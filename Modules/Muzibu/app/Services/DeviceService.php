@@ -89,8 +89,26 @@ class DeviceService
             'login_token' => substr($loginToken, 0, 16) . '...',
         ]);
 
-        // LIFO: Limit aşıldıysa eski session'ları sil
-        $this->enforceDeviceLimit($user, $sessionId);
+        // NOT: LIFO otomatik silme KALDIRILDI
+        // Kullanıcı login sonrası cihaz seçim modalından manuel seçecek
+        // $this->enforceDeviceLimit($user, $sessionId);
+    }
+
+    /**
+     * Limit aşıldı mı kontrol et (silmeden)
+     */
+    public function isDeviceLimitExceeded(User $user): bool
+    {
+        if (!$this->shouldRun()) {
+            return false;
+        }
+
+        $limit = $this->getDeviceLimit($user);
+        $count = DB::table($this->table)
+            ->where('user_id', $user->id)
+            ->count();
+
+        return $count > $limit;
     }
 
     /**
@@ -203,19 +221,22 @@ class DeviceService
     public function sessionExists(User $user): bool
     {
         if (!$this->shouldRun()) {
+            \Log::info('🔐 sessionExists: shouldRun() = FALSE, returning TRUE');
             return true; // Sistem kapalıysa her zaman valid
         }
 
         // 1. Cookie'den login_token al
         $cookieToken = request()->cookie('mzb_login_token');
 
-        \Log::debug('🔐 sessionExists: Checking with login_token', [
+        \Log::info('🔐 sessionExists: Starting check', [
             'user_id' => $user->id,
+            'session_id' => substr($this->getCurrentSessionId() ?: 'NULL', 0, 20) . '...',
             'cookie_token' => $cookieToken ? substr($cookieToken, 0, 16) . '...' : 'NULL',
         ]);
 
         // Cookie'de token yoksa → Session ID ile fallback
         if (!$cookieToken) {
+            \Log::info('🔐 sessionExists: No login_token cookie, using sessionExistsBySessionId');
             return $this->sessionExistsBySessionId($user);
         }
 
@@ -261,11 +282,20 @@ class DeviceService
     {
         $currentSessionId = $this->getCurrentSessionId();
 
+        \Log::info('🔐 sessionExistsBySessionId: Checking', [
+            'user_id' => $user->id,
+            'current_session_id' => $currentSessionId ? substr($currentSessionId, 0, 20) . '...' : 'NULL',
+        ]);
+
         if (!$currentSessionId) {
             // Session ID alamıyoruz - kullanıcının session'ı var mı?
             $hasSession = DB::table($this->table)
                 ->where('user_id', $user->id)
                 ->exists();
+
+            \Log::info('🔐 sessionExistsBySessionId: No session ID, checking if user has ANY session', [
+                'has_session' => $hasSession ? 'YES' : 'NO',
+            ]);
 
             return $hasSession;
         }
@@ -276,27 +306,18 @@ class DeviceService
             ->where('session_id', $currentSessionId)
             ->exists();
 
+        \Log::info('🔐 sessionExistsBySessionId: DB check result', [
+            'session_found' => $exists ? 'YES' : 'NO',
+        ]);
+
         if ($exists) {
             return true;
         }
 
-        // Tek session varsa sync yap (Livewire regenerate)
-        $sessions = DB::table($this->table)
-            ->where('user_id', $user->id)
-            ->get();
-
-        if ($sessions->count() === 1) {
-            $session = $sessions->first();
-            DB::table($this->table)
-                ->where('id', $session->id)
-                ->update([
-                    'session_id' => $currentSessionId,
-                    'last_activity' => now(),
-                    'updated_at' => now(),
-                ]);
-            return true;
-        }
-
+        // 🔥 FIX: Session DB'de yoksa FALSE döndür
+        // Eski kod "tek session varsa sync yap" yapıyordu ama bu YANLIŞ!
+        // Farklı cihazlarda çalışırken Chrome'un session'ını Edge'in ID'si ile değiştiriyordu!
+        \Log::info('🔐 sessionExistsBySessionId: Session NOT found in DB, returning FALSE');
         return false;
     }
 
@@ -561,6 +582,67 @@ class DeviceService
         }
 
         return $deleted;
+    }
+
+    /**
+     * Birden fazla session'ı toplu sonlandır (login device selection modal için)
+     *
+     * @param array $sessionIds Sonlandırılacak session ID'leri
+     * @param User|null $actor İşlemi yapan kullanıcı
+     * @return int Silinen session sayısı
+     */
+    public function terminateSessions(array $sessionIds, User $actor = null): int
+    {
+        if (!$this->shouldRun() || empty($sessionIds)) {
+            return 0;
+        }
+
+        $deletedCount = 0;
+
+        foreach ($sessionIds as $sessionId) {
+            // Önce session bilgisini al (cache'e reason kaydetmek için)
+            $session = DB::table($this->table)
+                ->where('session_id', $sessionId)
+                ->first();
+
+            if ($session && $session->login_token) {
+                // Cache'e silinme nedenini kaydet - "lifo" olarak işaretle
+                // Böylece silinen cihaz "başka cihazdan giriş yapıldı" mesajını görür
+                Cache::put(
+                    "session_deleted_reason:{$session->user_id}:{$session->login_token}",
+                    'lifo',
+                    300
+                );
+            }
+
+            // 1. Database'den session'ı sil
+            $deleted = DB::table($this->table)
+                ->where('session_id', $sessionId)
+                ->delete() > 0;
+
+            // 2. 🔥 FIX: Redis'ten de session key'i sil (kritik!)
+            if ($deleted) {
+                try {
+                    $redis = app('redis')->connection();
+                    if ($redis->exists($sessionId)) {
+                        $redis->del($sessionId);
+                        \Log::info('🔥 Redis session key deleted', [
+                            'session_id' => substr($sessionId, 0, 20) . '...',
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    \Log::warning('Redis session delete failed: ' . $e->getMessage());
+                }
+
+                $deletedCount++;
+                \Log::info('🔐 Session terminated (batch)', [
+                    'session_id' => substr($sessionId, 0, 20) . '...',
+                    'by_user' => $actor ? $actor->id : null,
+                ]);
+            }
+        }
+
+        return $deletedCount;
     }
 
     /**

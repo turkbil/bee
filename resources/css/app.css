@@ -1,29 +1,11 @@
 /**
  * TENANT-SAFE TAILWIND CSS
  * Bu dosya tenant sistemde sorun çıkarmayacak şekilde yapılandırıldı
- * Tailwind v4 syntax (updated 2025-12-21)
  */
 
-@import "tailwindcss";
-
-/**
- * Muzibu Custom Colors (Tenant 1001)
- * Migrated from tenant-1001.config.js to Tailwind v4 @theme
- */
-@theme {
-    /* Spotify-style colors */
-    --color-spotify-black: #121212;
-    --color-spotify-dark: #181818;
-    --color-spotify-green: #1DB954;
-    --color-spotify-green-light: #1ed760;
-    --color-spotify-gray: #282828;
-
-    /* Muzibu custom colors */
-    --color-muzibu-coral: #ff7f50;
-    --color-muzibu-gray: #1a1a1a;
-    --color-muzibu-gray-light: #282828;
-    --color-muzibu-text-gray: #B3B3B3;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* iXtif Theme Container Classes */
 @layer components {

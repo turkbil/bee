@@ -89,10 +89,10 @@ const MuzibuSpaRouter = {
         // 🔥 VIEWPORT PREFETCH: DISABLED (gereksiz network trafiği)
         // this.initViewportPrefetch();
 
-        // ⚡ HOVER PREFETCH: Mouse enter (sadece bu kalsın)
-        this.initHoverPrefetch();
+        // ⚡ HOVER PREFETCH: DISABLED (kullanıcı isteği)
+        // this.initHoverPrefetch();
 
-        console.log('🚀 SPA Router initialized (Hover Prefetch only)');
+        console.log('🚀 SPA Router initialized (Prefetch Disabled)');
     },
 
     /**

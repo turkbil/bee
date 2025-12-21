@@ -6,24 +6,6 @@
 if (window.Alpine && window.Alpine.store('sidebar')) {
     window.Alpine.store('sidebar').reset();
 }
-
-// 🚀 Auto-prefetch visible items on page load (staggered to avoid server overload)
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        const cards = document.querySelectorAll('[data-artist-id]');
-        const visibleCount = Math.min(cards.length, 6); // İlk 6 kart
-        cards.forEach((card, i) => {
-            if (i >= visibleCount) return;
-            const id = card.dataset.artistId;
-            if (id && window.Alpine?.store('sidebar')?.prefetch) {
-                // Stagger: Her 150ms'de bir istek
-                setTimeout(() => {
-                    window.Alpine.store('sidebar').prefetch('artist', parseInt(id));
-                }, i * 150);
-            }
-        });
-    }, 300);
-});
 </script>
 
 <div class="px-6 py-8">
@@ -38,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
             @foreach($artists as $artist)
                 <a href="{{ route('muzibu.artists.show', $artist->getTranslation('slug', app()->getLocale())) }}"
-                   @mouseenter="$store.sidebar.prefetch('artist', {{ $artist->artist_id }})"
                    @click="if(window.innerWidth >= 1280) { $event.preventDefault(); $store.sidebar.showPreview('artist', {{ $artist->artist_id }}, {
                        type: 'Artist',
                        id: {{ $artist->artist_id }},

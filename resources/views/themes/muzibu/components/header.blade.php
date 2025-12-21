@@ -51,11 +51,13 @@
             @endif
         </a>
 
-        {{-- Cache Clear Button - Icon Only (Logonun yanında) --}}
+        {{-- Cache Clear Button - Icon Only (Logonun yanında) - SADECE ADMIN --}}
+        @auth
+            @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('super-admin'))
         <button
             @click="clearCache()"
             class="w-9 h-9 bg-white/5 hover:bg-muzibu-coral/20 rounded-lg flex items-center justify-center text-muzibu-text-gray hover:text-muzibu-coral transition-all duration-300 group"
-            title="Cache Temizle"
+            title="Cache Temizle (Admin)"
             x-data="{
                 async clearCache() {
                     // ✅ 1. AI Conversation'ı veritabanından sil
@@ -109,6 +111,8 @@
         >
             <i class="fas fa-sync-alt text-sm group-hover:rotate-180 transition-transform duration-500"></i>
         </button>
+            @endif
+        @endauth
 
         {{-- Search Box - Meilisearch Powered (All Types) --}}
         <div class="relative flex-1 max-w-2xl mx-auto hidden md:block"

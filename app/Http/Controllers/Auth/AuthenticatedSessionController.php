@@ -19,12 +19,26 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View|RedirectResponse|Response
     {
-        // Eğer kullanıcı zaten giriş yapmışsa ana sayfaya yönlendir
+        // 🔐 DEVICE LIMIT: Cihaz limiti aşıldıysa modal göstermek için login sayfasına izin ver
+        $deviceLimitExceeded = session('device_limit_exceeded', false);
+
+        // Eğer kullanıcı zaten giriş yapmışsa
         if (Auth::check()) {
-            return redirect('/')
-                ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
-                ->header('Pragma', 'no-cache')
-                ->header('Expires', '0');
+            // Device limit exceeded ise → Login sayfasını göster (modal açılacak)
+            if ($deviceLimitExceeded) {
+                \Log::info('🔐 LOGIN PAGE: Device limit exceeded, showing modal', [
+                    'user_id' => Auth::id(),
+                    'device_limit' => session('device_limit'),
+                    'other_devices_count' => count(session('other_devices', [])),
+                ]);
+                // Continue to login page (modal will be shown)
+            } else {
+                // Normal durum → Ana sayfaya yönlendir
+                return redirect('/')
+                    ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                    ->header('Pragma', 'no-cache')
+                    ->header('Expires', '0');
+            }
         }
 
         // Auth sayfaları için locale - session'da varsa kullan, yoksa tenant default
@@ -162,13 +176,44 @@ class AuthenticatedSessionController extends Controller
             try {
                 $deviceService = app(\Modules\Muzibu\App\Services\DeviceService::class);
 
-                // registerSession() içinde LIFO otomatik çalışıyor
+                // registerSession() içinde LIFO otomatik KALDIRILDI
+                // Kullanıcı manuel seçecek
                 $deviceService->registerSession($user);
 
                 \Log::info('🔐 POST-LOGIN: Session registered', [
                     'user_id' => $user->id,
                     'session_id' => substr(session()->getId(), 0, 20) . '...',
                 ]);
+
+                // 🔐 DEVICE LIMIT CHECK: Limit aşıldıysa login sayfasına yönlendir (modal gösterilecek)
+                if ($deviceService->isDeviceLimitExceeded($user)) {
+                    $devices = $deviceService->getActiveDevices($user);
+                    $limit = $deviceService->getDeviceLimit($user);
+                    $currentSessionId = session()->getId();
+
+                    // Mevcut (yeni) session hariç diğer cihazları al
+                    $otherDevices = array_filter($devices, fn($d) => $d['session_id'] !== $currentSessionId);
+
+                    \Log::info('🔐 DEVICE LIMIT EXCEEDED: Showing device selection modal', [
+                        'user_id' => $user->id,
+                        'limit' => $limit,
+                        'total_devices' => count($devices),
+                        'other_devices' => count($otherDevices),
+                    ]);
+
+                    // Session'a device bilgilerini kaydet (flash yerine put - multiple redirect için)
+                    session()->put('device_limit_exceeded', true);
+                    session()->put('device_limit', $limit);
+                    session()->put('other_devices', array_values($otherDevices));
+                    session()->put('intended_url', session()->pull('url.intended', '/'));
+
+                    // 🔥 Login sayfasına redirect (custom guest middleware device limit durumunda izin verir)
+                    // Modal login blade'de otomatik açılacak (window.deviceLimitData)
+                    return redirect()->route('login')
+                        ->header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+                        ->header('Pragma', 'no-cache');
+                }
+
             } catch (\Exception $e) {
                 \Log::error('🔐 POST-LOGIN: Device service failed', [
                     'user_id' => $user->id,

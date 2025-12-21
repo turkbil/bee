@@ -52,10 +52,14 @@ $app = Application::configure(basePath: dirname(__DIR__))
                      \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO
         );
 
-        // 0.5. WWW REDIRECT - KALDIRILDI (POST request'leri bozuyordu)
-        // $middleware->prependToGroup('web', \App\Http\Middleware\EnsureWwwDomain::class);
+        // 0.5. WWW REDIRECT - www → non-www (Laravel middleware - Nginx .htaccess okumadığı için)
+        $middleware->prependToGroup('web', \App\Http\Middleware\RemoveWwwPrefix::class);
 
-        // 1. TENANT - Domain belirleme (EN ÖNCELİKLİ) - Sadece web
+        // 🔐 CRITICAL FIX: Ensure web middleware defaults are NOT removed
+        // Laravel 11 automatically includes: StartSession, VerifyCsrfToken, SubstituteBindings
+        // We prepend/append to 'web' group, but MUST NOT remove defaults!
+
+        // 1. TENANT - Domain belirleme (EN ÖNCELİKLİ) - Sadece web (www redirect'ten SONRA!)
         $middleware->prependToGroup('web', \App\Http\Middleware\InitializeTenancy::class);
         
         // 2. REDIS HEALTH CHECK - Redis bağlantı sağlığı kontrolü

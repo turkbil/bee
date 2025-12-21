@@ -320,6 +320,82 @@ class AuthController extends Controller
     }
 
     /**
+     * Terminate multiple device sessions (batch)
+     * Login device selection modal için kullanılır
+     */
+    public function terminateDevices(Request $request)
+    {
+        try {
+            // 🔥 FIX: Hem web hem sanctum guard'ı kontrol et
+            $user = auth('web')->user() ?? auth('sanctum')->user();
+
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized'
+                ], 401);
+            }
+
+            $request->validate([
+                'session_ids' => 'required|array',
+                'session_ids.*' => 'required|string'
+            ]);
+
+            // Tenant kontrolü
+            if (!tenant()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Device limit feature not available'
+                ], 400);
+            }
+
+            $deviceService = app(DeviceService::class);
+
+            if (!$deviceService->shouldRun()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Device limit feature not enabled for this tenant'
+                ], 400);
+            }
+
+            \Log::info('🔐 terminateDevices ATTEMPT', [
+                'session_ids' => $request->session_ids,
+                'user_id' => $user->id,
+                'count' => count($request->session_ids),
+            ]);
+
+            $deletedCount = $deviceService->terminateSessions($request->session_ids, $user);
+
+            \Log::info('🔐 terminateDevices RESULT', [
+                'deleted_count' => $deletedCount,
+                'requested_count' => count($request->session_ids),
+            ]);
+
+            // 🔥 Başarılıysa session data'yı temizle
+            if ($deletedCount > 0) {
+                session()->forget(['device_limit_exceeded', 'device_limit', 'other_devices', 'intended_url']);
+                session()->save(); // 🔥 CRITICAL: API route session değişikliklerini manuel save et
+            }
+
+            return response()->json([
+                'success' => $deletedCount > 0,
+                'deleted_count' => $deletedCount,
+                'message' => $deletedCount > 0 ? "{$deletedCount} cihaz oturumdan çıkarıldı" : 'Cihazlar bulunamadı'
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('🔐 terminateDevices ERROR', [
+                'error' => $e->getMessage(),
+                'session_ids' => $request->session_ids ?? [],
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Server error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Get active devices for user
      */
     public function getActiveDevices(Request $request)

@@ -20,19 +20,13 @@ async function playGenres(genreId) {
     try {
         // 🚫 PREMIUM CHECK
         if (!player.isLoggedIn) {
-            player.showToast('Şarkı dinlemek için kayıt olmalısınız', 'warning');
-            setTimeout(() => {
-                window.location.href = '/register';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.login_required || 'Şarkı dinlemek için giriş yapmalısınız', 'warning');
             return;
         }
 
         const isPremiumOrTrial = player.currentUser?.is_premium || player.currentUser?.is_trial;
         if (!isPremiumOrTrial) {
-            player.showToast('Şarkı dinlemek için premium üyelik gereklidir', 'warning');
-            setTimeout(() => {
-                window.location.href = '/subscription/plans';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.premium_required || 'Şarkı dinlemek için premium üyelik gereklidir', 'warning');
             return;
         }
 
@@ -84,19 +78,13 @@ async function playPlaylist(playlistId) {
     try {
         // 🚫 PREMIUM CHECK
         if (!player.isLoggedIn) {
-            player.showToast('Şarkı dinlemek için kayıt olmalısınız', 'warning');
-            setTimeout(() => {
-                window.location.href = '/register';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.login_required || 'Şarkı dinlemek için giriş yapmalısınız', 'warning');
             return;
         }
 
         const isPremiumOrTrial = player.currentUser?.is_premium || player.currentUser?.is_trial;
         if (!isPremiumOrTrial) {
-            player.showToast('Şarkı dinlemek için premium üyelik gereklidir', 'warning');
-            setTimeout(() => {
-                window.location.href = '/subscription/plans';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.premium_required || 'Şarkı dinlemek için premium üyelik gereklidir', 'warning');
             return;
         }
 
@@ -148,19 +136,13 @@ async function playAlbum(albumId) {
     try {
         // 🚫 PREMIUM CHECK
         if (!player.isLoggedIn) {
-            player.showToast('Şarkı dinlemek için kayıt olmalısınız', 'warning');
-            setTimeout(() => {
-                window.location.href = '/register';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.login_required || 'Şarkı dinlemek için giriş yapmalısınız', 'warning');
             return;
         }
 
         const isPremiumOrTrial = player.currentUser?.is_premium || player.currentUser?.is_trial;
         if (!isPremiumOrTrial) {
-            player.showToast('Şarkı dinlemek için premium üyelik gereklidir', 'warning');
-            setTimeout(() => {
-                window.location.href = '/subscription/plans';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.premium_required || 'Şarkı dinlemek için premium üyelik gereklidir', 'warning');
             return;
         }
 
@@ -212,19 +194,13 @@ async function playRadio(radioId) {
     try {
         // 🚫 PREMIUM CHECK
         if (!player.isLoggedIn) {
-            player.showToast('Şarkı dinlemek için kayıt olmalısınız', 'warning');
-            setTimeout(() => {
-                window.location.href = '/register';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.login_required || 'Şarkı dinlemek için giriş yapmalısınız', 'warning');
             return;
         }
 
         const isPremiumOrTrial = player.currentUser?.is_premium || player.currentUser?.is_trial;
         if (!isPremiumOrTrial) {
-            player.showToast('Şarkı dinlemek için premium üyelik gereklidir', 'warning');
-            setTimeout(() => {
-                window.location.href = '/subscription/plans';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.premium_required || 'Şarkı dinlemek için premium üyelik gereklidir', 'warning');
             return;
         }
 
@@ -276,19 +252,13 @@ async function playSector(sectorId) {
     try {
         // 🚫 PREMIUM CHECK
         if (!player.isLoggedIn) {
-            player.showToast('Şarkı dinlemek için kayıt olmalısınız', 'warning');
-            setTimeout(() => {
-                window.location.href = '/register';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.login_required || 'Şarkı dinlemek için giriş yapmalısınız', 'warning');
             return;
         }
 
         const isPremiumOrTrial = player.currentUser?.is_premium || player.currentUser?.is_trial;
         if (!isPremiumOrTrial) {
-            player.showToast('Şarkı dinlemek için premium üyelik gereklidir', 'warning');
-            setTimeout(() => {
-                window.location.href = '/subscription/plans';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.premium_required || 'Şarkı dinlemek için premium üyelik gereklidir', 'warning');
             return;
         }
 

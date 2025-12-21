@@ -1,19 +1,19 @@
-@props(['album', 'preview' => false])
+@props(['album', 'preview' => false, 'compact' => false])
 
 {{-- Muzibu Album Card Component --}}
 {{-- Usage: <x-muzibu.album-card :album="$album" /> --}}
 {{-- Features: Infinite queue data attributes, playing badge, context menu --}}
 
 <a @if($preview)
-       href="javascript:void(0)"
-       @click="$store.sidebar.showPreview('album', {{ $album->id }}, {
+       href="/albums/{{ $album->getTranslation('slug', app()->getLocale()) }}"
+       @click="if (window.innerWidth >= 1024) { $event.preventDefault(); $store.sidebar.showPreview('album', {{ $album->id }}, {
            type: 'Album',
            id: {{ $album->id }},
            title: '{{ addslashes($album->getTranslation('title', app()->getLocale())) }}',
            artist: '{{ $album->artist ? addslashes($album->artist->getTranslation('title', app()->getLocale())) : '' }}',
            cover: '{{ $album->coverMedia ? thumb($album->coverMedia, 300, 300, ['scale' => 1]) : '' }}',
            is_favorite: {{ auth()->check() && method_exists($album, 'isFavoritedBy') && $album->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
-       })"
+       }); }"
    @else
        href="/albums/{{ $album->getTranslation('slug', app()->getLocale()) }}"
    @endif
@@ -54,11 +54,11 @@
                     Math.abs($event.touches[0].clientY - touchStartPos.y) > 10;
        if (moved) clearTimeout(touchTimer);
    "
-   class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300"
+   class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg transition-all duration-300 @if($compact) flex-shrink-0 w-[190px] px-3 pt-3 @else px-4 pt-4 @endif"
    {{-- Active Album State (JS will add this class when playing) --}}
    x-bind:class="$store.player.currentContext?.type === 'album' && $store.player.currentContext?.id === {{ $album->id }} ? 'ring-2 ring-muzibu-coral' : ''">
 
-    <div class="relative mb-4">
+    <div class="relative @if($compact) mb-2 @else mb-4 @endif">
         {{-- Album Cover --}}
         @if($album->media_id && $album->coverMedia)
             <img src="{{ thumb($album->coverMedia, 300, 300, ['scale' => 1]) }}"
@@ -67,7 +67,7 @@
                  loading="lazy">
         @else
             <div class="w-full aspect-square bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                <span class="text-5xl sm:text-6xl">💿</span>
+                <span class="text-5xl">💿</span>
             </div>
         @endif
 
@@ -84,14 +84,14 @@
             <i class="fas fa-play ml-1"></i>
         </button>
 
-        {{-- Favorite + Menu Buttons (Cover Sağ Üst) - HOVER'DA GÖRÜNÜR --}}
+        {{-- Favorite + Menu Buttons (Sağ Üst) - HOVER'DA GÖRÜNÜR --}}
         <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent>
             {{-- Favorite Button --}}
             <button x-on:click.stop.prevent="$store.favorites.toggle('album', {{ $album->id }})"
-                    class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110"
+                    class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all"
                     x-bind:class="$store.favorites.isFavorite('album', {{ $album->id }}) ? 'text-muzibu-coral' : ''">
                 <i class="text-sm"
-                   x-bind:class="$store.favorites.isFavorite('album', {{ $album->id }}) ? 'fas fa-heart' : 'far fa-heart hover:text-muzibu-coral'"></i>
+                   x-bind:class="$store.favorites.isFavorite('album', {{ $album->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
             </button>
 
             {{-- 3-Dot Menu Button --}}
@@ -100,21 +100,23 @@
                 title: '{{ addslashes($album->getTranslation('title', app()->getLocale())) }}',
                 artist: '{{ $album->artist ? addslashes($album->artist->getTranslation('title', app()->getLocale())) : '' }}',
                 is_favorite: {{ auth()->check() && method_exists($album, 'isFavoritedBy') && $album->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
-            })" class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
                 <i class="fas fa-ellipsis-v text-sm"></i>
             </button>
         </div>
     </div>
 
-    {{-- Album Title --}}
-    <h3 class="font-semibold text-white mb-1 truncate">
-        {{ $album->getTranslation('title', app()->getLocale()) }}
-    </h3>
-
-    {{-- Artist Name --}}
-    @if($album->artist)
-        <p class="text-sm text-gray-400 truncate">
-            {{ $album->artist->getTranslation('title', app()->getLocale()) }}
+    {{-- Text Area (Fixed Height - Always 2 rows) --}}
+    <div class="h-12 overflow-hidden pb-4">
+        <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
+            {{ $album->getTranslation('title', app()->getLocale()) }}
+        </h3>
+        <p class="text-xs text-gray-400 leading-6 line-clamp-1">
+            @if($album->artist)
+                {{ $album->artist->getTranslation('title', app()->getLocale()) }}
+            @else
+                &nbsp;
+            @endif
         </p>
-    @endif
+    </div>
 </a>

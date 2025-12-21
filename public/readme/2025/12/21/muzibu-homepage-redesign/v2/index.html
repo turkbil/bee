@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v2 - Tab Sistemi Tasarımı | Muzibu Sidebar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'muzibu-coral': '#ff5a5f',
+                        'muzibu-dark': '#121212',
+                        'muzibu-card': '#181818',
+                        'muzibu-hover': '#282828'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .scrollbar-thin::-webkit-scrollbar { width: 6px; }
+        .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+        .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    </style>
+</head>
+<body class="bg-slate-900 min-h-screen p-8">
+
+    <!-- Header -->
+    <div class="max-w-4xl mx-auto mb-8">
+        <div class="flex items-center gap-3 mb-4">
+            <span class="bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-bold">v2</span>
+            <h1 class="text-2xl font-bold text-white">Tab Sistemi</h1>
+        </div>
+        <p class="text-slate-400">Popüler, Yeni ve Trend şarkılar ayrı tablarda gösterilir.</p>
+    </div>
+
+    <!-- Mockup Container -->
+    <div class="max-w-4xl mx-auto flex gap-8">
+
+        <!-- Sidebar Preview -->
+        <div class="w-[360px] flex-shrink-0">
+            <div class="bg-muzibu-dark rounded-2xl overflow-hidden shadow-2xl border border-white/5">
+
+                <!-- Tab Headers -->
+                <div class="flex border-b border-white/10">
+                    <button class="flex-1 py-3 px-4 text-sm font-semibold text-muzibu-coral border-b-2 border-muzibu-coral bg-white/5">
+                        <i class="fas fa-fire mr-1.5"></i>Popüler
+                    </button>
+                    <button class="flex-1 py-3 px-4 text-sm font-medium text-slate-400 hover:text-white transition-colors">
+                        <i class="fas fa-sparkles mr-1.5"></i>Yeni
+                    </button>
+                    <button class="flex-1 py-3 px-4 text-sm font-medium text-slate-400 hover:text-white transition-colors">
+                        <i class="fas fa-chart-line mr-1.5"></i>Trend
+                    </button>
+                </div>
+
+                <!-- Tab Content - Popüler (Active) -->
+                <div class="h-[580px] overflow-y-auto scrollbar-thin p-2 space-y-1">
+
+                    <div class="flex items-center gap-3 p-2.5 rounded-xl bg-muzibu-coral/10 border border-muzibu-coral/20 cursor-pointer group">
+                        <div class="w-6 text-center">
+                            <span class="text-sm font-bold text-muzibu-coral">1</span>
+                        </div>
+                        <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-pink-500 to-purple-600 flex-shrink-0"></div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-muzibu-coral truncate">Yaz Geceleri</p>
+                            <p class="text-xs text-slate-500 truncate">Cafe Del Mar</p>
+                        </div>
+                        <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                    </div>
+
+                    <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-muzibu-hover cursor-pointer group transition-all">
+                        <div class="w-6 text-center">
+                            <span class="text-sm font-bold text-slate-400">2</span>
+                        </div>
+                        <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-600 flex-shrink-0"></div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral">Morning Coffee</p>
+                            <p class="text-xs text-slate-500 truncate">Lounge Masters</p>
+                        </div>
+                        <div class="text-xs text-slate-600 group-hover:hidden">4:12</div>
+                        <i class="fas fa-play text-muzibu-coral text-xs hidden group-hover:block"></i>
+                    </div>
+
+                    <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-muzibu-hover cursor-pointer group transition-all">
+                        <div class="w-6 text-center">
+                            <span class="text-sm font-bold text-slate-400">3</span>
+                        </div>
+                        <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-green-500 to-teal-600 flex-shrink-0"></div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral">Sunset Boulevard</p>
+                            <p class="text-xs text-slate-500 truncate">Chill Collective</p>
+                        </div>
+                        <div class="text-xs text-slate-600 group-hover:hidden">3:45</div>
+                        <i class="fas fa-play text-muzibu-coral text-xs hidden group-hover:block"></i>
+                    </div>
+
+                    <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-muzibu-hover cursor-pointer group transition-all">
+                        <div class="w-6 text-center">
+                            <span class="text-sm font-bold text-slate-400">4</span>
+                        </div>
+                        <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-orange-500 to-red-600 flex-shrink-0"></div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral">Jazz Nights</p>
+                            <p class="text-xs text-slate-500 truncate">Blue Note Trio</p>
+                        </div>
+                        <div class="text-xs text-slate-600 group-hover:hidden">5:18</div>
+                        <i class="fas fa-play text-muzibu-coral text-xs hidden group-hover:block"></i>
+                    </div>
+
+                    <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-muzibu-hover cursor-pointer group transition-all">
+                        <div class="w-6 text-center">
+                            <span class="text-sm font-bold text-slate-400">5</span>
+                        </div>
+                        <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 flex-shrink-0"></div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral">Electric Dreams</p>
+                            <p class="text-xs text-slate-500 truncate">Synthwave FM</p>
+                        </div>
+                        <div class="text-xs text-slate-600 group-hover:hidden">4:02</div>
+                        <i class="fas fa-play text-muzibu-coral text-xs hidden group-hover:block"></i>
+                    </div>
+
+                    <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-muzibu-hover cursor-pointer group transition-all">
+                        <div class="w-6 text-center">
+                            <span class="text-sm font-bold text-slate-400">6</span>
+                        </div>
+                        <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 flex-shrink-0"></div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral">Ocean Waves</p>
+                            <p class="text-xs text-slate-500 truncate">Nature Sounds</p>
+                        </div>
+                        <div class="text-xs text-slate-600 group-hover:hidden">6:30</div>
+                        <i class="fas fa-play text-muzibu-coral text-xs hidden group-hover:block"></i>
+                    </div>
+
+                    <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-muzibu-hover cursor-pointer group transition-all">
+                        <div class="w-6 text-center">
+                            <span class="text-sm font-bold text-slate-400">7</span>
+                        </div>
+                        <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-red-500 to-orange-600 flex-shrink-0"></div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral">Latin Groove</p>
+                            <p class="text-xs text-slate-500 truncate">Havana Nights</p>
+                        </div>
+                        <div class="text-xs text-slate-600 group-hover:hidden">3:55</div>
+                        <i class="fas fa-play text-muzibu-coral text-xs hidden group-hover:block"></i>
+                    </div>
+
+                    <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-muzibu-hover cursor-pointer group transition-all">
+                        <div class="w-6 text-center">
+                            <span class="text-sm font-bold text-slate-400">8</span>
+                        </div>
+                        <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-teal-500 to-green-600 flex-shrink-0"></div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral">Ambient Flow</p>
+                            <p class="text-xs text-slate-500 truncate">Meditation Mix</p>
+                        </div>
+                        <div class="text-xs text-slate-600 group-hover:hidden">7:15</div>
+                        <i class="fas fa-play text-muzibu-coral text-xs hidden group-hover:block"></i>
+                    </div>
+
+                    <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-muzibu-hover cursor-pointer group transition-all">
+                        <div class="w-6 text-center">
+                            <span class="text-sm font-bold text-slate-400">9</span>
+                        </div>
+                        <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-yellow-500 to-orange-600 flex-shrink-0"></div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral">Funky Town</p>
+                            <p class="text-xs text-slate-500 truncate">Disco Revival</p>
+                        </div>
+                        <div class="text-xs text-slate-600 group-hover:hidden">4:28</div>
+                        <i class="fas fa-play text-muzibu-coral text-xs hidden group-hover:block"></i>
+                    </div>
+
+                    <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-muzibu-hover cursor-pointer group transition-all">
+                        <div class="w-6 text-center">
+                            <span class="text-sm font-bold text-slate-400">10</span>
+                        </div>
+                        <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-pink-500 to-red-600 flex-shrink-0"></div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral">Romantic Evening</p>
+                            <p class="text-xs text-slate-500 truncate">Love Songs Vol.2</p>
+                        </div>
+                        <div class="text-xs text-slate-600 group-hover:hidden">4:45</div>
+                        <i class="fas fa-play text-muzibu-coral text-xs hidden group-hover:block"></i>
+                    </div>
+
+                    <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-muzibu-hover cursor-pointer group transition-all">
+                        <div class="w-6 text-center">
+                            <span class="text-sm font-bold text-slate-400">11</span>
+                        </div>
+                        <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex-shrink-0"></div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral">Neon Lights</p>
+                            <p class="text-xs text-slate-500 truncate">City Vibes</p>
+                        </div>
+                        <div class="text-xs text-slate-600 group-hover:hidden">3:38</div>
+                        <i class="fas fa-play text-muzibu-coral text-xs hidden group-hover:block"></i>
+                    </div>
+
+                    <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-muzibu-hover cursor-pointer group transition-all">
+                        <div class="w-6 text-center">
+                            <span class="text-sm font-bold text-slate-400">12</span>
+                        </div>
+                        <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex-shrink-0"></div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral">Forest Rain</p>
+                            <p class="text-xs text-slate-500 truncate">Ambient Nature</p>
+                        </div>
+                        <div class="text-xs text-slate-600 group-hover:hidden">8:22</div>
+                        <i class="fas fa-play text-muzibu-coral text-xs hidden group-hover:block"></i>
+                    </div>
+
+                </div>
+
+                <!-- Play All Button -->
+                <div class="p-3 border-t border-white/5">
+                    <button class="w-full py-2.5 bg-muzibu-coral hover:bg-red-500 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2">
+                        <i class="fas fa-play"></i>
+                        Tümünü Çal
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="flex-1">
+            <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700 sticky top-8">
+                <h3 class="text-lg font-bold text-purple-400 mb-4">Özellikler</h3>
+                <ul class="space-y-3 text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>3 farklı tab: <strong>Popüler</strong>, <strong>Yeni</strong>, <strong>Trend</strong></span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>Her tab kendi şarkı listesini gösterir</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>Aktif tab vurgulanır (alt çizgi + renk)</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>"Tümünü Çal" butonu altta sabit</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>Çalan şarkı özel stil ile vurgulanır</span>
+                    </li>
+                </ul>
+
+                <div class="mt-6 p-4 bg-purple-500/10 rounded-xl border border-purple-500/30">
+                    <p class="text-sm text-purple-300">
+                        <i class="fas fa-lightbulb mr-2"></i>
+                        <strong>Organize yapı.</strong> Kullanıcı istediği kategoriye hızlıca geçebilir.
+                    </p>
+                </div>
+
+                <!-- Tab Preview -->
+                <div class="mt-6">
+                    <h4 class="text-sm font-semibold text-slate-400 mb-3">Tab İçerikleri:</h4>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2 p-2 bg-slate-700/50 rounded-lg">
+                            <i class="fas fa-fire text-orange-400"></i>
+                            <span class="text-sm">Popüler</span>
+                            <span class="text-xs text-slate-500 ml-auto">En çok dinlenenler</span>
+                        </div>
+                        <div class="flex items-center gap-2 p-2 bg-slate-700/50 rounded-lg">
+                            <i class="fas fa-sparkles text-green-400"></i>
+                            <span class="text-sm">Yeni</span>
+                            <span class="text-xs text-slate-500 ml-auto">Son eklenenler</span>
+                        </div>
+                        <div class="flex items-center gap-2 p-2 bg-slate-700/50 rounded-lg">
+                            <i class="fas fa-chart-line text-blue-400"></i>
+                            <span class="text-sm">Trend</span>
+                            <span class="text-xs text-slate-500 ml-auto">Yükselişte olanlar</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="max-w-4xl mx-auto text-center text-slate-500 text-sm pt-12">
+        <p><i class="fas fa-robot mr-2"></i>Claude AI | v2 - Tab Sistemi</p>
+    </footer>
+</body>
+</html>

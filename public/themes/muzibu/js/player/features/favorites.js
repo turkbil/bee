@@ -189,3 +189,14 @@ function muzibuFavorites() {
 
 // Make globally accessible (legacy)
 window.muzibuFavorites = muzibuFavorites;
+
+// 🎯 AUTO-LOAD FAVORITES: Initialize favorites list when Alpine is ready
+document.addEventListener('alpine:initialized', () => {
+    const favoritesStore = Alpine.store('favorites');
+
+    // Only load if user is authenticated
+    if (window.muzibuPlayerConfig?.isLoggedIn) {
+        console.log('🎵 Loading user favorites...');
+        favoritesStore.loadFavorites();
+    }
+});

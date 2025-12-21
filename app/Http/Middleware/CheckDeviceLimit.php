@@ -21,6 +21,12 @@ class CheckDeviceLimit
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // 🔴 DEVRE DIŞI: Bu middleware eskidir ve sessions tablosu kullanır
+        // Sistem Redis session kullanıyor, sessions tablosu boş
+        // Yeni device limit sistemi: Modules\Muzibu\App\Services\DeviceService (login'de çalışır)
+        return $next($request);
+
+        /* ESKI KOD (Redis uyumsuz - sessions tablosu boş)
         $user = $request->user();
 
         if (!$user) {
@@ -44,5 +50,6 @@ class CheckDeviceLimit
         }
 
         return $next($request);
+        */
     }
 }

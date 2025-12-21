@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailwind CSS v3 vs v4 - Kritik Farklar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-6">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <header class="mb-12">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="text-6xl">⚡</div>
+                <div>
+                    <h1 class="text-4xl font-bold text-white mb-2">Tailwind CSS v3 vs v4</h1>
+                    <p class="text-slate-400">Neden migration başarısız oldu? Kritik farklılıklar</p>
+                </div>
+            </div>
+            <div class="flex gap-4 text-sm">
+                <span class="px-3 py-1 bg-blue-900/30 text-blue-400 rounded-full">Migration Analizi</span>
+                <span class="px-3 py-1 bg-purple-900/30 text-purple-400 rounded-full">Breaking Changes</span>
+                <span class="px-3 py-1 bg-red-900/30 text-red-400 rounded-full">Muzibu Tenant 1001</span>
+            </div>
+        </header>
+
+        <!-- Özet -->
+        <section class="mb-12 bg-slate-900/50 border border-slate-800 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-4">📊 Özet</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-green-900/20 border border-green-800 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-green-400 mb-3">✅ v3 (Mevcut - Kararlı)</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li>✓ <strong>JS Config:</strong> tailwind.config.js</li>
+                        <li>✓ <strong>Safelist:</strong> 70+ class korundu</li>
+                        <li>✓ <strong>CSS Boyutu:</strong> 255 KB (optimize)</li>
+                        <li>✓ <strong>PostCSS:</strong> tailwindcss plugin</li>
+                        <li>✓ <strong>Import:</strong> @tailwind directives</li>
+                    </ul>
+                </div>
+                <div class="bg-red-900/20 border border-red-800 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-red-400 mb-3">❌ v4 (Migration Başarısız)</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li>✗ <strong>CSS Config:</strong> @theme directive (yeni)</li>
+                        <li>✗ <strong>Safelist:</strong> Yok! Purge aggressive</li>
+                        <li>✗ <strong>CSS Boyutu:</strong> 830 KB (+225% bloat!)</li>
+                        <li>✗ <strong>PostCSS:</strong> @tailwindcss/postcss (farklı)</li>
+                        <li>✗ <strong>Import:</strong> @import "tailwindcss"</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 1. Konfigürasyon Sistemi -->
+        <section class="mb-12 bg-slate-900/50 border border-slate-800 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6">⚙️ 1. Konfigürasyon Sistemi</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-blue-400 mb-3">v3 - JavaScript Config</h3>
+                    <pre class="bg-slate-950 text-green-400 p-4 rounded text-sm overflow-x-auto"><code>// tailwind.config.js
+module.exports = {
+    theme: {
+        extend: {
+            colors: {
+                'muzibu-coral': '#ff7f50',
+                'spotify-green': '#1DB954',
+            }
+        }
+    },
+    safelist: [
+        'bg-muzibu-coral',
+        'from-muzibu-coral',
+        'bg-black/70',
+        // 70+ classes...
+    ]
+}</code></pre>
+                </div>
+                
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-purple-400 mb-3">v4 - CSS Config (@theme)</h3>
+                    <pre class="bg-slate-950 text-green-400 p-4 rounded text-sm overflow-x-auto"><code>/* app.css */
+@import "tailwindcss";
+
+@theme {
+    --color-muzibu-coral: #ff7f50;
+    --color-spotify-green: #1DB954;
+}
+
+/* ⚠️ SAFELIST YOK! */</code></pre>
+                </div>
+            </div>
+
+            <div class="bg-yellow-900/20 border border-yellow-800 rounded-lg p-4">
+                <p class="text-yellow-400"><strong>⚠️ Kırılan Nokta:</strong> v4'te JS config kaldırıldı, safelist mekanizması yok!</p>
+            </div>
+        </section>
+
+        <!-- 2. PostCSS Plugin -->
+        <section class="mb-12 bg-slate-900/50 border border-slate-800 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6">🔌 2. PostCSS Plugin</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-blue-400 mb-3">v3 - tailwindcss</h3>
+                    <pre class="bg-slate-950 text-green-400 p-4 rounded text-sm overflow-x-auto"><code>// postcss.config.js
+export default {
+    plugins: {
+        tailwindcss: {},
+        autoprefixer: {},
+    },
+};</code></pre>
+                </div>
+                
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-purple-400 mb-3">v4 - @tailwindcss/postcss</h3>
+                    <pre class="bg-slate-950 text-green-400 p-4 rounded text-sm overflow-x-auto"><code>// postcss.config.js
+export default {
+    plugins: {
+        '@tailwindcss/postcss': {},
+        autoprefixer: {},
+    },
+};</code></pre>
+                </div>
+            </div>
+
+            <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-4">
+                <p class="text-blue-400"><strong>📦 Package:</strong> v4'te <code>@tailwindcss/postcss</code> ve <code>@tailwindcss/cli</code> ayrı paketler!</p>
+            </div>
+        </section>
+
+        <!-- 3. CSS Import Syntax -->
+        <section class="mb-12 bg-slate-900/50 border border-slate-800 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6">📄 3. CSS Import Syntax</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-blue-400 mb-3">v3 - @tailwind Directives</h3>
+                    <pre class="bg-slate-950 text-green-400 p-4 rounded text-sm overflow-x-auto"><code>/* app.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;</code></pre>
+                </div>
+                
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-purple-400 mb-3">v4 - @import Statement</h3>
+                    <pre class="bg-slate-950 text-green-400 p-4 rounded text-sm overflow-x-auto"><code>/* app.css */
+@import "tailwindcss";</code></pre>
+                </div>
+            </div>
+
+            <div class="bg-green-900/20 border border-green-800 rounded-lg p-4">
+                <p class="text-green-400"><strong>✅ Basitleşti:</strong> Tek satıra indi ama eski syntax kaldırıldı!</p>
+            </div>
+        </section>
+
+        <!-- 4. Safelist Problem -->
+        <section class="mb-12 bg-red-900/50 border border-red-800 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6">🚨 4. SAFELIST PROBLEM (Kritik!)</h2>
+            
+            <div class="mb-6">
+                <h3 class="text-xl font-bold text-red-400 mb-3">❌ v4'te Safelist Mekanizması YOK!</h3>
+                <p class="text-slate-300 mb-4">v3'te dinamik class'ları korumak için <code>safelist</code> array kullanıyorduk:</p>
+                
+                <div class="bg-slate-950 rounded-lg p-6 mb-4">
+                    <pre class="text-yellow-400 text-sm overflow-x-auto"><code>// v3 - tenant-1001.config.js
+safelist: [
+    'bg-gradient-to-br',
+    'from-muzibu-coral', 'to-pink-600',
+    'bg-black/70', 'bg-white/10',
+    'bg-spotify-green', 'text-spotify-green',
+    'hover:bg-muzibu-coral',
+    'bg-gray-800/50',
+    // ... toplam 70+ class
+]</code></pre>
+                </div>
+
+                <div class="bg-red-950/50 border border-red-700 rounded-lg p-6 mb-4">
+                    <h4 class="text-lg font-bold text-red-400 mb-2">🔴 v4'te Ne Oldu?</h4>
+                    <ul class="space-y-2 text-slate-300">
+                        <li>❌ <code>safelist</code> array <strong>tamamen kaldırıldı</strong></li>
+                        <li>❌ Purge stratejisi daha <strong>agresif</strong></li>
+                        <li>❌ Dinamik class'lar <strong>compile olmadı</strong></li>
+                        <li>❌ Gradientler, opacity'ler <strong>kayboldu</strong></li>
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-900/20 border border-yellow-800 rounded-lg p-4">
+                    <h4 class="text-lg font-bold text-yellow-400 mb-2">⚠️ Muzibu'da Ne Kırıldı?</h4>
+                    <ul class="space-y-2 text-slate-300">
+                        <li>• Playlist kartlarındaki <code>from-muzibu-coral to-pink-600</code> gradient'leri</li>
+                        <li>• Overlay'lerdeki <code>bg-black/70</code>, <code>bg-white/10</code> opacity'ler</li>
+                        <li>• Player'daki <code>bg-spotify-green</code>, <code>text-spotify-green</code> renkleri</li>
+                        <li>• Hover efektlerindeki <code>hover:bg-muzibu-coral</code> state'leri</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-lg p-6">
+                <h4 class="text-lg font-bold text-purple-400 mb-3">💡 v4'te Alternatif Çözümler</h4>
+                <ol class="space-y-3 text-slate-300">
+                    <li><strong>1. Content Array Optimize:</strong> Tüm Blade dosyalarını tam path ile ekle</li>
+                    <li><strong>2. Dummy Content:</strong> HTML yorumunda class'ları yaz (hacky!)</li>
+                    <li><strong>3. Component Library:</strong> @apply ile CSS component oluştur</li>
+                    <li><strong>4. v3'te Kal:</strong> Safelist kritikse <strong>migration yapma!</strong></li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- 5. CSS Boyutu -->
+        <section class="mb-12 bg-slate-900/50 border border-slate-800 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6">📦 5. CSS Boyutu & Performans</h2>
+            
+            <div class="grid md:grid-cols-3 gap-6 mb-6">
+                <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 text-center">
+                    <div class="text-4xl mb-2">📊</div>
+                    <h3 class="text-2xl font-bold text-green-400 mb-2">255 KB</h3>
+                    <p class="text-slate-400">v3 (Optimize)</p>
+                </div>
+                
+                <div class="bg-red-900/20 border border-red-800 rounded-lg p-6 text-center">
+                    <div class="text-4xl mb-2">💥</div>
+                    <h3 class="text-2xl font-bold text-red-400 mb-2">830 KB</h3>
+                    <p class="text-slate-400">v4 (İlk deneme)</p>
+                </div>
+
+                <div class="bg-yellow-900/20 border border-yellow-800 rounded-lg p-6 text-center">
+                    <div class="text-4xl mb-2">⚠️</div>
+                    <h3 class="text-2xl font-bold text-yellow-400 mb-2">+225%</h3>
+                    <p class="text-slate-400">Bloat oranı</p>
+                </div>
+            </div>
+
+            <div class="bg-red-900/20 border border-red-800 rounded-lg p-6">
+                <h4 class="text-lg font-bold text-red-400 mb-3">🔴 Neden 3 Kat Büyüdü?</h4>
+                <ul class="space-y-2 text-slate-300">
+                    <li><strong>1. Varsayılan Utility'ler:</strong> v4 daha fazla default class include ediyor</li>
+                    <li><strong>2. Purge Stratejisi:</strong> Content detection çalışmadı, tüm class'lar compile oldu</li>
+                    <li><strong>3. Color Palette:</strong> OKLCH renk sistemi daha fazla yer kaplıyor</li>
+                    <li><strong>4. CSS Variables:</strong> Her class için ekstra CSS variable tanımları</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 6. Color System -->
+        <section class="mb-12 bg-slate-900/50 border border-slate-800 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6">🎨 6. Color System</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-blue-400 mb-3">v3 - HEX/RGB</h3>
+                    <pre class="bg-slate-950 text-green-400 p-4 rounded text-sm overflow-x-auto"><code>colors: {
+    'muzibu-coral': '#ff7f50',
+    'spotify-green': '#1DB954',
+}
+
+// Compiled:
+.bg-muzibu-coral {
+    background-color: #ff7f50;
+}</code></pre>
+                </div>
+                
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-purple-400 mb-3">v4 - OKLCH (Modern)</h3>
+                    <pre class="bg-slate-950 text-green-400 p-4 rounded text-sm overflow-x-auto"><code>@theme {
+    --color-muzibu-coral: #ff7f50;
+}
+
+// Compiled (BROKEN!):
+:root {
+    --color-muzibu-coral: coral;
+    /* ❌ Keyword, hex değil! */
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="bg-red-900/20 border border-red-800 rounded-lg p-4 mb-4">
+                <p class="text-red-400"><strong>🐛 Bug:</strong> v4'te <code>#ff7f50</code> → <code>coral</code> keyword'e dönüştü, gradient'ler bozuldu!</p>
+            </div>
+
+            <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-4">
+                <p class="text-blue-400"><strong>💡 Çözüm:</strong> rgb() format kullan: <code>--color-muzibu-coral: rgb(255 127 80);</code></p>
+            </div>
+        </section>
+
+        <!-- 7. Breaking Changes -->
+        <section class="mb-12 bg-slate-900/50 border border-slate-800 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6">💔 7. Breaking Changes</h2>
+            
+            <div class="space-y-4">
+                <div class="bg-red-900/20 border border-red-800 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-red-400 mb-3">❌ Kaldırılan Özellikler</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li>• <code>tailwind.config.js</code> - Artık yok!</li>
+                        <li>• <code>safelist</code> array - Tamamen kaldırıldı</li>
+                        <li>• <code>@tailwind</code> directives - Deprecated</li>
+                        <li>• <code>purge</code> / <code>content</code> - Farklı çalışıyor</li>
+                        <li>• JIT mode flag - Artık varsayılan</li>
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-900/20 border border-yellow-800 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-yellow-400 mb-3">⚠️ Değişen Davranışlar</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li>• <strong>Default Values:</strong> border, placeholder, cursor varsayılanları değişti</li>
+                        <li>• <strong>Opacity Syntax:</strong> Hala çalışıyor ama farklı compile oluyor</li>
+                        <li>• <strong>Custom Plugins:</strong> API değişti, eski plugin'ler uyumsuz</li>
+                        <li>• <strong>PostCSS Config:</strong> Farklı plugin paketi gerekiyor</li>
+                    </ul>
+                </div>
+
+                <div class="bg-green-900/20 border border-green-800 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-green-400 mb-3">✅ Yeni Özellikler</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li>• <strong>CSS-First Config:</strong> @theme, @layer, @source directives</li>
+                        <li>• <strong>Native Cascade Layers:</strong> Daha iyi CSS specificity kontrolü</li>
+                        <li>• <strong>OKLCH Colors:</strong> Modern, geniş gamut renk desteği</li>
+                        <li>• <strong>Zero-Config:</strong> config dosyası olmadan çalışır</li>
+                        <li>• <strong>Faster Builds:</strong> Rust-based engine (teoride daha hızlı)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. Migration Sonucu -->
+        <section class="mb-12 bg-slate-900/50 border border-slate-800 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6">📋 8. Muzibu Migration Sonucu</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-red-900/20 border border-red-800 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-red-400 mb-4">❌ Başarısız (v4)</h3>
+                    <div class="space-y-3 text-slate-300">
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-400">✗</span>
+                            <div>
+                                <strong>CSS Bloat:</strong> 255 KB → 830 KB (+225%)
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-400">✗</span>
+                            <div>
+                                <strong>Safelist:</strong> 70+ class purge edildi
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-400">✗</span>
+                            <div>
+                                <strong>Gradient'ler:</strong> Görünmüyor (siyah kartlar)
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-400">✗</span>
+                            <div>
+                                <strong>Opacity:</strong> bg-black/70 compile olmadı
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-400">✗</span>
+                            <div>
+                                <strong>Renk Sistemi:</strong> #ff7f50 → "coral" bug
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-green-900/20 border border-green-800 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-green-400 mb-4">✅ Rollback (v3)</h3>
+                    <div class="space-y-3 text-slate-300">
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-400">✓</span>
+                            <div>
+                                <strong>CSS Optimize:</strong> 255 KB (ideal boyut)
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-400">✓</span>
+                            <div>
+                                <strong>Safelist:</strong> 70+ class korundu
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-400">✓</span>
+                            <div>
+                                <strong>Gradient'ler:</strong> Çalışıyor
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-400">✓</span>
+                            <div>
+                                <strong>Opacity:</strong> Tüm variant'lar compile
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-400">✓</span>
+                            <div>
+                                <strong>Renk Sistemi:</strong> HEX stable
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6">
+                <h3 class="text-lg font-bold text-blue-400 mb-3">📊 Checkpoint'ler</h3>
+                <pre class="text-slate-300 text-sm overflow-x-auto"><code>checkpoint-0-pre-migration    ✅ v3 stable (geri dönüldü)
+checkpoint-1-packages         ❌ v4.1.18 (bloat)
+checkpoint-2-postcss          ❌ @tailwindcss/postcss
+checkpoint-3-css-import       ❌ @import syntax
+checkpoint-4-colors           ❌ @theme (coral bug)
+checkpoint-5-build            ❌ 830 KB
+checkpoint-6-homepage-broken  ❌ Tasarım berbat
+checkpoint-10-complete        ❌ Migration failed</code></pre>
+            </div>
+        </section>
+
+        <!-- 9. Tavsiyeler -->
+        <section class="mb-12 bg-slate-900/50 border border-slate-800 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6">💡 9. v4'e Geçmeli miyim?</h2>
+            
+            <div class="space-y-6">
+                <div class="bg-green-900/20 border border-green-800 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-green-400 mb-4">✅ v4'e Geç (Yeni Projeler)</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li>✓ Yeni proje başlatıyorsan</li>
+                        <li>✓ Dinamik class kullanmıyorsan</li>
+                        <li>✓ Safelist'e ihtiyacın yoksa</li>
+                        <li>✓ Modern CSS özelliklerini kullanacaksan (cascade layers)</li>
+                        <li>✓ Build performansı kritikse (Rust engine)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-red-900/20 border border-red-800 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-red-400 mb-4">❌ v3'te Kal (Muzibu Gibi)</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li>✗ Mevcut büyük proje (migration riski)</li>
+                        <li>✗ Safelist kritik (70+ dinamik class)</li>
+                        <li>✗ Multi-tenant sistem (her tenant farklı)</li>
+                        <li>✗ Custom plugin'ler var (API uyumsuz)</li>
+                        <li>✗ Production'da sorun istemiyorsan</li>
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-900/20 border border-yellow-800 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-yellow-400 mb-4">⚠️ Dikkatli Geç (Hybrid)</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li>→ Staging'de test et (production'a verme!)</li>
+                        <li>→ Git checkpoint'ler oluştur (rollback hazır)</li>
+                        <li>→ CSS boyutunu ölç (bloat varsa optimize et)</li>
+                        <li>→ Tüm safelist class'larını migrate et</li>
+                        <li>→ Visual regression test yap (screenshot karşılaştır)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. Özet Tablo -->
+        <section class="mb-12 bg-slate-900/50 border border-slate-800 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6">📊 10. Hızlı Karşılaştırma Tablosu</h2>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="py-3 px-4 text-slate-400 font-semibold">Özellik</th>
+                            <th class="py-3 px-4 text-blue-400 font-semibold">v3 (Stable)</th>
+                            <th class="py-3 px-4 text-purple-400 font-semibold">v4 (Modern)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-semibold">Config Format</td>
+                            <td class="py-3 px-4">tailwind.config.js</td>
+                            <td class="py-3 px-4">@theme (CSS)</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-semibold">Import Syntax</td>
+                            <td class="py-3 px-4">@tailwind directives</td>
+                            <td class="py-3 px-4">@import "tailwindcss"</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-semibold">PostCSS Plugin</td>
+                            <td class="py-3 px-4">tailwindcss</td>
+                            <td class="py-3 px-4">@tailwindcss/postcss</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-semibold">Safelist</td>
+                            <td class="py-3 px-4 text-green-400">✅ Array (70+ class)</td>
+                            <td class="py-3 px-4 text-red-400">❌ Yok</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-semibold">Color System</td>
+                            <td class="py-3 px-4">HEX/RGB</td>
+                            <td class="py-3 px-4">OKLCH</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-semibold">CSS Size (Muzibu)</td>
+                            <td class="py-3 px-4 text-green-400">255 KB</td>
+                            <td class="py-3 px-4 text-red-400">830 KB (+225%)</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-semibold">Build Engine</td>
+                            <td class="py-3 px-4">JavaScript (Node)</td>
+                            <td class="py-3 px-4">Rust (Oxide)</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-semibold">JIT Mode</td>
+                            <td class="py-3 px-4">Optional flag</td>
+                            <td class="py-3 px-4">Always on</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-semibold">Custom Plugins</td>
+                            <td class="py-3 px-4 text-green-400">✅ Full API</td>
+                            <td class="py-3 px-4 text-yellow-400">⚠️ Limited (new API)</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-semibold">Cascade Layers</td>
+                            <td class="py-3 px-4">Manual @layer</td>
+                            <td class="py-3 px-4 text-green-400">✅ Native</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-semibold">Backward Compat</td>
+                            <td class="py-3 px-4 text-green-400">✅ Stable</td>
+                            <td class="py-3 px-4 text-red-400">❌ Breaking changes</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-semibold">Muzibu İçin Öneri</td>
+                            <td class="py-3 px-4 text-green-400 font-bold">✅ KAL</td>
+                            <td class="py-3 px-4 text-red-400 font-bold">❌ GEÇME</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm py-8 border-t border-slate-800">
+            <p>🤖 Generated with Claude Code | Migration Test: Muzibu Tenant 1001 | 2025-12-21</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -123,6 +123,7 @@ function muzibuApp() {
         volume: parseInt(safeStorage.getItem('volume')) || 100, // Load from localStorage, default 100
         isMuted: false,
         currentSong: null,
+        currentContext: null, // 🎯 Play context (playlist/album/genre/sector - for sidebar preview)
         currentFallbackUrl: null, // 🔐 MP3 fallback URL (signed)
         queue: [],
         queueIndex: 0,
@@ -197,24 +198,34 @@ function muzibuApp() {
 
         /**
          * 🔐 AUTHENTICATED FETCH: Tüm API çağrılarında 401 kontrolü yapar
-         * 401 alırsa kullanıcıyı logout eder
+         * 401 alırsa kullanıcıyı logout eder veya guest'e mesaj gösterir
          */
         async authenticatedFetch(url, options = {}) {
             const response = await fetch(url, options);
 
-            // 🔴 401 Unauthorized = Session terminated, LOGOUT!
+            // 🔴 401 Unauthorized = Guest user VEYA session terminated
             if (response.status === 401) {
                 try {
                     const data = await response.json();
+
+                    // 🚫 GUEST USER: Giriş yapmadan dinleyemez
+                    if (data.status === 'unauthorized' && data.redirect) {
+                        console.warn('🚫 Guest user tried to play, showing auth modal');
+                        // Modal göster (toast yerine)
+                        this.showAuthRequiredModal(data.message || 'Şarkı dinlemek için giriş yapmalısınız');
+                        return null; // Player durdur
+                    }
+
+                    // 🔐 SESSION TERMINATED: Başka cihazdan giriş yapıldı
                     if (data.force_logout || data.error === 'session_terminated') {
                         console.error('🔐 401 UNAUTHORIZED - Session terminated, forcing logout!');
                         this.handleSessionTerminated(data.message || 'Oturumunuz sonlandırıldı.');
-                        return null; // Çağrıyı durdurmak için null döndür
+                        return null;
                     }
                 } catch (e) {
-                    // JSON parse hatası olsa bile 401 = logout
-                    console.error('🔐 401 UNAUTHORIZED - Forcing logout!');
-                    this.handleSessionTerminated('Oturumunuz sonlandırıldı.');
+                    // JSON parse hatası = generic 401
+                    console.error('🔐 401 UNAUTHORIZED - Generic error');
+                    this.showAuthRequiredModal('Şarkı dinlemek için giriş yapmalısınız');
                     return null;
                 }
             }
@@ -404,9 +415,9 @@ function muzibuApp() {
                 if (!this.isPlaying) {
                     // Guest kullanıcı → Direkt /register
                     if (!this.isLoggedIn) {
-                        this.showToast('Şarkı dinlemek için kayıt olmalısınız', 'warning');
+                        this.showToast(this.frontLang?.auth?.login_required || 'Şarkı dinlemek için giriş yapmalısınız', 'warning');
                         setTimeout(() => {
-                            window.location.href = '/register';
+                            window.location.href = '/login';
                         }, 800);
                         return;
                     }
@@ -414,7 +425,7 @@ function muzibuApp() {
                     // Premium/Trial olmayan üye → Direkt /subscription/plans
                     const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
                     if (!isPremiumOrTrial) {
-                        this.showToast('Şarkı dinlemek için premium üyelik gereklidir', 'warning');
+                        this.showToast(this.frontLang?.auth?.premium_required || 'Şarkı dinlemek için premium üyelik gereklidir', 'warning');
                         setTimeout(() => {
                             window.location.href = '/subscription/plans';
                         }, 800);
@@ -450,6 +461,16 @@ function muzibuApp() {
                         this.howl.volume(targetVolume);
                         this.howl.play();
                         this.isPlaying = true;
+                        // 🔧 FIX: Start progress tracking if not already started
+                        if (!this.progressInterval) {
+                            this.startProgressTracking('howler');
+                        }
+                        window.dispatchEvent(new CustomEvent('player:play', {
+                            detail: {
+                                songId: this.currentSong?.song_id,
+                                isLoggedIn: this.isLoggedIn
+                            }
+                        }));
                     } else if (this.hls) {
                         const audio = this.getActiveHlsAudio();
                         if (audio) {
@@ -463,6 +484,16 @@ function muzibuApp() {
                                 }
                             }
                             this.isPlaying = true;
+                            // 🔧 FIX: Start progress tracking if not already started
+                            if (!this.progressInterval) {
+                                this.startProgressTracking('hls');
+                            }
+                            window.dispatchEvent(new CustomEvent('player:play', {
+                                detail: {
+                                    songId: this.currentSong?.song_id,
+                                    isLoggedIn: this.isLoggedIn
+                                }
+                            }));
                         }
                     } else if (this.currentSong) {
                         // 🎵 No audio source loaded yet - load and play current song
@@ -482,7 +513,7 @@ function muzibuApp() {
         async playRandomSongs(autoPlay = true) {
             // 🚫 CRITICAL: Premium kontrolü (auto-play engelle)
             if (!this.isLoggedIn) {
-                this.showToast('Şarkı dinlemek için kayıt olmalısınız', 'warning');
+                this.showToast(this.frontLang?.auth?.login_required || 'Şarkı dinlemek için giriş yapmalısınız', 'warning');
                 setTimeout(() => {
                     window.location.href = '/register';
                 }, 800);
@@ -491,7 +522,7 @@ function muzibuApp() {
 
             const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
             if (!isPremiumOrTrial) {
-                this.showToast('Şarkı dinlemek için premium üyelik gereklidir', 'warning');
+                this.showToast(this.frontLang?.auth?.premium_required || 'Şarkı dinlemek için premium üyelik gereklidir', 'warning');
                 setTimeout(() => {
                     window.location.href = '/subscription/plans';
                 }, 800);
@@ -1306,7 +1337,33 @@ function muzibuApp() {
             return `${m}:${s.toString().padStart(2, '0')}`;
         },
 
+        /**
+         * Set play context (for sidebar preview mode)
+         * @param {Object} context - { type, id, name, offset }
+         */
+        setPlayContext(context) {
+            this.currentContext = {
+                type: context.type || 'playlist',
+                id: context.id,
+                name: context.name,
+                offset: context.offset || 0,
+                source: context.source || 'sidebar'
+            };
+        },
+
         async playAlbum(id) {
+            // 🚫 PREMIUM CHECK
+            if (!this.isLoggedIn) {
+                this.showToast(this.frontLang?.auth?.login_required || 'Şarkı dinlemek için giriş yapmalısınız', 'warning');
+                return;
+            }
+
+            const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
+            if (!isPremiumOrTrial) {
+                this.showToast(this.frontLang?.auth?.premium_required || 'Şarkı dinlemek için premium üyelik gereklidir', 'warning');
+                return;
+            }
+
             try {
                 // 🚀 INSTANT FEEDBACK: Show loading state immediately
                 this.isLoading = true;
@@ -1343,6 +1400,18 @@ function muzibuApp() {
         },
 
         async playPlaylist(id) {
+            // 🚫 PREMIUM CHECK
+            if (!this.isLoggedIn) {
+                this.showToast(this.frontLang?.auth?.login_required || 'Şarkı dinlemek için giriş yapmalısınız', 'warning');
+                return;
+            }
+
+            const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
+            if (!isPremiumOrTrial) {
+                this.showToast(this.frontLang?.auth?.premium_required || 'Şarkı dinlemek için premium üyelik gereklidir', 'warning');
+                return;
+            }
+
             try {
                 // 🚀 INSTANT FEEDBACK: Show loading state immediately
                 this.isLoading = true;
@@ -1379,6 +1448,18 @@ function muzibuApp() {
         },
 
         async playGenre(id) {
+            // 🚫 PREMIUM CHECK
+            if (!this.isLoggedIn) {
+                this.showToast(this.frontLang?.auth?.login_required || 'Şarkı dinlemek için giriş yapmalısınız', 'warning');
+                return;
+            }
+
+            const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
+            if (!isPremiumOrTrial) {
+                this.showToast(this.frontLang?.auth?.premium_required || 'Şarkı dinlemek için premium üyelik gereklidir', 'warning');
+                return;
+            }
+
             try {
                 // 🚀 INSTANT FEEDBACK: Show loading state immediately
                 this.isLoading = true;
@@ -1410,6 +1491,18 @@ function muzibuApp() {
         },
 
         async playSector(id) {
+            // 🚫 PREMIUM CHECK
+            if (!this.isLoggedIn) {
+                this.showToast(this.frontLang?.auth?.login_required || 'Şarkı dinlemek için giriş yapmalısınız', 'warning');
+                return;
+            }
+
+            const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
+            if (!isPremiumOrTrial) {
+                this.showToast(this.frontLang?.auth?.premium_required || 'Şarkı dinlemek için premium üyelik gereklidir', 'warning');
+                return;
+            }
+
             try {
                 // 🚀 INSTANT FEEDBACK: Show loading state immediately
                 this.isLoading = true;
@@ -1441,6 +1534,18 @@ function muzibuApp() {
         },
 
         async playRadio(id) {
+            // 🚫 PREMIUM CHECK
+            if (!this.isLoggedIn) {
+                this.showToast(this.frontLang?.auth?.login_required || 'Şarkı dinlemek için giriş yapmalısınız', 'warning');
+                return;
+            }
+
+            const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
+            if (!isPremiumOrTrial) {
+                this.showToast(this.frontLang?.auth?.premium_required || 'Şarkı dinlemek için premium üyelik gereklidir', 'warning');
+                return;
+            }
+
             try {
                 // 🚀 INSTANT FEEDBACK: Show loading state immediately
                 this.isLoading = true;
@@ -1487,22 +1592,16 @@ function muzibuApp() {
         async playSong(id) {
             try {
                 // 🚫 FRONTEND PREMIUM CHECK: Şarkı çalmaya çalışmadan önce kontrol et
-                // Guest kullanıcı → Direkt /register
+                // Guest kullanıcı → Toast mesajı göster
                 if (!this.isLoggedIn) {
-                    this.showToast('Şarkı dinlemek için kayıt olmalısınız', 'warning');
-                    setTimeout(() => {
-                        window.location.href = '/register';
-                    }, 800);
+                    this.showToast(this.frontLang?.auth?.login_required || 'Şarkı dinlemek için giriş yapmalısınız', 'warning');
                     return;
                 }
 
-                // Premium/Trial olmayan üye → Direkt /subscription/plans
+                // Premium/Trial olmayan üye → Toast mesajı göster
                 const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
                 if (!isPremiumOrTrial) {
-                    this.showToast('Şarkı dinlemek için premium üyelik gereklidir', 'warning');
-                    setTimeout(() => {
-                        window.location.href = '/subscription/plans';
-                    }, 800);
+                    this.showToast(this.frontLang?.auth?.premium_required || 'Şarkı dinlemek için premium üyelik gereklidir', 'warning');
                     return;
                 }
 
@@ -1519,21 +1618,15 @@ function muzibuApp() {
                 if (!streamResponse.ok) {
                     const errorData = await streamResponse.json().catch(() => ({}));
 
-                    // 🚫 GUEST REDIRECT: Kayıt olmadan dinleyemez (401)
-                    if (streamResponse.status === 401 && errorData.redirect) {
-                        this.showToast(errorData.message || 'Şarkı dinlemek için kayıt olmalısınız', 'warning');
-                        setTimeout(() => {
-                            window.location.href = errorData.redirect;
-                        }, 1000);
+                    // 🚫 GUEST: Kayıt olmadan dinleyemez (401)
+                    if (streamResponse.status === 401) {
+                        this.showToast(errorData.message || 'Şarkı dinlemek için giriş yapmalısınız', 'warning');
                         return;
                     }
 
-                    // 💎 SUBSCRIPTION REDIRECT: Premium gerekli (402)
-                    if (streamResponse.status === 402 && errorData.redirect) {
+                    // 💎 SUBSCRIPTION: Premium gerekli (402)
+                    if (streamResponse.status === 402) {
                         this.showToast(errorData.message || 'Premium üyelik gereklidir', 'warning');
-                        setTimeout(() => {
-                            window.location.href = errorData.redirect;
-                        }, 1000);
                         return;
                     }
 
@@ -1698,7 +1791,7 @@ function muzibuApp() {
 
                         // 🚫 GUEST REDIRECT: Kayıt olmadan dinleyemez (401)
                         if (response.status === 401 && errorData.redirect) {
-                            this.showToast(errorData.message || 'Şarkı dinlemek için kayıt olmalısınız', 'warning');
+                            this.showToast(errorData.message || 'Şarkı dinlemek için giriş yapmalısınız', 'warning');
                             setTimeout(() => {
                                 window.location.href = errorData.redirect;
                             }, 1000);
@@ -2706,6 +2799,33 @@ onplay: function() {
             } else {
                 console.warn('Toast store not available:', message);
             }
+        },
+
+        /**
+         * 🚫 GUEST USER MODAL: Giriş yapmadan dinleyemez - kullanıcıya bildir
+         */
+        showAuthRequiredModal(message) {
+            // Player'ı durdur (HLS veya Howl)
+            if (this.hls) {
+                const audio = this.getActiveHlsAudio();
+                if (audio) {
+                    audio.pause();
+                }
+            } else if (this.howl) {
+                this.howl.pause();
+            }
+            this.isPlaying = false;
+
+            // Toast göster
+            this.showToast(message, 'warning');
+
+            // 2 saniye sonra login sayfasına yönlendir
+            setTimeout(() => {
+                // Kullanıcı zaten login sayfasındaysa tekrar yönlendirme
+                if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+                    window.location.href = '/login';
+                }
+            }, 2000);
         },
 
         // checkAuth() removed - user data now loaded directly from Laravel backend on page load
@@ -4064,28 +4184,23 @@ onplay: function() {
             this.deviceTerminateLoading = true;
 
             try {
-                // Her seçili cihaz için terminate isteği gönder
-                const promises = this.selectedDeviceIds.map(sessionId => {
-                    return fetch('/api/auth/terminate-device', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        },
-                        credentials: 'same-origin',
-                        body: JSON.stringify({ session_id: sessionId })
-                    }).then(res => res.json()).catch(err => ({ success: false, error: err.message }));
+                // 🔥 FIX: Tek API call ile tüm seçili cihazları terminate et (batch)
+                const response = await fetch('/api/auth/terminate-devices', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ session_ids: this.selectedDeviceIds })
                 });
 
-                const results = await Promise.all(promises);
-                const successCount = results.filter(data => data.success).length;
-                const failCount = results.filter(data => !data.success).length;
+                const data = await response.json();
 
-
-                if (successCount > 0) {
-                    this.showToast(`${successCount} cihaz çıkış yaptırıldı`, 'success');
+                if (data.success && data.deleted_count > 0) {
+                    this.showToast(`${data.deleted_count} cihaz çıkış yaptırıldı`, 'success');
 
                     // Close modals and refresh
                     this.showDeviceSelectionModal = false;
@@ -4095,10 +4210,13 @@ onplay: function() {
                     // 🔓 Reset device limit flag - user can play again
                     this.deviceLimitExceeded = false;
 
-                    // Refresh device list or reload page
-                    window.location.reload();
+                    // 🔥 FIX: Session save için 500ms bekle, sonra reload
+                    // Session cookie browser'a yazılmadan reload yapılıyordu
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
                 } else {
-                    alert('Cihazlar çıkış yaptırılamadı. Lütfen sayfayı yenileyip tekrar deneyin.');
+                    alert(data.message || 'Cihazlar çıkış yaptırılamadı. Lütfen sayfayı yenileyip tekrar deneyin.');
                 }
             } catch (error) {
                 console.error('Device termination failed:', error);
@@ -4122,36 +4240,25 @@ onplay: function() {
             this.deviceTerminateLoading = true;
 
             try {
-                // Tüm diğer cihazlar için terminate isteği gönder
-                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+                // 🔥 FIX: Tek API call ile tüm diğer cihazları terminate et (batch)
+                const sessionIds = otherDevices.map(d => d.session_id);
 
-                const promises = otherDevices.map(device => {
-                    return fetch('/api/auth/terminate-device', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken,
-                            'X-Requested-With': 'XMLHttpRequest'
-                        },
-                        credentials: 'same-origin',
-                        body: JSON.stringify({ session_id: device.session_id })
-                    }).then(async res => {
-                        const data = await res.json();
-                        return data;
-                    }).catch(err => {
-                        console.error(`🔐 Terminate ${device.session_id.substring(0,8)}... ERROR:`, err);
-                        return { success: false, error: err.message };
-                    });
+                const response = await fetch('/api/auth/terminate-devices', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ session_ids: sessionIds })
                 });
 
-                const results = await Promise.all(promises);
-                const successCount = results.filter(data => data.success).length;
-                const failCount = results.filter(data => !data.success).length;
+                const data = await response.json();
 
-
-                if (successCount > 0) {
-                    this.showToast(`${successCount} cihaz çıkış yaptırıldı`, 'success');
+                if (data.success && data.deleted_count > 0) {
+                    this.showToast(`${data.deleted_count} cihaz çıkış yaptırıldı`, 'success');
 
                     // Close modals and refresh
                     this.showDeviceSelectionModal = false;
@@ -4161,10 +4268,13 @@ onplay: function() {
                     // 🔓 Reset device limit flag - user can play again
                     this.deviceLimitExceeded = false;
 
-                    // Refresh device list or reload page
-                    window.location.reload();
+                    // 🔥 FIX: Session save için 500ms bekle, sonra reload
+                    // Session cookie browser'a yazılmadan reload yapılıyordu
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
                 } else {
-                    alert('Cihazlar çıkış yaptırılamadı. Lütfen sayfayı yenileyip tekrar deneyin.');
+                    alert(data.message || 'Cihazlar çıkış yaptırılamadı. Lütfen sayfayı yenileyip tekrar deneyin.');
                 }
             } catch (error) {
                 console.error('Device termination failed:', error);

@@ -53,12 +53,12 @@ class SongStreamController extends Controller
             // - Normal üye (premium/trial değil) → Direkt /subscription/plans yönlendirme (0 saniye dinleme)
             // - Premium/Trial üye → Sınırsız dinleme
 
-            // 🚫 Guest kullanıcı → Kayıt olmadan dinleyemez
+            // 🚫 Guest kullanıcı → Giriş yapmadan dinleyemez
             if (!$user) {
                 return response()->json([
                     'status' => 'unauthorized',
-                    'redirect' => '/register',
-                    'message' => 'Şarkı dinlemek için kayıt olmalısınız',
+                    'redirect' => '/login',
+                    'message' => trans('Muzibu::front.auth.login_required'),
                     'song' => [
                         'id' => $song->song_id,
                         'title' => $song->getTranslated('title', app()->getLocale()),
@@ -91,7 +91,7 @@ class SongStreamController extends Controller
                 return response()->json([
                     'status' => 'subscription_required',
                     'redirect' => '/subscription/plans',
-                    'message' => 'Şarkı dinlemek için premium üyelik gereklidir',
+                    'message' => trans('Muzibu::front.auth.premium_required'),
                     'song' => [
                         'id' => $song->song_id,
                         'title' => $song->getTranslated('title', app()->getLocale()),

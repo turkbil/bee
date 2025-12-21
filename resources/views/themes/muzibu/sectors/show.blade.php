@@ -60,54 +60,7 @@
             </h2>
             <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
                 @foreach($radios as $radio)
-                    <div class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300 cursor-pointer"
-                         @click="
-                            $store.player.setPlayContext({
-                                type: 'radio',
-                                id: {{ $radio->radio_id }},
-                                name: '{{ addslashes($radio->getTranslation('title', app()->getLocale())) }}',
-                                streamUrl: '{{ $radio->stream_url }}'
-                            });
-                            $dispatch('play-radio', {
-                                radioId: {{ $radio->radio_id }},
-                                title: '{{ addslashes($radio->getTranslation('title', app()->getLocale())) }}',
-                                streamUrl: '{{ $radio->stream_url }}'
-                            });
-                         ">
-                        <div class="relative mb-4">
-                            @if($radio->media_id && $radio->logoMedia)
-                                <div class="w-full aspect-square bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center p-4 shadow-lg overflow-hidden">
-                                    <img src="{{ thumb($radio->logoMedia, 200, 200, ['scale' => 1]) }}"
-                                         alt="{{ $radio->getTranslation('title', app()->getLocale()) }}"
-                                         class="w-full h-full object-contain"
-                                         loading="lazy">
-                                </div>
-                            @else
-                                <div class="w-full aspect-square bg-gradient-to-br from-red-500 via-pink-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                                    <i class="fas fa-radio text-white text-4xl opacity-90"></i>
-                                </div>
-                            @endif
-
-                            {{-- Play Button Overlay --}}
-                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 rounded-lg flex items-center justify-center">
-                                <button class="opacity-0 group-hover:opacity-100 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg">
-                                    <i class="fas fa-play ml-1"></i>
-                                </button>
-                            </div>
-
-                            {{-- Live Badge --}}
-                            <div class="absolute top-2 left-2">
-                                <div class="bg-red-600 text-white px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 shadow-lg animate-pulse">
-                                    <span class="w-1.5 h-1.5 bg-white rounded-full"></span>
-                                    CANLI
-                                </div>
-                            </div>
-                        </div>
-
-                        <h3 class="font-semibold text-white mb-1 truncate text-center">
-                            {{ $radio->getTranslation('title', app()->getLocale()) }}
-                        </h3>
-                    </div>
+                    <x-muzibu.radio-card :radio="$radio" />
                 @endforeach
             </div>
         </div>
@@ -122,65 +75,7 @@
             </h2>
             <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
                 @foreach($playlists as $playlist)
-                    <a href="{{ route('muzibu.playlists.show', $playlist->getTranslation('slug', app()->getLocale())) }}"
-                      
-                       class="playlist-card group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300"
-                       data-playlist-id="{{ $playlist->playlist_id }}"
-                       data-playlist-title="{{ $playlist->getTranslation('title', app()->getLocale()) }}"
-                       data-is-favorite="{{ auth()->check() && $playlist->isFavoritedBy(auth()->user()) ? '1' : '0' }}"
-                       data-is-mine="{{ auth()->check() && $playlist->user_id === auth()->id() ? '1' : '0' }}">
-                        <div class="relative mb-4">
-                            @if($playlist->media_id && $playlist->coverMedia)
-                                <img src="{{ thumb($playlist->coverMedia, 300, 300, ['scale' => 1]) }}"
-                                     alt="{{ $playlist->getTranslation('title', app()->getLocale()) }}"
-                                     class="w-full aspect-square object-cover rounded-lg shadow-lg"
-                                     loading="lazy">
-                            @else
-                                <div class="w-full aspect-square bg-gradient-to-br from-muzibu-coral to-purple-600 rounded-lg flex items-center justify-center text-4xl shadow-lg">
-                                    🎵
-                                </div>
-                            @endif
-
-                            {{-- Play Button - Spotify Style Bottom Right --}}
-                            <button @click.stop.prevent="
-                                $store.player.setPlayContext({
-                                    type: 'playlist',
-                                    id: {{ $playlist->playlist_id }},
-                                    name: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}'
-                                });
-                                playPlaylist({{ $playlist->playlist_id }});
-                            " class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
-                                <i class="fas fa-play ml-1"></i>
-                            </button>
-
-                            {{-- Favorite Button --}}
-                            <div class="absolute top-2 right-2" @click.stop>
-                                <x-common.favorite-button :model="$playlist" size="sm" iconOnly="true" />
-                            </div>
-
-                            {{-- Menu Button (3 nokta) --}}
-                            <div class="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity" @click.stop.prevent>
-                                <button @click="Alpine.store('contextMenu').openContextMenu($event, 'playlist', {
-                                    id: {{ $playlist->playlist_id }},
-                                    title: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}',
-                                    is_favorite: {{ auth()->check() && $playlist->isFavoritedBy(auth()->user()) ? 'true' : 'false' }},
-                                    is_mine: {{ auth()->check() && $playlist->user_id === auth()->id() ? 'true' : 'false' }}
-                                })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
-                                    <i class="fas fa-ellipsis-v text-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <h3 class="font-semibold text-white mb-1 truncate">
-                            {{ $playlist->getTranslation('title', app()->getLocale()) }}
-                        </h3>
-
-                        @if($playlist->description)
-                            <p class="text-sm text-gray-400 truncate">
-                                {{ $playlist->getTranslation('description', app()->getLocale()) }}
-                            </p>
-                        @endif
-                    </a>
+                    <x-muzibu.playlist-card :playlist="$playlist" :preview="true" />
                 @endforeach
             </div>
         </div>

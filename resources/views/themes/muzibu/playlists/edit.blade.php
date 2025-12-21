@@ -27,7 +27,7 @@
                 'song_id' => \$song->song_id,
                 'title' => \$song->getTranslation('title', app()->getLocale()),
                 'artist' => \$song->album && \$song->album->artist ? \$song->album->artist->getTranslation('title', app()->getLocale()) : ''',
-                'cover' => \$song->album && \$song->album->coverMedia ? thumb(\$song->album->coverMedia, 100, 100, ['scale' => 1]) : ''',
+                'cover' => \$song->getCoverUrl(100, 100) ?? '',
                 'position' => \$song->pivot->position ?? 0
             ];
         })->toJson() }},

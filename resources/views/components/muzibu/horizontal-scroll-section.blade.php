@@ -70,7 +70,7 @@
     </button>
 
     {{-- Scroll Container --}}
-    <div x-ref="scrollContainer" class="overflow-x-auto scrollbar-hide scroll-smooth pb-4 @if($gridMode) grid grid-rows-2 grid-flow-col auto-cols-[minmax(280px,1fr)] gap-2 @else flex gap-2 @endif">
+    <div x-ref="scrollContainer" class="overflow-x-auto scrollbar-hide scroll-smooth pb-4 @if($gridMode) grid grid-rows-2 grid-flow-col auto-cols-[minmax(280px,1fr)] gap-2 @else flex gap-4 @endif">
         {{ $slot }}
     </div>
 </div>

@@ -32,7 +32,7 @@
 
 @php
     $isFavorite = auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id());
-    $albumCover = $song->album && $song->album->coverMedia ? $song->album->coverMedia : null;
+    $coverUrl = $song->getCoverUrl(300, 300);
 @endphp
 
 <div @if($preview)
@@ -41,7 +41,7 @@
            id: {{ $song->id }},
            title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
            artist: '{{ $song->album && $song->album->artist ? addslashes($song->album->artist->getTranslation('title', app()->getLocale())) : '' }}',
-           cover: '{{ $albumCover ? thumb($albumCover, 300, 300, ['scale' => 1]) : '' }}',
+           cover: '{{ $coverUrl ?? '' }}',
            is_favorite: {{ $isFavorite ? 'true' : 'false' }}
        })"
      @else
@@ -85,20 +85,20 @@
                       Math.abs($event.touches[0].clientY - touchStartPos.y) > 10;
          if (moved) clearTimeout(touchTimer);
      "
-     class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300 cursor-pointer"
+     class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300"
      {{-- Active Song State (JS will add this class when playing) --}}
      x-bind:class="$store.player.currentSong?.id === {{ $song->id }} ? 'ring-2 ring-muzibu-coral' : ''">
 
     <div class="relative mb-4">
-        {{-- Song Cover (Album Cover) --}}
-        @if($albumCover)
-            <img src="{{ thumb($albumCover, 300, 300, ['scale' => 1]) }}"
+        {{-- Song Cover (Song's own cover or Album Cover) --}}
+        @if($coverUrl)
+            <img src="{{ $coverUrl }}"
                  alt="{{ $song->getTranslation('title', app()->getLocale()) }}"
                  class="w-full aspect-square object-cover rounded-lg shadow-lg"
                  loading="lazy">
         @else
             <div class="w-full aspect-square bg-gradient-to-br from-muzibu-coral to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                <i class="fas fa-music text-white text-4xl sm:text-5xl opacity-50"></i>
+                <i class="fas fa-music text-white text-5xl opacity-50"></i>
             </div>
         @endif
 
@@ -115,14 +115,14 @@
             <i class="fas fa-play ml-1"></i>
         </button>
 
-        {{-- Favorite + Menu Buttons (Cover Sağ Üst) - HOVER'DA GÖRÜNÜR --}}
+        {{-- Favorite + Menu Buttons (Sağ Üst) - HOVER'DA GÖRÜNÜR --}}
         <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent>
             {{-- Favorite Button --}}
             <button x-on:click.stop.prevent="$store.favorites.toggle('song', {{ $song->id }})"
-                    class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110"
+                    class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all"
                     x-bind:class="$store.favorites.isFavorite('song', {{ $song->id }}) ? 'text-muzibu-coral' : ''">
                 <i class="text-sm"
-                   x-bind:class="$store.favorites.isFavorite('song', {{ $song->id }}) ? 'fas fa-heart' : 'far fa-heart hover:text-muzibu-coral'"></i>
+                   x-bind:class="$store.favorites.isFavorite('song', {{ $song->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
             </button>
 
             {{-- 3-Dot Menu Button --}}
@@ -131,21 +131,23 @@
                 title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
                 artist: '{{ $song->album && $song->album->artist ? addslashes($song->album->artist->getTranslation('title', app()->getLocale())) : '' }}',
                 is_favorite: {{ $isFavorite ? 'true' : 'false' }}
-            })" class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
                 <i class="fas fa-ellipsis-v text-sm"></i>
             </button>
         </div>
     </div>
 
-    {{-- Song Title --}}
-    <h3 class="font-semibold text-white mb-1 truncate">
-        {{ $song->getTranslation('title', app()->getLocale()) }}
-    </h3>
-
-    {{-- Artist Name --}}
-    @if($song->album && $song->album->artist)
-        <p class="text-sm text-gray-400 truncate">
-            {{ $song->album->artist->getTranslation('title', app()->getLocale()) }}
+    {{-- Text Area (Fixed Height - Always 2 rows) --}}
+    <div class="h-12 overflow-hidden pb-4">
+        <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
+            {{ $song->getTranslation('title', app()->getLocale()) }}
+        </h3>
+        <p class="text-xs text-gray-400 leading-6 line-clamp-1">
+            @if($song->album && $song->album->artist)
+                {{ $song->album->artist->getTranslation('title', app()->getLocale()) }}
+            @else
+                &nbsp;
+            @endif
         </p>
-    @endif
+    </div>
 </div>

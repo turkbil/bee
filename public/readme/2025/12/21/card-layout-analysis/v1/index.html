@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Card Layout Detaylı Analiz - Tüm Farklar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'muzibu-coral': '#ff6b6b',
+                        'muzibu-gray': '#1a1a1a'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-white min-h-screen p-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold mb-2 text-muzibu-coral">🔍 Muzibu Card Layout Detaylı Analiz</h1>
+            <p class="text-slate-400">7 Kart Komponenti - Layout, Pattern, Class, Style, Div Design Farkları</p>
+            <p class="text-xs text-slate-500 mt-2">Tarih: 21 Aralık 2025</p>
+        </div>
+
+        <!-- Özet -->
+        <div class="bg-red-900/20 border border-red-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-bold mb-4 text-red-400">⚠️ SORUN: Kartlar Arasında Çok Fazla Fark Var!</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <h3 class="font-bold text-white mb-2">📊 İstatistikler:</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>✓ Toplam 7 kart komponenti analiz edildi</li>
+                        <li>❌ 12 farklı kategori bulundu</li>
+                        <li>❌ Her kartta farklılıklar var</li>
+                        <li>❌ Tutarsız class kullanımı</li>
+                        <li>❌ Responsive variant karışıklığı</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white mb-2">🎯 Hedef:</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>✓ Tüm kartlar aynı layout pattern kullanmalı</li>
+                        <li>✓ Tüm kartlar aynı class yapısına sahip olmalı</li>
+                        <li>✓ Responsive variant'lar kaldırılmalı</li>
+                        <li>✓ Sadece içerik farklı olmalı</li>
+                        <li>✓ %100 standartlaştırma</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1. ROOT ELEMENT FARKLARI -->
+        <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4 text-blue-400">1️⃣ Root Element Farkları</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-2 px-3 font-bold">Kart</th>
+                            <th class="text-left py-2 px-3">Element</th>
+                            <th class="text-left py-2 px-3">Özellikler</th>
+                            <th class="text-left py-2 px-3">Sorun</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Radio</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">&lt;div&gt;</code></td>
+                            <td class="py-2 px-3">@click ile direkt çalıyor, href yok</td>
+                            <td class="py-2 px-3 text-yellow-400">⚠️ Tek div kullanan</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Song</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">&lt;div&gt;</code></td>
+                            <td class="py-2 px-3">@click (preview modda farklı davranış)</td>
+                            <td class="py-2 px-3 text-yellow-400">⚠️ Div ama conditional</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Playlist</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">&lt;a&gt;</code></td>
+                            <td class="py-2 px-3">href="/playlists/...", preview mode var</td>
+                            <td class="py-2 px-3 text-green-400">✓ Link</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Album</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">&lt;a&gt;</code></td>
+                            <td class="py-2 px-3">href="/albums/...", preview mode var</td>
+                            <td class="py-2 px-3 text-green-400">✓ Link</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Artist</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">&lt;a&gt;</code></td>
+                            <td class="py-2 px-3">href="/artists/...", preview mode var</td>
+                            <td class="py-2 px-3 text-green-400">✓ Link</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Genre</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">&lt;a&gt;</code></td>
+                            <td class="py-2 px-3">href="/genres/..."</td>
+                            <td class="py-2 px-3 text-green-400">✓ Link</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Sector</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">&lt;a&gt;</code></td>
+                            <td class="py-2 px-3">href="/sectors/..."</td>
+                            <td class="py-2 px-3 text-green-400">✓ Link</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 bg-yellow-900/20 border border-yellow-800 rounded p-3">
+                <p class="text-sm text-yellow-300"><strong>⚠️ Sorun:</strong> Radio ve Song div kullanıyor, diğerleri <code>&lt;a&gt;</code>. Bu mantıklı (Radio detay sayfası yok) ama tutarlılık için hepsinin aynı yapıda olması gerekiyor.</p>
+            </div>
+        </div>
+
+        <!-- 2. CLASS YAPISI FARKLARI -->
+        <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4 text-purple-400">2️⃣ Root Class Yapısı Farkları</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-2 px-3 font-bold">Kart</th>
+                            <th class="text-left py-2 px-3">Class</th>
+                            <th class="text-left py-2 px-3">Fark</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Radio</td>
+                            <td class="py-2 px-3 text-xs"><code class="bg-slate-800 px-2 py-1 rounded">group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300 cursor-pointer hover:shadow-2xl hover:shadow-muzibu-coral/20</code></td>
+                            <td class="py-2 px-3 text-red-400">❌ Extra: cursor-pointer, hover:shadow-2xl, hover:shadow-muzibu-coral/20</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Song</td>
+                            <td class="py-2 px-3 text-xs"><code class="bg-slate-800 px-2 py-1 rounded">group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300 cursor-pointer</code></td>
+                            <td class="py-2 px-3 text-yellow-400">⚠️ Extra: cursor-pointer</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Playlist</td>
+                            <td class="py-2 px-3 text-xs"><code class="bg-slate-800 px-2 py-1 rounded">group bg-muzibu-gray hover:bg-gray-700 rounded-lg transition-all duration-300 @if($compact) ... @else px-4 pt-4 @endif</code></td>
+                            <td class="py-2 px-3 text-red-400">❌ Compact mode conditional</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Album</td>
+                            <td class="py-2 px-3 text-xs"><code class="bg-slate-800 px-2 py-1 rounded">group bg-muzibu-gray hover:bg-gray-700 rounded-lg transition-all duration-300 @if($compact) ... @else px-4 pt-4 @endif</code></td>
+                            <td class="py-2 px-3 text-red-400">❌ Compact mode conditional</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Artist</td>
+                            <td class="py-2 px-3 text-xs"><code class="bg-slate-800 px-2 py-1 rounded">group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Genre</td>
+                            <td class="py-2 px-3 text-xs"><code class="bg-slate-800 px-2 py-1 rounded">group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300 cursor-pointer</code></td>
+                            <td class="py-2 px-3 text-yellow-400">⚠️ Extra: cursor-pointer</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Sector</td>
+                            <td class="py-2 px-3 text-xs"><code class="bg-slate-800 px-2 py-1 rounded">group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 bg-red-900/20 border border-red-800 rounded p-3">
+                <p class="text-sm text-red-300"><strong>❌ Sorun:</strong> Radio'da ekstra shadow efektleri, Playlist/Album'de compact mode, Genre/Song'da cursor-pointer. Hepsinin aynı class yapısı olmalı!</p>
+            </div>
+        </div>
+
+        <!-- 3. TEXT CONTAINER FARKLARI -->
+        <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4 text-green-400">3️⃣ Text Container Farkları</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-2 px-3 font-bold">Kart</th>
+                            <th class="text-left py-2 px-3">Class</th>
+                            <th class="text-left py-2 px-3">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Radio</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">h-12 overflow-hidden pb-4</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart (text-center kaldırıldı)</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Song</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">h-12 overflow-hidden pb-4</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Playlist</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">h-12 overflow-hidden pb-4</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Album</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">h-12 overflow-hidden pb-4</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart</td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-red-900/20">
+                            <td class="py-2 px-3 font-semibold">Artist</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">h-12 overflow-hidden text-center pb-4</code></td>
+                            <td class="py-2 px-3 text-red-400">❌ Extra: text-center</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Genre</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">h-12 overflow-hidden pb-4</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Sector</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">h-12 overflow-hidden pb-4</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 bg-red-900/20 border border-red-800 rounded p-3">
+                <p class="text-sm text-red-300"><strong>❌ SORUN:</strong> Sadece Artist'te <code>text-center</code> var! Yazılar ortada görünüyor. Kaldırılmalı.</p>
+            </div>
+        </div>
+
+        <!-- 4. COVER STYLE FARKLARI -->
+        <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4 text-yellow-400">4️⃣ Cover Style Farkları</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-2 px-3 font-bold">Kart</th>
+                            <th class="text-left py-2 px-3">Image Class</th>
+                            <th class="text-left py-2 px-3">Fallback Class</th>
+                            <th class="text-left py-2 px-3">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Radio</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">rounded-lg</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">rounded-lg</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Square</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Song</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">rounded-lg</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">rounded-lg</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Square</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Playlist</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">rounded-lg</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">rounded-lg</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Square</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Album</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">rounded-lg</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">rounded-lg</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Square</td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-yellow-900/20">
+                            <td class="py-2 px-3 font-semibold">Artist</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">rounded-full</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">rounded-full</code></td>
+                            <td class="py-2 px-3 text-yellow-400">⚠️ Circle (Spotify style)</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Genre</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">rounded-lg</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">rounded-lg</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Square</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Sector</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">rounded-lg</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">rounded-lg</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Square</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 bg-green-900/20 border border-green-800 rounded p-3">
+                <p class="text-sm text-green-300"><strong>✓ NOT:</strong> Artist'te <code>rounded-full</code> olması mantıklı (sanatçı profil fotoğrafı). Bu fark korunabilir ama diğer tüm farklar kaldırılmalı!</p>
+            </div>
+        </div>
+
+        <!-- 5. FALLBACK ICON RESPONSIVE VARIANTS -->
+        <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4 text-red-400">5️⃣ Fallback Icon Responsive Variants ❌</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-2 px-3 font-bold">Kart</th>
+                            <th class="text-left py-2 px-3">Icon/Emoji</th>
+                            <th class="text-left py-2 px-3">Size Class</th>
+                            <th class="text-left py-2 px-3">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Radio</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">&lt;i class="fas fa-radio"&gt;</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">text-5xl</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Fixed</td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-red-900/20">
+                            <td class="py-2 px-3 font-semibold">Song</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">&lt;i class="fas fa-music"&gt;</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">text-4xl sm:text-5xl</code></td>
+                            <td class="py-2 px-3 text-red-400">❌ Responsive!</td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-red-900/20">
+                            <td class="py-2 px-3 font-semibold">Playlist</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">🎵 (emoji)</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">text-5xl sm:text-6xl</code></td>
+                            <td class="py-2 px-3 text-red-400">❌ Responsive!</td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-red-900/20">
+                            <td class="py-2 px-3 font-semibold">Album</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">💿 (emoji)</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">text-5xl sm:text-6xl</code></td>
+                            <td class="py-2 px-3 text-red-400">❌ Responsive!</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Artist</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">&lt;i class="fas fa-user"&gt;</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">text-5xl</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Fixed</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Genre</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">🎸 (emoji)</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">text-5xl</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Fixed</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Sector</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">🎭 (emoji)</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">text-5xl</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Fixed</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 bg-red-900/20 border border-red-800 rounded p-3">
+                <p class="text-sm text-red-300"><strong>❌ KRİTİK SORUN:</strong> Song, Playlist, Album'de <code>sm:text-5xl</code> ve <code>sm:text-6xl</code> responsive variants var! Tümü <code>text-5xl</code> fixed olmalı!</p>
+            </div>
+        </div>
+
+        <!-- 6. PLAY BUTTON POSITION -->
+        <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4 text-orange-400">6️⃣ Play Button Position Farkları</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-2 px-3 font-bold">Kart</th>
+                            <th class="text-left py-2 px-3">Position</th>
+                            <th class="text-left py-2 px-3">Style</th>
+                            <th class="text-left py-2 px-3">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800 bg-yellow-900/20">
+                            <td class="py-2 px-3 font-semibold">Radio</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">CENTER</code> (inset-0)</td>
+                            <td class="py-2 px-3 text-xs">Büyük overlay, w-16 h-16, ortada</td>
+                            <td class="py-2 px-3 text-yellow-400">⚠️ Farklı tasarım</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Song</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">bottom-2 right-2</code></td>
+                            <td class="py-2 px-3 text-xs">w-12 h-12, Spotify style</td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Playlist</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">bottom-2 right-2</code></td>
+                            <td class="py-2 px-3 text-xs">w-12 h-12, Spotify style</td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Album</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">bottom-2 right-2</code></td>
+                            <td class="py-2 px-3 text-xs">w-12 h-12, Spotify style</td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Artist</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">bottom-2 right-2</code></td>
+                            <td class="py-2 px-3 text-xs">w-12 h-12, Spotify style</td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Genre</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">bottom-2 right-2</code></td>
+                            <td class="py-2 px-3 text-xs">w-12 h-12, Spotify style</td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Sector</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">bottom-2 right-2</code></td>
+                            <td class="py-2 px-3 text-xs">w-12 h-12, Spotify style</td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 bg-green-900/20 border border-green-800 rounded p-3">
+                <p class="text-sm text-green-300"><strong>✓ NOT:</strong> Radio'nun merkez overlay tasarımı kullanıcı isteği (direkt çalsın diye). Diğer tüm kartlar Spotify-style bottom-right. Bu fark korunabilir.</p>
+            </div>
+        </div>
+
+        <!-- 7. PLAYING BADGE POSITION -->
+        <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4 text-pink-400">7️⃣ Playing Badge Position Farkları</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-2 px-3 font-bold">Kart</th>
+                            <th class="text-left py-2 px-3">Position</th>
+                            <th class="text-left py-2 px-3">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800 bg-red-900/20">
+                            <td class="py-2 px-3 font-semibold">Radio</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">top-2 right-2</code></td>
+                            <td class="py-2 px-3 text-red-400">❌ SAĞ ÜST</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Song</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">top-2 left-2</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Sol üst</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Playlist</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">top-2 left-2</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Sol üst</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Album</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">top-2 left-2</code></td>
+                            <td class="py-2 px-3 text-green-400">✓ Sol üst</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Artist</td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-slate-500">Playing badge yok</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Genre</td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-slate-500">Playing badge yok</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Sector</td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-slate-500">Playing badge yok</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 bg-red-900/20 border border-red-800 rounded p-3">
+                <p class="text-sm text-red-300"><strong>❌ SORUN:</strong> Radio'da "Çalıyor" badge'i SAĞ ÜSTTE, diğer tüm kartlarda SOL ÜSTTE! Radio da <code>top-2 left-2</code> olmalı.</p>
+            </div>
+        </div>
+
+        <!-- 8. FAVORITE/MENU BUTTON FARKLARI -->
+        <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4 text-indigo-400">8️⃣ Favorite/Menu Button Farkları</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-2 px-3 font-bold">Kart</th>
+                            <th class="text-left py-2 px-3">Background</th>
+                            <th class="text-left py-2 px-3">Hover</th>
+                            <th class="text-left py-2 px-3">Extra</th>
+                            <th class="text-left py-2 px-3">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800 bg-red-900/20">
+                            <td class="py-2 px-3 font-semibold">Radio</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">bg-black/70</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">hover:bg-black/90</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">backdrop-blur-sm</code></td>
+                            <td class="py-2 px-3 text-red-400">❌ Farklı!</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Song</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">bg-black/60</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">hover:bg-black/80</code></td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Playlist</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">bg-black/60</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">hover:bg-black/80</code></td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Album</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">bg-black/60</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">hover:bg-black/80</code></td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Artist</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">bg-black/60</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">hover:bg-black/80</code></td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Genre</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">bg-black/60</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">hover:bg-black/80</code></td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Sector</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">bg-black/60</code></td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-1 rounded text-xs">hover:bg-black/80</code></td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-green-400">✓ Standart</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 bg-red-900/20 border border-red-800 rounded p-3">
+                <p class="text-sm text-red-300"><strong>❌ SORUN:</strong> Radio'da <code>bg-black/70</code> + <code>backdrop-blur-sm</code> var, diğerlerinde <code>bg-black/60</code> sadece. Standart olmalı!</p>
+            </div>
+        </div>
+
+        <!-- 9. COMPACT MODE -->
+        <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4 text-cyan-400">9️⃣ Compact Mode Desteği</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-2 px-3 font-bold">Kart</th>
+                            <th class="text-left py-2 px-3">Compact Mode</th>
+                            <th class="text-left py-2 px-3">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Radio</td>
+                            <td class="py-2 px-3 text-slate-500">❌ Yok</td>
+                            <td class="py-2 px-3 text-green-400">✓</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Song</td>
+                            <td class="py-2 px-3 text-slate-500">❌ Yok</td>
+                            <td class="py-2 px-3 text-green-400">✓</td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-yellow-900/20">
+                            <td class="py-2 px-3 font-semibold">Playlist</td>
+                            <td class="py-2 px-3 text-yellow-400">✓ Var (@if($compact))</td>
+                            <td class="py-2 px-3 text-yellow-400">⚠️ Ekstra</td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-yellow-900/20">
+                            <td class="py-2 px-3 font-semibold">Album</td>
+                            <td class="py-2 px-3 text-yellow-400">✓ Var (@if($compact))</td>
+                            <td class="py-2 px-3 text-yellow-400">⚠️ Ekstra</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Artist</td>
+                            <td class="py-2 px-3 text-slate-500">❌ Yok</td>
+                            <td class="py-2 px-3 text-green-400">✓</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Genre</td>
+                            <td class="py-2 px-3 text-slate-500">❌ Yok</td>
+                            <td class="py-2 px-3 text-green-400">✓</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Sector</td>
+                            <td class="py-2 px-3 text-slate-500">❌ Yok</td>
+                            <td class="py-2 px-3 text-green-400">✓</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 bg-yellow-900/20 border border-yellow-800 rounded p-3">
+                <p class="text-sm text-yellow-300"><strong>⚠️ SORU:</strong> Playlist ve Album'de compact mode var. Bu özellik korunmalı mı yoksa silinmeli mi? Tüm kartlar için standardize edilmeli!</p>
+            </div>
+        </div>
+
+        <!-- 10. SPECIAL BADGES -->
+        <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4 text-emerald-400">🔟 Özel Badge'ler</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-2 px-3 font-bold">Kart</th>
+                            <th class="text-left py-2 px-3">Özel Badge</th>
+                            <th class="text-left py-2 px-3">Position</th>
+                            <th class="text-left py-2 px-3">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800 bg-blue-900/20">
+                            <td class="py-2 px-3 font-semibold">Radio</td>
+                            <td class="py-2 px-3">♾️ Sonsuz (Infinite badge)</td>
+                            <td class="py-2 px-3"><code class="bg-slate-800 px-2 py-1 rounded">top-2 left-2</code></td>
+                            <td class="py-2 px-3 text-blue-400">✓ Unique feature</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Song</td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-slate-500">Yok</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Playlist</td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-slate-500">Yok</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Album</td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-slate-500">Yok</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Artist</td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-slate-500">Yok</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Genre</td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-slate-500">Yok</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3 font-semibold">Sector</td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-slate-500">-</td>
+                            <td class="py-2 px-3 text-slate-500">Yok</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 bg-green-900/20 border border-green-800 rounded p-3">
+                <p class="text-sm text-green-300"><strong>✓ NOT:</strong> Radio'nun "Sonsuz" badge'i unique özellik (radyo sonsuz çalar). Bu korunmalı.</p>
+            </div>
+        </div>
+
+        <!-- SONUÇ & EYLEM PLANI -->
+        <div class="bg-gradient-to-r from-red-900/30 to-orange-900/30 border-2 border-red-600 rounded-lg p-8 mb-8">
+            <h2 class="text-3xl font-bold mb-6 text-red-400">📋 SONUÇ: Düzeltilmesi Gereken Farklar</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- KRİTİK SORUNLAR -->
+                <div class="bg-red-900/20 border border-red-800 rounded-lg p-4">
+                    <h3 class="text-xl font-bold mb-3 text-red-400">🔴 Kritik Sorunlar (MUTLAKA Düzelt!)</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <span class="text-red-400 font-bold">1.</span>
+                            <span><strong>Artist text-center:</strong> Yazılar ortada, diğer kartlarda sol. Kaldır!</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-red-400 font-bold">2.</span>
+                            <span><strong>Responsive Icon Sizes:</strong> Song/Playlist/Album'de sm: variants var. Kaldır!</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-red-400 font-bold">3.</span>
+                            <span><strong>Radio Playing Badge:</strong> Sağ üstte, diğerleri sol üstte. top-2 left-2 yap!</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-red-400 font-bold">4.</span>
+                            <span><strong>Radio Favorite Buttons:</strong> bg-black/70 + backdrop-blur, diğerleri /60. Standartlaştır!</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-red-400 font-bold">5.</span>
+                            <span><strong>Root Class Farkları:</strong> cursor-pointer, shadow, compact mode farkları. Temizle!</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- KORUNACAK FARKLAR -->
+                <div class="bg-green-900/20 border border-green-800 rounded-lg p-4">
+                    <h3 class="text-xl font-bold mb-3 text-green-400">✅ Korunacak Farklar (Mantıklı)</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400 font-bold">1.</span>
+                            <span><strong>Artist rounded-full:</strong> Sanatçı profil fotoğrafı circular olmalı ✓</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400 font-bold">2.</span>
+                            <span><strong>Radio Play Button Center:</strong> Kullanıcı isteği, direkt çalsın diye ✓</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400 font-bold">3.</span>
+                            <span><strong>Radio Infinite Badge:</strong> Unique özellik (sonsuz çalma) ✓</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400 font-bold">4.</span>
+                            <span><strong>Root Element (div vs a):</strong> Radio detay sayfası yok, div kullanmalı ✓</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- EYLEM PLANI -->
+            <div class="mt-6 bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                <h3 class="text-xl font-bold mb-3 text-blue-400">🎯 Eylem Planı</h3>
+                <ol class="space-y-2 text-sm text-slate-300 list-decimal list-inside">
+                    <li><strong>Artist-card.blade.php:</strong> <code>text-center</code> sil (line 122)</li>
+                    <li><strong>Song-card.blade.php:</strong> <code>text-4xl sm:text-5xl</code> → <code>text-5xl</code> (line 101)</li>
+                    <li><strong>Playlist-card.blade.php:</strong> <code>text-5xl sm:text-6xl</code> → <code>text-5xl</code> (line 62)</li>
+                    <li><strong>Album-card.blade.php:</strong> <code>text-5xl sm:text-6xl</code> → <code>text-5xl</code> (line 70)</li>
+                    <li><strong>Radio-card.blade.php:</strong> Playing badge <code>top-2 right-2</code> → <code>top-2 left-2</code> (line 66)</li>
+                    <li><strong>Radio-card.blade.php:</strong> Favorite buttons <code>bg-black/70 hover:bg-black/90 backdrop-blur-sm</code> → <code>bg-black/60 hover:bg-black/80</code> (lines 86, 98)</li>
+                    <li><strong>Radio-card.blade.php:</strong> Root class'dan <code>hover:shadow-2xl hover:shadow-muzibu-coral/20</code> sil (line 7)</li>
+                    <li><strong>Song/Genre:</strong> Root class'dan <code>cursor-pointer</code> sil (lines 88, 78)</li>
+                    <li><strong>Playlist/Album:</strong> Compact mode kaldır mı? (Kullanıcıya sor!)</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-8 text-center text-sm text-slate-500">
+            <p>🤖 Analiz: Claude Sonnet 4.5 | 📅 21 Aralık 2025</p>
+            <p class="mt-1">💾 Rapor Konumu: <code class="bg-slate-800 px-2 py-1 rounded text-xs">/public/readme/2025/12/21/card-layout-analysis/v1/index.html</code></p>
+        </div>
+    </div>
+</body>
+</html>

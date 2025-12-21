@@ -17,6 +17,62 @@ Route::get('/api/csrf-token', function () {
     ]);
 })->middleware('web');
 
+// 🔐 SESSION CHECK - Tenant 1001 (Muzibu) için session kontrolü
+// 🔥 FIX: Bu route web.php'de olmalı (API middleware grubu session kullanmaz!)
+Route::get('/api/session/check', function (\Illuminate\Http\Request $request) {
+    // Tenant 1001 kontrolü
+    if (!tenant() || tenant()->id != 1001) {
+        return response()->json(['authenticated' => false]);
+    }
+
+    // Auth kontrolü
+    if (!auth()->check()) {
+        return response()->json(['authenticated' => false], 401);
+    }
+
+    // 🔥 DEVICE LIMIT: Session DB'de var mı kontrol et
+    // Redis'ten silinen session'lar için logout zorla
+    try {
+        $deviceService = app(\Modules\Muzibu\App\Services\DeviceService::class);
+        $user = auth()->user();
+
+        \Log::info('🔐 SESSION CHECK: Starting', [
+            'user_id' => $user->id,
+            'session_id' => substr(session()->getId(), 0, 20) . '...',
+        ]);
+
+        // DB'de session var mı kontrol et
+        if (!$deviceService->sessionExists($user)) {
+            // Session DB'de yok -> LOGOUT
+            \Log::info('🔐 SESSION CHECK: Session NOT found in DB - returning 401');
+            return response()->json(['authenticated' => false], 401);
+        }
+
+        \Log::info('🔐 SESSION CHECK: Session found - returning authenticated: true');
+    } catch (\Exception $e) {
+        \Log::error('🔐 SESSION CHECK: DeviceService error', [
+            'user_id' => auth()->id(),
+            'error' => $e->getMessage(),
+        ]);
+    }
+
+    // ✅ Session hem Laravel auth'da hem DB'de geçerli
+    return response()->json([
+        'authenticated' => true,
+        'user' => [
+            'id' => auth()->user()->id,
+            'name' => auth()->user()->name,
+            'email' => auth()->user()->email,
+        ]
+    ]);
+})->name('api.session.check');
+
+// 🔐 TERMINATE DEVICES - Device selection modal (batch terminate)
+// 🔥 FIX: Bu route web.php'de olmalı (API middleware grubu session kullanmaz!)
+Route::post('/api/auth/terminate-devices', [\App\Http\Controllers\Api\Auth\AuthController::class, 'terminateDevices'])
+    ->middleware('auth')
+    ->name('api.auth.terminate-devices');
+
 // 🛒 SHOP & CART PRIORITY ROUTES (Wildcard'dan önce tanımlanmalı!)
 // NOT: Bu route'lar modülde tanımlanabilirdi ama Livewire component'ler modül route'unda catch-all'dan önce olmalı
 Route::get('/cart', \Modules\Cart\App\Http\Livewire\Front\CartPage::class)->name('cart.index');

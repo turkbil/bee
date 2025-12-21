@@ -87,7 +87,7 @@ if (
                             <article
                                 class="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700"
                                 @click="navigate('{{ $dynamicUrl }}')"
-                                @mouseenter="prefetch('{{ $dynamicUrl }}'); hover = {{ $loop->index }}"
+                                @mouseenter="hover = {{ $loop->index }}"
                                 @mouseleave="hover = null" x-data="{ localHover: false }" @mouseenter.self="localHover = true"
                                 @mouseleave.self="localHover = false">
 
@@ -189,23 +189,12 @@ if (
             return {
                 loaded: false,
                 hover: null,
-                prefetchedUrls: new Set(),
 
                 init() {
                     // Smooth fade in
                     this.$nextTick(() => {
                         this.loaded = true;
                     });
-                },
-
-                prefetch(url) {
-                    if (this.prefetchedUrls.has(url)) return;
-
-                    const link = document.createElement('link');
-                    link.rel = 'prefetch';
-                    link.href = url;
-                    document.head.appendChild(link);
-                    this.prefetchedUrls.add(url);
                 },
 
                 navigate(url) {

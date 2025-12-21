@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Modül Çoklu Dil Standardizasyonu - TR/EN Analiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'muzibu-coral': '#ff6b6b',
+                        'muzibu-gray': '#1a1a1a'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="dark bg-slate-950 text-slate-200 antialiased">
+    <div class="min-h-screen p-4 sm:p-8">
+        <!-- Header -->
+        <header class="max-w-6xl mx-auto mb-8">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-muzibu-coral to-pink-600 rounded-xl flex items-center justify-center text-2xl shadow-lg">
+                    🌍
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold bg-gradient-to-r from-muzibu-coral to-pink-500 bg-clip-text text-transparent">
+                        Muzibu Modül Çoklu Dil Standardizasyonu
+                    </h1>
+                    <p class="text-sm text-slate-400 mt-1">
+                        Page & Portfolio Pattern Bazlı TR/EN/AR Dil Yapısı | 21 Aralık 2025
+                    </p>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-6xl mx-auto space-y-6">
+            <!-- 📝 Basit Anlatım -->
+            <section class="bg-green-900/20 border border-green-800 rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-3xl">📝</span>
+                    <h2 class="text-xl font-bold text-green-400">Basit Anlatım (Herkes İçin)</h2>
+                </div>
+                <div class="space-y-4 text-slate-300">
+                    <p class="leading-relaxed">
+                        <strong class="text-white">Sorun Nedir?</strong><br>
+                        Muzibu modülü çoklu dil desteği var ama <strong class="text-red-400">tutarsız ve eksik</strong>:
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li>🇹🇷 <strong>Türkçe (TR):</strong> <span class="text-green-400">507 satır</span> - Çok detaylı, iyi organize</li>
+                        <li>🇬🇧 <strong>İngilizce (EN):</strong> <span class="text-red-400">218 satır</span> - <strong>289 satır eksik!</strong> (%57 eksiklik)</li>
+                        <li>🇸🇦 <strong>Arapça (AR):</strong> Kontrol edilmedi, muhtemelen eksik</li>
+                    </ul>
+
+                    <p class="leading-relaxed border-t border-green-800 pt-4">
+                        <strong class="text-white">Hedef:</strong><br>
+                        Page ve Portfolio modüllerinin standardını baz alarak Muzibu'yu aynı yapıya getirmek:
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li>✅ <strong>TR dosyası</strong> zaten iyi → Referans olarak kullanılacak</li>
+                        <li>✅ <strong>EN dosyası</strong> tamamlanacak → TR ile 1:1 eşleşecek</li>
+                        <li>✅ <strong>AR dosyası</strong> kontrol edilecek → Eksikler tamamlanacak</li>
+                        <li>✅ <strong>Front.php dosyaları</strong> genişletilecek → Frontend mesajları eklenecek</li>
+                    </ul>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 mt-4">
+                        <p class="text-sm text-slate-400">
+                            <strong class="text-white">Sonuç:</strong> Muzibu modülü tam çoklu dil desteğine kavuşacak.
+                            Admin panelinde ve frontend'de her dil için tam çeviri olacak.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 📊 Mevcut Durum Analizi -->
+            <section class="bg-blue-900/20 border border-blue-800 rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-3xl">📊</span>
+                    <h2 class="text-xl font-bold text-blue-400">Mevcut Durum Analizi</h2>
+                </div>
+                <div class="space-y-4 text-slate-300">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- TR -->
+                        <div class="bg-green-900/30 border border-green-700 rounded-lg p-4">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-2xl">🇹🇷</span>
+                                <h3 class="font-bold text-white">Türkçe (TR)</h3>
+                            </div>
+                            <div class="space-y-2 text-sm">
+                                <p><strong>admin.php:</strong> <span class="text-green-400">507 satır</span></p>
+                                <p><strong>front.php:</strong> <span class="text-yellow-400">42 satır</span></p>
+                                <p><strong>Durum:</strong> <span class="text-green-400">✅ Çok iyi</span></p>
+                                <p class="text-xs text-slate-400 mt-2">
+                                    Çok detaylı, tüm modüller için çeviriler mevcut.
+                                    Referans olarak kullanılacak.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- EN -->
+                        <div class="bg-red-900/30 border border-red-700 rounded-lg p-4">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-2xl">🇬🇧</span>
+                                <h3 class="font-bold text-white">İngilizce (EN)</h3>
+                            </div>
+                            <div class="space-y-2 text-sm">
+                                <p><strong>admin.php:</strong> <span class="text-red-400">218 satır</span></p>
+                                <p><strong>front.php:</strong> <span class="text-yellow-400">22 satır</span></p>
+                                <p><strong>Durum:</strong> <span class="text-red-400">❌ Eksik (%57)</span></p>
+                                <p class="text-xs text-slate-400 mt-2">
+                                    <strong class="text-red-400">289 satır eksik!</strong> Artists, Albums, Songs,
+                                    Playlists, Radios, Sectors modüllerinin çoğu çevirisi yok.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- AR -->
+                        <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-4">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-2xl">🇸🇦</span>
+                                <h3 class="font-bold text-white">Arapça (AR)</h3>
+                            </div>
+                            <div class="space-y-2 text-sm">
+                                <p><strong>admin.php:</strong> <span class="text-yellow-400">? satır</span></p>
+                                <p><strong>front.php:</strong> <span class="text-yellow-400">? satır</span></p>
+                                <p><strong>Durum:</strong> <span class="text-yellow-400">⚠️ Bilinmiyor</span></p>
+                                <p class="text-xs text-slate-400 mt-2">
+                                    Kontrol edilmedi. Muhtemelen EN kadar eksik veya daha kötü.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 🔍 EN Dosyasında Eksik Olan Bölümler -->
+            <section class="bg-red-900/20 border border-red-800 rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-3xl">🔍</span>
+                    <h2 class="text-xl font-bold text-red-400">EN Dosyasında Eksik Olan Bölümler</h2>
+                </div>
+                <div class="space-y-4 text-slate-300">
+                    <p class="text-sm text-slate-400">
+                        TR dosyasında var ama EN dosyasında YOK olan çeviriler:
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Artist Eksikleri -->
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h3 class="font-semibold text-red-400 mb-2">🎤 Artists (Sanatçılar)</h3>
+                            <ul class="text-sm space-y-1">
+                                <li>❌ artist_list, artist_management</li>
+                                <li>❌ add_artist, edit_artist</li>
+                                <li>❌ artist_not_found, artist_created</li>
+                                <li>❌ artist_updated, artist_deleted</li>
+                                <li>❌ artist_activated, artist_deactivated</li>
+                                <li>❌ no_artists_found</li>
+                                <li>❌ artist.search_placeholder</li>
+                                <li>❌ artist.title_field</li>
+                                <li>❌ artist.bio, artist.bio_placeholder</li>
+                                <li>❌ artist.new_artist_pretitle</li>
+                                <li>❌ artist.edit_artist_pretitle</li>
+                            </ul>
+                        </div>
+
+                        <!-- Album Eksikleri -->
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h3 class="font-semibold text-red-400 mb-2">💿 Albums (Albümler)</h3>
+                            <ul class="text-sm space-y-1">
+                                <li>❌ album_list, album_management</li>
+                                <li>❌ add_album, edit_album</li>
+                                <li>❌ album_not_found, album_created</li>
+                                <li>❌ album_updated, album_deleted</li>
+                                <li>❌ album_activated, album_deactivated</li>
+                                <li>❌ no_albums_found</li>
+                                <li>❌ album.all_artists</li>
+                                <li>❌ album.new_album_pretitle</li>
+                                <li>❌ album.description</li>
+                                <li>❌ album.select_artist, album.artist</li>
+                                <li>❌ album.release_date, album.year</li>
+                            </ul>
+                        </div>
+
+                        <!-- Song Eksikleri -->
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h3 class="font-semibold text-red-400 mb-2">🎵 Songs (Şarkılar)</h3>
+                            <ul class="text-sm space-y-1">
+                                <li>❌ song_list, song_management</li>
+                                <li>❌ add_song, edit_song</li>
+                                <li>❌ song_not_found, song_created</li>
+                                <li>❌ song_updated, song_deleted</li>
+                                <li>❌ song.lyrics, song.lyrics_placeholder</li>
+                                <li>❌ song.select_album, song.select_genre</li>
+                                <li>❌ song.duration_help</li>
+                                <li>❌ song.current_file</li>
+                                <li>❌ song.uploading_audio</li>
+                                <li>❌ song.upload_audio, song.change_audio</li>
+                                <li>❌ song.please_wait</li>
+                                <li>❌ song.hls_status, song.hls_completed</li>
+                            </ul>
+                        </div>
+
+                        <!-- Genre Eksikleri -->
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h3 class="font-semibold text-red-400 mb-2">🎸 Genres (Türler)</h3>
+                            <ul class="text-sm space-y-1">
+                                <li>❌ genre_list, genre_management</li>
+                                <li>❌ add_genre, edit_genre</li>
+                                <li>❌ genre_not_found, genre_created</li>
+                                <li>❌ genre_updated, genre_deleted</li>
+                                <li>❌ genre.new_genre_pretitle</li>
+                                <li>❌ genre.edit_genre_pretitle</li>
+                                <li>❌ genre.description</li>
+                            </ul>
+                        </div>
+
+                        <!-- Playlist Eksikleri -->
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h3 class="font-semibold text-red-400 mb-2">📋 Playlists</h3>
+                            <ul class="text-sm space-y-1">
+                                <li>❌ playlist_list, playlist_management</li>
+                                <li>❌ add_playlist, edit_playlist</li>
+                                <li>❌ playlist_not_found</li>
+                                <li>❌ playlist.all_sectors</li>
+                                <li>❌ playlist.new_playlist_pretitle</li>
+                                <li>❌ playlist.sectors, playlist.sectors_help</li>
+                                <li>❌ playlist.public, playlist.private</li>
+                                <li>❌ playlist.system_playlist</li>
+                                <li>❌ playlist.radio_mode</li>
+                            </ul>
+                        </div>
+
+                        <!-- Radio & Sector Eksikleri -->
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h3 class="font-semibold text-red-400 mb-2">📻 Radios & Sectors</h3>
+                            <ul class="text-sm space-y-1">
+                                <li>❌ radio_list, radio_management</li>
+                                <li>❌ add_radio, edit_radio</li>
+                                <li>❌ sector_list, sector_management</li>
+                                <li>❌ add_sector, edit_sector</li>
+                                <li>❌ Tüm radio ve sector çevirileri</li>
+                            </ul>
+                        </div>
+
+                        <!-- Bulk Upload Eksikleri -->
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h3 class="font-semibold text-red-400 mb-2">📦 Bulk Upload</h3>
+                            <ul class="text-sm space-y-1">
+                                <li>❌ bulk_upload.* (tüm bölüm eksik)</li>
+                                <li>❌ bulk_convert.* (tüm bölüm eksik)</li>
+                                <li>❌ Dashboard mesajları eksik</li>
+                            </ul>
+                        </div>
+
+                        <!-- Dashboard Eksikleri -->
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h3 class="font-semibold text-red-400 mb-2">📊 Dashboard</h3>
+                            <ul class="text-sm space-y-1">
+                                <li>❌ dashboard.* (tüm bölüm eksik)</li>
+                                <li>❌ quick_navigation</li>
+                                <li>❌ content_management</li>
+                                <li>❌ organization, distribution</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-red-900/30 border border-red-700 rounded-lg p-4 mt-4">
+                        <p class="text-sm font-semibold text-red-400">
+                            ⚠️ Toplam Eksiklik: ~289 satır (TR dosyasının %57'si)
+                        </p>
+                        <p class="text-xs text-slate-400 mt-2">
+                            EN dosyası sadece temel menü ve genel mesajları içeriyor. Modül-spesifik çeviriler neredeyse hiç yok.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 🎯 Yapılacaklar (Step-by-Step) -->
+            <section class="bg-purple-900/20 border border-purple-800 rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-3xl">🎯</span>
+                    <h2 class="text-xl font-bold text-purple-400">Yapılacaklar (Step-by-Step)</h2>
+                </div>
+                <div class="space-y-3">
+                    <!-- Step 1 -->
+                    <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-purple-500">
+                        <div class="flex items-start gap-3">
+                            <span class="text-2xl">1️⃣</span>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-white mb-2">EN admin.php Dosyasını Tamamla</h3>
+                                <p class="text-sm text-slate-300 mb-2">
+                                    TR admin.php dosyasını referans alarak EN dosyasını satır satır tamamla.
+                                </p>
+                                <div class="bg-slate-900 rounded p-3 text-xs space-y-2">
+                                    <p class="text-slate-400">Eklenecek bölümler:</p>
+                                    <ul class="list-disc list-inside text-slate-300 ml-2 space-y-1">
+                                        <li>Dashboard bölümü (recent_songs, popular_songs, hls_status)</li>
+                                        <li>Bulk Upload & Bulk Convert bölümleri</li>
+                                        <li>Artist bölümü (artist_list, bio, status mesajları)</li>
+                                        <li>Album bölümü (album_list, release_date, artist selection)</li>
+                                        <li>Song bölümü (audio_file, lyrics, duration_help, HLS status)</li>
+                                        <li>Genre, Playlist, Radio, Sector detay çevirileri</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-purple-500">
+                        <div class="flex items-start gap-3">
+                            <span class="text-2xl">2️⃣</span>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-white mb-2">AR admin.php Dosyasını Kontrol Et</h3>
+                                <p class="text-sm text-slate-300 mb-2">
+                                    AR dosyasını oku, eksikleri tespit et, EN çevirilerini Arapça'ya çevir.
+                                </p>
+                                <div class="bg-slate-900 rounded p-3 text-xs">
+                                    <p class="text-yellow-400">NOT:</p>
+                                    <p class="text-slate-400">Arapça çeviriler için profesyonel bir çevirmen kullanılmalı veya ChatGPT/DeepL gibi araçlardan yardım alınmalı.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-purple-500">
+                        <div class="flex items-start gap-3">
+                            <span class="text-2xl">3️⃣</span>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-white mb-2">Front.php Dosyalarını Genişlet</h3>
+                                <p class="text-sm text-slate-300 mb-2">
+                                    Frontend mesajlarını ekle (TR/EN/AR):
+                                </p>
+                                <div class="bg-slate-900 rounded p-3 text-xs space-y-2">
+                                    <ul class="list-disc list-inside text-slate-300 ml-2 space-y-1">
+                                        <li>general.songs, general.all_songs</li>
+                                        <li>general.artists, general.all_artists</li>
+                                        <li>general.albums, general.all_albums</li>
+                                        <li>general.genres, general.all_genres</li>
+                                        <li>general.playlists, general.all_playlists</li>
+                                        <li>general.radios, general.all_radios</li>
+                                        <li>general.sectors, general.all_sectors</li>
+                                        <li>messages.no_songs_found</li>
+                                        <li>messages.no_artists_found</li>
+                                        <li>auth.login_required ✅ (zaten eklendi)</li>
+                                        <li>auth.premium_required ✅ (zaten eklendi)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-purple-500">
+                        <div class="flex items-start gap-3">
+                            <span class="text-2xl">4️⃣</span>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-white mb-2">Backup Dosyasını Sil</h3>
+                                <p class="text-sm text-slate-300 mb-2">
+                                    <code class="text-yellow-400">Modules/Muzibu/lang/tr/admin.php.backup</code> dosyasını sil.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-green-500">
+                        <div class="flex items-start gap-3">
+                            <span class="text-2xl">5️⃣</span>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-white mb-2">Permission & Cache Temizle</h3>
+                                <p class="text-sm text-slate-300 mb-2">
+                                    Tüm lang dosyalarına doğru permission ver, cache temizle.
+                                </p>
+                                <div class="bg-slate-900 rounded p-3 text-xs">
+                                    <code class="text-cyan-400">sudo chown tuufi.com_:psaserv *.php</code><br>
+                                    <code class="text-cyan-400">sudo chmod 644 *.php</code><br>
+                                    <code class="text-cyan-400">php artisan cache:clear</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 💡 Page/Portfolio Standart Yapısı -->
+            <section class="bg-cyan-900/20 border border-cyan-800 rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-3xl">💡</span>
+                    <h2 class="text-xl font-bold text-cyan-400">Page/Portfolio Standart Yapısı (Referans)</h2>
+                </div>
+                <div class="space-y-4 text-slate-300">
+                    <p class="text-sm">
+                        Page ve Portfolio modülleri çok iyi organize edilmiş. Muzibu bu standarda getirilecek:
+                    </p>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h3 class="font-semibold text-white mb-2">📋 Standart Yapı:</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <p class="text-cyan-400 font-semibold mb-1">admin.php:</p>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300">
+                                    <li>Genel (title_field, slug_field, status)</li>
+                                    <li>Pretitle (new_X_pretitle, edit_X_pretitle)</li>
+                                    <li>SEO (meta_keywords, meta_description)</li>
+                                    <li>AI & Translation</li>
+                                    <li>Search & Filter</li>
+                                    <li>Menu</li>
+                                    <li>Validation & Messages</li>
+                                    <li>Dashboard Translations</li>
+                                    <li>Content Editor</li>
+                                    <li>SEO Management</li>
+                                    <li>Service Messages</li>
+                                    <li>Media Library</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p class="text-cyan-400 font-semibold mb-1">front.php:</p>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300">
+                                    <li>general (all_X, no_X_found)</li>
+                                    <li>messages (error/success)</li>
+                                    <li>auth (login_required, premium_required)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-900/30 border border-green-700 rounded-lg p-4">
+                        <p class="text-sm font-semibold text-green-400">
+                            ✅ Muzibu TR admin.php zaten bu yapıda organize!
+                        </p>
+                        <p class="text-xs text-slate-400 mt-2">
+                            EN ve AR dosyalarını aynı yapıya getirmek yeterli.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ⚠️ Önemli Notlar -->
+            <section class="bg-yellow-900/20 border border-yellow-800 rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-3xl">⚠️</span>
+                    <h2 class="text-xl font-bold text-yellow-400">Önemli Notlar</h2>
+                </div>
+                <div class="space-y-3 text-slate-300">
+                    <div class="flex items-start gap-3">
+                        <span class="text-xl">🔒</span>
+                        <div>
+                            <strong class="text-white">TR Dosyasını Değiştirme:</strong>
+                            <p class="text-sm mt-1">
+                                TR admin.php zaten mükemmel organize edilmiş. Sadece referans olarak kullan, değiştirme!
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-xl">📝</span>
+                        <div>
+                            <strong class="text-white">1:1 Eşleşme:</strong>
+                            <p class="text-sm mt-1">
+                                EN ve AR dosyaları TR ile satır satır eşleşmeli. Her key aynı sırada olmalı.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-xl">🌍</span>
+                        <div>
+                            <strong class="text-white">Çeviri Kalitesi:</strong>
+                            <p class="text-sm mt-1">
+                                Sadece Google Translate kullanma! Müzik terminolojisine uygun profesyonel çeviriler kullan.
+                                Örnek: "Artist" → "Artist" (İngilizce), "فنان" (Arapça)
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-xl">🧪</span>
+                        <div>
+                            <strong class="text-white">Test:</strong>
+                            <p class="text-sm mt-1">
+                                Her dil için admin panelini test et. Dil değiştirdiğinde tüm metinler çevrilmeli.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="max-w-6xl mx-auto mt-12 pt-6 border-t border-slate-800">
+            <p class="text-center text-sm text-slate-500">
+                🤖 Generated with <a href="https://claude.com/claude-code" class="text-muzibu-coral hover:underline" target="_blank">Claude Code</a>
+                <br>
+                <span class="text-slate-600">Muzibu Module Language Standardization Analysis</span>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

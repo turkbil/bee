@@ -57,30 +57,8 @@ Route::get('/get-districts/{city}', function ($city) {
     }
 });
 
-// 🔐 SESSION CHECK - Tenant 1001 (Muzibu) için session kontrolü
-Route::get('/session/check', function (Request $request) {
-    // Tenant 1001 kontrolü
-    if (!tenant() || tenant()->id != 1001) {
-        return response()->json(['authenticated' => false]);
-    }
-
-    // Auth kontrolü
-    if (!auth()->check()) {
-        return response()->json(['authenticated' => false], 401);
-    }
-
-    // ✅ Kullanıcı authenticated ise, session aktif demektir
-    // DB'de session yoksa bile sorun yok (garbage collection olmuş olabilir)
-    // Önemli olan: Laravel'in auth()->check() true dönmesi
-    return response()->json([
-        'authenticated' => true,
-        'user' => [
-            'id' => auth()->user()->id,
-            'name' => auth()->user()->name,
-            'email' => auth()->user()->email,
-        ]
-    ]);
-})->middleware('web')->name('api.session.check');
+// 🔐 SESSION CHECK - TAŞINDI web.php'YE!
+// API middleware grubu session kullanmadığı için auth()->check() çalışmıyordu
 
 // 🔐 AUTH ROUTES - Muzibu Authentication - STRICT AUTH THROTTLE
 // ⚠️ NOT: api.php dosyası zaten 'api' middleware grubuyla yüklenir (bootstrap/app.php)
@@ -96,7 +74,8 @@ Route::prefix('auth')->middleware(['throttle.user:auth'])->group(function () {
     Route::post('/logout', [\App\Http\Controllers\Api\Auth\AuthController::class, 'logout'])->middleware('auth:sanctum')->name('api.auth.logout');
     Route::get('/me', [\App\Http\Controllers\Api\Auth\AuthController::class, 'me'])->name('api.auth.me');
     Route::get('/check-session', [\App\Http\Controllers\Api\Auth\AuthController::class, 'checkSession'])->name('api.auth.check-session'); // 🔐 Device limit polling
-    Route::post('/terminate-device', [\App\Http\Controllers\Api\Auth\AuthController::class, 'terminateDevice'])->name('api.auth.terminate-device'); // 🔐 Device selection
+    Route::post('/terminate-device', [\App\Http\Controllers\Api\Auth\AuthController::class, 'terminateDevice'])->name('api.auth.terminate-device'); // 🔐 Device selection (tek)
+    // 🔐 terminate-devices TAŞINDI web.php'YE! (API middleware grubu session kullanmaz)
     Route::get('/active-devices', [\App\Http\Controllers\Api\Auth\AuthController::class, 'getActiveDevices'])->name('api.auth.active-devices'); // 🔐 Device list for selection modal (GET)
     Route::post('/forgot-password', [\App\Http\Controllers\Api\Auth\AuthController::class, 'forgotPassword'])->name('api.auth.forgot'); // 🔥 Auth throttle
     Route::post('/reset-password', [\App\Http\Controllers\Api\Auth\AuthController::class, 'resetPassword'])->name('api.auth.reset'); // 🔥 Auth throttle

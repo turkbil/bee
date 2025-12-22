@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Device Limit - Plan & TODO (v2)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        .glass { background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.15), transparent 25%), radial-gradient(circle at 80% 0%, rgba(14,165,233,0.12), transparent 25%), rgba(15,23,42,0.9); }
+        .progress-bar { transition: width 0.3s ease; }
+        .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+        .badge-red { background: rgba(248,113,113,0.18); color: #fca5a5; border: 1px solid rgba(248,113,113,0.35); }
+        .badge-amber { background: rgba(251,191,36,0.14); color: #fbbf24; border: 1px solid rgba(251,191,36,0.35); }
+        .badge-green { background: rgba(74,222,128,0.18); color: #4ade80; border: 1px solid rgba(74,222,128,0.35); }
+        .badge-blue { background: rgba(59,130,246,0.18); color: #93c5fd; border: 1px solid rgba(59,130,246,0.35); }
+        .card { border: 1px solid rgba(100,116,139,0.35); backdrop-filter: blur(10px); }
+        .checkbox-item input[type="checkbox"]:checked + label { text-decoration: line-through; opacity: 0.65; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-10">
+        <header class="mb-10 text-center">
+            <div class="inline-flex items-center gap-3 px-4 py-2 bg-emerald-500/15 border border-emerald-400/40 rounded-full mb-4">
+                <i class="fas fa-compass text-emerald-300"></i>
+                <span class="text-emerald-200 font-semibold">Analiz + Is Plani + TODO</span>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-3">Muzibu Device Limit Sistemi - Sorun Devam</h1>
+            <p class="text-slate-400 text-sm md:text-base">Limit = 1 cihaz | Session hedefi = uzun omur (auth_session_lifetime) | Tenant: 1001 (muzibu)</p>
+            <div class="flex flex-wrap justify-center gap-3 mt-4 text-xs text-slate-400">
+                <span class="badge badge-red"><i class="fas fa-bug"></i>Kritik akisa devam eden bosluklar var</span>
+                <span class="badge badge-blue"><i class="fas fa-calendar"></i>21 Aralik 2025</span>
+                <span class="badge badge-amber"><i class="fas fa-clock"></i>v2 - plan/todo guncellendi</span>
+            </div>
+        </header>
+
+        <!-- Iki seviyeli anlatim -->
+        <section class="grid md:grid-cols-2 gap-4 mb-8">
+            <div class="card bg-emerald-900/25 rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-emerald-200 mb-3"><i class="fas fa-hand-holding-heart mr-2"></i>Basit Anlatim (Herkes Icin)</h3>
+                <p class="text-slate-200 text-sm leading-relaxed mb-3">Cihaz limiti hala hatali calisiyor: atilmasi gereken cihazlar muzik stream edebiliyor, bazen eski oturumlar temizlenmiyor. Ama amac net: kullanici ayni anda sadece <strong>1 tarayici</strong> acik tutabilsin, digerleri otomatik kapansin ve bunun nedeni dogru mesajla bildirilsin.</p>
+                <ul class="text-sm text-slate-300 space-y-2">
+                    <li>• Stream API cihaz kontrolu kapali, bu yuzden atilan cihaz hala dinleyebiliyor.</li>
+                    <li>• Oturum silerken Redis kayitlari kalabiliyor, "hayalet" session riski var.</li>
+                    <li>• Session suresi ve limit davranisi farkli dosyalarda farkli degerler kullaniyor.</li>
+                </ul>
+            </div>
+            <div class="card bg-blue-900/25 rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-blue-200 mb-3"><i class="fas fa-microchip mr-2"></i>Teknik Detaylar (Gelistiriciler Icin)</h3>
+                <ul class="text-sm text-slate-300 space-y-2">
+                    <li>• <span class="font-mono text-slate-200">Modules/Muzibu/app/Services/DeviceService.php</span> registerSession() limit >= mantigi limit>1 icin tum oturumlari siliyor; cache reason <code>lifo_new_device</code> checkSession tarafindan okunmuyor.</li>
+                    <li>• <span class="font-mono text-slate-200">SongStreamController.php</span> cihaz kontrolu yorum satirinda (guard/session mismatch nedeniyle), bu yuzden kick edilen tarayici stream yapabiliyor.</li>
+                    <li>• Redis temizligi tutarsiz: terminateSession / terminateSessions prefixsiz key siliyor, unregisterSession da Redis temizlemiyor.</li>
+                    <li>• Session lifetime kaynaklari farkli: TenancyServiceProvider (120 dk), DeviceService cookie (10080 dk), CleanupExpiredSessionsCommand (525600 dk) -> uyumsuz.</li>
+                    <li>• <span class="font-mono text-slate-200">App/Services/Auth/DeviceService.php</span> ve <span class="font-mono text-slate-200">CheckDeviceLimit</span> eski kod olarak duruyor; terminate-device route hem web hem api'de tanimli.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Kritik bosluklar -->
+        <section class="mb-10">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-300"><i class="fas fa-triangle-exclamation"></i></div>
+                <h2 class="text-2xl font-bold text-white">Bugun Tespit Edilen Aciklar</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="card glass rounded-xl p-5">
+                    <h3 class="text-lg font-semibold text-white mb-3 flex items-center gap-2"><span class="badge badge-red">Acil</span>Akis / Limit</h3>
+                    <ul class="text-sm text-slate-300 space-y-2 list-disc list-inside">
+                        <li>Limit hesaplama <strong>>=</strong> kullanimi yuzunden limit 2-3 olsa bile tum eski oturumlar siliniyor; sadece fazla olanlar silinmeli.</li>
+                        <li>Kick nedeni <code>lifo_new_device</code> cache key'i checkSession tarafinda okunmuyor; kullaniciya yanlis mesaj donuyor.</li>
+                        <li>SessionExists fallback, cookie yoksa herhangi bir kaydi dogru sayiyor; yanlis cihaz bazen ayakta kalabilir.</li>
+                    </ul>
+                </div>
+                <div class="card glass rounded-xl p-5">
+                    <h3 class="text-lg font-semibold text-white mb-3 flex items-center gap-2"><span class="badge badge-red">Acil</span>Stream / Guard</h3>
+                    <ul class="text-sm text-slate-300 space-y-2 list-disc list-inside">
+                        <li>Stream API cihaz kontrolu yorum satirinda; atilan tarayici muzik calabiliyor (SongStreamController::stream).</li>
+                        <li>Guard/session mismatch yuzunden stream request'i dogru session id'yi goremiyor; login_token tabanli kontrol hazirlanmali.</li>
+                    </ul>
+                </div>
+                <div class="card glass rounded-xl p-5">
+                    <h3 class="text-lg font-semibold text-white mb-3 flex items-center gap-2"><span class="badge badge-amber">Kisa Vade</span>Temizlik / Tutarlilik</h3>
+                    <ul class="text-sm text-slate-300 space-y-2 list-disc list-inside">
+                        <li>Redis key silme prefixsiz (terminateSessions) veya hic yok (terminateSession, unregisterSession); hayalet session riski.</li>
+                        <li>Session lifetime degerleri uyumsuz: 120 dk (TenancyServiceProvider), 10080 dk (DeviceService cookie), 525600 dk (cleanup command).</li>
+                        <li>Legacy class ve duplicate routes kafa karistiriyor: App\\Services\\Auth\\DeviceService, CheckDeviceLimit middleware, web + api terminate-devices route.</li>
+                    </ul>
+                </div>
+                <div class="card glass rounded-xl p-5">
+                    <h3 class="text-lg font-semibold text-white mb-3 flex items-center gap-2"><span class="badge badge-blue">Kontrol</span>Ayarlari Dogrulama</h3>
+                    <ul class="text-sm text-slate-300 space-y-2 list-disc list-inside">
+                        <li>shouldRun() icin <code>auth_device</code> ve <code>auth_subscription</code> zorunlu; tenant 1001 degerleri teyit edilmeli.</li>
+                        <li><code>auth_device_limit</code> ve <code>auth_session_lifetime</code> setting girisi panelde dogru kaydedilmis mi kontrol edilmeli.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Plan ve TODO -->
+        <section class="mb-10">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300"><i class="fas fa-list-check"></i></div>
+                    <h2 class="text-2xl font-bold text-white">Onceliklendirilmis Is Plani</h2>
+                </div>
+                <div class="flex items-center gap-2 text-sm text-slate-400">
+                    <span class="font-semibold text-white" id="progress-text">0%</span>
+                    <div class="w-32 h-2 bg-slate-800 rounded-full overflow-hidden">
+                        <div id="progress-bar" class="progress-bar h-2 bg-gradient-to-r from-emerald-400 to-cyan-400" style="width:0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-5">
+                <div class="space-y-3">
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="task1" class="mt-1 w-5 h-5" data-critical>
+                            <label for="task1" class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-white font-semibold">Limit/LIFO akisini duzelt</span>
+                                    <span class="badge badge-red">kritik</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-1">registerSession: limit hesaplamasini sadece fazla olan kayitlari silecek sekle getir; cache reason'i <code>lifo</code> olarak kaydet ve checkSession ile uyumlu kil.</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="task2" class="mt-1 w-5 h-5" data-critical>
+                            <label for="task2" class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-white font-semibold">Stream API icin cihaz kontrolu</span>
+                                    <span class="badge badge-red">kritik</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-1">Guard/session mismatch'i coz; stream isteginde login_token dogrulamasi ekle ve SongStreamController cihaz limit kontrolunu yeniden aktive et.</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="task3" class="mt-1 w-5 h-5" data-critical>
+                            <label for="task3" class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-white font-semibold">Redis + session temizligi tekles</span>
+                                    <span class="badge badge-red">kritik</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-1">terminateSession, terminateSessions ve unregisterSession icin ortak atomic helper olustur; Redis key'leri <code>session.prefix</code> ile sil, cache reason'lari uyumlu tut.</p>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="task4" class="mt-1 w-5 h-5">
+                            <label for="task4" class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-white font-semibold">Session lifetime'i tek kaynaga bagla</span>
+                                    <span class="badge badge-amber">senkron</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-1">auth_session_lifetime degerini tek noktadan oku (Setting); TenancyServiceProvider, DeviceService cookie, CleanupExpiredSessionsCommand uyumlu olsun.</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="task5" class="mt-1 w-5 h-5">
+                            <label for="task5" class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-white font-semibold">Legacy kod ve route temizligi</span>
+                                    <span class="badge badge-amber">temizlik</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-1">App\\Services\\Auth\\DeviceService ve CheckDeviceLimit'i kaldir; terminate-devices route'larini tek API endpoint'te topla, front JS isteklerini yeni endpoint'e sabitle.</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="task6" class="mt-1 w-5 h-5">
+                            <label for="task6" class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-white font-semibold">Ayarlari dogrula ve seed et</span>
+                                    <span class="badge badge-blue">kontrol</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-1">tenant 1001 icin <code>auth_device</code>, <code>auth_subscription</code>, <code>auth_device_limit</code>, <code>auth_session_lifetime</code> degerlerini kontrol et; eksikse SettingManagement uzerinden ekle.</p>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test plan -->
+        <section class="mb-10">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-purple-500/25 border border-purple-500/40 flex items-center justify-center text-purple-200"><i class="fas fa-vial"></i></div>
+                <h2 class="text-2xl font-bold text-white">Test Plani (limit=1, cihaz=tarayici)</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" id="test1" class="mt-1 w-5 h-5">
+                        <label for="test1" class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white font-semibold">Ayni tarayici yeniden giris</span>
+                                <span class="badge badge-blue">dogrulama</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mt-1">Chrome kapanip acilsin, login-token ayni kalsin, DB'de tek kayit olsun, stream calissin.</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" id="test2" class="mt-1 w-5 h-5">
+                        <label for="test2" class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white font-semibold">Farkli tarayici LIFO</span>
+                                <span class="badge badge-blue">dogrulama</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mt-1">Chrome aktifken Firefox login olsun, Chrome checkSession 401/redirect alsin, stream 401 donsun.</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" id="test3" class="mt-1 w-5 h-5">
+                        <label for="test3" class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white font-semibold">Livewire session regenerate</span>
+                                <span class="badge badge-blue">regresyon</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mt-1">Livewire islemlerinde session_id degisse bile login_token uyumu sayesinde oturum dusmemeli.</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" id="test4" class="mt-1 w-5 h-5">
+                        <label for="test4" class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white font-semibold">Lifetime tutarliligi</span>
+                                <span class="badge badge-blue">konfigurasyon</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mt-1">auth_session_lifetime degistirildiginde cookie, Laravel session ve temizleme komutlari ayni sureyi kullanmali.</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item md:col-span-2">
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" id="test5" class="mt-1 w-5 h-5">
+                        <label for="test5" class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white font-semibold">Race condition</span>
+                                <span class="badge badge-blue">dayaniklilik</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mt-1">Ayni anda iki tarayicidan login dene, distributed lock sayesinde DB'de tek satir kalmali, stream sadece aktif tarayicida calismali.</p>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Riskler ve bagimliliklar -->
+        <section class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-amber-500/25 border border-amber-500/40 flex items-center justify-center text-amber-200"><i class="fas fa-radiation"></i></div>
+                <h2 class="text-2xl font-bold text-white">Riskler / Bagimliliklar</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                <div class="card rounded-xl p-4">
+                    <div class="font-semibold text-white mb-2">Guard karma</div>
+                    <p class="text-slate-400">Stream API hem web hem sanctum guard kullanmaya devam ederse session_id tespiti karisiyor; login_token bazli kontrol zorunlu.</p>
+                </div>
+                <div class="card rounded-xl p-4">
+                    <div class="font-semibold text-white mb-2">Redis temizligi</div>
+                    <p class="text-slate-400">Prefixsiz silme sonucu eski session key'leri kalirsa kullanici cikis oldugunu gormeden devam edebilir.</p>
+                </div>
+                <div class="card rounded-xl p-4">
+                    <div class="font-semibold text-white mb-2">Setting tutarsizligi</div>
+                    <p class="text-slate-400">auth_device / auth_subscription false ise tum akisi bypass eder; paneldeki degerler kontrol edilmeden testler yaniltici olur.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center text-xs text-slate-500 border-t border-slate-800 pt-6">
+            <p><i class="fas fa-robot text-cyan-400 mr-2"></i>Hazirlayan: Claude AI | 21 Aralik 2025 | v2 plan</p>
+            <p class="mt-1">Hedef: stream + session tum ortamlarda limit=1 uyumlu, kick edilen cihaz stream yapamaz, neden mesajlari dogru.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const storageKey = 'session-device-limit-v2';
+
+            const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
+            checkboxes.forEach(cb => { if (saved[cb.id]) cb.checked = true; });
+
+            function update() {
+                const total = checkboxes.length;
+                const done = Array.from(checkboxes).filter(cb => cb.checked).length;
+                const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+                progressBar.style.width = pct + '%';
+                progressText.textContent = pct + '%';
+
+                const state = {};
+                checkboxes.forEach(cb => state[cb.id] = cb.checked);
+                localStorage.setItem(storageKey, JSON.stringify(state));
+            }
+
+            checkboxes.forEach(cb => cb.addEventListener('change', update));
+            update();
+        });
+    </script>
+</body>
+</html>

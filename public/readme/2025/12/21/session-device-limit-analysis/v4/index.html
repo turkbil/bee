@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Device Limit - Sıfırlama + Plan (v4)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        .glass { background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.15), transparent 25%), radial-gradient(circle at 80% 0%, rgba(14,165,233,0.12), transparent 25%), rgba(15,23,42,0.9); }
+        .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+        .badge-emerald { background: rgba(16,185,129,0.16); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); }
+        .badge-blue { background: rgba(59,130,246,0.18); color: #93c5fd; border: 1px solid rgba(59,130,246,0.35); }
+        .badge-amber { background: rgba(251,191,36,0.14); color: #fbbf24; border: 1px solid rgba(251,191,36,0.35); }
+        .badge-red { background: rgba(248,113,113,0.18); color: #fca5a5; border: 1px solid rgba(248,113,113,0.35); }
+        .card { border: 1px solid rgba(100,116,139,0.35); backdrop-filter: blur(10px); }
+        .checkbox-item input[type="checkbox"]:checked + label { text-decoration: line-through; opacity: 0.7; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-10">
+        <header class="mb-10 text-center">
+            <div class="inline-flex items-center gap-3 px-4 py-2 bg-emerald-500/15 border border-emerald-400/40 rounded-full mb-4">
+                <i class="fas fa-rotate text-emerald-300"></i>
+                <span class="text-emerald-200 font-semibold">Sıfırlama yapıldı, yeni test öncesi plan</span>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-3">Muzibu Device Limit & Sonsuz Çalma - v4</h1>
+            <p class="text-slate-400 text-sm md:text-base">Tenant 1001 (muzibu) | Limit=1 cihaz | Amaç: aynı cihazda kesintisiz, diğer girişleri engelleyerek sonsuz müzik</p>
+            <div class="flex flex-wrap justify-center gap-3 mt-4 text-xs text-slate-400">
+                <span class="badge badge-emerald"><i class="fas fa-broom"></i>Aktif session tablosu boş (hard reset)</span>
+                <span class="badge badge-blue"><i class="fas fa-calendar"></i>22 Aralık 2025</span>
+                <span class="badge badge-amber"><i class="fas fa-clipboard-list"></i>v4 plan + takip</span>
+            </div>
+        </header>
+
+        <!-- Iki seviyeli anlatim -->
+        <section class="grid md:grid-cols-2 gap-4 mb-8">
+            <div class="card bg-emerald-900/25 rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-emerald-200 mb-3"><i class="fas fa-hand-holding-heart mr-2"></i>Basit Anlatım (Herkes İçin)</h3>
+                <p class="text-sm leading-relaxed text-slate-100 mb-3">Tüm aktif girişleri sildim; sistem şu an tek cihazla sıfırdan deneme için hazır. Amaç: bir kişi tek cihazdan hiç kesilmeden dinlesin, ikinci giriş olursa ilkini düşürsün. HLS (m3u8) akışında manifest hatası ve “başka cihaz” uyarısının yanlış çıkma ihtimali var; bunları güçlendirecek adımları aşağıya yazdım.</p>
+                <ul class="text-sm text-slate-200 space-y-2">
+                    <li>• Hard reset: tenant_muzibu_1528d0.user_active_sessions şu an boş.</li>
+                    <li>• Tek cihaz kuralı devam; cookie kaybolsa bile oturumu yeniden tanıma kodu hazır, tekrar test edeceğiz.</li>
+                    <li>• HLS manifest hatasında müzik duruyor; fallback/yeniden imzalama akışı sağlamlaştırılacak.</li>
+                    <li>• “Başka cihaz” uyarısının nedeni loglanacak; yanlış uyarı vermemesi sağlanacak.</li>
+                </ul>
+            </div>
+            <div class="card bg-blue-900/25 rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-blue-200 mb-3"><i class="fas fa-microchip mr-2"></i>Teknik Detaylar (Geliştiriciler İçin)</h3>
+                <ul class="text-sm text-slate-200 space-y-2">
+                    <li>• Sıfırlama: <code>tenant_muzibu_1528d0.user_active_sessions</code> temizlendi (0 kayıt); central <code>user_active_sessions</code> zaten boştu.</li>
+                    <li>• Mevcut kod: DeviceService cookie re-issue + SongStreamController HLS token doğrulaması aktif; TTL şu an 300s, player 240s’de yeniliyor.</li>
+                    <li>• Açık konular: manifestLoadError ve HLS timeout (loglarda 349/355) → uzun parça/TTL uyumsuzluğu ve crossfade fallback eksikliği incelenecek.</li>
+                    <li>• Favorites API <code>/api/favorites/list</code> 500 veriyor; henüz ele alınmadı, regresyon riski.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Durum -->
+        <section class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-emerald-500/25 border border-emerald-500/40 flex items-center justify-center text-emerald-200"><i class="fas fa-signal"></i></div>
+                <h2 class="text-2xl font-bold text-white">Durum Özeti</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                <div class="card glass rounded-xl p-4">
+                    <div class="font-semibold text-emerald-200 mb-2 flex items-center gap-2"><i class="fas fa-circle-check"></i> Hazır</div>
+                    <p class="text-slate-300">Aktif session tablosu boş; yeni girişte loglardan tüm akışı uçtan uca takip edebiliriz.</p>
+                </div>
+                <div class="card rounded-xl p-4">
+                    <div class="font-semibold text-amber-200 mb-2 flex items-center gap-2"><i class="fas fa-triangle-exclamation"></i> İzlenecek</div>
+                    <p class="text-slate-300">Aynı cihaz/farklı tarayıcıda cookie kaybı ya da Livewire session değişimi hâlâ “başka cihaz” uyarısı verebilir; sebebi için ayrıntılı log eklenecek.</p>
+                </div>
+                <div class="card rounded-xl p-4">
+                    <div class="font-semibold text-red-200 mb-2 flex items-center gap-2"><i class="fas fa-ban"></i> Kritik</div>
+                    <p class="text-slate-300">HLS manifest hatası (timeout/manifestLoadError) müziği durduruyor; fallback akışı devreye girmeli ve uzun parçalar için imzalı URL süresi uzatılmalı.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Plan -->
+        <section class="mb-10">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300"><i class="fas fa-list-check"></i></div>
+                    <h2 class="text-2xl font-bold text-white">Öncelikli İş Planı</h2>
+                </div>
+                <div class="flex items-center gap-2 text-sm text-slate-400">
+                    <span class="font-semibold text-white" id="progress-text">0%</span>
+                    <div class="w-32 h-2 bg-slate-800 rounded-full overflow-hidden">
+                        <div id="progress-bar" class="h-2 bg-gradient-to-r from-emerald-400 to-cyan-400" style="width:0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="space-y-3">
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="task1" class="mt-1 w-5 h-5" checked disabled>
+                            <label for="task1" class="flex-1 line-through opacity-70">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-white font-semibold">Hard reset - aktif oturumları temizle</span>
+                                    <span class="badge badge-emerald">tamam</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-1">tenant_muzibu_1528d0.user_active_sessions boş; yeni login sırasında tam izleme yapılacak.</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="task2" class="mt-1 w-5 h-5">
+                            <label for="task2" class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-white font-semibold">Tek cihaz + çok tarayıcı doğrulaması</span>
+                                    <span class="badge badge-blue">devam</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-1">Aynı cihaz farklı tarayıcı senaryosunda cookie re-issue + session_id eşleştirme çalışıyor mu, yanlış “başka cihaz” uyarısı veriyor mu izlenecek.</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="task3" class="mt-1 w-5 h-5">
+                            <label for="task3" class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-white font-semibold">Global logout senkronizasyonu</span>
+                                    <span class="badge badge-blue">devam</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-1">Bir cihazdan “çıkış” veya limit aşıldığında tüm oturumlarda stream + UI aynı anda kapanacak; mesajda neden kodu gösterilecek.</p>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="task4" class="mt-1 w-5 h-5">
+                            <label for="task4" class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-white font-semibold">HLS dayanıklılığı + fallback</span>
+                                    <span class="badge badge-amber">kritik</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-1">Manifest timeout/loadError olduğunda MP3 fallback veya sıradaki parçaya otomatik geç; crossfade sırasında re-sign edilen URL’yi kullan.</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="task5" class="mt-1 w-5 h-5">
+                            <label for="task5" class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-white font-semibold">Uzun parça / TTL ayarı</span>
+                                    <span class="badge badge-amber">kritik</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-1">300s TTL uzun şarkılarda yetmiyor; süreyi parça uzunluğu + tampon olarak hesapla veya player’ın yenilediği URL’yi aktif stream’e bindir.</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="task6" class="mt-1 w-5 h-5">
+                            <label for="task6" class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-white font-semibold">Favorites API 500</span>
+                                    <span class="badge badge-blue">devam</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-1">/api/favorites/list 500 hatası loglanıp düzeltilecek; oturum kontrolüyle bağlantısı incelenecek.</p>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test plan -->
+        <section class="mb-10">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-purple-500/25 border border-purple-500/40 flex items-center justify-center text-purple-200"><i class="fas fa-vial"></i></div>
+                <h2 class="text-2xl font-bold text-white">Test Senaryoları (limit=1, uzun süreli çalma)</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" id="test1" class="mt-1 w-5 h-5">
+                        <label for="test1" class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white font-semibold">Tek tarayıcı, yenilemeden uzun dinleme</span>
+                                <span class="badge badge-blue">stabilite</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mt-1">Login sonrası 15-30 dk sayfa yenilemeden çal; HLS linki süresi dolmadan otomatik yenileniyor mu, durmadan çalıyor mu gözle.</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" id="test2" class="mt-1 w-5 h-5">
+                        <label for="test2" class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white font-semibold">A: Chrome açıkken B: Firefox login</span>
+                                <span class="badge badge-blue">limit</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mt-1">B giriş yaptığında A 401/uyarı almalı, stream durmalı ve login ekranına dönmeli; mesajda “başka cihaz” nedeni görünmeli.</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" id="test3" class="mt-1 w-5 h-5">
+                        <label for="test3" class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white font-semibold">Aynı cihaz + farklı tarayıcı</span>
+                                <span class="badge badge-blue">yanlış uyarı</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mt-1">Chrome login sonrası Firefox sadece açık kalsın; Chrome “başka cihaz” uyarısı veriyor mu, login_token yeniden basılıyor mu takip et.</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item">
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" id="test4" class="mt-1 w-5 h-5">
+                        <label for="test4" class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white font-semibold">Uzun parça (>300s) HLS</span>
+                                <span class="badge badge-amber">kritik</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mt-1">300s üstü parçayı çal, HLS imzası süresi dolmadan yenileniyor mu; manifestLoadError çıkarsa fallback devreye giriyor mu gözlemle.</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 checkbox-item md:col-span-2">
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" id="test5" class="mt-1 w-5 h-5">
+                        <label for="test5" class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white font-semibold">Çıkış tüm cihazları düşürüyor mu?</span>
+                                <span class="badge badge-blue">güvenlik</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mt-1">B’den logout tetikle; A aynı anda player + UI’dan düşüyor mu, yeni şarkı başlatamıyor mu kontrol et.</p>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Riskler -->
+        <section class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-amber-500/25 border border-amber-500/40 flex items-center justify-center text-amber-200"><i class="fas fa-radiation"></i></div>
+                <h2 class="text-2xl font-bold text-white">Riskler / Notlar</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                <div class="card rounded-xl p-4">
+                    <div class="font-semibold text-white mb-2">Yanlış “başka cihaz” uyarısı</div>
+                    <p class="text-slate-400">Session_id değişimi (Livewire, cookie reset) veya HLS isteğinde token bulunamazsa aynı cihazda da uyarı tetiklenebilir; sebebi için ayrıntılı log şart.</p>
+                </div>
+                <div class="card rounded-xl p-4">
+                    <div class="font-semibold text-white mb-2">HLS imza süresi</div>
+                    <p class="text-slate-400">300s TTL uzun parçalarda yetmiyor; crossfade da aynı URL’yi kullanınca manifestLoadError yaratıyor.</p>
+                </div>
+                <div class="card rounded-xl p-4">
+                    <div class="font-semibold text-white mb-2">API yan etkileri</div>
+                    <p class="text-slate-400">Favorites 500 hatası login akışında ekstra isteklere neden oluyor; oturum kontrolüyle çakışma riski var.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center text-xs text-slate-500 border-t border-slate-800 pt-6">
+            <p><i class="fas fa-robot text-cyan-400 mr-2"></i>Hazırlayan: Claude AI | 22 Aralık 2025 | v4 plan</p>
+            <p class="mt-1">Hedef: Tek cihazda kesintisiz çalma, diğer girişleri güvenli şekilde düşürme, HLS manifest hatasında otomatik toparlanma.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkboxes = document.querySelectorAll('input[type=\"checkbox\"]');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const storageKey = 'session-device-limit-v4';
+
+            const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
+            checkboxes.forEach(cb => { if (saved[cb.id]) cb.checked = true; });
+
+            function update() {
+                const total = checkboxes.length;
+                const done = Array.from(checkboxes).filter(cb => cb.checked).length;
+                const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+                progressBar.style.width = pct + '%';
+                progressText.textContent = pct + '%';
+
+                const state = {};
+                checkboxes.forEach(cb => state[cb.id] = cb.checked);
+                localStorage.setItem(storageKey, JSON.stringify(state));
+            }
+
+            checkboxes.forEach(cb => cb.addEventListener('change', update));
+            update();
+        });
+    </script>
+</body>
+</html>

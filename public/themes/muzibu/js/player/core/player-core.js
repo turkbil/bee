@@ -201,6 +201,7 @@ function muzibuApp() {
          * 401 alırsa kullanıcıyı logout eder veya guest'e mesaj gösterir
          */
         async authenticatedFetch(url, options = {}) {
+            const ignoreAuthError = options.ignoreAuthError || false;
             const fetchOptions = {
                 credentials: 'include',
                 headers: {
@@ -218,6 +219,11 @@ function muzibuApp() {
 
             // 🔴 401/419 Unauthorized = Guest user VEYA session terminated/CSRF expired
             if (response.status === 401 || response.status === 419) {
+                // Preload vs: auth hatasını sessizce yut (logout tetikleme)
+                if (ignoreAuthError) {
+                    return null;
+                }
+
                 // Tekrar deneme döngüsünü engelle
                 if (this._handlingAuthError) {
                     return null;
@@ -3534,7 +3540,7 @@ onplay: function() {
 
             try {
                 // 🚀 Fetch stream URL and cache it (🔐 401 kontrolü ile)
-                const response = await this.authenticatedFetch(`/api/muzibu/songs/${songId}/stream`);
+                const response = await this.authenticatedFetch(`/api/muzibu/songs/${songId}/stream`, { ignoreAuthError: true });
                 if (!response || !response.ok) return;
 
                 const data = await response.json();
@@ -3597,7 +3603,7 @@ onplay: function() {
 
             // Arka planda API'den çek ve cache'e yaz
             try {
-                const response = await this.authenticatedFetch(`/api/muzibu/songs/${nextSong.song_id}/stream`);
+                const response = await this.authenticatedFetch(`/api/muzibu/songs/${nextSong.song_id}/stream`, { ignoreAuthError: true });
                 if (!response) return; // 401 aldıysa çık
 
                 // 🚫 CRITICAL: Sadece başarılı response'ları cache'le (402, 403, 500 hariç)
@@ -4142,6 +4148,8 @@ onplay: function() {
                 this.isLoggedIn = false;
                 this.stopSessionPolling();
                 this.clearAllBrowserStorage();
+                this.streamUrlCache = new Map();
+                this.preloadedSongs = new Set();
             } catch(e) {}
 
             let reason = null;

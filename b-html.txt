@@ -1,591 +1,117 @@
-Navigated to https://muzibu.com.tr/
-player-core.js?v=1766369441:3948 ✅ Player state cleared (fresh start)
-spa-router.js?v=1766368636:95 🚀 SPA Router initialized (Prefetch Disabled)
-VM4965:3 🔐 Auth Debug: {isLoggedIn: true, currentUser: Proxy(Object)}
-(index):6653 🔐 Session check component initialized
-(index):6658 🔐 Starting session check polling (5 seconds interval)
+player-core.js?v=1766411193:1056 Uncaught SyntaxError: Unexpected token ')' (at player-core.js?v=1766411193:1056:27)
+VM752:3 🔐 Auth Debug: {isLoggedIn: false, currentUser: null}
+(index):6628 🔐 Session check component initialized
+(index):6633 🔐 Starting session check polling (5 seconds interval)
 favorites.js?v=1766368636:199 🎵 Loading user favorites...
-(index):8238 ✅ Player store verified
-VM5447:38 🧪 Debug Panel connected
-(index):8224 ✅ Player store = Proxy to root (auto-forward all properties/methods)
-player-core.js?v=1766369441:1914 🎵 HLS DEBUG v3 (new /hls/ route) stream_url: https://muzibu.com.tr/hls/muzibu/songs/355/playlist.m3u8?expires=1766369608&token=00e8d2d39cb94a5cc5dde600b93481156110e13b35c21c880c28ba571f461079&sig=5d987737d8c9b79b3b58f7be9022a110481ca40c1f167e0325bdf7b3ee42111f type: hls
-player-core.js?v=1766369441:3639 🔄 HLS URL refreshed for current song: https://muzibu.com.tr/hls/muzibu/songs/457/playlist.m3u8?expires=1766369940&token=00e8d2d39cb94a5cc5dde600b93481156110e13b35c21c880c28ba571f461079&sig=405f63bf969da7a72bba9f382ffa41329eadd0bd34aa67854a9a4b79432c8780
-xhr-loader.ts:158  GET https://muzibu.com.tr/hls/muzibu/songs/345/segment-013.ts?expires=1766369921&token=00e8d2d39cb94a5cc5dde600b93481156110e13b35c21c880c28ba571f461079&sig=85e33eb90185c3073a7de8d73ab5e12dd8f301eebb4dc41200bb6a5198e62187 401 (Unauthorized)
-e.openAndSendXhr @ xhr-loader.ts:158
-(anonymous) @ xhr-loader.ts:104
-Promise.then
-e.loadInternal @ xhr-loader.ts:102
-e.load @ xhr-loader.ts:76
-(anonymous) @ fragment-loader.ts:100
-e.load @ fragment-loader.ts:67
-r._doFragLoad @ base-stream-controller.ts:772
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-xhr-loader.ts:158  GET https://muzibu.com.tr/hls/muzibu/songs/345/segment-013.ts?expires=1766369921&token=00e8d2d39cb94a5cc5dde600b93481156110e13b35c21c880c28ba571f461079&sig=85e33eb90185c3073a7de8d73ab5e12dd8f301eebb4dc41200bb6a5198e62187 401 (Unauthorized)
-e.openAndSendXhr @ xhr-loader.ts:158
-(anonymous) @ xhr-loader.ts:104
-Promise.then
-e.loadInternal @ xhr-loader.ts:102
-e.load @ xhr-loader.ts:76
-(anonymous) @ fragment-loader.ts:100
-e.load @ fragment-loader.ts:67
-r._doFragLoad @ base-stream-controller.ts:772
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
+(index):8262 ✅ Player store verified
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: muzibuApp is not defined
+
+Expression: "muzibuApp()"
+
+ <html lang=​"tr" x-data=​"muzibuApp()​" x-init=​"init()​" class=​"dark">​<head>​…​</head>​<body class=​"bg-black text-white overflow-hidden" @play-song.window=​"playSong($event.detail.songId)​">​…​</body>​</html>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
 Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-xhr-loader.ts:158  GET https://muzibu.com.tr/hls/muzibu/songs/345/segment-013.ts?expires=1766369921&token=00e8d2d39cb94a5cc5dde600b93481156110e13b35c21c880c28ba571f461079&sig=85e33eb90185c3073a7de8d73ab5e12dd8f301eebb4dc41200bb6a5198e62187 401 (Unauthorized)
-e.openAndSendXhr @ xhr-loader.ts:158
-(anonymous) @ xhr-loader.ts:104
-Promise.then
-e.loadInternal @ xhr-loader.ts:102
-e.load @ xhr-loader.ts:76
-(anonymous) @ fragment-loader.ts:100
-e.load @ fragment-loader.ts:67
-r._doFragLoad @ base-stream-controller.ts:772
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3564
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: init is not defined
+
+Expression: "init()"
+
+ <html lang=​"tr" x-data=​"muzibuApp()​" x-init=​"init()​" class=​"dark">​<head>​…​</head>​<body class=​"bg-black text-white overflow-hidden" @play-song.window=​"playSong($event.detail.songId)​">​…​</body>​</html>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
 Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-xhr-loader.ts:158  GET https://muzibu.com.tr/hls/muzibu/songs/345/segment-013.ts?expires=1766369921&token=00e8d2d39cb94a5cc5dde600b93481156110e13b35c21c880c28ba571f461079&sig=85e33eb90185c3073a7de8d73ab5e12dd8f301eebb4dc41200bb6a5198e62187 401 (Unauthorized)
-e.openAndSendXhr @ xhr-loader.ts:158
-(anonymous) @ xhr-loader.ts:104
-Promise.then
-e.loadInternal @ xhr-loader.ts:102
-e.load @ xhr-loader.ts:76
-(anonymous) @ fragment-loader.ts:100
-e.load @ fragment-loader.ts:67
-r._doFragLoad @ base-stream-controller.ts:772
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-xhr-loader.ts:158  GET https://muzibu.com.tr/hls/muzibu/songs/345/segment-013.ts?expires=1766369921&token=00e8d2d39cb94a5cc5dde600b93481156110e13b35c21c880c28ba571f461079&sig=85e33eb90185c3073a7de8d73ab5e12dd8f301eebb4dc41200bb6a5198e62187 401 (Unauthorized)
-e.openAndSendXhr @ xhr-loader.ts:158
-(anonymous) @ xhr-loader.ts:104
-Promise.then
-e.loadInternal @ xhr-loader.ts:102
-e.load @ xhr-loader.ts:76
-(anonymous) @ fragment-loader.ts:100
-e.load @ fragment-loader.ts:67
-r._doFragLoad @ base-stream-controller.ts:772
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-xhr-loader.ts:158  GET https://muzibu.com.tr/hls/muzibu/songs/345/segment-013.ts?expires=1766369921&token=00e8d2d39cb94a5cc5dde600b93481156110e13b35c21c880c28ba571f461079&sig=85e33eb90185c3073a7de8d73ab5e12dd8f301eebb4dc41200bb6a5198e62187 401 (Unauthorized)
-e.openAndSendXhr @ xhr-loader.ts:158
-(anonymous) @ xhr-loader.ts:104
-Promise.then
-e.loadInternal @ xhr-loader.ts:102
-e.load @ xhr-loader.ts:76
-(anonymous) @ fragment-loader.ts:100
-e.load @ fragment-loader.ts:67
-r._doFragLoad @ base-stream-controller.ts:772
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-xhr-loader.ts:158  GET https://muzibu.com.tr/hls/muzibu/songs/345/segment-013.ts?expires=1766369921&token=00e8d2d39cb94a5cc5dde600b93481156110e13b35c21c880c28ba571f461079&sig=85e33eb90185c3073a7de8d73ab5e12dd8f301eebb4dc41200bb6a5198e62187 401 (Unauthorized)
-e.openAndSendXhr @ xhr-loader.ts:158
-(anonymous) @ xhr-loader.ts:104
-Promise.then
-e.loadInternal @ xhr-loader.ts:102
-e.load @ xhr-loader.ts:76
-(anonymous) @ fragment-loader.ts:100
-e.load @ fragment-loader.ts:67
-r._doFragLoad @ base-stream-controller.ts:772
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-player-core.js?v=1766369441:1173 HLS crossfade fatal error: {type: 'networkError', details: 'fragLoadError', fatal: true, frag: e, response: {…}, …}
-(anonymous) @ player-core.js?v=1766369441:1173
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3489
+(anonymous) @ livewire.js?id=df3a17f2:1909
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: muzibuApp is not defined
+    at [Alpine] muzibuApp(/) (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:16)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at evaluate (livewire.js?id=df3a17f2:1140:34)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3564:17)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+    at stopDeferring (livewire.js?id=df3a17f2:1286:7)
+    at deferHandlingDirectives (livewire.js?id=df3a17f2:1289:5)
+    at initTree (livewire.js?id=df3a17f2:1479:5)
+    at livewire.js?id=df3a17f2:1428:7
+[Alpine] muzibuApp() @ VM708:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3564
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: init is not defined
+    at [Alpine] init(/) (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:16)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at evaluate (livewire.js?id=df3a17f2:1140:34)
+    at livewire.js?id=df3a17f2:3489:37
+    at Function.<anonymous> (livewire.js?id=df3a17f2:1909:58)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+    at stopDeferring (livewire.js?id=df3a17f2:1286:7)
+    at deferHandlingDirectives (livewire.js?id=df3a17f2:1289:5)
+    at initTree (livewire.js?id=df3a17f2:1479:5)
+[Alpine] init() @ VM709:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3489
+(anonymous) @ livewire.js?id=df3a17f2:1909
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+VM1229:38 🧪 Debug Panel connected
+(index):8248 ✅ Player store = Proxy to root (auto-forward all properties/methods)
+(index):6642  GET https://muzibu.com.tr/api/session/check 401 (Unauthorized)
+checkSession @ (index):6642
+(anonymous) @ (index):6636
+setInterval
+startSessionCheck @ (index):6635
+init @ (index):6629
+(anonymous) @ livewire.js?id=df3a17f2:1160
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3571
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+(index):6657 🔐 Session terminated - showing modal

@@ -58,71 +58,6 @@
 
     @yield('styles')
 
-    <style>
-        /* Grid Layout Fix - Prevent Shrinking */
-        html, body {
-            width: 100vw;
-            max-width: 100vw;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* Main Grid Container */
-        #main-app-grid {
-            width: 100vw;
-            max-width: 100vw;
-            min-width: 100vw;
-        }
-
-        /* Prevent content shrinking on mobile menu open */
-        @media (max-width: 1023px) {
-            #main-app-grid {
-                position: fixed;
-                left: 0;
-                right: 0;
-            }
-        }
-
-        /* Keyboard Feedback Notification */
-        .keyboard-feedback {
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            z-index: 9999;
-            pointer-events: none;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.2s ease, transform 0.2s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        .keyboard-feedback.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        @media (max-width: 640px) {
-            .keyboard-feedback {
-                bottom: 80px;
-                right: 10px;
-                padding: 10px 16px;
-                font-size: 13px;
-            }
-        }
-
-        /* 🔧 Alpine.js x-cloak: Hide elements until Alpine initializes */
-        [x-cloak] {
-            display: none !important;
-        }
-    </style>
 </head>
 <body class="bg-black text-white overflow-hidden" @play-song.window="playSong($event.detail.songId)">
     {{-- Mobile Menu Overlay - Sidebar açıkken arka planı karartır --}}
@@ -162,7 +97,7 @@
     {{-- Main App Grid - Dynamic columns based on right sidebar visibility --}}
     <div
         id="main-app-grid"
-        class="grid grid-rows-[56px_1fr_auto] grid-cols-1 lg:grid-cols-[220px_1fr] {{ $gridCols }} h-[100dvh] gap-0 lg:gap-3 px-0 pb-0 lg:px-3 lg:pb-3"
+        class="grid grid-rows-[56px_1fr_52px] grid-cols-1 lg:grid-cols-[220px_1fr] {{ $gridCols }} h-[100dvh] gap-0 lg:gap-3 px-0 pb-0 pt-0 lg:px-3 lg:pb-3 lg:pt-3"
     >
         @include('themes.muzibu.components.header')
         @include('themes.muzibu.components.sidebar-left')
@@ -170,7 +105,7 @@
 
         {{-- Right Sidebar - XL+ screens, music pages only --}}
         @if($showRightSidebar)
-            <aside class="muzibu-right-sidebar overflow-y-auto rounded-2xl hidden xl:block">
+            <aside class="muzibu-right-sidebar row-start-2 overflow-y-auto rounded-2xl hidden xl:block">
                 @include('themes.muzibu.components.sidebar-right')
             </aside>
         @endif
@@ -410,26 +345,26 @@
 
     {{-- 🎯 Livewire Navigation Hook - Alpine Re-Init --}}
     <script>
-        // Livewire SPA navigation sonrası yeni content'teki Alpine component'leri init et
+        // ✅ FIX: Prevent Alpine.js multiple initialization ($nextTick redefine error)
         document.addEventListener('livewire:navigated', () => {
-            // Kısa gecikme ile Alpine'in hazır olmasını bekle
-            setTimeout(() => {
-                if (!window.Alpine) return;
+            if (!window.Alpine) return;
 
-                // Sadece initialize edilmemiş x-data element'lerini bul ve init et
-                document.querySelectorAll('[x-data]').forEach(el => {
-                    // Eğer element Alpine tarafından initialize edilmemişse
-                    if (!el.__x) {
+            // 🎯 Use Alpine's built-in mutateDom to safely initialize new components
+            // This prevents magic property redefinition errors
+            setTimeout(() => {
+                window.Alpine.mutateDom(() => {
+                    // Only initialize uninitialized elements
+                    document.querySelectorAll('[x-data]:not([data-alpine-initialized])').forEach(el => {
                         try {
-                            // Manuel initialize (try-catch ile $nextTick hatasını önle)
                             window.Alpine.initTree(el);
+                            el.setAttribute('data-alpine-initialized', 'true');
                         } catch (e) {
-                            // Hata sessizce yut ($nextTick duplicate hatası)
-                            if (!e.message?.includes('redefine')) {
+                            // Silently ignore already initialized elements
+                            if (!e.message?.includes('redefine') && !e.message?.includes('already')) {
                                 console.warn('Alpine init warning:', e.message);
                             }
                         }
-                    }
+                    });
                 });
             }, 50);
         });

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İXTİF F4 - 1.5 Ton Li-Ion Elektrikli Transpalet</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            color: #374151;
+            background: #f9fafb;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 60px 40px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            opacity: 0.95;
+        }
+
+        /* Introduction */
+        .intro {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .intro p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #4b5563;
+            margin-bottom: 20px;
+        }
+
+        .intro strong {
+            color: #1f2937;
+        }
+
+        /* Section */
+        section {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        section h2 {
+            color: #f97316;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            border-color: #f97316;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.1);
+        }
+
+        .feature-card i {
+            font-size: 3rem;
+            color: #f97316;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            color: #1f2937;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        /* Use Cases */
+        .use-cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .use-case {
+            background: #f9fafb;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .use-case h3 {
+            color: #1f2937;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .use-case p {
+            color: #6b7280;
+        }
+
+        /* Advantages */
+        .advantages-list {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .advantages-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .advantages-list li {
+            padding: 20px 0;
+            border-bottom: 1px solid #bfdbfe;
+            display: flex;
+            gap: 15px;
+        }
+
+        .advantages-list li:last-child {
+            border-bottom: none;
+        }
+
+        .advantages-list li i {
+            color: #3b82f6;
+            font-size: 1.5rem;
+            margin-top: 5px;
+        }
+
+        .advantages-list li strong {
+            color: #1e40af;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* CTA */
+        .cta-section {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .cta-section h2 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #f97316;
+            padding: 15px 40px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background: #fee2e2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Specs Table */
+        .specs-table {
+            margin-top: 30px;
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+        }
+
+        .specs-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .specs-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .specs-table td:first-child {
+            font-weight: 600;
+            color: #1f2937;
+            width: 40%;
+        }
+
+        .specs-table td:last-child {
+            color: #6b7280;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>İXTİF F4 - 1.5 Ton Li-Ion Elektrikli Transpalet</h1>
+            <p>
+                Modern depo ve lojistik operasyonları için tasarlanmış, güvenilir ve verimli elektrikli transpalet çözümü.
+                Li-Ion batarya teknolojisi ve kompakt tasarımıyla iş akışınızı hızlandırır.
+            </p>
+        </div>
+
+        <!-- Introduction -->
+        <div class="intro">
+            <p>
+                <strong>İXTİF F4 Elektrikli Transpalet</strong>, modern depo ve lojistik operasyonlarında verimliliği artırmak
+                için tasarlanmış 1.5 ton kapasiteli profesyonel bir ekipmandır. <strong>Li-Ion batarya teknolojisi</strong>
+                ile uzun çalışma süresi sunar ve kesintisiz operasyon sağlar.
+            </p>
+            <p>
+                Kompakt tasarımı ve hafif gövdesiyle dar alanlarda bile kolayca manevra yapabilirsiniz. 400mm şasi genişliği
+                sayesinde standart transpaletlerin giremediği koridorlara rahatlıkla erişim sağlar. <strong>Modüler batarya
+                sistemi</strong> ile çift batarya kullanabilme özelliği, tam gün kesintisiz çalışma imkanı sunar.
+            </p>
+            <p>
+                Ergonomik kumanda, güvenlik fren sistemi ve CE sertifikalı üretim ile operatör güvenliğini ön planda tutar.
+                Düşük bakım ihtiyacı ve enerji tasarrufu sağlayan teknolojisi ile işletme maliyetlerinizi düşürür.
+            </p>
+        </div>
+
+        <!-- Features -->
+        <section>
+            <h2><i class="fas fa-fire"></i> Neden Bu Ürünü Tercih Etmelisiniz?</h2>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-battery-full"></i>
+                    <h3>Modüler Li-Ion Batarya</h3>
+                    <p>
+                        24V 20Ah Li-Ion batarya ile 6-8 saat kesintisiz çalışma. Çift batarya seçeneği ile
+                        tam gün operasyon imkanı.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <i class="fas fa-compress-arrows-alt"></i>
+                    <h3>Kompakt Tasarım</h3>
+                    <p>
+                        400mm şasi genişliği ile dar koridorlarda rahat manevra. Standart transpaletlerin
+                        giremediği alanlara erişim.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <i class="fas fa-weight-hanging"></i>
+                    <h3>1.5 Ton Kapasite</h3>
+                    <p>
+                        Standart euro paletler ve endüstriyel yükler için yeterli taşıma kapasitesi.
+                        Güvenli ve dengeli yük taşıma.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    <h3>Ergonomik Kumanda</h3>
+                    <p>
+                        Operatör konforunu artıran ergonomik tasarım. Uzun süreli kullanımda yorulmadan
+                        çalışma imkanı.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Güvenlik Sistemi</h3>
+                    <p>
+                        Acil fren sistemi, CE sertifikası ve güvenlik standartlarına uygunluk.
+                        Operatör ve çevre güvenliği.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <i class="fas fa-tools"></i>
+                    <h3>Düşük Bakım İhtiyacı</h3>
+                    <p>
+                        Li-Ion teknolojisi sayesinde minimal bakım. Kurşun asit bataryalara göre
+                        çok daha az bakım maliyeti.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Use Cases -->
+        <section>
+            <h2><i class="fas fa-briefcase"></i> Hangi Alanlarda Kullanılır?</h2>
+
+            <div class="use-cases-grid">
+                <div class="use-case">
+                    <h3><i class="fas fa-warehouse"></i> Depo ve Lojistik</h3>
+                    <p>
+                        Palet taşıma, raf yükleme ve malzeme hareketi işlemlerinde verimliliği artırır.
+                    </p>
+                </div>
+
+                <div class="use-case">
+                    <h3><i class="fas fa-industry"></i> Üretim Hatları</h3>
+                    <p>
+                        Malzeme besleme ve yarı mamul taşıma işlerinde zaman tasarrufu sağlar.
+                    </p>
+                </div>
+
+                <div class="use-case">
+                    <h3><i class="fas fa-shopping-cart"></i> Perakende</h3>
+                    <p>
+                        Mağaza deposundan satış alanına ürün transferinde kolaylık sağlar.
+                    </p>
+                </div>
+
+                <div class="use-case">
+                    <h3><i class="fas fa-box"></i> E-ticaret</h3>
+                    <p>
+                        Hızlı sipariş hazırlama ve sevkiyat süreçlerini kolaylaştırır.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Competitive Advantages -->
+        <section>
+            <h2><i class="fas fa-trophy"></i> Rakiplerden Farkımız</h2>
+
+            <div class="advantages-list">
+                <ul>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <strong>Modüler Batarya Sistemi</strong>
+                            <p>Çift batarya seçeneği ile kesintisiz tam gün operasyon imkanı. Batarya değişimi çok hızlı ve kolay.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <strong>Dar Alan Uzmanlığı</strong>
+                            <p>400mm kompakt genişlik ile standart transpaletlerin giremediği alanlara erişim sağlar. %27 daha dar.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <strong>CE Sertifikalı Üretim</strong>
+                            <p>Avrupa güvenlik standartlarına uygun üretim. Kalite ve güvenlik garantisi.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <strong>Uzun Ömürlü Teknoloji</strong>
+                            <p>Li-Ion batarya teknolojisi ile 3 kat daha uzun batarya ömrü. Kurşun asit bataryalara göre daha ekonomik.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Technical Specs -->
+        <section>
+            <h2><i class="fas fa-cogs"></i> Teknik Özellikler</h2>
+
+            <div class="specs-table">
+                <table>
+                    <tr>
+                        <td>Taşıma Kapasitesi</td>
+                        <td>1.5 ton (1500 kg)</td>
+                    </tr>
+                    <tr>
+                        <td>Batarya Tipi</td>
+                        <td>24V 20Ah Li-Ion</td>
+                    </tr>
+                    <tr>
+                        <td>Çalışma Süresi</td>
+                        <td>6-8 saat (kullanıma göre değişir)</td>
+                    </tr>
+                    <tr>
+                        <td>Şarj Süresi</td>
+                        <td>2-3 saat</td>
+                    </tr>
+                    <tr>
+                        <td>Şasi Genişliği</td>
+                        <td>400mm</td>
+                    </tr>
+                    <tr>
+                        <td>Çatal Uzunluğu</td>
+                        <td>1150mm (opsiyonel uzunluklar mevcut)</td>
+                    </tr>
+                    <tr>
+                        <td>Kaldırma Yüksekliği</td>
+                        <td>200mm</td>
+                    </tr>
+                    <tr>
+                        <td>Sertifikalar</td>
+                        <td>CE Sertifikalı</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <h2>Size Nasıl Yardımcı Olabiliriz?</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 30px; opacity: 0.95;">
+                İXTİF F4 hakkında daha fazla bilgi almak veya teknik detayları görüşmek için
+                bizimle iletişime geçebilirsiniz.
+            </p>
+            <a href="#" class="cta-button">Detaylı Bilgi Alın</a>
+            <a href="#" class="cta-button">Teklif İsteyin</a>
+            <a href="#" class="cta-button">Bizi Arayın</a>
+        </div>
+    </div>
+</body>
+</html>

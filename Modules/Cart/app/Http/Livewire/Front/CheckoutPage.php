@@ -269,14 +269,15 @@ class CheckoutPage extends Component
         \Log::info('🔵 MOUNT CALLED', ['user_id' => Auth::id()]);
 
         try {
-            // Subscription plan parametresi varsa sepete ekle ve URL'den temizle
+            $this->agree_all = false;
+
+            // Subscription plan parametresi varsa sepete ekle
             if (request()->has('plan') && request()->has('cycle')) {
                 $this->addSubscriptionToCart(request('plan'), request('cycle'));
-                // URL'den parametreleri temizle (güvenlik)
-                return $this->redirect(route('cart.checkout'), navigate: true);
+                // 🔥 FIX: Redirect yapma, cart'ı yeniden yükle (yoksa totaller güncellenmiyor)
+                // URL parametrelerini temizlemek için JavaScript redirect kullanılacak (view'da)
             }
 
-            $this->agree_all = false;
             $this->loadCart();
 
             // 🛒 SEPET BOŞ MU KONTROL ET
@@ -329,9 +330,14 @@ class CheckoutPage extends Component
             $options = $bridge->prepareSubscriptionForCart($plan, $cycleKey, true);
             $cartService->addItem($cart, $plan, 1, $options);
 
+            // 🔥 FIX: Cart'ı refresh et ve component property'sini güncelle
+            $cart->refresh();
+            $this->cart = $cart;
+
             \Log::info('✅ Subscription auto-added to cart', [
                 'plan_id' => $planId,
                 'cycle_key' => $cycleKey,
+                'cart_total' => $cart->total,
             ]);
         } catch (\Exception $e) {
             \Log::error('❌ Subscription auto-add error: ' . $e->getMessage());
@@ -1130,6 +1136,11 @@ class CheckoutPage extends Component
             $this->cart = $cartService->findOrCreateCart($customerId, $sessionId);
         }
 
+        // 🔥 FIX: Cart'ı refresh et (güncel totalleri çek)
+        if ($this->cart) {
+            $this->cart->refresh();
+        }
+
         $this->loadCartData();
     }
 
@@ -1175,6 +1186,9 @@ class CheckoutPage extends Component
         }
 
         // Cart'tan subtotal ve tax_amount al (item bazlı tax hesaplama)
+        // 🔥 FIX: Cart'ı refresh et (cache'lenmiş olabilir, güncel totalleri al)
+        $this->cart->refresh();
+
         $this->subtotal = (float) $this->cart->subtotal;
         $this->taxAmount = (float) $this->cart->tax_amount;
         $this->total = (float) $this->cart->total;
@@ -1769,12 +1783,16 @@ class CheckoutPage extends Component
                 'amount' => $this->grandTotal,
             ]);
 
+            // Payment number oluştur (PayTR merchant_oid olarak kullanılacak)
+            $paymentNumber = 'PAY-' . date('YmdHis') . '-' . strtoupper(substr(uniqid(), -6));
+
             $payment = Payment::create([
                 'payment_method_id' => $this->selectedPaymentMethodId,
                 'payable_type' => Order::class,
                 'payable_id' => $order->order_id,
                 'gateway' => $gateway,
-                'gateway_transaction_id' => 'TXN-' . date('YmdHis') . '-' . strtoupper(substr(uniqid(), -6)),
+                'payment_number' => $paymentNumber,
+                'gateway_transaction_id' => $paymentNumber, // PayTR merchant_oid ile eşleşecek
                 'amount' => $this->grandTotal,
                 'currency' => 'TRY',
                 'exchange_rate' => 1,

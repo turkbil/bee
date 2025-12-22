@@ -1,8 +1,8 @@
 {{-- RIGHT SIDEBAR - v6: Tab System with Dynamic Header --}}
 <div class="h-full" x-data="{ songsTab: 'new' }">
 
-    {{-- PREVIEW MODE: Premium Card Design (when clicking on list item) --}}
-    <template x-if="!$store.sidebar.isDetailPage && $store.sidebar.previewMode">
+    {{-- PREVIEW MODE: Premium Card Design (when clicking on list item - WORKS EVERYWHERE) --}}
+    <template x-if="$store.sidebar.previewMode">
         <div class="animate-fade-in h-full flex flex-col">
             {{-- Large Cover Header with Gradient --}}
             <div class="relative h-56 flex-shrink-0 overflow-hidden rounded-t-xl">
@@ -61,10 +61,9 @@
 
             {{-- Track List with Thumbnails --}}
             <template x-if="!$store.sidebar.previewLoading && $store.sidebar.hasPreviewTracks">
-                <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent p-2 space-y-0.5">
+                <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent space-y-0.5 pt-1">
                     <template x-for="(track, index) in $store.sidebar.previewTracks" :key="track.id">
                         <div class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all"
-                             :class="track.isPlaying ? 'bg-muzibu-coral/10 border border-muzibu-coral/20' : ''"
                              @click="(($store.sidebar.previewMode && $store.sidebar.previewInfo) ? $store.player.setPlayContext({
                                  type: $store.sidebar.previewInfo.type || 'playlist',
                                  id: $store.sidebar.previewInfo.id,
@@ -72,33 +71,24 @@
                                  offset: index
                              }) : null), $dispatch('play-song', { songId: track.id })">
 
-                            {{-- Track Number / Play Icon --}}
-                            <div class="w-5 text-center flex-shrink-0">
-                                <template x-if="track.isPlaying">
-                                    <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
-                                </template>
-                                <template x-if="!track.isPlaying">
-                                    <span class="text-xs text-gray-500 group-hover:hidden" x-text="index + 1"></span>
-                                </template>
-                                <i class="fas fa-play text-muzibu-coral text-[10px] hidden group-hover:inline" x-show="!track.isPlaying"></i>
-                            </div>
-
-                            {{-- Track Thumbnail --}}
-                            <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600">
+                            {{-- Track Thumbnail with Play Overlay --}}
+                            <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600 relative">
                                 <template x-if="track.cover">
-                                    <img :src="track.cover" :alt="track.title" class="w-full h-full object-cover">
+                                    <img :src="track.cover" :alt="track.title" class="w-full h-full object-cover" loading="lazy">
                                 </template>
                                 <template x-if="!track.cover">
                                     <div class="w-full h-full flex items-center justify-center">
                                         <i class="fas fa-music text-gray-600 text-xs"></i>
                                     </div>
                                 </template>
+                                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                    <i class="fas fa-play text-white text-xs"></i>
+                                </div>
                             </div>
 
                             {{-- Track Info --}}
                             <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium truncate transition-colors"
-                                   :class="track.isPlaying ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'"
+                                <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral transition-colors"
                                    x-text="track.title"></p>
                                 <p class="text-xs text-gray-500 truncate" x-text="track.artist"></p>
                             </div>
@@ -109,9 +99,8 @@
                             {{-- Actions (show on hover) --}}
                             <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
                                 <button @click.stop="$dispatch('toggle-favorite', { type: 'song', id: track.id })"
-                                        class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"
-                                        :class="track.is_favorite ? 'text-muzibu-coral' : 'text-gray-400 hover:text-muzibu-coral'">
-                                    <i :class="track.is_favorite ? 'fas fa-heart' : 'far fa-heart'" class="text-xs"></i>
+                                        class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 text-gray-400 hover:text-muzibu-coral transition-colors">
+                                    <i class="far fa-heart text-xs"></i>
                                 </button>
                                 <button @click.stop="Alpine.store('contextMenu').openContextMenu($event, 'song', { id: track.id, title: track.title })"
                                         class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
@@ -135,8 +124,8 @@
         </div>
     </template>
 
-    {{-- DETAIL PAGE: Premium Card Design --}}
-    <template x-if="$store.sidebar.isDetailPage && $store.sidebar.hasTracks">
+    {{-- DETAIL PAGE: Premium Card Design (only when NOT in preview mode) --}}
+    <template x-if="$store.sidebar.isDetailPage && !$store.sidebar.previewMode && $store.sidebar.hasTracks">
         <div class="animate-fade-in h-full flex flex-col">
             {{-- Large Cover Header with Gradient --}}
             <div class="relative h-56 flex-shrink-0 overflow-hidden rounded-t-xl">
@@ -187,7 +176,6 @@
             <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent p-2 space-y-0.5">
                 <template x-for="(track, index) in $store.sidebar.tracks" :key="track.id">
                     <div class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all"
-                         :class="track.isPlaying ? 'bg-muzibu-coral/10 border border-muzibu-coral/20' : ''"
                          @click="(($store.sidebar.isDetailPage && $store.sidebar.entityInfo) ? $store.player.setPlayContext({
                              type: $store.sidebar.pageType,
                              id: $store.sidebar.entityInfo.id,
@@ -195,33 +183,24 @@
                              offset: index
                          }) : null), $dispatch('play-song', { songId: track.id })">
 
-                        {{-- Track Number / Play Icon --}}
-                        <div class="w-5 text-center flex-shrink-0">
-                            <template x-if="track.isPlaying">
-                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
-                            </template>
-                            <template x-if="!track.isPlaying">
-                                <span class="text-xs text-gray-500 group-hover:hidden" x-text="index + 1"></span>
-                            </template>
-                            <i class="fas fa-play text-muzibu-coral text-[10px] hidden group-hover:inline" x-show="!track.isPlaying"></i>
-                        </div>
-
-                        {{-- Track Thumbnail --}}
-                        <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600">
+                        {{-- Track Thumbnail with Play Overlay --}}
+                        <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600 relative">
                             <template x-if="track.cover">
-                                <img :src="track.cover" :alt="track.title" class="w-full h-full object-cover">
+                                <img :src="track.cover" :alt="track.title" class="w-full h-full object-cover" loading="lazy">
                             </template>
                             <template x-if="!track.cover">
                                 <div class="w-full h-full flex items-center justify-center">
                                     <i class="fas fa-music text-gray-600 text-xs"></i>
                                 </div>
                             </template>
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                <i class="fas fa-play text-white text-xs"></i>
+                            </div>
                         </div>
 
                         {{-- Track Info --}}
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium truncate transition-colors"
-                               :class="track.isPlaying ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'"
+                            <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral transition-colors"
                                x-text="track.title"></p>
                             <p class="text-xs text-gray-500 truncate" x-text="track.artist"></p>
                         </div>
@@ -232,9 +211,8 @@
                         {{-- Actions (show on hover) --}}
                         <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
                             <button @click.stop="$dispatch('toggle-favorite', { type: 'song', id: track.id })"
-                                    class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"
-                                    :class="track.is_favorite ? 'text-muzibu-coral' : 'text-gray-400 hover:text-muzibu-coral'">
-                                <i :class="track.is_favorite ? 'fas fa-heart' : 'far fa-heart'" class="text-xs"></i>
+                                    class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 text-gray-400 hover:text-muzibu-coral transition-colors">
+                                <i class="far fa-heart text-xs"></i>
                             </button>
                             <button @click.stop="Alpine.store('contextMenu').openContextMenu($event, 'song', { id: track.id, title: track.title })"
                                     class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
@@ -247,19 +225,28 @@
         </div>
     </template>
 
-    {{-- HOMEPAGE: Tab System with Songs (v6 Design) --}}
+    {{-- HOMEPAGE: Tab System with Songs (v6 Design - when NOT in preview/detail) --}}
     <template x-if="!$store.sidebar.isDetailPage && !$store.sidebar.previewMode">
-        <div class="h-full flex flex-col bg-gradient-to-b from-white/[0.03] to-transparent rounded-2xl overflow-hidden">
+        <div class="h-full flex flex-col">
 
-            {{-- Premium Header with Rounded Top --}}
-            <div class="relative overflow-hidden rounded-t-2xl transition-all duration-300"
-                 :class="{
-                     'bg-gradient-to-br from-orange-500/30 via-red-500/20 to-transparent': songsTab === 'popular',
-                     'bg-gradient-to-br from-green-500/30 via-emerald-500/20 to-transparent': songsTab === 'new',
-                     'bg-gradient-to-br from-blue-500/30 via-indigo-500/20 to-transparent': songsTab === 'trend'
-                 }">
-                <div class="px-3 py-1">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            {{-- Premium Header with Tabs --}}
+            <div class="relative rounded-t-lg overflow-hidden">
+                {{-- Gradient Background Layer (Fixed Height, Behind Content) --}}
+                <div class="absolute top-0 left-0 right-0 h-[120px] rounded-t-lg pointer-events-none overflow-hidden">
+                    {{-- Color Layer (Dynamic based on active tab) --}}
+                    <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-green-500/40 via-green-500/20 to-transparent"
+                         x-show="songsTab === 'new'"></div>
+                    <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-blue-500/40 via-blue-500/20 to-transparent"
+                         x-show="songsTab === 'trend'"></div>
+                    <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-orange-500/40 via-orange-500/20 to-transparent"
+                         x-show="songsTab === 'popular'"></div>
+                    {{-- Dark Overlay (Bottom fade to #121212) --}}
+                    <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-transparent via-black/30 to-[#121212]"></div>
+                </div>
+
+                {{-- Content (Above Gradient) --}}
+                <div class="relative z-10 pt-3 pb-2">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2 px-3">
                         <template x-if="songsTab === 'popular'">
                             <span class="flex items-center gap-2">
                                 <i class="fas fa-fire text-orange-400"></i>
@@ -279,82 +266,48 @@
                             </span>
                         </template>
                     </h3>
-                    <p class="text-xs text-gray-400 mt-1"
-                       x-text="songsTab === 'popular' ? (window.muzibuPlayerConfig?.frontLang?.sidebar?.most_played || 'Most Played') : (songsTab === 'new' ? (window.muzibuPlayerConfig?.frontLang?.sidebar?.newly_added || 'Newly Added') : (window.muzibuPlayerConfig?.frontLang?.sidebar?.trending || 'Trending'))"></p>
+                    <p class="text-xs text-gray-400 mt-1 px-3">
+                        <template x-if="songsTab === 'new'">
+                            <span>{{ trans('muzibu::front.sidebar.newly_added') }}</span>
+                        </template>
+                        <template x-if="songsTab === 'trend'">
+                            <span>{{ trans('muzibu::front.sidebar.trending') }}</span>
+                        </template>
+                        <template x-if="songsTab === 'popular'">
+                            <span>{{ trans('muzibu::front.sidebar.most_played') }}</span>
+                        </template>
+                    </p>
+
+                    {{-- Tab Headers (3 tabs) - Pill Style: Yeni → Trend → Popüler --}}
+                    <div class="flex gap-1 pt-3 px-3">
+                        <button @click="songsTab = 'new'"
+                                class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
+                                :class="songsTab === 'new' ? 'bg-green-500/20 text-green-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
+                            <i class="fas fa-star mr-1"></i>{{ trans('muzibu::front.sidebar.new') }}
+                        </button>
+                        <button @click="songsTab = 'trend'"
+                                class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
+                                :class="songsTab === 'trend' ? 'bg-blue-500/20 text-blue-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
+                            <i class="fas fa-chart-line mr-1"></i>{{ trans('muzibu::front.sidebar.trend') }}
+                        </button>
+                        <button @click="songsTab = 'popular'"
+                                class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
+                                :class="songsTab === 'popular' ? 'bg-orange-500/20 text-orange-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
+                            <i class="fas fa-fire mr-1"></i>{{ trans('muzibu::front.sidebar.popular') }}
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            {{-- Tab Headers (3 tabs) - Pill Style: Yeni → Trend → Popüler --}}
-            <div class="flex gap-1 px-3 py-2 bg-black/20">
-                <button @click="songsTab = 'new'"
-                        class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
-                        :class="songsTab === 'new' ? 'bg-green-500/20 text-green-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
-                    <i class="fas fa-star mr-1"></i>{{ trans('muzibu::front.sidebar.new') }}
-                </button>
-                <button @click="songsTab = 'trend'"
-                        class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
-                        :class="songsTab === 'trend' ? 'bg-blue-500/20 text-blue-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
-                    <i class="fas fa-chart-line mr-1"></i>{{ trans('muzibu::front.sidebar.trend') }}
-                </button>
-                <button @click="songsTab = 'popular'"
-                        class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
-                        :class="songsTab === 'popular' ? 'bg-orange-500/20 text-orange-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
-                    <i class="fas fa-fire mr-1"></i>{{ trans('muzibu::front.sidebar.popular') }}
-                </button>
-            </div>
-
             {{-- Song Lists --}}
-            <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent p-2 space-y-0.5">
+            <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent px-2 pt-1 pb-2 space-y-0.5">
 
                 {{-- POPULAR SONGS TAB --}}
                 <template x-if="songsTab === 'popular'">
                     <div class="space-y-0.5">
                         @if(isset($popularSongs) && count($popularSongs) > 0)
                             @foreach($popularSongs->take(15) as $index => $song)
-                            <div class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all"
-                                 @click="$dispatch('play-song', { songId: {{ $song->song_id }} })">
-                                {{-- Track Thumbnail with Play Overlay --}}
-                                @php $coverUrl = $song->getCoverUrl(40, 40); @endphp
-                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600 relative">
-                                    @if($coverUrl)
-                                        <img src="{{ $coverUrl }}" alt="{{ $song->getTranslation('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
-                                    @else
-                                        <div class="w-full h-full flex items-center justify-center">
-                                            <i class="fas fa-music text-gray-600 text-xs"></i>
-                                        </div>
-                                    @endif
-                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                        <i class="fas fa-play text-white text-xs"></i>
-                                    </div>
-                                </div>
-
-                                {{-- Track Info --}}
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral transition-colors">
-                                        {{ $song->getTranslation('title', app()->getLocale()) }}
-                                    </p>
-                                    <p class="text-xs text-gray-500 truncate">
-                                        {{ $song->artist ? $song->artist->getTranslation('title', app()->getLocale()) : '' }}
-                                    </p>
-                                </div>
-
-                                {{-- Duration (hide on hover) --}}
-                                <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden">
-                                    {{ $song->duration ? gmdate('i:s', $song->duration) : '' }}
-                                </div>
-
-                                {{-- Actions (show on hover) --}}
-                                <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
-                                    <button @click.stop="$dispatch('toggle-favorite', { type: 'song', id: {{ $song->song_id }} })"
-                                            class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 text-gray-400 hover:text-muzibu-coral transition-colors">
-                                        <i class="far fa-heart text-xs"></i>
-                                    </button>
-                                    <button @click.stop="Alpine.store('contextMenu').openContextMenu($event, 'song', { id: {{ $song->song_id }}, title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}' })"
-                                            class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
-                                        <i class="fas fa-ellipsis-v text-xs"></i>
-                                    </button>
-                                </div>
-                            </div>
+                                <x-muzibu.song-list-item :song="$song" :index="$index" />
                             @endforeach
                         @else
                             <div class="text-center py-8 text-gray-500">
@@ -370,98 +323,12 @@
                     <div class="space-y-0.5">
                         @if(isset($newSongs) && count($newSongs) > 0)
                             @foreach($newSongs->take(15) as $index => $song)
-                            <div class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all"
-                                 @click="$dispatch('play-song', { songId: {{ $song->song_id }} })">
-                                {{-- Track Thumbnail with Play Overlay --}}
-                                @php $coverUrl = $song->getCoverUrl(40, 40); @endphp
-                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600 relative">
-                                    @if($coverUrl)
-                                        <img src="{{ $coverUrl }}" alt="{{ $song->getTranslation('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
-                                    @else
-                                        <div class="w-full h-full flex items-center justify-center">
-                                            <i class="fas fa-music text-gray-600 text-xs"></i>
-                                        </div>
-                                    @endif
-                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                        <i class="fas fa-play text-white text-xs"></i>
-                                    </div>
-                                </div>
-
-                                {{-- Track Info --}}
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral transition-colors">
-                                        {{ $song->getTranslation('title', app()->getLocale()) }}
-                                    </p>
-                                    <p class="text-xs text-gray-500 truncate">
-                                        {{ $song->artist ? $song->artist->getTranslation('title', app()->getLocale()) : '' }}
-                                    </p>
-                                </div>
-
-                                {{-- Duration (hide on hover) --}}
-                                <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden">
-                                    {{ $song->duration ? gmdate('i:s', $song->duration) : '' }}
-                                </div>
-
-                                {{-- Actions (show on hover) --}}
-                                <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
-                                    <button @click.stop="$dispatch('toggle-favorite', { type: 'song', id: {{ $song->song_id }} })"
-                                            class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 text-gray-400 hover:text-muzibu-coral transition-colors">
-                                        <i class="far fa-heart text-xs"></i>
-                                    </button>
-                                    <button @click.stop="Alpine.store('contextMenu').openContextMenu($event, 'song', { id: {{ $song->song_id }}, title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}' })"
-                                            class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
-                                        <i class="fas fa-ellipsis-v text-xs"></i>
-                                    </button>
-                                </div>
-                            </div>
+                                <x-muzibu.song-list-item :song="$song" :index="$index" />
                             @endforeach
                         @elseif(isset($popularSongs) && count($popularSongs) > 10)
                             {{-- Fallback: Use slice of popularSongs if newSongs not available --}}
                             @foreach($popularSongs->slice(10)->take(15) as $index => $song)
-                            <div class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all"
-                                 @click="$dispatch('play-song', { songId: {{ $song->song_id }} })">
-                                {{-- Track Thumbnail with Play Overlay --}}
-                                @php $coverUrl = $song->getCoverUrl(40, 40); @endphp
-                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600 relative">
-                                    @if($coverUrl)
-                                        <img src="{{ $coverUrl }}" alt="{{ $song->getTranslation('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
-                                    @else
-                                        <div class="w-full h-full flex items-center justify-center">
-                                            <i class="fas fa-music text-gray-600 text-xs"></i>
-                                        </div>
-                                    @endif
-                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                        <i class="fas fa-play text-white text-xs"></i>
-                                    </div>
-                                </div>
-
-                                {{-- Track Info --}}
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral transition-colors">
-                                        {{ $song->getTranslation('title', app()->getLocale()) }}
-                                    </p>
-                                    <p class="text-xs text-gray-500 truncate">
-                                        {{ $song->artist ? $song->artist->getTranslation('title', app()->getLocale()) : '' }}
-                                    </p>
-                                </div>
-
-                                {{-- Duration (hide on hover) --}}
-                                <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden">
-                                    {{ $song->duration ? gmdate('i:s', $song->duration) : '' }}
-                                </div>
-
-                                {{-- Actions (show on hover) --}}
-                                <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
-                                    <button @click.stop="$dispatch('toggle-favorite', { type: 'song', id: {{ $song->song_id }} })"
-                                            class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 text-gray-400 hover:text-muzibu-coral transition-colors">
-                                        <i class="far fa-heart text-xs"></i>
-                                    </button>
-                                    <button @click.stop="Alpine.store('contextMenu').openContextMenu($event, 'song', { id: {{ $song->song_id }}, title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}' })"
-                                            class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
-                                        <i class="fas fa-ellipsis-v text-xs"></i>
-                                    </button>
-                                </div>
-                            </div>
+                                <x-muzibu.song-list-item :song="$song" :index="$index" />
                             @endforeach
                         @else
                             <div class="text-center py-8 text-gray-500">
@@ -477,98 +344,12 @@
                     <div class="space-y-0.5">
                         @if(isset($trendSongs) && count($trendSongs) > 0)
                             @foreach($trendSongs->take(15) as $index => $song)
-                            <div class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all"
-                                 @click="$dispatch('play-song', { songId: {{ $song->song_id }} })">
-                                {{-- Track Thumbnail with Play Overlay --}}
-                                @php $coverUrl = $song->getCoverUrl(40, 40); @endphp
-                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600 relative">
-                                    @if($coverUrl)
-                                        <img src="{{ $coverUrl }}" alt="{{ $song->getTranslation('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
-                                    @else
-                                        <div class="w-full h-full flex items-center justify-center">
-                                            <i class="fas fa-music text-gray-600 text-xs"></i>
-                                        </div>
-                                    @endif
-                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                        <i class="fas fa-play text-white text-xs"></i>
-                                    </div>
-                                </div>
-
-                                {{-- Track Info --}}
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral transition-colors">
-                                        {{ $song->getTranslation('title', app()->getLocale()) }}
-                                    </p>
-                                    <p class="text-xs text-gray-500 truncate">
-                                        {{ $song->artist ? $song->artist->getTranslation('title', app()->getLocale()) : '' }}
-                                    </p>
-                                </div>
-
-                                {{-- Duration (hide on hover) --}}
-                                <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden">
-                                    {{ $song->duration ? gmdate('i:s', $song->duration) : '' }}
-                                </div>
-
-                                {{-- Actions (show on hover) --}}
-                                <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
-                                    <button @click.stop="$dispatch('toggle-favorite', { type: 'song', id: {{ $song->song_id }} })"
-                                            class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 text-gray-400 hover:text-muzibu-coral transition-colors">
-                                        <i class="far fa-heart text-xs"></i>
-                                    </button>
-                                    <button @click.stop="Alpine.store('contextMenu').openContextMenu($event, 'song', { id: {{ $song->song_id }}, title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}' })"
-                                            class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
-                                        <i class="fas fa-ellipsis-v text-xs"></i>
-                                    </button>
-                                </div>
-                            </div>
+                                <x-muzibu.song-list-item :song="$song" :index="$index" />
                             @endforeach
                         @elseif(isset($popularSongs) && count($popularSongs) > 0)
                             {{-- Fallback: Use popularSongs shuffled if trendSongs not available --}}
                             @foreach($popularSongs->shuffle()->take(15) as $index => $song)
-                            <div class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all"
-                                 @click="$dispatch('play-song', { songId: {{ $song->song_id }} })">
-                                {{-- Track Thumbnail with Play Overlay --}}
-                                @php $coverUrl = $song->getCoverUrl(40, 40); @endphp
-                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600 relative">
-                                    @if($coverUrl)
-                                        <img src="{{ $coverUrl }}" alt="{{ $song->getTranslation('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
-                                    @else
-                                        <div class="w-full h-full flex items-center justify-center">
-                                            <i class="fas fa-music text-gray-600 text-xs"></i>
-                                        </div>
-                                    @endif
-                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                        <i class="fas fa-play text-white text-xs"></i>
-                                    </div>
-                                </div>
-
-                                {{-- Track Info --}}
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral transition-colors">
-                                        {{ $song->getTranslation('title', app()->getLocale()) }}
-                                    </p>
-                                    <p class="text-xs text-gray-500 truncate">
-                                        {{ $song->artist ? $song->artist->getTranslation('title', app()->getLocale()) : '' }}
-                                    </p>
-                                </div>
-
-                                {{-- Duration (hide on hover) --}}
-                                <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden">
-                                    {{ $song->duration ? gmdate('i:s', $song->duration) : '' }}
-                                </div>
-
-                                {{-- Actions (show on hover) --}}
-                                <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
-                                    <button @click.stop="$dispatch('toggle-favorite', { type: 'song', id: {{ $song->song_id }} })"
-                                            class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 text-gray-400 hover:text-muzibu-coral transition-colors">
-                                        <i class="far fa-heart text-xs"></i>
-                                    </button>
-                                    <button @click.stop="Alpine.store('contextMenu').openContextMenu($event, 'song', { id: {{ $song->song_id }}, title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}' })"
-                                            class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
-                                        <i class="fas fa-ellipsis-v text-xs"></i>
-                                    </button>
-                                </div>
-                            </div>
+                                <x-muzibu.song-list-item :song="$song" :index="$index" />
                             @endforeach
                         @else
                             <div class="text-center py-8 text-gray-500">
@@ -583,8 +364,8 @@
         </div>
     </template>
 
-    {{-- FALLBACK: Loading State --}}
-    <template x-if="$store.sidebar.isDetailPage && !$store.sidebar.hasTracks">
+    {{-- FALLBACK: Loading State (detail page without tracks, not in preview) --}}
+    <template x-if="$store.sidebar.isDetailPage && !$store.sidebar.previewMode && !$store.sidebar.hasTracks">
         <div class="h-full flex items-center justify-center">
             <div class="text-center text-gray-500">
                 <i class="fas fa-spinner fa-spin text-muzibu-coral text-2xl mb-3"></i>

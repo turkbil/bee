@@ -892,7 +892,8 @@ document.addEventListener('alpine:init', () => {
                     // Extract tracks based on response format
                     let tracks = [];
                     if (type === 'genre' || type === 'sector') {
-                        tracks = Array.isArray(data) ? data : (data.data || []);
+                        // Genre/Sector API returns: { genre/sector: {...}, songs: [...] }
+                        tracks = data.songs || (Array.isArray(data) ? data : (data.data || []));
                     } else {
                         tracks = data.songs || [];
                     }
@@ -921,7 +922,8 @@ document.addEventListener('alpine:init', () => {
          * @param {Object} info - Item info (title, cover)
          */
         async showPreview(type, id, info) {
-            if (this.pageType !== 'home') return; // Only on list pages
+            // ✅ ALWAYS show preview on PC (even from detail pages)
+            // No restriction - preview should work everywhere
 
             this.previewMode = true;
             this.previewInfo = info;
@@ -963,7 +965,8 @@ document.addEventListener('alpine:init', () => {
                     // Extract tracks based on response format
                     let tracks = [];
                     if (type === 'genre' || type === 'sector') {
-                        tracks = Array.isArray(data) ? data : (data.data || []);
+                        // Genre/Sector API returns: { genre/sector: {...}, songs: [...] }
+                        tracks = data.songs || (Array.isArray(data) ? data : (data.data || []));
                     } else {
                         tracks = data.songs || [];
                     }

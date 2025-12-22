@@ -13,9 +13,9 @@
  * - Queue degisikliklerini, refill'leri, transition'lari loglar
  */
 
-// 🛡️ GUARD: Prevent redeclaration on SPA navigation
+// 🛡️ GUARD: Prevent redeclaration on SPA navigation (silent)
 if (typeof DEBUG_COLORS !== 'undefined') {
-    console.log('⚠️ Debug module already loaded, skipping...');
+    // Already loaded - skip silently
 } else {
 
 // 🎯 Debug Log Storage

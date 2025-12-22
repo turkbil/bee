@@ -455,18 +455,51 @@
                 </button>
             </div>
 
-            <!-- Terms -->
-            <div class="flex items-start gap-3">
-                <input
-                    type="checkbox"
-                    name="terms"
-                    required
-                    class="mt-1 w-4 h-4 rounded bg-dark-600 border-dark-500 text-mz-500 focus:ring-mz-500"
-                >
-                <label class="text-sm text-dark-200 leading-relaxed">
-                    <a href="/terms" class="text-mz-400 hover:text-mz-300">Kullanım Koşullarını</a> ve
-                    <a href="/privacy" class="text-mz-400 hover:text-mz-300">Gizlilik Politikasını</a> kabul ediyorum.
-                </label>
+            <!-- Terms & Privacy Consent -->
+            <div class="space-y-4">
+                <!-- Checkbox: Sözleşme Onayı -->
+                <div class="flex items-start gap-3">
+                    <input
+                        type="checkbox"
+                        name="terms"
+                        required
+                        class="mt-1 w-4 h-4 rounded bg-dark-600 border-dark-500 text-mz-500 focus:ring-mz-500 flex-shrink-0"
+                    >
+                    <label class="text-sm text-dark-200 leading-relaxed">
+                        <a href="javascript:void(0)" @click.prevent="openPageModal(3)" class="text-mz-400 hover:text-mz-300 underline">Kullanım Koşulları ve Üyelik Sözleşmesi</a> ile
+                        <a href="javascript:void(0)" @click.prevent="openPageModal(4)" class="text-mz-400 hover:text-mz-300 underline">Üyelik ve Satın Alım Faaliyetleri Kapsamında Aydınlatma Metni</a>'ni okudum, kabul ediyorum.
+                    </label>
+                </div>
+
+                <!-- Marketing Consent Radios -->
+                <div class="space-y-3 pl-7">
+                    <!-- Radio 1: Rıza Göstermiyorum -->
+                    <div class="flex items-start gap-3">
+                        <input
+                            type="radio"
+                            name="marketing_consent"
+                            value="0"
+                            required
+                            class="mt-1 w-4 h-4 bg-dark-600 border-dark-500 text-mz-500 focus:ring-mz-500 flex-shrink-0"
+                        >
+                        <label class="text-sm text-dark-200 leading-relaxed">
+                            <a href="javascript:void(0)" @click.prevent="openPageModal(5)" class="text-mz-400 hover:text-mz-300 underline">Aydınlatma metninde</a> belirtilen hususlar doğrultusunda, kişisel verilerimin ürün/hizmet ve stratejik pazarlama faaliyetleri ile ticari elektronik ileti gönderimi kapsamında işlenmesine <strong>açık rıza göstermediğimi beyan ederim</strong>.
+                        </label>
+                    </div>
+
+                    <!-- Radio 2: Rıza Veriyorum -->
+                    <div class="flex items-start gap-3">
+                        <input
+                            type="radio"
+                            name="marketing_consent"
+                            value="1"
+                            class="mt-1 w-4 h-4 bg-dark-600 border-dark-500 text-mz-500 focus:ring-mz-500 flex-shrink-0"
+                        >
+                        <label class="text-sm text-dark-200 leading-relaxed">
+                            <a href="javascript:void(0)" @click.prevent="openPageModal(5)" class="text-mz-400 hover:text-mz-300 underline">Aydınlatma metninde</a> belirtilen hususlar doğrultusunda, kişisel verilerimin ürün/hizmet ve stratejik pazarlama faaliyetleri ile ticari elektronik ileti gönderimi kapsamında işlenmesine <strong>açık rıza verdiğimi kabul ve beyan ederim</strong>.
+                        </label>
+                    </div>
+                </div>
             </div>
 
             <!-- Submit -->

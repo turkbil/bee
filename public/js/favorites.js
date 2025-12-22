@@ -72,6 +72,14 @@ document.addEventListener("alpine:init", () => {
                     })
                 });
 
+                // 401 Unauthorized → Guest kullanıcı, login'e yönlendir
+                if (response.status === 401) {
+                    this.loading = false;
+                    // Pending favorite kaydet ve login'e yönlendir
+                    await window.savePendingFavorite(modelClass, modelId, window.location.href);
+                    return;
+                }
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }

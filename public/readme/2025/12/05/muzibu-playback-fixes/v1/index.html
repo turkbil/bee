@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Playback Fixes - Tüm Hatalar Çözüldü</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                ✅ Muzibu Playback Fixes
+            </h1>
+            <div class="text-slate-400 text-lg">
+                Tüm console hatalarını çözdük, şarkılar artık çalıyor!
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 5 Aralık 2025</span>
+                <span>🎯 Tenant: muzibu.com.tr (1001)</span>
+                <span>👤 Şarkı çalma sistemini tamamen düzelttik</span>
+            </div>
+        </header>
+
+        <!-- Özet -->
+        <section class="mb-16 bg-green-500/10 border border-green-500/30 rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-4 text-green-400">🎉 Sonuç</h2>
+            <div class="space-y-3 text-slate-300">
+                <p class="text-lg">✅ <strong class="text-white">Şarkı çalma sistemi tamamen çalışır hale geldi!</strong></p>
+                <p>✅ HLS chunk token authorization düzeltildi</p>
+                <p>✅ Thumbnail görselleri düzeltildi</p>
+                <p>✅ Cover image priority logic eklendi (song > album > placeholder)</p>
+                <p>✅ Tenant-aware storage path problemi çözüldü</p>
+                <p>✅ HLS.js query string preservation uygulandı</p>
+            </div>
+        </section>
+
+        <!-- Çözülen Hatalar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">🐛 Çözülen Hatalar</h2>
+
+            <!-- Hata 1: HLS Chunks 404 -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-red-300 mb-2">
+                            HLS Chunks 404 Error
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">ÇÖZÜLDÜ</span>
+                        </h3>
+                        <div class="text-slate-300 space-y-2">
+                            <p><strong class="text-red-400">Hata:</strong> <code class="bg-slate-900 px-2 py-1 rounded text-sm">GET https://muzibu.com.tr/api/muzibu/songs/319/chunk_000.ts 404</code></p>
+                            <p><strong class="text-yellow-300">Sebep:</strong> HLS.js, playlist.m3u8 içindeki chunk URL'lerinden query string'leri (?token=...) ve /chunk/ path segment'ini kaldırıyordu</p>
+                            <p><strong class="text-green-300">Çözüm:</strong></p>
+                            <ul class="list-disc list-inside ml-4 space-y-1">
+                                <li>HLS.js'ye custom <code class="bg-slate-900 px-2 py-1 rounded text-xs">xhrSetup</code> fonksiyonu eklendi</li>
+                                <li><code class="bg-slate-900 px-2 py-1 rounded text-xs">LEVEL_LOADED</code> event'i ile chunk URL'leri token'larıyla birlikte saklandı</li>
+                                <li>XHR request'leri sırasında token'lı URL'ler geri yüklendi</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hata 2: Tenant Storage Path -->
+            <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-yellow-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-yellow-300 mb-2">
+                            Tenant Storage Path Hatası
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">ÇÖZÜLDÜ</span>
+                        </h3>
+                        <div class="text-slate-300 space-y-2">
+                            <p><strong class="text-red-400">Hata:</strong> Chunk dosyaları <code class="bg-slate-900 px-2 py-1 rounded text-sm">storage/app/public/</code> yerine <code class="bg-slate-900 px-2 py-1 rounded text-sm">storage/tenant1001/app/public/</code> konumunda</p>
+                            <p><strong class="text-yellow-300">Sebep:</strong> PlaylistGeneratorService ve SongController tenant-aware storage path kullanmıyordu</p>
+                            <p><strong class="text-green-300">Çözüm:</strong></p>
+                            <ul class="list-disc list-inside ml-4 space-y-1">
+                                <li><code class="bg-slate-900 px-2 py-1 rounded text-xs">tenant('id')</code> kontrolü eklendi</li>
+                                <li>Path logic: <code class="bg-slate-900 px-2 py-1 rounded text-xs">storage_path("../tenant{$tenantId}/app/public/{$path}")</code></li>
+                                <li>Her iki dosyada da (PlaylistGeneratorService.php, SongController.php) uygulandı</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hata 3: Chunk Pattern Mismatch -->
+            <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-purple-300 mb-2">
+                            Chunk Pattern Uyumsuzluğu
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">ÇÖZÜLDÜ</span>
+                        </h3>
+                        <div class="text-slate-300 space-y-2">
+                            <p><strong class="text-red-400">Hata:</strong> FFmpeg <code class="bg-slate-900 px-2 py-1 rounded text-sm">chunk_XXX.ts</code> oluştururken, kod <code class="bg-slate-900 px-2 py-1 rounded text-sm">segment-XXX.ts</code> arıyordu</p>
+                            <p><strong class="text-green-300">Çözüm:</strong></p>
+                            <ul class="list-disc list-inside ml-4 space-y-1">
+                                <li>Regex pattern güncellendi: <code class="bg-slate-900 px-2 py-1 rounded text-xs">/((?:segment-|chunk_)\d+\.ts)/</code></li>
+                                <li>Chunk detection logic: <code class="bg-slate-900 px-2 py-1 rounded text-xs">str_contains($line, 'chunk_')</code> eklendi</li>
+                                <li>Artık her iki format da destekleniyor (segment-XXX.ts ve chunk_XXX.ts)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hata 4: Thumbnail 404 -->
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">4</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-blue-300 mb-2">
+                            Thumbnail Route Eksik
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">ÇÖZÜLDÜ</span>
+                        </h3>
+                        <div class="text-slate-300 space-y-2">
+                            <p><strong class="text-red-400">Hata:</strong> <code class="bg-slate-900 px-2 py-1 rounded text-sm">GET /thumb/2054/56/56 404</code></p>
+                            <p><strong class="text-yellow-300">Sebep:</strong> Thumbmaker route yoktu, frontend <code class="bg-slate-900 px-2 py-1 rounded text-xs">/thumb/{mediaId}/{width}/{height}</code> formatında istek yapıyordu</p>
+                            <p><strong class="text-green-300">Çözüm:</strong></p>
+                            <ul class="list-disc list-inside ml-4 space-y-1">
+                                <li>routes/web.php'ye <code class="bg-slate-900 px-2 py-1 rounded text-xs">/thumbmaker</code> query string route eklendi</li>
+                                <li><code class="bg-slate-900 px-2 py-1 rounded text-xs">/thumb/{mediaId}/{width}/{height}</code> shortcut route eklendi (thumbmaker'a redirect)</li>
+                                <li>Media::findOrFail() ile doğrulama yapılıyor</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hata 5: Cover Image Priority -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">5</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-green-300 mb-2">
+                            Cover Image Logic
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">ÇÖZÜLDÜ</span>
+                        </h3>
+                        <div class="text-slate-300 space-y-2">
+                            <p><strong class="text-yellow-300">İstek:</strong> Şarkının kendi görseli öncelikli, yoksa albüm görseli gösterilsin</p>
+                            <p><strong class="text-green-300">Çözüm:</strong></p>
+                            <ul class="list-disc list-inside ml-4 space-y-1">
+                                <li>player-core.js'ye cover priority logic eklendi</li>
+                                <li>Öncelik: <code class="bg-slate-900 px-2 py-1 rounded text-xs">song.media_id > album.media_id > placeholder</code></li>
+                                <li>Fallback: <code class="bg-slate-900 px-2 py-1 rounded text-xs">/placeholder-album.jpg</code></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hata 6: TypeError pause() -->
+            <div class="bg-slate-800/50 border-l-4 border-orange-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-orange-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">6</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-orange-300 mb-2">
+                            TypeError: this.pause is not a function
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">ÇÖZÜLDÜ</span>
+                        </h3>
+                        <div class="text-slate-300 space-y-2">
+                            <p><strong class="text-red-400">Hata:</strong> Guest preview bittiğinde <code class="bg-slate-900 px-2 py-1 rounded text-sm">this.pause()</code> çağrısı hataya düşüyordu</p>
+                            <p><strong class="text-green-300">Çözüm:</strong></p>
+                            <ul class="list-disc list-inside ml-4 space-y-1">
+                                <li>Howler.js için: <code class="bg-slate-900 px-2 py-1 rounded text-xs">this.howl.pause()</code></li>
+                                <li>HLS.js için: <code class="bg-slate-900 px-2 py-1 rounded text-xs">audio.pause()</code></li>
+                                <li>Conditional pause logic eklendi (engine detection)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">🔧 Teknik Detaylar</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- HLS Token System -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-blue-400">🔐 HLS Token Authorization</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <p>✅ ChunkTokenService ile signed URL generation</p>
+                        <p>✅ Token içeriği: song_id, chunk_name, user_id, is_premium, expires_at</p>
+                        <p>✅ Token TTL: 15 dakika (900 saniye)</p>
+                        <p>✅ HMAC-SHA256 signature ile güvenlik</p>
+                        <p>✅ Guest kullanıcılar: İlk 4 chunk erişimi (30 saniye preview)</p>
+                        <p>✅ Premium kullanıcılar: Tüm chunk'lara sınırsız erişim</p>
+                    </div>
+                </div>
+
+                <!-- Storage Architecture -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-green-400">📁 Multi-Tenant Storage</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <p>✅ Central: <code class="bg-slate-900 px-2 py-1 rounded text-xs">storage/app/public/</code></p>
+                        <p>✅ Tenant 1001: <code class="bg-slate-900 px-2 py-1 rounded text-xs">storage/tenant1001/app/public/</code></p>
+                        <p>✅ HLS chunks: <code class="bg-slate-900 px-2 py-1 rounded text-xs">muzibu/hls/{song_id}/</code></p>
+                        <p>✅ Chunk format: <code class="bg-slate-900 px-2 py-1 rounded text-xs">chunk_000.ts</code> to <code class="bg-slate-900 px-2 py-1 rounded text-xs">chunk_059.ts</code></p>
+                        <p>✅ Playlist: <code class="bg-slate-900 px-2 py-1 rounded text-xs">playlist.m3u8</code></p>
+                        <p>✅ Encryption: AES-128 CBC mode</p>
+                    </div>
+                </div>
+
+                <!-- HLS.js Configuration -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-purple-400">⚙️ HLS.js Configuration</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <p>✅ <code class="bg-slate-900 px-2 py-1 rounded text-xs">enableWorker: true</code> (web worker kullan)</p>
+                        <p>✅ <code class="bg-slate-900 px-2 py-1 rounded text-xs">lowLatencyMode: false</code></p>
+                        <p>✅ Custom <code class="bg-slate-900 px-2 py-1 rounded text-xs">xhrSetup</code> (token preservation)</p>
+                        <p>✅ <code class="bg-slate-900 px-2 py-1 rounded text-xs">LEVEL_LOADED</code> event listener (chunk URL caching)</p>
+                        <p>✅ Query string preservation logic</p>
+                        <p>✅ Fallback to MP3 on HLS error</p>
+                    </div>
+                </div>
+
+                <!-- Player Architecture -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-yellow-400">🎵 Player Architecture</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <p>✅ Dual Engine: HLS.js (primary) + Howler.js (fallback)</p>
+                        <p>✅ HLS Priority: Önce HLS dene, başarısızsa MP3</p>
+                        <p>✅ Guest Preview: 30 saniye (4 chunk × 7.5s avg)</p>
+                        <p>✅ Fade-in/Fade-out: 1000ms smooth transition</p>
+                        <p>✅ SPA Navigation: Müzik kesintisiz devam eder</p>
+                        <p>✅ Alpine.js reactive state management</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Değiştirilen Dosyalar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400">📝 Değiştirilen Dosyalar</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="text-yellow-300 font-bold mb-2">1. routes/web.php</h4>
+                        <p class="text-slate-400 text-sm">Thumbmaker route'ları eklendi (query string + path-based)</p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-yellow-300 font-bold mb-2">2. app/Services/Muzibu/PlaylistGeneratorService.php</h4>
+                        <p class="text-slate-400 text-sm">Chunk pattern fix + tenant storage path + signed URL generation</p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-yellow-300 font-bold mb-2">3. Modules/Muzibu/app/Http/Controllers/Api/SongController.php</h4>
+                        <p class="text-slate-400 text-sm">Tenant storage path fix (serveChunk method)</p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-yellow-300 font-bold mb-2">4. public/themes/muzibu/js/player/core/player-core.js</h4>
+                        <p class="text-slate-400 text-sm">HLS.js xhrSetup + LEVEL_LOADED event + pause fix + cover priority logic</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test Senaryoları -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">🧪 Test Senaryoları</h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-4">
+                    <h4 class="text-green-300 font-bold mb-2">✅ Test 1: Guest Kullanıcı Preview</h4>
+                    <p class="text-slate-400 text-sm">Logout olun → Herhangi bir şarkı çalın → 30 saniye sonra otomatik durmalı</p>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-4">
+                    <h4 class="text-blue-300 font-bold mb-2">✅ Test 2: Premium Kullanıcı Tam Çalma</h4>
+                    <p class="text-slate-400 text-sm">Premium hesapla login → Şarkı baştan sona kesintisiz çalmalı</p>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-4">
+                    <h4 class="text-purple-300 font-bold mb-2">✅ Test 3: Thumbnail Görüntüleme</h4>
+                    <p class="text-slate-400 text-sm">Player'da şarkı görseli doğru görünmeli (şarkının kendi görseli veya albüm görseli)</p>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-4">
+                    <h4 class="text-yellow-300 font-bold mb-2">✅ Test 4: SPA Navigation</h4>
+                    <p class="text-slate-400 text-sm">Şarkı çalarken sayfa değiştir → Müzik kesintisiz devam etmeli</p>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-4">
+                    <h4 class="text-red-300 font-bold mb-2">✅ Test 5: HLS Fallback</h4>
+                    <p class="text-slate-400 text-sm">HLS conversion olmamış şarkı → Otomatik MP3'e fallback yapmalı</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu - Tailwind CSS</p>
+            <p class="mt-2">🎵 Muzibu.com.tr (Tenant 1001) - Multi-Tenant Music Platform</p>
+        </footer>
+    </div>
+</body>
+</html>
+
+        <!-- BONUS: Son Dakika Eklenen Fix -->
+        <section class="mb-16 bg-purple-500/10 border border-purple-500/30 rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-4 text-purple-400">🔧 Bonus Fix: Throttle Middleware</h2>
+            <div class="space-y-3 text-slate-300">
+                <p><strong class="text-red-400">Hata:</strong> <code class="bg-slate-900 px-2 py-1 rounded text-sm">Call to undefined method Symfony\Component\HttpFoundation\BinaryFileResponse::header()</code></p>
+                <p><strong class="text-yellow-300">Sebep:</strong> ThrottleByUserType middleware, BinaryFileResponse üzerinde <code class="bg-slate-900 px-2 py-1 rounded text-xs">->header()</code> method çağırıyordu</p>
+                <p><strong class="text-green-300">Çözüm:</strong> <code class="bg-slate-900 px-2 py-1 rounded text-xs">->headers->set()</code> kullanılacak şekilde güncellendi</p>
+                <pre class="bg-slate-900 p-4 rounded-lg text-sm mt-3">
+// ❌ BEFORE:
+return $response
+    ->header('X-RateLimit-Limit', $maxAttempts)
+    ->header('X-RateLimit-Remaining', $remainingAttempts);
+
+// ✅ AFTER:
+$response->headers->set('X-RateLimit-Limit', $maxAttempts);
+$response->headers->set('X-RateLimit-Remaining', $remainingAttempts);
+return $response;</pre>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

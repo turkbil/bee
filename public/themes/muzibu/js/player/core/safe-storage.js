@@ -3,9 +3,9 @@
  * Prevents "Access to storage is not allowed" errors in privacy-restricted contexts
  */
 
-// Guard against duplicate loading in SPA navigation
+// 🛡️ Guard against duplicate loading in SPA navigation (silent)
 if (typeof window.safeStorage !== 'undefined') {
-    console.log('⚠️ safeStorage already loaded, skipping...');
+    // Already loaded - skip silently
 } else {
 
 window.safeStorage = {

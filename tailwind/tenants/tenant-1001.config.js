@@ -96,6 +96,11 @@ module.exports = {
         'bg-red-500/20', 'bg-red-600',
         'bg-indigo-600', 'bg-teal-600',
         'bg-slate-700', 'bg-slate-800', 'bg-slate-800/50',
+        // Gradient from/via/to variants (right sidebar dynamic gradients)
+        'from-orange-500/40', 'via-orange-500/20', 'to-transparent',
+        'from-green-500/40', 'via-green-500/20',
+        'from-blue-500/40', 'via-blue-500/20',
+        'from-transparent', 'via-black/30', 'to-[#121212]',
     ],
 
     plugins: [

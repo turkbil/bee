@@ -53,6 +53,7 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
+        // ✅ Email doğrulaması için login yap (ama verified middleware ile bloklanacak)
         Auth::login($user);
 
         // Kayıt log'u
@@ -66,11 +67,13 @@ class RegisteredUserController extends Controller
             ->log("\"{$user->name}\" kayıt oldu");
 
         // Trial subscription başlat (auth_subscription açıksa ve trial plan varsa)
+        // NOT: Trial subscription email doğrulandıktan sonra aktif olacak
         if (setting('auth_subscription')) {
             $subscriptionService = app(\Modules\Subscription\App\Services\SubscriptionService::class);
             $subscriptionService->createTrialForUser($user);
         }
 
-        return redirect('/');
+        // Email doğrulama sayfasına yönlendir
+        return redirect()->route('verification.notice');
     }
 }

@@ -18,6 +18,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Get page content by ID (for modals)
+Route::get('/page-content/{id}', [\Modules\Page\App\Http\Controllers\Api\PageApiController::class, 'getById']);
+
 // Get districts by city (for checkout page)
 Route::get('/get-districts/{city}', function ($city) {
     try {

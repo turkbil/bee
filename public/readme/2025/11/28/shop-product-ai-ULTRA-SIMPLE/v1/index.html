@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>ULTRA SIMPLE - Shop Product AI Guide</title>
+    <style>
+        body { background: #1a1a1a; color: #fff; font-family: monospace; padding: 40px; line-height: 1.8; }
+        .step { background: #2a2a2a; padding: 30px; margin: 20px 0; border-left: 5px solid #ff6b6b; }
+        .step h2 { color: #ff6b6b; margin-top: 0; }
+        code { background: #000; color: #0f0; padding: 20px; display: block; overflow-x: auto; margin: 15px 0; }
+        .critical { background: #ff000020; border: 3px solid #ff0000; padding: 20px; margin: 20px 0; }
+        .success { background: #00ff0020; border: 3px solid: #00ff00; padding: 20px; }
+    </style>
+</head>
+<body>
+
+<h1>🔥 ULTRA SIMPLE - SHOP PRODUCT AI GUIDE 🔥</h1>
+<p><strong>Tarih:</strong> 2025-11-28</p>
+<p><strong>Hedef:</strong> Gerizekalı AI bile anlasın!</p>
+
+<div class="critical">
+<h2>⚠️ SENİN YAPACAKLARIN (ADIM ADIM)</h2>
+
+<h3>1. TENANT BAŞLAT</h3>
+<code>$tenant = App\Models\Tenant::find(2);
+tenancy()->initialize($tenant);
+$product = Modules\Shop\App\Models\ShopProduct::find(332);</code>
+
+<h3>2. İÇERİK OLUŞTUR (Branch B - Genel Tanıtım)</h3>
+<p>KURAL:</p>
+<ul>
+<li>❌ Boyut verme (150mm, 2kg YASAK!)</li>
+<li>❌ Fiyat verme (500 TL YASAK!)</li>
+<li>✅ Genel ifadeler kullan: "Forklift modelinize uyumlu", "Detaylar için arayın"</li>
+<li>✅ 10,000 karakter TR + 10,000 karakter EN</li>
+<li>✅ Primary specs: ["label" => "X", "value" => "Y"] formatında (ARRAY OF OBJECTS!)</li>
+</ul>
+
+<h3>3. LEONARDO AI GÖRSELLER (2 ADET) - 11 KURAL FORMÜLÜ</h3>
+
+<p>⚠️ <strong>11 KURAL FORMÜLÜ KULLAN:</strong> https://ixtif.com/readme/2025/11/26/11-kural-formulu/</p>
+
+<div class="critical">
+<h2>🔴 SHOP ÜRÜN GÖRSELLERİ İÇİN ÖZEL ADAPTASYON</h2>
+
+<p><strong>SATIŞ ODAKLI GÖRSEL YAKLAŞIMI:</strong></p>
+<p>Bu formül <strong>SATIŞ</strong> amaçlı görseller için optimize edilmiştir.</p>
+<p>Temiz, modern, profesyonel ortamlar. Kusursuz gibi gerçekçi ama <strong>minimal kusurlu</strong>.</p>
+
+<h3>🔄 ORİJİNAL vs SHOP ADAPTASYONU FARK</h3>
+
+<p><strong>❌ Orijinal 11 Kural (Belgesel Yaklaşım):</strong></p>
+<ul>
+<li>• Yıpranmış duvarlar, boya dökülüyor</li>
+<li>• Duvar çatlakları (hairline cracks)</li>
+<li>• Yerde yağ lekeleri</li>
+<li>• Tozlu/kirli tulumlar</li>
+<li>• Paslanmış raflar</li>
+<li>• "Gerçek işyeri" atmosferi</li>
+</ul>
+
+<p><strong>✅ SHOP Adaptasyonu (Satış Yaklaşım):</strong></p>
+<ul>
+<li>• Temiz, modern duvarlar</li>
+<li>• Cilalı beton zemin</li>
+<li>• Temiz, düzenli tulumlar</li>
+<li>• Profesyonel organizasyon</li>
+<li>• <strong>Sadece optik kusurlar</strong> (lens vignetting, subtle lens breathing)</li>
+<li>• "Premium profesyonel" atmosferi</li>
+</ul>
+
+<p><strong>🔑 ANA FARK:</strong></p>
+<ul>
+<li>Orijinal formül: "Gerçek hayatın kusurlarını göster" (belgesel)</li>
+<li>SHOP adaptasyonu: "Kusursuz gibi gerçekçi göster" (katalog/satış)</li>
+</ul>
+
+<p><strong>⚠️ ÖNEMLİ NOTLAR:</strong></p>
+<ul>
+<li>✅ 11 kural formülünün TÜM kurallarını uygula</li>
+<li>✅ <strong>SADECE Kural 9 (Kusurlar) adaptasyonu:</strong> Fiziksel kusurlar YOK, sadece optik!</li>
+<li>✅ Temiz, modern, profesyonel ortamlar tercih et</li>
+<li>❌ Fiziksel kusurlar KULLANMA (duvar çatlağı, pas, kir, yıpranma, yağ lekesi)</li>
+<li>✅ Sadece lens karakteristikleri (vignetting, subtle lens breathing, minimal dust in light)</li>
+</ul>
+</div>
+
+<code>$leonardoService = app(\App\Services\Media\LeonardoAIService::class);
+
+// 🔴 11 KURAL FORMÜLÜ - SHOP İÇİN ADAPTASYON (YATAY 16:9!)
+// ⚠️ KRİTİK: Görseller DİKEY DEĞİL YATAY olacak! (16:9 aspect ratio)
+// ⚠️ PARÇA ODAKLI: İnsan arka planda bulanık, parçalar ön planda keskin!
+
+$prompt = "Cinematic widescreen product photography of forklift axle shaft covers systematically organized on professional industrial metal racking, hero component sharp and prominent in right third with multiple identical units creating rhythm and depth across frame, technician silhouette subtly visible in far background left adding scale and human context without distraction, dramatic golden hour sunlight streaming from high windows creating volumetric atmosphere and metallic highlights, shot from slightly elevated perspective using wide-angle lens emphasizing warehouse breadth and inventory organization, rule of thirds composition with main product at right golden ratio point and leading lines through shelving system, Canon EOS R5 with 24mm f/1.4L wide lens at f/2.8 for context sharpness with atmospheric depth, Kodak Portra 400 cinematic aesthetic delivering warm professional catalog tones with fine grain texture, minimal optical character - subtle vignetting gentle atmospheric haze natural light bloom on metal surfaces, mood of premium industrial supply and systematic professional inventory management, sophisticated color grading with lifted blacks warm highlights teal-orange cinematic separation --ar 16:9 --style raw";
+
+$imageData = $leonardoService->generateFromPrompt($prompt, [
+    'width' => 1456,  // 16:9 aspect ratio
+    'height' => 816,
+    'style' => 'cinematic'
+]);
+
+$image2Data = $leonardoService->generateFromPrompt($prompt2, [
+    'width' => 1024,
+    'height' => 1024,
+    'style' => 'cinematic'
+]);</code>
+
+<p><strong>11 KURAL KONTROL (SHOP ADAPTASYONU):</strong></p>
+<ul>
+<li>✅ 1. Foto tipi: "Editorial photograph" (profesyonel katalog)</li>
+<li>✅ 2. Konu + Aksiyon: "skilled technician carefully inspecting" (profesyonel kalite)</li>
+<li>✅ 3. Ortam + Zaman: "modern professional workshop, warm afternoon golden hour"</li>
+<li>✅ 4. Kamera açısı: "slightly elevated angle showing spacious facility"</li>
+<li>✅ 5. Kompozisyon: "rule of thirds composition"</li>
+<li>✅ 6. Işık: "warm golden hour sunlight streaming through clean windows"</li>
+<li>✅ 7. Kamera + Lens: "Canon EOS R5 with 35mm f/1.4L at f/2.0"</li>
+<li>✅ 8. Film stock: "Kodak Portra 400 film aesthetic"</li>
+<li>✅ 9. Kusurlar: <strong>SADECE OPTİK!</strong> "only subtle lens breathing and natural vignetting"</li>
+<li>✅ 10. Atmosfer: "professional excellence and meticulous quality standards"</li>
+<li>✅ 11. Post-processing: "cinematic grading with lifted blacks"</li>
+</ul>
+
+<p>⚠️ <strong>ÖNEMLİ:</strong> Kural 9 değişmedi, sadece SHOP için adaptasyon yaptık!</p>
+
+<p>⚠️ <strong>$image1Data şu formatta döner:</strong></p>
+<code>array:2 [
+  "url" => "https://cdn.leonardo.ai/users/52776fa4-xxx/image.jpg"  // ← LEONARDO CDN LINK!
+  "content" => (binary image data)
+]</code>
+
+<h3>4. 🔴 KRİTİK: LEONARDO LINKLERI KULLANMA!</h3>
+<div class="critical">
+<p><strong>YANLIŞ:</strong></p>
+<code>&lt;img src="https://cdn.leonardo.ai/users/52776fa4.../image.jpg"&gt;  ❌❌❌</code>
+
+<p><strong>DOĞRU:</strong></p>
+<code>// Leonardo'dan gelen görseli DOWNLOAD ET
+$imageContent = $image1Data['content'];  // Binary data
+
+// Geçici dosyaya kaydet
+$tempPath = '/tmp/product-332-image-1.jpg';
+file_put_contents($tempPath, $imageContent);
+
+// Spatie Media Library ile SISTEME YÜKLE
+$media1 = $product->addMedia($tempPath)
+    ->usingName('Akson Keçe Kapağı 422 - Workshop Scene')
+    ->usingFileName('akson-kece-kapagi-422-workshop.jpg')
+    ->withCustomProperties([
+        'alt' => 'Forklift Akson Keçe Kapağı 422 Montaj Görseli',
+        'title' => 'Akson Keçe Kapağı 422 - Profesyonel Montaj'
+    ])
+    ->toMediaCollection('gallery');
+
+// İXTİF.COM LINK AL
+$ixtifImage1Url = $media1->getFullUrl();
+// https://ixtif.com/storage/tenant2/987/akson-kece-kapagi-422-workshop.jpg
+
+echo "✅ Görsel sisteme yüklendi: " . $ixtifImage1Url;</code>
+</div>
+
+<h3>5. HTML BODY OLUŞTUR (GERÇEK LINKLERLE!)</h3>
+<code>$bodyTR = "&lt;section class='mb-20'&gt;
+  &lt;div class='grid lg:grid-cols-3 gap-8'&gt;
+    &lt;div class='lg:col-span-2'&gt;
+      &lt;p&gt;Akson Keçe Kapağı 422 serisi...&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;div&gt;
+      &lt;div class='sticky top-24'&gt;
+        &lt;a href='" . $ixtifImage1Url . "' class='glightbox'&gt;
+          &lt;img src='" . $ixtifImage1Url . "'
+               alt='Forklift Akson Keçe Kapağı 422'
+               loading='lazy' /&gt;
+        &lt;/a&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- 2. Görsel --&gt;
+&lt;section&gt;
+  &lt;img src='" . $ixtifImage2Url . "' alt='...' /&gt;
+&lt;/section&gt;";</code>
+
+<h3>6. SEO AYARLARI</h3>
+<code>$seo = $product->getOrCreateSeoSetting();
+$seo->update([
+    'titles' => [
+        'tr' => 'Forklift Akson Keçe Kapağı 422 | OEM Kalite Yedek Parça',
+        'en' => 'Forklift Axle Seal Cover 422 | OEM Quality Spare Part'
+    ],
+    'descriptions' => [
+        'tr' => 'Forklift arka dingil akson keçe kapağı 422 serisi...',
+        'en' => 'Forklift rear axle seal cover 422 series...'
+    ],
+    'keywords' => [
+        'tr' => 'forklift, yedek parça, akson kapağı, keçe kapağı, 422',
+        'en' => 'forklift, spare part, axle cover, seal cover, 422'
+    ],
+    'og_titles' => [
+        'tr' => 'Akson Keçe Kapağı - 422',
+        'en' => 'Axle Seal Cover - 422'
+    ],
+    'og_descriptions' => [
+        'tr' => 'Forklift arka dingil sistemleri için yüksek kalite keçe kapağı.',
+        'en' => 'High quality seal cover for forklift rear axle systems.'
+    ],
+    'focus_keywords' => [
+        'tr' => ['forklift', 'yedek parça', 'akson kapağı', 'keçe'],
+        'en' => ['forklift', 'spare part', 'axle cover', 'seal']
+    ],
+    'schema_type' => ['Product'],
+    'robots_meta' => ['index', 'follow'],
+]);</code>
+
+<h3>6. BODY İÇERİĞİ OLUŞTUR (V6 PERFECT GİBİ)</h3>
+<p>⚠️ <strong>DETAYLI BODY YAPISI ZORUNLU!</strong></p>
+
+<p><strong>🎨 TASARIM KURALLARI:</strong></p>
+<ul>
+<li>✅ <strong>GLASS EFEKTİ ZORUNLU:</strong> bg-white/70 dark:bg-white/5 backdrop-blur-md + border-white/30 dark:border-white/10</li>
+<li>✅ <strong>Renk:</strong> SADECE mavi accent! Turuncu/Gökkuşağı/Renkli kartlar YASAK!</li>
+<li>✅ <strong>Bold Dark Mode:</strong> font-bold yerine font-semibold + text-gray-900 dark:text-gray-100</li>
+<li>✅ <strong>Spacing:</strong> Her section arası mb-20 (eşit boşluk)</li>
+<li>✅ <strong>Görsel Caption:</strong> Basit, kısa (örn: "Akson Mili Kapağı 414")</li>
+<li>✅ <strong>Responsive:</strong> grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3</li>
+</ul>
+
+<p><strong>📋 BODY YAPISI - TAM HTML ÖRNEĞİ:</strong></p>
+
+<div class="critical">
+<h3>🔴 ZORUNLU BODY TEMPLATE (NOKTASINA KADAR AYNI!)</h3>
+<p>⚠️ Aşağıdaki template'i AYNEN kullan! Sadece içerikleri değiştir, HTML yapısını ASLA değiştirme!</p>
+
+<code>&lt;div class="prose max-w-none"&gt;
+
+&lt;!-- 1. TANITIM + GÖRSEL --&gt;
+&lt;section class="mb-20"&gt;
+  &lt;div class="grid grid-cols-1 lg:grid-cols-3 gap-8"&gt;
+    &lt;div class="lg:col-span-2"&gt;
+      &lt;p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-5"&gt;
+        &lt;strong class="text-gray-900 dark:text-gray-100 font-semibold"&gt;[Ürün Adı Serisi]&lt;/strong&gt;, [genel tanıtım cümlesi]. &lt;strong class="text-gray-900 dark:text-gray-100 font-semibold"&gt;[Önemli özellik]&lt;/strong&gt; [devam eden açıklama].
+      &lt;/p&gt;
+      &lt;p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-5"&gt;
+        [İkinci paragraf detaylar...]
+      &lt;/p&gt;
+      &lt;p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed"&gt;
+        [Üçüncü paragraf kullanım alanları...]
+      &lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;div class="lg:col-span-1"&gt;
+      &lt;div class="sticky top-24"&gt;
+        &lt;a href="https://ixtif.com/storage/tenant2/XXX/image.jpg" class="glightbox" data-gallery="product-gallery"&gt;
+          &lt;img src="https://ixtif.com/storage/tenant2/XXX/image.jpg"
+               alt="[Ürün Adı]"
+               class="w-full rounded-xl object-cover shadow-lg hover:shadow-2xl transition-shadow duration-300"
+               loading="lazy"&gt;
+        &lt;/a&gt;
+        &lt;p class="text-sm text-gray-500 dark:text-gray-400 mt-3 italic text-center"&gt;[Ürün Adı]&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- 2. SORUNLAR VE ÇÖZÜMLER --&gt;
+&lt;section class="mb-20"&gt;
+  &lt;h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8"&gt;
+    &lt;i class="fas fa-lightbulb mr-3 text-blue-500"&gt;&lt;/i&gt;Yaygın Sorunlar ve Çözümler
+  &lt;/h2&gt;
+
+  &lt;div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"&gt;
+    &lt;div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-blue-400 transition-all text-center"&gt;
+      &lt;i class="fas fa-[icon] text-red-500 text-5xl mb-4"&gt;&lt;/i&gt;
+      &lt;h4 class="font-semibold text-lg mb-2 text-gray-900 dark:text-gray-100"&gt;[Sorun Başlığı]&lt;/h4&gt;
+      &lt;p class="text-gray-600 dark:text-gray-400"&gt;[Sorun açıklaması]&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;!-- 3 tane daha aynı kart (toplam 4) --&gt;
+  &lt;/div&gt;
+
+  &lt;div class="bg-gradient-to-br from-blue-500 to-blue-600 p-8 rounded-xl text-white shadow-lg"&gt;
+    &lt;h3 class="font-semibold text-2xl mb-4 flex items-center gap-3"&gt;
+      &lt;i class="fas fa-check-circle text-3xl"&gt;&lt;/i&gt; İXTİF Çözümü
+    &lt;/h3&gt;
+    &lt;p class="text-lg leading-relaxed"&gt;
+      &lt;span class="font-semibold"&gt;[Ürün Adı]&lt;/span&gt; ile [çözüm açıklaması]. &lt;span class="font-semibold"&gt;[vurgu]&lt;/span&gt; [devam].
+    &lt;/p&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- 3. ÖZELLİKLER --&gt;
+&lt;section class="mb-20"&gt;
+  &lt;h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8"&gt;
+    &lt;i class="fas fa-fire mr-3 text-blue-500"&gt;&lt;/i&gt;Neden Bu Ürünü Tercih Etmelisiniz?
+  &lt;/h2&gt;
+
+  &lt;div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"&gt;
+    &lt;div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-blue-500 hover:shadow-xl transition-all text-center"&gt;
+      &lt;i class="fas fa-[icon] text-blue-500 text-5xl mb-4"&gt;&lt;/i&gt;
+      &lt;h4 class="font-semibold text-xl mb-2 text-gray-900 dark:text-gray-100"&gt;[Özellik Başlığı]&lt;/h4&gt;
+      &lt;p class="text-gray-600 dark:text-gray-400"&gt;[Özellik açıklaması]&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;!-- 5 tane daha aynı kart (toplam 6) --&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- 4. KULLANIM ALANLARI --&gt;
+&lt;section class="mb-20"&gt;
+  &lt;h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8"&gt;
+    &lt;i class="fas fa-industry mr-3 text-blue-500"&gt;&lt;/i&gt;Kullanım Alanları
+  &lt;/h2&gt;
+
+  &lt;div class="grid grid-cols-1 md:grid-cols-2 gap-6"&gt;
+    &lt;div class="bg-white/70 dark:bg-white/5 backdrop-blur-md p-6 rounded-xl border border-white/30 dark:border-white/10 hover:border-blue-400 transition-all"&gt;
+      &lt;h4 class="font-semibold text-xl mb-3 text-gray-900 dark:text-white"&gt;
+        &lt;i class="fas fa-[icon] mr-2 text-blue-500"&gt;&lt;/i&gt;[Alan Başlığı]
+      &lt;/h4&gt;
+      &lt;p class="text-gray-700 dark:text-gray-300"&gt;[Alan açıklaması]&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;!-- 3 tane daha aynı kart (toplam 4) --&gt;
+    &lt;!-- ⚠️ TÜM KARTLAR AYNI RENK! GÖKKUŞAĞI YASAK! --&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- 5. İLETİŞİM --&gt;
+&lt;div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 p-8 rounded-xl"&gt;
+  &lt;h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4"&gt;[CTA Başlığı]&lt;/h3&gt;
+  &lt;p class="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed"&gt;
+    [İlk paragraf...]
+  &lt;/p&gt;
+  &lt;p class="text-gray-700 dark:text-gray-300 leading-relaxed"&gt;
+    [İkinci paragraf...] &lt;span class="font-semibold text-gray-900 dark:text-gray-100"&gt;Toplu siparişlerde özel indirim&lt;/span&gt; [devam...]
+  &lt;/p&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;</code>
+
+<p><strong>⚠️ KRİTİK KURALLAR:</strong></p>
+<ul>
+<li>❌ <strong>GÖKKUŞAĞI RENK YASAK:</strong> cyan, teal, indigo, violet, orange kullanma!</li>
+<li>❌ <strong>Gradient background YASAK:</strong> from-slate-50, from-cyan-50 vb. kullanma!</li>
+<li>✅ <strong>Problem kartları:</strong> bg-gray-50 dark:bg-gray-800 + border-gray-200 dark:border-gray-700</li>
+<li>✅ <strong>Özellik kartları:</strong> bg-gray-50 dark:bg-gray-800 + border-gray-200 dark:border-gray-700</li>
+<li>✅ <strong>Kullanım alanları:</strong> bg-white/70 dark:bg-white/5 backdrop-blur-md + border-white/30</li>
+<li>✅ <strong>Tüm text:</strong> text-gray-900 dark:text-white (renkli text yasak!)</li>
+<li>✅ <strong>Sadece mavi accent:</strong> İkonlarda text-blue-500, hover'da border-blue-400</li>
+</ul>
+</div></code>
+
+<h3>7. DATABASE KAYDET</h3>
+<code>$product->update([
+    'title' => ['tr' => '...', 'en' => '...'],
+    'short_description' => ['tr' => '...', 'en' => '...'],
+    'body' => ['tr' => $bodyTR, 'en' => $bodyEN],
+    'primary_specs' => [
+        ['label' => 'Malzeme', 'value' => 'Yüksek Kalite Keçe'],
+        ['label' => 'Uyumluluk', 'value' => 'Forklift Dingil Sistemleri'],
+        ['label' => 'Seri', 'value' => '422']
+    ],
+    'faq_data' => [
+        [
+            'question' => ['tr' => '...', 'en' => '...'],
+            'answer' => ['tr' => '...', 'en' => '...']
+        ]
+    ],
+    'tags' => ['tr' => 'forklift, yedek parça, ...', 'en' => 'forklift, spare part, ...']
+]);</code>
+
+<h3>8. CACHE TEMİZLE</h3>
+<code>Artisan::call('view:clear');
+Artisan::call('responsecache:clear');
+exec('curl -s -k https://ixtif.com/opcache-reset.php');</code>
+
+<h3>9. TEST ET</h3>
+<code>echo "✅ Tamamlandı! Sayfa: https://ixtif.com/shop/akson-kece-kapagi-422";</code>
+
+</div>
+
+<div class="critical">
+<h2>🔴 PRIMARY SPECS FORMATI (KRİTİK!)</h2>
+
+<p><strong>❌ YANLIŞ (String array):</strong></p>
+<code>$product->primary_specs = [
+    "tr" => ["OEM Kalite", "Yüksek Dayanıklılık"]
+];  // ❌❌❌ BU HATALI!</code>
+
+<p><strong>✅ DOĞRU (Label/Value pairs):</strong></p>
+<code>$product->primary_specs = [
+    ["label" => "Malzeme", "value" => "Yüksek Kalite Keçe"],
+    ["label" => "Uyumluluk", "value" => "Forklift Dingil Sistemleri"],
+    ["label" => "Seri", "value" => "422"],
+    ["label" => "Kaplama", "value" => "Standart"]
+];  // ✅✅✅ BU DOĞRU!</code>
+</div>
+
+<div class="critical">
+<h2>🚫 ASLA YAPMA!</h2>
+<ul>
+<li>❌ Leonardo CDN linklerini direkt kullanma!</li>
+<li>❌ Fiyat bilgisi verme!</li>
+<li>❌ Branch B'de teknik detay verme (boyut/ağırlık/voltaj)!</li>
+<li>❌ Primary specs'i string array yapma!</li>
+<li>❌ Body'yi 10,000 karakterden kısa tutma!</li>
+<li>❌ Görselleri media tablosuna kaydetmeden kullanma!</li>
+</ul>
+</div>
+
+<div class="success">
+<h2>✅ BAŞARI KRİTERLERİ</h2>
+<ul>
+<li>✅ Görseller: https://ixtif.com/storage/tenant2/... formatında</li>
+<li>✅ Media tablosunda 2 kayıt var</li>
+<li>✅ Primary specs: array of objects (label/value)</li>
+<li>✅ Body length: 10,000+ karakter (TR ve EN)</li>
+<li>✅ SEO ayarları dolu</li>
+<li>✅ Fiyat bilgisi YOK</li>
+<li>✅ Branch B → Teknik detay YOK</li>
+<li>✅ GLightbox çalışıyor</li>
+<li>✅ Sticky sidebar image var</li>
+</ul>
+</div>
+
+<h2>📋 ÖZET WORKFLOW</h2>
+<code>1. Tenant başlat + Ürün getir
+2. İçerik oluştur (10K+ char, genel tanıtım)
+3. Leonardo AI → 1 görsel üret (YATAY 16:9!)
+4. ⚠️ Leonardo CDN linklerini KULLANMA!
+5. file_put_contents() ile /tmp'ye kaydet
+6. addMedia() ile Spatie Media Library'ye yükle
+7. getFullUrl() ile ixtif.com linkini al
+8. Body HTML'e gerçek linkleri embed et (TEMPLATE KULLAN!)
+9. SEO ayarlarını doldur
+10. Database'e kaydet
+11. Cache temizle
+12. Test et!</code>
+
+<div class="critical">
+<h2>📊 PROGRESS TRACKING SİSTEMİ</h2>
+
+<p><strong>⚠️ ZORUNLU: Her ürün için progress log tut!</strong></p>
+
+<code>// İlk çalıştırmada log dosyası oluştur
+$logFile = '/var/www/vhosts/tuufi.com/httpdocs/readme/claude-docs/shop-ai-progress.md';
+
+if (!file_exists($logFile)) {
+    file_put_contents($logFile, "# Shop Product AI - Progress Log\n\nBaşlangıç: " . date('Y-m-d H:i:s') . "\n\n## Tamamlanan Ürünler\n\n");
+}
+
+// Her ürün tamamlandığında ekle
+$logEntry = sprintf(
+    "- [✅] **Product %d** - %s\n  - URL: https://ixtif.com/shop/%s\n  - Tamamlanma: %s\n  - Görsel: %s\n\n",
+    $product->product_id,
+    $product->getTranslation('title', 'tr'),
+    $product->getTranslation('slug', 'tr'),
+    date('Y-m-d H:i:s'),
+    $media->getFullUrl()
+);
+
+file_put_contents($logFile, $logEntry, FILE_APPEND);
+
+echo "✅ Product {$product->product_id} tamamlandı ve log'a eklendi!\n";</code>
+
+<p><strong>Log Formatı Örneği:</strong></p>
+<code># Shop Product AI - Progress Log
+
+Başlangıç: 2025-11-28 06:00:00
+
+## Tamamlanan Ürünler
+
+- [✅] **Product 331** - Akson Mili Kapağı - 414
+  - URL: https://ixtif.com/shop/akson-mili-kapagi-414
+  - Tamamlanma: 2025-11-28 06:15:23
+  - Görsel: https://ixtif.com/storage/tenant2/1035/p331-akson-mili-kapagi-414-stock.jpg
+
+- [✅] **Product 332** - Akson Keçe Kapağı - 422
+  - URL: https://ixtif.com/shop/akson-kece-kapagi-422
+  - Tamamlanma: 2025-11-28 06:18:45
+  - Görsel: https://ixtif.com/storage/tenant2/1036/p332-akson-kece-kapagi-422-stock.jpg
+
+## İstatistikler
+
+- Toplam işlenen: 2
+- Başarılı: 2
+- Hatalı: 0</code>
+
+<p><strong>⚠️ Sıralama:</strong></p>
+<ul>
+<li>✅ ID sırasına göre (küçükten büyüğe)</li>
+<li>✅ İlk ürün: En düşük ID'li boş body olan ürün</li>
+<li>✅ Sonraki ürün: Bir sonraki boş body</li>
+</ul>
+
+<code>// Sıradaki ürünü bul
+$nextProduct = Modules\Shop\App\Models\ShopProduct::query()
+    ->where('tenant_id', 2)
+    ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(body, '$.tr')) IS NULL OR JSON_UNQUOTE(JSON_EXTRACT(body, '$.tr')) = ''")
+    ->orderBy('product_id', 'ASC')
+    ->first();
+
+if ($nextProduct) {
+    echo "📌 Sıradaki ürün: Product {$nextProduct->product_id} - {$nextProduct->getTranslation('title', 'tr')}\n";
+} else {
+    echo "🎉 TÜM ÜRÜNLER TAMAMLANDI!\n";
+}</code>
+</div>
+
+</body>
+</html>

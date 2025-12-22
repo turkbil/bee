@@ -1,4 +1,4 @@
-<header class="xl:col-span-3 lg:col-span-2 col-span-1 bg-black/80 backdrop-blur-md border-b border-white/5 px-4 flex items-center justify-between sticky top-0 z-50">
+<header class="row-start-1 xl:col-span-3 lg:col-span-2 col-span-1 bg-black/80 backdrop-blur-md border-b border-white/5 px-4 flex items-center justify-between sticky top-0 z-50">
     <div class="flex items-center gap-4 flex-1">
         {{-- Mobile Hamburger --}}
         <button
@@ -9,7 +9,9 @@
         </button>
 
         {{-- Logo with animation - Settings powered --}}
-        <a href="/" class="text-2xl font-bold group flex items-center">
+        <a href="/"
+           @click="if ($store.sidebar) $store.sidebar.reset()"
+           class="text-2xl font-bold group flex items-center">
             @php
                 // LogoService kullan - Settings'den logo çek
                 $logoService = app(\App\Services\LogoService::class);

@@ -1,7 +1,7 @@
 {{-- LEFT SIDEBAR - Modern & Clean --}}
 <aside
     id="leftSidebar"
-    class="muzibu-left-sidebar lg:flex lg:flex-col"
+    class="muzibu-left-sidebar row-start-2 lg:flex lg:flex-col"
 >
     {{-- Library Section --}}
     <div class="mb-3">

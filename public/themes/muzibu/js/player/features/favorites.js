@@ -43,6 +43,25 @@ document.addEventListener('alpine:init', () => {
                     })
                 });
 
+                // 401 Unauthorized → Guest kullanıcı, login'e yönlendir
+                if (response.status === 401) {
+                    this.loading = false;
+                    // Revert optimistic update
+                    if (wasLiked) {
+                        this.favorites.push(key);
+                    } else {
+                        this.favorites = this.favorites.filter(f => f !== key);
+                    }
+                    // Pending favorite kaydet ve login'e yönlendir
+                    if (window.savePendingFavorite) {
+                        await window.savePendingFavorite(this.getModelClass(type), id, window.location.href);
+                    } else {
+                        // Fallback: direkt login'e yönlendir
+                        window.location.href = '/login';
+                    }
+                    return;
+                }
+
                 const data = await response.json();
 
                 if (data.success) {

@@ -1052,13 +1052,26 @@ function muzibuApp() {
                     }, 100);
                 }
 
+                // 🔊 BACKGROUND TAB FIX: Background'daysa eski player'ı da fade etme, direkt stop
+                const isBackgroundTab = document.hidden;
+
                 // Fade out current player (Howler or HLS)
                 if (hasActiveHowler) {
-                    this.howl.fade(targetVolume, 0, this.crossfadeDuration);
+                    if (!isBackgroundTab) {
+                        this.howl.fade(targetVolume, 0, this.crossfadeDuration);
+                    } else {
+                        // Background: Direkt volume 0 yap, fade yok
+                        this.howl.volume(0);
+                    }
                 } else if (hasActiveHls) {
-                    // 🔥 FIX: Use saved volume instead of audio.volume
-                    // (audio.volume might be 0 if createNextHlsPlayer reused the same element!)
-                    this.fadeAudioElement(audio, currentAudioVolume, 0, this.crossfadeDuration);
+                    if (!isBackgroundTab) {
+                        // 🔥 FIX: Use saved volume instead of audio.volume
+                        // (audio.volume might be 0 if createNextHlsPlayer reused the same element!)
+                        this.fadeAudioElement(audio, currentAudioVolume, 0, this.crossfadeDuration);
+                    } else {
+                        // Background: Direkt volume 0 yap, fade yok
+                        audio.volume = 0;
+                    }
                 }
 
                 // After crossfade duration, complete the transition
@@ -1096,14 +1109,19 @@ function muzibuApp() {
             else if (url.includes('.wav')) format = ['wav'];
             else if (url.includes('.webm')) format = ['webm'];
 
+            // 🔊 BACKGROUND TAB FIX: Background'daysa fade skip, direkt volume set
+            const isBackgroundTab = document.hidden;
+
             this.howlNext = new Howl({
                 src: [url],
                 format: format,
                 html5: true,
-                volume: 0,
+                volume: isBackgroundTab ? targetVolume : 0,
                 onplay: function() {
-                    // Fade in next song
-                    self.howlNext.fade(0, targetVolume, self.crossfadeDuration);
+                    // 🔊 BACKGROUND TAB: Fade skip
+                    if (!isBackgroundTab) {
+                        self.howlNext.fade(0, targetVolume, self.crossfadeDuration);
+                    }
                 },
                 onloaderror: function(id, error) {
                     console.error('Howler load error (crossfade):', error);
@@ -1117,6 +1135,9 @@ function muzibuApp() {
         // Create next HLS player for crossfade
         async createNextHlsPlayer(url, targetVolume) {
             const self = this;
+
+            // 🔊 BACKGROUND TAB FIX: Background'daysa fade skip, direkt volume set
+            const isBackgroundTab = document.hidden;
 
             // 🔥 FIX: Use the INACTIVE audio element for crossfade
             // If hlsAudio is active, use hlsAudioNext. If hlsAudioNext is active, use hlsAudio.
@@ -1157,10 +1178,12 @@ function muzibuApp() {
                     this.hlsNext.attachMedia(nextAudio);
 
                     this.hlsNext.on(Hls.Events.MANIFEST_PARSED, function() {
-                        nextAudio.volume = 0;
+                        nextAudio.volume = isBackgroundTab ? targetVolume : 0;
                         nextAudio.play().then(() => {
-                            // Fade in next HLS stream
-                            self.fadeAudioElement(nextAudio, 0, targetVolume, self.crossfadeDuration);
+                            // 🔊 BACKGROUND TAB: Fade skip
+                            if (!isBackgroundTab) {
+                                self.fadeAudioElement(nextAudio, 0, targetVolume, self.crossfadeDuration);
+                            }
                             resolve();
                         }).catch(e => {
                             console.error('HLS crossfade play error:', e);
@@ -1177,9 +1200,12 @@ function muzibuApp() {
                 } else if (nextAudio.canPlayType('application/vnd.apple.mpegurl')) {
                     // Native HLS support (Safari)
                     nextAudio.src = url;
-                    nextAudio.volume = 0;
+                    nextAudio.volume = isBackgroundTab ? targetVolume : 0;
                     nextAudio.play().then(() => {
-                        self.fadeAudioElement(nextAudio, 0, targetVolume, self.crossfadeDuration);
+                        // 🔊 BACKGROUND TAB: Fade skip
+                        if (!isBackgroundTab) {
+                            self.fadeAudioElement(nextAudio, 0, targetVolume, self.crossfadeDuration);
+                        }
                         resolve();
                     }).catch(reject);
                 } else {

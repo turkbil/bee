@@ -23,17 +23,21 @@
             },
             credentials: 'same-origin'
         })
-        .then(response => {
-            // 419 (Page Expired) veya herhangi bir hata -> Anasayfaya yönlendir
-            if (response.status === 419 || !response.ok) {
-                window.location.href = '/';
-            } else {
-                // Başarılı logout -> Login sayfasına
+        .then(response => response.json().then(data => ({ status: response.status, data })))
+        .then(({ status, data }) => {
+            // Başarılı logout veya session zaten expire (redirect field varsa kullan)
+            if (data && data.redirect) {
+                window.location.href = data.redirect;
+            } else if (status === 200 || data.success) {
+                // Default: Login sayfasına
                 window.location.href = '/login';
+            } else {
+                // Hata durumu -> Anasayfaya
+                window.location.href = '/';
             }
         })
         .catch(error => {
-            // Network hatası -> Anasayfaya yönlendir
+            // JSON parse hatası veya network hatası -> Anasayfaya
             console.error('Logout error:', error);
             window.location.href = '/';
         });

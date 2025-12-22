@@ -78,10 +78,13 @@ class SectorController extends Controller
                     'song_slug' => $song->slug,
                     'duration' => $song->duration,
                     'file_path' => $song->file_path,
-                    'hls_path' => $song->hls_path,                    'album_id' => $album?->album_id,
+                    'hls_path' => $song->hls_path,
+                    'cover_url' => $song->getCoverUrl(80, 80), // Sidebar için cover
+                    'album_id' => $album?->album_id,
                     'album_title' => $album?->title,
                     'artist_id' => $artist?->artist_id,
                     'artist_title' => $artist?->title,
+                    'is_favorite' => false, // TODO: Auth check
                 ];
             })->values();
 

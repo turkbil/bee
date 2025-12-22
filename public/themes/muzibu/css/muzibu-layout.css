@@ -142,7 +142,7 @@
 
 /* LEFT SIDEBAR */
 .muzibu-left-sidebar {
-    border-radius: 12px 12px 0 0;
+    border-radius: 8px 8px 0 0;
     background: #121212;
     padding: 24px 4px 12px 4px;
     overflow-y: auto;
@@ -235,7 +235,7 @@
 
 /* MAIN CONTENT */
 .muzibu-main {
-    border-radius: 12px 12px 0 0;
+    border-radius: 8px 8px 0 0;
     background: #121212;
     padding: 0;
     overflow-y: auto;
@@ -404,9 +404,9 @@
 
 /* RIGHT SIDEBAR */
 .muzibu-right-sidebar {
-    border-radius: 12px 12px 0 0;
+    border-radius: 8px 8px 0 0;
     background: #121212;
-    padding: 16px 6px 12px 6px;
+    padding: 0 4px 4px 4px;
     overflow-y: auto;
 }
 
@@ -739,7 +739,7 @@
     }
 
     .muzibu-right-sidebar {
-    border-radius: 0 12px 0 0;
+    border-radius: 0 8px 0 0;
         display: none;
     }
 }
@@ -800,7 +800,7 @@
     }
 
     .muzibu-left-sidebar {
-    border-radius: 12px 0 0 0;
+    border-radius: 8px 0 0 0;
     background: #121212;
         position: fixed;
         top: 0;
@@ -817,7 +817,7 @@
     }
 
     .muzibu-main {
-    border-radius: 12px 12px 0 0;
+    border-radius: 8px 8px 0 0;
         grid-column: 1;
     }
 
@@ -1196,4 +1196,96 @@
 .muzibu-profile-btn:hover {
     background: linear-gradient(to bottom right, #34d399, #10b981);
     transform: scale(1.05);
+}
+
+/* ==================== GRID LAYOUT FIX ==================== */
+
+/* Grid Layout Fix - Prevent Shrinking */
+html, body {
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Main Grid Container */
+#main-app-grid {
+    width: 100vw;
+    max-width: 100vw;
+    min-width: 100vw;
+}
+
+/* Prevent content shrinking on mobile menu open */
+@media (max-width: 1023px) {
+    #main-app-grid {
+        position: fixed;
+        left: 0;
+        right: 0;
+    }
+}
+
+/* ==================== KEYBOARD FEEDBACK ==================== */
+
+/* Keyboard Feedback Notification */
+.keyboard-feedback {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.keyboard-feedback.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 640px) {
+    .keyboard-feedback {
+        bottom: 80px;
+        right: 10px;
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+}
+
+/* ==================== ALPINE.JS X-CLOAK ==================== */
+
+/* Alpine.js x-cloak: Hide elements until Alpine initializes */
+[x-cloak] {
+    display: none !important;
+}
+
+/* ==================== GRADIENT ANIMATION ==================== */
+
+/* Horizontal Gradient Animation (Main Content Background) */
+@keyframes gradient-horizontal {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+}
+
+.animate-gradient-horizontal {
+    background: linear-gradient(to right,
+        #ff6b6b,
+        #ff5252,
+        #e91e63,
+        #ff5252,
+        #ff6b6b,
+        #ff5252,
+        #e91e63,
+        #ff5252,
+        #ff6b6b);
+    animation: gradient-horizontal 8s linear infinite;
 }

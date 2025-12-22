@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ana Sayfa Background Gradient - Muzibu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --muzibu-coral: #ff7f50;
+            --muzibu-coral-light: #ff9770;
+            --muzibu-coral-dark: #ff6a3d;
+            --muzibu-dark: #121212;
+            --muzibu-black: #000000;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ff7f50, #ff6a3d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .note {
+            background: rgba(255, 127, 80, 0.1);
+            border-left: 4px solid var(--muzibu-coral);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .note-title {
+            color: var(--muzibu-coral);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .version-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid #334155;
+        }
+
+        .version-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .version-number {
+            background: linear-gradient(135deg, #ff7f50, #ff6a3d);
+            color: white;
+            font-weight: 700;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1rem;
+        }
+
+        .version-name {
+            color: #cbd5e1;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .bg-preview {
+            width: 100%;
+            height: 500px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .bg-content {
+            position: relative;
+            z-index: 10;
+            padding: 40px;
+            color: white;
+        }
+
+        .bg-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .bg-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .sample-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .sample-card {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sample-card-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .sample-card-text {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .description {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* V1: Yukarıdan Aşağıya - Statik (MEVCUT) */
+        .v1-bg {
+            background: linear-gradient(to bottom,
+                rgba(255, 127, 80, 0.3) 0%,
+                rgba(255, 106, 61, 0.15) 50%,
+                rgba(18, 18, 18, 1) 100%);
+        }
+
+        /* V2: Yukarıdan Aşağıya - Daha Belirgin */
+        .v2-bg {
+            background: linear-gradient(to bottom,
+                rgba(255, 127, 80, 0.5) 0%,
+                rgba(255, 106, 61, 0.3) 40%,
+                rgba(18, 18, 18, 1) 100%);
+        }
+
+        /* V3: Yukarıdan Aşağıya - Çok Belirgin */
+        .v3-bg {
+            background: linear-gradient(to bottom,
+                rgba(255, 127, 80, 0.7) 0%,
+                rgba(255, 106, 61, 0.5) 30%,
+                rgba(18, 18, 18, 1) 100%);
+        }
+
+        /* V4: Yukarıdan Aşağıya + Soldan Sağa Işık (→) */
+        .v4-bg {
+            background: linear-gradient(to bottom,
+                rgba(255, 127, 80, 0.5) 0%,
+                rgba(255, 106, 61, 0.3) 40%,
+                rgba(18, 18, 18, 1) 100%);
+            position: relative;
+        }
+
+        .v4-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(255, 127, 80, 0.4) 50%,
+                transparent 100%);
+            animation: sweepLeft 4s linear infinite;
+        }
+
+        @keyframes sweepLeft {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* V5: Yukarıdan Aşağıya + Sağdan Sola Işık (←) */
+        .v5-bg {
+            background: linear-gradient(to bottom,
+                rgba(255, 127, 80, 0.5) 0%,
+                rgba(255, 106, 61, 0.3) 40%,
+                rgba(18, 18, 18, 1) 100%);
+            position: relative;
+        }
+
+        .v5-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(255, 127, 80, 0.4) 50%,
+                transparent 100%);
+            animation: sweepRight 4s linear infinite;
+        }
+
+        @keyframes sweepRight {
+            0% { right: -100%; }
+            100% { right: 100%; }
+        }
+
+        /* V6: Yukarıdan Aşağıya + Gidip Gelen Işık (↔) */
+        .v6-bg {
+            background: linear-gradient(to bottom,
+                rgba(255, 127, 80, 0.5) 0%,
+                rgba(255, 106, 61, 0.3) 40%,
+                rgba(18, 18, 18, 1) 100%);
+            position: relative;
+        }
+
+        .v6-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(255, 127, 80, 0.4) 50%,
+                transparent 100%);
+            animation: sweepOscillate 5s ease-in-out infinite;
+        }
+
+        @keyframes sweepOscillate {
+            0%, 100% { left: -100%; }
+            50% { left: 100%; }
+        }
+
+        /* V7: Yukarıdan Aşağıya + Çift Yönlü Işık */
+        .v7-bg {
+            background: linear-gradient(to bottom,
+                rgba(255, 127, 80, 0.5) 0%,
+                rgba(255, 106, 61, 0.3) 40%,
+                rgba(18, 18, 18, 1) 100%);
+            position: relative;
+        }
+
+        .v7-bg::before,
+        .v7-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(255, 127, 80, 0.3) 50%,
+                transparent 100%);
+        }
+
+        .v7-bg::before {
+            left: -50%;
+            animation: sweepLeft 3s linear infinite;
+        }
+
+        .v7-bg::after {
+            right: -50%;
+            animation: sweepRight 3s linear infinite 1.5s;
+        }
+
+        /* V8: Yukarıdan Aşağıya + Yavaş Kayan Işık (→) */
+        .v8-bg {
+            background: linear-gradient(to bottom,
+                rgba(255, 127, 80, 0.5) 0%,
+                rgba(255, 106, 61, 0.3) 40%,
+                rgba(18, 18, 18, 1) 100%);
+            position: relative;
+        }
+
+        .v8-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(255, 127, 80, 0.4) 50%,
+                transparent 100%);
+            animation: sweepLeft 8s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Ana Sayfa Background Gradient Alternatifleri</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-28 |
+                🎯 Muzibu Ana Sayfa Background |
+                🎨 8 Farklı Gradient + Animasyon Versiyonu
+            </div>
+        </header>
+
+        <div class="note">
+            <div class="note-title">🎯 ÖNEMLİ BİLGİ</div>
+            <p><strong>Kullanım:</strong> Ana sayfa (main content) arka plan gradient'i için</p>
+            <p style="margin-top: 10px;"><strong>Boyut:</strong> Genişlik: Full width, Yükseklik: 500px</p>
+            <p style="margin-top: 5px;"><strong>Renk Sistemi:</strong> CORAL (yukarıda) → DARK (aşağıda)</p>
+            <p style="margin-top: 5px;"><strong>Dark'ın Konumu:</strong> HEP EN ALTTA (net görünür)</p>
+        </div>
+
+        <div class="grid">
+            <!-- V1: Statik - Mevcut Tasarım -->
+            <div class="version-card">
+                <div class="version-header">
+                    <div class="version-number">V1</div>
+                    <div class="version-name">Statik (Mevcut) - Yumuşak</div>
+                </div>
+                <div class="bg-preview v1-bg">
+                    <div class="bg-content">
+                        <div class="bg-title">Ana Sayfa</div>
+                        <div class="bg-subtitle">Öne Çıkan Listeler</div>
+                        <div class="sample-cards">
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 1</div>
+                                <div class="sample-card-text">12 şarkı</div>
+                            </div>
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 2</div>
+                                <div class="sample-card-text">8 şarkı</div>
+                            </div>
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 3</div>
+                                <div class="sample-card-text">15 şarkı</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="description">
+                    <strong>Açıklama:</strong> Şu anki tasarım. Coral opacity %30. Yumuşak, minimal geçiş. Dark en altta.
+                </div>
+            </div>
+
+            <!-- V2: Statik - Daha Belirgin -->
+            <div class="version-card">
+                <div class="version-header">
+                    <div class="version-number">V2</div>
+                    <div class="version-name">Statik - Daha Belirgin</div>
+                </div>
+                <div class="bg-preview v2-bg">
+                    <div class="bg-content">
+                        <div class="bg-title">Ana Sayfa</div>
+                        <div class="bg-subtitle">Öne Çıkan Listeler</div>
+                        <div class="sample-cards">
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 1</div>
+                                <div class="sample-card-text">12 şarkı</div>
+                            </div>
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 2</div>
+                                <div class="sample-card-text">8 şarkı</div>
+                            </div>
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 3</div>
+                                <div class="sample-card-text">15 şarkı</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="description">
+                    <strong>Açıklama:</strong> Coral opacity %50. Daha belirgin geçiş. Dark en altta net görünür.
+                </div>
+            </div>
+
+            <!-- V3: Statik - Çok Belirgin -->
+            <div class="version-card">
+                <div class="version-header">
+                    <div class="version-number">V3</div>
+                    <div class="version-name">Statik - Çok Belirgin</div>
+                </div>
+                <div class="bg-preview v3-bg">
+                    <div class="bg-content">
+                        <div class="bg-title">Ana Sayfa</div>
+                        <div class="bg-subtitle">Öne Çıkan Listeler</div>
+                        <div class="sample-cards">
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 1</div>
+                                <div class="sample-card-text">12 şarkı</div>
+                            </div>
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 2</div>
+                                <div class="sample-card-text">8 şarkı</div>
+                            </div>
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 3</div>
+                                <div class="sample-card-text">15 şarkı</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="description">
+                    <strong>Açıklama:</strong> Coral opacity %70. Çok belirgin, güçlü gradient. Dark en altta çok net.
+                </div>
+            </div>
+
+            <!-- V4: Soldan Sağa Işık -->
+            <div class="version-card" style="border: 2px solid var(--muzibu-coral);">
+                <div class="version-header">
+                    <div class="version-number">V4 ⭐</div>
+                    <div class="version-name">Soldan Sağa Işık (→)</div>
+                </div>
+                <div class="bg-preview v4-bg">
+                    <div class="bg-content">
+                        <div class="bg-title">Ana Sayfa</div>
+                        <div class="bg-subtitle">Öne Çıkan Listeler</div>
+                        <div class="sample-cards">
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 1</div>
+                                <div class="sample-card-text">12 şarkı</div>
+                            </div>
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 2</div>
+                                <div class="sample-card-text">8 şarkı</div>
+                            </div>
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 3</div>
+                                <div class="sample-card-text">15 şarkı</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="description">
+                    <strong>Açıklama:</strong> Coral yukarı, dark aşağı. Soldan sağa kayan ışık (4s). INFINITE!
+                </div>
+            </div>
+
+            <!-- V5: Sağdan Sola Işık -->
+            <div class="version-card" style="border: 2px solid var(--muzibu-coral);">
+                <div class="version-header">
+                    <div class="version-number">V5 ⭐</div>
+                    <div class="version-name">Sağdan Sola Işık (←)</div>
+                </div>
+                <div class="bg-preview v5-bg">
+                    <div class="bg-content">
+                        <div class="bg-title">Ana Sayfa</div>
+                        <div class="bg-subtitle">Öne Çıkan Listeler</div>
+                        <div class="sample-cards">
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 1</div>
+                                <div class="sample-card-text">12 şarkı</div>
+                            </div>
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 2</div>
+                                <div class="sample-card-text">8 şarkı</div>
+                            </div>
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 3</div>
+                                <div class="sample-card-text">15 şarkı</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="description">
+                    <strong>Açıklama:</strong> Coral yukarı, dark aşağı. Sağdan sola kayan ışık (4s). INFINITE!
+                </div>
+            </div>
+
+            <!-- V6: Gidip Gelen Işık -->
+            <div class="version-card" style="border: 2px solid var(--muzibu-coral);">
+                <div class="version-header">
+                    <div class="version-number">V6 ⭐</div>
+                    <div class="version-name">Gidip Gelen Işık (↔)</div>
+                </div>
+                <div class="bg-preview v6-bg">
+                    <div class="bg-content">
+                        <div class="bg-title">Ana Sayfa</div>
+                        <div class="bg-subtitle">Öne Çıkan Listeler</div>
+                        <div class="sample-cards">
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 1</div>
+                                <div class="sample-card-text">12 şarkı</div>
+                            </div>
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 2</div>
+                                <div class="sample-card-text">8 şarkı</div>
+                            </div>
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 3</div>
+                                <div class="sample-card-text">15 şarkı</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="description">
+                    <strong>Açıklama:</strong> Coral yukarı, dark aşağı. Sola-sağa gidip gelen ışık (5s). INFINITE!
+                </div>
+            </div>
+
+            <!-- V7: Çift Yönlü Işık -->
+            <div class="version-card" style="border: 2px solid var(--muzibu-coral);">
+                <div class="version-header">
+                    <div class="version-number">V7 ⭐</div>
+                    <div class="version-name">Çift Yönlü Işık (⇄)</div>
+                </div>
+                <div class="bg-preview v7-bg">
+                    <div class="bg-content">
+                        <div class="bg-title">Ana Sayfa</div>
+                        <div class="bg-subtitle">Öne Çıkan Listeler</div>
+                        <div class="sample-cards">
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 1</div>
+                                <div class="sample-card-text">12 şarkı</div>
+                            </div>
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 2</div>
+                                <div class="sample-card-text">8 şarkı</div>
+                            </div>
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 3</div>
+                                <div class="sample-card-text">15 şarkı</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="description">
+                    <strong>Açıklama:</strong> Coral yukarı, dark aşağı. Soldan ve sağdan aynı anda ışık. INFINITE!
+                </div>
+            </div>
+
+            <!-- V8: Yavaş Kayan Işık -->
+            <div class="version-card" style="border: 2px solid var(--muzibu-coral);">
+                <div class="version-header">
+                    <div class="version-number">V8 ⭐</div>
+                    <div class="version-name">Yavaş Soldan Sağa (→)</div>
+                </div>
+                <div class="bg-preview v8-bg">
+                    <div class="bg-content">
+                        <div class="bg-title">Ana Sayfa</div>
+                        <div class="bg-subtitle">Öne Çıkan Listeler</div>
+                        <div class="sample-cards">
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 1</div>
+                                <div class="sample-card-text">12 şarkı</div>
+                            </div>
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 2</div>
+                                <div class="sample-card-text">8 şarkı</div>
+                            </div>
+                            <div class="sample-card">
+                                <div class="sample-card-title">Playlist 3</div>
+                                <div class="sample-card-text">15 şarkı</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="description">
+                    <strong>Açıklama:</strong> Coral yukarı, dark aşağı. Soldan sağa YAVAŞ kayan ışık (8s). INFINITE!
+                </div>
+            </div>
+        </div>
+
+        <div class="note">
+            <div class="note-title">💡 Öneri ve Kullanım</div>
+            <p><strong>Sakin ve minimal:</strong> V1, V2 (statik)</p>
+            <p><strong>Belirgin ve güçlü:</strong> V3 (statik, yüksek opacity)</p>
+            <p><strong>Dinamik ve modern:</strong> V4 (soldan sağa), V5 (sağdan sola)</p>
+            <p><strong>Yumuşak hareket:</strong> V6 (gidip gelen), V8 (yavaş)</p>
+            <p><strong>Dikkat çekici:</strong> V7 (çift yönlü)</p>
+            <p style="margin-top: 15px;"><strong>ÖNEMLİ:</strong> Tüm versiyonlarda CORAL yukarıda, DARK aşağıda!</p>
+        </div>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu - Muzibu Ana Sayfa Background Gradient Alternatifleri
+        </footer>
+    </div>
+</body>
+</html>

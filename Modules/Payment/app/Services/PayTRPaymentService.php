@@ -46,7 +46,7 @@ class PayTRPaymentService
             $basket = $this->prepareBasket($orderInfo);
 
             // PayTR'ye gönderilecek parametreler
-            $merchantOid = $payment->transaction_id; // Benzersiz sipariş no
+            $merchantOid = $payment->payment_number; // payment_number kullan (transaction_id yok)
             $userIp = request()->ip();
             $emailDomain = explode('@', $userInfo['email'])[1] ?? 'example.com';
 
@@ -191,8 +191,10 @@ class PayTRPaymentService
             ];
         }
 
-        // Transaction ID ile payment bul
-        $payment = Payment::where('transaction_id', $postData['merchant_oid'])->first();
+        // merchant_oid ile payment bul (gateway_transaction_id veya payment_number)
+        $payment = Payment::where('gateway_transaction_id', $postData['merchant_oid'])
+            ->orWhere('payment_number', $postData['merchant_oid'])
+            ->first();
 
         if (!$payment) {
             return [

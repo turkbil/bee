@@ -1,6 +1,8 @@
 <nav class="muzibu-bottom-nav">
     <div class="muzibu-bottom-nav-items">
-        <a href="{{ route('muzibu.home') }}" class="muzibu-bottom-nav-item {{ request()->routeIs('muzibu.home') ? 'active' : '' }}">
+        <a href="{{ route('muzibu.home') }}"
+           @click="if (window.Alpine?.store('sidebar')) window.Alpine.store('sidebar').reset()"
+           class="muzibu-bottom-nav-item {{ request()->routeIs('muzibu.home') ? 'active' : '' }}">
             <i class="fas fa-home"></i>
             <span>Ana Sayfa</span>
         </a>

@@ -55,6 +55,26 @@ class Handler extends ExceptionHandler
                 'session_id' => $request->session()->getId() ?? 'NO_SESSION_ID',
             ]);
 
+            // 🚪 LOGOUT: Session expire olmuş demektir, direkt anasayfaya yönlendir
+            if ($request->is('logout') || $request->routeIs('logout')) {
+                \Log::info('🚪 LOGOUT: CSRF expired, redirecting to home (session already invalid)');
+
+                // JSON request ise (fetch API)
+                if ($request->expectsJson() || $request->ajax()) {
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Oturum zaten sonlanmış',
+                        'redirect' => '/'
+                    ], 200); // 200 OK - Zaten çıkmış
+                }
+
+                // Normal request - anasayfaya yönlendir (cache bypass)
+                return redirect('/')
+                    ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                    ->header('Pragma', 'no-cache')
+                    ->header('Expires', '0');
+            }
+
             // API request'leri için JSON response
             if ($request->expectsJson() || $request->is('api/*')) {
                 return response()->json([

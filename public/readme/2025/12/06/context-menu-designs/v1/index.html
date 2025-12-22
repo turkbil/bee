@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Context Menu Tasarım Seçenekleri - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-black min-h-screen p-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="mb-12 text-center">
+            <h1 class="text-5xl font-black text-white mb-4">Context Menu Tasarımları</h1>
+            <p class="text-gray-400 text-lg">6 farklı tasarım - Hangisini beğeniyorsun?</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+
+            <!-- TASARIM 1: Minimal & Clean -->
+            <div class="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
+                <div class="mb-4">
+                    <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold">Tasarım 1</span>
+                    <h3 class="text-white text-xl font-bold mt-3">Minimal & Temiz</h3>
+                    <p class="text-gray-400 text-sm mt-1">Sade, okunabilir, hızlı</p>
+                </div>
+
+                <!-- Preview -->
+                <div class="bg-gray-900 rounded-lg p-4">
+                    <!-- Header -->
+                    <div class="pb-3 mb-3 border-b border-gray-700">
+                        <div class="text-xs text-gray-500 uppercase tracking-wider mb-1">Playlist</div>
+                        <div class="text-white font-semibold">Neo-Soul & Chill Funk</div>
+                    </div>
+
+                    <!-- Menu Items -->
+                    <div class="space-y-1">
+                        <button class="w-full text-left px-3 py-2 rounded hover:bg-gray-700 text-gray-300 hover:text-white flex items-center gap-3 text-sm transition">
+                            <i class="fas fa-play w-4"></i>
+                            <span>Şimdi Çal</span>
+                        </button>
+                        <button class="w-full text-left px-3 py-2 rounded hover:bg-gray-700 text-gray-300 hover:text-white flex items-center gap-3 text-sm transition">
+                            <i class="fas fa-heart w-4"></i>
+                            <span>Favorilere Ekle</span>
+                        </button>
+                        <button class="w-full text-left px-3 py-2 rounded hover:bg-gray-700 text-gray-300 hover:text-white flex items-center gap-3 text-sm transition">
+                            <i class="fas fa-list w-4"></i>
+                            <span>Sıraya Ekle</span>
+                        </button>
+                        <button class="w-full text-left px-3 py-2 rounded hover:bg-gray-700 text-gray-300 hover:text-white flex items-center gap-3 text-sm transition">
+                            <i class="fas fa-star w-4"></i>
+                            <span>Değerlendir</span>
+                        </button>
+                        <button class="w-full text-left px-3 py-2 rounded hover:bg-gray-700 text-gray-300 hover:text-white flex items-center gap-3 text-sm transition">
+                            <i class="fas fa-copy w-4"></i>
+                            <span>Kopyasını Oluştur</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TASARIM 2: Spotify Style -->
+            <div class="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
+                <div class="mb-4">
+                    <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-bold">Tasarım 2</span>
+                    <h3 class="text-white text-xl font-bold mt-3">Spotify Tarzı</h3>
+                    <p class="text-gray-400 text-sm mt-1">Tanıdık, profesyonel</p>
+                </div>
+
+                <div class="bg-gray-900 rounded-lg p-2">
+                    <div class="px-3 py-2 mb-1">
+                        <div class="flex items-center gap-2 text-white font-semibold">
+                            <i class="fas fa-music text-green-500"></i>
+                            <div>
+                                <div class="text-xs text-gray-500">Playlist</div>
+                                <div>Neo-Soul & Chill Funk</div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="border-gray-800 my-1">
+                    <button class="w-full text-left px-3 py-2.5 hover:bg-gray-800 text-white text-sm flex items-center gap-3">
+                        <i class="fas fa-play-circle w-5 text-green-500"></i>
+                        <span>Çal</span>
+                    </button>
+                    <button class="w-full text-left px-3 py-2.5 hover:bg-gray-800 text-white text-sm flex items-center gap-3">
+                        <i class="fas fa-heart w-5"></i>
+                        <span>Favorilere ekle</span>
+                    </button>
+                    <button class="w-full text-left px-3 py-2.5 hover:bg-gray-800 text-white text-sm flex items-center gap-3">
+                        <i class="fas fa-list-ul w-5"></i>
+                        <span>Sıraya ekle</span>
+                    </button>
+                    <hr class="border-gray-800 my-1">
+                    <button class="w-full text-left px-3 py-2.5 hover:bg-gray-800 text-white text-sm flex items-center gap-3">
+                        <i class="fas fa-star w-5 text-yellow-500"></i>
+                        <span>Puan ver</span>
+                    </button>
+                    <button class="w-full text-left px-3 py-2.5 hover:bg-gray-800 text-white text-sm flex items-center gap-3">
+                        <i class="fas fa-clone w-5"></i>
+                        <span>Kopyala</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- TASARIM 3: Compact & Dense -->
+            <div class="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
+                <div class="mb-4">
+                    <span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-bold">Tasarım 3</span>
+                    <h3 class="text-white text-xl font-bold mt-3">Kompakt & Yoğun</h3>
+                    <p class="text-gray-400 text-sm mt-1">Yer kaplamaz, çok seçenek</p>
+                </div>
+
+                <div class="bg-gray-900 rounded-lg p-1.5">
+                    <div class="bg-purple-600 text-white px-2 py-1 text-xs font-bold mb-1 rounded">
+                        PLAYLIST: Neo-Soul & Chill Funk
+                    </div>
+                    <button class="w-full text-left px-2 py-1.5 hover:bg-gray-800 text-gray-300 text-xs flex items-center gap-2">
+                        <i class="fas fa-play w-3"></i> Çal
+                    </button>
+                    <button class="w-full text-left px-2 py-1.5 hover:bg-gray-800 text-gray-300 text-xs flex items-center gap-2">
+                        <i class="fas fa-heart w-3"></i> Favorile
+                    </button>
+                    <button class="w-full text-left px-2 py-1.5 hover:bg-gray-800 text-gray-300 text-xs flex items-center gap-2">
+                        <i class="fas fa-list w-3"></i> Sıraya Ekle
+                    </button>
+                    <button class="w-full text-left px-2 py-1.5 hover:bg-gray-800 text-gray-300 text-xs flex items-center gap-2">
+                        <i class="fas fa-star w-3"></i> Puan Ver
+                    </button>
+                    <button class="w-full text-left px-2 py-1.5 hover:bg-gray-800 text-gray-300 text-xs flex items-center gap-2">
+                        <i class="fas fa-copy w-3"></i> Kopyala
+                    </button>
+                    <button class="w-full text-left px-2 py-1.5 hover:bg-gray-800 text-gray-300 text-xs flex items-center gap-2">
+                        <i class="fas fa-plus w-3"></i> Playlist'e Ekle
+                    </button>
+                </div>
+            </div>
+
+            <!-- TASARIM 4: Material Design -->
+            <div class="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
+                <div class="mb-4">
+                    <span class="bg-orange-600 text-white px-3 py-1 rounded-full text-sm font-bold">Tasarım 4</span>
+                    <h3 class="text-white text-xl font-bold mt-3">Material Design</h3>
+                    <p class="text-gray-400 text-sm mt-1">Modern, elevasyonlu</p>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-2xl overflow-hidden">
+                    <div class="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-4 py-3">
+                        <div class="text-xs opacity-90 mb-0.5">Playlist</div>
+                        <div class="font-bold">Neo-Soul & Chill Funk</div>
+                    </div>
+                    <div class="p-2">
+                        <button class="w-full text-left px-4 py-3 hover:bg-gray-100 text-gray-800 text-sm flex items-center gap-3 rounded">
+                            <i class="fas fa-play text-orange-600"></i>
+                            <span>Şimdi Çal</span>
+                        </button>
+                        <button class="w-full text-left px-4 py-3 hover:bg-gray-100 text-gray-800 text-sm flex items-center gap-3 rounded">
+                            <i class="fas fa-heart text-red-500"></i>
+                            <span>Favorilere Ekle</span>
+                        </button>
+                        <button class="w-full text-left px-4 py-3 hover:bg-gray-100 text-gray-800 text-sm flex items-center gap-3 rounded">
+                            <i class="fas fa-list text-blue-600"></i>
+                            <span>Sıraya Ekle</span>
+                        </button>
+                        <button class="w-full text-left px-4 py-3 hover:bg-gray-100 text-gray-800 text-sm flex items-center gap-3 rounded">
+                            <i class="fas fa-star text-yellow-500"></i>
+                            <span>Değerlendirin</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TASARIM 5: macOS Big Sur Style -->
+            <div class="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
+                <div class="mb-4">
+                    <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-bold">Tasarım 5</span>
+                    <h3 class="text-white text-xl font-bold mt-3">macOS Big Sur</h3>
+                    <p class="text-gray-400 text-sm mt-1">Glassmorphism, şık</p>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden shadow-2xl">
+                    <div class="px-4 py-3 bg-white/5">
+                        <div class="text-xs text-gray-400 mb-1">Playlist</div>
+                        <div class="text-white font-semibold">Neo-Soul & Chill Funk</div>
+                    </div>
+                    <div class="p-2">
+                        <button class="w-full text-left px-3 py-2.5 hover:bg-white/10 text-white text-sm rounded-lg flex items-center gap-3 transition">
+                            <i class="fas fa-play"></i>
+                            <span>Çal</span>
+                        </button>
+                        <button class="w-full text-left px-3 py-2.5 hover:bg-white/10 text-white text-sm rounded-lg flex items-center gap-3 transition">
+                            <i class="fas fa-heart"></i>
+                            <span>Favorilere Ekle</span>
+                        </button>
+                        <button class="w-full text-left px-3 py-2.5 hover:bg-white/10 text-white text-sm rounded-lg flex items-center gap-3 transition">
+                            <i class="fas fa-list-ul"></i>
+                            <span>Sıraya Ekle</span>
+                        </button>
+                        <div class="border-t border-white/10 my-1"></div>
+                        <button class="w-full text-left px-3 py-2.5 hover:bg-white/10 text-white text-sm rounded-lg flex items-center gap-3 transition">
+                            <i class="fas fa-star"></i>
+                            <span>Puan Ver</span>
+                        </button>
+                        <button class="w-full text-left px-3 py-2.5 hover:bg-white/10 text-white text-sm rounded-lg flex items-center gap-3 transition">
+                            <i class="fas fa-clone"></i>
+                            <span>Kopya Oluştur</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TASARIM 6: Gradient & Bold -->
+            <div class="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
+                <div class="mb-4">
+                    <span class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-3 py-1 rounded-full text-sm font-bold">Tasarım 6</span>
+                    <h3 class="text-white text-xl font-bold mt-3">Gradient & Bold</h3>
+                    <p class="text-gray-400 text-sm mt-1">Cesur, göz alıcı</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-pink-600 via-purple-600 to-blue-600 rounded-xl p-[2px]">
+                    <div class="bg-gray-900 rounded-xl p-3">
+                        <div class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-3 py-2 rounded-lg mb-2 text-center">
+                            <div class="text-xs font-bold">PLAYLIST</div>
+                            <div class="font-black text-sm">Neo-Soul & Chill Funk</div>
+                        </div>
+                        <button class="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-3 py-2.5 rounded-lg font-bold text-sm mb-1 flex items-center justify-center gap-2">
+                            <i class="fas fa-play"></i> ŞİMDİ ÇAL
+                        </button>
+                        <button class="w-full hover:bg-white/10 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-3">
+                            <i class="fas fa-heart"></i> Favorilere Ekle
+                        </button>
+                        <button class="w-full hover:bg-white/10 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-3">
+                            <i class="fas fa-list"></i> Sıraya Ekle
+                        </button>
+                        <button class="w-full hover:bg-white/10 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-3">
+                            <i class="fas fa-star"></i> Puan Ver
+                        </button>
+                        <button class="w-full hover:bg-white/10 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-3">
+                            <i class="fas fa-copy"></i> Kopyala
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer Note -->
+        <div class="mt-12 text-center">
+            <p class="text-gray-500 text-sm">
+                💡 Hangi tasarımı beğendin? Numarasını söyle uygulayayım (1-6)
+            </p>
+        </div>
+    </div>
+</body>
+</html>

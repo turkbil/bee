@@ -47,7 +47,7 @@ class PayTRDirectService
             $basket = $this->prepareBasket($orderInfo);
 
             // Token oluşturma için hash string
-            $merchantOid = $payment->transaction_id;
+            $merchantOid = $payment->payment_number; // payment_number kullan (transaction_id yok)
             $userIp = request()->ip();
             $email = $userInfo['email'];
             $paymentAmount = number_format($payment->amount, 2, '.', ''); // 100.99 formatında

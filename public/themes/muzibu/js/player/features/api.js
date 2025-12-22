@@ -5,9 +5,9 @@
  * Dependencies: session.js (for handleSessionTerminated)
  */
 
-// 🛡️ GUARD: Prevent redeclaration on SPA navigation
+// 🛡️ GUARD: Prevent redeclaration on SPA navigation (silent)
 if (typeof MuzibuApi !== 'undefined') {
-    console.log('⚠️ MuzibuApi already loaded, skipping...');
+    // Already loaded - skip silently
 } else {
 
 const MuzibuApi = {

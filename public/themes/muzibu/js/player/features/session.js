@@ -5,9 +5,9 @@
  * Dependencies: player-core.js (for this.* context)
  */
 
-// 🛡️ GUARD: Prevent redeclaration on SPA navigation
+// 🛡️ GUARD: Prevent redeclaration on SPA navigation (silent)
 if (typeof MuzibuSession !== 'undefined') {
-    console.log('⚠️ MuzibuSession already loaded, skipping...');
+    // Already loaded - skip silently
 } else {
 
 const MuzibuSession = {

@@ -262,11 +262,13 @@ class Subscription extends BaseModel
 
     /**
      * User için trial kullanımını kontrol et (statik helper)
+     * Pending_payment olanlar sayılmaz (ödeme başarısız olursa trial hakkı yanmaz)
      */
     public static function userHasUsedTrial(int $userId): bool
     {
         return self::where('user_id', $userId)
             ->where('has_trial', true)
+            ->where('status', '!=', 'pending_payment') // Pending olanları sayma
             ->exists();
     }
 

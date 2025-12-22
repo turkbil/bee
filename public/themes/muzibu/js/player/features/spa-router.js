@@ -5,9 +5,9 @@
  * Dependencies: player-core.js (for this.* context)
  */
 
-// 🛡️ GUARD: Prevent redeclaration on SPA navigation
+// 🛡️ GUARD: Prevent redeclaration on SPA navigation (silent)
 if (typeof MuzibuSpaRouter !== 'undefined') {
-    console.log('⚠️ MuzibuSpaRouter already loaded, skipping...');
+    // Already loaded - skip silently
 } else {
 
 const MuzibuSpaRouter = {
@@ -367,6 +367,20 @@ const MuzibuSpaRouter = {
                 console.log('🔵 loadPage() Entering main content update...');
                 const currentMain = document.querySelector('main');
                 if (currentMain) {
+                    // 🔥 FIX: Destroy Alpine.js components before replacing DOM (prevent $nextTick redefine error)
+                    // Alpine.js magic properties ($nextTick, $watch, etc.) can't be redefined, so we must clean up first
+                    if (window.Alpine && typeof window.Alpine.destroyTree === 'function') {
+                        try {
+                            // Destroy all Alpine components in current main
+                            currentMain.querySelectorAll('[x-data]').forEach(el => {
+                                window.Alpine.destroyTree(el);
+                            });
+                            console.log('✅ Alpine.js components destroyed before DOM replace');
+                        } catch (e) {
+                            console.warn('⚠️ Alpine.js cleanup failed:', e.message);
+                        }
+                    }
+
                     // 🛡️ SECURITY: Clone content and remove all script tags to prevent duplicate execution
                     // This is the industry-standard approach used by Google, Facebook, etc.
                     const clonedContent = newContent.cloneNode(true);
@@ -400,6 +414,18 @@ const MuzibuSpaRouter = {
                         clonedAside.querySelectorAll('script').forEach(script => script.remove());
 
                         if (currentAside) {
+                            // 🔥 FIX: Destroy Alpine.js components in sidebar before replacing
+                            if (window.Alpine && typeof window.Alpine.destroyTree === 'function') {
+                                try {
+                                    currentAside.querySelectorAll('[x-data]').forEach(el => {
+                                        window.Alpine.destroyTree(el);
+                                    });
+                                    console.log('✅ Sidebar Alpine.js components destroyed');
+                                } catch (e) {
+                                    console.warn('⚠️ Sidebar Alpine.js cleanup failed:', e.message);
+                                }
+                            }
+
                             // Replace existing sidebar
                             console.log('✅ SPA: Replacing existing sidebar');
                             currentAside.replaceWith(clonedAside);
@@ -416,6 +442,18 @@ const MuzibuSpaRouter = {
                     } else {
                         // New page has NO sidebar - remove it
                         if (currentAside) {
+                            // 🔥 FIX: Destroy Alpine.js components before removing sidebar
+                            if (window.Alpine && typeof window.Alpine.destroyTree === 'function') {
+                                try {
+                                    currentAside.querySelectorAll('[x-data]').forEach(el => {
+                                        window.Alpine.destroyTree(el);
+                                    });
+                                    console.log('✅ Sidebar Alpine.js components destroyed (before remove)');
+                                } catch (e) {
+                                    console.warn('⚠️ Sidebar Alpine.js cleanup failed:', e.message);
+                                }
+                            }
+
                             console.log('🗑️ SPA: Removing sidebar');
                             currentAside.remove();
                         } else {
@@ -441,6 +479,16 @@ const MuzibuSpaRouter = {
 
                     this.currentPath = url;
                     console.log('✅ Page loaded:', url);
+
+                    // 🏠 HOMEPAGE NAVIGATION: Reset sidebar to default state
+                    const urlPath = new URL(url, window.location.origin).pathname;
+                    if (urlPath === '/' || urlPath === '') {
+                        // Anasayfaya dönüldü → Sidebar preview mode'dan çık
+                        if (window.Alpine?.store('sidebar')) {
+                            window.Alpine.store('sidebar').reset();
+                            console.log('🏠 Homepage detected → Sidebar reset to default');
+                        }
+                    }
 
                     // 🔥 RE-OBSERVE NEW LINKS: DISABLED (viewport prefetch kapatıldı)
                     // setTimeout(() => this.observeLinks(), 100);

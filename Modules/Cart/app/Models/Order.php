@@ -199,6 +199,37 @@ class Order extends BaseModel
                 // Cycle süresi
                 $durationDays = $cycleMetadata['duration_days'] ?? 30;
 
+                // ÖNCE: Pending payment subscription var mı kontrol et (duplike oluşturmamak için)
+                $pendingSubscription = \Modules\Subscription\App\Models\Subscription::where('user_id', $this->user_id)
+                    ->where('subscription_plan_id', $plan->subscription_plan_id)
+                    ->where('status', 'pending_payment')
+                    ->first();
+
+                if ($pendingSubscription) {
+                    // Pending subscription'ı aktifleştir (trial varsa trial, yoksa active)
+                    $hasTrialDays = ($pendingSubscription->trial_days ?? 0) > 0;
+                    $pendingSubscription->update([
+                        'status' => $hasTrialDays ? 'trial' : 'active',
+                        'total_paid' => $item->total_price,
+                        'billing_cycles_completed' => 1,
+                        'metadata' => array_merge($pendingSubscription->metadata ?? [], [
+                            'order_id' => $this->order_id,
+                            'order_number' => $this->order_number,
+                            'activated_at' => now()->toDateTimeString(),
+                        ]),
+                    ]);
+
+                    \Log::info('✅ Pending subscription aktifleştirildi', [
+                        'subscription_id' => $pendingSubscription->subscription_id,
+                        'user_id' => $this->user_id,
+                        'plan_id' => $plan->subscription_plan_id,
+                        'status' => $hasTrialDays ? 'trial' : 'active',
+                        'has_trial' => $hasTrialDays,
+                    ]);
+
+                    continue; // Bu item için işlem tamamlandı, sonrakine geç
+                }
+
                 // Mevcut aktif subscription var mı kontrol et
                 $existingSubscription = \Modules\Subscription\App\Models\Subscription::where('user_id', $this->user_id)
                     ->where('subscription_plan_id', $plan->subscription_plan_id)

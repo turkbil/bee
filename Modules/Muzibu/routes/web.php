@@ -48,12 +48,14 @@ Route::get('/songs/{slug}', [SongController::class, 'show'])->name('muzibu.songs
 // Radios
 Route::get('/radios', [RadioController::class, 'index'])->name('muzibu.radios.index');
 
-// User Library
-Route::get('/favorites', [FavoritesController::class, 'index'])->name('muzibu.favorites');
-Route::get('/my-playlists', [MyPlaylistsController::class, 'index'])->name('muzibu.my-playlists');
+// User Library (Auth + Verified Required)
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/favorites', [FavoritesController::class, 'index'])->name('muzibu.favorites');
+    Route::get('/my-playlists', [MyPlaylistsController::class, 'index'])->name('muzibu.my-playlists');
 
-// Playlist Management (Edit Page)
-Route::get('/playlist/{id}/edit', [MyPlaylistsController::class, 'edit'])->name('muzibu.playlist.edit');
+    // Playlist Management (Edit Page)
+    Route::get('/playlist/{id}/edit', [MyPlaylistsController::class, 'edit'])->name('muzibu.playlist.edit');
+});
 
 // 🔍 Search Results Page (Livewire) - Moved to main routes/web.php (priority route)
 // Route moved to avoid catch-all conflicts - same pattern as Cart module

@@ -1,6 +1,7 @@
-{{-- Session Check Component - AKTİF --}}
-{{-- Session DB kontrolü ile LIFO device limit için logout trigger --}}
-@if(tenant() && tenant()->id == 1001 && auth()->check() && !request()->is('admin/*'))
+{{-- Session Check Component - DEVRE DIŞI (2025-12-22) --}}
+{{-- SEBEP: session.js ile çakışma - login/logout döngüsü oluşturuyordu --}}
+{{-- session.js zaten tüm session kontrolünü yapıyor (player entegrasyonlu) --}}
+@if(false) {{-- DEVRE DIŞI: tenant() && tenant()->id == 1001 && auth()->check() && !request()->is('admin/*') --}}
 
 <script>
 // 🔥 FIX: Alpine.js init event'ini bekle (defer loading için)

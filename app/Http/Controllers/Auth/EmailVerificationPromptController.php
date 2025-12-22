@@ -14,8 +14,20 @@ class EmailVerificationPromptController extends Controller
      */
     public function __invoke(Request $request): RedirectResponse|View
     {
-        return $request->user()->hasVerifiedEmail()
-                    ? redirect()->intended(route('dashboard', absolute: false))
-                    : view('auth.verify-email');
+        if ($request->user()->hasVerifiedEmail()) {
+            return redirect()->intended('/');
+        }
+
+        // Tema-aware verify-email view
+        $theme = app(\App\Services\ThemeService::class)->getActiveTheme();
+        $themeName = $theme ? $theme->name : 'simple';
+        $viewPath = "themes.{$themeName}.auth.verify-email";
+
+        // Fallback: Tema yoksa veya view yoksa default auth.verify-email kullan
+        if (!view()->exists($viewPath)) {
+            $viewPath = 'auth.verify-email';
+        }
+
+        return view($viewPath);
     }
 }

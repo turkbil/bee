@@ -1812,5 +1812,13 @@
         window.MuzibuSpaRouter.enabled = false;
         console.log('✅ Checkout: SPA Router disabled');
     }
+
+    // 🧹 Clean URL parameters (plan, cycle) after subscription added to cart
+    // Bu sayede kullanıcı sayfayı yenilediğinde aynı subscription tekrar eklenmez
+    if (window.location.search.includes('plan=') || window.location.search.includes('cycle=')) {
+        const cleanUrl = window.location.pathname; // Sadece path, query parametreleri olmadan
+        window.history.replaceState({}, document.title, cleanUrl);
+        console.log('🧹 URL parameters cleaned');
+    }
 </script>
 @endscript

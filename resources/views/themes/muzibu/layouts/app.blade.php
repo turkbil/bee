@@ -263,24 +263,41 @@
         window.showKeyboardHelp = window.showKeyboardHelp || false;
         window.showDeviceSelectionModal = window.showDeviceSelectionModal || false;
         window.showDeviceLimitWarning = window.showDeviceLimitWarning || false;
+        window.showDeviceLimitModal = window.showDeviceLimitModal || false;
         window.deviceTerminateLoading = window.deviceTerminateLoading || false;
         window.activeDevices = window.activeDevices || [];
         window.deviceLimit = window.deviceLimit || 1;
 
         // Player state
         window.isLoading = window.isLoading || false;
+        window.isSongLoading = window.isSongLoading || false;
+        window.isPlaying = window.isPlaying || false;
         window.currentSong = window.currentSong || null;
         window.currentTime = window.currentTime || 0;
         window.duration = window.duration || 0;
+        window.progressPercent = window.progressPercent || 0;
         window.isLiked = window.isLiked || false;
+
+        // Playback controls
+        window.shuffle = window.shuffle || false;
+        window.repeatMode = window.repeatMode || 'off';
 
         // Volume & Audio
         window.volume = window.volume ?? 80;
         window.isMuted = window.isMuted || false;
 
-        // UI panels
+        // Stream info
+        window.currentStreamType = window.currentStreamType || 'hls';
+        window.lastFallbackReason = window.lastFallbackReason || null;
+
+        // UI panels & Debug
         window.showLyrics = window.showLyrics || false;
         window.showQueue = window.showQueue || false;
+        window.showDebugInfo = window.showDebugInfo || false;
+
+        // Auth (fallback - overwritten by config below)
+        window.isLoggedIn = window.isLoggedIn || false;
+        window.currentUser = window.currentUser || null;
 
         // Helper functions
         window.formatTime = window.formatTime || function(sec) {

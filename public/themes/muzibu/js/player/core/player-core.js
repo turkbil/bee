@@ -2198,7 +2198,6 @@ onplay: function() {
                         position_sec: Math.round(currentPos)
                     });
                     hlsAborted = true;
-                    const currentPos = self.getActiveHlsAudio?.()?.currentTime || 0;
                     const retried = await self.retryHlsWithNewUrl(targetVolume, autoplay, 'timeout', currentPos);
                     if (!retried) {
                         self.triggerMp3Fallback(audio, targetVolume, 'timeout');
@@ -2729,7 +2728,7 @@ onplay: function() {
                     // 🎵 Track play after 30 seconds (analytics: hit +1, play log with IP)
                     if (!self.playTracked && currentTime >= self.playTrackedAt && self.currentSong && self.isLoggedIn) {
                         self.playTracked = true;
-                        self.trackSongPlay(self.currentSong.id);
+                        self.trackSongPlay(self.currentSong.song_id);
                     }
 
                     // Check for crossfade at end of song

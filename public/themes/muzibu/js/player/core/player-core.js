@@ -2190,10 +2190,12 @@ onplay: function() {
             const hlsTimeoutId = setTimeout(async () => {
                 if (!hlsPlayStarted && !hlsAborted && autoplay) {
                     // Fallback triggered
+                    const currentPos = this.getActiveHlsAudio?.()?.currentTime || 0;
                     console.warn('⚠️ HLS TIMEOUT:', {
                         song: self.currentSong?.title,
                         timeout: hlsTimeoutMs + 'ms',
-                        reason: 'HLS yüklenemedi (timeout)'
+                        reason: 'HLS yüklenemedi (timeout)',
+                        position_sec: Math.round(currentPos)
                     });
                     hlsAborted = true;
                     const currentPos = self.getActiveHlsAudio?.()?.currentTime || 0;
@@ -2393,7 +2395,8 @@ onplay: function() {
                             errorFatal: data.fatal,
                             errorReason: data.reason,
                             url: data.url,
-                            response: data.response
+                            response: data.response,
+                            position_sec: Math.round((self.getActiveHlsAudio?.()?.currentTime || 0))
                         });
 
                         const respCode = data?.response?.code || data?.response?.status || null;
@@ -2421,16 +2424,16 @@ onplay: function() {
                             return;
                         }
 
-                        // 🔍 DEBUG: Log fallback URL status
-                        console.log('🔍 FALLBACK DEBUG:', {
-                            hasCurrentSong: !!self.currentSong,
-                            hasFallbackUrl: !!self.currentFallbackUrl,
-                            fallbackUrl: self.currentFallbackUrl ? self.currentFallbackUrl.substring(0, 100) + '...' : null
-                        });
+                // 🔍 DEBUG: Log fallback URL status
+                console.log('🔍 FALLBACK DEBUG:', {
+                    hasCurrentSong: !!self.currentSong,
+                    hasFallbackUrl: !!self.currentFallbackUrl,
+                    fallbackUrl: self.currentFallbackUrl ? self.currentFallbackUrl.substring(0, 100) + '...' : null
+                });
 
-                        // 🛡️ Set abort flag FIRST to prevent MANIFEST_PARSED from calling play()
-                        hlsAborted = true;
-                        clearTimeout(hlsTimeoutId); // Timeout'u temizle
+                // 🛡️ Set abort flag FIRST to prevent MANIFEST_PARSED from calling play()
+                hlsAborted = true;
+                clearTimeout(hlsTimeoutId); // Timeout'u temizle
 
                         // Önce yeni imzalı HLS URL ile yeniden dene (tek sefer)
                         const retried = await self.retryHlsWithNewUrl(targetVolume, autoplay, data.details || 'fatal');

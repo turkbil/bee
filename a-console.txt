@@ -1,0 +1,13 @@
+player-core.js?v=1766368670:3948 ✅ Player state cleared (fresh start)
+spa-router.js?v=1766368636:95 🚀 SPA Router initialized (Prefetch Disabled)
+VM89:3 🔐 Auth Debug: Object
+(index):6462 🔐 Session check component initialized
+(index):6467 🔐 Starting session check polling (5 seconds interval)
+favorites.js?v=1766368636:199 🎵 Loading user favorites...
+(index):8047 ✅ Player store verified
+VM567:38 🧪 Debug Panel connected
+(index):8033 ✅ Player store = Proxy to root (auto-forward all properties/methods)
+player-core.js?v=1766368670:1914 🎵 HLS DEBUG v3 (new /hls/ route) stream_url: https://muzibu.com.tr/hls/muzibu/songs/460/playlist.m3u8?expires=1766369244&token=00e8d2d39cb94a5cc5dde600b93481156110e13b35c21c880c28ba571f461079&sig=b657c98c89e737c9313c0d3361992f84241729cc48b618e1137abb71c12bd0c9 type: hls
+player-core.js?v=1766368670:1914 🎵 HLS DEBUG v3 (new /hls/ route) stream_url: https://muzibu.com.tr/hls/muzibu/songs/344/playlist.m3u8?expires=1766369248&token=00e8d2d39cb94a5cc5dde600b93481156110e13b35c21c880c28ba571f461079&sig=7c64e3c139e7b0382f5bdd74b2b315af3391f546f4864e0bca94d148bbaefd78 type: hls
+player-core.js?v=1766368670:3639 🔄 HLS URL refreshed for current song: https://muzibu.com.tr/hls/muzibu/songs/353/playlist.m3u8?expires=1766369248&token=00e8d2d39cb94a5cc5dde600b93481156110e13b35c21c880c28ba571f461079&sig=8e64bd1ab29b614edd407be6e93b80c87f7e1e7e6af43086238e89d545149559
+player-core.js?v=1766368670:3639 🔄 HLS URL refreshed for current song: https://muzibu.com.tr/hls/muzibu/songs/353/playlist.m3u8?expires=1766369248&token=00e8d2d39cb94a5cc5dde600b93481156110e13b35c21c880c28ba571f461079&sig=8e64bd1ab29b614edd407be6e93b80c87f7e1e7e6af43086238e89d545149559

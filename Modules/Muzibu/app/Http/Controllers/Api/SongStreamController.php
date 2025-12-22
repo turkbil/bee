@@ -614,6 +614,7 @@ class SongStreamController extends Controller
                     'song_id' => $songId,
                     'file' => $filename,
                     'token_prefix' => substr($token, 0, 12),
+                    'session_id' => substr($sessionRow->session_id ?? '', 0, 20),
                     'ip' => request()->ip(),
                 ]);
                 return response()->json(['error' => 'File not found'], 404);
@@ -644,6 +645,8 @@ class SongStreamController extends Controller
                     'token_prefix' => substr($token, 0, 12),
                     'session_id' => substr($sessionRow->session_id ?? '', 0, 20),
                     'ip' => request()->ip(),
+                    'user_agent' => substr(request()->userAgent() ?? '', 0, 80),
+                    'expires_in' => $expires - Carbon::now()->timestamp
                 ]);
 
                 return response($content, 200, [
@@ -656,13 +659,25 @@ class SongStreamController extends Controller
             }
 
             // For segment files, use BinaryFileResponse for efficient streaming
-            return response()->file($filePath, [
+            $response = response()->file($filePath, [
                 'Content-Type' => $contentType,
                 'Access-Control-Allow-Origin' => '*',
                 'Access-Control-Allow-Methods' => 'GET, OPTIONS',
                 'Access-Control-Allow-Headers' => 'Content-Type, Range',
                 'Cache-Control' => 'public, max-age=31536000, immutable',
             ]);
+
+            Log::info('HLS segment served', [
+                'song_id' => $songId,
+                'file' => $filename,
+                'token_prefix' => substr($token, 0, 12),
+                'session_id' => substr($sessionRow->session_id ?? '', 0, 20),
+                'ip' => request()->ip(),
+                'user_agent' => substr(request()->userAgent() ?? '', 0, 80),
+                'expires_in' => $expires - Carbon::now()->timestamp
+            ]);
+
+            return $response;
 
         } catch (\Exception $e) {
             Log::error('HLS file serving error', [

@@ -45,10 +45,11 @@ class SidebarComposer
             $view->with('newSongs', $newSongs);
         }
 
-        // 📈 TREND SONGS - Son 7 günde en çok dinlenenler
+        // 📈 TREND SONGS - Son 7 günde en çok dinlenenler (5 dk cache)
         if (!$view->offsetExists('trendSongs')) {
             $trendSongs = Cache::remember('sidebar_trend_songs', 300, function () {
-                return Song::where('is_active', 1)
+                // Önce son 7 günü dene
+                $songs = Song::where('is_active', 1)
                     ->whereNotNull('file_path')
                     ->whereNotNull('hls_path')
                     ->where('updated_at', '>=', now()->subDays(7))
@@ -56,12 +57,10 @@ class SidebarComposer
                     ->orderBy('play_count', 'desc')
                     ->limit(15)
                     ->get();
-            });
 
-            // Fallback: Eğer son 7 günde yeterli şarkı yoksa, tüm zamanlardan al
-            if ($trendSongs->count() < 5) {
-                $trendSongs = Cache::remember('sidebar_trend_songs_fallback', 300, function () {
-                    return Song::where('is_active', 1)
+                // Fallback: Yeterli şarkı yoksa tüm zamanlardan al
+                if ($songs->count() < 5) {
+                    $songs = Song::where('is_active', 1)
                         ->whereNotNull('file_path')
                         ->whereNotNull('hls_path')
                         ->with(['artist', 'album.coverMedia', 'coverMedia'])
@@ -69,8 +68,10 @@ class SidebarComposer
                         ->orderBy('updated_at', 'desc')
                         ->limit(15)
                         ->get();
-                });
-            }
+                }
+
+                return $songs;
+            });
 
             $view->with('trendSongs', $trendSongs);
         }

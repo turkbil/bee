@@ -144,15 +144,13 @@ class OrdersComponent extends Component
             return;
         }
 
-        $this->selectedOrder->update([
-            'payment_status' => 'paid',
-            'paid_amount' => $this->selectedOrder->total_amount,
-        ]);
+        // Order model'deki markAsPaid() metodu subscription'ları da aktifleştirir!
+        $this->selectedOrder->markAsPaid();
         $this->selectedOrder->refresh();
 
         $this->dispatch('toast', [
             'title' => 'Başarılı!',
-            'message' => 'Sipariş ödendi olarak işaretlendi',
+            'message' => 'Sipariş ödendi olarak işaretlendi ve abonelikler aktifleştirildi',
             'type' => 'success',
         ]);
     }

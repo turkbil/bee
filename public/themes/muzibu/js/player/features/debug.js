@@ -13,9 +13,14 @@
  * - Queue degisikliklerini, refill'leri, transition'lari loglar
  */
 
+// 🛡️ GUARD: Prevent redeclaration on SPA navigation
+if (typeof DEBUG_COLORS !== 'undefined') {
+    console.log('⚠️ Debug module already loaded, skipping...');
+} else {
+
 // 🎯 Debug Log Storage
-window.debugLogs = [];
-window.debugMaxLogs = 30;
+window.debugLogs = window.debugLogs || [];
+window.debugMaxLogs = window.debugMaxLogs || 30;
 
 // 🎨 Event Type Colors (for console)
 const DEBUG_COLORS = {
@@ -252,6 +257,9 @@ window.debugFeature = {
 
 // 🏪 Alpine Debug Store (register when Alpine loads)
 document.addEventListener('alpine:init', () => {
+    // Skip if already registered
+    if (Alpine.store('debug')) return;
+
     Alpine.store('debug', {
         logs: window.debugLogs,
         showPanel: false,
@@ -269,4 +277,6 @@ document.addEventListener('alpine:init', () => {
         }
     });
 });
+
+} // END GUARD
 

@@ -5,6 +5,11 @@
  * Dependencies: session.js (for handleSessionTerminated)
  */
 
+// 🛡️ GUARD: Prevent redeclaration on SPA navigation
+if (typeof MuzibuApi !== 'undefined') {
+    console.log('⚠️ MuzibuApi already loaded, skipping...');
+} else {
+
 const MuzibuApi = {
     /**
      * 🔐 AUTHENTICATED FETCH: Tüm API çağrılarında 401 kontrolü yapar
@@ -106,3 +111,5 @@ const MuzibuApi = {
 
 // Export for use in player-core.js
 window.MuzibuApi = MuzibuApi;
+
+} // END GUARD

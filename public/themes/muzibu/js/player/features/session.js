@@ -5,6 +5,11 @@
  * Dependencies: player-core.js (for this.* context)
  */
 
+// 🛡️ GUARD: Prevent redeclaration on SPA navigation
+if (typeof MuzibuSession !== 'undefined') {
+    console.log('⚠️ MuzibuSession already loaded, skipping...');
+} else {
+
 const MuzibuSession = {
     // State
     sessionPollInterval: null,
@@ -341,3 +346,5 @@ const MuzibuSession = {
 
 // Export for use in player-core.js
 window.MuzibuSession = MuzibuSession;
+
+} // END GUARD

@@ -5,6 +5,11 @@
  * Dependencies: player-core.js (for this.* context)
  */
 
+// 🛡️ GUARD: Prevent redeclaration on SPA navigation
+if (typeof MuzibuSpaRouter !== 'undefined') {
+    console.log('⚠️ MuzibuSpaRouter already loaded, skipping...');
+} else {
+
 const MuzibuSpaRouter = {
     // Auth pages that should NOT use SPA navigation
     authPaths: ['/login', '/register', '/forgot-password', '/reset-password', '/verify-email', '/logout'],
@@ -482,3 +487,5 @@ const MuzibuSpaRouter = {
 
 // Export for use in player-core.js
 window.MuzibuSpaRouter = MuzibuSpaRouter;
+
+} // END GUARD

@@ -19,7 +19,7 @@ class SidebarComposer
     {
         // Featured Playlists - CACHED
         if (!$view->offsetExists('featuredPlaylists')) {
-            $featuredPlaylists = Cache::remember('sidebar_featured_playlists', 300, function () {
+            $featuredPlaylists = Cache::remember('sidebar_featured_playlists', 3600, function () {
                 return Playlist::where('is_active', 1)
                     ->where('is_system', 1)
                     ->with(['songs', 'coverMedia'])
@@ -32,7 +32,7 @@ class SidebarComposer
 
         // 🆕 NEW SONGS - Son eklenenler (created_at desc)
         if (!$view->offsetExists('newSongs')) {
-            $newSongs = Cache::remember('sidebar_new_songs', 300, function () {
+            $newSongs = Cache::remember('sidebar_new_songs', 3600, function () {
                 return Song::where('is_active', 1)
                     ->whereNotNull('file_path')
                     ->whereNotNull('hls_path')
@@ -47,7 +47,7 @@ class SidebarComposer
 
         // 📈 TREND SONGS - Son 7 günde en çok dinlenenler (5 dk cache)
         if (!$view->offsetExists('trendSongs')) {
-            $trendSongs = Cache::remember('sidebar_trend_songs', 300, function () {
+            $trendSongs = Cache::remember('sidebar_trend_songs', 3600, function () {
                 // Önce son 7 günü dene
                 $songs = Song::where('is_active', 1)
                     ->whereNotNull('file_path')
@@ -78,7 +78,7 @@ class SidebarComposer
 
         // 🔥 POPULAR SONGS - En çok dinlenenler (play_count desc)
         if (!$view->offsetExists('popularSongs')) {
-            $popularSongs = Cache::remember('sidebar_popular_songs', 300, function () {
+            $popularSongs = Cache::remember('sidebar_popular_songs', 3600, function () {
                 return Song::where('is_active', 1)
                     ->whereNotNull('file_path')
                     ->whereNotNull('hls_path')
@@ -93,7 +93,7 @@ class SidebarComposer
 
         // Recent Albums - CACHED
         if (!$view->offsetExists('recentAlbums')) {
-            $recentAlbums = Cache::remember('sidebar_recent_albums', 300, function () {
+            $recentAlbums = Cache::remember('sidebar_recent_albums', 3600, function () {
                 return Album::where('is_active', 1)
                     ->with(['artist', 'coverMedia'])
                     ->orderBy('created_at', 'desc')
@@ -106,7 +106,7 @@ class SidebarComposer
 
         // Genres - CACHED
         if (!$view->offsetExists('genres')) {
-            $genres = Cache::remember('sidebar_genres', 300, function () {
+            $genres = Cache::remember('sidebar_genres', 3600, function () {
                 return Genre::where('is_active', 1)
                     ->limit(6)
                     ->get();

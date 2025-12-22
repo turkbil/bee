@@ -27,6 +27,9 @@ module.exports = {
         './Modules/**/resources/views/front/**/*.blade.php',
         './Modules/**/resources/views/livewire/front/**/*.blade.php',
 
+        // Subscription modulu (onemli!)
+        './Modules/Subscription/resources/views/**/*.blade.php',
+
         // Muzibu modulu ozel
         './Modules/Muzibu/resources/views/**/*.blade.php',
 
@@ -51,6 +54,11 @@ module.exports = {
                 'muzibu-gray': '#1a1a1a',
                 'muzibu-gray-light': '#282828',
                 'muzibu-text-gray': '#B3B3B3',
+                // Subscription page colors
+                'sub-coral': '#ff6b6b',
+                'sub-coral-hover': '#ff5252',
+                'sub-dark': '#141414',
+                'sub-darker': '#0a0a0a',
             }
         }
     },
@@ -58,8 +66,21 @@ module.exports = {
     // muzibu icin ek safelist
     safelist: [
         ...baseConfig.safelist,
+        // Subscription Plans Page - onemli!
+        'bg-sub-coral', 'hover:bg-sub-coral-hover', 'text-sub-coral',
+        'bg-sub-dark', 'bg-sub-darker',
+        'border-sub-coral', 'border-sub-coral/30', 'border-sub-coral/50',
+        'bg-emerald-500', 'hover:bg-emerald-600', 'text-emerald-400', 'text-emerald-500',
+        'bg-emerald-500/20', 'border-emerald-500/30',
+        'bg-white/5', 'bg-white/10', 'bg-white/15', 'bg-white/20',
+        'border-white/8', 'border-white/10', 'border-white/15',
+        'shadow-lg', 'shadow-xl', 'rounded-3xl', 'rounded-2xl',
+        'bg-gray-700', 'text-yellow-300',
+        // Subscription card alignment
+        'min-h-[60px]', 'min-h-[50px]', 'min-h-[100px]', 'min-h-[120px]',
+        'items-stretch', 'line-clamp-2', 'pt-4',
         // muzibu'ya ozel siniflar
-        'bg-gradient-to-b',
+        'bg-gradient-to-b', 'bg-gradient-to-br',
         'from-gray-900', 'to-black',
         'from-purple-900', 'to-gray-900',
         // ALL Spotify colors (extracted from views)

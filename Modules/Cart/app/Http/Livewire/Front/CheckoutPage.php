@@ -280,10 +280,40 @@ class CheckoutPage extends Component
 
             $this->loadCart();
 
-            // 🛒 SEPET BOŞ MU KONTROL ET
+            // 🛒 SEPET BOŞ İSE CART SAYFASINA YÖNLENDİR
             if (!$this->cart || $this->items->isEmpty()) {
                 \Log::warning('⚠️ Checkout: Sepet boş, cart sayfasına yönlendiriliyor');
                 session()->flash('warning', 'Sepetiniz boş. Lütfen ürün ekleyiniz.');
+                return redirect()->route('cart.index');
+            }
+
+            // 🔥 ITEM'LARDAN DİREKT HESAPLA - Cart tablosuna güvenme!
+            $this->subtotal = $this->items->sum('subtotal');
+            $this->taxAmount = $this->items->sum('tax_amount');
+            $this->total = $this->subtotal + $this->taxAmount;
+            $this->grandTotal = $this->total;
+
+            // Cart tablosunu da güncelle (senkron tut)
+            $this->cart->subtotal = $this->subtotal;
+            $this->cart->tax_amount = $this->taxAmount;
+            $this->cart->total = $this->total;
+            $this->cart->items_count = $this->items->sum('quantity');
+            $this->cart->save();
+
+            \Log::info('💰 Checkout totals from items', [
+                'cart_id' => $this->cart->cart_id,
+                'subtotal' => $this->subtotal,
+                'tax' => $this->taxAmount,
+                'total' => $this->total,
+            ]);
+
+            // 🔥 Toplam 0 ise cart sayfasına yönlendir
+            if ($this->total <= 0) {
+                \Log::warning('⚠️ Checkout: Sepet toplamı 0', [
+                    'cart_id' => $this->cart->cart_id,
+                    'items_count' => $this->items->count(),
+                ]);
+                session()->flash('warning', 'Sepet toplamı hesaplanamadı. Lütfen tekrar deneyin.');
                 return redirect()->route('cart.index');
             }
 
@@ -320,18 +350,27 @@ class CheckoutPage extends Component
             $cart = $cartService->findOrCreateCart($customerId, $sessionId);
 
             // Diğer subscription'ları temizle
-            $cart->items()
+            $existingSubscriptions = $cart->items()
                 ->where('cartable_type', 'Modules\Subscription\App\Models\SubscriptionPlan')
-                ->each(function ($item) use ($cartService) {
-                    $cartService->removeItem($item);
-                });
+                ->get();
+
+            foreach ($existingSubscriptions as $item) {
+                $cartService->removeItem($item);
+            }
+
+            // Eski item'lar silindikten sonra toplamları sıfırla
+            if ($existingSubscriptions->count() > 0) {
+                $cart->refresh();
+                $cart->recalculateTotals();
+            }
 
             // Subscription ekle
             $options = $bridge->prepareSubscriptionForCart($plan, $cycleKey, true);
             $cartService->addItem($cart, $plan, 1, $options);
 
-            // 🔥 FIX: Cart'ı refresh et ve component property'sini güncelle
+            // 🔥 FIX: Cart'ı refresh et ve toplamları yeniden hesapla
             $cart->refresh();
+            $cart->recalculateTotals();
             $this->cart = $cart;
 
             \Log::info('✅ Subscription auto-added to cart', [
@@ -2024,6 +2063,11 @@ class CheckoutPage extends Component
 
     public function render()
     {
+        // 🔥 NO-CACHE HEADERS - Browser cache'i engelle
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+        header('Pragma: no-cache');
+        header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
+
         // Layout: Tenant temasından (header/footer için)
         // View: Module default (içerik fallback'ten)
         $theme = tenant()->theme ?? 'simple';

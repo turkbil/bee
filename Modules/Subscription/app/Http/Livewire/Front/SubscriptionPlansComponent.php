@@ -107,11 +107,19 @@ class SubscriptionPlansComponent extends Component
             $cart = $cartService->findOrCreateCart($customerId, $sessionId);
 
             // Cart'taki diğer subscription'ları temizle (sadece bir subscription olabilir)
-            $cart->items()
+            $existingSubscriptions = $cart->items()
                 ->where('cartable_type', 'Modules\Subscription\App\Models\SubscriptionPlan')
-                ->each(function ($item) use ($cartService) {
-                    $cartService->removeItem($item);
-                });
+                ->get();
+
+            foreach ($existingSubscriptions as $item) {
+                $cartService->removeItem($item);
+            }
+
+            // Eski item'lar silindikten sonra toplamları sıfırla (güvenlik için)
+            if ($existingSubscriptions->count() > 0) {
+                $cart->refresh();
+                $cart->recalculateTotals();
+            }
 
             // Bridge ile subscription verilerini hazırla (fiyat + display info)
             $options = $bridge->prepareSubscriptionForCart($plan, $cycleKey, $autoRenew);
@@ -119,8 +127,9 @@ class SubscriptionPlansComponent extends Component
             // Cart'a ekle (CartService ile)
             $cartItem = $cartService->addItem($cart, $plan, 1, $options);
 
-            // Cart refresh
+            // Cart refresh ve toplamları yeniden hesapla (güvenlik için)
             $cart->refresh();
+            $cart->recalculateTotals();
             $itemCount = $cart->items()->where('is_active', true)->sum('quantity');
 
             // Events
@@ -131,8 +140,9 @@ class SubscriptionPlansComponent extends Component
                 'cart_id' => $cart->cart_id,
             ]);
 
-            // Checkout sayfasına yönlendir (Livewire navigate)
-            return $this->redirect(route('cart.checkout'), navigate: true);
+            // Checkout sayfasına yönlendir (cache buster ile)
+            $url = route('cart.checkout') . '?t=' . time();
+            return $this->redirect($url, navigate: false);
 
         } catch (\Exception $e) {
             \Log::error('❌ Subscription AddToCart ERROR', [

@@ -35,11 +35,21 @@ class CartPage extends Component
         $this->cart = $cartService->getCart($customerId, $sessionId);
 
         if ($this->cart) {
+            // Önce item'ları al
             $this->items = $this->cart->items()->where('is_active', true)->get();
             $this->itemCount = $this->items->sum('quantity');
-            $this->subtotal = (float) $this->cart->subtotal;
-            $this->taxAmount = (float) $this->cart->tax_amount;
-            $this->total = (float) $this->cart->total;
+
+            // 🔥 ITEM'LARDAN DİREKT HESAPLA - Cart tablosuna güvenme!
+            $this->subtotal = (float) $this->items->sum('subtotal');
+            $this->taxAmount = (float) $this->items->sum('tax_amount');
+            $this->total = $this->subtotal + $this->taxAmount;
+
+            // Cart tablosunu da güncelle (senkron tut)
+            $this->cart->subtotal = $this->subtotal;
+            $this->cart->tax_amount = $this->taxAmount;
+            $this->cart->total = $this->total;
+            $this->cart->items_count = $this->itemCount;
+            $this->cart->save();
         } else {
             $this->items = collect([]);
             $this->itemCount = 0;
@@ -131,6 +141,11 @@ class CartPage extends Component
 
     public function render()
     {
+        // 🔥 NO-CACHE HEADERS - Browser cache'i engelle
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+        header('Pragma: no-cache');
+        header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
+
         // Layout: Tenant temasından (header/footer için)
         // View: Module default (içerik fallback'ten)
         $theme = tenant()->theme ?? 'simple';

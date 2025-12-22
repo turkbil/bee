@@ -1,186 +1,469 @@
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+{{-- Subscription Plans - Premium Design --}}
+<div x-data="{
+    selectedCycle: {},
+    hoveredPlan: null,
+    init() {
+        // Her plan için ilk cycle'ı seç
+        @foreach($plans as $plan)
+            @php $cycles = $plan->getSortedCycles(); $firstKey = array_key_first($cycles); @endphp
+            this.selectedCycle[{{ $plan->subscription_plan_id }}] = '{{ $firstKey }}';
+        @endforeach
+    }
+}">
+<style>
+    /* Animated Background Orbs - Subtle */
+    .orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(120px);
+        opacity: 0.15;
+        animation: float 30s ease-in-out infinite;
+    }
+    .orb-1 { width: 300px; height: 300px; background: #ff6b6b; top: -150px; left: -150px; animation-delay: 0s; }
+    .orb-2 { width: 250px; height: 250px; background: #a55eea; bottom: 10%; right: -100px; animation-delay: -5s; }
+    .orb-3 { width: 200px; height: 200px; background: #00d2d3; top: 60%; left: -50px; animation-delay: -10s; }
+
+    @keyframes float {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        25% { transform: translate(30px, -30px) scale(1.05); }
+        50% { transform: translate(-20px, 20px) scale(0.95); }
+        75% { transform: translate(-30px, -20px) scale(1.02); }
+    }
+
+    /* Glass Card Effect */
+    .glass-card {
+        background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .glass-card-hover:hover {
+        background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%);
+        border-color: rgba(255,255,255,0.15);
+    }
+
+    /* Featured Card Glow - Subtle */
+    .featured-glow {
+        box-shadow:
+            0 0 40px -10px rgba(255, 107, 107, 0.25),
+            0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+    }
+
+    .featured-glow:hover {
+        box-shadow:
+            0 0 50px -10px rgba(255, 107, 107, 0.35),
+            0 25px 50px -12px rgba(0, 0, 0, 0.6);
+        border-color: rgba(255, 107, 107, 0.5);
+    }
+
+    /* Featured Border */
+    .gradient-border {
+        position: relative;
+    }
+
+    /* Animated Gradient Price */
+    .price-gradient {
+        background: linear-gradient(90deg, #ff6b6b, #f368e0, #a55eea, #00d2d3, #ff6b6b);
+        background-size: 300% 100%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: priceGradientFlow 6s ease infinite;
+    }
+
+    .price-gradient-emerald {
+        background: linear-gradient(90deg, #10b981, #14b8a6, #06b6d4, #10b981);
+        background-size: 300% 100%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: priceGradientFlow 6s ease infinite;
+    }
+
+    @keyframes priceGradientFlow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* Card Hover Effects */
+    .plan-card-inner {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .plan-card:hover .plan-card-inner {
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .plan-card:hover .card-glow {
+        opacity: 1;
+    }
+
+    .card-glow {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.08) 0%, transparent 60%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        pointer-events: none;
+        border-radius: 24px;
+    }
+
+    /* Hover border glow */
+    .plan-card:hover .glass-card {
+        border-color: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 0 30px -10px rgba(255, 255, 255, 0.1);
+    }
+
+    .plan-card:hover .featured-glow {
+        border-color: rgba(255, 107, 107, 0.5);
+        box-shadow: 0 0 50px -10px rgba(255, 107, 107, 0.4), 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Icon pulse on hover */
+    .plan-card:hover .feature-icon {
+        transform: scale(1.1);
+    }
+
+    .feature-icon {
+        transition: transform 0.3s ease;
+    }
+
+    /* Shine Effect on Button */
+    .btn-shine {
+        position: relative;
+        overflow: hidden;
+    }
+    .btn-shine::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+        transform: translateX(-100%) rotate(45deg);
+        transition: none;
+    }
+    .btn-shine:hover::after {
+        animation: shine 0.6s ease forwards;
+    }
+    @keyframes shine {
+        to { transform: translateX(100%) rotate(45deg); }
+    }
+
+    /* Feature Check Animation */
+    .feature-item {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    .feature-item.visible {
+        animation: slideIn 0.4s ease forwards;
+    }
+    @keyframes slideIn {
+        to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Cycle Selector Pills */
+    .cycle-pill {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .cycle-pill.active {
+        background: #ff6b6b;
+    }
+
+    /* Scroll Animations */
+    .plan-card {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: fadeUp 0.6s ease forwards;
+    }
+    .plan-card:nth-child(1) { animation-delay: 0.1s; }
+    .plan-card:nth-child(2) { animation-delay: 0.2s; }
+    .plan-card:nth-child(3) { animation-delay: 0.3s; }
+    .plan-card:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes fadeUp {
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="relative min-h-screen overflow-hidden bg-gradient-to-br from-sub-darker via-sub-darker to-sub-darker py-12 px-4 sm:px-6 lg:px-8">
+    {{-- Animated Background Orbs --}}
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    {{-- Content --}}
+    <div class="relative z-10 max-w-7xl mx-auto">
 
         {{-- Header --}}
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                {{ __('Üyelik Planları') }}
+        <div class="text-center mb-16">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 tracking-tight leading-tight">
+                <span class="text-white">Sınırsız</span>
+                <br class="sm:hidden">
+                <span class="text-sub-coral">Müzik Keyfi</span>
             </h1>
-            <p class="text-lg text-gray-600 dark:text-gray-400">
-                {{ __('Sizin için en uygun planı seçin') }}
+
+            <p class="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+                İşletmenize en uygun planı seçin, telifsiz müziğin keyfini çıkarın
             </p>
         </div>
 
-        {{-- Plans Loop --}}
-        @foreach($plans as $plan)
-            @php
-                $cycles = $plan->getSortedCycles();
-                $cycleCount = count($cycles);
+        {{-- Plans Grid --}}
+        @php
+            $visiblePlans = $plans->filter(function($plan) use ($userHasUsedTrial) {
+                return !($plan->is_trial && $userHasUsedTrial);
+            })->filter(function($plan) {
+                return !empty($plan->getSortedCycles());
+            });
+            $planCount = $visiblePlans->count();
+        @endphp
 
-                // Grid sütun sayısı - max 4 sütun
-                $gridCols = match($cycleCount) {
-                    1 => 'grid-cols-1',
-                    2 => 'md:grid-cols-2',
-                    3 => 'md:grid-cols-3',
-                    default => 'md:grid-cols-2 lg:grid-cols-4'
-                };
-            @endphp
-
-            {{-- Plan Title (Eğer birden fazla plan varsa göster) --}}
-            @if($plans->count() > 1)
-            <div class="text-center mb-6">
-                <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                    {{ $plan->getTranslated('title') }}
-                </h2>
-                @if($plan->getTranslated('description'))
-                <p class="text-gray-600 dark:text-gray-400">
-                    {{ $plan->getTranslated('description') }}
-                </p>
+        @if($planCount > 0)
+        <div class="grid grid-cols-1 md:grid-cols-2 {{ $planCount >= 3 ? 'lg:grid-cols-3' : '' }} gap-6 lg:gap-8 max-w-5xl mx-auto items-stretch">
+            @foreach($plans as $planIndex => $plan)
+                @if($plan->is_trial && $userHasUsedTrial)
+                    @continue
                 @endif
-            </div>
-            @endif
 
-            {{-- Billing Cycles Grid --}}
-            <div class="grid grid-cols-1 {{ $gridCols }} gap-8 max-w-6xl mx-auto mb-16">
-                @foreach($cycles as $cycleKey => $cycle)
-                    @php
-                        $cycleLabel = $cycle['label']['tr'] ?? $cycle['label']['en'] ?? $cycleKey;
-                        $price = $cycle['price'];
-                        $comparePrice = $cycle['compare_price'] ?? null;
-                        $durationDays = $cycle['duration_days'];
-                        $trialDays = $cycle['trial_days'] ?? null;
-                        $badge = $cycle['badge'] ?? null;
-                        $promoText = $cycle['promo_text']['tr'] ?? $cycle['promo_text']['en'] ?? null;
+                @php
+                    $cycles = $plan->getSortedCycles();
+                    if (empty($cycles)) continue;
+                    $firstCycleKey = array_key_first($cycles);
+                    $isFeatured = $plan->is_featured;
+                    $isTrial = $plan->is_trial;
+                @endphp
 
-                        // Öne çıkan plan için border rengi
-                        $borderColor = $plan->is_featured ? 'border-blue-500' : 'border-gray-200 dark:border-gray-700';
+                <div class="plan-card relative group"
+                     x-on:mouseenter="hoveredPlan = {{ $plan->subscription_plan_id }}"
+                     x-on:mouseleave="hoveredPlan = null">
 
-                        // Badge rengi
-                        $badgeColor = match($badge['color'] ?? null) {
-                            'success' => 'bg-green-500',
-                            'warning' => 'bg-yellow-500',
-                            'danger' => 'bg-red-500',
-                            'info' => 'bg-cyan-500',
-                            'primary' => 'bg-blue-500',
-                            default => 'bg-blue-500'
-                        };
-                    @endphp
-
-                    <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl border-2 {{ $borderColor }} overflow-hidden transition-all hover:scale-105 hover:shadow-2xl">
-
-                        {{-- Badge (Üstte) --}}
-                        @if($badge && !empty($badge['text']))
-                        <div class="absolute top-0 right-0 {{ $badgeColor }} text-white text-xs font-bold px-4 py-2 rounded-bl-xl">
-                            {{ $badge['text'] }}
+                    {{-- Featured Badge --}}
+                    @if($isFeatured)
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
+                        <div class="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-sub-coral text-white text-xs font-bold shadow-lg">
+                            <i class="fas fa-crown text-yellow-300"></i>
+                            <span>EN POPÜLER</span>
                         </div>
-                        @endif
+                    </div>
+                    @endif
 
-                        <div class="p-8">
-                            {{-- Plan Title (Tek plan varsa göster) --}}
-                            @if($plans->count() === 1)
-                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                                {{ $plan->getTranslated('title') }}
-                            </h3>
+                    {{-- Trial Badge --}}
+                    @if($isTrial)
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
+                        <div class="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-500 text-white text-xs font-bold shadow-lg">
+                            <i class="fas fa-gift"></i>
+                            <span>ÜCRETSİZ DENE</span>
+                        </div>
+                    </div>
+                    @endif
+
+                    {{-- Card --}}
+                    <div class="relative h-full rounded-3xl overflow-hidden transition-all duration-500 {{ $isFeatured ? 'gradient-border featured-glow' : 'glass-card glass-card-hover' }} {{ $isFeatured ? 'scale-[1.02] lg:scale-105' : '' }}">
+
+                        {{-- Hover Glow Effect --}}
+                        <div class="card-glow"></div>
+
+                        {{-- Top Accent Bar --}}
+                        <div class="h-1 w-full {{ $isTrial ? 'bg-emerald-500' : ($isFeatured ? 'bg-sub-coral' : 'bg-gray-700') }}"></div>
+
+                        <div class="p-6 sm:p-8 flex flex-col h-full {{ $isFeatured ? 'bg-sub-dark' : '' }}">
+
+                            {{-- Plan Name --}}
+                            <div class="mb-2">
+                                <h3 class="text-2xl font-bold text-white mb-1">
+                                    {{ $plan->getTranslated('title') }}
+                                </h3>
+                                @if($plan->getTranslated('description'))
+                                <p class="text-sm text-gray-500 line-clamp-2">{{ $plan->getTranslated('description') }}</p>
+                                @endif
+                            </div>
+
+                            {{-- Cycle Selector --}}
+                            @if(count($cycles) > 1)
+                            <div class="mb-3">
+                                <div class="flex flex-wrap gap-2 p-1 rounded-xl bg-white/5">
+                                    @foreach($cycles as $cycleKey => $cycle)
+                                        @php
+                                            $cycleLabel = $cycle['label'][app()->getLocale()] ?? $cycle['label']['tr'] ?? $cycleKey;
+                                        @endphp
+                                        <button
+                                            type="button"
+                                            x-on:click="selectedCycle[{{ $plan->subscription_plan_id }}] = '{{ $cycleKey }}'"
+                                            :class="selectedCycle[{{ $plan->subscription_plan_id }}] === '{{ $cycleKey }}' ? 'active text-white' : 'text-gray-400 hover:text-white'"
+                                            class="cycle-pill flex-1 px-3 py-2 text-sm font-medium rounded-lg transition-all">
+                                            {{ $cycleLabel }}
+                                        </button>
+                                    @endforeach
+                                </div>
+                            </div>
                             @endif
 
-                            {{-- Cycle Label --}}
-                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-6 font-semibold">
-                                {{ $cycleLabel }}
-                                @if($durationDays)
-                                <span class="text-xs text-gray-500">
-                                    ({{ $durationDays }} {{ __('gün') }})
-                                </span>
-                                @endif
-                            </p>
+                            {{-- Price Display --}}
+                            <div class="mb-6">
+                                @foreach($cycles as $cycleKey => $cycle)
+                                    @php
+                                        $price = $cycle['price'] ?? 0;
+                                        $comparePrice = $cycle['compare_price'] ?? null;
+                                        $durationDays = $cycle['duration_days'] ?? 30;
+                                        $monthlyPrice = $durationDays > 0 ? round(($price / $durationDays) * 30) : $price;
+                                        $discount = $comparePrice ? round((($comparePrice - $price) / $comparePrice) * 100) : 0;
+                                    @endphp
 
-                            {{-- Price --}}
-                            <div class="mb-8">
-                                <span class="text-5xl font-extrabold text-gray-900 dark:text-white">
-                                    ₺{{ number_format($price, 0, ',', '.') }}
-                                </span>
+                                    <div x-show="selectedCycle[{{ $plan->subscription_plan_id }}] === '{{ $cycleKey }}'"
+                                         x-transition:enter="transition ease-out duration-300"
+                                         x-transition:enter-start="opacity-0 transform scale-95"
+                                         x-transition:enter-end="opacity-100 transform scale-100">
 
-                                {{-- Compare Price (Üstü Çizili) --}}
-                                @if($comparePrice)
-                                <div class="mt-2 text-sm">
-                                    <span class="line-through text-gray-500 dark:text-gray-400">
-                                        ₺{{ number_format($comparePrice, 0, ',', '.') }}
-                                    </span>
-                                    <span class="ml-2 text-green-600 dark:text-green-400 font-semibold">
-                                        {{ __('Tasarruf: ₺') }}{{ number_format($comparePrice - $price, 0, ',', '.') }}
-                                    </span>
-                                </div>
-                                @endif
+                                        @if($isTrial)
+                                            <div class="flex items-baseline gap-2">
+                                                <span class="text-5xl font-black price-gradient-emerald">
+                                                    ÜCRETSİZ
+                                                </span>
+                                            </div>
+                                            <p class="text-sm text-gray-500 mt-2">
+                                                <i class="fas fa-clock mr-1"></i>
+                                                {{ $durationDays }} gün deneme süresi
+                                            </p>
+                                        @else
+                                            {{-- Compare Price --}}
+                                            @if($comparePrice)
+                                            <div class="flex items-center gap-3 mb-2">
+                                                <span class="text-lg text-gray-500 line-through">
+                                                    {{ number_format($comparePrice, 0, ',', '.') }}₺
+                                                </span>
+                                                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                                                    %{{ $discount }} TASARRUF
+                                                </span>
+                                            </div>
+                                            @endif
 
-                                {{-- Promo Text --}}
-                                @if($promoText)
-                                <div class="mt-3 inline-block bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold px-3 py-1 rounded-full">
-                                    {{ $promoText }}
-                                </div>
-                                @endif
+                                            {{-- Main Price --}}
+                                            <div class="flex items-baseline gap-1">
+                                                <span class="text-5xl sm:text-6xl font-black price-gradient">
+                                                    {{ number_format($price, 0, ',', '.') }}
+                                                </span>
+                                                <span class="text-2xl price-gradient">₺</span>
+                                            </div>
 
-                                {{-- Trial Period (Kullanıcı daha önce kullanmadıysa göster) --}}
-                                @if($trialDays && !$userHasUsedTrial)
-                                <div class="mt-3 text-sm text-blue-600 dark:text-blue-400 font-medium">
-                                    <i class="fas fa-gift mr-1"></i>
-                                    {{ $trialDays }} {{ __('gün ücretsiz deneme') }}
+                                            {{-- Tax Info --}}
+                                            @if($plan->tax_rate > 0)
+                                            <p class="text-xs text-gray-500 mt-1">KDV dahil</p>
+                                            @endif
+
+                                            {{-- Monthly Equivalent --}}
+                                            @if($durationDays > 30)
+                                            <p class="text-sm text-gray-500 mt-1">
+                                                <span class="text-white font-semibold">{{ number_format($monthlyPrice, 0, ',', '.') }}₺</span>/ay
+                                            </p>
+                                            @endif
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            {{-- Features List --}}
+                            @php
+                                $features = $plan->features ?? [];
+                            @endphp
+                            <div class="flex-1 mb-6">
+                                @if(!empty($features))
+                                <div class="space-y-3">
+                                    @foreach($features as $featureIndex => $feature)
+                                        @php
+                                            if (str_contains($feature, '|')) {
+                                                [$icon, $text] = explode('|', $feature, 2);
+                                            } else {
+                                                $icon = 'fas fa-check';
+                                                $text = $feature;
+                                            }
+                                        @endphp
+                                        <div class="flex items-start gap-3 text-sm">
+                                            <div class="feature-icon flex-shrink-0 w-5 h-5 rounded-full {{ $isFeatured ? 'bg-sub-coral' : ($isTrial ? 'bg-emerald-500' : 'bg-white/20') }} flex items-center justify-center mt-0.5">
+                                                <i class="{{ $icon }} text-white text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-300">{{ $text }}</span>
+                                        </div>
+                                    @endforeach
                                 </div>
                                 @endif
                             </div>
 
-                            {{-- Features --}}
-                            @php
-                                $features = $plan->features ?? [];
-                            @endphp
-                            @if($features && is_array($features) && count($features) > 0)
-                            <ul class="space-y-4 mb-8">
-                                @foreach($features as $feature)
-                                @php
-                                    // Format: "icon|text" veya sadece "text"
-                                    if (str_contains($feature, '|')) {
-                                        [$icon, $text] = explode('|', $feature, 2);
-                                    } else {
-                                        $icon = 'fas fa-check';
-                                        $text = $feature;
-                                    }
-                                @endphp
-                                <li class="flex items-start">
-                                    <i class="{{ $icon }} text-green-500 mr-3 flex-shrink-0" style="font-size: 1.25rem; margin-top: 2px;"></i>
-                                    <span class="text-gray-700 dark:text-gray-300">{{ $text }}</span>
-                                </li>
+                            {{-- CTA Button - Her Zaman En Altta --}}
+                            <div class="mt-auto pt-4">
+                                @foreach($cycles as $cycleKey => $cycle)
+                                    <div x-show="selectedCycle[{{ $plan->subscription_plan_id }}] === '{{ $cycleKey }}'">
+                                        <button
+                                            @if($isTrial)
+                                                wire:click="startTrial({{ $plan->subscription_plan_id }}, '{{ $cycleKey }}')"
+                                            @else
+                                                wire:click="addToCart({{ $plan->subscription_plan_id }}, '{{ $cycleKey }}', true)"
+                                            @endif
+                                            wire:loading.attr="disabled"
+                                            wire:loading.class="opacity-60 cursor-wait"
+                                            class="btn-shine w-full py-4 px-6 rounded-2xl font-bold text-base sm:text-lg transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:cursor-wait
+                                                {{ $isFeatured
+                                                    ? 'bg-sub-coral hover:bg-sub-coral-hover text-white shadow-lg'
+                                                    : ($isTrial
+                                                        ? 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg'
+                                                        : 'bg-white text-black hover:bg-gray-100 shadow-lg')
+                                                }}">
+                                            <span wire:loading.remove wire:target="{{ $isTrial ? 'startTrial' : 'addToCart' }}({{ $plan->subscription_plan_id }}, '{{ $cycleKey }}'{{ $isTrial ? '' : ', true' }})">
+                                                @if($isTrial)
+                                                    <i class="fas fa-gift mr-2"></i>Ücretsiz Başla
+                                                @else
+                                                    <i class="fas fa-crown mr-2"></i>Üyeliğini Uzat
+                                                @endif
+                                            </span>
+                                            <span wire:loading wire:target="{{ $isTrial ? 'startTrial' : 'addToCart' }}({{ $plan->subscription_plan_id }}, '{{ $cycleKey }}'{{ $isTrial ? '' : ', true' }})">
+                                                <i class="fas fa-spinner fa-spin mr-2"></i>Yükleniyor...
+                                            </span>
+                                        </button>
+                                    </div>
                                 @endforeach
-                            </ul>
-                            @endif
-
-                            {{-- CTA Button --}}
-                            <button wire:click="addToCart({{ $plan->subscription_plan_id }}, '{{ $cycleKey }}')"
-                                    wire:loading.attr="disabled"
-                                    class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-4 px-6 rounded-xl transition-all transform hover:scale-102 shadow-lg disabled:opacity-50 disabled:cursor-wait">
-                                <span wire:loading.remove wire:target="addToCart({{ $plan->subscription_plan_id }}, '{{ $cycleKey }}')">
-                                    {{ __('Satın Al') }}
-                                </span>
-                                <span wire:loading wire:target="addToCart({{ $plan->subscription_plan_id }}, '{{ $cycleKey }}')">
-                                    <i class="fas fa-spinner fa-spin mr-2"></i>{{ __('Ekleniyor...') }}
-                                </span>
-                            </button>
+                            </div>
                         </div>
                     </div>
-                @endforeach
-            </div>
-        @endforeach
+                </div>
+            @endforeach
+        </div>
 
-        {{-- No Plans Message --}}
-        @if($plans->count() === 0)
-        <div class="text-center py-12">
-            <div class="text-gray-400 dark:text-gray-600 text-6xl mb-4">
-                <i class="fas fa-crown"></i>
+        {{-- Trust Badges --}}
+        <div class="mt-16 flex flex-wrap justify-center items-center gap-6 sm:gap-10 text-gray-500">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-shield-alt text-emerald-500"></i>
+                <span class="text-sm">Güvenli Ödeme</span>
             </div>
-            <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                {{ __('Henüz Aktif Plan Yok') }}
+            <div class="flex items-center gap-2">
+                <i class="fas fa-undo text-blue-500"></i>
+                <span class="text-sm">İstediğiniz Zaman İptal</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-headset text-purple-500"></i>
+                <span class="text-sm">7/24 Destek</span>
+            </div>
+        </div>
+
+        @else
+        {{-- No Plans Message --}}
+        <div class="text-center py-20">
+            <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-white/5 flex items-center justify-center">
+                <i class="fas fa-crown text-4xl text-gray-600"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-3">
+                Henüz Aktif Plan Yok
             </h3>
-            <p class="text-gray-500 dark:text-gray-400">
-                {{ __('Yakında yeni planlar eklenecek') }}
+            <p class="text-gray-500 text-lg">
+                Yakında yeni planlar eklenecek
             </p>
         </div>
         @endif
+
     </div>
+</div>
 </div>

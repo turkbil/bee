@@ -1,437 +1,306 @@
-# Turkbil Bee - Laravel 12 Multi-Tenancy Projesi
+# Turkbil Bee - Multi-Tenant SaaS Platform
 
-Bu proje, Laravel 12 ile geliştirilmiş, modüler ve çok kiracılı (multi-tenancy) bir web uygulamasıdır.
+Laravel 12 tabanlı, modüler ve çok kiracılı (multi-tenancy) web platformu. Müzik streaming, e-ticaret ve kurumsal web sitesi çözümlerini tek çatı altında sunar.
 
-## 🚀 HIZLI BAŞLATMA
+---
 
-### Tüm Servisleri Başlat
+## Aktif Tenant'lar
+
+| ID | Domain | Sektör | Özellikler |
+|----|--------|--------|------------|
+| 1 | tuufi.com | Central Admin | Tüm tenant yönetimi |
+| 2 | ixtif.com | Endüstriyel Ekipman | Forklift, transpalet satışı |
+| 1001 | muzibu.com.tr | Müzik Platformu | Streaming, playlist, AI asistan |
+
+---
+
+## Son Güncellemeler
+
+### v6.0.0 - Device/Session Limit System (22 Aralık 2025)
+
+**Muzibu Session Yönetimi Tam Revizyonu**
+
+- **Cookie-based Device Detection**: `mzb_login_token` ile tarayıcı bazlı cihaz tanıma
+- **LIFO Mekanizması**: Yeni cihaz girişinde eski cihaz otomatik çıkış
+- **Distributed Lock**: Race condition koruması (`Cache::lock`)
+- **Atomic Termination**: DB + Redis + Cache senkron temizlik
+- **Rate Limiting Fix**: Çift throttle sorunu çözüldü, 429 hataları giderildi
+
+```
+Commit: 🔐 Muzibu Device/Session Limit System Overhaul
+Files: 33 changed, 1303 insertions(+), 718 deletions(-)
+```
+
+### v5.9.0 - Tailwind v4 Migration (21 Aralık 2025)
+
+**Muzibu Frontend Modernizasyonu**
+
+- Tailwind CSS v3 → v4.1.18 migration
+- Tenant-aware CSS build sistemi (`npm run css:muzibu`)
+- Homepage redesign - modern card layout
+- Performance optimizasyonu
+
+```
+Commits:
+🎉 Checkpoint 10: Tailwind v4 migration COMPLETE
+🎯 Checkpoint 11: Homepage Redesign + Song Cover Fix
+```
+
+### v5.8.0 - AI & Security Updates (Aralık 2025)
+
+- AI Chat dinamik context sistemi (ben/biz ayrımı)
+- HLS streaming güvenlik güncellemeleri
+- Console log cleanup (110+ gereksiz log silindi)
+- Premium access & toast system düzeltmeleri
+
+---
+
+## Mimari
+
+### Multi-Tenancy
+
+```
+Central Database (tuufi_4ekim)
+├── tenants, domains
+├── users, roles, permissions
+├── subscriptions, invoices
+└── migrations
+
+Tenant Database (tenant_X)
+├── pages, blogs, products
+├── songs, albums, playlists (Muzibu)
+├── media, settings
+└── seo_meta
+```
+
+### Modül Sistemi
+
+```
+Modules/
+├── AI/                 # AI Chat, Credits
+├── Blog/               # Blog sistemi
+├── Favorite/           # Favori sistemi
+├── LanguageManagement/ # Çok dil desteği
+├── MenuManagement/     # Dinamik menüler
+├── Muzibu/             # Müzik streaming
+├── Page/               # Sayfa yönetimi
+├── Portfolio/          # Portfolyo
+├── SEO/                # SEO meta yönetimi
+├── SettingManagement/  # Ayarlar
+├── Shop/               # E-ticaret
+├── Subscription/       # Abonelik sistemi
+├── TenantManagement/   # Tenant yönetimi
+└── UserManagement/     # Kullanıcı yönetimi
+```
+
+---
+
+## Kurulum
+
+### Gereksinimler
+
+- PHP 8.3+
+- MySQL 8.0+ / MariaDB 10.6+
+- Redis 7+
+- Node.js 20+
+- Composer 2.6+
+
+### Hızlı Başlangıç
+
 ```bash
-composer run dev              # Laravel:8000 + PHPMyAdmin:8001 + Domains:9000
-composer run dev-extended     # + 2 ek proje portu (8003, 8004)
+# Bağımlılıkları yükle
+composer install
+npm install
+
+# Ortam dosyasını yapılandır
+cp .env.example .env
+php artisan key:generate
+
+# Veritabanını hazırla
+php artisan migrate
+php artisan tenants:migrate
+
+# Asset'leri derle
+npm run prod
+
+# Sunucuyu başlat
+php artisan serve
 ```
 
-### Port Yapısı
-- **Laravel CMS**: http://localhost:8000 (tenant domain ile)
-- **PHPMyAdmin**: http://localhost:8001 
-- **Domains Projesi**: http://localhost:9000 (Flask)
-- **Yeni Projeler**: 8003, 8004 portları
+### Build Komutları
 
-### Yeni Proje Ekleme
-CMS klasöründe yeni proje eklerseniz:
-1. `../yeni-proje` klasörü oluşturun 
-2. `composer run dev-extended` ile başlatın
-3. İlgili port'tan erişim sağlayın
-
-**Not**: Projeler otomatik başlar, manuel müdahale gerekmez.
-
-## 🎉 SİSTEM BAŞARILARI - 20.08.2025 - SEO HEAD OPTİMİZASYON SİSTEMİ v5.7.0
-
-### 🚀 SEO HEAD META TAG SİSTEMİ TAMAMLANDI
-**BAŞARI**: Yeni SEO alanları HTML head'de kusursuz görünüyor! Profesyonel meta tag çıktısı sağlandı!
-
-**🎯 EKLENİLEN YENİ ALANLAR:**
-✅ **Basic Meta**: author, publisher, copyright - Web sitesi sahiplik bilgileri
-✅ **Enhanced Open Graph**: og:locale, og:site_name - Sosyal medya için gelişmiş metadatalar  
-✅ **Twitter Cards Plus**: twitter:site, twitter:creator - Twitter paylaşımları için creator bilgileri
-
-**⚡ TEKNİK İYİLEŞTİRMELER:**
-- **Database Migration**: Central/tenant ayrı migrationlar ile yeni SEO alanları eklendi
-- **SeoMetaTagService**: Yeni alanlar için veri üretimi ve fallback mantığı
-- **SeoSetting Model**: Fillable array'e yeni alanlar eklendi, mass assignment desteği
-- **Blade Template**: HTML head çıktısı için robust conditional logic 
-
-**🔧 ÖRNEK ÇIKTI:**
-```html
-<meta name="author" content="Nurullah Okatan">
-<meta name="publisher" content="Türk Bilişim">
-<meta name="copyright" content="2025 Türk Bilişim. Tüm hakları saklıdır.">
-<meta name="twitter:site" content="@turkbilisim">
-<meta name="twitter:creator" content="@nurullahokatan">
+```bash
+npm run prod         # Tüm tenant CSS + app.css
+npm run css:all      # Sadece tenant CSS'leri
+npm run css:ixtif    # Tenant 2 CSS
+npm run css:muzibu   # Tenant 1001 CSS
+npm run mix-only     # Sadece Laravel Mix
 ```
 
-**🐛 ÇÖZÜLEN SORUNLAR:**
-- Database migration column reference hatası (keywords vs meta_keywords)
-- SeoSetting model fillable eksikliği ve veri kaydetme sorunu
-- Template conditional logic'i ve head output görüntüleme sorunu
-- Database seeding ve model association sorunları
+---
 
-**📋 KALİTE KONTROL:**
-- Migration'lar başarıyla çalıştı, yeni alanlar eklendi
-- Veri kaydedilebiliyor ve güvenli şekilde retrieve ediliyor
-- HTML head çıktısı temiz ve professional formatta
-- Multi-language ve tenant desteği korundu
+## Güvenli Cache Temizleme
 
-## 🎉 SİSTEM BAŞARILARI - 07.08.2025 - AI CHAT DİNAMİK CONTEXT SİSTEMİ v5.6.0
+```bash
+# Güvenli komutlar
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+php artisan responsecache:clear
+php artisan optimize:clear
 
-### 🚀 AI CHAT BEN/BİZ DİNAMİK AYRIM SİSTEMİ TAMAMLANDI
-**BAŞARI**: AI artık hardcode kelimeler yerine akıllı dil analizi ile kullanıcı vs şirket ayrımı yapıyor!
-
-**🎯 ÇÖZÜLEN SORUNLAR:**
-✅ **Hardcode Ayrım Kaldırıldı**: Artık sabit "ben kimim", "biz kimiz" kontrolü yok
-✅ **AI Akıllı Tespit**: Sorudaki dil yapısından ve kelimelerden otomatik tespit
-✅ **Dinamik Context Seçimi**: AI kendi kendine kullanıcı mı şirket mi context'i seçiyor
-✅ **Esnek Yanıtlar**: Belirsiz sorularda context'e bakarak mantıklı seçim yapıyor
-
-**⚡ TEKNİK DETAYLAR:**
-- **Kullanıcı Odaklı Sorular**: "ben, beni, benim, kendim, kim, hangi kişi" → Kullanıcı bilgileri
-- **Şirket Odaklı Sorular**: "biz, bizim, firmamız, şirketimiz, markamız, kuruluş" → Şirket bilgileri
-- **Zeka Kuralı**: AI sorudaki dil yapısından otomatik tespit ediyor
-- **Her İki Context Hazır**: Şirket bilgileri de hazır, AI gerektiğinde seçiyor
-
-**🔧 KULLANIM ÖRNEKLERİ:**
-```
-"Ben kimim?" → Kullanıcı bilgisi (Hasan Basan, admin, 120 gündür üye...)
-"Hangi kişiyim?" → Kullanıcı bilgisi
-"Biz ne iş yapıyoruz?" → Şirket bilgisi (XYZ Teknoloji, yazılım...)
-"Firmamızın sektörü nedir?" → Şirket bilgisi
-"Bizim misyonumuz ne?" → Şirket bilgisi
+# Nuclear clear (değişiklik yansımadığında)
+php artisan cache:clear && php artisan config:clear && \
+php artisan route:clear && php artisan view:clear && \
+php artisan responsecache:clear && \
+curl -s -k https://domain.com/opcache-reset.php
 ```
 
-**🧠 AI MANTIK SİSTEMİ:**
-- Hardcode kontrol yapmıyor, sadece dil yapısını analiz ediyor
-- Türkçe dilbilgisi kurallarını anlıyor
-- Context belirsizliğinde mantıklı tahmin yapıyor
-- Yanıt vermeden önce hangi context'i kullanacağını seçiyor
+### YASAK Komutlar
 
-## 🎉 SİSTEM BAŞARILARI - 04.08.2025 - DİNAMİK MODÜL TİTLE & URL ÇAKIŞMA SİSTEMİ v5.5.0
+```bash
+# ASLA KULLANMA - Veri kaybı riski!
+php artisan migrate:fresh
+php artisan db:wipe
+php artisan media-library:clear
+rm -rf storage/
+```
 
-### 🚀 DİNAMİK MODÜL TİTLE SİSTEMİ TAMAMLANDI
-**BAŞARI**: Modül title'ları artık JSON kolonda saklanıyor ve frontend'de dinamik çalışıyor!
+---
 
-**🎯 ÇÖZÜLEN SORUNLAR:**
-✅ **Veri Migrasyonu**: `multiLangNames` settings JSON'dan `title` kolonuna başarıyla taşındı
-✅ **Frontend Entegrasyonu**: Page, Announcement, Portfolio modüllerinde `$moduleTitle` değişkeni kullanılıyor
-✅ **Fallback Sistemi**: Eğer custom title yoksa default modül adları kullanılıyor
-✅ **Auto-Save Kaldırıldı**: Module management'ta manuel kaydetme sistemi (footer button)
+## Muzibu - Müzik Streaming
 
-### 🔧 URL ÇAKIŞMA MANTIK DÜZELTMESİ - KRİTİK
-**BAŞARI**: URL çakışma kontrolü Nurullah'ın kurallarına göre düzeltildi!
+### Özellikler
 
-**🎯 DOĞRU ÇAKIŞMA KURALLARI:**
-✅ **Aynı modül farklı key'ler**: Aynı slug kullanabilir (ÇAKIŞMA YOK)
-✅ **Farklı diller**: Aynı slug kullanabilir (prefix sistemi var)
-❌ **Farklı modüller**: Aynı slug kullanamaz (ÇAKIŞMA VAR)
-❌ **Central modül isimleri**: Slug, modül ismi olamaz (ÇAKIŞMA VAR)
+- HLS encrypted streaming
+- AI destekli playlist oluşturma
+- Sektör bazlı müzik kategorileri
+- Device limit sistemi (LIFO)
+- Favori ve rating sistemi
+- Infinite queue (otomatik şarkı ekleme)
 
-**⚡ TEKNİK DETAYLAR:**
-- `ModuleSlugService::isMultiLangSlugConflict()`: Case-insensitive kontrol eklendi
-- `ModuleTenantSetting`: `title` JSON kolonu eklendi, fillable/casts güncellendi
-- `ModuleSlugSettingsComponent`: Auto-save kaldırıldı, manuel save sistemi
-- Frontend controllers: `getModuleTitle()` metodları eklendi
+### Session Yönetimi
 
-**🐛 ÇÖZÜLEN HATA:**
-- `"Announcement"` vs `"announcement"` case sensitivity hatası → `strtolower()` ile düzeltildi
-
-## 🎉 SİSTEM BAŞARILARI - 02.08.2025 - SETTING HELPER SİSTEMİ & HEADER ENTEGRASYONİ
-
-### 🚀 GLOBAL SETTING HELPER SİSTEMİ - v5.4.0
-**BAŞARI**: Key-based setting erişim sistemi ve header logo/favicon entegrasyonu tamamlandı!
-
-**🎯 ÇÖZÜLEN SORUNLAR:**
-✅ **Global Setting Erişimi**: `setting('site_title')` formatında her yerden erişim
-✅ **3 Katmanlı Fallback**: Tenant değer → Central varsayılan → Function parameter
-✅ **Otomatik Cache Sistemi**: Tenant-aware cache ve otomatik temizleme
-✅ **Header Logo Entegrasyonu**: Logo varken title gizleme, güvenli URL çözümleme
-✅ **Favicon Entegrasyonu**: Dinamik favicon sistemi
-
-**⚡ TEKNİK İYİLEŞTİRMELER:**
-- `SettingManagement/app/Helpers/setting_helpers.php`: 4 helper fonksiyon
-- `SettingValue` model: Otomatik cache temizleme events
-- Header template: Logo/favicon güvenli görüntüleme
-- Multi-language settings desteği
-- Tenant isolation ve güvenlik
-
-**🔧 KULLANIM ÖRNEKLERİ:**
 ```php
-// Basit kullanım
-setting('site_title')
-setting('site_email', 'default@email.com')
+// Device = Tarayıcı instance
+// Chrome + Firefox = 2 cihaz
+// Aynı tarayıcıda re-login = 1 cihaz
 
-// Çoklu değer
-settings(['site_title', 'site_logo'])
-
-// Güncelleme (tenant)
-setting_update('site_title', 'Yeni Başlık')
+// Cookie: mzb_login_token
+// Lifetime: auth_session_lifetime setting (varsayılan 43200 dakika)
+// LIFO: Yeni cihaz girişinde eski cihaz otomatik logout
 ```
 
-## 🎉 SİSTEM BAŞARILARI - 01.08.2025 - DİNAMİK MODÜL SLUG SİSTEMİ & 404 FALLBACK
+### API Endpoints
 
-### 🚀 TENANT-AWARE MODÜL SLUG SİSTEMİ - v5.3.0
-**BAŞARI**: Modül slug değişiklikleri artık menü sistemi ve tüm linklerde otomatik çalışıyor!
+```
+POST /api/auth/login          # Giriş + session oluşturma
+GET  /api/auth/check-session  # Session geçerlilik kontrolü
+GET  /api/auth/active-devices # Aktif cihaz listesi
+POST /api/auth/terminate-device # Cihaz sonlandırma
 
-**🎯 ÇÖZÜLEN SORUNLAR:**
-✅ **MenuUrlBuilderService Entegrasyonu**: Artık ModuleSlugService'i locale-aware kullanıyor
-✅ **Tüm Modül Hard-coded Linkler**: Portfolio, Page, Announcement modüllerindeki tüm linkler dinamik
-✅ **404 Alternatif Slug Kontrolü**: Eski slug'lara gidildiğinde doğru URL'e 301 redirect yapılıyor
-✅ **Tenant-Aware Fallback**: Her tenant'ın kendi slug ayarları ve dilleri dikkate alınıyor
-
-**⚡ TEKNİK İYİLEŞTİRMELER:**
-- `MenuUrlBuilderService::buildModuleDetailUrl()`: ModuleSlugService entegrasyonu
-- `DynamicRouteResolver`: Locale-aware slug çözümleme
-- `DynamicRouteService::checkAlternativeSlugs()`: Akıllı 404 fallback sistemi
-- Portfolio blade dosyaları: Dinamik slug kullanımı
-- Page blade dosyaları: Dinamik slug kullanımı
-- Announcement blade dosyaları: Dinamik slug kullanımı
-
-**🔧 KULLANIM ÖRNEKLERİ:**
-```php
-// Modül slug'ı değiştirildiğinde
-// Eski: /portfolio → Yeni: /referanslar
-// Menüler otomatik güncellenir
-// Eski URL'ler yeni URL'lere yönlendirilir
-
-// Portfolio detay sayfasındaki buton
-// Eski: href="/portfolio" (hard-coded)
-// Yeni: href="{{ $localePrefix . '/' . $indexSlug }}" (dinamik)
+GET  /api/muzibu/songs/{id}/stream  # HLS stream
+GET  /api/muzibu/playlists          # Playlist listesi
+POST /api/ai/v1/assistant/chat      # AI asistan
 ```
 
-**📋 TENANT-AWARE ÖZELLİKLER:**
-- Her tenant kendi modül slug'larını tanımlayabilir
-- Her tenant kendi dillerini ve varsayılan dilini belirleyebilir
-- 404 kontrolü tenant'ın aktif modüllerini ve dillerini dikkate alır
-- Yönlendirmeler tenant'ın slug ayarlarına göre yapılır
+---
 
-## 🎉 SİSTEM BAŞARILARI - 01.08.2025 - NAVIGATION MENU CACHE & PERFORMANCE
+## İxtif - Endüstriyel Ekipman
 
-### 🚀 MENU SİSTEMİ PERFORMANS OPTİMİZASYONU - v5.2.0
-**BAŞARI**: Navigasyon menü sistemi cache ve active state optimizasyonları tamamlandı!
+### Özellikler
 
-**🎯 CACHE SİSTEMİ:**
-✅ **24 Saatlik Cache**: Menu helper fonksiyonları artık 24 saat cache'leniyor
-✅ **Locale-Aware Keys**: `menu.default.tr`, `menu.id.1.en` formatında dil bazlı cache
-✅ **Otomatik Cache Temizleme**: CRUD operasyonlarında otomatik cache invalidation
-✅ **clearMenuCaches() Helper**: Manuel cache temizleme için yardımcı fonksiyon
+- Forklift ve transpalet kataloğu
+- Teknik özellik karşılaştırma
+- Teklif talep sistemi
+- SEO optimizasyonu
 
-**⚡ PERFORMANS İYİLEŞTİRMELERİ:**
-✅ **%80 Daha Hızlı Menu Yükleme**: Cache sayesinde veritabanı sorguları minimize edildi
-✅ **%50 Daha Hızlı Active State**: Optimize edilmiş path normalization ve karşılaştırma
-✅ **Locale Cache**: Active locales listesi 1 saatlik cache ile optimize edildi
-✅ **Modern PHP**: str_starts_with() ve static cache kullanımı
+---
 
-**🔧 TEKNİK DETAYLAR:**
-- `MenuHelper.php`: Cache::remember() wrapper'ları eklendi
-- `MenuItem.php`: isActive() metodu modernize edildi, normalizeLocalePath() eklendi
-- `MenuService.php`: Tüm CRUD metodlarına clearMenuCaches() entegre edildi
-- Cache key pattern: `menu.{type}.{id}.{locale}` formatı
+## Geliştirme Standartları
 
-**📋 KULLANIM ÖRNEKLERİ:**
-```php
-// Otomatik cache kullanımı
-$menu = getDefaultMenu('tr'); // 24 saat cache'lenir
+### Admin Panel
 
-// Manuel cache temizleme
-clearMenuCaches(); // Tüm menü cache'lerini temizle
-clearMenuCaches(1); // Menu ID 1'in cache'ini temizle
-clearMenuCaches(null, 'tr'); // Türkçe cache'leri temizle
-clearMenuCaches(1, 'en'); // Belirli menü ve dil cache'ini temizle
+- **Framework**: Tabler.io + Bootstrap 5
+- **Components**: Livewire 3.5+
+- **Icons**: FontAwesome (`fas`, `far`, `fab`)
+
+### Frontend
+
+- **CSS**: Tailwind CSS v4
+- **JS**: Alpine.js 3.x
+- **Build**: Vite + PostCSS
+
+### Dosya İzinleri
+
+```bash
+# Dosya oluşturduktan sonra
+sudo chown tuufi.com_:psaserv /path/to/file
+sudo chmod 644 /path/to/file  # Dosya
+sudo chmod 755 /path/to/dir/  # Klasör
 ```
 
-## 🎉 SİSTEM BAŞARILARI - 30.07.2025 - ÇOK TENANT DİL SİSTEMİ & UI OPTİMİZASYONU
+---
 
-### 🚀 MULTI-TENANT LANGUAGE SYSTEM & CONDITIONAL UI - v5.1.0
-**BAŞARI**: Çok tenant dil sistemi kusursuz çalışıyor! Tenant-spesifik dil konfigürasyonları ve akıllı UI sistemi tamamlandı!
+## Commit Geçmişi (Son 30)
 
-**🌐 TENANT-SPESİFİK DİL KONFİGÜRASYONU:**
-✅ **laravel.test (Central)**: 3 dil (tr, en, ar) - Varsayılan: tr
-✅ **a.test**: 2 dil (en, tr) - Varsayılan: en  
-✅ **b.test**: 2 dil (ar, en) - Varsayılan: ar
-✅ **c.test**: 1 dil (en) - Varsayılan: en
-
-**🎯 AKILLI UI SİSTEMİ:**
-✅ **Conditional Language Switcher**: Tek dil olduğunda dil değiştirici gizlenir
-✅ **Multiple Switcher Support**: 3 farklı dil değiştirici bileşeni optimize edildi
-✅ **Dynamic Seeder System**: Domain-based language assignment, tenant-spesifik varsayılan diller
-✅ **Database Consistency**: `tenant_default_locale` field'ı tüm tenant'larda doğru şekilde set ediliyor
-
-**🔧 BİLEŞEN OPTİMİZASYONLARI:**
-- **Livewire LanguageSwitcher**: Admin ve site panellerinde conditional rendering
-- **CanonicalHelper Header Switcher**: Site header'ında akıllı gizleme
-- **Navigation Language Switcher**: Aynı Livewire bileşeni kullanan navigasyon
-
-**📋 TEKNİK ÇÖZÜMLER:**
-- Fixed: TenantSeeder.php → `tenant_default_locale` field'ları düzgün set ediliyor
-- Fixed: TenantLanguagesSeeder.php → Domain-based dynamic language configuration
-- Fixed: Conditional UI rendering → `@if(count($languages) > 1)` pattern'ı
-- Fixed: Language middleware → Proper locale detection ve session management
-
-**🚨 KÖK NEDENİ ÇÖZÜLDİ:**
-Manuel database patch'ler yerine seeder fix'i yapıldı. Sistem artık fresh migrate/seed'de kusursuz çalışıyor!
-
-## 🎉 SİSTEM BAŞARILARI - 28.07.2025 - CORE SYSTEM & DİL DEĞİŞTİRME SİSTEMİ
-
-### 🚀 CORE SYSTEM SCRIPTS & ÇOK DİLLİ NAVİGASYON - v5.0.0
-**BAŞARI**: Tema bağımsız core system oluşturuldu ve çok dilli içerik navigasyonu tamamlandı!
-
-**🎯 CORE SYSTEM ÖZELLIKLERI:**
-✅ **Core System Scripts**: `/public/js/core-system.js` - Tema değişikliklerinden etkilenmeyen sistem JS'leri
-✅ **Core System Styles**: `/public/css/core-system.css` - Tema bağımsız sistem CSS'leri  
-✅ **Koruma Altında**: AI tarafından değiştirilemez, header comment'leri ile korunur
-✅ **Otomatik Yükleme**: Tüm temalarda ve admin panelde otomatik include edilir
-
-**🌐 DİL DEĞİŞTİRME SİSTEMİ:**
-✅ **Aynı İçerikte Kalma**: Kullanıcı dil değiştirdiğinde aynı içerik sayfasında kalır
-✅ **SEO Dostu URL'ler**: Her dil için ayrı slug desteği (hakkimizda ↔ about-us)
-✅ **Canonical/Alternate Links**: SEO için hreflang tag'leri otomatik oluşturulur
-✅ **Varsayılan Dil Gizleme**: Tenant varsayılan dili prefix almaz (dinamik)
-✅ **Fallback Mekanizması**: Yanlış dilde slug aranırsa doğru dile 301 redirect
-
-**🔧 TEKNİK DETAYLAR:**
-- **CanonicalHelper**: Alternate link generation, language switcher links
-- **LocaleSwitcher Middleware**: URL'den locale tespiti ve session yönetimi
-- **Multi-Language Slug Support**: JSON based slug storage per language
-- **Smart Redirect System**: Wrong language slugs auto-redirect to correct URL
-
-**📋 UYGULANAN MODÜLLER:**
-- ✅ Page Module: Full fallback support
-- ✅ Announcement Module: Full fallback support
-- ✅ Portfolio Module: Partial (fallback needed)
-- ✅ Ana Sayfa: Multi-language URL support (/, /en, /ar)
-
-**🎨 UI/UX İYİLEŞTİRMELER:**
-- Language switcher dropdown with flags
-- Loading animation during language switch
-- Seamless navigation between languages
-- No more homepage redirects on language change
-
-## 🎉 SİSTEM BAŞARILARI - 27.07.2025 - PAGE PATTERN MODERNLEŞTIRME VERSİYONU
-
-### 🚀 ANNOUNCEMENT MODÜLÜ MODERNLEŞTIRME COMPLETE - v4.1.0
-**BAŞARI**: Announcement modülü tamamen Page pattern'ına göre modernleştirildi! Kod ve tasarım pattern'ı başarıyla uygulandı!
-
-**🎯 PAGE PATTERN UYGULAMASI:**
-✅ **Migration Modernizasyonu**: JSON multi-language columns (title, slug, body)
-✅ **Model Pattern**: HasTranslations trait, SEO relationships, modern PHP 8.3+
-✅ **Service Layer**: Readonly classes, SOLID principles, dependency injection
-✅ **Component Pattern**: Livewire 3.5+ computed properties, modern boot() injection
-✅ **UI/UX Pattern**: Form floating labels, language tabs, SEO panel design
-✅ **Validation System**: Multi-language field validation, SlugHelper integration
-✅ **Language Files**: Module-specific + global admin.php keys
-✅ **Configuration**: Module config/tabs.php, GlobalTabService entegrasyonu
-
-**🎨 TASARIM PATTERN'İ TAŞINAN ÖĞELER:**
-- Form Layout Pattern (floating labels, pretty switches)
-- Language System UI (Bootstrap nav-tabs, seamless switching)
-- SEO Panel Design (character counters, canonical URL inputs)
-- Button & Action Patterns (consistent styling)
-- JavaScript Integration (TinyMCE sync, form validation)
-
-**🏗️ KOD PATTERN'İ TAŞINAN ÖĞELER:**
-- Backend Architecture (Migration, Model, Service, Repository patterns)
-- Component Architecture (Computed properties, dependency injection)
-- Validation & Language (SlugHelper, nested field validation)
-- Configuration (Module-specific tab configs)
-
-**🔧 ÖZELLEŞTIRMELER:**
-- ❌ Homepage alanı kaldırıldı (announcements homepage olamaz)
-- ❌ Code tab kaldırıldı (announcements'ta kod alanı olmaz)
-- ✅ Announcement-specific validation rules
-- ✅ Module-specific language keys
-
-**📚 KAPSAMLI DOKÜMANTASYON:**
-- `CLAUDE.md` → Page Pattern Uygulaması rehberi eklendi
-- Kod ve Tasarım pattern kavramları tanımlandı
-- Pattern uygulama checklist'i oluşturuldu
-- Kritik sorun çözümleri dokümante edildi
-
-**🚀 SONUÇ:**
-Artık tüm modüller Page pattern'ına göre modernleştirilebilir! Standardize edilmiş yaklaşım ile tutarlı geliştirme süreci sağlandı.
-
-## 🎉 ÖNCEKİ BAŞARILAR - 27.07.2025
-
-### ✅ Mobile Responsive Optimizations - Complete UI/UX Enhancement - v3.1.0 
-**BAŞARI**: Mobil responsive sorunları tamamen çözüldü! Navigation, table actions ve form headers artık mobilde mükemmel çalışıyor!
-
-**SİSTEM ÖZELLİKLERİ**:
-- 📱 **Mobile Navigation**: Navbar artık 1199px altında dropdown moduna geçiyor (lg → xl breakpoint)
-- 🗂️ **Action Button Layout**: Table action button'lar mobilde yanyana kalıyor, altalta geçmiyor
-- 💫 **Form Header Spacing**: Studio button ve Language selector arasında perfect boşluk
-- 🎯 **Language Alignment**: Mobilde language selector sağ tarafa yaslanıyor, tablara değil
-- 🔧 **Responsive Actions**: Edit, studio, dropdown button'lar mobilde rahat tıklanabilir spacing
-
-**TEKNİK DÜZELTMELER**:
-- Fixed: Navbar responsive breakpoint lg → xl (Bootstrap)
-- Fixed: Action buttons `white-space: nowrap` + `flex-wrap: nowrap` 
-- Fixed: Mobile form header `.nav-item` spacing optimization
-- Fixed: Language container mobile alignment `justify-content: flex-end`
-- Fixed: Removed theme button from navigation (clean UI)
-
-### ✅ HugeRTE Theme Switching Fix - Editor Duplication Prevention - v3.1.1
-**BAŞARI**: HugeRTE editor'ün dark/light mod değişiminde çoklanma sorunu tamamen çözüldü!
-
-**SİSTEM ÖZELLİKLERİ**:
-- 🎨 **Theme Switch Detection**: Dark/Light mod değişimi anlık algılama
-- 🧹 **Complete Cleanup**: Editor instance'ları + DOM elementleri tam temizlik
-- ⏱️ **Debounced Updates**: 500ms debounce ile çoklu trigger önleme
-- 🔄 **Safe Reinit**: Temizlik sonrası güvenli yeniden başlatma
-- 🎯 **Single Panel**: Her mod değişiminde tek, temiz editor paneli
-
-**TEKNİK DÜZELTMELER**:
-- Fixed: `hugerte.remove()` + DOM cleanup for complete cleanup
-- Fixed: 500ms debounce timeout prevents multiple triggers
-- Fixed: `shouldUpdate` flag prevents unnecessary reinitializations
-- Fixed: Extended 300ms timeout for safe editor reinitialization
-- Fixed: Theme detection via MutationObserver with proper filtering
-
-### 🚀 GLOBAL SERVICES COMPLETE MIGRATION - v4.0.0
-**BAŞARI**: Page modülündeki tüm servisler global sisteme taşındı! Artık tüm modüller aynı servisleri kullanabilir!
-
-**🎯 GLOBAL SERVİSLER:**
-✅ **GlobalSeoService**: Tüm modüller için SEO yönetimi (PageSeoService → Global)
-✅ **GlobalTabService**: Tüm modüller için tab sistemi (PageTabService → Global)  
-✅ **GlobalSeoRepository**: Model-agnostic SEO veri yönetimi (PageSeoRepository → Global)
-✅ **GlobalCacheService**: Model-agnostic cache sistemi (PageCacheService → Global)
-✅ **Global Content Editor**: Tüm modüller için HugeRTE editörü (Page includes → Global component)
-✅ **AI Assistant Panel**: Global sisteme taşındı ve dokümante edildi
-
-**📚 KAPSAMLI DOKÜMANTASYON:**
-- `readme/GLOBAL_SEO_SERVICE.md` - SEO sistemi kullanım kılavuzu
-- `readme/GLOBAL_TAB_SERVICE.md` - Tab sistemi API referansı  
-- `readme/GLOBAL_CACHE_SERVICE.md` - Model cache sistemi
-- `readme/GLOBAL_CONTENT_EDITOR.md` - HugeRTE component kullanımı
-- `readme/global-services-usage.md` - Hızlı başlangıç kılavuzu
-- `readme/ai-assistant/` - AI panel sistemi dokümantasyonu
-
-**🔧 TEKNİK ÖZELLİKLER:**
-- Model-agnostic design pattern (herhangi bir modelle çalışır)
-- Interface-based dependency injection
-- Backward compatibility (mevcut kod bozulmaz)
-- Request-scoped performance caching
-- Global konfigürasyon desteği
-- Comprehensive API documentation
-
-**🚀 MODüL HAZIRLIĞI:**
-Portfolio, Blog, Announcement modülleri artık bu global servisleri kullanmaya hazır!
-
-## 🎉 SİSTEM BAŞARILARI - 02.08.2025 - SLUG SİSTEMİ & LOGO DİL KORUNUM
-
-### 🚀 SLUG SİSTEMİ TEMİZLİĞİ & LOGO DİL FIX - v5.4.0
-**BAŞARI**: Slug sistemindeki tekrarlı yapılar temizlendi ve logo dil korunumu sağlandı!
-
-**🎯 ÇÖZÜLEN SORUNLAR:**
-✅ **Tekrarlı Slug Yapısı**: Eski `slugs` kaldırıldı, sadece `multiLangSlugs` kullanılıyor
-✅ **Admin Panel Temizliği**: ModuleSlugSettingsComponent artık sadece multiLangSlugs kaydediyor
-✅ **Veritabanı Temizliği**: Tüm tenant'lardaki duplicate slug verileri temizlendi
-✅ **Logo Dil Korunumu**: Arapça sitede logo tıklanınca artık Arapça ana sayfaya gidiyor
-
-**⚡ TEKNİK İYİLEŞTİRMELER:**
-- `ModuleSlugService`: Backward compatibility kodları kaldırıldı
-- `ModuleSlugSettingsComponent::saveSettings()`: `slugs` kaydı kaldırıldı
-- Header logo linki: Mevcut locale'e göre dinamik URL oluşturuyor
-- Veritabanı: laravel.test ve c.test tenant'larında eski slugs temizlendi
-
-**🔧 LOGO DİL KORUNUM ÖRNEĞİ:**
-```php
-// Eski: <a href="{{ url('/') }}"> // Her zaman Türkçe'ye gider
-// Yeni: 
-@php
-    $currentLocale = app()->getLocale();
-    $defaultLocale = get_tenant_default_locale();
-    $homeUrl = $currentLocale === $defaultLocale ? url('/') : url('/' . $currentLocale);
-@endphp
-<a href="{{ $homeUrl }}">
+```
+dc34c1e1a 📄 Session/Device Limit Analysis Reports
+a630a4cd9 🔐 Muzibu Device/Session Limit System Overhaul
+7ea5d0155 🎯 Checkpoint 11: Muzibu Homepage Redesign + Song Cover Fix
+b1be47ccb 🎉 Checkpoint 10: Muzibu Tailwind v4 migration COMPLETE
+0ffa6d4cc ⚡ Checkpoint 9: Performance test - SIZE INCREASE DETECTED
+bfab7275a 🌐 Checkpoint 6: Visual test - ISSUES DETECTED
+4b3226fa6 🔨 Checkpoint 5: First successful build with Tailwind v4
+df4462f8d 🎨 Checkpoint 4: Muzibu custom colors migrated to @theme
+05495b4e1 📝 Checkpoint 3: CSS import syntax updated to Tailwind v4
+30b667ffa ⚙️ Checkpoint 2: PostCSS config updated for Tailwind v4
+9a7adcce1 📦 Checkpoint 1: Tailwind v4.1.18 packages installed
+a6cc45fe4 ✅ Muzibu current state (before Tailwind v4 migration)
+b54f283e5 ♻️ Muzibu: Quick Access component refactor
+dc9e6afec 🎨 Muzibu: CDN'den tenant_css()'e geçiş
+2e076809d ✨ Add Favorite Buttons & Responsive Icons to Homepage
+ec01d03b5 📱 Make Card Icons Responsive (Album, Playlist)
+eac772756 ✨ Add Favorite Buttons to All Muzibu Cards
+9607094e5 🎨 Muzibu Component System Implementation
+12a3c2c3e 🎨 Muzibu Component Design System - Infinite Queue
+35e989e9f 🔧 System Updates: AI, Mail, Auth, Frontend & Favorites
+914d10cb7 🚀 Feature Updates: Component Analysis, AI Enhancements
+6caf91d91 ✨ System Improvements: Mail, HLS Streaming, Auth
+c7dd990e7 🔧 CHECKPOINT: Before loading performance optimization
+95758da34 🔒 Critical Security & UX Fixes - Premium Access
+fda65e550 🔧 SEO Fix: Homepage redirect + Schema generation
+4b31c221a 🔇 Debug logs: Only show when debug panel active
+08613d25e 🧹 Console log cleanup - Phase 2 COMPLETE
+e1b72642c 🧹 Console log cleanup - Phase 1 (110+ logs removed)
+f21c9084f 🎯 Muzibu AI: ACTION Button Post-Processing System
+9fe46058d 🎲 Fix: Queue refill random & SQL issues
 ```
 
-**📋 TEMİZLENEN YAPILAR:**
-- Portfolio (laravel.test): Eski `slugs` kaldırıldı
-- Announcement (c.test): Eski `slugs` kaldırıldı, eksik diller eklendi
-- Sistem geneli: Artık sadece `multiLangSlugs` + `multiLangNames` kullanılıyor
+---
+
+## Dokümantasyon
+
+### Raporlar
+
+- [Session/Device Limit Analizi](https://muzibu.com.tr/readme/2025/12/21/session-device-limit-analysis/)
+- [Tüm Raporlar - İxtif](https://ixtif.com/readme/)
+- [Tüm Raporlar - Muzibu](https://muzibu.com.tr/readme/)
+
+### Geliştirici Rehberleri
+
+- `CLAUDE.md` - AI geliştirme kuralları
+- `TENANT_LIST.md` - Tenant detayları
+- `readme/claude-docs/` - Teknik dökümanlar
+
+---
+
+## Lisans
+
+Proprietary - Türk Bilişim
+
+## İletişim
+
+- **Geliştirici**: Nurullah Okatan
+- **E-posta**: nurullah@nurullah.net

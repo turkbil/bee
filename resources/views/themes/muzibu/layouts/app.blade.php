@@ -259,17 +259,30 @@
         });
 
         // 🌐 Global Alpine defaults (ReferenceError önleme)
+        // Device & Modal
         window.showKeyboardHelp = window.showKeyboardHelp || false;
         window.showDeviceSelectionModal = window.showDeviceSelectionModal || false;
         window.showDeviceLimitWarning = window.showDeviceLimitWarning || false;
         window.deviceTerminateLoading = window.deviceTerminateLoading || false;
         window.activeDevices = window.activeDevices || [];
         window.deviceLimit = window.deviceLimit || 1;
+
+        // Player state
         window.isLoading = window.isLoading || false;
         window.currentSong = window.currentSong || null;
         window.currentTime = window.currentTime || 0;
         window.duration = window.duration || 0;
         window.isLiked = window.isLiked || false;
+
+        // Volume & Audio
+        window.volume = window.volume ?? 80;
+        window.isMuted = window.isMuted || false;
+
+        // UI panels
+        window.showLyrics = window.showLyrics || false;
+        window.showQueue = window.showQueue || false;
+
+        // Helper functions
         window.formatTime = window.formatTime || function(sec) {
             const t = Math.max(0, Math.floor(sec || 0));
             const m = Math.floor(t / 60);

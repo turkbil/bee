@@ -1,5 +1,5 @@
 {{-- RIGHT SIDEBAR - v6: Tab System with Dynamic Header --}}
-<div class="h-full" x-data="{ songsTab: 'popular' }">
+<div class="h-full" x-data="{ songsTab: 'new' }">
 
     {{-- PREVIEW MODE: Premium Card Design (when clicking on list item) --}}
     <template x-if="!$store.sidebar.isDetailPage && $store.sidebar.previewMode">
@@ -284,13 +284,8 @@
                 </div>
             </div>
 
-            {{-- Tab Headers (3 tabs) - Pill Style --}}
+            {{-- Tab Headers (3 tabs) - Pill Style: Yeni → Trend → Popüler --}}
             <div class="flex gap-1 px-3 py-2 bg-black/20">
-                <button @click="songsTab = 'popular'"
-                        class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
-                        :class="songsTab === 'popular' ? 'bg-orange-500/20 text-orange-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
-                    <i class="fas fa-fire mr-1"></i>{{ trans('muzibu::front.sidebar.popular') }}
-                </button>
                 <button @click="songsTab = 'new'"
                         class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
                         :class="songsTab === 'new' ? 'bg-green-500/20 text-green-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
@@ -300,6 +295,11 @@
                         class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
                         :class="songsTab === 'trend' ? 'bg-blue-500/20 text-blue-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
                     <i class="fas fa-chart-line mr-1"></i>{{ trans('muzibu::front.sidebar.trend') }}
+                </button>
+                <button @click="songsTab = 'popular'"
+                        class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
+                        :class="songsTab === 'popular' ? 'bg-orange-500/20 text-orange-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
+                    <i class="fas fa-fire mr-1"></i>{{ trans('muzibu::front.sidebar.popular') }}
                 </button>
             </div>
 

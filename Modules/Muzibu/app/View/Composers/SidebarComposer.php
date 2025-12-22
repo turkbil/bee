@@ -30,13 +30,60 @@ class SidebarComposer
             $view->with('featuredPlaylists', $featuredPlaylists);
         }
 
-        // Popular Songs - CACHED
+        // 🆕 NEW SONGS - Son eklenenler (created_at desc)
+        if (!$view->offsetExists('newSongs')) {
+            $newSongs = Cache::remember('sidebar_new_songs', 300, function () {
+                return Song::where('is_active', 1)
+                    ->whereNotNull('file_path')
+                    ->whereNotNull('hls_path')
+                    ->with(['artist', 'album.coverMedia', 'coverMedia'])
+                    ->orderBy('created_at', 'desc')
+                    ->limit(15)
+                    ->get();
+            });
+
+            $view->with('newSongs', $newSongs);
+        }
+
+        // 📈 TREND SONGS - Son 7 günde en çok dinlenenler
+        if (!$view->offsetExists('trendSongs')) {
+            $trendSongs = Cache::remember('sidebar_trend_songs', 300, function () {
+                return Song::where('is_active', 1)
+                    ->whereNotNull('file_path')
+                    ->whereNotNull('hls_path')
+                    ->where('updated_at', '>=', now()->subDays(7))
+                    ->with(['artist', 'album.coverMedia', 'coverMedia'])
+                    ->orderBy('play_count', 'desc')
+                    ->limit(15)
+                    ->get();
+            });
+
+            // Fallback: Eğer son 7 günde yeterli şarkı yoksa, tüm zamanlardan al
+            if ($trendSongs->count() < 5) {
+                $trendSongs = Cache::remember('sidebar_trend_songs_fallback', 300, function () {
+                    return Song::where('is_active', 1)
+                        ->whereNotNull('file_path')
+                        ->whereNotNull('hls_path')
+                        ->with(['artist', 'album.coverMedia', 'coverMedia'])
+                        ->orderBy('play_count', 'desc')
+                        ->orderBy('updated_at', 'desc')
+                        ->limit(15)
+                        ->get();
+                });
+            }
+
+            $view->with('trendSongs', $trendSongs);
+        }
+
+        // 🔥 POPULAR SONGS - En çok dinlenenler (play_count desc)
         if (!$view->offsetExists('popularSongs')) {
             $popularSongs = Cache::remember('sidebar_popular_songs', 300, function () {
                 return Song::where('is_active', 1)
-                    ->with(['artist'])
-                    ->orderBy('created_at', 'desc')
-                    ->limit(5)
+                    ->whereNotNull('file_path')
+                    ->whereNotNull('hls_path')
+                    ->with(['artist', 'album.coverMedia', 'coverMedia'])
+                    ->orderBy('play_count', 'desc')
+                    ->limit(15)
                     ->get();
             });
 

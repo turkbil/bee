@@ -213,10 +213,22 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
 
     /**
      * Toplam süreyi hesapla
+     * Not: Performans için songs_sum_duration (withSum) kullanılırsa onu tercih eder
      */
     public function getTotalDuration(): int
     {
-        return $this->songs->sum('duration');
+        // Eğer withSum kullanılmışsa (songs_sum_duration attribute'u varsa)
+        if (isset($this->attributes['songs_sum_duration'])) {
+            return (int) $this->attributes['songs_sum_duration'];
+        }
+
+        // Eğer songs ilişkisi yüklenmişse
+        if ($this->relationLoaded('songs')) {
+            return $this->songs->sum('duration');
+        }
+
+        // Hiçbiri yoksa sorgu at
+        return $this->songs()->sum('duration');
     }
 
     /**
@@ -235,6 +247,41 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
         }
 
         return sprintf('%02d:%02d', $minutes, $seconds);
+    }
+
+    /**
+     * Türkçe formatlanmış toplam süre (2s 45dk, 45dk 30sn, 3gün 2s 15dk)
+     */
+    public function getTurkishFormattedDuration(): string
+    {
+        $totalSeconds = $this->getTotalDuration();
+
+        if ($totalSeconds == 0) {
+            return '0dk';
+        }
+
+        $days = floor($totalSeconds / 86400);
+        $hours = floor(($totalSeconds % 86400) / 3600);
+        $minutes = floor(($totalSeconds % 3600) / 60);
+        $seconds = $totalSeconds % 60;
+
+        $parts = [];
+
+        if ($days > 0) {
+            $parts[] = $days . 'gün';
+        }
+        if ($hours > 0) {
+            $parts[] = $hours . 's';
+        }
+        if ($minutes > 0) {
+            $parts[] = $minutes . 'dk';
+        }
+        // Sadece saniye varsa veya toplam 60 saniyeden azsa saniye göster
+        if ($seconds > 0 && ($days == 0 && $hours == 0 && $minutes == 0)) {
+            $parts[] = $seconds . 'sn';
+        }
+
+        return implode(' ', $parts);
     }
 
     /**

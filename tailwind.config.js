@@ -169,6 +169,10 @@ module.exports = {
 
         // Badge Gradient Animation
         'bg-[length:200%_100%]', 'animate-gradient',
+
+        // Text Utilities (for card components)
+        'line-clamp-1', 'line-clamp-2', 'leading-tight', 'leading-snug',
+        'h-[48px]', 'h-[52px]', 'h-[60px]',
     ],
 
     theme: {

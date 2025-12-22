@@ -52,10 +52,14 @@ $app = Application::configure(basePath: dirname(__DIR__))
                      \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO
         );
 
-        // 0.5. WWW REDIRECT - KALDIRILDI (POST request'leri bozuyordu)
-        // $middleware->prependToGroup('web', \App\Http\Middleware\EnsureWwwDomain::class);
+        // 0.5. WWW REDIRECT - www → non-www (Laravel middleware - Nginx .htaccess okumadığı için)
+        $middleware->prependToGroup('web', \App\Http\Middleware\RemoveWwwPrefix::class);
 
-        // 1. TENANT - Domain belirleme (EN ÖNCELİKLİ) - Sadece web
+        // 🔐 CRITICAL FIX: Ensure web middleware defaults are NOT removed
+        // Laravel 11 automatically includes: StartSession, VerifyCsrfToken, SubstituteBindings
+        // We prepend/append to 'web' group, but MUST NOT remove defaults!
+
+        // 1. TENANT - Domain belirleme (EN ÖNCELİKLİ) - Sadece web (www redirect'ten SONRA!)
         $middleware->prependToGroup('web', \App\Http\Middleware\InitializeTenancy::class);
         
         // 2. REDIS HEALTH CHECK - Redis bağlantı sağlığı kontrolü
@@ -112,7 +116,6 @@ $app = Application::configure(basePath: dirname(__DIR__))
             'root.debugbar' => \App\Http\Middleware\RootOnlyDebugbar::class, // 🛠️ ROOT-ONLY DEBUGBAR
             'frontend.auto.seo' => \App\Http\Middleware\FrontendAutoSeoFillMiddleware::class, // 🎯 FRONTEND AUTO SEO FILL
             // Membership middleware
-            'device.limit' => \App\Http\Middleware\CheckDeviceLimit::class,
             'subscription' => \App\Http\Middleware\CheckSubscription::class,
             'approved' => \App\Http\Middleware\CheckApproval::class,
             // Under construction protection
@@ -137,10 +140,13 @@ $app = Application::configure(basePath: dirname(__DIR__))
         ]);
         
         // API middleware grubu
+        // 🔥 FIX: throttle:api KALDIRILDI - ThrottleByUserType (throttle.user:*) zaten her route'ta var
+        // Çift throttle: throttle:api (60/min toplam) + throttle.user:api (300/min per endpoint)
+        // Sayfa yüklendiğinde 6-7 API isteği aynı anda geldiğinde 429 hatası veriyordu
         $middleware->group('api', [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class, // 🔐 Sanctum session auth
             \App\Http\Middleware\InitializeTenancy::class, // 🔥 Tenant initialization for API
-            'throttle:api',
+            // 'throttle:api', // ❌ KALDIRILDI - Çift throttle sorunu çözüldü
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
         

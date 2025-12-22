@@ -93,6 +93,86 @@
                 showPasswordConfirm: false,
                 passwordStrength: 0,
 
+                // Device Selection Modal
+                showDeviceModal: false,
+                deviceLimit: 1,
+                otherDevices: [],
+                selectedDevices: [],
+                intendedUrl: '/',
+                terminatingDevices: false,
+                terminateError: null,
+
+                init() {
+                    // Session flash'tan device limit exceeded kontrolu
+                    const deviceData = window.deviceLimitData || null;
+                    if (deviceData && deviceData.exceeded) {
+                        this.showDeviceModal = true;
+                        this.deviceLimit = deviceData.limit || 1;
+                        this.otherDevices = deviceData.devices || [];
+                        this.intendedUrl = deviceData.intendedUrl || '/';
+                    }
+                },
+
+                getDeviceIcon(deviceType) {
+                    switch(deviceType) {
+                        case 'mobile': return 'fas fa-mobile-alt';
+                        case 'tablet': return 'fas fa-tablet-alt';
+                        default: return 'fas fa-desktop';
+                    }
+                },
+
+                toggleDeviceSelection(sessionId) {
+                    const index = this.selectedDevices.indexOf(sessionId);
+                    if (index === -1) {
+                        this.selectedDevices.push(sessionId);
+                    } else {
+                        this.selectedDevices.splice(index, 1);
+                    }
+                },
+
+                isDeviceSelected(sessionId) {
+                    return this.selectedDevices.includes(sessionId);
+                },
+
+                async terminateSelectedDevices() {
+                    if (this.selectedDevices.length === 0) {
+                        this.terminateError = 'Lutfen en az bir cihaz secin.';
+                        return;
+                    }
+
+                    this.terminatingDevices = true;
+                    this.terminateError = null;
+
+                    try {
+                        const response = await fetch('/api/auth/terminate-devices', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Accept': 'application/json',
+                            },
+                            credentials: 'same-origin',
+                            body: JSON.stringify({
+                                session_ids: this.selectedDevices
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            // Basarili - hedef URL'e yonlendir
+                            window.location.href = this.intendedUrl;
+                        } else {
+                            this.terminateError = data.message || 'Cihazlar cikis yaptirilirken hata olustu.';
+                        }
+                    } catch (error) {
+                        console.error('Terminate devices error:', error);
+                        this.terminateError = 'Baglanti hatasi. Lutfen tekrar deneyin.';
+                    } finally {
+                        this.terminatingDevices = false;
+                    }
+                },
+
                 checkPasswordStrength(password) {
                     let strength = 0;
                     if (password.length >= 8) strength++;

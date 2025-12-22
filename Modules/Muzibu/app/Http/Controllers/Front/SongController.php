@@ -10,6 +10,19 @@ use App\Services\SeoMetaTagService;
 class SongController extends Controller
 {
     /**
+     * Display songs list
+     */
+    public function index()
+    {
+        $songs = Song::with(['artist', 'album', 'coverMedia'])
+            ->where('is_active', 1)
+            ->orderBy('created_at', 'desc')
+            ->paginate(200);
+
+        return view('themes.muzibu.songs.index', compact('songs'));
+    }
+
+    /**
      * Song detail page
      */
     public function show($slug)

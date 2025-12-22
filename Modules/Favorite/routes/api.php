@@ -42,6 +42,36 @@ Route::middleware(['tenant'])
             return response()->json($result);
         })->name('toggle');
 
+        // List user favorites (for Alpine.js store initialization)
+        Route::get('/list', function(\Illuminate\Http\Request $request) {
+            // Auth kontrolü - web session veya sanctum token
+            if (!auth()->check() && !auth('sanctum')->check()) {
+                return response()->json(['success' => true, 'data' => []]);
+            }
+
+            $userId = auth()->id() ?? auth('sanctum')->id();
+
+            // Tüm favorileri al ve 'type-id' formatında döndür
+            $favorites = \DB::table('favorites')
+                ->where('user_id', $userId)
+                ->get()
+                ->map(function($fav) {
+                    // model_class boş ise atla (eski/veri hatalı kayıtlar)
+                    if (empty($fav->model_class)) {
+                        return null;
+                    }
+
+                    // Model class'tan type'ı çıkar (Modules\Muzibu\app\Models\Song -> song)
+                    $type = strtolower(class_basename($fav->model_class));
+                    return "{$type}-{$fav->model_id}";
+                })
+                ->filter()
+                ->values()
+                ->toArray();
+
+            return response()->json(['success' => true, 'data' => $favorites]);
+        })->name('list');
+
         // Check if favorited
         Route::get('/check', function(\Illuminate\Http\Request $request) {
             // Auth kontrolü - web session veya sanctum token

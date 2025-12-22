@@ -19,7 +19,8 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View|RedirectResponse|Response
     {
-        // Eğer kullanıcı zaten giriş yapmışsa ana sayfaya yönlendir
+        // Kullanıcı zaten giriş yapmışsa ana sayfaya yönlendir
+        // ✅ Device limit modal KALDIRILDI - LIFO otomatik çalışıyor (21.12.2025)
         if (Auth::check()) {
             return redirect('/')
                 ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
@@ -162,13 +163,19 @@ class AuthenticatedSessionController extends Controller
             try {
                 $deviceService = app(\Modules\Muzibu\App\Services\DeviceService::class);
 
-                // registerSession() içinde LIFO otomatik çalışıyor
+                // registerSession() içinde LIFO otomatik KALDIRILDI
+                // Kullanıcı manuel seçecek
                 $deviceService->registerSession($user);
 
-                \Log::info('🔐 POST-LOGIN: Session registered', [
+                \Log::info('🔐 POST-LOGIN: Session registered (LIFO otomatik)', [
                     'user_id' => $user->id,
                     'session_id' => substr(session()->getId(), 0, 20) . '...',
                 ]);
+
+                // ✅ LIFO artık registerSession() içinde otomatik çalışıyor
+                // ✅ isDeviceLimitExceeded kontrolü KALDIRILDI (21.12.2025)
+                // ✅ Eski session'lar otomatik siliniyor, modal gereksiz
+
             } catch (\Exception $e) {
                 \Log::error('🔐 POST-LOGIN: Device service failed', [
                     'user_id' => $user->id,

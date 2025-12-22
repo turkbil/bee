@@ -42,20 +42,19 @@ class SignedUrlService
     }
 
     /**
-     * Generate signed URL for HLS playlist
-     * HLS için daha uzun süre (60 dakika) - chunked streaming
-     * 
+     * Generate signed HLS URL (playlist + segments) tied to login token
+     *
      * @param int $songId
-     * @param int $expiresInMinutes (default: 60 dakika)
+     * @param int $expiresInSeconds (default: 300 saniye)
+     * @param string|null $loginToken
      * @return string
      */
-    public function generateHlsUrl(int $songId, int $expiresInMinutes = 60): string
+    public function generateHlsUrl(int $songId, int $expiresInSeconds = 300, ?string $loginToken = null): string
     {
-        $expiration = Carbon::now()->addMinutes($expiresInMinutes);
+        $expiration = Carbon::now()->addSeconds($expiresInSeconds);
         $expires = $expiration->timestamp;
 
         // Build HLS playlist URL (use current tenant domain)
-        // 🔧 Use tenant's primary domain (or first domain) instead of request domain
         $tenant = tenancy()->tenant;
         $tenantDomain = $tenant
             ? ($tenant->domains()->where('is_primary', 1)->first()?->domain
@@ -63,13 +62,16 @@ class SignedUrlService
             : null;
         $domain = $tenantDomain ? 'https://' . $tenantDomain : request()->getSchemeAndHttpHost();
 
-        // 🎵 HLS through /hls/ endpoint (NOT /api/ - avoids Laravel CORS middleware)
-        // Laravel CORS adds `Access-Control-Allow-Credentials: true` to /api/* paths
-        // which conflicts with `Access-Control-Allow-Origin: *` - browsers reject this
-        // By using /hls/ path, controller handles CORS directly without middleware conflict
-        $hlsUrl = $domain . "/hls/muzibu/songs/{$songId}/playlist.m3u8";
+        $basePath = "/hls/muzibu/songs/{$songId}/playlist.m3u8";
+        $baseUrl = $domain . $basePath;
+        $signatureBase = "/hls/muzibu/songs/{$songId}";
 
-        return $hlsUrl; // HLS doesn't need signed URL (AES-128 encrypted)
+        // Token zorunlu
+        $token = $loginToken ?: '';
+
+        $sig = hash_hmac('sha256', "{$signatureBase}|{$token}|{$expires}", config('app.key'));
+
+        return $baseUrl . '?expires=' . $expires . '&token=' . urlencode($token) . '&sig=' . $sig;
     }
 
     /**

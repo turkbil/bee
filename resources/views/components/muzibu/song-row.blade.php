@@ -35,12 +35,19 @@
         </span>
     </span>
 
-    {{-- Album Cover (Optional - if showAlbum is true) --}}
-    @if($showAlbum && $song->album && $song->album->coverMedia)
-        <img src="{{ thumb($song->album->coverMedia, 48, 48) }}"
-             alt="{{ $song->album->getTranslation('title', app()->getLocale()) }}"
-             class="w-10 h-10 sm:w-12 sm:h-12 rounded shadow-md flex-shrink-0"
-             loading="lazy">
+    {{-- Song/Album Cover (Optional - if showAlbum is true) --}}
+    @if($showAlbum)
+        @php $coverUrl = $song->getCoverUrl(48, 48); @endphp
+        @if($coverUrl)
+            <img src="{{ $coverUrl }}"
+                 alt="{{ $song->getTranslation('title', app()->getLocale()) }}"
+                 class="w-10 h-10 sm:w-12 sm:h-12 rounded shadow-md flex-shrink-0"
+                 loading="lazy">
+        @else
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded shadow-md flex-shrink-0 bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center">
+                <i class="fas fa-music text-gray-600 text-xs"></i>
+            </div>
+        @endif
     @endif
 
     {{-- Song Info --}}

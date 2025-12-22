@@ -76,7 +76,7 @@
                     Math.abs($event.touches[0].clientY - touchStartPos.y) > 10;
        if (moved) clearTimeout(touchTimer);
    "
-   class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300">
+   class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300">
 
     <div class="relative mb-4">
         {{-- Artist Photo (Circular) --}}
@@ -86,7 +86,7 @@
                  class="w-full aspect-square object-cover rounded-full shadow-lg"
                  loading="lazy">
         @else
-            <div class="w-full aspect-square bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+            <div class="w-full aspect-square bg-gradient-to-br from-muzibu-coral to-orange-600 rounded-full flex items-center justify-center shadow-lg">
                 <i class="fas fa-user text-white text-5xl opacity-50"></i>
             </div>
         @endif
@@ -97,14 +97,14 @@
             <i class="fas fa-play ml-1"></i>
         </button>
 
-        {{-- Favorite + Menu Buttons (Cover Sağ Üst) - HOVER'DA GÖRÜNÜR --}}
+        {{-- Favorite + Menu Buttons (Sağ Üst) - HOVER'DA GÖRÜNÜR --}}
         <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent>
             {{-- Favorite Button --}}
             <button x-on:click.stop.prevent="$store.favorites.toggle('artist', {{ $artist->id }})"
-                    class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110"
+                    class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all"
                     x-bind:class="$store.favorites.isFavorite('artist', {{ $artist->id }}) ? 'text-muzibu-coral' : ''">
                 <i class="text-sm"
-                   x-bind:class="$store.favorites.isFavorite('artist', {{ $artist->id }}) ? 'fas fa-heart' : 'far fa-heart hover:text-muzibu-coral'"></i>
+                   x-bind:class="$store.favorites.isFavorite('artist', {{ $artist->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
             </button>
 
             {{-- 3-Dot Menu Button --}}
@@ -112,19 +112,19 @@
                 id: {{ $artist->id }},
                 title: '{{ addslashes($artist->getTranslation('title', app()->getLocale())) }}',
                 is_favorite: {{ auth()->check() && method_exists($artist, 'isFavoritedBy') && $artist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
-            })" class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
                 <i class="fas fa-ellipsis-v text-sm"></i>
             </button>
         </div>
     </div>
 
-    {{-- Artist Name --}}
-    <h3 class="font-semibold text-white mb-1 truncate text-center">
-        {{ $artist->getTranslation('title', app()->getLocale()) }}
-    </h3>
-
-    {{-- Artist Type Label --}}
-    <p class="text-sm text-gray-400 truncate text-center">
-        Sanatçı
-    </p>
+    {{-- Text Area (Fixed Height - Always 2 rows) --}}
+    <div class="h-12 overflow-hidden pb-4">
+        <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
+            {{ $artist->getTranslation('title', app()->getLocale()) }}
+        </h3>
+        <p class="text-xs text-gray-400 leading-6 line-clamp-1">
+            Sanatçı
+        </p>
+    </div>
 </a>

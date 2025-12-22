@@ -28,15 +28,15 @@
                 <i class="fas fa-stream text-muzibu-coral text-sm"></i>
             </div>
             <div>
-                <h3 class="text-base font-bold text-white">Sira</h3>
-                <p class="text-xs text-zinc-500" x-text="(queue || []).length + ' sarki'"></p>
+                <h3 class="text-base font-bold text-white">{{ trans('muzibu::front.player.queue') }}</h3>
+                <p class="text-xs text-zinc-500" x-text="(queue || []).length + ' {{ trans('muzibu::front.general.song') }}'"></p>
             </div>
         </div>
         <div class="flex items-center gap-1">
             <button
                 @click="clearQueue()"
                 class="p-2 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all"
-                title="Sirayi Temizle"
+                title="{{ trans('muzibu::front.player.clear_queue') }}"
             >
                 <i class="fas fa-trash-alt text-sm"></i>
             </button>
@@ -54,7 +54,7 @@
         <div class="px-5 py-4 bg-gradient-to-r from-muzibu-coral/10 to-transparent border-b border-white/5">
             <div class="flex items-center gap-2 mb-3">
                 <div class="w-1.5 h-1.5 bg-muzibu-coral rounded-full animate-pulse"></div>
-                <span class="text-xs font-semibold text-muzibu-coral uppercase tracking-wider">Simdi Caliniyor</span>
+                <span class="text-xs font-semibold text-muzibu-coral uppercase tracking-wider">{{ trans('muzibu::front.player.now_playing') }}</span>
             </div>
             <div class="flex items-center gap-3">
                 <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-muzibu-coral to-pink-600 flex-shrink-0 overflow-hidden shadow-lg shadow-muzibu-coral/20">
@@ -66,8 +66,8 @@
                     </template>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <h4 class="text-sm font-bold text-white truncate" x-text="currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || 'Sarki'"></h4>
-                    <p class="text-xs text-zinc-400 truncate mt-0.5" x-text="currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || 'Sanatci'"></p>
+                    <h4 class="text-sm font-bold text-white truncate" x-text="currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')"></h4>
+                    <p class="text-xs text-zinc-400 truncate mt-0.5" x-text="currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')"></p>
                 </div>
                 <button
                     @click="toggleLike()"
@@ -82,8 +82,8 @@
 
     {{-- Queue Header --}}
     <div class="px-5 py-3 flex items-center justify-between border-b border-white/5">
-        <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Siradaki Sarkilar</span>
-        <span class="text-xs text-zinc-600" x-show="queue && queue.length > 0">Suruklemeyle sirala</span>
+        <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">{{ trans('muzibu::front.player.next_songs') }}</span>
+        <span class="text-xs text-zinc-600" x-show="queue && queue.length > 0">{{ trans('muzibu::front.player.drag_to_sort') }}</span>
     </div>
 
     {{-- Queue Content --}}
@@ -94,13 +94,13 @@
                 <div class="w-20 h-20 bg-zinc-800/50 rounded-full flex items-center justify-center mb-4">
                     <i class="fas fa-music text-3xl text-zinc-600"></i>
                 </div>
-                <h4 class="text-base font-semibold text-zinc-400 mb-1">Sira Bos</h4>
-                <p class="text-sm text-zinc-600">Sarki eklemek icin bir playlist veya albume gidin</p>
+                <h4 class="text-base font-semibold text-zinc-400 mb-1">{{ trans('muzibu::front.player.queue_empty') }}</h4>
+                <p class="text-sm text-zinc-600">{{ trans('muzibu::front.player.queue_empty_description') }}</p>
             </div>
         </template>
 
         {{-- Queue List --}}
-        <div id="queue-list" class="py-2">
+        <div id="queue-list" class="p-2 space-y-0.5">
             <template x-for="(song, index) in (queue || [])" :key="'queue-' + index + '-' + (song?.song_id || 'song')">
                 <div
                     @click="playFromQueue(index)"
@@ -110,31 +110,33 @@
                     @drop.prevent="drop(index)"
                     @dragend="draggedIndex = null; dropTargetIndex = null"
                     draggable="true"
-                    class="group flex items-center gap-3 px-5 py-2.5 cursor-pointer transition-all duration-150"
+                    class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group"
                     :class="{
-                        'bg-white/5': queueIndex === index,
+                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
                         'hover:bg-white/5': queueIndex !== index,
                         'border-t-2 border-muzibu-coral': dropTargetIndex === index && draggedIndex !== null,
                         'opacity-50': draggedIndex === index
                     }"
                 >
-                    {{-- Index/Play Icon --}}
-                    <div class="w-6 flex-shrink-0 text-center">
-                        <span
-                            class="text-xs text-zinc-500 group-hover:hidden"
-                            :class="queueIndex === index && 'text-muzibu-coral font-bold'"
-                            x-text="index + 1"
-                        ></span>
-                        <i class="fas fa-play text-xs text-white hidden group-hover:inline"></i>
-                    </div>
-
-                    {{-- Cover --}}
-                    <div class="w-10 h-10 rounded-lg bg-zinc-800 flex-shrink-0 overflow-hidden">
+                    {{-- Cover with Play Overlay --}}
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
                         <template x-if="song.album_cover">
                             <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
                         </template>
                         <template x-if="!song.album_cover">
-                            <div class="w-full h-full flex items-center justify-center text-sm text-zinc-600">🎵</div>
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        </template>
+                        {{-- Play overlay on hover --}}
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <i class="fas fa-play text-white text-xs"></i>
+                        </div>
+                        {{-- Playing indicator --}}
+                        <template x-if="queueIndex === index">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
                         </template>
                     </div>
 
@@ -142,27 +144,28 @@
                     <div class="flex-1 min-w-0">
                         <h4
                             class="text-sm font-medium truncate transition-colors"
-                            :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-white'"
-                            x-text="song.song_title?.tr || song.song_title?.en || song.song_title || 'Sarki'"
+                            :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'"
+                            x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')"
                         ></h4>
-                        <p class="text-xs text-zinc-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || 'Sanatci'"></p>
+                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')"></p>
                     </div>
 
-                    {{-- Duration (if available) --}}
-                    <span class="text-xs text-zinc-600 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)"></span>
+                    {{-- Duration (hide on hover) --}}
+                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)"></div>
 
-                    {{-- Actions --}}
-                    <div class="hidden group-hover:flex items-center gap-1">
-                        {{-- 🚫 Son şarkıyken silme butonu gizlenir --}}
+                    {{-- Actions (show on hover) --}}
+                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                        {{-- Remove from queue button --}}
                         <button
                             x-show="queue.length > 1"
                             @click.stop="removeFromQueue(index)"
-                            class="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded transition-all"
-                            title="Siradan Cikar"
+                            class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                            title="{{ trans('muzibu::front.player.remove_from_queue') }}"
                         >
                             <i class="fas fa-times text-xs"></i>
                         </button>
-                        <div class="p-1.5 text-zinc-500 cursor-grab active:cursor-grabbing" title="Surukle">
+                        {{-- Drag handle --}}
+                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="{{ trans('muzibu::front.player.drag') }}">
                             <i class="fas fa-grip-vertical text-xs"></i>
                         </div>
                     </div>
@@ -176,11 +179,11 @@
         <div class="flex items-center justify-between text-xs text-zinc-600">
             <span x-show="queue && queue.length > 0">
                 <i class="fas fa-info-circle mr-1"></i>
-                Sarkilara tiklayarak cal
+                {{ trans('muzibu::front.player.click_to_play') }}
             </span>
             <span x-show="queue && queue.length > 0">
                 <i class="fas fa-keyboard mr-1"></i>
-                0-9 ile hizli erisim
+                0-9 {{ trans('muzibu::front.player.quick_access') }}
             </span>
         </div>
     </div>

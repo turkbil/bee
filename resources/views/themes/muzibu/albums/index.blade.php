@@ -6,24 +6,6 @@
 if (window.Alpine && window.Alpine.store('sidebar')) {
     window.Alpine.store('sidebar').reset();
 }
-
-// 🚀 Auto-prefetch visible items on page load (staggered to avoid server overload)
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        const cards = document.querySelectorAll('[data-album-id]');
-        const visibleCount = Math.min(cards.length, 6); // İlk 6 kart
-        cards.forEach((card, i) => {
-            if (i >= visibleCount) return;
-            const id = card.dataset.albumId;
-            if (id && window.Alpine?.store('sidebar')?.prefetch) {
-                // Stagger: Her 150ms'de bir istek
-                setTimeout(() => {
-                    window.Alpine.store('sidebar').prefetch('album', parseInt(id));
-                }, i * 150);
-            }
-        });
-    }, 300);
-});
 </script>
 
 <div class="px-6 py-8">

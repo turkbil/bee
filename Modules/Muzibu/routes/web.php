@@ -42,6 +42,7 @@ Route::get('/sectors', [SectorController::class, 'index'])->name('muzibu.sectors
 Route::get('/sectors/{slug}', [SectorController::class, 'show'])->name('muzibu.sectors.show');
 
 // Songs
+Route::get('/songs', [SongController::class, 'index'])->name('muzibu.songs.index');
 Route::get('/songs/{slug}', [SongController::class, 'show'])->name('muzibu.songs.show');
 
 // Radios

@@ -1,8 +1,136 @@
-player-core.js?v=1766269373:3588 ✅ Player state cleared (fresh start)
-spa-router.js?v=1766199260:95 🚀 SPA Router initialized (Hover Prefetch only)
-VM95:3 🔐 Auth Debug: Object
-(index):10055 ❌ Alpine root instance not found!
-(anonymous) @ (index):10055
-(index):10069 ✅ Player store verified
-VM848:38 🧪 Debug Panel connected
-player-core.js?v=1766269373:1777 🎵 HLS DEBUG v3 (new /hls/ route) stream_url: https://muzibu.com.tr/hls/muzibu/songs/457/playlist.m3u8 type: hls
+player-core.js?v=1766329159:3705 ✅ Player state cleared (fresh start)
+spa-router.js?v=1766325726:95 🚀 SPA Router initialized (Prefetch Disabled)
+VM11613:3 🔐 Auth Debug: {isLoggedIn: false, currentUser: null}
+(index):10100 ✅ Player store verified
+VM12357:38 🧪 Debug Panel connected
+(index):10086 ✅ Player store = Proxy to root (auto-forward all properties/methods)
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: $store.player.setPlayContext is not a function
+
+Expression: "
+                            // 🎯 HOMEPAGE: Set 'popular' context for homepage popular songs
+                            $store.player.setPlayContext({
+                                type: 'popular',
+                                id: null,
+                                name: 'Popüler Şarkılar',
+                                offset: 1
+                            });
+                            $dispatch('play-song', { songId: 442 })
+                         "
+
+ <div class=​"flex items-center gap-2.5 p-2 rounded-xl hover:​bg-white/​5 cursor-pointer transition-all group" @click=​"
+                            /​/​ 🎯 HOMEPAGE:​ Set 'popular' context for homepage popular songs
+                            $store.player.setPlayContext({
+                                type:​ 'popular',
+                                id:​ null,
+                                name:​ 'Popüler Şarkılar',
+                                offset:​ 1
+                            }​)​;​
+                            $dispatch('play-song', { songId:​ 442 }​)​
+                         ">​…​</div>​flex
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+(anonymous) @ livewire.js?id=df3a17f2:3185
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: $store.player.setPlayContext is not a function
+    at [Alpine] 
+                            // 🎯 HOMEPAGE: Set 'popular' context for homepage popular songs
+                            $store.player.setPlayContext({
+                                type: 'popular',
+                                id: null,
+                                name: 'Popüler Şarkılar',
+                                offset: 1
+                            });
+                            $dispatch('play-song', { songId: 442 })
+                          (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:5:43)
+    at https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1196:23
+    at tryCatch (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1116:14)
+    at https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:3881:7
+    at handler4 (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:3183:27)
+    at https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:3247:9
+    at HTMLDivElement.<anonymous> (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:3185:54)
+[Alpine] 
+                            // 🎯 HOMEPAGE: Set 'popular' context for homepage popular songs
+                            $store.player.setPlayContext({
+                                type: 'popular',
+                                id: null,
+                                name: 'Popüler Şarkılar',
+                                offset: 1
+                            });
+                            $dispatch('play-song', { songId: 442 })
+                          @ VM12172:5
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+(anonymous) @ livewire.js?id=df3a17f2:3185
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: $store.player.setPlayContext is not a function
+
+Expression: "
+                            // 🎯 HOMEPAGE: Set 'popular' context for homepage popular songs
+                            $store.player.setPlayContext({
+                                type: 'popular',
+                                id: null,
+                                name: 'Popüler Şarkılar',
+                                offset: 2
+                            });
+                            $dispatch('play-song', { songId: 323 })
+                         "
+
+ <div class=​"flex items-center gap-2.5 p-2 rounded-xl hover:​bg-white/​5 cursor-pointer transition-all group" @click=​"
+                            /​/​ 🎯 HOMEPAGE:​ Set 'popular' context for homepage popular songs
+                            $store.player.setPlayContext({
+                                type:​ 'popular',
+                                id:​ null,
+                                name:​ 'Popüler Şarkılar',
+                                offset:​ 2
+                            }​)​;​
+                            $dispatch('play-song', { songId:​ 323 }​)​
+                         ">​…​</div>​flex
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+(anonymous) @ livewire.js?id=df3a17f2:3185
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: $store.player.setPlayContext is not a function
+    at [Alpine] 
+                            // 🎯 HOMEPAGE: Set 'popular' context for homepage popular songs
+                            $store.player.setPlayContext({
+                                type: 'popular',
+                                id: null,
+                                name: 'Popüler Şarkılar',
+                                offset: 2
+                            });
+                            $dispatch('play-song', { songId: 323 })
+                          (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:5:43)
+    at https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1196:23
+    at tryCatch (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1116:14)
+    at https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:3881:7
+    at handler4 (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:3183:27)
+    at https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:3247:9
+    at HTMLDivElement.<anonymous> (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:3185:54)
+[Alpine] 
+                            // 🎯 HOMEPAGE: Set 'popular' context for homepage popular songs
+                            $store.player.setPlayContext({
+                                type: 'popular',
+                                id: null,
+                                name: 'Popüler Şarkılar',
+                                offset: 2
+                            });
+                            $dispatch('play-song', { songId: 323 })
+                          @ VM12173:5
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+(anonymous) @ livewire.js?id=df3a17f2:3185

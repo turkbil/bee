@@ -11,12 +11,15 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\InitializeTenancy;
+use App\Http\Middleware\RedirectIfAuthenticatedExceptDeviceLimit;
 
-Route::middleware([InitializeTenancy::class, 'guest'])
+Route::middleware([InitializeTenancy::class, RedirectIfAuthenticatedExceptDeviceLimit::class])
     ->withoutMiddleware([\Modules\LanguageManagement\app\Http\Middleware\SiteSetLocaleMiddleware::class])
     ->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])
-        ->name('register');
+    // 🔄 Register GET → Login'e yönlendir (tab=register ile)
+    Route::get('register', function() {
+        return redirect('/login?tab=register');
+    })->name('register');
 
     Route::post('register', [RegisteredUserController::class, 'store'])
         ->middleware('throttle:3,5'); // Max 3 registration per 5 minutes

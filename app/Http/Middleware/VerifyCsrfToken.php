@@ -29,13 +29,29 @@ class VerifyCsrfToken extends Middleware
     {
         // Multi-tenant ortamında token kontrolü
         $token = $this->getTokenFromRequest($request);
-        
+
         if (!$token) {
+            \Log::warning('🔐 CSRF: No token in request', [
+                'url' => $request->fullUrl(),
+                'method' => $request->method(),
+                'has_session' => $request->hasSession(),
+            ]);
             return false;
         }
-        
-        // Session token ile request token'ı karşılaştır
-        return hash_equals($request->session()->token(), $token);
+
+        $sessionToken = $request->session()->token();
+        $match = hash_equals($sessionToken, $token);
+
+        if (!$match) {
+            \Log::warning('🔐 CSRF: Token mismatch', [
+                'url' => $request->fullUrl(),
+                'session_token' => substr($sessionToken, 0, 20) . '...',
+                'request_token' => substr($token, 0, 20) . '...',
+                'session_id' => $request->session()->getId(),
+            ]);
+        }
+
+        return $match;
     }
     
     /**

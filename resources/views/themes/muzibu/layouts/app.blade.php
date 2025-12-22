@@ -454,6 +454,40 @@
     <script src="{{ versioned_asset('themes/muzibu/js/context-menu/init.js') }}"></script>
     @endonce
 
+    @once
+    {{-- 🎯 Alpine helper: horizontalScroll (SPA route changes için global) --}}
+    <script>
+        document.addEventListener('alpine:init', () => {
+            if (!Alpine.data('horizontalScroll')) {
+                Alpine.data('horizontalScroll', () => ({
+                    scrollContainer: null,
+                    scrollInterval: null,
+                    init() {
+                        this.scrollContainer = this.$refs.scrollContainer;
+                    },
+                    scrollLeft() {
+                        this.scrollContainer?.scrollBy({ left: -400, behavior: 'smooth' });
+                    },
+                    scrollRight() {
+                        this.scrollContainer?.scrollBy({ left: 400, behavior: 'smooth' });
+                    },
+                    startAutoScroll(direction) {
+                        this.scrollInterval = setInterval(() => {
+                            this.scrollContainer?.scrollBy({ left: direction === 'right' ? 20 : -20 });
+                        }, 50);
+                    },
+                    stopAutoScroll() {
+                        if (this.scrollInterval) {
+                            clearInterval(this.scrollInterval);
+                            this.scrollInterval = null;
+                        }
+                    }
+                }));
+            }
+        });
+    </script>
+    @endonce
+
     {{-- PWA Service Worker Registration --}}
     <x-pwa-registration />
 

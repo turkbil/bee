@@ -24,6 +24,9 @@ class PlaylistController extends Controller
             ->withCount(['songs' => function($q) {
                 $q->where('is_active', 1);
             }])
+            ->withSum(['songs' => function($q) {
+                $q->where('is_active', 1);
+            }], 'duration')
             ->orderBy('created_at', 'desc')
             ->paginate(200);
 
@@ -70,6 +73,9 @@ class PlaylistController extends Controller
             ->withCount(['songs' => function($q) {
                 $q->where('is_active', 1);
             }])
+            ->withSum(['songs' => function($q) {
+                $q->where('is_active', 1);
+            }], 'duration')
             ->orderBy('created_at', 'desc')
             ->paginate(200);
 

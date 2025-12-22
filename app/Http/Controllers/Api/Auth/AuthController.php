@@ -189,6 +189,23 @@ class AuthController extends Controller
             $deviceService = app(DeviceService::class);
 
             if ($deviceService->shouldRun()) {
+                // 🔥 GEÇICI: Cookie token sync - döngü sorunu çözümü
+                // Cookie yoksa veya eşleşmezse, mevcut session'ın token'ını güncelle
+                $cookieToken = $request->cookie('mzb_login_token');
+
+                if (!$cookieToken) {
+                    // Cookie yok - session varsa geçerli say (yeni login sonrası)
+                    $userSession = \DB::table('user_active_sessions')
+                        ->where('user_id', $user->id)
+                        ->first();
+
+                    if ($userSession) {
+                        // Session var, cookie yok = yeni login, geçerli
+                        $deviceService->updateSessionActivity($user);
+                        return response()->json(['valid' => true, 'user_id' => $user->id]);
+                    }
+                }
+
                 // 🔥 LIFO CHECK: Session DB'de var mı? (TAM EŞLEŞME)
                 // Session sync KALDIRILDI - LIFO düzgün çalışsın diye
                 // Her cihaz kendi session'ını tutuyor, farklı session = farklı cihaz
@@ -208,9 +225,8 @@ class AuthController extends Controller
                     }
 
                     // Reason'a göre mesaj belirle
-                    // Oturum sadece 3 sebepten kapanır: LIFO, manuel logout, session expired
                     $message = match($deletedReason) {
-                        'lifo' => 'Başka bir cihazdan giriş yapıldı.',
+                        'lifo', 'lifo_new_device' => 'Başka bir cihazdan giriş yapıldı.',
                         'manual_logout' => 'Oturumunuz kapatıldı.',
                         'admin_terminated' => 'Oturumunuz yönetici tarafından sonlandırıldı.',
                         default => 'Oturumunuz sonlandırıldı. Lütfen tekrar giriş yapın.',
@@ -310,6 +326,82 @@ class AuthController extends Controller
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
                 'session_id' => $request->session_id ?? 'N/A',
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Server error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Terminate multiple device sessions (batch)
+     * Login device selection modal için kullanılır
+     */
+    public function terminateDevices(Request $request)
+    {
+        try {
+            // 🔥 FIX: Hem web hem sanctum guard'ı kontrol et
+            $user = auth('web')->user() ?? auth('sanctum')->user();
+
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized'
+                ], 401);
+            }
+
+            $request->validate([
+                'session_ids' => 'required|array',
+                'session_ids.*' => 'required|string'
+            ]);
+
+            // Tenant kontrolü
+            if (!tenant()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Device limit feature not available'
+                ], 400);
+            }
+
+            $deviceService = app(DeviceService::class);
+
+            if (!$deviceService->shouldRun()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Device limit feature not enabled for this tenant'
+                ], 400);
+            }
+
+            \Log::info('🔐 terminateDevices ATTEMPT', [
+                'session_ids' => $request->session_ids,
+                'user_id' => $user->id,
+                'count' => count($request->session_ids),
+            ]);
+
+            $deletedCount = $deviceService->terminateSessions($request->session_ids, $user);
+
+            \Log::info('🔐 terminateDevices RESULT', [
+                'deleted_count' => $deletedCount,
+                'requested_count' => count($request->session_ids),
+            ]);
+
+            // 🔥 Başarılıysa session data'yı temizle
+            if ($deletedCount > 0) {
+                session()->forget(['device_limit_exceeded', 'device_limit', 'other_devices', 'intended_url']);
+                session()->save(); // 🔥 CRITICAL: API route session değişikliklerini manuel save et
+            }
+
+            return response()->json([
+                'success' => $deletedCount > 0,
+                'deleted_count' => $deletedCount,
+                'message' => $deletedCount > 0 ? "{$deletedCount} cihaz oturumdan çıkarıldı" : 'Cihazlar bulunamadı'
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('🔐 terminateDevices ERROR', [
+                'error' => $e->getMessage(),
+                'session_ids' => $request->session_ids ?? [],
             ]);
 
             return response()->json([

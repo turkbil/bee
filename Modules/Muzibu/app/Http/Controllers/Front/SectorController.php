@@ -56,6 +56,9 @@ class SectorController extends Controller
             ->withCount(['songs' => function($q) {
                 $q->where('is_active', 1);
             }])
+            ->withSum(['songs' => function($q) {
+                $q->where('is_active', 1);
+            }], 'duration')
             ->get();
 
         return view('themes.muzibu.sectors.show', compact('sector', 'radios', 'playlists'));
@@ -95,6 +98,9 @@ class SectorController extends Controller
             ->withCount(['songs' => function($q) {
                 $q->where('is_active', 1);
             }])
+            ->withSum(['songs' => function($q) {
+                $q->where('is_active', 1);
+            }], 'duration')
             ->get();
         $html = view('themes.muzibu.partials.sector-detail', compact('sector', 'playlists'))->render();
         $titleJson = @json_decode($sector->title);

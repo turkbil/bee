@@ -40,19 +40,19 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
             <div class="text-center">
                 <div class="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-muzibu-coral to-muzibu-coral-light mb-2">{{ $songCount }}</div>
-                <div class="text-gray-400">Şarkı</div>
+                <div class="text-gray-400">{{ trans('muzibu::front.general.song') }}</div>
             </div>
             <div class="text-center">
                 <div class="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400 mb-2">{{ $albumCount }}</div>
-                <div class="text-gray-400">Albüm</div>
+                <div class="text-gray-400">{{ trans('muzibu::front.general.album') }}</div>
             </div>
             <div class="text-center">
                 <div class="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-400 mb-2">{{ $playlistCount }}+</div>
-                <div class="text-gray-400">Playlist</div>
+                <div class="text-gray-400">{{ trans('muzibu::front.general.playlist') }}</div>
             </div>
             <div class="text-center">
                 <div class="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-muzibu-coral to-red-400 mb-2">24/7</div>
-                <div class="text-gray-400">Destek</div>
+                <div class="text-gray-400">{{ trans('muzibu::front.footer.support') }}</div>
             </div>
         </div>
 
@@ -61,30 +61,30 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-32">
             {{-- Hızlı Erişim --}}
             <div>
-                <h3 class="text-lg font-bold text-white mb-4">Hızlı Erişim</h3>
+                <h3 class="text-lg font-bold text-white mb-4">{{ trans('muzibu::front.footer.quick_access') }}</h3>
                 <ul class="space-y-2">
-                    <li><a href="/playlists" class="text-gray-400 hover:text-muzibu-coral transition-colors">Oynatma Listeleri</a></li>
-                    <li><a href="/albums" class="text-gray-400 hover:text-muzibu-coral transition-colors">Albümler</a></li>
-                    <li><a href="/playlists?type=radio" class="text-gray-400 hover:text-muzibu-coral transition-colors">Radyolar</a></li>
-                    <li><a href="/genres" class="text-gray-400 hover:text-muzibu-coral transition-colors">Türler</a></li>
+                    <li><a href="/playlists" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.general.playlists') }}</a></li>
+                    <li><a href="/albums" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.general.albums') }}</a></li>
+                    <li><a href="/playlists?type=radio" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.general.radios') }}</a></li>
+                    <li><a href="/genres" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.general.genres') }}</a></li>
                 </ul>
             </div>
 
             {{-- Hesap --}}
             <div>
-                <h3 class="text-lg font-bold text-white mb-4">Hesap</h3>
+                <h3 class="text-lg font-bold text-white mb-4">{{ trans('muzibu::front.general.account') }}</h3>
                 <ul class="space-y-2">
-                    <li><a href="/login" class="text-gray-400 hover:text-muzibu-coral transition-colors">Giriş Yap</a></li>
-                    <li><a href="/register" class="text-gray-400 hover:text-muzibu-coral transition-colors">Kayıt Ol</a></li>
+                    <li><a href="/login" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.general.login') }}</a></li>
+                    <li><a href="/register" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.footer.register') }}</a></li>
                 </ul>
             </div>
 
             {{-- Kurumsal --}}
             <div>
-                <h3 class="text-lg font-bold text-white mb-4">Kurumsal</h3>
+                <h3 class="text-lg font-bold text-white mb-4">{{ trans('muzibu::front.footer.corporate') }}</h3>
                 <ul class="space-y-2">
-                    <li><a href="/iletisim" class="text-gray-400 hover:text-muzibu-coral transition-colors">İletişim</a></li>
-                    <li><a href="/kullanim-kosullari-ve-uyelik-sozlesmesi" class="text-gray-400 hover:text-muzibu-coral transition-colors">Kullanım Koşulları</a></li>
+                    <li><a href="/iletisim" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.footer.contact') }}</a></li>
+                    <li><a href="/kullanim-kosullari-ve-uyelik-sozlesmesi" class="text-gray-400 hover:text-muzibu-coral transition-colors">{{ trans('muzibu::front.user.terms_of_service') }}</a></li>
                 </ul>
             </div>
         </div>
@@ -121,13 +121,13 @@
             </div>
             <div class="flex items-center gap-2">
                 <i class="fas fa-comment-dots text-green-400"></i>
-                <a href="#" class="hover:text-white transition-colors">Canlı Destek</a>
+                <a href="#" class="hover:text-white transition-colors">{{ trans('muzibu::front.footer.live_support') }}</a>
             </div>
         </div>
 
         {{-- Copyright --}}
         <div class="text-center text-gray-500 text-xs md:text-sm border-t border-white/10 pt-6">
-            © {{ date('Y') }} Muzibu - Tüm hakları saklıdır.
+            © {{ date('Y') }} Muzibu - {{ trans('muzibu::front.footer.all_rights_reserved') }}.
         </div>
 
     </div>

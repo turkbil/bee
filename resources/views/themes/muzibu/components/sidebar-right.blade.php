@@ -1,5 +1,5 @@
-{{-- RIGHT SIDEBAR - Premium Card Design (Draft 1) --}}
-<div class="h-full" x-data>
+{{-- RIGHT SIDEBAR - v6: Tab System with Dynamic Header --}}
+<div class="h-full" x-data="{ songsTab: 'popular' }">
 
     {{-- PREVIEW MODE: Premium Card Design (when clicking on list item) --}}
     <template x-if="!$store.sidebar.isDetailPage && $store.sidebar.previewMode">
@@ -44,7 +44,7 @@
                     <h3 class="text-lg font-bold text-white truncate leading-tight mt-0.5"
                         x-text="$store.sidebar.previewInfo?.title"></h3>
                     <p class="text-xs text-white/60 mt-1">
-                        <span x-text="$store.sidebar.previewTracks.length"></span> sarki
+                        <span x-text="$store.sidebar.previewTracks.length"></span> {{ trans('muzibu::front.general.song') }}
                     </p>
                 </div>
             </div>
@@ -54,7 +54,7 @@
                 <div class="flex-1 flex items-center justify-center">
                     <div class="text-center">
                         <i class="fas fa-spinner fa-spin text-muzibu-coral text-xl mb-2"></i>
-                        <p class="text-xs text-gray-500">Yukleniyor...</p>
+                        <p class="text-xs text-gray-500">{{ trans('muzibu::front.general.loading') }}</p>
                     </div>
                 </div>
             </template>
@@ -84,7 +84,7 @@
                             </div>
 
                             {{-- Track Thumbnail --}}
-                            <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-gray-700 to-gray-800">
+                            <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600">
                                 <template x-if="track.cover">
                                     <img :src="track.cover" :alt="track.title" class="w-full h-full object-cover">
                                 </template>
@@ -128,7 +128,7 @@
                 <div class="flex-1 flex items-center justify-center">
                     <div class="text-center text-gray-500">
                         <i class="fas fa-music text-2xl mb-2"></i>
-                        <p class="text-xs">Sarki bulunamadi</p>
+                        <p class="text-xs">{{ trans('muzibu::front.messages.song_not_found') }}</p>
                     </div>
                 </div>
             </template>
@@ -178,7 +178,7 @@
                     <h3 class="text-lg font-bold text-white truncate leading-tight mt-0.5"
                         x-text="$store.sidebar.entityInfo?.title"></h3>
                     <p class="text-xs text-white/60 mt-1">
-                        <span x-text="$store.sidebar.tracks.length"></span> sarki
+                        <span x-text="$store.sidebar.tracks.length"></span> {{ trans('muzibu::front.general.song') }}
                     </p>
                 </div>
             </div>
@@ -207,7 +207,7 @@
                         </div>
 
                         {{-- Track Thumbnail --}}
-                        <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-gray-700 to-gray-800">
+                        <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600">
                             <template x-if="track.cover">
                                 <img :src="track.cover" :alt="track.title" class="w-full h-full object-cover">
                             </template>
@@ -247,154 +247,339 @@
         </div>
     </template>
 
-    {{-- HOMEPAGE: Featured Content (default - when not in preview or detail mode) --}}
+    {{-- HOMEPAGE: Tab System with Songs (v6 Design) --}}
     <template x-if="!$store.sidebar.isDetailPage && !$store.sidebar.previewMode">
-        <div class="p-3 space-y-5 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+        <div class="h-full flex flex-col bg-gradient-to-b from-white/[0.03] to-transparent rounded-2xl overflow-hidden">
 
-            {{-- Section 1: Sizin Icin --}}
-            <div>
-                <div class="mb-3">
-                    <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                        <span class="w-1 h-4 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full"></span>
-                        Sizin Icin
+            {{-- Premium Header with Rounded Top --}}
+            <div class="relative overflow-hidden rounded-t-2xl transition-all duration-300"
+                 :class="{
+                     'bg-gradient-to-br from-orange-500/30 via-red-500/20 to-transparent': songsTab === 'popular',
+                     'bg-gradient-to-br from-green-500/30 via-emerald-500/20 to-transparent': songsTab === 'new',
+                     'bg-gradient-to-br from-blue-500/30 via-indigo-500/20 to-transparent': songsTab === 'trend'
+                 }">
+                <div class="px-3 py-1">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <template x-if="songsTab === 'popular'">
+                            <span class="flex items-center gap-2">
+                                <i class="fas fa-fire text-orange-400"></i>
+                                {{ trans('muzibu::front.general.popular_songs') }}
+                            </span>
+                        </template>
+                        <template x-if="songsTab === 'new'">
+                            <span class="flex items-center gap-2">
+                                <i class="fas fa-star text-green-400"></i>
+                                {{ trans('muzibu::front.general.new_songs') }}
+                            </span>
+                        </template>
+                        <template x-if="songsTab === 'trend'">
+                            <span class="flex items-center gap-2">
+                                <i class="fas fa-chart-line text-blue-400"></i>
+                                {{ trans('muzibu::front.general.trending_songs') }}
+                            </span>
+                        </template>
                     </h3>
+                    <p class="text-xs text-gray-400 mt-1"
+                       x-text="songsTab === 'popular' ? (window.muzibuPlayerConfig?.frontLang?.sidebar?.most_played || 'Most Played') : (songsTab === 'new' ? (window.muzibuPlayerConfig?.frontLang?.sidebar?.newly_added || 'Newly Added') : (window.muzibuPlayerConfig?.frontLang?.sidebar?.trending || 'Trending'))"></p>
                 </div>
-
-                @if(isset($featuredPlaylists) && $featuredPlaylists->count() > 0)
-                <div class="space-y-1">
-                    @foreach($featuredPlaylists->take(5) as $playlist)
-                    <a href="/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}"
-                      
-                       class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer transition-all group">
-                        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 flex-shrink-0 overflow-hidden shadow-lg">
-                            @if($playlist->coverMedia)
-                                <img src="{{ thumb($playlist->coverMedia, 40, 40, ['scale' => 1]) }}" alt="{{ getLocaleTitle($playlist->title, 'Playlist') }}" class="w-full h-full object-cover" loading="lazy">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center text-base">🎵</div>
-                            @endif
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <h4 class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral transition-colors">
-                                {{ getLocaleTitle($playlist->title, 'Playlist') }}
-                            </h4>
-                            <p class="text-xs text-gray-500 truncate">
-                                {{ $playlist->songs()->count() }} sarki
-                            </p>
-                        </div>
-                    </a>
-                    @endforeach
-                </div>
-                @else
-                <div class="text-center py-4 text-gray-500">
-                    <i class="fas fa-music text-lg mb-1"></i>
-                    <p class="text-xs">Henuz playlist yok</p>
-                </div>
-                @endif
             </div>
 
-            {{-- Section 2: Populer Sarkilar --}}
-            @if(isset($popularSongs) && count($popularSongs) > 0)
-            <div>
-                <div class="mb-3">
-                    <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                        <span class="w-1 h-4 bg-gradient-to-b from-orange-500 to-red-500 rounded-full"></span>
-                        Populer
-                    </h3>
-                </div>
-                <div class="space-y-1">
-                    @foreach($popularSongs as $index => $song)
-                    <div class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer transition-all group"
-                         @click="
-                            // 🎯 HOMEPAGE: Set 'popular' context for homepage popular songs
-                            $store.player.setPlayContext({
-                                type: 'popular',
-                                id: null,
-                                name: 'Popüler Şarkılar',
-                                offset: {{ $index }}
-                            });
-                            $dispatch('play-song', { songId: {{ $song->song_id }} })
-                         ">
-                        {{-- Rank Badge --}}
-                        <div class="w-6 h-6 rounded-lg bg-gradient-to-br from-orange-500 to-red-600 flex-shrink-0 flex items-center justify-center text-white font-bold text-xs shadow-lg">
-                            {{ $index + 1 }}
-                        </div>
-                        {{-- Song Info --}}
-                        <div class="flex-1 min-w-0">
-                            <h4 class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral transition-colors">
-                                {{ $song->getTranslation('title', app()->getLocale()) }}
-                            </h4>
-                            <p class="text-xs text-gray-500 truncate">
-                                {{ $song->artist ? $song->artist->getTranslation('title', app()->getLocale()) : '' }}
-                            </p>
-                        </div>
-                        {{-- Play Icon on Hover --}}
-                        <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-                            <i class="fas fa-play text-muzibu-coral text-xs"></i>
-                        </div>
+            {{-- Tab Headers (3 tabs) - Pill Style --}}
+            <div class="flex gap-1 px-3 py-2 bg-black/20">
+                <button @click="songsTab = 'popular'"
+                        class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
+                        :class="songsTab === 'popular' ? 'bg-orange-500/20 text-orange-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
+                    <i class="fas fa-fire mr-1"></i>{{ trans('muzibu::front.sidebar.popular') }}
+                </button>
+                <button @click="songsTab = 'new'"
+                        class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
+                        :class="songsTab === 'new' ? 'bg-green-500/20 text-green-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
+                    <i class="fas fa-star mr-1"></i>{{ trans('muzibu::front.sidebar.new') }}
+                </button>
+                <button @click="songsTab = 'trend'"
+                        class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
+                        :class="songsTab === 'trend' ? 'bg-blue-500/20 text-blue-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
+                    <i class="fas fa-chart-line mr-1"></i>{{ trans('muzibu::front.sidebar.trend') }}
+                </button>
+            </div>
+
+            {{-- Song Lists --}}
+            <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent p-2 space-y-0.5">
+
+                {{-- POPULAR SONGS TAB --}}
+                <template x-if="songsTab === 'popular'">
+                    <div class="space-y-0.5">
+                        @if(isset($popularSongs) && count($popularSongs) > 0)
+                            @foreach($popularSongs->take(15) as $index => $song)
+                            <div class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all"
+                                 @click="$dispatch('play-song', { songId: {{ $song->song_id }} })">
+                                {{-- Track Thumbnail with Play Overlay --}}
+                                @php $coverUrl = $song->getCoverUrl(40, 40); @endphp
+                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600 relative">
+                                    @if($coverUrl)
+                                        <img src="{{ $coverUrl }}" alt="{{ $song->getTranslation('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center">
+                                            <i class="fas fa-music text-gray-600 text-xs"></i>
+                                        </div>
+                                    @endif
+                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                        <i class="fas fa-play text-white text-xs"></i>
+                                    </div>
+                                </div>
+
+                                {{-- Track Info --}}
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral transition-colors">
+                                        {{ $song->getTranslation('title', app()->getLocale()) }}
+                                    </p>
+                                    <p class="text-xs text-gray-500 truncate">
+                                        {{ $song->artist ? $song->artist->getTranslation('title', app()->getLocale()) : '' }}
+                                    </p>
+                                </div>
+
+                                {{-- Duration (hide on hover) --}}
+                                <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden">
+                                    {{ $song->duration ? gmdate('i:s', $song->duration) : '' }}
+                                </div>
+
+                                {{-- Actions (show on hover) --}}
+                                <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                                    <button @click.stop="$dispatch('toggle-favorite', { type: 'song', id: {{ $song->song_id }} })"
+                                            class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 text-gray-400 hover:text-muzibu-coral transition-colors">
+                                        <i class="far fa-heart text-xs"></i>
+                                    </button>
+                                    <button @click.stop="Alpine.store('contextMenu').openContextMenu($event, 'song', { id: {{ $song->song_id }}, title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}' })"
+                                            class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+                                        <i class="fas fa-ellipsis-v text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            @endforeach
+                        @else
+                            <div class="text-center py-8 text-gray-500">
+                                <i class="fas fa-music text-2xl mb-2"></i>
+                                <p class="text-xs">{{ trans('muzibu::front.general.no_songs') }}</p>
+                            </div>
+                        @endif
                     </div>
-                    @endforeach
-                </div>
-            </div>
-            @endif
+                </template>
 
-            {{-- Section 3: Yeni Eklenenler --}}
-            @if(isset($recentAlbums) && count($recentAlbums) > 0)
-            <div>
-                <div class="mb-3">
-                    <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                        <span class="w-1 h-4 bg-gradient-to-b from-green-500 to-teal-500 rounded-full"></span>
-                        Yeni
-                    </h3>
-                </div>
-                <div class="space-y-1">
-                    @foreach($recentAlbums as $album)
-                    <a href="/albums/{{ $album->getTranslation('slug', app()->getLocale()) }}"
-                      
-                       class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer transition-all group">
-                        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-teal-600 flex-shrink-0 overflow-hidden shadow-lg">
-                            @if($album->coverMedia)
-                                <img src="{{ thumb($album->coverMedia, 40, 40, ['scale' => 1]) }}" alt="{{ getLocaleTitle($album->title, 'Album') }}" class="w-full h-full object-cover" loading="lazy">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center text-base">💿</div>
-                            @endif
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <h4 class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral transition-colors">
-                                {{ getLocaleTitle($album->title, 'Album') }}
-                            </h4>
-                            <p class="text-xs text-gray-500 truncate">
-                                {{ $album->artist ? $album->artist->getTranslation('title', app()->getLocale()) : '' }}
-                            </p>
-                        </div>
-                    </a>
-                    @endforeach
-                </div>
-            </div>
-            @endif
+                {{-- NEW SONGS TAB --}}
+                <template x-if="songsTab === 'new'">
+                    <div class="space-y-0.5">
+                        @if(isset($newSongs) && count($newSongs) > 0)
+                            @foreach($newSongs->take(15) as $index => $song)
+                            <div class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all"
+                                 @click="$dispatch('play-song', { songId: {{ $song->song_id }} })">
+                                {{-- Track Thumbnail with Play Overlay --}}
+                                @php $coverUrl = $song->getCoverUrl(40, 40); @endphp
+                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600 relative">
+                                    @if($coverUrl)
+                                        <img src="{{ $coverUrl }}" alt="{{ $song->getTranslation('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center">
+                                            <i class="fas fa-music text-gray-600 text-xs"></i>
+                                        </div>
+                                    @endif
+                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                        <i class="fas fa-play text-white text-xs"></i>
+                                    </div>
+                                </div>
 
-            {{-- Section 4: Turler --}}
-            @if(isset($genres) && count($genres) > 0)
-            <div>
-                <div class="mb-3">
-                    <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                        <span class="w-1 h-4 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></span>
-                        Turler
-                    </h3>
-                </div>
-                <div class="grid grid-cols-2 gap-1.5">
-                    @foreach($genres->take(6) as $genre)
-                    <a href="/genres/{{ $genre->getTranslation('slug', app()->getLocale()) }}"
-                      
-                       class="bg-gradient-to-br from-white/5 to-white/0 hover:from-white/10 hover:to-white/5 border border-white/5 rounded-xl p-2.5 text-center transition-all group">
-                        <div class="text-base mb-1">🎸</div>
-                        <div class="text-xs font-medium text-white group-hover:text-muzibu-coral transition-colors truncate">
-                            {{ getLocaleTitle($genre->title, 'Genre') }}
-                        </div>
-                    </a>
-                    @endforeach
-                </div>
+                                {{-- Track Info --}}
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral transition-colors">
+                                        {{ $song->getTranslation('title', app()->getLocale()) }}
+                                    </p>
+                                    <p class="text-xs text-gray-500 truncate">
+                                        {{ $song->artist ? $song->artist->getTranslation('title', app()->getLocale()) : '' }}
+                                    </p>
+                                </div>
+
+                                {{-- Duration (hide on hover) --}}
+                                <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden">
+                                    {{ $song->duration ? gmdate('i:s', $song->duration) : '' }}
+                                </div>
+
+                                {{-- Actions (show on hover) --}}
+                                <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                                    <button @click.stop="$dispatch('toggle-favorite', { type: 'song', id: {{ $song->song_id }} })"
+                                            class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 text-gray-400 hover:text-muzibu-coral transition-colors">
+                                        <i class="far fa-heart text-xs"></i>
+                                    </button>
+                                    <button @click.stop="Alpine.store('contextMenu').openContextMenu($event, 'song', { id: {{ $song->song_id }}, title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}' })"
+                                            class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+                                        <i class="fas fa-ellipsis-v text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            @endforeach
+                        @elseif(isset($popularSongs) && count($popularSongs) > 10)
+                            {{-- Fallback: Use slice of popularSongs if newSongs not available --}}
+                            @foreach($popularSongs->slice(10)->take(15) as $index => $song)
+                            <div class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all"
+                                 @click="$dispatch('play-song', { songId: {{ $song->song_id }} })">
+                                {{-- Track Thumbnail with Play Overlay --}}
+                                @php $coverUrl = $song->getCoverUrl(40, 40); @endphp
+                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600 relative">
+                                    @if($coverUrl)
+                                        <img src="{{ $coverUrl }}" alt="{{ $song->getTranslation('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center">
+                                            <i class="fas fa-music text-gray-600 text-xs"></i>
+                                        </div>
+                                    @endif
+                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                        <i class="fas fa-play text-white text-xs"></i>
+                                    </div>
+                                </div>
+
+                                {{-- Track Info --}}
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral transition-colors">
+                                        {{ $song->getTranslation('title', app()->getLocale()) }}
+                                    </p>
+                                    <p class="text-xs text-gray-500 truncate">
+                                        {{ $song->artist ? $song->artist->getTranslation('title', app()->getLocale()) : '' }}
+                                    </p>
+                                </div>
+
+                                {{-- Duration (hide on hover) --}}
+                                <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden">
+                                    {{ $song->duration ? gmdate('i:s', $song->duration) : '' }}
+                                </div>
+
+                                {{-- Actions (show on hover) --}}
+                                <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                                    <button @click.stop="$dispatch('toggle-favorite', { type: 'song', id: {{ $song->song_id }} })"
+                                            class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 text-gray-400 hover:text-muzibu-coral transition-colors">
+                                        <i class="far fa-heart text-xs"></i>
+                                    </button>
+                                    <button @click.stop="Alpine.store('contextMenu').openContextMenu($event, 'song', { id: {{ $song->song_id }}, title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}' })"
+                                            class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+                                        <i class="fas fa-ellipsis-v text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            @endforeach
+                        @else
+                            <div class="text-center py-8 text-gray-500">
+                                <i class="fas fa-star text-2xl mb-2"></i>
+                                <p class="text-xs">{{ trans('muzibu::front.messages.no_songs_found') }}</p>
+                            </div>
+                        @endif
+                    </div>
+                </template>
+
+                {{-- TREND SONGS TAB --}}
+                <template x-if="songsTab === 'trend'">
+                    <div class="space-y-0.5">
+                        @if(isset($trendSongs) && count($trendSongs) > 0)
+                            @foreach($trendSongs->take(15) as $index => $song)
+                            <div class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all"
+                                 @click="$dispatch('play-song', { songId: {{ $song->song_id }} })">
+                                {{-- Track Thumbnail with Play Overlay --}}
+                                @php $coverUrl = $song->getCoverUrl(40, 40); @endphp
+                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600 relative">
+                                    @if($coverUrl)
+                                        <img src="{{ $coverUrl }}" alt="{{ $song->getTranslation('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center">
+                                            <i class="fas fa-music text-gray-600 text-xs"></i>
+                                        </div>
+                                    @endif
+                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                        <i class="fas fa-play text-white text-xs"></i>
+                                    </div>
+                                </div>
+
+                                {{-- Track Info --}}
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral transition-colors">
+                                        {{ $song->getTranslation('title', app()->getLocale()) }}
+                                    </p>
+                                    <p class="text-xs text-gray-500 truncate">
+                                        {{ $song->artist ? $song->artist->getTranslation('title', app()->getLocale()) : '' }}
+                                    </p>
+                                </div>
+
+                                {{-- Duration (hide on hover) --}}
+                                <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden">
+                                    {{ $song->duration ? gmdate('i:s', $song->duration) : '' }}
+                                </div>
+
+                                {{-- Actions (show on hover) --}}
+                                <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                                    <button @click.stop="$dispatch('toggle-favorite', { type: 'song', id: {{ $song->song_id }} })"
+                                            class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 text-gray-400 hover:text-muzibu-coral transition-colors">
+                                        <i class="far fa-heart text-xs"></i>
+                                    </button>
+                                    <button @click.stop="Alpine.store('contextMenu').openContextMenu($event, 'song', { id: {{ $song->song_id }}, title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}' })"
+                                            class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+                                        <i class="fas fa-ellipsis-v text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            @endforeach
+                        @elseif(isset($popularSongs) && count($popularSongs) > 0)
+                            {{-- Fallback: Use popularSongs shuffled if trendSongs not available --}}
+                            @foreach($popularSongs->shuffle()->take(15) as $index => $song)
+                            <div class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all"
+                                 @click="$dispatch('play-song', { songId: {{ $song->song_id }} })">
+                                {{-- Track Thumbnail with Play Overlay --}}
+                                @php $coverUrl = $song->getCoverUrl(40, 40); @endphp
+                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600 relative">
+                                    @if($coverUrl)
+                                        <img src="{{ $coverUrl }}" alt="{{ $song->getTranslation('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center">
+                                            <i class="fas fa-music text-gray-600 text-xs"></i>
+                                        </div>
+                                    @endif
+                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                        <i class="fas fa-play text-white text-xs"></i>
+                                    </div>
+                                </div>
+
+                                {{-- Track Info --}}
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-white truncate group-hover:text-muzibu-coral transition-colors">
+                                        {{ $song->getTranslation('title', app()->getLocale()) }}
+                                    </p>
+                                    <p class="text-xs text-gray-500 truncate">
+                                        {{ $song->artist ? $song->artist->getTranslation('title', app()->getLocale()) : '' }}
+                                    </p>
+                                </div>
+
+                                {{-- Duration (hide on hover) --}}
+                                <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden">
+                                    {{ $song->duration ? gmdate('i:s', $song->duration) : '' }}
+                                </div>
+
+                                {{-- Actions (show on hover) --}}
+                                <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                                    <button @click.stop="$dispatch('toggle-favorite', { type: 'song', id: {{ $song->song_id }} })"
+                                            class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 text-gray-400 hover:text-muzibu-coral transition-colors">
+                                        <i class="far fa-heart text-xs"></i>
+                                    </button>
+                                    <button @click.stop="Alpine.store('contextMenu').openContextMenu($event, 'song', { id: {{ $song->song_id }}, title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}' })"
+                                            class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+                                        <i class="fas fa-ellipsis-v text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            @endforeach
+                        @else
+                            <div class="text-center py-8 text-gray-500">
+                                <i class="fas fa-chart-line text-2xl mb-2"></i>
+                                <p class="text-xs">{{ trans('muzibu::front.messages.no_songs_found') }}</p>
+                            </div>
+                        @endif
+                    </div>
+                </template>
+
             </div>
-            @endif
         </div>
     </template>
 
@@ -403,7 +588,7 @@
         <div class="h-full flex items-center justify-center">
             <div class="text-center text-gray-500">
                 <i class="fas fa-spinner fa-spin text-muzibu-coral text-2xl mb-3"></i>
-                <p class="text-xs">Sarki yukleniyor...</p>
+                <p class="text-xs">{{ trans('muzibu::front.sidebar.song_loading') }}</p>
             </div>
         </div>
     </template>

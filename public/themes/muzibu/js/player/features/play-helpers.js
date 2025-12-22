@@ -20,19 +20,13 @@ async function playGenres(genreId) {
     try {
         // 🚫 PREMIUM CHECK
         if (!player.isLoggedIn) {
-            player.showToast('Şarkı dinlemek için kayıt olmalısınız', 'warning');
-            setTimeout(() => {
-                window.location.href = '/register';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.login_required || 'Login required to listen', 'warning');
             return;
         }
 
         const isPremiumOrTrial = player.currentUser?.is_premium || player.currentUser?.is_trial;
         if (!isPremiumOrTrial) {
-            player.showToast('Şarkı dinlemek için premium üyelik gereklidir', 'warning');
-            setTimeout(() => {
-                window.location.href = '/subscription/plans';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
             return;
         }
 
@@ -49,7 +43,7 @@ async function playGenres(genreId) {
         const data = await response.json();
 
         if (!data.songs || data.songs.length === 0) {
-            player.showToast('Bu türde şarkı bulunamadı', 'warning');
+            player.showToast(player.frontLang?.messages?.genre_no_playable_songs || 'No songs found in this genre', 'warning');
             player.isLoading = false;
             return;
         }
@@ -63,7 +57,7 @@ async function playGenres(genreId) {
 
     } catch (error) {
         console.error('playGenres error:', error);
-        player.showToast('Şarkılar yüklenemedi', 'error');
+        player.showToast(player.frontLang?.messages?.songs_loading_failed || 'Failed to load songs', 'error');
     } finally {
         player.isLoading = false;
     }
@@ -84,19 +78,13 @@ async function playPlaylist(playlistId) {
     try {
         // 🚫 PREMIUM CHECK
         if (!player.isLoggedIn) {
-            player.showToast('Şarkı dinlemek için kayıt olmalısınız', 'warning');
-            setTimeout(() => {
-                window.location.href = '/register';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.login_required || 'Login required to listen', 'warning');
             return;
         }
 
         const isPremiumOrTrial = player.currentUser?.is_premium || player.currentUser?.is_trial;
         if (!isPremiumOrTrial) {
-            player.showToast('Şarkı dinlemek için premium üyelik gereklidir', 'warning');
-            setTimeout(() => {
-                window.location.href = '/subscription/plans';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
             return;
         }
 
@@ -113,7 +101,7 @@ async function playPlaylist(playlistId) {
         const data = await response.json();
 
         if (!data.playlist || !data.playlist.songs || data.playlist.songs.length === 0) {
-            player.showToast('Bu playlist\'te şarkı bulunamadı', 'warning');
+            player.showToast(player.frontLang?.messages?.playlist_no_playable_songs || 'No songs found in this playlist', 'warning');
             player.isLoading = false;
             return;
         }
@@ -127,7 +115,7 @@ async function playPlaylist(playlistId) {
 
     } catch (error) {
         console.error('playPlaylist error:', error);
-        player.showToast('Playlist yüklenemedi', 'error');
+        player.showToast(player.frontLang?.messages?.playlist_loading_failed || 'Failed to load playlist', 'error');
     } finally {
         player.isLoading = false;
     }
@@ -148,19 +136,13 @@ async function playAlbum(albumId) {
     try {
         // 🚫 PREMIUM CHECK
         if (!player.isLoggedIn) {
-            player.showToast('Şarkı dinlemek için kayıt olmalısınız', 'warning');
-            setTimeout(() => {
-                window.location.href = '/register';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.login_required || 'Login required to listen', 'warning');
             return;
         }
 
         const isPremiumOrTrial = player.currentUser?.is_premium || player.currentUser?.is_trial;
         if (!isPremiumOrTrial) {
-            player.showToast('Şarkı dinlemek için premium üyelik gereklidir', 'warning');
-            setTimeout(() => {
-                window.location.href = '/subscription/plans';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
             return;
         }
 
@@ -177,7 +159,7 @@ async function playAlbum(albumId) {
         const data = await response.json();
 
         if (!data.album || !data.album.songs || data.album.songs.length === 0) {
-            player.showToast('Bu albümde şarkı bulunamadı', 'warning');
+            player.showToast(player.frontLang?.messages?.album_no_playable_songs || 'No songs found in this album', 'warning');
             player.isLoading = false;
             return;
         }
@@ -191,7 +173,7 @@ async function playAlbum(albumId) {
 
     } catch (error) {
         console.error('playAlbum error:', error);
-        player.showToast('Albüm yüklenemedi', 'error');
+        player.showToast(player.frontLang?.messages?.album_loading_failed || 'Failed to load album', 'error');
     } finally {
         player.isLoading = false;
     }
@@ -212,19 +194,13 @@ async function playRadio(radioId) {
     try {
         // 🚫 PREMIUM CHECK
         if (!player.isLoggedIn) {
-            player.showToast('Şarkı dinlemek için kayıt olmalısınız', 'warning');
-            setTimeout(() => {
-                window.location.href = '/register';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.login_required || 'Login required to listen', 'warning');
             return;
         }
 
         const isPremiumOrTrial = player.currentUser?.is_premium || player.currentUser?.is_trial;
         if (!isPremiumOrTrial) {
-            player.showToast('Şarkı dinlemek için premium üyelik gereklidir', 'warning');
-            setTimeout(() => {
-                window.location.href = '/subscription/plans';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
             return;
         }
 
@@ -241,7 +217,7 @@ async function playRadio(radioId) {
         const data = await response.json();
 
         if (!data.songs || data.songs.length === 0) {
-            player.showToast('Bu radyoda şarkı bulunamadı', 'warning');
+            player.showToast(player.frontLang?.messages?.radio_no_playable_songs || 'No songs found in this radio', 'warning');
             player.isLoading = false;
             return;
         }
@@ -255,7 +231,7 @@ async function playRadio(radioId) {
 
     } catch (error) {
         console.error('playRadio error:', error);
-        player.showToast('Radyo yüklenemedi', 'error');
+        player.showToast(player.frontLang?.messages?.radio_loading_failed || 'Failed to load radio', 'error');
     } finally {
         player.isLoading = false;
     }
@@ -276,19 +252,13 @@ async function playSector(sectorId) {
     try {
         // 🚫 PREMIUM CHECK
         if (!player.isLoggedIn) {
-            player.showToast('Şarkı dinlemek için kayıt olmalısınız', 'warning');
-            setTimeout(() => {
-                window.location.href = '/register';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.login_required || 'Login required to listen', 'warning');
             return;
         }
 
         const isPremiumOrTrial = player.currentUser?.is_premium || player.currentUser?.is_trial;
         if (!isPremiumOrTrial) {
-            player.showToast('Şarkı dinlemek için premium üyelik gereklidir', 'warning');
-            setTimeout(() => {
-                window.location.href = '/subscription/plans';
-            }, 800);
+            player.showToast(player.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
             return;
         }
 
@@ -305,7 +275,7 @@ async function playSector(sectorId) {
         const data = await response.json();
 
         if (!data.songs || data.songs.length === 0) {
-            player.showToast('Bu sektörde şarkı bulunamadı', 'warning');
+            player.showToast(player.frontLang?.messages?.sector_no_playable_songs || 'No songs found in this sector', 'warning');
             player.isLoading = false;
             return;
         }
@@ -319,7 +289,7 @@ async function playSector(sectorId) {
 
     } catch (error) {
         console.error('playSector error:', error);
-        player.showToast('Sektör yüklenemedi', 'error');
+        player.showToast(player.frontLang?.messages?.sector_loading_failed || 'Failed to load sector', 'error');
     } finally {
         player.isLoading = false;
     }

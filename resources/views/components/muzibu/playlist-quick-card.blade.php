@@ -55,7 +55,7 @@
      })">
 
     {{-- Cover Image --}}
-    <div class="w-16 h-16 flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-pink-600">
+    <div class="w-16 h-16 flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600">
         @if($playlist->coverMedia)
             <img src="{{ thumb($playlist->coverMedia, 64, 64, ['scale' => 1]) }}"
                  alt="{{ $playlist->getTranslation('title', app()->getLocale()) }}"

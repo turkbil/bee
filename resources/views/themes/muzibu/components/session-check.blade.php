@@ -1,8 +1,112 @@
-{{-- Session Check Component - GEÇİCİ OLARAK DEVRE DIŞI --}}
-{{-- Problem: Session garbage collection nedeniyle yanlış tetikleniyor --}}
-{{-- Device limit kontrolü zaten middleware ile yapılıyor --}}
-@if(false && tenant() && tenant()->id == 1001 && auth()->check() && !request()->is('admin/*'))
-<div x-data="sessionCheckComponent()" x-init="startSessionCheck()">
+{{-- Session Check Component - AKTİF --}}
+{{-- Session DB kontrolü ile LIFO device limit için logout trigger --}}
+@if(tenant() && tenant()->id == 1001 && auth()->check() && !request()->is('admin/*'))
+
+<script>
+// 🔥 FIX: Alpine.js init event'ini bekle (defer loading için)
+document.addEventListener('alpine:init', () => {
+    // Alpine.data ile component'i kaydet
+    Alpine.data('sessionCheckComponent', () => ({
+        sessionCheckInterval: null,
+        sessionTerminatedModal: false,
+
+        // init() Alpine.js tarafından otomatik çağrılır
+        init() {
+            console.log('🔐 Session check component initialized');
+            this.startSessionCheck();
+        },
+
+        startSessionCheck() {
+            console.log('🔐 Starting session check polling (5 seconds interval)');
+            // Her 5 saniyede bir session kontrol et (TEST MODE)
+            this.sessionCheckInterval = setInterval(() => {
+                this.checkSession();
+            }, 5000); // 5 saniye = test mode
+        },
+
+        async checkSession() {
+            try {
+                const response = await fetch('/api/session/check', {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                    }
+                });
+
+                // 🔥 FIX: 429 Too Many Requests durumunda logout YAPMA!
+                if (response.status === 429) {
+                    console.warn('⚠️ Session check rate limited, will retry');
+                    return; // Hiçbir şey yapma, polling devam edecek
+                }
+
+                // Eğer 401 (Unauthorized) dönerse session kesilmiş demektir
+                if (response.status === 401) {
+                    console.log('🔐 Session terminated - showing modal');
+                    this.onSessionTerminated();
+                }
+            } catch (error) {
+                // Network hatalarını logla (401 değil)
+                if (error.message !== 'Failed to fetch') {
+                    console.warn('Session check network error:', error.message);
+                }
+            }
+        },
+
+        onSessionTerminated() {
+            // Session check interval'ı durdur
+            if (this.sessionCheckInterval) {
+                clearInterval(this.sessionCheckInterval);
+            }
+
+            // Müziği durdur (player var mı kontrol et)
+            try {
+                if (window.Alpine && window.Alpine.store('player')) {
+                    const player = window.Alpine.store('player');
+                    // Player'da pause() fonksiyonu var
+                    if (typeof player.pause === 'function') {
+                        player.pause();
+                    }
+                }
+            } catch (e) {
+                console.warn('Could not pause player:', e.message);
+            }
+
+            // Modal göster
+            this.sessionTerminatedModal = true;
+        },
+
+        async logout() {
+            try {
+                // Fresh CSRF token
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+                const response = await fetch('/logout', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'same-origin'
+                });
+
+                // 419 (Page Expired) veya herhangi bir hata -> Anasayfaya
+                if (response.status === 419 || !response.ok) {
+                    window.location.href = '/';
+                } else {
+                    // Başarılı logout -> Login sayfası
+                    window.location.href = '/login';
+                }
+            } catch (error) {
+                // Network hatası -> Anasayfaya
+                console.error('Logout error:', error);
+                window.location.href = '/';
+            }
+        }
+    }));
+});
+</script>
+
+<div x-data="sessionCheckComponent">
     <!-- Session Terminated Modal - Spotify-Like Modern Design -->
     <div
         x-show="sessionTerminatedModal"
@@ -62,87 +166,6 @@
         </div>
     </div>
 </div>
-
-<script>
-function sessionCheckComponent() {
-    return {
-        sessionCheckInterval: null,
-        sessionTerminatedModal: false,
-
-        startSessionCheck() {
-            // Her 1 dakikada bir session kontrol et
-            this.sessionCheckInterval = setInterval(() => {
-                this.checkSession();
-            }, 60000); // 60 saniye = 1 dakika
-        },
-
-        async checkSession() {
-            try {
-                const response = await fetch('/api/session/check', {
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
-                    }
-                });
-
-                // Eğer 401 (Unauthorized) dönerse session kesilmiş demektir
-                // Note: 401 normal bir durumdur, console'a hata yazmaya gerek yok
-                if (response.status === 401) {
-                    this.onSessionTerminated();
-                }
-            } catch (error) {
-                // Network hatalarını logla (401 değil)
-                if (error.message !== 'Failed to fetch') {
-                    console.warn('Session check network error:', error.message);
-                }
-            }
-        },
-
-        onSessionTerminated() {
-            // Session check interval'ı durdur
-            if (this.sessionCheckInterval) {
-                clearInterval(this.sessionCheckInterval);
-            }
-
-            // Müziği durdur (player var mı kontrol et)
-            if (window.Alpine && window.Alpine.store('player')) {
-                window.Alpine.store('player').stopMusic();
-            }
-
-            // Modal göster
-            this.sessionTerminatedModal = true;
-        },
-
-        async logout() {
-            try {
-                // Fresh CSRF token
-                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
-
-                const response = await fetch('/logout', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Accept': 'application/json'
-                    },
-                    credentials: 'same-origin'
-                });
-
-                // 419 (Page Expired) veya herhangi bir hata -> Anasayfaya
-                if (response.status === 419 || !response.ok) {
-                    window.location.href = '/';
-                } else {
-                    // Başarılı logout -> Login sayfası
-                    window.location.href = '/login';
-                }
-            } catch (error) {
-                // Network hatası -> Anasayfaya
-                console.error('Logout error:', error);
-                window.location.href = '/';
-            }
-        }
-    };
-}
-</script>
 
 <style>
     [x-cloak] { display: none !important; }

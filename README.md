@@ -4,16 +4,6 @@ Laravel 12 tabanlı, modüler ve çok kiracılı (multi-tenancy) web platformu. 
 
 ---
 
-## Aktif Tenant'lar
-
-| ID | Domain | Sektör | Özellikler |
-|----|--------|--------|------------|
-| 1 | tuufi.com | Central Admin | Tüm tenant yönetimi |
-| 2 | ixtif.com | Endüstriyel Ekipman | Forklift, transpalet satışı |
-| 1001 | muzibu.com.tr | Müzik Platformu | Streaming, playlist, AI asistan |
-
----
-
 ## Son Güncellemeler
 
 ### v6.0.0 - Device/Session Limit System (22 Aralık 2025)

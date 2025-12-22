@@ -88,6 +88,7 @@ class SongStreamController extends Controller
                 ]);
 
                 if (!$sessionExists) {
+                    $reason = 'session_missing';
                     // Kullanıcıyı çıkış yaptır ve mesaj döndür
                     auth('web')->logout();
                     if (request()->hasSession()) {
@@ -100,10 +101,12 @@ class SongStreamController extends Controller
                     \Log::warning('🔐 stream blocked (session missing)', [
                         'user_id' => $user->id,
                         'cookie_token' => $cookieToken ? substr($cookieToken, 0, 16) . '...' : 'NULL',
+                        'reason' => $reason,
                     ]);
 
                     return response()->json([
                         'status' => 'session_terminated',
+                        'reason' => $reason,
                         'redirect' => '/login',
                         'message' => $this->getSessionTerminationMessage($user),
                     ], 401)
@@ -571,7 +574,11 @@ class SongStreamController extends Controller
                 'expires_in' => $expires ? $expires - Carbon::now()->timestamp : null,
                 'ip' => request()->ip(),
             ]);
-            return response()->json(['status' => 'session_terminated', 'message' => 'Oturum doğrulanamadı'], 401);
+            return response()->json([
+                'status' => 'session_terminated',
+                'reason' => 'expired_signature',
+                'message' => 'Oturum doğrulanamadı'
+            ], 401);
         }
 
         // Token DB'de geçerli mi? (LIFO sonrası silindiyse 401)
@@ -586,7 +593,11 @@ class SongStreamController extends Controller
                 'token_prefix' => substr($token, 0, 12),
                 'ip' => request()->ip(),
             ]);
-            return response()->json(['status' => 'session_terminated', 'message' => 'Oturum bulunamadı'], 401);
+            return response()->json([
+                'status' => 'session_terminated',
+                'reason' => 'session_missing',
+                'message' => 'Oturum bulunamadı'
+            ], 401);
         }
 
         try {

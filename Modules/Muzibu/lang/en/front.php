@@ -87,6 +87,15 @@ return [
         'now_playing' => 'Now Playing',
         'show_queue' => 'Show Queue',
         'hide_queue' => 'Hide Queue',
+        'next_songs' => 'Up Next',
+        'clear_queue' => 'Clear Queue',
+        'drag_to_sort' => 'Drag to reorder',
+        'queue_empty' => 'Queue Empty',
+        'queue_empty_description' => 'Go to a playlist or album to add songs',
+        'click_to_play' => 'Click songs to play',
+        'quick_access' => 'quick access',
+        'remove_from_queue' => 'Remove from Queue',
+        'drag' => 'Drag',
 
         // Shuffle & Repeat
         'shuffle' => 'Shuffle',

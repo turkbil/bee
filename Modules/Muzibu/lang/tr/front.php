@@ -83,10 +83,19 @@ return [
         'listen' => 'Dinle',
 
         // Queue
-        'queue' => 'Kuyruk',
-        'now_playing' => 'Şimdi Çalıyor',
+        'queue' => 'Sıra',
+        'now_playing' => 'Şimdi Çalınıyor',
         'show_queue' => 'Sırayı aç',
         'hide_queue' => 'Sırayı kapat',
+        'next_songs' => 'Sıradaki Şarkılar',
+        'clear_queue' => 'Sırayı Temizle',
+        'drag_to_sort' => 'Sürükleyerek sırala',
+        'queue_empty' => 'Sıra Boş',
+        'queue_empty_description' => 'Şarkı eklemek için bir playlist veya albüme gidin',
+        'click_to_play' => 'Şarkılara tıklayarak çal',
+        'quick_access' => 'hızlı erişim',
+        'remove_from_queue' => 'Sıradan Çıkar',
+        'drag' => 'Sürükle',
 
         // Shuffle & Repeat
         'shuffle' => 'Karıştır',

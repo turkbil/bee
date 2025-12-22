@@ -254,7 +254,7 @@ function muzibuApp() {
 
                     // 🔐 SESSION TERMINATED: Başka cihazdan giriş yapıldı
                     if (data.force_logout || data.error === 'session_terminated') {
-                        this.handleSessionTerminated(data.message || 'Oturumunuz sonlandırıldı.');
+                        this.handleSessionTerminated({ message: data.message, reason: data.reason || null });
                         return null;
                     }
                 } catch (e) {
@@ -262,7 +262,7 @@ function muzibuApp() {
                 }
 
                 // Genel fallback: logout mesajı
-                this.handleSessionTerminated(this.frontLang?.messages?.session_terminated || 'Oturumunuz sona erdi, lütfen tekrar giriş yapın.');
+                this.handleSessionTerminated({ message: this.frontLang?.messages?.session_terminated || 'Oturumunuz sona erdi, lütfen tekrar giriş yapın.', reason: null });
                 return null;
             }
 
@@ -2214,6 +2214,9 @@ onplay: function() {
                 this.hls = new Hls({
                     enableWorker: false, // 🔧 FIX: Disable worker to avoid internal exceptions
                     lowLatencyMode: false,
+                    maxBufferLength: 90, // Daha uzun buffer (seek beklemesini azalt)
+                    maxBufferSize: 120 * 1000 * 1000, // 120MB
+                    backBufferLength: 30,
                     // 🔑 KEY LOADING POLICY - Prevent keyLoadError with aggressive retries
                     keyLoadPolicy: {
                         default: {
@@ -2405,7 +2408,10 @@ onplay: function() {
                             } catch (_) {}
 
                             console.warn('🔒 HLS denied (401/403), stopping playback and logging out');
-                            self.handleSessionTerminated(self.frontLang?.messages?.session_terminated || 'Başka bir cihazdan giriş yapıldı. Oturum kapatıldı.');
+                            self.handleSessionTerminated({
+                                message: self.frontLang?.messages?.session_terminated || 'Oturumunuz sonlandırıldı.',
+                                reason: 'device_limit'
+                            });
                             return;
                         }
 
@@ -4121,7 +4127,7 @@ onplay: function() {
          * 🔐 SESSION TERMINATED: Başka cihazdan giriş yapıldı
          * HEMEN logout yap ve login'e yönlendir - modal yok, bekleme yok!
          */
-        handleSessionTerminated(message) {
+        handleSessionTerminated(messageOrObj) {
             // 🔥 Sonsuz döngü önleme
             if (this._sessionTerminatedHandling) {
                 return;
@@ -4138,14 +4144,38 @@ onplay: function() {
                 this.clearAllBrowserStorage();
             } catch(e) {}
 
-            const displayMessage = message || (this.frontLang?.messages?.session_terminated || 'Başka bir cihazdan giriş yapıldı. Oturum kapatıldı.');
-            this.showSessionTerminatedModal(displayMessage);
+            let reason = null;
+            let displayMessage = null;
+            if (typeof messageOrObj === 'object' && messageOrObj !== null) {
+                reason = messageOrObj.reason || null;
+                displayMessage = messageOrObj.message || null;
+            } else {
+                displayMessage = messageOrObj;
+            }
+
+            const reasonMessages = {
+                device_limit: 'Başka bir cihazdan giriş yapıldı. Bu oturum kapatıldı.',
+                lifo: 'Başka bir cihazdan giriş yapıldı. Bu oturum kapatıldı.',
+                lifo_new_device: 'Başka bir cihazdan giriş yapıldı. Bu oturum kapatıldı.',
+                expired_signature: 'Oturum süresi doldu. Lütfen tekrar giriş yapın.',
+                session_missing: 'Oturum bulunamadı. Lütfen tekrar giriş yapın.',
+                csrf: 'Güvenlik doğrulaması yenilendi. Lütfen tekrar giriş yapın.'
+            };
+
+            if (!displayMessage && reason && reasonMessages[reason]) {
+                displayMessage = reasonMessages[reason];
+            }
+
+            const fallbackMessage = this.frontLang?.messages?.session_terminated || 'Oturumunuz sonlandırıldı. Lütfen tekrar giriş yapın.';
+            const finalMessage = displayMessage || fallbackMessage;
+            this.showSessionTerminatedModal(finalMessage);
 
             // 🔥 HARD REDIRECT (logout fetch yok, 419 döngüsü engelle)
             setTimeout(() => {
                 const query = new URLSearchParams({
                     session_terminated: 1,
-                    msg: displayMessage
+                    reason: reason || '',
+                    msg: finalMessage
                 });
                 window.location.href = '/login?' + query.toString();
             }, 300);

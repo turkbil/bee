@@ -1,136 +1,378 @@
-player-core.js?v=1766329159:3705 ✅ Player state cleared (fresh start)
-spa-router.js?v=1766325726:95 🚀 SPA Router initialized (Prefetch Disabled)
-VM11613:3 🔐 Auth Debug: {isLoggedIn: false, currentUser: null}
-(index):10100 ✅ Player store verified
-VM12357:38 🧪 Debug Panel connected
-(index):10086 ✅ Player store = Proxy to root (auto-forward all properties/methods)
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: $store.player.setPlayContext is not a function
-
-Expression: "
-                            // 🎯 HOMEPAGE: Set 'popular' context for homepage popular songs
-                            $store.player.setPlayContext({
-                                type: 'popular',
-                                id: null,
-                                name: 'Popüler Şarkılar',
-                                offset: 1
-                            });
-                            $dispatch('play-song', { songId: 442 })
-                         "
-
- <div class=​"flex items-center gap-2.5 p-2 rounded-xl hover:​bg-white/​5 cursor-pointer transition-all group" @click=​"
-                            /​/​ 🎯 HOMEPAGE:​ Set 'popular' context for homepage popular songs
-                            $store.player.setPlayContext({
-                                type:​ 'popular',
-                                id:​ null,
-                                name:​ 'Popüler Şarkılar',
-                                offset:​ 1
-                            }​)​;​
-                            $dispatch('play-song', { songId:​ 442 }​)​
-                         ">​…​</div>​flex
-handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
+player-core.js?v=1766368007:1908 🎵 HLS DEBUG v3 (new /hls/ route) stream_url: https://muzibu.com.tr/hls/muzibu/songs/354/playlist.m3u8?expires=1766368515&token=88fc221461dd3ef81a2bef44df57c5827149a6b370d954bfca8903c00f8138bc&sig=f0218cff813e2802bb3c16b5125188860739b01b819a8ab9687499b3d0350791 type: hls
+player-core.js?v=1766368007:3627 🔄 HLS URL refreshed for current song: https://muzibu.com.tr/hls/muzibu/songs/354/playlist.m3u8?expires=1766368515&token=88fc221461dd3ef81a2bef44df57c5827149a6b370d954bfca8903c00f8138bc&sig=f0218cff813e2802bb3c16b5125188860739b01b819a8ab9687499b3d0350791
+Navigated to https://muzibu.com.tr/
+player-core.js?v=1766368204:3942 ✅ Player state cleared (fresh start)
+spa-router.js?v=1766368007:95 🚀 SPA Router initialized (Prefetch Disabled)
+VM49956:3 🔐 Auth Debug: {isLoggedIn: true, currentUser: Proxy(Object)}
+(index):6460 🔐 Session check component initialized
+(index):6465 🔐 Starting session check polling (5 seconds interval)
+favorites.js?v=1766368007:199 🎵 Loading user favorites...
+(index):8045 ✅ Player store verified
+VM50438:38 🧪 Debug Panel connected
+(index):8031 ✅ Player store = Proxy to root (auto-forward all properties/methods)
+player-core.js?v=1766368204:1908 🎵 HLS DEBUG v3 (new /hls/ route) stream_url: https://muzibu.com.tr/hls/muzibu/songs/353/playlist.m3u8 type: hls
+xhr-loader.ts:158  GET https://muzibu.com.tr/hls/muzibu/songs/353/playlist.m3u8?v=1766368479760 401 (Unauthorized)
+e.openAndSendXhr @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+e.loadInternal @ xhr-loader.ts:102
+e.load @ xhr-loader.ts:76
+e.load @ playlist-loader.ts:347
+e.onManifestLoading @ playlist-loader.ts:154
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.loadSource @ hls.ts:389
+playHlsStream @ player-core.js?v=1766368204:2291
+loadAndPlaySong @ player-core.js?v=1766368204:2021
+await in loadAndPlaySong
+playSongFromQueue @ player-core.js?v=1766368204:1909
+await in playSongFromQueue
+playRandomSongs @ player-core.js?v=1766368204:609
+await in playRandomSongs
+(anonymous) @ player-core.js?v=1766368204:366
+setTimeout
+init @ player-core.js?v=1766368204:364
+(anonymous) @ livewire.js?id=df3a17f2:1160
 tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3881
-handler4 @ livewire.js?id=df3a17f2:3183
-(anonymous) @ livewire.js?id=df3a17f2:3247
-(anonymous) @ livewire.js?id=df3a17f2:3185
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: $store.player.setPlayContext is not a function
-    at [Alpine] 
-                            // 🎯 HOMEPAGE: Set 'popular' context for homepage popular songs
-                            $store.player.setPlayContext({
-                                type: 'popular',
-                                id: null,
-                                name: 'Popüler Şarkılar',
-                                offset: 1
-                            });
-                            $dispatch('play-song', { songId: 442 })
-                          (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:5:43)
-    at https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1196:23
-    at tryCatch (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1116:14)
-    at https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:3881:7
-    at handler4 (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:3183:27)
-    at https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:3247:9
-    at HTMLDivElement.<anonymous> (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:3185:54)
-[Alpine] 
-                            // 🎯 HOMEPAGE: Set 'popular' context for homepage popular songs
-                            $store.player.setPlayContext({
-                                type: 'popular',
-                                id: null,
-                                name: 'Popüler Şarkılar',
-                                offset: 1
-                            });
-                            $dispatch('play-song', { songId: 442 })
-                          @ VM12172:5
-(anonymous) @ livewire.js?id=df3a17f2:1196
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3571
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+player-core.js?v=1766368204:2299 HLS Fatal Error: networkError manifestLoadError
+(anonymous) @ player-core.js?v=1766368204:2299
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.handleNetworkError @ playlist-loader.ts:605
+onError @ playlist-loader.ts:326
+e.readystatechange @ xhr-loader.ts:240
+XMLHttpRequest.send
+e.openAndSendXhr @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+e.loadInternal @ xhr-loader.ts:102
+e.load @ xhr-loader.ts:76
+e.load @ playlist-loader.ts:347
+e.onManifestLoading @ playlist-loader.ts:154
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.loadSource @ hls.ts:389
+playHlsStream @ player-core.js?v=1766368204:2291
+loadAndPlaySong @ player-core.js?v=1766368204:2021
+await in loadAndPlaySong
+playSongFromQueue @ player-core.js?v=1766368204:1909
+await in playSongFromQueue
+playRandomSongs @ player-core.js?v=1766368204:609
+await in playRandomSongs
+(anonymous) @ player-core.js?v=1766368204:366
+setTimeout
+init @ player-core.js?v=1766368204:364
+(anonymous) @ livewire.js?id=df3a17f2:1160
 tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3881
-handler4 @ livewire.js?id=df3a17f2:3183
-(anonymous) @ livewire.js?id=df3a17f2:3247
-(anonymous) @ livewire.js?id=df3a17f2:3185
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: $store.player.setPlayContext is not a function
-
-Expression: "
-                            // 🎯 HOMEPAGE: Set 'popular' context for homepage popular songs
-                            $store.player.setPlayContext({
-                                type: 'popular',
-                                id: null,
-                                name: 'Popüler Şarkılar',
-                                offset: 2
-                            });
-                            $dispatch('play-song', { songId: 323 })
-                         "
-
- <div class=​"flex items-center gap-2.5 p-2 rounded-xl hover:​bg-white/​5 cursor-pointer transition-all group" @click=​"
-                            /​/​ 🎯 HOMEPAGE:​ Set 'popular' context for homepage popular songs
-                            $store.player.setPlayContext({
-                                type:​ 'popular',
-                                id:​ null,
-                                name:​ 'Popüler Şarkılar',
-                                offset:​ 2
-                            }​)​;​
-                            $dispatch('play-song', { songId:​ 323 }​)​
-                         ">​…​</div>​flex
-handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3571
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+player-core.js?v=1766368204:2380 🔴 HLS FATAL ERROR: {song_id: 353, song: Proxy(Object), artist: Proxy(Object), hls_path: 'muzibu/hls/353/playlist.m3u8', errorType: 'networkError', …}
+(anonymous) @ player-core.js?v=1766368204:2380
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.handleNetworkError @ playlist-loader.ts:605
+onError @ playlist-loader.ts:326
+e.readystatechange @ xhr-loader.ts:240
+XMLHttpRequest.send
+e.openAndSendXhr @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+e.loadInternal @ xhr-loader.ts:102
+e.load @ xhr-loader.ts:76
+e.load @ playlist-loader.ts:347
+e.onManifestLoading @ playlist-loader.ts:154
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.loadSource @ hls.ts:389
+playHlsStream @ player-core.js?v=1766368204:2291
+loadAndPlaySong @ player-core.js?v=1766368204:2021
+await in loadAndPlaySong
+playSongFromQueue @ player-core.js?v=1766368204:1909
+await in playSongFromQueue
+playRandomSongs @ player-core.js?v=1766368204:609
+await in playRandomSongs
+(anonymous) @ player-core.js?v=1766368204:366
+setTimeout
+init @ player-core.js?v=1766368204:364
+(anonymous) @ livewire.js?id=df3a17f2:1160
 tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3881
-handler4 @ livewire.js?id=df3a17f2:3183
-(anonymous) @ livewire.js?id=df3a17f2:3247
-(anonymous) @ livewire.js?id=df3a17f2:3185
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: $store.player.setPlayContext is not a function
-    at [Alpine] 
-                            // 🎯 HOMEPAGE: Set 'popular' context for homepage popular songs
-                            $store.player.setPlayContext({
-                                type: 'popular',
-                                id: null,
-                                name: 'Popüler Şarkılar',
-                                offset: 2
-                            });
-                            $dispatch('play-song', { songId: 323 })
-                          (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:5:43)
-    at https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1196:23
-    at tryCatch (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1116:14)
-    at https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:3881:7
-    at handler4 (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:3183:27)
-    at https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:3247:9
-    at HTMLDivElement.<anonymous> (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:3185:54)
-[Alpine] 
-                            // 🎯 HOMEPAGE: Set 'popular' context for homepage popular songs
-                            $store.player.setPlayContext({
-                                type: 'popular',
-                                id: null,
-                                name: 'Popüler Şarkılar',
-                                offset: 2
-                            });
-                            $dispatch('play-song', { songId: 323 })
-                          @ VM12173:5
-(anonymous) @ livewire.js?id=df3a17f2:1196
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3571
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+player-core.js?v=1766368204:2410 🔒 HLS denied (401/403), stopping playback and logging out
+(anonymous) @ player-core.js?v=1766368204:2410
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.handleNetworkError @ playlist-loader.ts:605
+onError @ playlist-loader.ts:326
+e.readystatechange @ xhr-loader.ts:240
+XMLHttpRequest.send
+e.openAndSendXhr @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+e.loadInternal @ xhr-loader.ts:102
+e.load @ xhr-loader.ts:76
+e.load @ playlist-loader.ts:347
+e.onManifestLoading @ playlist-loader.ts:154
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.loadSource @ hls.ts:389
+playHlsStream @ player-core.js?v=1766368204:2291
+loadAndPlaySong @ player-core.js?v=1766368204:2021
+await in loadAndPlaySong
+playSongFromQueue @ player-core.js?v=1766368204:1909
+await in playSongFromQueue
+playRandomSongs @ player-core.js?v=1766368204:609
+await in playRandomSongs
+(anonymous) @ player-core.js?v=1766368204:366
+setTimeout
+init @ player-core.js?v=1766368204:364
+(anonymous) @ livewire.js?id=df3a17f2:1160
 tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3881
-handler4 @ livewire.js?id=df3a17f2:3183
-(anonymous) @ livewire.js?id=df3a17f2:3247
-(anonymous) @ livewire.js?id=df3a17f2:3185
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3571
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+Navigated to https://muzibu.com.tr/
+player-core.js?v=1766368204:3942 ✅ Player state cleared (fresh start)
+spa-router.js?v=1766368007:95 🚀 SPA Router initialized (Prefetch Disabled)
+VM50635:3 🔐 Auth Debug: {isLoggedIn: true, currentUser: Proxy(Object)}
+(index):6460 🔐 Session check component initialized
+(index):6465 🔐 Starting session check polling (5 seconds interval)
+favorites.js?v=1766368007:199 🎵 Loading user favorites...
+(index):8045 ✅ Player store verified
+VM51117:38 🧪 Debug Panel connected
+(index):8031 ✅ Player store = Proxy to root (auto-forward all properties/methods)
+player-core.js?v=1766368204:1908 🎵 HLS DEBUG v3 (new /hls/ route) stream_url: https://muzibu.com.tr/hls/muzibu/songs/350/playlist.m3u8 type: hls
+xhr-loader.ts:158  GET https://muzibu.com.tr/hls/muzibu/songs/350/playlist.m3u8?v=1766368484645 401 (Unauthorized)
+e.openAndSendXhr @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+e.loadInternal @ xhr-loader.ts:102
+e.load @ xhr-loader.ts:76
+e.load @ playlist-loader.ts:347
+e.onManifestLoading @ playlist-loader.ts:154
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.loadSource @ hls.ts:389
+playHlsStream @ player-core.js?v=1766368204:2291
+loadAndPlaySong @ player-core.js?v=1766368204:2021
+await in loadAndPlaySong
+playSongFromQueue @ player-core.js?v=1766368204:1909
+await in playSongFromQueue
+playRandomSongs @ player-core.js?v=1766368204:609
+await in playRandomSongs
+(anonymous) @ player-core.js?v=1766368204:366
+setTimeout
+init @ player-core.js?v=1766368204:364
+(anonymous) @ livewire.js?id=df3a17f2:1160
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3571
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+player-core.js?v=1766368204:2299 HLS Fatal Error: networkError manifestLoadError
+(anonymous) @ player-core.js?v=1766368204:2299
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.handleNetworkError @ playlist-loader.ts:605
+onError @ playlist-loader.ts:326
+e.readystatechange @ xhr-loader.ts:240
+XMLHttpRequest.send
+e.openAndSendXhr @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+e.loadInternal @ xhr-loader.ts:102
+e.load @ xhr-loader.ts:76
+e.load @ playlist-loader.ts:347
+e.onManifestLoading @ playlist-loader.ts:154
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.loadSource @ hls.ts:389
+playHlsStream @ player-core.js?v=1766368204:2291
+loadAndPlaySong @ player-core.js?v=1766368204:2021
+await in loadAndPlaySong
+playSongFromQueue @ player-core.js?v=1766368204:1909
+await in playSongFromQueue
+playRandomSongs @ player-core.js?v=1766368204:609
+await in playRandomSongs
+(anonymous) @ player-core.js?v=1766368204:366
+setTimeout
+init @ player-core.js?v=1766368204:364
+(anonymous) @ livewire.js?id=df3a17f2:1160
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3571
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+player-core.js?v=1766368204:2380 🔴 HLS FATAL ERROR: {song_id: 350, song: Proxy(Object), artist: Proxy(Object), hls_path: 'muzibu/hls/350/playlist.m3u8', errorType: 'networkError', …}
+(anonymous) @ player-core.js?v=1766368204:2380
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.handleNetworkError @ playlist-loader.ts:605
+onError @ playlist-loader.ts:326
+e.readystatechange @ xhr-loader.ts:240
+XMLHttpRequest.send
+e.openAndSendXhr @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+e.loadInternal @ xhr-loader.ts:102
+e.load @ xhr-loader.ts:76
+e.load @ playlist-loader.ts:347
+e.onManifestLoading @ playlist-loader.ts:154
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.loadSource @ hls.ts:389
+playHlsStream @ player-core.js?v=1766368204:2291
+loadAndPlaySong @ player-core.js?v=1766368204:2021
+await in loadAndPlaySong
+playSongFromQueue @ player-core.js?v=1766368204:1909
+await in playSongFromQueue
+playRandomSongs @ player-core.js?v=1766368204:609
+await in playRandomSongs
+(anonymous) @ player-core.js?v=1766368204:366
+setTimeout
+init @ player-core.js?v=1766368204:364
+(anonymous) @ livewire.js?id=df3a17f2:1160
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3571
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+player-core.js?v=1766368204:2410 🔒 HLS denied (401/403), stopping playback and logging out
+(anonymous) @ player-core.js?v=1766368204:2410
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.handleNetworkError @ playlist-loader.ts:605
+onError @ playlist-loader.ts:326
+e.readystatechange @ xhr-loader.ts:240
+XMLHttpRequest.send
+e.openAndSendXhr @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+e.loadInternal @ xhr-loader.ts:102
+e.load @ xhr-loader.ts:76
+e.load @ playlist-loader.ts:347
+e.onManifestLoading @ playlist-loader.ts:154
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.loadSource @ hls.ts:389
+playHlsStream @ player-core.js?v=1766368204:2291
+loadAndPlaySong @ player-core.js?v=1766368204:2021
+await in loadAndPlaySong
+playSongFromQueue @ player-core.js?v=1766368204:1909
+await in playSongFromQueue
+playRandomSongs @ player-core.js?v=1766368204:609
+await in playRandomSongs
+(anonymous) @ player-core.js?v=1766368204:366
+setTimeout
+init @ player-core.js?v=1766368204:364
+(anonymous) @ livewire.js?id=df3a17f2:1160
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3571
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+player-core.js?v=1766368204:3553  GET https://muzibu.com.tr/hls/muzibu/songs/353/playlist.m3u8 401 (Unauthorized)
+preloadSongOnHover @ player-core.js?v=1766368204:3553
+await in preloadSongOnHover
+(anonymous) @ player-core.js?v=1766368204:3509
+preloadNextThreeSongs @ player-core.js?v=1766368204:3508
+playSongFromQueue @ player-core.js?v=1766368204:1932
+await in playSongFromQueue
+playRandomSongs @ player-core.js?v=1766368204:609
+await in playRandomSongs
+(anonymous) @ player-core.js?v=1766368204:366
+setTimeout
+init @ player-core.js?v=1766368204:364
+(anonymous) @ livewire.js?id=df3a17f2:1160
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3571
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+Navigated to https://muzibu.com.tr/
+player-core.js?v=1766368204:3942 ✅ Player state cleared (fresh start)
+spa-router.js?v=1766368007:95 🚀 SPA Router initialized (Prefetch Disabled)
+VM51312:3 🔐 Auth Debug: {isLoggedIn: true, currentUser: Proxy(Object)}
+(index):6460 🔐 Session check component initialized
+(index):6465 🔐 Starting session check polling (5 seconds interval)
+favorites.js?v=1766368007:199 🎵 Loading user favorites...
+(index):8045 ✅ Player store verified
+VM51794:38 🧪 Debug Panel connected
+(index):8031 ✅ Player store = Proxy to root (auto-forward all properties/methods)

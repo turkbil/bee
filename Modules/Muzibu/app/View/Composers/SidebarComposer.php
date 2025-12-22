@@ -32,7 +32,7 @@ class SidebarComposer
 
         // 🆕 NEW SONGS - Son eklenenler (created_at desc)
         if (!$view->offsetExists('newSongs')) {
-            $newSongs = Cache::remember('sidebar_new_songs', 43200, function () {
+            $newSongs = Cache::remember('sidebar_new_songs', 3600, function () { // 1 saat - yeni şarkılar hızlı görünsün
                 return Song::where('is_active', 1)
                     ->whereNotNull('file_path')
                     ->whereNotNull('hls_path')

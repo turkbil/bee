@@ -189,6 +189,23 @@ class AuthController extends Controller
             $deviceService = app(DeviceService::class);
 
             if ($deviceService->shouldRun()) {
+                // 🔥 GEÇICI: Cookie token sync - döngü sorunu çözümü
+                // Cookie yoksa veya eşleşmezse, mevcut session'ın token'ını güncelle
+                $cookieToken = $request->cookie('mzb_login_token');
+
+                if (!$cookieToken) {
+                    // Cookie yok - session varsa geçerli say (yeni login sonrası)
+                    $userSession = \DB::table('user_active_sessions')
+                        ->where('user_id', $user->id)
+                        ->first();
+
+                    if ($userSession) {
+                        // Session var, cookie yok = yeni login, geçerli
+                        $deviceService->updateSessionActivity($user);
+                        return response()->json(['valid' => true, 'user_id' => $user->id]);
+                    }
+                }
+
                 // 🔥 LIFO CHECK: Session DB'de var mı? (TAM EŞLEŞME)
                 // Session sync KALDIRILDI - LIFO düzgün çalışsın diye
                 // Her cihaz kendi session'ını tutuyor, farklı session = farklı cihaz
@@ -208,9 +225,8 @@ class AuthController extends Controller
                     }
 
                     // Reason'a göre mesaj belirle
-                    // Oturum sadece 3 sebepten kapanır: LIFO, manuel logout, session expired
                     $message = match($deletedReason) {
-                        'lifo' => 'Başka bir cihazdan giriş yapıldı.',
+                        'lifo', 'lifo_new_device' => 'Başka bir cihazdan giriş yapıldı.',
                         'manual_logout' => 'Oturumunuz kapatıldı.',
                         'admin_terminated' => 'Oturumunuz yönetici tarafından sonlandırıldı.',
                         default => 'Oturumunuz sonlandırıldı. Lütfen tekrar giriş yapın.',

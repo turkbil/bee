@@ -86,7 +86,7 @@
                  class="w-full aspect-square object-cover rounded-full shadow-lg"
                  loading="lazy">
         @else
-            <div class="w-full aspect-square bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+            <div class="w-full aspect-square bg-gradient-to-br from-muzibu-coral to-orange-600 rounded-full flex items-center justify-center shadow-lg">
                 <i class="fas fa-user text-white text-5xl opacity-50"></i>
             </div>
         @endif

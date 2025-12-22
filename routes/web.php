@@ -67,12 +67,6 @@ Route::get('/api/session/check', function (\Illuminate\Http\Request $request) {
     ]);
 })->name('api.session.check');
 
-// 🔐 TERMINATE DEVICES - Device selection modal (batch terminate)
-// 🔥 FIX: Bu route web.php'de olmalı (API middleware grubu session kullanmaz!)
-Route::post('/api/auth/terminate-devices', [\App\Http\Controllers\Api\Auth\AuthController::class, 'terminateDevices'])
-    ->middleware('auth')
-    ->name('api.auth.terminate-devices');
-
 // 🛒 SHOP & CART PRIORITY ROUTES (Wildcard'dan önce tanımlanmalı!)
 // NOT: Bu route'lar modülde tanımlanabilirdi ama Livewire component'ler modül route'unda catch-all'dan önce olmalı
 Route::get('/cart', \Modules\Cart\App\Http\Livewire\Front\CartPage::class)->name('cart.index');

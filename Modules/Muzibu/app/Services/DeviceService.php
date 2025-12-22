@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 use Jenssegers\Agent\Agent;
 
 /**
@@ -41,6 +42,11 @@ class DeviceService
 
     /**
      * Yeni session kaydet (login sonrası)
+     *
+     * MANTIK:
+     * 1. Cookie'de mzb_login_token var mı kontrol et
+     * 2. Varsa ve DB'de eşleşiyorsa → AYNI TARAYICI, sadece güncelle
+     * 3. Yoksa veya eşleşmiyorsa → FARKLI TARAYICI, LIFO uygula
      */
     public function registerSession(User $user): void
     {
@@ -54,44 +60,100 @@ class DeviceService
         }
 
         $agent = new Agent();
-
-        // 🔥 LOGIN TOKEN: Her login için benzersiz token oluştur
-        // Bu token session ID değişse bile aynı kalır
-        $loginToken = bin2hex(random_bytes(32)); // 64 char hex
-
-        // Önce bu session'ı sil (varsa) - temiz kayıt için
-        DB::table($this->table)->where('session_id', $sessionId)->delete();
-
-        // Yeni session kaydet
-        DB::table($this->table)->insert([
-            'user_id' => $user->id,
-            'session_id' => $sessionId,
-            'login_token' => $loginToken,
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
-            'device_type' => $this->getDeviceType($agent),
-            'device_name' => $this->getDeviceName($agent),
-            'browser' => $agent->browser(),
-            'platform' => $agent->platform(),
-            'last_activity' => now(),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        // 🔥 LOGIN TOKEN: Cookie'ye kaydet (7 gün, HttpOnly)
+        $lifetime = (int) setting('auth_session_lifetime', 525600); // Varsayılan 1 yıl (panelden override)
         $cookieName = 'mzb_login_token';
-        $cookieMinutes = 60 * 24 * 7; // 7 gün
-        cookie()->queue(cookie($cookieName, $loginToken, $cookieMinutes, '/', null, true, true, false, 'Lax'));
 
-        \Log::info('🔐 Session registered with login_token', [
-            'user_id' => $user->id,
-            'session_id' => substr($sessionId, 0, 20) . '...',
-            'login_token' => substr($loginToken, 0, 16) . '...',
-        ]);
+        // 🔥 1. AYNI TARAYICI MI? Cookie kontrolü
+        $existingToken = request()->cookie($cookieName);
 
-        // NOT: LIFO otomatik silme KALDIRILDI
-        // Kullanıcı login sonrası cihaz seçim modalından manuel seçecek
-        // $this->enforceDeviceLimit($user, $sessionId);
+        if ($existingToken) {
+            $existingSession = DB::table($this->table)
+                ->where('user_id', $user->id)
+                ->where('login_token', $existingToken)
+                ->first();
+
+            if ($existingSession) {
+                // ✅ AYNI TARAYICI - Mevcut kaydı güncelle, YENİ TOKEN OLUŞTURMA!
+                DB::table($this->table)
+                    ->where('id', $existingSession->id)
+                    ->update([
+                        'session_id' => $sessionId,
+                        'ip_address' => request()->ip(),
+                        'user_agent' => request()->userAgent(),
+                        'last_activity' => now(),
+                        'updated_at' => now(),
+                    ]);
+
+                // Cookie süresini uzat
+                cookie()->queue(cookie($cookieName, $existingToken, $lifetime, '/', null, true, true, false, 'Lax'));
+
+                \Log::info('🔐 AYNI TARAYICI: Session güncellendi (yeni token oluşturulmadı)', [
+                    'user_id' => $user->id,
+                    'session_id' => substr($sessionId, 0, 20) . '...',
+                    'login_token' => substr($existingToken, 0, 16) . '...',
+                ]);
+
+                return; // İŞLEM BİTTİ - Yeni session oluşturma!
+            }
+        }
+
+        // 🔥 2. FARKLI TARAYICI - DISTRIBUTED LOCK + LIFO
+        $lock = Cache::lock("user_login:{$user->id}", 10);
+
+        if (!$lock->get()) {
+            \Log::warning('🔐 LOCK: Başka login işlemi devam ediyor', ['user_id' => $user->id]);
+            // Lock alınamadı - yine de devam et (ama log'la)
+        }
+
+        try {
+            $limit = $this->getDeviceLimit($user);
+            $existingSessions = DB::table($this->table)
+                ->where('user_id', $user->id)
+                ->orderBy('last_activity', 'asc') // En eski önce
+                ->get();
+
+            // Limit aşıldıysa sadece fazla olan kadar session sil (LIFO - en eski önce)
+            $existingCount = $existingSessions->count();
+            $overLimit = max(0, $existingCount - $limit + 1); // yeni cihaz için yer aç
+
+            if ($overLimit > 0) {
+                $sessionsToRemove = $existingSessions->take($overLimit);
+
+                foreach ($sessionsToRemove as $oldSession) {
+                    $this->terminateSessionAtomicByRow($oldSession, 'lifo', $user);
+                }
+            }
+
+            // 🔥 3. YENİ SESSION OLUŞTUR
+            $loginToken = bin2hex(random_bytes(32)); // 64 char hex
+
+            DB::table($this->table)->insert([
+                'user_id' => $user->id,
+                'session_id' => $sessionId,
+                'login_token' => $loginToken,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'device_type' => $this->getDeviceType($agent),
+                'device_name' => $this->getDeviceName($agent),
+                'browser' => $agent->browser(),
+                'platform' => $agent->platform(),
+                'last_activity' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            // Cookie oluştur
+            cookie()->queue(cookie($cookieName, $loginToken, $lifetime, '/', null, true, true, false, 'Lax'));
+
+            \Log::info('🔐 YENİ TARAYICI: Session oluşturuldu', [
+                'user_id' => $user->id,
+                'session_id' => substr($sessionId, 0, 20) . '...',
+                'login_token' => substr($loginToken, 0, 16) . '...',
+            ]);
+
+        } finally {
+            $lock->release();
+        }
     }
 
     /**
@@ -123,24 +185,13 @@ class DeviceService
 
         $sessionId = session()->getId();
         if ($sessionId) {
-            // Önce session bilgisini al (cache'e reason kaydetmek için)
             $session = DB::table($this->table)
                 ->where('session_id', $sessionId)
                 ->first();
 
-            if ($session && $session->login_token) {
-                // Cache'e silinme nedenini kaydet (5 dakika TTL)
-                Cache::put(
-                    "session_deleted_reason:{$user->id}:{$session->login_token}",
-                    'manual_logout',
-                    300
-                );
+            if ($session) {
+                $this->terminateSessionAtomicByRow($session, 'manual_logout', $user);
             }
-
-            // Şimdi sil
-            DB::table($this->table)
-                ->where('session_id', $sessionId)
-                ->delete();
         }
     }
 
@@ -234,10 +285,43 @@ class DeviceService
             'cookie_token' => $cookieToken ? substr($cookieToken, 0, 16) . '...' : 'NULL',
         ]);
 
-        // Cookie'de token yoksa → Session ID ile fallback
+        // Cookie'de token yoksa → tek session varsa cookie'yi re-issue et, yoksa invalid
         if (!$cookieToken) {
-            \Log::info('🔐 sessionExists: No login_token cookie, using sessionExistsBySessionId');
-            return $this->sessionExistsBySessionId($user);
+            $currentSessionId = $this->getCurrentSessionId();
+
+            $sessionQuery = DB::table($this->table)->where('user_id', $user->id);
+            $sessionCount = (clone $sessionQuery)->count();
+
+            if ($sessionCount === 1) {
+                $session = $sessionQuery->first();
+                if ($session && $session->login_token) {
+                    $lifetime = (int) setting('auth_session_lifetime', 525600);
+                    cookie()->queue(cookie('mzb_login_token', $session->login_token, $lifetime, '/', null, true, true, false, 'Lax'));
+
+                    // Eğer session_id farklıysa güncelle
+                    if ($currentSessionId && $session->session_id !== $currentSessionId) {
+                        DB::table($this->table)
+                            ->where('id', $session->id)
+                            ->update([
+                                'session_id' => $currentSessionId,
+                                'updated_at' => now(),
+                                'last_activity' => now(),
+                            ]);
+                    }
+
+                    \Log::info('🔐 sessionExists: Cookie yoktu, tek kayıt bulundu ve yeniden yazıldı', [
+                        'user_id' => $user->id,
+                        'session_id' => $currentSessionId ? substr($currentSessionId, 0, 20) . '...' : 'NULL',
+                    ]);
+
+                    return true;
+                }
+            }
+
+            \Log::warning('🔐 sessionExists: No login_token cookie, returning FALSE (device limit enforced)', [
+                'user_id' => $user->id,
+            ]);
+            return false;
         }
 
         // 2. Login token ile DB'de kontrol et
@@ -277,6 +361,9 @@ class DeviceService
 
     /**
      * Session ID ile kontrol (login_token yoksa fallback)
+     *
+     * 🔥 FIX: Livewire session regenerate sorunu için daha toleranslı kontrol
+     * Session ID değişebilir (Livewire), önemli olan kullanıcının EN AZ BİR session'ı olması
      */
     protected function sessionExistsBySessionId(User $user): bool
     {
@@ -287,38 +374,37 @@ class DeviceService
             'current_session_id' => $currentSessionId ? substr($currentSessionId, 0, 20) . '...' : 'NULL',
         ]);
 
-        if (!$currentSessionId) {
-            // Session ID alamıyoruz - kullanıcının session'ı var mı?
-            $hasSession = DB::table($this->table)
-                ->where('user_id', $user->id)
-                ->exists();
-
-            \Log::info('🔐 sessionExistsBySessionId: No session ID, checking if user has ANY session', [
-                'has_session' => $hasSession ? 'YES' : 'NO',
-            ]);
-
-            return $hasSession;
-        }
-
-        // Session ID ile kontrol
-        $exists = DB::table($this->table)
+        // 🔥 FIX: Cookie yoksa, kullanıcının EN AZ BİR session'ı varsa TRUE döndür
+        // Session ID eşleşmesi zorunlu DEĞİL çünkü Livewire regenerate yapabilir
+        $userSession = DB::table($this->table)
             ->where('user_id', $user->id)
-            ->where('session_id', $currentSessionId)
-            ->exists();
+            ->first();
 
-        \Log::info('🔐 sessionExistsBySessionId: DB check result', [
-            'session_found' => $exists ? 'YES' : 'NO',
-        ]);
-
-        if ($exists) {
-            return true;
+        if (!$userSession) {
+            \Log::info('🔐 sessionExistsBySessionId: No session found for user', [
+                'user_id' => $user->id,
+            ]);
+            return false;
         }
 
-        // 🔥 FIX: Session DB'de yoksa FALSE döndür
-        // Eski kod "tek session varsa sync yap" yapıyordu ama bu YANLIŞ!
-        // Farklı cihazlarda çalışırken Chrome'un session'ını Edge'in ID'si ile değiştiriyordu!
-        \Log::info('🔐 sessionExistsBySessionId: Session NOT found in DB, returning FALSE');
-        return false;
+        // Session var - activity güncelle ve session_id sync et
+        $updateData = ['last_activity' => now()];
+
+        // Session ID varsa ve farklıysa güncelle (Livewire regenerate)
+        if ($currentSessionId && $userSession->session_id !== $currentSessionId) {
+            $updateData['session_id'] = $currentSessionId;
+            $updateData['updated_at'] = now();
+            \Log::info('🔐 sessionExistsBySessionId: Session ID updated (Livewire regenerate)', [
+                'old_session' => substr($userSession->session_id, 0, 20) . '...',
+                'new_session' => substr($currentSessionId, 0, 20) . '...',
+            ]);
+        }
+
+        DB::table($this->table)
+            ->where('id', $userSession->id)
+            ->update($updateData);
+
+        return true;
     }
 
     /**
@@ -529,19 +615,7 @@ class DeviceService
                 // 🔐 DETAYLI LOG - Session Termination
                 $this->logSessionTermination($user, $newSession, $old, 'lifo');
 
-                // Cache'e silinme nedenini kaydet (5 dakika TTL)
-                if ($old->login_token) {
-                    Cache::put(
-                        "session_deleted_reason:{$user->id}:{$old->login_token}",
-                        'lifo',
-                        300
-                    );
-                }
-
-                // Session'ı sil
-                DB::table($this->table)
-                    ->where('id', $old->id)
-                    ->delete();
+                $this->terminateSessionAtomicByRow($old, 'lifo', $user);
             }
         }
     }
@@ -555,33 +629,13 @@ class DeviceService
             return false;
         }
 
-        // Önce session bilgisini al (cache'e reason kaydetmek için)
         $session = DB::table($this->table)
             ->where('session_id', $sessionId)
             ->first();
 
-        if ($session && $session->login_token) {
-            // Cache'e silinme nedenini kaydet (5 dakika TTL)
-            Cache::put(
-                "session_deleted_reason:{$session->user_id}:{$session->login_token}",
-                'admin_terminated',
-                300
-            );
-        }
-
-        // Şimdi sil
-        $deleted = DB::table($this->table)
-            ->where('session_id', $sessionId)
-            ->delete() > 0;
-
-        if ($deleted) {
-            \Log::info('🔐 Session terminated', [
-                'session_id' => substr($sessionId, 0, 20) . '...',
-                'by_user' => $actor ? $actor->id : null,
-            ]);
-        }
-
-        return $deleted;
+        return $session
+            ? $this->terminateSessionAtomicByRow($session, 'manual_logout', $actor)
+            : false;
     }
 
     /**
@@ -600,45 +654,12 @@ class DeviceService
         $deletedCount = 0;
 
         foreach ($sessionIds as $sessionId) {
-            // Önce session bilgisini al (cache'e reason kaydetmek için)
             $session = DB::table($this->table)
                 ->where('session_id', $sessionId)
                 ->first();
 
-            if ($session && $session->login_token) {
-                // Cache'e silinme nedenini kaydet - "lifo" olarak işaretle
-                // Böylece silinen cihaz "başka cihazdan giriş yapıldı" mesajını görür
-                Cache::put(
-                    "session_deleted_reason:{$session->user_id}:{$session->login_token}",
-                    'lifo',
-                    300
-                );
-            }
-
-            // 1. Database'den session'ı sil
-            $deleted = DB::table($this->table)
-                ->where('session_id', $sessionId)
-                ->delete() > 0;
-
-            // 2. 🔥 FIX: Redis'ten de session key'i sil (kritik!)
-            if ($deleted) {
-                try {
-                    $redis = app('redis')->connection();
-                    if ($redis->exists($sessionId)) {
-                        $redis->del($sessionId);
-                        \Log::info('🔥 Redis session key deleted', [
-                            'session_id' => substr($sessionId, 0, 20) . '...',
-                        ]);
-                    }
-                } catch (\Exception $e) {
-                    \Log::warning('Redis session delete failed: ' . $e->getMessage());
-                }
-
+            if ($session && $this->terminateSessionAtomicByRow($session, 'manual_logout', $actor)) {
                 $deletedCount++;
-                \Log::info('🔐 Session terminated (batch)', [
-                    'session_id' => substr($sessionId, 0, 20) . '...',
-                    'by_user' => $actor ? $actor->id : null,
-                ]);
             }
         }
 
@@ -656,10 +677,20 @@ class DeviceService
 
         $currentSessionId = session()->getId();
 
-        return DB::table($this->table)
+        $sessions = DB::table($this->table)
             ->where('user_id', $user->id)
             ->where('session_id', '!=', $currentSessionId)
-            ->delete();
+            ->get();
+
+        $deleted = 0;
+
+        foreach ($sessions as $session) {
+            if ($this->terminateSessionAtomicByRow($session, 'manual_logout', $user)) {
+                $deleted++;
+            }
+        }
+
+        return $deleted;
     }
 
     /**
@@ -738,5 +769,82 @@ class DeviceService
         ];
 
         Log::channel('session-terminations')->info('Session Terminated', $logData);
+    }
+
+    /**
+     * Tek bir session kaydını (DB + Redis) atomik şekilde sonlandır
+     */
+    protected function terminateSessionAtomicByRow(object $session, string $reason, ?User $actor = null): bool
+    {
+        $this->markDeletionReason((int) $session->user_id, $session->login_token ?? null, $reason);
+        $this->deleteRedisSession($session->session_id ?? null);
+
+        $deleted = DB::table($this->table)
+            ->where('id', $session->id)
+            ->delete() > 0;
+
+        if ($deleted) {
+            \Log::info('🔐 Session terminated (atomic)', [
+                'session_id' => $session->session_id ? substr($session->session_id, 0, 20) . '...' : 'N/A',
+                'reason' => $reason,
+                'by_user' => $actor?->id,
+            ]);
+        }
+
+        return $deleted;
+    }
+
+    protected function markDeletionReason(int $userId, ?string $loginToken, string $reason): void
+    {
+        if (!$loginToken) {
+            return;
+        }
+
+        Cache::put("session_deleted_reason:{$userId}:{$loginToken}", $reason, 300);
+    }
+
+    protected function deleteRedisSession(?string $sessionId): void
+    {
+        if (!$sessionId) {
+            return;
+        }
+
+        try {
+            // Use Laravel session handler for driver-agnostic delete
+            app('session')->getHandler()->destroy($sessionId);
+        } catch (\Throwable $e) {
+            \Log::warning('Session handler destroy failed', [
+                'session_id' => $sessionId,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        foreach ($this->buildRedisSessionKeys($sessionId) as $key) {
+            try {
+                Redis::del($key);
+            } catch (\Throwable $e) {
+                \Log::warning('Redis session delete failed', [
+                    'key' => $key,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+    }
+
+    protected function buildRedisSessionKeys(string $sessionId): array
+    {
+        $keys = [];
+
+        if ($sessionId !== '') {
+            $prefix = config('session.prefix', 'laravel_session');
+            if ($prefix) {
+                $keys[] = "{$prefix}:{$sessionId}";
+            }
+
+            // Prefixsiz raw key'i de dene (geri uyumluluk)
+            $keys[] = $sessionId;
+        }
+
+        return array_values(array_unique($keys));
     }
 }

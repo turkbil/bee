@@ -57,7 +57,7 @@
         <button
             @click="clearCache()"
             class="w-9 h-9 bg-white/5 hover:bg-muzibu-coral/20 rounded-lg flex items-center justify-center text-muzibu-text-gray hover:text-muzibu-coral transition-all duration-300 group"
-            title="Cache Temizle (Admin)"
+            title="{{ trans('muzibu::front.admin.clear_cache') }}"
             x-data="{
                 async clearCache() {
                     // ✅ 1. AI Conversation'ı veritabanından sil
@@ -190,7 +190,7 @@
                     } catch (e) {
                         console.error('Search error:', e);
                         this.resetSuggestions();
-                        this.error = 'Arama yapılamadı.';
+                        this.error = window.muzibuPlayerConfig?.frontLang?.search?.search_failed || 'Search failed.';
                     }
                     this.loading = false;
                     this.openDropdown();
@@ -277,14 +277,15 @@
                     this.closeDropdown();
                 },
                 getBadge(type) {
+                    const lang = window.muzibuPlayerConfig?.frontLang?.general || {};
                     const badges = {
-                        song: { icon: 'fa-music', label: 'Şarkı', color: 'bg-pink-500/20 text-pink-400' },
-                        album: { icon: 'fa-compact-disc', label: 'Albüm', color: 'bg-purple-500/20 text-purple-400' },
-                        artist: { icon: 'fa-user', label: 'Sanatçı', color: 'bg-blue-500/20 text-blue-400' },
-                        playlist: { icon: 'fa-list', label: 'Playlist', color: 'bg-green-500/20 text-green-400' },
-                        genre: { icon: 'fa-guitar', label: 'Tür', color: 'bg-yellow-500/20 text-yellow-400' },
-                        sector: { icon: 'fa-building', label: 'Sektör', color: 'bg-orange-500/20 text-orange-400' },
-                        radio: { icon: 'fa-broadcast-tower', label: 'Radyo', color: 'bg-red-500/20 text-red-400' }
+                        song: { icon: 'fa-music', label: lang.song || 'Song', color: 'bg-pink-500/20 text-pink-400' },
+                        album: { icon: 'fa-compact-disc', label: lang.album || 'Album', color: 'bg-purple-500/20 text-purple-400' },
+                        artist: { icon: 'fa-user', label: lang.artist || 'Artist', color: 'bg-blue-500/20 text-blue-400' },
+                        playlist: { icon: 'fa-list', label: lang.playlist || 'Playlist', color: 'bg-green-500/20 text-green-400' },
+                        genre: { icon: 'fa-guitar', label: lang.genre || 'Genre', color: 'bg-yellow-500/20 text-yellow-400' },
+                        sector: { icon: 'fa-building', label: lang.sector || 'Sector', color: 'bg-orange-500/20 text-orange-400' },
+                        radio: { icon: 'fa-broadcast-tower', label: lang.radio || 'Radio', color: 'bg-red-500/20 text-red-400' }
                     };
                     return badges[type] || { icon: 'fa-circle', label: type, color: 'bg-gray-500/20 text-gray-400' };
                 },
@@ -311,7 +312,7 @@
                     @keydown.arrow-down.prevent="moveHighlight(1)"
                     @keydown.arrow-up.prevent="moveHighlight(-1)"
                     @keydown.escape.prevent="closeDropdown()"
-                    placeholder="Şarkı, sanatçı, albüm ara..."
+                    placeholder="{{ trans('muzibu::front.search.placeholder') }}"
                     class="w-full pl-11 pr-11 py-2 bg-white/10 hover:bg-white/15 focus:bg-white/20 border-0 rounded-full text-white placeholder-zinc-300 focus:outline-none focus:ring-2 focus:ring-muzibu-coral/50 focus:shadow-lg focus:shadow-muzibu-coral/20 transition-all duration-300 text-sm"
                     autocomplete="off">
 
@@ -356,7 +357,7 @@
                         <div x-show="results.songs?.length > 0" class="space-y-2">
                             <div class="flex items-center gap-2 mb-3 pb-2 border-b border-white/5">
                                 <i class="fas fa-music text-pink-400 text-xs"></i>
-                                <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Şarkılar</span>
+                                <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">{{ trans('muzibu::front.general.songs') }}</span>
                                 <span class="ml-auto text-[10px] text-zinc-500" x-text="results.songs.length"></span>
                             </div>
                             <template x-for="(song, index) in results.songs" :key="'song-'+song.song_id">
@@ -368,7 +369,7 @@
                                         <button
                                             @click="playSong(song, $event)"
                                             class="absolute inset-0 bg-muzibu-coral flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
-                                            title="Çal"
+                                            title="{{ trans('muzibu::front.player.play') }}"
                                         >
                                             <i class="fas fa-play text-white text-xs ml-0.5"></i>
                                         </button>
@@ -388,7 +389,7 @@
                             <div x-show="results.albums?.length > 0" class="space-y-2">
                                 <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-white/5">
                                     <i class="fas fa-compact-disc text-purple-400 text-xs"></i>
-                                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Albümler</span>
+                                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">{{ trans('muzibu::front.general.albums') }}</span>
                                 </div>
                                 <template x-for="album in results.albums" :key="'album-'+album.album_id">
                                     <a href="#"
@@ -400,7 +401,7 @@
                                         <div class="flex-1 min-w-0">
                                             <div class="text-sm text-white truncate" x-text="getTitle(album)"></div>
                                         </div>
-                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-purple-500/20 text-purple-400">Albüm</span>
+                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-purple-500/20 text-purple-400">{{ trans('muzibu::front.general.album') }}</span>
                                     </a>
                                 </template>
                             </div>
@@ -409,7 +410,7 @@
                             <div x-show="results.artists?.length > 0" class="space-y-2">
                                 <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-white/5">
                                     <i class="fas fa-user text-blue-400 text-xs"></i>
-                                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Sanatçılar</span>
+                                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">{{ trans('muzibu::front.general.artists') }}</span>
                                 </div>
                                 <template x-for="artist in results.artists" :key="'artist-'+artist.artist_id">
                                     <a href="#"
@@ -421,7 +422,7 @@
                                         <div class="flex-1 min-w-0">
                                             <div class="text-sm text-white truncate" x-text="getTitle(artist)"></div>
                                         </div>
-                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-blue-500/20 text-blue-400">Sanatçı</span>
+                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-blue-500/20 text-blue-400">{{ trans('muzibu::front.general.artist') }}</span>
                                     </a>
                                 </template>
                             </div>
@@ -430,7 +431,7 @@
                             <div x-show="results.playlists?.length > 0" class="space-y-2">
                                 <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-white/5">
                                     <i class="fas fa-list text-green-400 text-xs"></i>
-                                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Playlistler</span>
+                                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">{{ trans('muzibu::front.general.playlists') }}</span>
                                 </div>
                                 <template x-for="playlist in results.playlists" :key="'playlist-'+playlist.playlist_id">
                                     <a href="#"
@@ -442,7 +443,7 @@
                                         <div class="flex-1 min-w-0">
                                             <div class="text-sm text-white truncate" x-text="getTitle(playlist)"></div>
                                         </div>
-                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-green-500/20 text-green-400">Playlist</span>
+                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-green-500/20 text-green-400">{{ trans('muzibu::front.general.playlist') }}</span>
                                     </a>
                                 </template>
                             </div>
@@ -451,7 +452,7 @@
                             <div x-show="results.genres?.length > 0" class="space-y-2">
                                 <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-white/5">
                                     <i class="fas fa-guitar text-yellow-400 text-xs"></i>
-                                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Türler</span>
+                                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">{{ trans('muzibu::front.general.genres') }}</span>
                                 </div>
                                 <template x-for="genre in results.genres" :key="'genre-'+genre.genre_id">
                                     <a href="#"
@@ -463,7 +464,7 @@
                                         <div class="flex-1 min-w-0">
                                             <div class="text-sm text-white truncate" x-text="getTitle(genre)"></div>
                                         </div>
-                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-yellow-500/20 text-yellow-400">Tür</span>
+                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-yellow-500/20 text-yellow-400">{{ trans('muzibu::front.general.genre') }}</span>
                                     </a>
                                 </template>
                             </div>
@@ -472,7 +473,7 @@
                             <div x-show="results.sectors?.length > 0" class="space-y-2">
                                 <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-white/5">
                                     <i class="fas fa-building text-orange-400 text-xs"></i>
-                                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Sektörler</span>
+                                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">{{ trans('muzibu::front.general.sectors') }}</span>
                                 </div>
                                 <template x-for="sector in results.sectors" :key="'sector-'+sector.sector_id">
                                     <a href="#"
@@ -484,7 +485,7 @@
                                         <div class="flex-1 min-w-0">
                                             <div class="text-sm text-white truncate" x-text="getTitle(sector)"></div>
                                         </div>
-                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-orange-500/20 text-orange-400">Sektör</span>
+                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-orange-500/20 text-orange-400">{{ trans('muzibu::front.general.sector') }}</span>
                                     </a>
                                 </template>
                             </div>
@@ -493,7 +494,7 @@
                             <div x-show="results.radios?.length > 0" class="space-y-2">
                                 <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-white/5">
                                     <i class="fas fa-broadcast-tower text-red-400 text-xs"></i>
-                                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Radyolar</span>
+                                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">{{ trans('muzibu::front.general.radios') }}</span>
                                 </div>
                                 <template x-for="radio in results.radios" :key="'radio-'+radio.radio_id">
                                     <a href="#"
@@ -505,7 +506,7 @@
                                         <div class="flex-1 min-w-0">
                                             <div class="text-sm text-white truncate" x-text="getTitle(radio)"></div>
                                         </div>
-                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-red-500/20 text-red-400">Radyo</span>
+                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-red-500/20 text-red-400">{{ trans('muzibu::front.general.radio') }}</span>
                                     </a>
                                 </template>
                             </div>
@@ -516,7 +517,7 @@
                 {{-- Empty State --}}
                 <div x-show="showEmptyState()" class="px-5 py-10 text-center text-sm text-zinc-400" x-cloak>
                     <i class="far fa-face-smile text-xl mb-2 block text-muzibu-coral"></i>
-                    <span>Sonuç bulunamadı. Farklı bir kelime deneyin.</span>
+                    <span>{{ trans('muzibu::front.search.try_different') }}</span>
                 </div>
 
                 {{-- View All Results Link --}}
@@ -524,7 +525,7 @@
                    x-show="total > 0"
                    class="block p-3 text-center text-muzibu-coral hover:bg-muzibu-coral/10 font-medium transition border-t border-white/10 text-sm rounded-b-2xl">
                     <i class="fas fa-arrow-right mr-2"></i>
-                    <span x-text="`Tüm ${total} sonucu gör`"></span>
+                    <span x-text="(window.muzibuPlayerConfig?.frontLang?.search?.view_all_results || 'View all :count results').replace(':count', total)"></span>
                 </a>
             </div>
         </div>
@@ -543,7 +544,7 @@
             class="hidden sm:flex items-center gap-2 px-4 py-2 border border-muzibu-coral/40 hover:border-muzibu-coral hover:bg-muzibu-coral/10 rounded-full text-muzibu-coral text-sm font-semibold transition-all duration-300"
         >
             <i class="fas fa-crown text-xs"></i>
-            <span class="hidden md:inline">Premium'a Geç</span>
+            <span class="hidden md:inline">{{ trans('muzibu::front.user.go_premium') }}</span>
             <span class="md:hidden">Premium</span>
         </a>
 
@@ -576,7 +577,7 @@
                  class="absolute right-0 mt-3 w-64 bg-zinc-900/95 backdrop-blur-xl rounded-xl shadow-2xl border border-white/10 py-2 overflow-hidden z-50"
                  style="display: none;">
                 <div class="px-4 py-3 border-b border-white/10">
-                    <p class="text-white font-semibold text-sm" x-text="currentUser?.name || 'Kullanıcı'"></p>
+                    <p class="text-white font-semibold text-sm" x-text="currentUser?.name || (window.muzibuPlayerConfig?.frontLang?.user?.user || 'User')"></p>
                     <p class="text-zinc-400 text-xs" x-text="currentUser?.email || ''"></p>
 
                     {{-- Premium Badge --}}
@@ -585,7 +586,7 @@
                         class="mt-2 inline-flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-full"
                     >
                         <i class="fas fa-crown text-yellow-400 text-xs"></i>
-                        <span class="text-yellow-400 text-xs font-semibold">Premium Üye</span>
+                        <span class="text-yellow-400 text-xs font-semibold">{{ trans('muzibu::front.user.premium_member') }}</span>
                     </div>
 
                     {{-- Üyelik Tipi Badge (Sadece statik gösterim) --}}
@@ -600,16 +601,16 @@
                         @if($isTrial)
                             <span class="mt-1 inline-flex items-center gap-1 px-2 py-0.5 bg-green-500/20 border border-green-500/30 rounded-full">
                                 <i class="fas fa-gift text-green-400 text-[10px]"></i>
-                                <span class="text-green-400 text-[10px] font-semibold">Deneme Üyesi</span>
+                                <span class="text-green-400 text-[10px] font-semibold">{{ trans('muzibu::front.user.trial_member') }}</span>
                             </span>
                         @elseif($isPremiumOrTrial)
                             <span class="mt-1 inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-500/20 border border-yellow-500/30 rounded-full">
                                 <i class="fas fa-crown text-yellow-400 text-[10px]"></i>
-                                <span class="text-yellow-400 text-[10px] font-semibold">Premium Üye</span>
+                                <span class="text-yellow-400 text-[10px] font-semibold">{{ trans('muzibu::front.user.premium_member') }}</span>
                             </span>
                         @else
                             <span class="mt-1 inline-flex items-center gap-1 px-2 py-0.5 bg-gray-500/20 border border-gray-500/30 rounded-full">
-                                <span class="text-gray-400 text-[10px] font-semibold">Ücretsiz Üye</span>
+                                <span class="text-gray-400 text-[10px] font-semibold">{{ trans('muzibu::front.user.free_member') }}</span>
                             </span>
                         @endif
                     @endauth
@@ -618,13 +619,13 @@
                 {{-- Dashboard Link --}}
                 <a href="/dashboard" @click="userMenuOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-white text-sm transition-colors">
                     <i class="fas fa-th-large w-5"></i>
-                    <span>Kullanıcı Paneli</span>
+                    <span>{{ trans('muzibu::front.user.dashboard') }}</span>
                 </a>
 
                 {{-- Profile Link --}}
                 <a href="/profile" @click="userMenuOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-white text-sm transition-colors">
                     <i class="fas fa-user w-5"></i>
-                    <span>Profil</span>
+                    <span>{{ trans('muzibu::front.user.profile') }}</span>
                 </a>
 
                 <div class="h-px bg-white/10 my-1"></div>
@@ -632,25 +633,25 @@
                 {{-- Premium'a Geç (ücretsiz üyeler için) --}}
                 <a
                     href="/subscription/plans"
-                   
+
                     x-show="!currentUser?.is_premium"
                     @click="userMenuOpen = false"
                     class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-yellow-500/10 text-yellow-400 text-sm transition-colors"
                 >
                     <i class="fas fa-crown w-5"></i>
-                    <span>Premium'a Geç</span>
+                    <span>{{ trans('muzibu::front.user.go_premium') }}</span>
                 </a>
 
                 {{-- Üyeliğini Uzat (premium/trial üyeler için) --}}
                 <a
                     href="/subscription/plans"
-                   
+
                     x-show="currentUser?.is_premium"
                     @click="userMenuOpen = false"
                     class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-yellow-500/10 text-yellow-400 text-sm transition-colors"
                 >
                     <i class="fas fa-sync-alt w-5"></i>
-                    <span>Üyeliğini Uzat</span>
+                    <span>{{ trans('muzibu::front.sidebar.extend_membership') }}</span>
                 </a>
 
                 <div class="h-px bg-white/10 my-1"></div>
@@ -658,7 +659,7 @@
                 {{-- Logout --}}
                 <button @click.prevent="logout()" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-red-500/10 text-red-400 text-sm transition-colors">
                     <i class="fas fa-sign-out-alt w-5"></i>
-                    <span>Çıkış Yap</span>
+                    <span>{{ trans('muzibu::front.general.logout') }}</span>
                 </button>
             </div>
         </div>
@@ -671,16 +672,16 @@
                 class="hidden sm:flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-full text-white text-sm font-semibold transition-all duration-300"
             >
                 <i class="fas fa-sign-in-alt text-xs"></i>
-                <span>Giriş Yap</span>
+                <span>{{ trans('muzibu::front.general.login') }}</span>
             </a>
             <a
                 href="/register"
-               
+
                 class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-muzibu-coral to-muzibu-coral-light hover:from-muzibu-coral-light hover:to-muzibu-coral rounded-full text-white text-sm font-bold transition-all duration-300 shadow-lg hover:shadow-muzibu-coral/30"
             >
                 <i class="fas fa-user-plus text-xs"></i>
-                <span class="hidden md:inline">Üye Ol</span>
-                <span class="md:hidden">Kaydol</span>
+                <span class="hidden md:inline">{{ trans('muzibu::front.general.register') }}</span>
+                <span class="md:hidden">{{ trans('muzibu::front.general.register') }}</span>
             </a>
         </div>
     </div>

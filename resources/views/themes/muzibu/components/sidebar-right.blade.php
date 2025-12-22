@@ -44,7 +44,7 @@
                     <h3 class="text-lg font-bold text-white truncate leading-tight mt-0.5"
                         x-text="$store.sidebar.previewInfo?.title"></h3>
                     <p class="text-xs text-white/60 mt-1">
-                        <span x-text="$store.sidebar.previewTracks.length"></span> şarkı
+                        <span x-text="$store.sidebar.previewTracks.length"></span> {{ trans('muzibu::front.general.song') }}
                     </p>
                 </div>
             </div>
@@ -54,7 +54,7 @@
                 <div class="flex-1 flex items-center justify-center">
                     <div class="text-center">
                         <i class="fas fa-spinner fa-spin text-muzibu-coral text-xl mb-2"></i>
-                        <p class="text-xs text-gray-500">Yükleniyor...</p>
+                        <p class="text-xs text-gray-500">{{ trans('muzibu::front.general.loading') }}</p>
                     </div>
                 </div>
             </template>
@@ -84,7 +84,7 @@
                             </div>
 
                             {{-- Track Thumbnail --}}
-                            <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-gray-700 to-gray-800">
+                            <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600">
                                 <template x-if="track.cover">
                                     <img :src="track.cover" :alt="track.title" class="w-full h-full object-cover">
                                 </template>
@@ -128,7 +128,7 @@
                 <div class="flex-1 flex items-center justify-center">
                     <div class="text-center text-gray-500">
                         <i class="fas fa-music text-2xl mb-2"></i>
-                        <p class="text-xs">Şarkı bulunamadı</p>
+                        <p class="text-xs">{{ trans('muzibu::front.messages.song_not_found') }}</p>
                     </div>
                 </div>
             </template>
@@ -178,7 +178,7 @@
                     <h3 class="text-lg font-bold text-white truncate leading-tight mt-0.5"
                         x-text="$store.sidebar.entityInfo?.title"></h3>
                     <p class="text-xs text-white/60 mt-1">
-                        <span x-text="$store.sidebar.tracks.length"></span> şarkı
+                        <span x-text="$store.sidebar.tracks.length"></span> {{ trans('muzibu::front.general.song') }}
                     </p>
                 </div>
             </div>
@@ -207,7 +207,7 @@
                         </div>
 
                         {{-- Track Thumbnail --}}
-                        <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-gray-700 to-gray-800">
+                        <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600">
                             <template x-if="track.cover">
                                 <img :src="track.cover" :alt="track.title" class="w-full h-full object-cover">
                             </template>
@@ -258,29 +258,29 @@
                      'bg-gradient-to-br from-green-500/30 via-emerald-500/20 to-transparent': songsTab === 'new',
                      'bg-gradient-to-br from-blue-500/30 via-indigo-500/20 to-transparent': songsTab === 'trend'
                  }">
-                <div class="p-5 pb-4">
-                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                <div class="px-3 py-1">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
                         <template x-if="songsTab === 'popular'">
                             <span class="flex items-center gap-2">
                                 <i class="fas fa-fire text-orange-400"></i>
-                                Popüler Şarkılar
+                                {{ trans('muzibu::front.general.popular_songs') }}
                             </span>
                         </template>
                         <template x-if="songsTab === 'new'">
                             <span class="flex items-center gap-2">
                                 <i class="fas fa-star text-green-400"></i>
-                                Yeni Şarkılar
+                                {{ trans('muzibu::front.general.new_songs') }}
                             </span>
                         </template>
                         <template x-if="songsTab === 'trend'">
                             <span class="flex items-center gap-2">
                                 <i class="fas fa-chart-line text-blue-400"></i>
-                                Trend Şarkılar
+                                {{ trans('muzibu::front.general.trending_songs') }}
                             </span>
                         </template>
                     </h3>
                     <p class="text-xs text-gray-400 mt-1"
-                       x-text="songsTab === 'popular' ? 'En çok dinlenenler' : (songsTab === 'new' ? 'Yeni eklenenler' : 'Yükselişte olanlar')"></p>
+                       x-text="songsTab === 'popular' ? (window.muzibuPlayerConfig?.frontLang?.sidebar?.most_played || 'Most Played') : (songsTab === 'new' ? (window.muzibuPlayerConfig?.frontLang?.sidebar?.newly_added || 'Newly Added') : (window.muzibuPlayerConfig?.frontLang?.sidebar?.trending || 'Trending'))"></p>
                 </div>
             </div>
 
@@ -289,17 +289,17 @@
                 <button @click="songsTab = 'popular'"
                         class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
                         :class="songsTab === 'popular' ? 'bg-orange-500/20 text-orange-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
-                    <i class="fas fa-fire mr-1"></i>Popüler
+                    <i class="fas fa-fire mr-1"></i>{{ trans('muzibu::front.sidebar.popular') }}
                 </button>
                 <button @click="songsTab = 'new'"
                         class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
                         :class="songsTab === 'new' ? 'bg-green-500/20 text-green-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
-                    <i class="fas fa-star mr-1"></i>Yeni
+                    <i class="fas fa-star mr-1"></i>{{ trans('muzibu::front.sidebar.new') }}
                 </button>
                 <button @click="songsTab = 'trend'"
                         class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
                         :class="songsTab === 'trend' ? 'bg-blue-500/20 text-blue-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
-                    <i class="fas fa-chart-line mr-1"></i>Trend
+                    <i class="fas fa-chart-line mr-1"></i>{{ trans('muzibu::front.sidebar.trend') }}
                 </button>
             </div>
 
@@ -315,7 +315,7 @@
                                  @click="$dispatch('play-song', { songId: {{ $song->song_id }} })">
                                 {{-- Track Thumbnail with Play Overlay --}}
                                 @php $coverUrl = $song->getCoverUrl(40, 40); @endphp
-                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-gray-700 to-gray-800 relative">
+                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600 relative">
                                     @if($coverUrl)
                                         <img src="{{ $coverUrl }}" alt="{{ $song->getTranslation('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
                                     @else
@@ -359,7 +359,7 @@
                         @else
                             <div class="text-center py-8 text-gray-500">
                                 <i class="fas fa-music text-2xl mb-2"></i>
-                                <p class="text-xs">Henüz şarkı yok</p>
+                                <p class="text-xs">{{ trans('muzibu::front.general.no_songs') }}</p>
                             </div>
                         @endif
                     </div>
@@ -374,7 +374,7 @@
                                  @click="$dispatch('play-song', { songId: {{ $song->song_id }} })">
                                 {{-- Track Thumbnail with Play Overlay --}}
                                 @php $coverUrl = $song->getCoverUrl(40, 40); @endphp
-                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-gray-700 to-gray-800 relative">
+                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600 relative">
                                     @if($coverUrl)
                                         <img src="{{ $coverUrl }}" alt="{{ $song->getTranslation('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
                                     @else
@@ -422,7 +422,7 @@
                                  @click="$dispatch('play-song', { songId: {{ $song->song_id }} })">
                                 {{-- Track Thumbnail with Play Overlay --}}
                                 @php $coverUrl = $song->getCoverUrl(40, 40); @endphp
-                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-gray-700 to-gray-800 relative">
+                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600 relative">
                                     @if($coverUrl)
                                         <img src="{{ $coverUrl }}" alt="{{ $song->getTranslation('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
                                     @else
@@ -466,7 +466,7 @@
                         @else
                             <div class="text-center py-8 text-gray-500">
                                 <i class="fas fa-star text-2xl mb-2"></i>
-                                <p class="text-xs">Henüz yeni şarkı yok</p>
+                                <p class="text-xs">{{ trans('muzibu::front.messages.no_songs_found') }}</p>
                             </div>
                         @endif
                     </div>
@@ -481,7 +481,7 @@
                                  @click="$dispatch('play-song', { songId: {{ $song->song_id }} })">
                                 {{-- Track Thumbnail with Play Overlay --}}
                                 @php $coverUrl = $song->getCoverUrl(40, 40); @endphp
-                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-gray-700 to-gray-800 relative">
+                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600 relative">
                                     @if($coverUrl)
                                         <img src="{{ $coverUrl }}" alt="{{ $song->getTranslation('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
                                     @else
@@ -529,7 +529,7 @@
                                  @click="$dispatch('play-song', { songId: {{ $song->song_id }} })">
                                 {{-- Track Thumbnail with Play Overlay --}}
                                 @php $coverUrl = $song->getCoverUrl(40, 40); @endphp
-                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-gray-700 to-gray-800 relative">
+                                <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600 relative">
                                     @if($coverUrl)
                                         <img src="{{ $coverUrl }}" alt="{{ $song->getTranslation('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
                                     @else
@@ -573,7 +573,7 @@
                         @else
                             <div class="text-center py-8 text-gray-500">
                                 <i class="fas fa-chart-line text-2xl mb-2"></i>
-                                <p class="text-xs">Henüz trend şarkı yok</p>
+                                <p class="text-xs">{{ trans('muzibu::front.messages.no_songs_found') }}</p>
                             </div>
                         @endif
                     </div>
@@ -588,7 +588,7 @@
         <div class="h-full flex items-center justify-center">
             <div class="text-center text-gray-500">
                 <i class="fas fa-spinner fa-spin text-muzibu-coral text-2xl mb-3"></i>
-                <p class="text-xs">Şarkı yükleniyor...</p>
+                <p class="text-xs">{{ trans('muzibu::front.sidebar.song_loading') }}</p>
             </div>
         </div>
     </template>

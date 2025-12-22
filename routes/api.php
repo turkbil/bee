@@ -68,17 +68,22 @@ Route::get('/get-districts/{city}', function ($city) {
 //    - throttle:api
 //    Bu yüzden burada sadece özel throttle ekleyip diğerlerini inherit ediyoruz
 Route::prefix('auth')->middleware(['throttle.user:auth'])->group(function () {
-    Route::post('/login', [\App\Http\Controllers\Api\Auth\AuthController::class, 'login'])->name('api.auth.login'); // 🔥 Guest: 10/min, Member: 20/min, Premium: 30/min
-    Route::post('/register', [\App\Http\Controllers\Api\Auth\AuthController::class, 'register'])->name('api.auth.register'); // 🔥 Auth throttle
-    Route::post('/check-email', [\App\Http\Controllers\Api\Auth\AuthController::class, 'checkEmail'])->name('api.auth.check-email'); // 🔥 Auth throttle
+    Route::post('/login', [\App\Http\Controllers\Api\Auth\AuthController::class, 'login'])->name('api.auth.login');
+    Route::post('/register', [\App\Http\Controllers\Api\Auth\AuthController::class, 'register'])->name('api.auth.register');
+    Route::post('/check-email', [\App\Http\Controllers\Api\Auth\AuthController::class, 'checkEmail'])->name('api.auth.check-email');
     Route::post('/logout', [\App\Http\Controllers\Api\Auth\AuthController::class, 'logout'])->middleware('auth:sanctum')->name('api.auth.logout');
     Route::get('/me', [\App\Http\Controllers\Api\Auth\AuthController::class, 'me'])->name('api.auth.me');
-    Route::get('/check-session', [\App\Http\Controllers\Api\Auth\AuthController::class, 'checkSession'])->name('api.auth.check-session'); // 🔐 Device limit polling
-    Route::post('/terminate-device', [\App\Http\Controllers\Api\Auth\AuthController::class, 'terminateDevice'])->name('api.auth.terminate-device'); // 🔐 Device selection (tek)
-    // 🔐 terminate-devices TAŞINDI web.php'YE! (API middleware grubu session kullanmaz)
-    Route::get('/active-devices', [\App\Http\Controllers\Api\Auth\AuthController::class, 'getActiveDevices'])->name('api.auth.active-devices'); // 🔐 Device list for selection modal (GET)
-    Route::post('/forgot-password', [\App\Http\Controllers\Api\Auth\AuthController::class, 'forgotPassword'])->name('api.auth.forgot'); // 🔥 Auth throttle
-    Route::post('/reset-password', [\App\Http\Controllers\Api\Auth\AuthController::class, 'resetPassword'])->name('api.auth.reset'); // 🔥 Auth throttle
+    Route::post('/terminate-device', [\App\Http\Controllers\Api\Auth\AuthController::class, 'terminateDevice'])->name('api.auth.terminate-device');
+    Route::post('/terminate-devices', [\App\Http\Controllers\Api\Auth\AuthController::class, 'terminateDevices'])->middleware('auth')->name('api.auth.terminate-devices');
+    // ⚠️ active-devices TAŞINDI → throttle dışına (polling endpoint)
+    Route::post('/forgot-password', [\App\Http\Controllers\Api\Auth\AuthController::class, 'forgotPassword'])->name('api.auth.forgot');
+    Route::post('/reset-password', [\App\Http\Controllers\Api\Auth\AuthController::class, 'resetPassword'])->name('api.auth.reset');
+});
+
+// 🔐 POLLING ENDPOINTS - Sayfa yüklendiğinde sık çağrılan, rate limit YOK
+Route::prefix('auth')->group(function () {
+    Route::get('/check-session', [\App\Http\Controllers\Api\Auth\AuthController::class, 'checkSession'])->name('api.auth.check-session');
+    Route::get('/active-devices', [\App\Http\Controllers\Api\Auth\AuthController::class, 'getActiveDevices'])->name('api.auth.active-devices');
 });
 
 // Mobile App Endpoints

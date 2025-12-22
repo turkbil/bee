@@ -33,6 +33,12 @@ document.addEventListener('alpine:init', () => {
                     }
                 });
 
+                // 🔥 FIX: 429 Too Many Requests durumunda logout YAPMA!
+                if (response.status === 429) {
+                    console.warn('⚠️ Session check rate limited, will retry');
+                    return; // Hiçbir şey yapma, polling devam edecek
+                }
+
                 // Eğer 401 (Unauthorized) dönerse session kesilmiş demektir
                 if (response.status === 401) {
                     console.log('🔐 Session terminated - showing modal');

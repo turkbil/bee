@@ -328,7 +328,7 @@ document.addEventListener('alpine:init', () => {
 
             } catch (error) {
                 console.error('❌ Queue refill error:', error);
-                this.showToast('Şarkılar yüklenirken hata oluştu', 'error');
+                this.showToast(window.muzibuPlayerConfig?.frontLang?.messages?.songs_loading_failed || 'Failed to load songs', 'error');
                 return [];
             }
         }

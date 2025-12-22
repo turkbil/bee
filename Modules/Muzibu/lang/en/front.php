@@ -116,6 +116,13 @@ return [
         'show_lyrics' => 'Show Lyrics',
         'no_lyrics' => 'No Lyrics Available',
 
+        // Volume & UI
+        'mute' => 'Mute',
+        'unmute' => 'Unmute',
+        'volume' => 'Volume',
+        'max_volume' => 'Max volume',
+        'show_keyboard_shortcuts' => 'Show keyboard shortcuts',
+
         // Info
         'duration' => 'Duration',
         'release_date' => 'Release Date',
@@ -127,6 +134,8 @@ return [
         'placeholder' => 'Search songs, artists, albums...',
         'search_failed' => 'Search failed.',
         'no_results' => 'No results found',
+        'try_different' => 'No results found. Try a different keyword.',
+        'view_all_results' => 'View all :count results',
     ],
 
     'sidebar' => [
@@ -145,6 +154,7 @@ return [
         'user' => 'User',
         'profile' => 'Profile',
         'settings' => 'Settings',
+        'dashboard' => 'Dashboard',
 
         // Membership
         'premium_member' => 'Premium Member',
@@ -154,8 +164,14 @@ return [
 
         // Greetings
         'welcome_back' => 'Welcome back!',
+        'welcome_back_name' => 'Welcome, :name!',
+        'welcome_premium' => 'Welcome, :name! Your premium trial has started.',
         'reset_password' => 'Reset your password',
         'enjoy_music' => 'Enjoy the music',
+
+        // Theme
+        'dark_mode_on' => 'Dark mode on',
+        'light_mode_on' => 'Light mode on',
 
         // Form
         'full_name' => 'Full Name',
@@ -234,6 +250,27 @@ return [
         'popular_songs_playing' => 'Popular songs playing!',
         'now_playing' => ':title is playing',
 
+        // Queue Messages
+        'song_removed_from_queue' => 'Song removed from queue.',
+        'queue_cleared' => 'Queue cleared.',
+        'queue_updated' => 'Queue updated.',
+        'queue_error' => 'Error adding to queue.',
+
+        // System Messages
+        'share_link_copied' => 'Share link copied.',
+        'page_loading_failed' => 'Page loading failed.',
+        'server_error' => 'Server error.',
+        'generic_error' => 'An error occurred.',
+        'hls_not_supported' => 'HLS not supported.',
+        'hls_fallback' => 'HLS failed, playing with MP3...',
+        'playback_error' => 'Playback error.',
+        'song_loading_failed_next' => 'Song failed to load, skipping to next...',
+        'song_loading_failed' => 'Song failed to load.',
+        'song_playing' => 'Song is playing.',
+        'subscription_expired' => 'Your premium membership has expired. Redirecting to subscription page...',
+        'device_limit_reached' => 'Device limit reached. You can log out and log back in from this device to listen to music.',
+        'devices_logged_out' => ':count device(s) logged out.',
+
         // Legacy (backward compatibility)
         'no_muzibus_found' => 'No music added yet.',
         'no_muzibus_description' => 'No music has been published yet.',
@@ -256,5 +293,31 @@ return [
         'support' => 'Support',
         'all_rights_reserved' => 'All rights reserved',
         'register' => 'Register',
+    ],
+
+    'sidebar' => [
+        // Tabs
+        'most_played' => 'Most Played',
+        'newly_added' => 'Newly Added',
+        'trending' => 'Trending',
+        'popular' => 'Popular',
+        'new' => 'New',
+        'trend' => 'Trend',
+        'song_loading' => 'Loading song...',
+
+        // Library
+        'my_library' => 'My Library',
+        'my_playlists' => 'My Playlists',
+        'create_playlist' => 'Create Playlist',
+
+        // Membership
+        'free_member' => 'Free Member',
+        'trial_member' => 'Trial Member',
+        'premium_member' => 'Premium Member',
+        'membership_expired' => 'Membership expired',
+        'days_hours_left' => ':days days :hours hours left',
+        'hours_minutes_left' => ':hours hours :minutes min left',
+        'minutes_left' => ':minutes minutes left',
+        'extend_membership' => 'Extend Membership',
     ],
 ];

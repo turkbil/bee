@@ -56,7 +56,7 @@
                  class="w-full aspect-square object-cover rounded-lg shadow-lg"
                  loading="lazy">
         @else
-            <div class="w-full aspect-square bg-gradient-to-br from-pink-500 to-rose-600 rounded-lg flex items-center justify-center shadow-lg">
+            <div class="w-full aspect-square bg-gradient-to-br from-muzibu-coral to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
                 <span class="text-5xl">🎭</span>
             </div>
         @endif

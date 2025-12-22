@@ -36,7 +36,7 @@
                 @click="toggleLike()"
                 :class="{ 'text-muzibu-coral border-muzibu-coral': isLiked, 'text-white border-white/50': !isLiked }"
                 class="absolute -top-1 -right-1 w-5 h-5 bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center border shadow-lg transition-all sm:hidden"
-                :aria-label="isLiked ? 'Favorilerden çıkar' : 'Favorilere ekle'"
+                :aria-label="isLiked ? (window.muzibuPlayerConfig?.frontLang?.player?.remove_from_favorites || 'Remove from favorites') : (window.muzibuPlayerConfig?.frontLang?.player?.add_to_favorites || 'Add to favorites')"
                 :aria-pressed="isLiked"
             >
                 <i :class="isLiked ? 'fas fa-heart' : 'far fa-heart'" class="text-[10px]"></i>
@@ -44,12 +44,12 @@
         </div>
 
         <div class="min-w-0 flex-1 hidden xs:block sm:block">
-            <h4 class="text-xs sm:text-sm font-semibold text-white truncate" x-text="currentSong ? (currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || 'Şarkı') : 'Şarkı seç'">Şarkı seç</h4>
-            <p class="text-[10px] sm:text-xs text-muzibu-text-gray truncate" x-text="currentSong ? (currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || 'Sanatçı') : 'Sanatçı'">Sanatçı</p>
+            <h4 class="text-xs sm:text-sm font-semibold text-white truncate" x-text="currentSong ? (currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')) : (window.muzibuPlayerConfig?.frontLang?.general?.select_song || 'Select Song')">{{ trans('muzibu::front.general.select_song') }}</h4>
+            <p class="text-[10px] sm:text-xs text-muzibu-text-gray truncate" x-text="currentSong ? (currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')) : (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">{{ trans('muzibu::front.general.artist') }}</p>
         </div>
 
         {{-- Desktop Heart Button (Desktop Only) --}}
-        <button class="text-muzibu-text-gray hover:text-muzibu-coral transition-all hidden sm:block" @click="toggleLike()" :class="{ 'text-muzibu-coral': isLiked }" :aria-label="isLiked ? 'Favorilerden çıkar' : 'Favorilere ekle'" :aria-pressed="isLiked">
+        <button class="text-muzibu-text-gray hover:text-muzibu-coral transition-all hidden sm:block" @click="toggleLike()" :class="{ 'text-muzibu-coral': isLiked }" :aria-label="isLiked ? (window.muzibuPlayerConfig?.frontLang?.player?.remove_from_favorites || 'Remove from favorites') : (window.muzibuPlayerConfig?.frontLang?.player?.add_to_favorites || 'Add to favorites')" :aria-pressed="isLiked">
             <i :class="isLiked ? 'fas fa-heart' : 'far fa-heart'"></i>
         </button>
     </div>
@@ -57,13 +57,13 @@
     {{-- Player Controls --}}
     <div class="flex flex-col gap-1 sm:gap-2">
         <div class="flex items-center justify-center gap-3 sm:gap-6">
-            <button class="text-muzibu-text-gray hover:text-white transition-all hidden sm:block" :class="shuffle ? 'text-muzibu-coral' : ''" @click="toggleShuffle()" :aria-label="shuffle ? 'Karıştırmayı kapat' : 'Karıştırmayı aç'" :aria-pressed="shuffle">
+            <button class="text-muzibu-text-gray hover:text-white transition-all hidden sm:block" :class="shuffle ? 'text-muzibu-coral' : ''" @click="toggleShuffle()" :aria-label="shuffle ? (window.muzibuPlayerConfig?.frontLang?.player?.disable_shuffle || 'Disable shuffle') : (window.muzibuPlayerConfig?.frontLang?.player?.enable_shuffle || 'Enable shuffle')" :aria-pressed="shuffle">
                 <i class="fas fa-random"></i>
             </button>
-            <button class="text-muzibu-text-gray hover:text-white transition-all" @click="previousTrack()" aria-label="Önceki şarkı">
+            <button class="text-muzibu-text-gray hover:text-white transition-all" @click="previousTrack()" aria-label="{{ trans('muzibu::front.player.previous_song') }}">
                 <i class="fas fa-step-backward"></i>
             </button>
-            <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black transition-all shadow-lg hover:shadow-white/50" @click="togglePlayPause()" :aria-label="isSongLoading ? 'Yükleniyor...' : (isPlaying ? 'Duraklat' : 'Çal')">
+            <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black transition-all shadow-lg hover:shadow-white/50" @click="togglePlayPause()" :aria-label="isSongLoading ? (window.muzibuPlayerConfig?.frontLang?.general?.loading || 'Loading...') : (isPlaying ? (window.muzibuPlayerConfig?.frontLang?.player?.pause || 'Pause') : (window.muzibuPlayerConfig?.frontLang?.player?.play || 'Play'))">
                 {{-- 🎵 Loading state: Spinner animation --}}
                 <i x-show="isSongLoading" x-cloak class="fas fa-spinner fa-spin"></i>
                 {{-- Playing state: Stop icon --}}
@@ -71,16 +71,16 @@
                 {{-- Paused state: Play icon (visible by default) --}}
                 <i x-show="!isSongLoading && !isPlaying" class="fas fa-play ml-0.5"></i>
             </button>
-            <button class="text-muzibu-text-gray hover:text-white transition-all" @click="nextTrack()" aria-label="Sonraki şarkı">
+            <button class="text-muzibu-text-gray hover:text-white transition-all" @click="nextTrack()" aria-label="{{ trans('muzibu::front.player.next_song') }}">
                 <i class="fas fa-step-forward"></i>
             </button>
-            <button class="text-muzibu-text-gray hover:text-white transition-all hidden sm:block" :class="repeatMode !== 'off' ? 'text-muzibu-coral' : ''" @click="cycleRepeat()" :aria-label="repeatMode === 'off' ? 'Tekrarlamayı aç' : 'Tekrarlama modu: ' + repeatMode" :aria-pressed="repeatMode !== 'off'">
+            <button class="text-muzibu-text-gray hover:text-white transition-all hidden sm:block" :class="repeatMode !== 'off' ? 'text-muzibu-coral' : ''" @click="cycleRepeat()" :aria-label="repeatMode === 'off' ? (window.muzibuPlayerConfig?.frontLang?.player?.enable_repeat || 'Enable repeat') : ((window.muzibuPlayerConfig?.frontLang?.player?.repeat_mode || 'Repeat mode') + ': ' + repeatMode)" :aria-pressed="repeatMode !== 'off'">
                 <i class="fas fa-redo"></i>
             </button>
         </div>
         <div class="flex items-center gap-1 sm:gap-2">
             <span class="text-[10px] sm:text-xs text-muzibu-text-gray w-8 sm:w-10 text-right" x-text="formatTime(currentTime)">0:00</span>
-            <div class="flex-1 h-1 sm:h-1.5 bg-muzibu-text-gray/30 rounded-full cursor-pointer group" @click="seekTo($event)" role="progressbar" :aria-valuenow="Math.round(progressPercent)" aria-valuemin="0" aria-valuemax="100" aria-label="Şarkı ilerlemesi">
+            <div class="flex-1 h-1 sm:h-1.5 bg-muzibu-text-gray/30 rounded-full cursor-pointer group" @click="seekTo($event)" role="progressbar" :aria-valuenow="Math.round(progressPercent)" aria-valuemin="0" aria-valuemax="100" aria-label="{{ trans('muzibu::front.player.song_progress') }}">
                 <div class="h-full bg-white rounded-full relative group-hover:bg-muzibu-coral transition-colors" :style="`width: ${progressPercent}%`">
                     <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 sm:w-3 h-2 sm:h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 shadow-lg"></div>
                 </div>
@@ -94,7 +94,7 @@
         <button
             class="text-muzibu-text-gray hover:text-white transition-all hidden md:block"
             @click="showKeyboardHelp = !showKeyboardHelp"
-            aria-label="Klavye kısayollarını göster"
+            aria-label="{{ trans('muzibu::front.player.show_keyboard_shortcuts') }}"
         >
             <i class="fas fa-keyboard"></i>
         </button>
@@ -103,14 +103,14 @@
             x-cloak
             class="text-muzibu-coral hover:text-white transition-all hidden sm:block"
             @click="showLyrics = !showLyrics"
-            aria-label="Şarkı sözlerini göster"
+            aria-label="{{ trans('muzibu::front.player.show_lyrics') }}"
         >
             <i class="fas fa-microphone"></i>
         </button>
-        <button class="text-muzibu-text-gray hover:text-white transition-all" @click="showQueue = !showQueue" :aria-label="showQueue ? 'Sırayı kapat' : 'Sırayı aç'" :aria-pressed="showQueue">
+        <button class="text-muzibu-text-gray hover:text-white transition-all" @click="showQueue = !showQueue" :aria-label="showQueue ? (window.muzibuPlayerConfig?.frontLang?.player?.hide_queue || 'Hide queue') : (window.muzibuPlayerConfig?.frontLang?.player?.show_queue || 'Show queue')" :aria-pressed="showQueue">
             <i class="fas fa-list text-sm sm:text-base"></i>
         </button>
-        <button class="text-muzibu-text-gray hover:text-white transition-all hidden sm:block" @click="toggleMute()" :aria-label="isMuted ? 'Sesi aç' : 'Sesi kapat'" :aria-pressed="isMuted">
+        <button class="text-muzibu-text-gray hover:text-white transition-all hidden sm:block" @click="toggleMute()" :aria-label="isMuted ? (window.muzibuPlayerConfig?.frontLang?.player?.unmute || 'Unmute') : (window.muzibuPlayerConfig?.frontLang?.player?.mute || 'Mute')" :aria-pressed="isMuted">
             <i :class="isMuted ? 'fas fa-volume-mute' : (volume > 50 ? 'fas fa-volume-up' : 'fas fa-volume-down')"></i>
         </button>
         <!-- Volume Slider with Tooltip & Drag (smooth control) -->
@@ -130,7 +130,7 @@
                 :aria-valuenow="Math.round(volume)"
                 aria-valuemin="0"
                 aria-valuemax="100"
-                aria-label="Ses seviyesi"
+                aria-label="{{ trans('muzibu::front.player.volume') }}"
             >
                 <!-- Bar (player bar ile aynı stil) -->
                 <div class="h-1.5 bg-muzibu-text-gray/30 rounded-full relative">
@@ -154,7 +154,7 @@
             <button
                 @click="volume = 100; isMuted = false"
                 class="w-1.5 h-1.5 rounded-full transition-all bg-muzibu-text-gray/50 hover:bg-white"
-                aria-label="Ses 100%"
+                aria-label="{{ trans('muzibu::front.player.max_volume') }}"
                 title="100%"
             ></button>
         </div>

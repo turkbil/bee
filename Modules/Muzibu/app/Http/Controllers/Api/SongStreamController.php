@@ -10,6 +10,9 @@ use Modules\Muzibu\App\Jobs\ConvertToHLSJob;
 use App\Services\SignedUrlService;
 use Modules\Muzibu\App\Services\MuzibuCacheService;
 use Modules\Muzibu\App\Services\DeviceService;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class SongStreamController extends Controller
 {
@@ -58,7 +61,7 @@ class SongStreamController extends Controller
                 return response()->json([
                     'status' => 'unauthorized',
                     'redirect' => '/login',
-                    'message' => trans('Muzibu::front.auth.login_required'),
+                    'message' => trans('muzibu::front.auth.login_required'),
                     'song' => [
                         'id' => $song->song_id,
                         'title' => $song->getTranslated('title', app()->getLocale()),
@@ -72,16 +75,42 @@ class SongStreamController extends Controller
                 ], 401);
             }
 
-            // 🔐 DEVICE LIMIT CHECK: DEVRE DIŞI BIRAKILDI
-            // ⚠️ SORUN: Stream API 'web' middleware kullanıyor ve farklı session ID görüyor!
-            // checkSession (api middleware) doğru session görüyor ama stream API yanlış görüyor.
-            // Bu race condition polling ile çözülüyor (5 saniyede bir checkSession çalışıyor)
-            // Device limit kontrolü polling tarafından yapılıyor, stream API'de tekrar kontrol gereksiz.
-            //
-            // @TODO: Stream route'u için session handling düzeltilince bu kontrol aktif edilebilir
-            // Şimdilik polling yeterli - device limit aşılırsa polling yakalayacak.
-            //
-            // if ($this->deviceService->shouldRun()) { ... }
+            // 🔐 DEVICE LIMIT CHECK: login_token ile doğrula (kick edilen cihaz stream yapamasın)
+            if ($this->deviceService->shouldRun()) {
+                $cookieToken = request()->cookie('mzb_login_token');
+                $sessionExists = $this->deviceService->sessionExists($user);
+
+                \Log::info('🔐 stream device check', [
+                    'user_id' => $user->id,
+                    'session_id' => substr(session()->getId() ?: 'N/A', 0, 20) . '...',
+                    'cookie_token' => $cookieToken ? substr($cookieToken, 0, 16) . '...' : 'NULL',
+                    'session_exists' => $sessionExists,
+                ]);
+
+                if (!$sessionExists) {
+                    // Kullanıcıyı çıkış yaptır ve mesaj döndür
+                    auth('web')->logout();
+                    if (request()->hasSession()) {
+                        request()->session()->invalidate();
+                        request()->session()->regenerateToken();
+                    }
+
+                    $sessionCookie = config('session.cookie', 'laravel_session');
+
+                    \Log::warning('🔐 stream blocked (session missing)', [
+                        'user_id' => $user->id,
+                        'cookie_token' => $cookieToken ? substr($cookieToken, 0, 16) . '...' : 'NULL',
+                    ]);
+
+                    return response()->json([
+                        'status' => 'session_terminated',
+                        'redirect' => '/login',
+                        'message' => $this->getSessionTerminationMessage($user),
+                    ], 401)
+                    ->withCookie(cookie()->forget($sessionCookie))
+                    ->withCookie(cookie()->forget('XSRF-TOKEN'));
+                }
+            }
 
             // 🚫 Normal üye (premium veya trial değil) → Subscription sayfasına yönlendir
             // 🔥 FIX: isPremiumOrTrial() helper kullanılıyor
@@ -91,7 +120,7 @@ class SongStreamController extends Controller
                 return response()->json([
                     'status' => 'subscription_required',
                     'redirect' => '/subscription/plans',
-                    'message' => trans('Muzibu::front.auth.premium_required'),
+                    'message' => trans('muzibu::front.auth.premium_required'),
                     'song' => [
                         'id' => $song->song_id,
                         'title' => $song->getTranslated('title', app()->getLocale()),
@@ -144,11 +173,42 @@ class SongStreamController extends Controller
             // 🔥 Subscription bilgilerini al
             $subscriptionData = $this->getSubscriptionData($user);
 
-            // HLS already converted - return HLS URL (SIGNED)
+            // HLS already converted - return HLS URL (SIGNED + token-bound)
+            $cookieName = 'mzb_login_token';
+            $loginToken = request()->cookie($cookieName);
+
+            if ($this->deviceService->shouldRun()) {
+                // Cookie yoksa DB'den token bul ve yeniden cookie yaz
+                if (!$loginToken) {
+                    $sessionRow = \Illuminate\Support\Facades\DB::table('user_active_sessions')
+                        ->where('user_id', $user->id)
+                        ->orderByDesc('last_activity')
+                        ->first();
+
+                    if ($sessionRow && $sessionRow->login_token) {
+                        $loginToken = $sessionRow->login_token;
+                        $lifetime = (int) setting('auth_session_lifetime', 525600);
+                        cookie()->queue(cookie($cookieName, $loginToken, $lifetime, '/', null, true, true, false, 'Lax'));
+                    } else {
+                        return response()->json([
+                            'status' => 'session_terminated',
+                            'message' => 'Oturum bulunamadı. Lütfen tekrar giriş yapın.'
+                        ], 401);
+                    }
+                }
+            }
+
+            // 🔒 TTL: Şarkı süresine göre dinamik imza (uzun parçalarda timeout yaşamamak için)
+            $durationSeconds = (int) ($song->duration ?? 0);
+            $bufferSeconds = 180; // 3 dakika tampon
+            $ttlSeconds = max(480, min($durationSeconds + $bufferSeconds, 1800)); // min 8 dk, max 30 dk
+
+            $hlsUrl = $this->signedUrlService->generateHlsUrl($songId, $ttlSeconds, $loginToken);
+
             return response()->json(array_merge([
                 'status' => 'ready',
                 'message' => 'HLS stream ready',
-                'stream_url' => $this->signedUrlService->generateHlsUrl($songId, 60), // 🔐 SIGNED HLS URL
+                'stream_url' => $hlsUrl, // 🔐 SIGNED HLS URL (token + expires + sig)
                 'stream_type' => 'hls',
                 'fallback_url' => $this->signedUrlService->generateStreamUrl($songId, 30, true), // 🔐 SIGNED MP3 fallback (force MP3)
                 'hls_converting' => false,
@@ -398,6 +458,25 @@ class SongStreamController extends Controller
         }
 
         try {
+            // 🔐 Token + imza doğrulaması (HLS ile aynı imza)
+            $token = request()->query('token');
+            $expires = (int) request()->query('expires');
+            $sig = request()->query('sig');
+            $signatureBase = "/hls/muzibu/songs/{$songId}";
+            $expectedSig = hash_hmac('sha256', "{$signatureBase}|{$token}|{$expires}", config('app.key'));
+
+            if (!$token || !$expires || !$sig || $sig !== $expectedSig || Carbon::now()->timestamp > $expires) {
+                return response()->json(['status' => 'session_terminated', 'message' => 'Oturum doğrulanamadı'], 401);
+            }
+
+            $sessionRow = DB::table('user_active_sessions')
+                ->where('login_token', $token)
+                ->first();
+
+            if (!$sessionRow) {
+                return response()->json(['status' => 'session_terminated', 'message' => 'Oturum bulunamadı'], 401);
+            }
+
             // 🚀 Get song from cache
             $song = $this->cacheService->getSong($songId);
 
@@ -476,6 +555,40 @@ class SongStreamController extends Controller
             ]);
         }
 
+        // 🔐 Token + imza doğrulaması
+        $token = request()->query('token');
+        $expires = (int) request()->query('expires');
+        $sig = request()->query('sig');
+
+        $signatureBase = "/hls/muzibu/songs/{$songId}";
+        $expectedSig = hash_hmac('sha256', "{$signatureBase}|{$token}|{$expires}", config('app.key'));
+
+        if (!$token || !$expires || !$sig || $sig !== $expectedSig || Carbon::now()->timestamp > $expires) {
+            Log::warning('HLS serve denied (invalid signature)', [
+                'song_id' => $songId,
+                'file' => $filename,
+                'token_prefix' => $token ? substr($token, 0, 12) : 'NULL',
+                'expires_in' => $expires ? $expires - Carbon::now()->timestamp : null,
+                'ip' => request()->ip(),
+            ]);
+            return response()->json(['status' => 'session_terminated', 'message' => 'Oturum doğrulanamadı'], 401);
+        }
+
+        // Token DB'de geçerli mi? (LIFO sonrası silindiyse 401)
+        $sessionRow = DB::table('user_active_sessions')
+            ->where('login_token', $token)
+            ->first();
+
+        if (!$sessionRow) {
+            Log::warning('HLS serve denied (token not found)', [
+                'song_id' => $songId,
+                'file' => $filename,
+                'token_prefix' => substr($token, 0, 12),
+                'ip' => request()->ip(),
+            ]);
+            return response()->json(['status' => 'session_terminated', 'message' => 'Oturum bulunamadı'], 401);
+        }
+
         try {
             // Security: Only allow specific file types
             if (!preg_match('/^(playlist\.m3u8|segment-\d+\.ts)$/', $filename)) {
@@ -486,6 +599,12 @@ class SongStreamController extends Controller
             $filePath = storage_path("app/public/muzibu/hls/{$songId}/{$filename}");
 
             if (!file_exists($filePath)) {
+                Log::warning('HLS file not found', [
+                    'song_id' => $songId,
+                    'file' => $filename,
+                    'token_prefix' => substr($token, 0, 12),
+                    'ip' => request()->ip(),
+                ]);
                 return response()->json(['error' => 'File not found'], 404);
             }
 
@@ -497,7 +616,24 @@ class SongStreamController extends Controller
             // For playlist.m3u8, rewrite key URLs to use API endpoint
             if ($filename === 'playlist.m3u8') {
                 $content = file_get_contents($filePath);
+                $query = http_build_query([
+                    'expires' => $expires,
+                    'token' => $token,
+                    'sig' => $sig,
+                ]);
+
+                // Segment ve key satırlarına token + imza ekle
+                $content = preg_replace('/(segment-\\d+\\.ts)/', '$1?' . $query, $content);
+                $content = str_replace("/api/muzibu/songs/{$songId}/key", "/api/muzibu/songs/{$songId}/key?{$query}", $content);
                 // Key URL is already correct (/api/muzibu/songs/{id}/key)
+
+                Log::info('HLS playlist served', [
+                    'song_id' => $songId,
+                    'file' => $filename,
+                    'token_prefix' => substr($token, 0, 12),
+                    'session_id' => substr($sessionRow->session_id ?? '', 0, 20),
+                    'ip' => request()->ip(),
+                ]);
 
                 return response($content, 200, [
                     'Content-Type' => $contentType,
@@ -525,5 +661,23 @@ class SongStreamController extends Controller
             ]);
             return response()->json(['error' => 'Internal server error'], 500);
         }
+    }
+
+    protected function getSessionTerminationMessage($user): string
+    {
+        $cookieToken = request()->cookie('mzb_login_token');
+        $deletedReason = null;
+
+        if ($cookieToken) {
+            $cacheKey = "session_deleted_reason:{$user->id}:{$cookieToken}";
+            $deletedReason = Cache::pull($cacheKey);
+        }
+
+        return match($deletedReason) {
+            'lifo', 'lifo_new_device' => 'Başka bir cihazdan giriş yapıldı.',
+            'manual_logout' => 'Oturumunuz kapatıldı.',
+            'admin_terminated' => 'Oturumunuz yönetici tarafından sonlandırıldı.',
+            default => 'Oturumunuz sonlandırıldı. Lütfen tekrar giriş yapın.',
+        };
     }
 }

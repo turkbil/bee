@@ -258,6 +258,25 @@
             }
         });
 
+        // 🌐 Global Alpine defaults (ReferenceError önleme)
+        window.showKeyboardHelp = window.showKeyboardHelp || false;
+        window.showDeviceSelectionModal = window.showDeviceSelectionModal || false;
+        window.showDeviceLimitWarning = window.showDeviceLimitWarning || false;
+        window.deviceTerminateLoading = window.deviceTerminateLoading || false;
+        window.activeDevices = window.activeDevices || [];
+        window.deviceLimit = window.deviceLimit || 1;
+        window.isLoading = window.isLoading || false;
+        window.currentSong = window.currentSong || null;
+        window.currentTime = window.currentTime || 0;
+        window.duration = window.duration || 0;
+        window.isLiked = window.isLiked || false;
+        window.formatTime = window.formatTime || function(sec) {
+            const t = Math.max(0, Math.floor(sec || 0));
+            const m = Math.floor(t / 60);
+            const s = (t % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        };
+
         // Config for Alpine.js
         window.muzibuPlayerConfig = {
             lang: @json(tenant_lang('player')),

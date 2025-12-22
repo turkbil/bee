@@ -2,6 +2,7 @@
 {{-- Modal backdrop - x-teleport ile body seviyesinde render --}}
 <template x-teleport="body">
     <div
+        x-data="{ deviceTerminateLoading: false, activeDevices: window.activeDevices || [] }"
         x-show="showDeviceLimitModal"
         x-cloak
         class="fixed inset-0 z-[9999] flex items-center justify-center p-4 animate-fade-in"

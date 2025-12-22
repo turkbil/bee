@@ -1,8 +1,4 @@
-Navigated to https://muzibu.com.tr/
-player-core.js?v=1766369852:2201 Uncaught SyntaxError: Identifier 'currentPos' has already been declared (at player-core.js?v=1766369852:2201:27)
- 🔐 Session check component initialized
- 🔐 Starting session check polling (5 seconds interval)
- 🎵 Loading user favorites...
+player-core.js:2201 Uncaught 
  ✅ Player store verified
  Alpine Expression Error: muzibuApp is not defined
 
@@ -10,2031 +6,510 @@ Expression: "muzibuApp()"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3564
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: init is not defined
 
 Expression: "init()"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3489
-(anonymous) @ livewire.js?id=df3a17f2:1909
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isLoggedIn is not defined
 
 Expression: "console.log('🔐 Auth Debug:', { isLoggedIn, currentUser })"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3489
-(anonymous) @ livewire.js?id=df3a17f2:1909
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isLoggedIn is not defined
 
 Expression: "isLoggedIn && (!currentUser?.is_premium)"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isLoggedIn is not defined
 
 Expression: "isLoggedIn"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isLoggedIn is not defined
 
 Expression: "isLoggedIn"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: currentUser is not defined
 
 Expression: "currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : 'U'"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: currentUser is not defined
 
 Expression: "currentUser?.name || (window.muzibuPlayerConfig?.frontLang?.user?.user || 'User')"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: currentUser is not defined
 
 Expression: "currentUser?.email || ''"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: currentUser is not defined
 
 Expression: "currentUser?.is_premium"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: currentUser is not defined
 
 Expression: "!currentUser?.is_premium"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: currentUser is not defined
 
 Expression: "currentUser?.is_premium"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isLoggedIn is not defined
 
 Expression: "!isLoggedIn"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isLoggedIn is not defined
 
 Expression: "isLoggedIn"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isLoading is not defined
 
 Expression: "isLoading"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isLoading is not defined
 
 Expression: "!isLoading"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: showDebugInfo is not defined
 
 Expression: "showDebugInfo && currentSong"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: currentStreamType is not defined
 
 Expression: "currentStreamType === 'hls' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: currentStreamType is not defined
 
 Expression: "currentStreamType || 'N/A'"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: lastFallbackReason is not defined
 
 Expression: "lastFallbackReason"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: lastFallbackReason is not defined
 
 Expression: "lastFallbackReason"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: currentSong is not defined
 
 Expression: "currentSong && currentSong.album_cover"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3856
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3856
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: currentSong is not defined
 
 Expression: "!currentSong || !currentSong.album_cover"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3856
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3856
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isLiked is not defined
 
 Expression: "{ 'text-muzibu-coral border-muzibu-coral': isLiked, 'text-white border-white/50': !isLiked }"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isLiked is not defined
 
 Expression: "isLiked ? (window.muzibuPlayerConfig?.frontLang?.player?.remove_from_favorites || 'Remove from favorites') : (window.muzibuPlayerConfig?.frontLang?.player?.add_to_favorites || 'Add to favorites')"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isLiked is not defined
 
 Expression: "isLiked"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: currentSong is not defined
 
 Expression: "currentSong"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isLiked is not defined
 
 Expression: "isLiked ? 'fas fa-heart' : 'far fa-heart'"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: currentSong is not defined
 
 Expression: "currentSong ? (currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')) : (window.muzibuPlayerConfig?.frontLang?.general?.select_song || 'Select Song')"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: currentSong is not defined
 
 Expression: "currentSong ? (currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')) : (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isLiked is not defined
 
 Expression: "{ 'text-muzibu-coral': isLiked }"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isLiked is not defined
 
 Expression: "isLiked ? (window.muzibuPlayerConfig?.frontLang?.player?.remove_from_favorites || 'Remove from favorites') : (window.muzibuPlayerConfig?.frontLang?.player?.add_to_favorites || 'Add to favorites')"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isLiked is not defined
 
 Expression: "isLiked"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isLiked is not defined
 
 Expression: "isLiked ? 'fas fa-heart' : 'far fa-heart'"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: shuffle is not defined
 
 Expression: "shuffle ? 'text-muzibu-coral' : ''"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: shuffle is not defined
 
 Expression: "shuffle ? (window.muzibuPlayerConfig?.frontLang?.player?.disable_shuffle || 'Disable shuffle') : (window.muzibuPlayerConfig?.frontLang?.player?.enable_shuffle || 'Enable shuffle')"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: shuffle is not defined
 
 Expression: "shuffle"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isSongLoading is not defined
 
 Expression: "isSongLoading ? (window.muzibuPlayerConfig?.frontLang?.general?.loading || 'Loading...') : (isPlaying ? (window.muzibuPlayerConfig?.frontLang?.player?.pause || 'Pause') : (window.muzibuPlayerConfig?.frontLang?.player?.play || 'Play'))"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isSongLoading is not defined
 
 Expression: "isSongLoading"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isSongLoading is not defined
 
 Expression: "!isSongLoading && isPlaying"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isSongLoading is not defined
 
 Expression: "!isSongLoading && !isPlaying"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: repeatMode is not defined
 
 Expression: "repeatMode !== 'off' ? 'text-muzibu-coral' : ''"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: repeatMode is not defined
 
 Expression: "repeatMode === 'off' ? (window.muzibuPlayerConfig?.frontLang?.player?.enable_repeat || 'Enable repeat') : ((window.muzibuPlayerConfig?.frontLang?.player?.repeat_mode || 'Repeat mode') + ': ' + repeatMode)"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: repeatMode is not defined
 
 Expression: "repeatMode !== 'off'"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: formatTime is not defined
 
 Expression: "formatTime(currentTime)"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: progressPercent is not defined
 
 Expression: "Math.round(progressPercent)"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: progressPercent is not defined
 
 Expression: "`width: ${progressPercent}%`"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: formatTime is not defined
 
 Expression: "formatTime(duration)"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: currentSong is not defined
 
 Expression: "currentSong && currentSong.lyrics"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: showQueue is not defined
 
 Expression: "showQueue ? (window.muzibuPlayerConfig?.frontLang?.player?.hide_queue || 'Hide queue') : (window.muzibuPlayerConfig?.frontLang?.player?.show_queue || 'Show queue')"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: showQueue is not defined
 
 Expression: "showQueue"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isMuted is not defined
 
 Expression: "isMuted ? (window.muzibuPlayerConfig?.frontLang?.player?.unmute || 'Unmute') : (window.muzibuPlayerConfig?.frontLang?.player?.mute || 'Mute')"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isMuted is not defined
 
 Expression: "isMuted"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isMuted is not defined
 
 Expression: "isMuted ? 'fas fa-volume-mute' : (volume > 50 ? 'fas fa-volume-up' : 'fas fa-volume-down')"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: volume is not defined
 
 Expression: "Math.round(volume)"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: volume is not defined
 
 Expression: "`width: ${volume}%`"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: volume is not defined
 
 Expression: "volume >= 95 ? 'MAX' : Math.round(volume)"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: showLyrics is not defined
 
 Expression: "showLyrics"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: showLyrics is not defined
 
 Expression: "showLyrics"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: currentSong is not defined
 
 Expression: "currentSong"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3856
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3856
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: currentSong is not defined
 
 Expression: "currentSong && currentSong.lyrics"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3856
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3856
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: currentSong is not defined
 
 Expression: "!currentSong || !currentSong.lyrics"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3856
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3856
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isLiked is not defined
 
 Expression: "isLiked ? 'text-muzibu-coral' : 'text-muzibu-text-gray'"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isLiked is not defined
 
 Expression: "isLiked ? 'fas fa-heart' : 'far fa-heart'"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: formatTime is not defined
 
 Expression: "formatTime(currentTime)"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: formatTime is not defined
 
 Expression: "formatTime(duration)"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: showKeyboardHelp is not defined
 
 Expression: "showKeyboardHelp"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: showKeyboardHelp is not defined
 
 Expression: "showKeyboardHelp"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: isLoading is not defined
 
 Expression: "isLoading"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: showDeviceLimitWarning is not defined
 
 Expression: "showDeviceLimitWarning"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: deviceLimit is not defined
 
 Expression: "deviceLimit"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: showDeviceSelectionModal is not defined
 
 Expression: "showDeviceSelectionModal"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: deviceLimit is not defined
 
 Expression: "deviceLimit"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: activeDevices is not defined
 
 Expression: "activeDevices.length"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
  Alpine Expression Error: activeDevices is not defined
 
 Expression: "activeDevices"
 
  
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-loop @ livewire.js?id=df3a17f2:3655
-(anonymous) @ livewire.js?id=df3a17f2:3642
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3642
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: activeDevices is not defined
+ Alpine Expression Error: activeDevices is not defined
 
 Expression: "activeDevices.length === 0"
 
- <div x-show=​"activeDevices.length === 0" class=​"text-center py-8 text-slate-400" style=​"display:​ none;​">​…​</div>​
+ 
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: selectedDeviceIds is not defined
+ Alpine Expression Error: selectedDeviceIds is not defined
 
 Expression: "selectedDeviceIds.length === 0 || deviceTerminateLoading"
 
- <button @click=​"terminateSelectedDevices()​" :disabled=​"selectedDeviceIds.length === 0 || deviceTerminateLoading" class=​"w-full px-6 py-3 bg-red-600 hover:​bg-red-500 text-white rounded-xl font-semibold transition-all duration-200 shadow-lg hover:​shadow-red-500/​30 disabled:​opacity-50 disabled:​cursor-not-allowed" disabled=​"disabled">​…​</button>​
+ 
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1123 Alpine Expression Error: deviceTerminateLoading is not defined
 
 Expression: "deviceTerminateLoading && 'fa-spin fa-spinner'"
 
  <i class=​"fas fa-sign-out-alt mr-2" :class=​"deviceTerminateLoading && 'fa-spin fa-spinner'">​</i>​
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1123 Alpine Expression Error: deviceTerminateLoading is not defined
 
 Expression: "deviceTerminateLoading ? 'İşleniyor...' : 'Seçilenleri Çıkar (' + selectedDeviceIds.length + ')'"
 
  <span x-text=​"deviceTerminateLoading ? 'İşleniyor...' :​ 'Seçilenleri Çıkar (' + selectedDeviceIds.length + ')​'">​</span>​
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1123 Alpine Expression Error: deviceTerminateLoading is not defined
 
 Expression: "deviceTerminateLoading || activeDevices.filter(d => !d.is_current).length === 0"
 
  <button @click=​"terminateAllDevices()​" :disabled=​"deviceTerminateLoading || activeDevices.filter(d => !d.is_current)​.length === 0" class=​"w-full px-6 py-3 bg-orange-600 hover:​bg-orange-500 text-white rounded-xl font-semibold transition-all duration-200 shadow-lg hover:​shadow-orange-500/​30 disabled:​opacity-50 disabled:​cursor-not-allowed" disabled=​"disabled">​…​</button>​
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1123 Alpine Expression Error: deviceTerminateLoading is not defined
 
 Expression: "deviceTerminateLoading && 'fa-spin fa-spinner'"
 
  <i class=​"fas fa-users-slash mr-2" :class=​"deviceTerminateLoading && 'fa-spin fa-spinner'">​</i>​
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1123 Alpine Expression Error: deviceTerminateLoading is not defined
 
 Expression: "deviceTerminateLoading ? 'İşleniyor...' : 'Diğer Tüm Cihazları Çıkar'"
 
  <span x-text=​"deviceTerminateLoading ? 'İşleniyor...' :​ 'Diğer Tüm Cihazları Çıkar'">​</span>​
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1123 Alpine Expression Error: deviceTerminateLoading is not defined
 
 Expression: "!deviceTerminateLoading"
 
  <span class=​"text-sm opacity-80 ml-2" x-show=​"!deviceTerminateLoading" style=​"display:​ none;​">​…​</span>​
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1123 Alpine Expression Error: activeDevices is not defined
 
 Expression: "activeDevices.filter(d => !d.is_current).length"
 
  <span x-text=​"activeDevices.filter(d => !d.is_current)​.length">​</span>​
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1123 Alpine Expression Error: deviceTerminateLoading is not defined
 
 Expression: "deviceTerminateLoading"
 
  <button @click=​"logoutFromThisDevice()​" :disabled=​"deviceTerminateLoading" class=​"w-full px-6 py-3 bg-slate-700 hover:​bg-slate-600 text-white rounded-xl font-semibold transition-all duration-200 border border-slate-600 disabled:​opacity-50 disabled:​cursor-not-allowed">​…​</button>​
 handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: muzibuApp is not defined
     at [Alpine] muzibuApp(/) (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:16)
     at livewire.js?id=df3a17f2:1196:23
@@ -2046,19 +521,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: muzibuApp is not defined
     at deferHandlingDirectives (livewire.js?id=df3a17f2:1289:5)
     at initTree (livewire.js?id=df3a17f2:1479:5)
     at livewire.js?id=df3a17f2:1428:7
-[Alpine] muzibuApp() @ VM6239:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3564
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: init is not defined
     at [Alpine] init(/) (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:16)
     at livewire.js?id=df3a17f2:1196:23
@@ -2070,20 +532,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: init is not defined
     at stopDeferring (livewire.js?id=df3a17f2:1286:7)
     at deferHandlingDirectives (livewire.js?id=df3a17f2:1289:5)
     at initTree (livewire.js?id=df3a17f2:1479:5)
-[Alpine] init() @ VM6240:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3489
-(anonymous) @ livewire.js?id=df3a17f2:1909
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLoggedIn is not defined
     at [Alpine] console.log(/'🔐 Auth Debug:', { isLoggedIn, currentUser }) (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:64)
     at livewire.js?id=df3a17f2:1196:23
@@ -2095,20 +543,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLoggedIn is not defined
     at stopDeferring (livewire.js?id=df3a17f2:1286:7)
     at deferHandlingDirectives (livewire.js?id=df3a17f2:1289:5)
     at initTree (livewire.js?id=df3a17f2:1479:5)
-[Alpine] console.log('🔐 Auth Debug:', { isLoggedIn, currentUser }) @ VM6283:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3489
-(anonymous) @ livewire.js?id=df3a17f2:1909
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLoggedIn is not defined
     at [Alpine] isLoggedIn && (/!currentUser?.is_premium) (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2120,23 +554,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLoggedIn is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] isLoggedIn && (!currentUser?.is_premium) @ VM6284:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLoggedIn is not defined
     at [Alpine] isLoggedIn (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2148,23 +565,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLoggedIn is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] isLoggedIn @ VM6285:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLoggedIn is not defined
     at [Alpine] isLoggedIn (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2176,23 +576,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLoggedIn is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] isLoggedIn @ VM6285:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentUser is not defined
     at [Alpine] currentUser?.name ? currentUser.name.charAt(/0).toUpperCase() : 'U' (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2204,23 +587,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentUser is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : 'U' @ VM6288:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentUser is not defined
     at [Alpine] currentUser?.name || (/window.muzibuPlayerConfig?.frontLang?.user?.user || 'User') (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2232,23 +598,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentUser is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] currentUser?.name || (window.muzibuPlayerConfig?.frontLang?.user?.user || 'User') @ VM6291:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentUser is not defined
     at [Alpine] currentUser?.email || '' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2260,23 +609,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentUser is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] currentUser?.email || '' @ VM6292:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentUser is not defined
     at [Alpine] currentUser?.is_premium (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2288,23 +620,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentUser is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] currentUser?.is_premium @ VM6293:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentUser is not defined
     at [Alpine] !currentUser?.is_premium (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:33)
     at livewire.js?id=df3a17f2:1196:23
@@ -2316,23 +631,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentUser is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] !currentUser?.is_premium @ VM6294:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentUser is not defined
     at [Alpine] currentUser?.is_premium (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2344,23 +642,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentUser is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] currentUser?.is_premium @ VM6293:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLoggedIn is not defined
     at [Alpine] !isLoggedIn (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:33)
     at livewire.js?id=df3a17f2:1196:23
@@ -2372,23 +653,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLoggedIn is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] !isLoggedIn @ VM6296:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLoggedIn is not defined
     at [Alpine] isLoggedIn (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2400,23 +664,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLoggedIn is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] isLoggedIn @ VM6285:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLoading is not defined
     at [Alpine] isLoading (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2428,23 +675,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLoading is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] isLoading @ VM6304:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLoading is not defined
     at [Alpine] !isLoading (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:33)
     at livewire.js?id=df3a17f2:1196:23
@@ -2456,23 +686,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLoading is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] !isLoading @ VM6305:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showDebugInfo is not defined
     at [Alpine] showDebugInfo && currentSong (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2484,23 +697,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showDebugInfo is not defin
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] showDebugInfo && currentSong @ VM6596:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentStreamType is not defined
     at [Alpine] currentStreamType === 'hls' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2512,23 +708,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentStreamType is not d
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] currentStreamType === 'hls' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30' @ VM6597:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentStreamType is not defined
     at [Alpine] currentStreamType || 'N/A' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2540,23 +719,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentStreamType is not d
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] currentStreamType || 'N/A' @ VM6598:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: lastFallbackReason is not defined
     at [Alpine] lastFallbackReason (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2568,23 +730,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: lastFallbackReason is not 
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] lastFallbackReason @ VM6599:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: lastFallbackReason is not defined
     at [Alpine] lastFallbackReason (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2596,23 +741,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: lastFallbackReason is not 
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] lastFallbackReason @ VM6599:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentSong is not defined
     at [Alpine] currentSong && currentSong.album_cover (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2624,23 +752,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentSong is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3856:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] currentSong && currentSong.album_cover @ VM6600:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3856
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3856
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentSong is not defined
     at [Alpine] !currentSong || !currentSong.album_cover (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:33)
     at livewire.js?id=df3a17f2:1196:23
@@ -2652,23 +763,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentSong is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3856:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] !currentSong || !currentSong.album_cover @ VM6601:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3856
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3856
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at [Alpine] { 'text-muzibu-coral border-muzibu-coral': isLiked, 'text-white border-white/50': !isLiked } (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:75)
     at livewire.js?id=df3a17f2:1196:23
@@ -2680,23 +774,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] { 'text-muzibu-coral border-muzibu-coral': isLiked, 'text-white border-white/50': !isLiked } @ VM6602:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at [Alpine] isLiked ? (/window.muzibuPlayerConfig?.frontLang?.player?.remove_from_favorites || 'Remove from favorites') : (window.muzibuPlayerConfig?.frontLang?.player?.add_to_favorites || 'Add to favorites') (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2708,23 +785,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] isLiked ? (window.muzibuPlayerConfig?.frontLang?.player?.remove_from_favorites || 'Remove from favorites') : (window.muzibuPlayerConfig?.frontLang?.player?.add_to_favorites || 'Add to favorites') @ VM6603:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at [Alpine] isLiked (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2736,23 +796,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] isLiked @ VM6604:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentSong is not defined
     at [Alpine] currentSong (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2764,23 +807,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentSong is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] currentSong @ VM6605:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at [Alpine] isLiked ? 'fas fa-heart' : 'far fa-heart' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2792,23 +818,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] isLiked ? 'fas fa-heart' : 'far fa-heart' @ VM6607:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentSong is not defined
     at [Alpine] currentSong ? (/currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')) : (window.muzibuPlayerConfig?.frontLang?.general?.select_song || 'Select Song') (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2820,23 +829,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentSong is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] currentSong ? (currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')) : (window.muzibuPlayerConfig?.frontLang?.general?.select_song || 'Select Song') @ VM6608:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentSong is not defined
     at [Alpine] currentSong ? (/currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')) : (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist') (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2848,23 +840,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentSong is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] currentSong ? (currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')) : (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist') @ VM6609:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at [Alpine] { 'text-muzibu-coral': isLiked } (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:55)
     at livewire.js?id=df3a17f2:1196:23
@@ -2876,23 +851,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] { 'text-muzibu-coral': isLiked } @ VM6610:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at [Alpine] isLiked ? (/window.muzibuPlayerConfig?.frontLang?.player?.remove_from_favorites || 'Remove from favorites') : (window.muzibuPlayerConfig?.frontLang?.player?.add_to_favorites || 'Add to favorites') (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2904,23 +862,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] isLiked ? (window.muzibuPlayerConfig?.frontLang?.player?.remove_from_favorites || 'Remove from favorites') : (window.muzibuPlayerConfig?.frontLang?.player?.add_to_favorites || 'Add to favorites') @ VM6603:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at [Alpine] isLiked (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2932,23 +873,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] isLiked @ VM6604:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at [Alpine] isLiked ? 'fas fa-heart' : 'far fa-heart' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2960,23 +884,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] isLiked ? 'fas fa-heart' : 'far fa-heart' @ VM6607:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: shuffle is not defined
     at [Alpine] shuffle ? 'text-muzibu-coral' : '' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -2988,23 +895,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: shuffle is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] shuffle ? 'text-muzibu-coral' : '' @ VM6611:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: shuffle is not defined
     at [Alpine] shuffle ? (/window.muzibuPlayerConfig?.frontLang?.player?.disable_shuffle || 'Disable shuffle') : (window.muzibuPlayerConfig?.frontLang?.player?.enable_shuffle || 'Enable shuffle') (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3016,23 +906,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: shuffle is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] shuffle ? (window.muzibuPlayerConfig?.frontLang?.player?.disable_shuffle || 'Disable shuffle') : (window.muzibuPlayerConfig?.frontLang?.player?.enable_shuffle || 'Enable shuffle') @ VM6612:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: shuffle is not defined
     at [Alpine] shuffle (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3044,23 +917,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: shuffle is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] shuffle @ VM6613:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isSongLoading is not defined
     at [Alpine] isSongLoading ? (/window.muzibuPlayerConfig?.frontLang?.general?.loading || 'Loading...') : (isPlaying ? (window.muzibuPlayerConfig?.frontLang?.player?.pause || 'Pause') : (window.muzibuPlayerConfig?.frontLang?.player?.play || 'Play')) (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3072,23 +928,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isSongLoading is not defin
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] isSongLoading ? (window.muzibuPlayerConfig?.frontLang?.general?.loading || 'Loading...') : (isPlaying ? (window.muzibuPlayerConfig?.frontLang?.player?.pause || 'Pause') : (window.muzibuPlayerConfig?.frontLang?.player?.play || 'Play')) @ VM6616:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isSongLoading is not defined
     at [Alpine] isSongLoading (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3100,23 +939,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isSongLoading is not defin
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] isSongLoading @ VM6618:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isSongLoading is not defined
     at [Alpine] !isSongLoading && isPlaying (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:33)
     at livewire.js?id=df3a17f2:1196:23
@@ -3128,23 +950,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isSongLoading is not defin
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] !isSongLoading && isPlaying @ VM6619:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isSongLoading is not defined
     at [Alpine] !isSongLoading && !isPlaying (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:33)
     at livewire.js?id=df3a17f2:1196:23
@@ -3156,23 +961,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isSongLoading is not defin
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] !isSongLoading && !isPlaying @ VM6620:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: repeatMode is not defined
     at [Alpine] repeatMode !== 'off' ? 'text-muzibu-coral' : '' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3184,23 +972,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: repeatMode is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] repeatMode !== 'off' ? 'text-muzibu-coral' : '' @ VM6622:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: repeatMode is not defined
     at [Alpine] repeatMode === 'off' ? (/window.muzibuPlayerConfig?.frontLang?.player?.enable_repeat || 'Enable repeat') : ((window.muzibuPlayerConfig?.frontLang?.player?.repeat_mode || 'Repeat mode') + ': ' + repeatMode) (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3212,23 +983,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: repeatMode is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] repeatMode === 'off' ? (window.muzibuPlayerConfig?.frontLang?.player?.enable_repeat || 'Enable repeat') : ((window.muzibuPlayerConfig?.frontLang?.player?.repeat_mode || 'Repeat mode') + ': ' + repeatMode) @ VM6623:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: repeatMode is not defined
     at [Alpine] repeatMode !== 'off' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3240,23 +994,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: repeatMode is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] repeatMode !== 'off' @ VM6624:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: formatTime is not defined
     at [Alpine] formatTime(/currentTime) (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:16)
     at livewire.js?id=df3a17f2:1196:23
@@ -3268,23 +1005,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: formatTime is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] formatTime(currentTime) @ VM6626:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: progressPercent is not defined
     at [Alpine] Math.round(/progressPercent) (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:43)
     at livewire.js?id=df3a17f2:1196:23
@@ -3296,23 +1016,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: progressPercent is not def
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] Math.round(progressPercent) @ VM6627:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: progressPercent is not defined
     at [Alpine] `width: ${progressPercent}%` (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:42)
     at livewire.js?id=df3a17f2:1196:23
@@ -3324,23 +1027,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: progressPercent is not def
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] `width: ${progressPercent}%` @ VM6629:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: formatTime is not defined
     at [Alpine] formatTime(/duration) (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:16)
     at livewire.js?id=df3a17f2:1196:23
@@ -3352,23 +1038,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: formatTime is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] formatTime(duration) @ VM6630:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentSong is not defined
     at [Alpine] currentSong && currentSong.lyrics (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3380,23 +1049,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentSong is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] currentSong && currentSong.lyrics @ VM6632:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showQueue is not defined
     at [Alpine] showQueue ? (/window.muzibuPlayerConfig?.frontLang?.player?.hide_queue || 'Hide queue') : (window.muzibuPlayerConfig?.frontLang?.player?.show_queue || 'Show queue') (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3408,23 +1060,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showQueue is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] showQueue ? (window.muzibuPlayerConfig?.frontLang?.player?.hide_queue || 'Hide queue') : (window.muzibuPlayerConfig?.frontLang?.player?.show_queue || 'Show queue') @ VM6634:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showQueue is not defined
     at [Alpine] showQueue (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3436,23 +1071,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showQueue is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] showQueue @ VM6635:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isMuted is not defined
     at [Alpine] isMuted ? (/window.muzibuPlayerConfig?.frontLang?.player?.unmute || 'Unmute') : (window.muzibuPlayerConfig?.frontLang?.player?.mute || 'Mute') (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3464,23 +1082,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isMuted is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] isMuted ? (window.muzibuPlayerConfig?.frontLang?.player?.unmute || 'Unmute') : (window.muzibuPlayerConfig?.frontLang?.player?.mute || 'Mute') @ VM6637:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isMuted is not defined
     at [Alpine] isMuted (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3492,23 +1093,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isMuted is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] isMuted @ VM6638:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isMuted is not defined
     at [Alpine] isMuted ? 'fas fa-volume-mute' : (/volume > 50 ? 'fas fa-volume-up' : 'fas fa-volume-down') (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3520,23 +1104,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isMuted is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] isMuted ? 'fas fa-volume-mute' : (volume > 50 ? 'fas fa-volume-up' : 'fas fa-volume-down') @ VM6640:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: volume is not defined
     at [Alpine] Math.round(/volume) (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:43)
     at livewire.js?id=df3a17f2:1196:23
@@ -3548,23 +1115,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: volume is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] Math.round(volume) @ VM6642:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: volume is not defined
     at [Alpine] `width: ${volume}%` (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:42)
     at livewire.js?id=df3a17f2:1196:23
@@ -3576,23 +1126,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: volume is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] `width: ${volume}%` @ VM6648:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: volume is not defined
     at [Alpine] volume >= 95 ? 'MAX' : Math.round(/volume) (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3604,23 +1137,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: volume is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] volume >= 95 ? 'MAX' : Math.round(volume) @ VM6651:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showLyrics is not defined
     at [Alpine] showLyrics (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3632,23 +1148,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showLyrics is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] showLyrics @ VM6654:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showLyrics is not defined
     at [Alpine] showLyrics (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3660,23 +1159,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showLyrics is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] showLyrics @ VM6654:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentSong is not defined
     at [Alpine] currentSong (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3688,23 +1170,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentSong is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3856:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] currentSong @ VM6605:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3856
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3856
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentSong is not defined
     at [Alpine] currentSong && currentSong.lyrics (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3716,23 +1181,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentSong is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3856:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] currentSong && currentSong.lyrics @ VM6632:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3856
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3856
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentSong is not defined
     at [Alpine] !currentSong || !currentSong.lyrics (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:33)
     at livewire.js?id=df3a17f2:1196:23
@@ -3744,23 +1192,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: currentSong is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3856:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] !currentSong || !currentSong.lyrics @ VM6656:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3856
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3856
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at [Alpine] isLiked ? 'text-muzibu-coral' : 'text-muzibu-text-gray' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3772,23 +1203,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] isLiked ? 'text-muzibu-coral' : 'text-muzibu-text-gray' @ VM6657:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at [Alpine] isLiked ? 'fas fa-heart' : 'far fa-heart' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3800,23 +1214,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLiked is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] isLiked ? 'fas fa-heart' : 'far fa-heart' @ VM6607:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: formatTime is not defined
     at [Alpine] formatTime(/currentTime) (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:16)
     at livewire.js?id=df3a17f2:1196:23
@@ -3828,23 +1225,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: formatTime is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] formatTime(currentTime) @ VM6626:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: formatTime is not defined
     at [Alpine] formatTime(/duration) (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:16)
     at livewire.js?id=df3a17f2:1196:23
@@ -3856,23 +1236,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: formatTime is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] formatTime(duration) @ VM6630:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showKeyboardHelp is not defined
     at [Alpine] showKeyboardHelp (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3884,23 +1247,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showKeyboardHelp is not de
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] showKeyboardHelp @ VM6658:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showKeyboardHelp is not defined
     at [Alpine] showKeyboardHelp (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3912,23 +1258,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showKeyboardHelp is not de
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] showKeyboardHelp @ VM6658:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLoading is not defined
     at [Alpine] isLoading (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3940,23 +1269,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: isLoading is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] isLoading @ VM6304:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showDeviceLimitWarning is not defined
     at [Alpine] showDeviceLimitWarning (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3968,23 +1280,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showDeviceLimitWarning is 
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] showDeviceLimitWarning @ VM6660:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: deviceLimit is not defined
     at [Alpine] deviceLimit (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -3996,23 +1291,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: deviceLimit is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] deviceLimit @ VM6662:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showDeviceSelectionModal is not defined
     at [Alpine] showDeviceSelectionModal (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -4024,23 +1302,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showDeviceSelectionModal i
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] showDeviceSelectionModal @ VM6665:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: deviceLimit is not defined
     at [Alpine] deviceLimit (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -4052,23 +1313,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: deviceLimit is not defined
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] deviceLimit @ VM6662:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: activeDevices is not defined
     at [Alpine] activeDevices.length (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -4080,23 +1324,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: activeDevices is not defin
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] activeDevices.length @ VM6666:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: activeDevices is not defined
     at [Alpine] activeDevices (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -4108,24 +1335,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: activeDevices is not defin
     at effect (livewire.js?id=df3a17f2:764:35)
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3642:5)
-[Alpine] activeDevices @ VM6667:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-loop @ livewire.js?id=df3a17f2:3655
-(anonymous) @ livewire.js?id=df3a17f2:3642
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3642
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: activeDevices is not defined
     at [Alpine] activeDevices.length === 0 (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -4137,23 +1346,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: activeDevices is not defin
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] activeDevices.length === 0 @ VM6669:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: selectedDeviceIds is not defined
     at [Alpine] selectedDeviceIds.length === 0 || deviceTerminateLoading (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -4165,23 +1357,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: selectedDeviceIds is not d
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] selectedDeviceIds.length === 0 || deviceTerminateLoading @ VM6670:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: deviceTerminateLoading is not defined
     at [Alpine] deviceTerminateLoading && 'fa-spin fa-spinner' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -4193,23 +1368,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: deviceTerminateLoading is 
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] deviceTerminateLoading && 'fa-spin fa-spinner' @ VM6672:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: deviceTerminateLoading is not defined
     at [Alpine] deviceTerminateLoading ? 'İşleniyor...' : 'Seçilenleri Çıkar (/' + selectedDeviceIds.length + ')' (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -4221,23 +1379,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: deviceTerminateLoading is 
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] deviceTerminateLoading ? 'İşleniyor...' : 'Seçilenleri Çıkar (' + selectedDeviceIds.length + ')' @ VM6673:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: deviceTerminateLoading is not defined
     at [Alpine] deviceTerminateLoading || activeDevices.filter(/d => !d.is_current).length === 0 (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -4249,23 +1390,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: deviceTerminateLoading is 
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] deviceTerminateLoading || activeDevices.filter(d => !d.is_current).length === 0 @ VM6674:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: deviceTerminateLoading is not defined
     at [Alpine] deviceTerminateLoading && 'fa-spin fa-spinner' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -4277,23 +1401,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: deviceTerminateLoading is 
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] deviceTerminateLoading && 'fa-spin fa-spinner' @ VM6672:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: deviceTerminateLoading is not defined
     at [Alpine] deviceTerminateLoading ? 'İşleniyor...' : 'Diğer Tüm Cihazları Çıkar' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -4305,23 +1412,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: deviceTerminateLoading is 
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] deviceTerminateLoading ? 'İşleniyor...' : 'Diğer Tüm Cihazları Çıkar' @ VM6676:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: deviceTerminateLoading is not defined
     at [Alpine] !deviceTerminateLoading (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:33)
     at livewire.js?id=df3a17f2:1196:23
@@ -4333,23 +1423,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: deviceTerminateLoading is 
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] !deviceTerminateLoading @ VM6677:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: activeDevices is not defined
     at [Alpine] activeDevices.filter(/d => !d.is_current).length (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -4361,23 +1434,6 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: activeDevices is not defin
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] activeDevices.filter(d => !d.is_current).length @ VM6678:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3496
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3495
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
 livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: deviceTerminateLoading is not defined
     at [Alpine] deviceTerminateLoading (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -4389,22 +1445,5 @@ livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: deviceTerminateLoading is 
     at wrappedEffect (livewire.js?id=df3a17f2:780:29)
     at handler2 (livewire.js?id=df3a17f2:3533:5)
     at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] deviceTerminateLoading @ VM6679:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-VM6758:38 🧪 Debug Panel connected
-(index):8224 ✅ Player store = Proxy to root (auto-forward all properties/methods)
+VM560:38 🧪 Debug Panel connected
+(index):8041 ✅ Player store = Proxy to root (auto-forward all properties/methods)

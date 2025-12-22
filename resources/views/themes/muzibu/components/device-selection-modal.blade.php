@@ -1,6 +1,13 @@
 {{-- Device Selection Modal - KAPATILMAZ (Cihaz seçmeden devam edemez) --}}
 <div x-show="showDeviceSelectionModal"
      x-cloak
+     x-data="{
+         deviceTerminateLoading: false,
+         selectedDeviceIds: [],
+         activeDevices: window.activeDevices || [],
+         deviceLimit: window.deviceLimit || 2
+     }"
+     x-init="$watch('showDeviceSelectionModal', val => { if(val) { activeDevices = window.activeDevices || []; deviceLimit = window.deviceLimit || 2; selectedDeviceIds = []; } })"
      class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm">
 
     <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full mx-4 border border-red-500/50">

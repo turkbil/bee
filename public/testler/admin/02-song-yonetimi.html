@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin 02: Song Yönetimi - Muzibu Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { slate: { 850: '#1a202e', 950: '#0f1419' } } } }
+        }
+    </script>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            input[type="checkbox"] { -webkit-appearance: checkbox; appearance: checkbox; }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <a href="../index.html" class="text-purple-400 hover:text-purple-300 no-print">← Geri</a>
+                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded text-sm no-print">🖨️ Yazdır</button>
+            </div>
+            <h1 class="text-3xl font-bold text-purple-400 mb-2">Admin 02: Song (Şarkı) Yönetimi</h1>
+            <p class="text-slate-400">CRUD, upload, metadata, bulk operations, HLS conversion</p>
+
+            <div class="mt-4 bg-slate-900 rounded-lg p-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold">İlerleme</span>
+                    <span class="text-sm" id="progress-text">0 / 20</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-3">
+                    <div id="progress-bar" class="bg-purple-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+
+            <!-- Listeleme (Index) -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-purple-300 mb-4">📋 Listeleme (Index)</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-index-view">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">Song Listesi Görünümü</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Tablo formatında: ID, Başlık, Sanatçı, Album, Süre, Durum, İşlemler<br>
+                                ▸ Her satırda: Düzenle, Sil, HLS Convert, Önizle butonları<br>
+                                ▸ Checkbox ile çoklu seçim (bulk operations için)<br>
+                                ▸ Pagination: 50 song/sayfa (ayarlanabilir: 25, 50, 100)<br>
+                                ▸ URL: /admin/muzibu/songs
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-search-filter">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">Arama & Filtreleme</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Search bar: Şarkı adı, sanatçı adı ile arama<br>
+                                ▸ Filter dropdown: Genre, Sector, Artist, Album seçimi<br>
+                                ▸ Status filter: Active, Inactive, All<br>
+                                ▸ HLS status filter: Converted, Pending, Not Converted<br>
+                                ▸ Filtreler URL query string'e eklenmeli (bookmark edilebilsin)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-sorting">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">Sıralama (Sorting)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Kolon başlıklarına tıklanınca sıralama (ASC/DESC)<br>
+                                ▸ Sıralanabilir kolonlar: ID, Title, Artist, Duration, Play Count, Created At<br>
+                                ▸ Aktif sıralama oku (↑ veya ↓) ile gösterilmeli<br>
+                                ▸ Default sıralama: created_at DESC (en yeni en üstte)
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Ekleme (Create) -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-purple-300 mb-4">➕ Ekleme (Create)</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-create-form">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">Ekleme Formu</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ URL: /admin/muzibu/songs/manage (create mode)<br>
+                                ▸ Zorunlu alanlar: Title, Artist, Audio File<br>
+                                ▸ Opsiyonel: Album, Genre (multiple), Sector (multiple), Cover Image<br>
+                                ▸ Slug otomatik oluşturulmalı (title'dan generate)<br>
+                                ▸ Duration otomatik hesaplanmalı (audio file metadata'sından)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-audio-upload">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">Audio Dosya Upload</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Desteklenen format: MP3, WAV, FLAC, AAC<br>
+                                ▸ Max dosya boyutu: 50MB<br>
+                                ▸ Drag & drop desteği olmalı<br>
+                                ▸ Upload progress bar gösterilmeli<br>
+                                ▸ Metadata extraction: ID3 tag'lerden artist, title, album otomatik çekilmeli<br>
+                                ▸ Dosya storage'a kaydedilmeli: storage/tenantX/app/public/muzibu/songs/
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-cover-upload">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">Kapak Görseli Upload</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Format: JPG, PNG, WebP<br>
+                                ▸ Max boyut: 5MB<br>
+                                ▸ Otomatik crop: 1:1 ratio (square)<br>
+                                ▸ Thumbmaker ile multiple size oluşturulmalı (400x400, 800x800)<br>
+                                ▸ WebP dönüşümü yapılmalı (performans)<br>
+                                ▸ Cover yoksa placeholder gösterilmeli
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-relations">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">İlişkiler (Relations)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Artist seçimi: Select2 dropdown (search + create new)<br>
+                                ▸ Album seçimi: Seçilen artist'e göre filtrelenmiş album listesi<br>
+                                ▸ Genre seçimi: Multiple select (birden fazla tür seçilebilir)<br>
+                                ▸ Sector seçimi: Multiple select (Restoran, Cafe, Hotel vb.)<br>
+                                ▸ Yeni artist/album varsa hızlı oluşturma modal'ı açılmalı
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-create-save">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">Kaydetme</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "Kaydet" butonuna basılınca validation yapılmalı<br>
+                                ▸ Başarılı kayıt: "✅ Şarkı başarıyla eklendi!" toast mesajı<br>
+                                ▸ Database'e kayıt: songs tablosu + pivot tablolar (genre_song, sector_song)<br>
+                                ▸ Redirect: Song listesine dön veya "Kaydet ve Yeni Ekle" seçeneği<br>
+                                ▸ Hata durumunda: Form alanlarında inline error mesajları gösterilmeli
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Düzenleme (Edit) -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-purple-300 mb-4">✏️ Düzenleme (Edit)</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-edit-form">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">Düzenleme Formu</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ URL: /admin/muzibu/songs/manage/{id} (edit mode)<br>
+                                ▸ Mevcut veriler form alanlarına doldurulmuş olmalı<br>
+                                ▸ Tüm alanlar düzenlenebilir olmalı (title, artist, album, genres, sectors)<br>
+                                ▸ Mevcut audio dosya gösterilmeli + "Değiştir" butonu<br>
+                                ▸ Mevcut cover gösterilmeli + "Değiştir" butonu
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-edit-save">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">Güncelleme</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "Güncelle" butonuna basılınca değişiklikler kaydedilmeli<br>
+                                ▸ Toast mesajı: "✅ Şarkı güncellendi!"<br>
+                                ▸ Slug otomatik güncellenmeli (title değiştiyse)<br>
+                                ▸ Eski medya dosyaları silinmeden yenisi eklenmeli (versiyonlama)<br>
+                                ▸ Updated_at timestamp güncellenmeli
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Silme (Delete) -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-purple-300 mb-4">🗑️ Silme (Delete)</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-delete-single">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">Tekil Silme</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Song satırında "Sil" butonu kırmızı renkte olmalı<br>
+                                ▸ Tıklandığında onay modal'ı açılmalı: "Şarkı kalıcı olarak silinecek!"<br>
+                                ▸ Modal'da şarkı adı gösterilmeli: "'{song_title}' silinsin mi?"<br>
+                                ▸ Onaylanınca: Database'den song + pivot ilişkiler + media dosyaları silinmeli<br>
+                                ▸ Toast mesajı: "✅ Şarkı silindi!"
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-delete-cascade">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">Cascade Delete Kontrolleri</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Song silinince pivot tablolardan da kaldırılmalı (genre_song, sector_song, playlist_song)<br>
+                                ▸ Favorilerden otomatik çıkarılmalı<br>
+                                ▸ Media kütüphanesinden audio ve cover dosyaları silinmeli<br>
+                                ▸ HLS dosyaları varsa onlar da silinmeli (storage/muzibu/hls/song_{id}/)<br>
+                                ▸ Play count verileri korunmalı mı yoksa silinmeli mi? (Ayara göre)
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Bulk Upload -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-purple-300 mb-4">📤 Bulk Upload (Toplu Yükleme)</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-bulk-upload-ui">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">Bulk Upload UI</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "Toplu Yükle" butonu index sayfasında belirgin olmalı<br>
+                                ▸ Modal/sayfa açılınca drag-drop alanı olmalı<br>
+                                ▸ Multiple file seçimi: 20'ye kadar MP3 dosyası seçilebilmeli<br>
+                                ▸ Her dosya için progress bar gösterilmeli<br>
+                                ▸ Upload sırasında sayfa kapatılırsa uyarı verilmeli
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-bulk-metadata">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">Otomatik Metadata Extraction</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Her dosyadan ID3 tag'leri çekilmeli (getID3 kütüphanesi)<br>
+                                ▸ Çıkarılacak bilgiler: Title, Artist, Album, Genre, Duration, Cover Art<br>
+                                ▸ Artist/Album database'de yoksa otomatik oluşturulmalı<br>
+                                ▸ Cover art varsa otomatik atanmalı, yoksa placeholder<br>
+                                ▸ Metadata yoksa dosya adı kullanılmalı (fallback)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-bulk-process">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">Bulk Upload Processing</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Her dosya ayrı bir job olarak queue'ya eklenmalı (Horizon)<br>
+                                ▸ Job: Upload + Metadata Extraction + Database Kayıt<br>
+                                ▸ İşlem bittikten sonra rapor gösterilmeli: "✅ 18/20 başarılı, ❌ 2 hata"<br>
+                                ▸ Hatalı dosyalar için log: Neden başarısız oldu? (invalid format, corrupt file vb.)<br>
+                                ▸ Başarılı upload sonrası otomatik HLS conversion başlatılabilir (ayara göre)
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- HLS Conversion -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-purple-300 mb-4">🎬 HLS Conversion</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-hls-single">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">Tekil HLS Dönüşümü</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Song satırında "HLS Convert" butonu olmalı<br>
+                                ▸ Buton tıklanınca dönüşüm job'u başlamalı<br>
+                                ▸ Status: pending → converting → completed/failed<br>
+                                ▸ Real-time status güncelleme (polling veya websocket)<br>
+                                ▸ Dönüşüm tamamlanınca "✅ HLS Ready" badge gösterilmeli
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-hls-bulk">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">Toplu HLS Dönüşümü</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Checkbox ile birden fazla song seçilmeli<br>
+                                ▸ "Seçilenleri HLS'ye Dönüştür" butonu olmalı<br>
+                                ▸ Toplu job kuyruğa eklenmeliİşlem raporu: "15/20 tamamlandı, 5 işlemde"<br>
+                                ▸ Background processing (kullanıcı beklemez, Horizon işler)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-hls-status">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">HLS Status Gösterimi</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Her şarkıda HLS durumu badge ile gösterilmeli:<br>
+                                &nbsp;&nbsp;• 🟢 Ready: HLS dosyaları var<br>
+                                &nbsp;&nbsp;• 🟡 Converting: Dönüşüm devam ediyor<br>
+                                &nbsp;&nbsp;• ⚪ Not Converted: HLS yok<br>
+                                &nbsp;&nbsp;• 🔴 Failed: Dönüşüm başarısız<br>
+                                ▸ Badge'e tıklandığında HLS dosya yolu gösterilmeli
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Diğer İşlemler -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-purple-300 mb-4">⚙️ Diğer İşlemler</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-preview">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">Önizleme (Preview)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Song satırında "Önizle" (👁️) butonu olmalı<br>
+                                ▸ Tıklandığında mini player modal'ı açılmalı<br>
+                                ▸ Modal'da: Play/Pause, Seek bar, Volume, Kapak görseli, Meta bilgiler<br>
+                                ▸ Admin şarkıyı dinleyip kalite kontrolü yapabilmeli
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-duplicate">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">Çoğaltma (Duplicate)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "Kopyala" butonu ile şarkı kopyalanabilmeli<br>
+                                ▸ Tüm bilgiler kopyalanmalı + slug'a "-copy" eklenmeli<br>
+                                ▸ Media dosyaları yeni kopyaya bağlanmalı (dosya paylaşılır)<br>
+                                ▸ Use case: Aynı şarkıyı farklı sector/genre kombinasyonlarında kullanmak
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-export">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-purple-300">Export (CSV/Excel)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "Export" butonu ile tüm şarkılar CSV/Excel formatında indirilebilmeli<br>
+                                ▸ Kolonlar: ID, Title, Artist, Album, Genres, Sectors, Duration, Play Count, Status<br>
+                                ▸ Filtreli liste export edilebilmeli (sadece görüntülenen sonuçlar)<br>
+                                ▸ Dosya adı: muzibu_songs_{tarih}.xlsx
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-8 flex gap-4 no-print">
+            <button onclick="resetProgress()" class="bg-red-600 hover:bg-red-500 px-6 py-3 rounded-lg text-white font-semibold">
+                🔄 İlerlemeyi Sıfırla
+            </button>
+            <button onclick="markAllComplete()" class="bg-purple-600 hover:bg-purple-500 px-6 py-3 rounded-lg text-white font-semibold">
+                ✅ Tümünü Tamamla
+            </button>
+        </div>
+
+        <div class="mt-12 text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+            <p>🎵 Muzibu.com.tr - Song Yönetimi Test Checklist</p>
+        </div>
+
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'muzibu_test_admin_02_song';
+        const TOTAL_TESTS = 20;
+
+        function loadProgress() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+                    if (data[checkbox.dataset.test]) checkbox.checked = true;
+                });
+            }
+            updateProgress();
+        }
+
+        function saveProgress() {
+            const data = {};
+            document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+                data[checkbox.dataset.test] = checkbox.checked;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const checked = document.querySelectorAll('.test-checkbox:checked').length;
+            const percentage = Math.round((checked / TOTAL_TESTS) * 100);
+            document.getElementById('progress-bar').style.width = percentage + '%';
+            document.getElementById('progress-text').textContent = `${checked} / ${TOTAL_TESTS}`;
+        }
+
+        function resetProgress() {
+            if (!confirm('⚠️ Tüm işaretlemeler silinecek! Emin misiniz?')) return;
+            localStorage.removeItem(STORAGE_KEY);
+            document.querySelectorAll('.test-checkbox').forEach(cb => cb.checked = false);
+            updateProgress();
+        }
+
+        function markAllComplete() {
+            document.querySelectorAll('.test-checkbox').forEach(cb => cb.checked = true);
+            saveProgress();
+        }
+
+        document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', saveProgress);
+        });
+
+        loadProgress();
+    </script>
+</body>
+</html>

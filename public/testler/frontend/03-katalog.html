@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend 03: Katalog Sayfaları - Muzibu Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{slate:{850:'#1a202e',950:'#0f1419'}}}}}</script>
+    <style>@media print{.no-print{display:none}input[type="checkbox"]{-webkit-appearance:checkbox;appearance:checkbox}}</style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <a href="../index.html" class="text-emerald-400 hover:text-emerald-300 no-print">← Geri</a>
+                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded text-sm no-print">🖨️ Yazdır</button>
+            </div>
+            <h1 class="text-3xl font-bold text-emerald-400 mb-2">Frontend 03: Katalog Sayfaları</h1>
+            <p class="text-slate-400">Playlists, Albums, Artists, Songs, Genres, Sectors, Radios</p>
+            <div class="mt-4 bg-slate-900 rounded-lg p-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold">İlerleme</span>
+                    <span class="text-sm" id="progress-text">0 / 20</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-3">
+                    <div id="progress-bar" class="bg-emerald-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">🎵 Playlists (/playlists)</h2>
+                <div class="space-y-4">
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="pl-grid">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Grid Görünüm</div>
+                            <div class="text-sm text-slate-400 mt-1">▸ Grid layout: 4 sütun (desktop), 2 sütun (tablet), 1 sütun (mobile)<br>▸ Her kart: Kapak (1:1), isim, şarkı sayısı, creator<br>▸ Hover: Play butonu ve favorilere ekle ikonu gösterilmeli<br>▸ Kartlara tıklandığında /playlists/{slug} sayfasına gidilmeli</div>
+                        </div>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="pl-filter">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Filtreleme & Sıralama</div>
+                            <div class="text-sm text-slate-400 mt-1">▸ Filter: Genre, Sector seçimi (dropdown)<br>▸ Sort: En Yeni, En Popüler, İsim (A-Z), Şarkı Sayısı<br>▸ Featured playlists checkbox: Sadece öne çıkanlar<br>▸ Pagination: 24 playlist/sayfa</div>
+                        </div>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="pl-search">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Arama</div>
+                            <div class="text-sm text-slate-400 mt-1">▸ Search bar: Playlist ismi ile arama<br>▸ Real-time arama (debounce 300ms)<br>▸ Boş sonuç: "Playlist bulunamadı" mesajı<br>▸ Search query URL'de query string olarak saklanmalı</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">💿 Albums (/albums)</h2>
+                <div class="space-y-4">
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="al-grid">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Grid Görünüm</div>
+                            <div class="text-sm text-slate-400 mt-1">▸ Grid layout responsive<br>▸ Kart: Kapak, album adı, sanatçı adı, çıkış yılı<br>▸ Hover: Play butonu, favorilere ekle<br>▸ Tıklama: /albums/{slug} detay sayfası</div>
+                        </div>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="al-filter">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Filtreleme</div>
+                            <div class="text-sm text-slate-400 mt-1">▸ Filter: Artist, Genre, Release Year<br>▸ Sort: Yeni Çıkanlar, Popüler, A-Z, Çıkış Tarihi<br>▸ "New Releases" tab: Son 30 gün içinde eklenenler</div>
+                        </div>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="al-pagination">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Pagination</div>
+                            <div class="text-sm text-slate-400 mt-1">▸ 24 album/sayfa<br>▸ Sayfa numaraları + Previous/Next butonları<br>▸ İlk/son sayfa butonları disabled olmalı<br>▸ URL: /albums?page=2 formatında</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">🎤 Artists (/artists)</h2>
+                <div class="space-y-4">
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="ar-grid">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Grid Görünüm</div>
+                            <div class="text-sm text-slate-400 mt-1">▸ Kart: Artist fotoğrafı (circular/square), isim<br>▸ Hover: "Dinle" butonu<br>▸ Tıklama: /artists/{slug} detay<br>▸ Responsive grid</div>
+                        </div>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="ar-search">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Arama & Alfabetik</div>
+                            <div class="text-sm text-slate-400 mt-1">▸ Search bar: Artist ismi<br>▸ Alfabetik filter: A-Z butonları (tıklandığında o harfle başlayanlar)<br>▸ Sort: A-Z, Popülerlik, Şarkı Sayısı</div>
+                        </div>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="ar-popular">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Popüler Sanatçılar Tab</div>
+                            <div class="text-sm text-slate-400 mt-1">▸ "Popüler" tab: Play count'a göre top 50<br>▸ Liste formatı: Rank, fotoğraf, isim, toplam şarkı<br>▸ Badge: Top 10'da altın, 11-30 gümüş, 31-50 bronz</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">🎶 Songs (/songs)</h2>
+                <div class="space-y-4">
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="so-list">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Liste Görünümü</div>
+                            <div class="text-sm text-slate-400 mt-1">▸ Tablo/liste: #, Kapak, Şarkı, Sanatçı, Album, Süre, Aksiyon<br>▸ Her satır: Play, Favorilere ekle, Playlist'e ekle, Üç nokta (menü)<br>▸ Hover: Satır highlight olmalı<br>▸ Tıklama: Şarkı detay sayfası veya direkt play</div>
+                        </div>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="so-filter">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Filtreleme</div>
+                            <div class="text-sm text-slate-400 mt-1">▸ Filter: Genre, Artist, Album, Sector<br>▸ Sort: Popüler, Yeni Eklenler, A-Z, Süre<br>▸ "Yeni Şarkılar" tab: Son 7 gün<br>▸ "Popüler Şarkılar" tab: Play count > 100</div>
+                        </div>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="so-bulk-actions">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Toplu İşlemler</div>
+                            <div class="text-sm text-slate-400 mt-1">▸ Checkbox ile çoklu seçim<br>▸ "Seçilenleri Oynat" butonu (queue'ya toplu ekle)<br>▸ "Seçilenleri Playlist'e Ekle" modal açmalı<br>▸ "Seçilenleri Favorilere Ekle" (premium için)</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">🎸 Genres & Sectors & Radios</h2>
+                <div class="space-y-4">
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="ge-grid">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Genres Grid (/genres)</div>
+                            <div class="text-sm text-slate-400 mt-1">▸ Renkli kartlar: Genre rengi background<br>▸ Kart: İkon, genre ismi, şarkı sayısı<br>▸ Tıklama: /genres/{slug} detay (o türdeki şarkılar)<br>▸ Grid: 6 sütun desktop, 3 tablet, 2 mobile</div>
+                        </div>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="se-grid">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Sectors Grid (/sectors)</div>
+                            <div class="text-sm text-slate-400 mt-1">▸ Kart: Görsel, sector ismi, açıklama (truncate)<br>▸ Use case: Restoran, Cafe, Hotel, Spor Salonu vb.<br>▸ Tıklama: /sectors/{slug} detay (sector playlist'leri)<br>▸ Grid responsive</div>
+                        </div>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="ra-list">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Radios Liste (/radios)</div>
+                            <div class="text-sm text-slate-400 mt-1">▸ Liste/grid: Logo, radio adı, canlı badge (🔴 LIVE)<br>▸ Play butonu: Radyo stream başlat<br>▸ Radyo çalarken diğer şarkılar durdurulmalı<br>▸ Player'da "Radio: {name}" gösterilmeli</div>
+                        </div>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="catalog-empty">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Boş Liste Durumu</div>
+                            <div class="text-sm text-slate-400 mt-1">▸ Tüm katalog sayfalarında: Veri yoksa empty state gösterilmeli<br>▸ Mesaj: "Henüz {item} eklenmemiş" + ikon<br>▸ Admin ise "İçerik Ekle" CTA butonu<br>▸ Filter sonuç boşsa: "Filtre kriterleri ile eşleşen sonuç yok"</div>
+                        </div>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="catalog-loading">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Loading States</div>
+                            <div class="text-sm text-slate-400 mt-1">▸ İlk yükleme: Skeleton loader kartlar gösterilmeli<br>▸ Pagination geçişi: Loading spinner + disabled butonlar<br>▸ Filter değişimi: Smooth transition + loading indicator<br>▸ Hata durumu: "Yükleme hatası" + "Tekrar Dene" butonu</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 flex gap-4 no-print">
+            <button onclick="resetProgress()" class="bg-red-600 hover:bg-red-500 px-6 py-3 rounded-lg text-white font-semibold">🔄 İlerlemeyi Sıfırla</button>
+            <button onclick="markAllComplete()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-3 rounded-lg text-white font-semibold">✅ Tümünü Tamamla</button>
+        </div>
+
+        <div class="mt-12 text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+            <p>🎵 Muzibu.com.tr - Katalog Sayfaları Test Checklist</p>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY='muzibu_test_frontend_03_catalog';const TOTAL_TESTS=20;
+        function loadProgress(){const saved=localStorage.getItem(STORAGE_KEY);if(saved){const data=JSON.parse(saved);document.querySelectorAll('.test-checkbox').forEach(checkbox=>{if(data[checkbox.dataset.test])checkbox.checked=true;})}updateProgress();}
+        function saveProgress(){const data={};document.querySelectorAll('.test-checkbox').forEach(checkbox=>{data[checkbox.dataset.test]=checkbox.checked;});localStorage.setItem(STORAGE_KEY,JSON.stringify(data));updateProgress();}
+        function updateProgress(){const checked=document.querySelectorAll('.test-checkbox:checked').length;const percentage=Math.round((checked/TOTAL_TESTS)*100);document.getElementById('progress-bar').style.width=percentage+'%';document.getElementById('progress-text').textContent=`${checked} / ${TOTAL_TESTS}`;}
+        function resetProgress(){if(!confirm('⚠️ Tüm işaretlemeler silinecek! Emin misiniz?'))return;localStorage.removeItem(STORAGE_KEY);document.querySelectorAll('.test-checkbox').forEach(cb=>cb.checked=false);updateProgress();}
+        function markAllComplete(){document.querySelectorAll('.test-checkbox').forEach(cb=>cb.checked=true);saveProgress();}
+        document.querySelectorAll('.test-checkbox').forEach(checkbox=>{checkbox.addEventListener('change',saveProgress);});
+        loadProgress();
+    </script>
+</body>
+</html>

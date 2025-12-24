@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Dashboard & Kurumsal Alan - Tasarım Planı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); }
+        .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); }
+        .coral { color: #ff6b6b; }
+        .bg-coral { background: #ff6b6b; }
+        .border-coral { border-color: #ff6b6b; }
+        .glow { box-shadow: 0 0 30px rgba(255,107,107,0.2); }
+    </style>
+</head>
+<body class="min-h-screen text-slate-200 p-6">
+    <div class="max-w-7xl mx-auto">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-3 mb-4">
+                <i class="fas fa-music text-4xl coral"></i>
+                <h1 class="text-4xl font-bold bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
+                    Muzibu Dashboard & Kurumsal Alan
+                </h1>
+            </div>
+            <p class="text-slate-400 text-lg">Kapsamlı Tasarım ve Uygulama Planı</p>
+            <div class="flex justify-center gap-4 mt-4 text-sm text-slate-500">
+                <span><i class="fas fa-calendar mr-1"></i> 22 Aralık 2025</span>
+                <span><i class="fas fa-code-branch mr-1"></i> Versiyon 1.0</span>
+                <span><i class="fas fa-layer-group mr-1"></i> Tenant: 1001 (muzibu.com.tr)</span>
+            </div>
+        </header>
+
+        <!-- İçindekiler -->
+        <nav class="glass rounded-xl p-6 mb-8 border border-slate-700">
+            <h2 class="text-xl font-bold coral mb-4"><i class="fas fa-list-ul mr-2"></i>İçindekiler</h2>
+            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                <a href="#dashboard" class="p-3 bg-slate-800/50 rounded-lg hover:bg-slate-700/50 transition">
+                    <i class="fas fa-gauge-high mr-2 text-blue-400"></i> Dashboard Tasarımı
+                </a>
+                <a href="#kurumsal" class="p-3 bg-slate-800/50 rounded-lg hover:bg-slate-700/50 transition">
+                    <i class="fas fa-building mr-2 text-purple-400"></i> Kurumsal Alan
+                </a>
+                <a href="#teknik" class="p-3 bg-slate-800/50 rounded-lg hover:bg-slate-700/50 transition">
+                    <i class="fas fa-cogs mr-2 text-green-400"></i> Teknik Detaylar
+                </a>
+            </div>
+        </nav>
+
+        <!-- BÖLÜM 1: Dashboard -->
+        <section id="dashboard" class="glass rounded-xl p-8 mb-8 border border-slate-700 glow">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-gauge-high text-blue-400"></i>
+                </div>
+                Dashboard Tasarımı
+            </h2>
+
+            <!-- Basit Anlatım -->
+            <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-6">
+                <h3 class="text-lg font-semibold text-green-400 mb-3"><i class="fas fa-lightbulb mr-2"></i>Basit Anlatım (Herkes İçin)</h3>
+                <p class="text-slate-300 mb-4">
+                    Dashboard, kullanıcının Muzibu'ya giriş yaptığında gördüğü ana sayfa. Şu anda basit bir yapıda.
+                    Yeni tasarımla kullanıcı:
+                </p>
+                <ul class="space-y-2 text-slate-300">
+                    <li><i class="fas fa-check text-green-400 mr-2"></i> <strong>Son dinlediği şarkıları</strong> görecek (Spotify benzeri)</li>
+                    <li><i class="fas fa-check text-green-400 mr-2"></i> <strong>Favorilerini</strong> hızlıca erişebilecek</li>
+                    <li><i class="fas fa-check text-green-400 mr-2"></i> <strong>Kurumsal üyelik</strong> durumunu görecek (varsa)</li>
+                    <li><i class="fas fa-check text-green-400 mr-2"></i> <strong>Kişiselleştirilmiş öneriler</strong> alabilecek</li>
+                    <li><i class="fas fa-check text-green-400 mr-2"></i> <strong>Playlistlerini</strong> yönetebilecek</li>
+                </ul>
+            </div>
+
+            <!-- Dashboard Bölümleri -->
+            <h3 class="text-xl font-bold mb-4 text-slate-200"><i class="fas fa-puzzle-piece mr-2 coral"></i>Dashboard Bölümleri</h3>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+
+                <!-- 1. İstatistik Kartları -->
+                <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-600">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-chart-bar text-yellow-400"></i>
+                        </div>
+                        <h4 class="font-semibold">1. İstatistik Kartları</h4>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><i class="fas fa-crown text-yellow-400 mr-2"></i> Üyelik durumu (Premium/Trial/Free)</li>
+                        <li><i class="fas fa-clock text-blue-400 mr-2"></i> Kalan süre (varsa)</li>
+                        <li><i class="fas fa-play text-green-400 mr-2"></i> Toplam dinleme sayısı</li>
+                        <li><i class="fas fa-heart text-red-400 mr-2"></i> Favori sayısı</li>
+                        <li><i class="fas fa-list text-purple-400 mr-2"></i> Playlist sayısı</li>
+                        <li><i class="fas fa-building text-cyan-400 mr-2"></i> Kurumsal üyelik (varsa)</li>
+                    </ul>
+                </div>
+
+                <!-- 2. Son Dinlenenler -->
+                <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-600">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-history text-green-400"></i>
+                        </div>
+                        <h4 class="font-semibold">2. Son Dinlenenler</h4>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><i class="fas fa-music mr-2"></i> Son 10 dinlenen şarkı</li>
+                        <li><i class="fas fa-image mr-2"></i> Albüm kapağı ile görsel liste</li>
+                        <li><i class="fas fa-user mr-2"></i> Sanatçı bilgisi</li>
+                        <li><i class="fas fa-clock mr-2"></i> Ne zaman dinlendiği</li>
+                        <li><i class="fas fa-play mr-2"></i> Tek tıkla çalmaya devam</li>
+                    </ul>
+                    <div class="mt-3 p-2 bg-blue-900/30 rounded text-xs text-blue-300">
+                        <i class="fas fa-database mr-1"></i> Kaynak: <code>muzibu_song_plays</code> tablosu
+                    </div>
+                </div>
+
+                <!-- 3. Favoriler -->
+                <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-600">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-heart text-red-400"></i>
+                        </div>
+                        <h4 class="font-semibold">3. Favorilerim</h4>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><i class="fas fa-th-large mr-2"></i> Grid görünümde favori şarkılar</li>
+                        <li><i class="fas fa-random mr-2"></i> Karıştır butonu</li>
+                        <li><i class="fas fa-play-circle mr-2"></i> Tümünü çal butonu</li>
+                        <li><i class="fas fa-arrow-right mr-2"></i> Tümünü gör linki</li>
+                    </ul>
+                    <div class="mt-3 p-2 bg-blue-900/30 rounded text-xs text-blue-300">
+                        <i class="fas fa-database mr-1"></i> Kaynak: <code>favorites</code> tablosu
+                    </div>
+                </div>
+
+                <!-- 4. Playlistlerim -->
+                <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-600">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-list-music text-purple-400"></i>
+                        </div>
+                        <h4 class="font-semibold">4. Playlistlerim</h4>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><i class="fas fa-folder mr-2"></i> Kullanıcının playlistleri</li>
+                        <li><i class="fas fa-plus mr-2"></i> Yeni playlist oluştur butonu</li>
+                        <li><i class="fas fa-edit mr-2"></i> Düzenleme linki</li>
+                        <li><i class="fas fa-sort mr-2"></i> Son güncellenen önce</li>
+                    </ul>
+                    <div class="mt-3 p-2 bg-blue-900/30 rounded text-xs text-blue-300">
+                        <i class="fas fa-database mr-1"></i> Kaynak: <code>muzibu_playlists</code> tablosu
+                    </div>
+                </div>
+
+                <!-- 5. Kurumsal Bölüm -->
+                <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-600">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-building text-cyan-400"></i>
+                        </div>
+                        <h4 class="font-semibold">5. Kurumsal Üyelik</h4>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><i class="fas fa-id-card mr-2"></i> Bağlı kurum bilgisi</li>
+                        <li><i class="fas fa-key mr-2"></i> Kurumsal kod (ana şube için)</li>
+                        <li><i class="fas fa-users mr-2"></i> Şube/üye sayısı</li>
+                        <li><i class="fas fa-arrow-right mr-2"></i> Kurumsal panele git linki</li>
+                    </ul>
+                    <div class="mt-3 p-2 bg-orange-900/30 rounded text-xs text-orange-300">
+                        <i class="fas fa-info-circle mr-1"></i> Sadece kurumsal üyelere gösterilir
+                    </div>
+                </div>
+
+                <!-- 6. Hızlı İşlemler -->
+                <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-600">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-bolt text-orange-400"></i>
+                        </div>
+                        <h4 class="font-semibold">6. Hızlı İşlemler</h4>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><i class="fas fa-home mr-2"></i> Keşfet (Anasayfa)</li>
+                        <li><i class="fas fa-search mr-2"></i> Şarkı/Sanatçı Ara</li>
+                        <li><i class="fas fa-user mr-2"></i> Profil Ayarları</li>
+                        <li><i class="fas fa-crown mr-2"></i> Üyelik Planları</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Dashboard Mockup -->
+            <h3 class="text-xl font-bold mb-4 text-slate-200"><i class="fas fa-desktop mr-2 coral"></i>Dashboard Görsel Taslak</h3>
+            <div class="bg-slate-900 rounded-xl p-6 border border-slate-600">
+                <div class="grid grid-cols-4 gap-4 mb-6">
+                    <div class="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-lg p-4 text-center">
+                        <i class="fas fa-crown text-yellow-400 text-2xl mb-2"></i>
+                        <div class="text-sm text-yellow-400">Premium</div>
+                        <div class="text-xs text-slate-400">12 gün kaldı</div>
+                    </div>
+                    <div class="bg-slate-800/50 border border-slate-600 rounded-lg p-4 text-center">
+                        <i class="fas fa-play text-green-400 text-2xl mb-2"></i>
+                        <div class="text-lg font-bold text-white">248</div>
+                        <div class="text-xs text-slate-400">Dinleme</div>
+                    </div>
+                    <div class="bg-slate-800/50 border border-slate-600 rounded-lg p-4 text-center">
+                        <i class="fas fa-heart text-red-400 text-2xl mb-2"></i>
+                        <div class="text-lg font-bold text-white">32</div>
+                        <div class="text-xs text-slate-400">Favori</div>
+                    </div>
+                    <div class="bg-slate-800/50 border border-slate-600 rounded-lg p-4 text-center">
+                        <i class="fas fa-list text-purple-400 text-2xl mb-2"></i>
+                        <div class="text-lg font-bold text-white">5</div>
+                        <div class="text-xs text-slate-400">Playlist</div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Son Dinlenenler -->
+                    <div class="bg-slate-800/30 rounded-lg p-4 border border-slate-700">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="font-semibold text-white"><i class="fas fa-history mr-2 text-green-400"></i>Son Dinlenenler</h4>
+                            <a href="#" class="text-xs coral">Tümünü Gör →</a>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3 p-2 bg-slate-900/50 rounded-lg hover:bg-slate-800/50 cursor-pointer">
+                                <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg"></div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-sm font-medium text-white truncate">Şarkı Adı 1</div>
+                                    <div class="text-xs text-slate-400">Sanatçı Adı</div>
+                                </div>
+                                <span class="text-xs text-slate-500">2dk önce</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 bg-slate-900/50 rounded-lg hover:bg-slate-800/50 cursor-pointer">
+                                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg"></div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-sm font-medium text-white truncate">Şarkı Adı 2</div>
+                                    <div class="text-xs text-slate-400">Sanatçı Adı</div>
+                                </div>
+                                <span class="text-xs text-slate-500">15dk önce</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 bg-slate-900/50 rounded-lg hover:bg-slate-800/50 cursor-pointer">
+                                <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-teal-500 rounded-lg"></div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-sm font-medium text-white truncate">Şarkı Adı 3</div>
+                                    <div class="text-xs text-slate-400">Sanatçı Adı</div>
+                                </div>
+                                <span class="text-xs text-slate-500">1 saat önce</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Favoriler -->
+                    <div class="bg-slate-800/30 rounded-lg p-4 border border-slate-700">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="font-semibold text-white"><i class="fas fa-heart mr-2 text-red-400"></i>Favorilerim</h4>
+                            <a href="#" class="text-xs coral">Tümünü Gör →</a>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="aspect-square bg-gradient-to-br from-pink-500 to-red-500 rounded-lg relative group cursor-pointer">
+                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                                    <i class="fas fa-play text-white"></i>
+                                </div>
+                            </div>
+                            <div class="aspect-square bg-gradient-to-br from-indigo-500 to-blue-500 rounded-lg relative group cursor-pointer">
+                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                                    <i class="fas fa-play text-white"></i>
+                                </div>
+                            </div>
+                            <div class="aspect-square bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg relative group cursor-pointer">
+                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                                    <i class="fas fa-play text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 mt-3">
+                            <button class="flex-1 bg-coral text-white text-xs py-2 rounded-lg">
+                                <i class="fas fa-play mr-1"></i> Tümünü Çal
+                            </button>
+                            <button class="flex-1 bg-slate-700 text-white text-xs py-2 rounded-lg">
+                                <i class="fas fa-random mr-1"></i> Karıştır
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 2: Kurumsal Alan -->
+        <section id="kurumsal" class="glass rounded-xl p-8 mb-8 border border-slate-700 glow">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-building text-purple-400"></i>
+                </div>
+                Kurumsal Alan (Corporate)
+            </h2>
+
+            <!-- Basit Anlatım -->
+            <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-6">
+                <h3 class="text-lg font-semibold text-green-400 mb-3"><i class="fas fa-lightbulb mr-2"></i>Basit Anlatım (Herkes İçin)</h3>
+                <p class="text-slate-300 mb-4">
+                    Kurumsal sistem, şirketlerin çalışanlarına Muzibu Premium üyeliği sunmasını sağlar.
+                    Nasıl çalışır?
+                </p>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-cyan-400 mb-2"><i class="fas fa-building mr-2"></i>Ana Şube (Merkez)</h4>
+                        <ul class="space-y-1 text-sm text-slate-300">
+                            <li>• Kurumsal kod oluşturur</li>
+                            <li>• Kodu çalışanlarla paylaşır</li>
+                            <li>• Alt şubeleri/çalışanları görür</li>
+                            <li>• Premium abonelik satın alır</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-orange-400 mb-2"><i class="fas fa-store mr-2"></i>Alt Şube (Çalışan)</h4>
+                        <ul class="space-y-1 text-sm text-slate-300">
+                            <li>• Kurumsal kodu girer</li>
+                            <li>• Ana şubeye bağlanır</li>
+                            <li>• Premium özelliklerden yararlanır</li>
+                            <li>• İsterse ayrılabilir</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kurumsal Kod Sistemi -->
+            <h3 class="text-xl font-bold mb-4 text-slate-200"><i class="fas fa-key mr-2 coral"></i>Kurumsal Kod Sistemi</h3>
+            <div class="bg-slate-800/50 rounded-lg p-6 mb-6 border border-slate-600">
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-1 text-2xl text-blue-400"></i>
+                        </div>
+                        <h4 class="font-semibold mb-2">Kod Oluşturma</h4>
+                        <p class="text-sm text-slate-400">Ana şube otomatik 8 haneli benzersiz kod alır</p>
+                        <div class="mt-2 bg-slate-900 rounded-lg px-3 py-2 font-mono text-lg text-green-400">
+                            ABC12XYZ
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-2 text-2xl text-purple-400"></i>
+                        </div>
+                        <h4 class="font-semibold mb-2">Kod Paylaşma</h4>
+                        <p class="text-sm text-slate-400">Şirket kodu çalışanlara dağıtır</p>
+                        <div class="mt-2 text-slate-500 text-sm">
+                            <i class="fas fa-share-alt mr-1"></i> Email, SMS, QR Code
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-3 text-2xl text-green-400"></i>
+                        </div>
+                        <h4 class="font-semibold mb-2">Bağlanma</h4>
+                        <p class="text-sm text-slate-400">Çalışan kodu girer, onaylanır</p>
+                        <div class="mt-2 text-green-400 text-sm">
+                            <i class="fas fa-check-circle mr-1"></i> Premium aktif!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Frontend Sayfaları -->
+            <h3 class="text-xl font-bold mb-4 text-slate-200"><i class="fas fa-browser mr-2 coral"></i>Frontend Sayfaları</h3>
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+
+                <!-- Sayfa 1: Kurumsal Anasayfa -->
+                <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-600">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-home text-cyan-400"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Kurumsal Anasayfa</h4>
+                            <code class="text-xs text-slate-400">/corporate</code>
+                        </div>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><i class="fas fa-check text-green-400 mr-2"></i> "Muzibu Kurumsal" tanıtım</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i> Avantajlar listesi</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i> Kurumsal kod giriş formu</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i> "Kurumsal ol" başvuru butonu</li>
+                    </ul>
+                </div>
+
+                <!-- Sayfa 2: Kurumsal Panel -->
+                <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-600">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-tachometer-alt text-purple-400"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Kurumsal Panel (Ana Şube)</h4>
+                            <code class="text-xs text-slate-400">/corporate/dashboard</code>
+                        </div>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><i class="fas fa-key text-yellow-400 mr-2"></i> Kurumsal kod gösterimi</li>
+                        <li><i class="fas fa-copy text-blue-400 mr-2"></i> Kodu kopyala butonu</li>
+                        <li><i class="fas fa-sync text-orange-400 mr-2"></i> Kodu yenile butonu</li>
+                        <li><i class="fas fa-users text-green-400 mr-2"></i> Bağlı şubeler listesi</li>
+                        <li><i class="fas fa-user-minus text-red-400 mr-2"></i> Şube çıkarma işlemi</li>
+                    </ul>
+                </div>
+
+                <!-- Sayfa 3: Şube Görünümü -->
+                <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-600">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-store text-orange-400"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Şube Görünümü (Alt Şube)</h4>
+                            <code class="text-xs text-slate-400">/corporate/my-corporate</code>
+                        </div>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><i class="fas fa-building text-cyan-400 mr-2"></i> Bağlı olduğu kurum bilgisi</li>
+                        <li><i class="fas fa-crown text-yellow-400 mr-2"></i> Premium durumu</li>
+                        <li><i class="fas fa-sign-out-alt text-red-400 mr-2"></i> Ayrıl butonu</li>
+                    </ul>
+                </div>
+
+                <!-- Sayfa 4: Kod ile Katıl -->
+                <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-600">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-link text-green-400"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Kod ile Katıl</h4>
+                            <code class="text-xs text-slate-400">/corporate/join</code>
+                        </div>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><i class="fas fa-keyboard text-blue-400 mr-2"></i> Kurumsal kod giriş formu</li>
+                        <li><i class="fas fa-search text-purple-400 mr-2"></i> Kod doğrulama</li>
+                        <li><i class="fas fa-check-circle text-green-400 mr-2"></i> Başarılı bağlanma mesajı</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Kurumsal Mockup -->
+            <h3 class="text-xl font-bold mb-4 text-slate-200"><i class="fas fa-desktop mr-2 coral"></i>Kurumsal Panel Taslağı (Ana Şube)</h3>
+            <div class="bg-slate-900 rounded-xl p-6 border border-slate-600">
+                <!-- Header -->
+                <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-700">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-building text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">ABC Teknoloji A.Ş.</h3>
+                            <p class="text-slate-400 text-sm">Kurumsal Hesap • Ana Şube</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">
+                            <i class="fas fa-check-circle mr-1"></i> Aktif
+                        </span>
+                        <span class="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-sm">
+                            <i class="fas fa-crown mr-1"></i> Premium
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Kurumsal Kod -->
+                <div class="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-xl p-6 mb-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-slate-400 text-sm mb-1">Kurumsal Davet Kodu</p>
+                            <p class="text-3xl font-mono font-bold text-white tracking-widest">ABC12XYZ</p>
+                            <p class="text-xs text-slate-500 mt-1">Bu kodu çalışanlarınızla paylaşın</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="p-3 bg-slate-800 hover:bg-slate-700 rounded-lg transition">
+                                <i class="fas fa-copy text-slate-300"></i>
+                            </button>
+                            <button class="p-3 bg-slate-800 hover:bg-slate-700 rounded-lg transition">
+                                <i class="fas fa-qrcode text-slate-300"></i>
+                            </button>
+                            <button class="p-3 bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 rounded-lg transition">
+                                <i class="fas fa-sync"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Şubeler -->
+                <div class="bg-slate-800/30 rounded-lg border border-slate-700">
+                    <div class="flex items-center justify-between p-4 border-b border-slate-700">
+                        <h4 class="font-semibold text-white"><i class="fas fa-users mr-2 text-blue-400"></i>Bağlı Şubeler</h4>
+                        <span class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-sm">12 üye</span>
+                    </div>
+                    <div class="divide-y divide-slate-700">
+                        <div class="flex items-center justify-between p-4 hover:bg-slate-800/50 transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold">
+                                    AK
+                                </div>
+                                <div>
+                                    <div class="font-medium text-white">Ahmet Kaya</div>
+                                    <div class="text-xs text-slate-400">ahmet@abc.com • İstanbul Şubesi</div>
+                                </div>
+                            </div>
+                            <button class="text-red-400 hover:text-red-300 text-sm">
+                                <i class="fas fa-user-minus mr-1"></i> Çıkar
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between p-4 hover:bg-slate-800/50 transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">
+                                    MY
+                                </div>
+                                <div>
+                                    <div class="font-medium text-white">Mehmet Yılmaz</div>
+                                    <div class="text-xs text-slate-400">mehmet@abc.com • Ankara Şubesi</div>
+                                </div>
+                            </div>
+                            <button class="text-red-400 hover:text-red-300 text-sm">
+                                <i class="fas fa-user-minus mr-1"></i> Çıkar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 3: Teknik Detaylar -->
+        <section id="teknik" class="glass rounded-xl p-8 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-cogs text-green-400"></i>
+                </div>
+                Teknik Detaylar
+            </h2>
+
+            <!-- Dosya Yapısı -->
+            <h3 class="text-xl font-bold mb-4 text-slate-200"><i class="fas fa-folder-tree mr-2 coral"></i>Oluşturulacak Dosyalar</h3>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <!-- Dashboard -->
+                <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-600">
+                    <h4 class="font-semibold text-blue-400 mb-3"><i class="fas fa-gauge-high mr-2"></i>Dashboard</h4>
+                    <div class="space-y-2 text-sm font-mono">
+                        <div class="text-slate-300">
+                            <i class="fas fa-file text-yellow-400 mr-2"></i>
+                            <span class="text-slate-500">Views:</span> resources/views/themes/muzibu/dashboard.blade.php
+                            <span class="text-orange-400 ml-2">(güncelle)</span>
+                        </div>
+                        <div class="text-slate-300">
+                            <i class="fas fa-file text-green-400 mr-2"></i>
+                            <span class="text-slate-500">Route:</span> Modules/Muzibu/routes/web.php
+                            <span class="text-orange-400 ml-2">(route ekle)</span>
+                        </div>
+                        <div class="text-slate-300">
+                            <i class="fas fa-file text-purple-400 mr-2"></i>
+                            <span class="text-slate-500">Controller:</span> DashboardController
+                            <span class="text-green-400 ml-2">(yeni)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kurumsal -->
+                <div class="bg-slate-800/50 rounded-lg p-5 border border-slate-600">
+                    <h4 class="font-semibold text-purple-400 mb-3"><i class="fas fa-building mr-2"></i>Kurumsal</h4>
+                    <div class="space-y-2 text-sm font-mono">
+                        <div class="text-slate-300">
+                            <i class="fas fa-file text-green-400 mr-2"></i>
+                            <span class="text-slate-500">Controller:</span> CorporateFrontController
+                            <span class="text-green-400 ml-2">(yeni)</span>
+                        </div>
+                        <div class="text-slate-300">
+                            <i class="fas fa-file text-yellow-400 mr-2"></i>
+                            <span class="text-slate-500">Views:</span>
+                        </div>
+                        <div class="pl-6 text-slate-400">
+                            • corporate/index.blade.php (tanıtım)<br>
+                            • corporate/dashboard.blade.php (panel)<br>
+                            • corporate/join.blade.php (katıl)<br>
+                            • corporate/my-corporate.blade.php (üye)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Route Yapısı -->
+            <h3 class="text-xl font-bold mb-4 text-slate-200"><i class="fas fa-route mr-2 coral"></i>Route Yapısı</h3>
+            <div class="bg-slate-900 rounded-lg p-4 mb-6 border border-slate-700 overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="text-slate-400 border-b border-slate-700">
+                        <tr>
+                            <th class="text-left py-2 px-3">Method</th>
+                            <th class="text-left py-2 px-3">URI</th>
+                            <th class="text-left py-2 px-3">Controller</th>
+                            <th class="text-left py-2 px-3">Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3"><span class="px-2 py-0.5 bg-green-500/20 text-green-400 rounded text-xs">GET</span></td>
+                            <td class="py-2 px-3 font-mono">/dashboard</td>
+                            <td class="py-2 px-3">DashboardController@index</td>
+                            <td class="py-2 px-3 text-slate-400">Kullanıcı dashboard (güncelle)</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3"><span class="px-2 py-0.5 bg-green-500/20 text-green-400 rounded text-xs">GET</span></td>
+                            <td class="py-2 px-3 font-mono">/listening-history</td>
+                            <td class="py-2 px-3">DashboardController@history</td>
+                            <td class="py-2 px-3 text-slate-400">Tüm dinleme geçmişi</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3"><span class="px-2 py-0.5 bg-green-500/20 text-green-400 rounded text-xs">GET</span></td>
+                            <td class="py-2 px-3 font-mono">/corporate</td>
+                            <td class="py-2 px-3">CorporateFrontController@index</td>
+                            <td class="py-2 px-3 text-slate-400">Kurumsal tanıtım sayfası</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3"><span class="px-2 py-0.5 bg-green-500/20 text-green-400 rounded text-xs">GET</span></td>
+                            <td class="py-2 px-3 font-mono">/corporate/dashboard</td>
+                            <td class="py-2 px-3">CorporateFrontController@dashboard</td>
+                            <td class="py-2 px-3 text-slate-400">Ana şube paneli</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3"><span class="px-2 py-0.5 bg-green-500/20 text-green-400 rounded text-xs">GET</span></td>
+                            <td class="py-2 px-3 font-mono">/corporate/join</td>
+                            <td class="py-2 px-3">CorporateFrontController@join</td>
+                            <td class="py-2 px-3 text-slate-400">Kod ile katıl formu</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3"><span class="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded text-xs">POST</span></td>
+                            <td class="py-2 px-3 font-mono">/corporate/join</td>
+                            <td class="py-2 px-3">CorporateFrontController@doJoin</td>
+                            <td class="py-2 px-3 text-slate-400">Kod ile bağlanma işlemi</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3"><span class="px-2 py-0.5 bg-green-500/20 text-green-400 rounded text-xs">GET</span></td>
+                            <td class="py-2 px-3 font-mono">/corporate/my-corporate</td>
+                            <td class="py-2 px-3">CorporateFrontController@myCorporate</td>
+                            <td class="py-2 px-3 text-slate-400">Üye kullanıcı görünümü</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3"><span class="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded text-xs">POST</span></td>
+                            <td class="py-2 px-3 font-mono">/corporate/leave</td>
+                            <td class="py-2 px-3">CorporateFrontController@leave</td>
+                            <td class="py-2 px-3 text-slate-400">Kurumdan ayrıl</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 px-3"><span class="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded text-xs">POST</span></td>
+                            <td class="py-2 px-3 font-mono">/corporate/regenerate-code</td>
+                            <td class="py-2 px-3">CorporateFrontController@regenerateCode</td>
+                            <td class="py-2 px-3 text-slate-400">Yeni kod oluştur (ana şube)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-3"><span class="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded text-xs">POST</span></td>
+                            <td class="py-2 px-3 font-mono">/corporate/remove-member/{id}</td>
+                            <td class="py-2 px-3">CorporateFrontController@removeMember</td>
+                            <td class="py-2 px-3 text-slate-400">Üye çıkar (ana şube)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Database -->
+            <h3 class="text-xl font-bold mb-4 text-slate-200"><i class="fas fa-database mr-2 coral"></i>Mevcut Tablolar</h3>
+            <div class="grid md:grid-cols-2 gap-4 mb-6">
+                <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-4">
+                    <h4 class="font-semibold text-blue-400 mb-2"><i class="fas fa-table mr-2"></i>muzibu_song_plays</h4>
+                    <p class="text-sm text-slate-400">Dinleme geçmişi - son dinlenenler için kullanılacak</p>
+                </div>
+                <div class="bg-purple-900/20 border border-purple-800 rounded-lg p-4">
+                    <h4 class="font-semibold text-purple-400 mb-2"><i class="fas fa-table mr-2"></i>muzibu_corporate_accounts</h4>
+                    <p class="text-sm text-slate-400">Kurumsal hesaplar - parent/child ilişkisi</p>
+                </div>
+                <div class="bg-red-900/20 border border-red-800 rounded-lg p-4">
+                    <h4 class="font-semibold text-red-400 mb-2"><i class="fas fa-table mr-2"></i>favorites</h4>
+                    <p class="text-sm text-slate-400">Favori şarkılar</p>
+                </div>
+                <div class="bg-green-900/20 border border-green-800 rounded-lg p-4">
+                    <h4 class="font-semibold text-green-400 mb-2"><i class="fas fa-table mr-2"></i>muzibu_playlists</h4>
+                    <p class="text-sm text-slate-400">Kullanıcı playlistleri</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Uygulama Sırası -->
+        <section class="glass rounded-xl p-8 mb-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-tasks text-orange-400"></i>
+                </div>
+                Uygulama Sırası
+            </h2>
+
+            <div class="space-y-4">
+                <div class="flex gap-4 items-start p-4 bg-slate-800/50 rounded-lg border border-slate-600">
+                    <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold shrink-0">1</div>
+                    <div>
+                        <h4 class="font-semibold text-white">Dashboard Güncellemesi</h4>
+                        <p class="text-sm text-slate-400 mt-1">Mevcut dashboard.blade.php'yi yeni tasarımla güncelle. Son dinlenenler, favoriler, kurumsal bölüm ekle.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start p-4 bg-slate-800/50 rounded-lg border border-slate-600">
+                    <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold shrink-0">2</div>
+                    <div>
+                        <h4 class="font-semibold text-white">Frontend DashboardController</h4>
+                        <p class="text-sm text-slate-400 mt-1">Controller oluştur: son dinlenenler, favoriler, playlistler çekecek. Listening history route ekle.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start p-4 bg-slate-800/50 rounded-lg border border-slate-600">
+                    <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold shrink-0">3</div>
+                    <div>
+                        <h4 class="font-semibold text-white">CorporateFrontController</h4>
+                        <p class="text-sm text-slate-400 mt-1">Frontend kurumsal controller oluştur. index, dashboard, join, myCorporate, leave metodları.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start p-4 bg-slate-800/50 rounded-lg border border-slate-600">
+                    <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold shrink-0">4</div>
+                    <div>
+                        <h4 class="font-semibold text-white">Kurumsal View'lar</h4>
+                        <p class="text-sm text-slate-400 mt-1">4 adet blade view oluştur: index, dashboard, join, my-corporate. Tailwind + Alpine.js kullan.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start p-4 bg-slate-800/50 rounded-lg border border-slate-600">
+                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold shrink-0">5</div>
+                    <div>
+                        <h4 class="font-semibold text-white">Route'lar & Test</h4>
+                        <p class="text-sm text-slate-400 mt-1">Tüm route'ları web.php'ye ekle. Middleware ayarla. Canlıda test et.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm py-8 border-t border-slate-700">
+            <p><i class="fas fa-robot mr-1"></i> Claude AI tarafından hazırlanmıştır</p>
+            <p class="mt-1">Muzibu Dashboard & Kurumsal Alan Tasarım Planı v1.0</p>
+        </footer>
+
+    </div>
+</body>
+</html>

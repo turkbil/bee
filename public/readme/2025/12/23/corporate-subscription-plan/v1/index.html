@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurumsal Subscription Yönetimi - Mimari Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-gray-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl mb-6">
+                <i class="fas fa-building text-white text-3xl"></i>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-4">Kurumsal Subscription Yönetimi</h1>
+            <p class="text-xl text-gray-400">Muzibu Corporate - Üyelik Ödeme Sistemi Mimari Planı</p>
+            <div class="flex items-center justify-center gap-4 mt-4 text-sm text-gray-500">
+                <span><i class="fas fa-calendar mr-2"></i>23 Aralık 2025</span>
+                <span><i class="fas fa-code-branch mr-2"></i>Tenant 1001</span>
+                <span><i class="fas fa-tag mr-2"></i>v1.0</span>
+            </div>
+        </div>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-green-400 mb-4">
+                <i class="fas fa-lightbulb mr-3"></i>Basit Anlatım (Herkes İçin)
+            </h2>
+            <div class="text-gray-300 space-y-4">
+                <p>
+                    <strong>Ne yapılacak?</strong> Kurumsal hesap sahibi (şirket yöneticisi),
+                    çalışanlarının Muzibu Premium üyeliklerini tek bir yerden yönetebilecek ve ödeme yapabilecek.
+                </p>
+                <div class="grid md:grid-cols-3 gap-4 mt-6">
+                    <div class="bg-white/5 rounded-xl p-4">
+                        <div class="text-3xl mb-2">👥</div>
+                        <h3 class="font-semibold text-white mb-1">Üye Seçimi</h3>
+                        <p class="text-sm text-gray-400">Tek tek veya toplu olarak çalışanları seç</p>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-4">
+                        <div class="text-3xl mb-2">💳</div>
+                        <h3 class="font-semibold text-white mb-1">Toplu Ödeme</h3>
+                        <p class="text-sm text-gray-400">Seçilen tüm üyeler için tek seferde ödeme yap</p>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-4">
+                        <div class="text-3xl mb-2">🔄</div>
+                        <h3 class="font-semibold text-white mb-1">Otomatik Uzatma</h3>
+                        <p class="text-sm text-gray-400">Üyelikler ödeme sonrası otomatik aktif olur</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-blue-400 mb-4">
+                <i class="fas fa-cogs mr-3"></i>Teknik Detaylar (Geliştiriciler İçin)
+            </h2>
+
+            <!-- Mimari -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-white mb-4">Dosya Yapısı</h3>
+                <div class="bg-slate-800 rounded-xl p-4 font-mono text-sm overflow-x-auto">
+                    <pre class="text-gray-300">
+Modules/Muzibu/
+├── app/Http/Controllers/Front/
+│   ├── CorporateFrontController.php      <span class="text-green-400"># Mevcut</span>
+│   └── <span class="text-yellow-400">CorporateSubscriptionController.php</span>  <span class="text-blue-400"># YENİ</span>
+│
+├── app/Services/
+│   └── <span class="text-yellow-400">CorporateSubscriptionService.php</span>     <span class="text-blue-400"># YENİ</span>
+│
+├── resources/views/themes/muzibu/corporate/
+│   ├── dashboard.blade.php               <span class="text-green-400"># Mevcut</span>
+│   └── <span class="text-yellow-400">subscriptions.blade.php</span>              <span class="text-blue-400"># YENİ</span>
+│
+└── routes/web.php
+    └── <span class="text-yellow-400">/corporate/subscriptions/*</span>           <span class="text-blue-400"># YENİ Routes</span></pre>
+                </div>
+            </div>
+
+            <!-- Routes -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-white mb-4">Route Yapısı</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-left text-gray-400 border-b border-white/10">
+                                <th class="py-3 px-4">Method</th>
+                                <th class="py-3 px-4">URI</th>
+                                <th class="py-3 px-4">Controller</th>
+                                <th class="py-3 px-4">Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-300">
+                            <tr class="border-b border-white/5">
+                                <td class="py-3 px-4"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">GET</span></td>
+                                <td class="py-3 px-4 font-mono">/corporate/subscriptions</td>
+                                <td class="py-3 px-4">index()</td>
+                                <td class="py-3 px-4">Üyelik yönetim sayfası</td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="py-3 px-4"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">GET</span></td>
+                                <td class="py-3 px-4 font-mono">/corporate/subscriptions/plans</td>
+                                <td class="py-3 px-4">plans()</td>
+                                <td class="py-3 px-4">Mevcut planları getir (JSON)</td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="py-3 px-4"><span class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">POST</span></td>
+                                <td class="py-3 px-4 font-mono">/corporate/subscriptions/calculate</td>
+                                <td class="py-3 px-4">calculate()</td>
+                                <td class="py-3 px-4">Seçilen üyeler için fiyat hesapla</td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="py-3 px-4"><span class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">POST</span></td>
+                                <td class="py-3 px-4 font-mono">/corporate/subscriptions/checkout</td>
+                                <td class="py-3 px-4">checkout()</td>
+                                <td class="py-3 px-4">Ödeme sayfasına yönlendir</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4"><span class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">POST</span></td>
+                                <td class="py-3 px-4 font-mono">/corporate/subscriptions/complete</td>
+                                <td class="py-3 px-4">complete()</td>
+                                <td class="py-3 px-4">Ödeme sonrası callback</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Database -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-white mb-4">Database Entegrasyonu</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-white/5 rounded-xl p-4">
+                        <h4 class="text-purple-400 font-semibold mb-2"><i class="fas fa-database mr-2"></i>Central DB</h4>
+                        <ul class="text-sm text-gray-400 space-y-1">
+                            <li>• <code class="text-gray-300">subscriptions</code> - Üyelik kayıtları</li>
+                            <li>• <code class="text-gray-300">subscription_plans</code> - Plan tanımları</li>
+                            <li>• <code class="text-gray-300">users</code> - Kullanıcı bilgileri</li>
+                            <li>• <code class="text-gray-300">invoices</code> - Fatura kayıtları</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-4">
+                        <h4 class="text-pink-400 font-semibold mb-2"><i class="fas fa-database mr-2"></i>Tenant DB (1001)</h4>
+                        <ul class="text-sm text-gray-400 space-y-1">
+                            <li>• <code class="text-gray-300">muzibu_corporate_accounts</code> - Kurumsal hesaplar</li>
+                            <li>• <code class="text-gray-300">corporate_payment_history</code> - Ödeme geçmişi (YENİ?)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Flow -->
+        <div class="bg-purple-900/20 border border-purple-800 rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-purple-400 mb-6">
+                <i class="fas fa-route mr-3"></i>Kullanıcı Akışı (User Flow)
+            </h2>
+
+            <div class="relative">
+                <!-- Flow Steps -->
+                <div class="space-y-6">
+                    <!-- Step 1 -->
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center text-white font-bold flex-shrink-0">1</div>
+                        <div class="flex-1 bg-white/5 rounded-xl p-4">
+                            <h3 class="text-white font-semibold mb-2">Corporate Dashboard</h3>
+                            <p class="text-gray-400 text-sm">Kurumsal yönetici dashboard'a girer, "Üyelikleri Yönet" butonuna tıklar</p>
+                            <div class="mt-2 text-xs text-purple-400 font-mono">/corporate/dashboard → /corporate/subscriptions</div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center text-white font-bold flex-shrink-0">2</div>
+                        <div class="flex-1 bg-white/5 rounded-xl p-4">
+                            <h3 class="text-white font-semibold mb-2">Üye Seçimi</h3>
+                            <p class="text-gray-400 text-sm">Tüm kurumsal üyeler listelenir. Checkbox ile tekli veya "Tümünü Seç" ile toplu seçim yapılır.</p>
+                            <div class="flex gap-2 mt-3">
+                                <span class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">☑️ Tekli Seçim</span>
+                                <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">☑️ Tümünü Seç</span>
+                                <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs">⏳ Süresi Dolacaklar</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center text-white font-bold flex-shrink-0">3</div>
+                        <div class="flex-1 bg-white/5 rounded-xl p-4">
+                            <h3 class="text-white font-semibold mb-2">Plan Seçimi</h3>
+                            <p class="text-gray-400 text-sm">Aylık veya yıllık plan seçilir. Seçilen üye sayısına göre toplam tutar hesaplanır.</p>
+                            <div class="mt-3 bg-slate-800 rounded-lg p-3 text-sm">
+                                <div class="flex justify-between text-gray-400">
+                                    <span>5 üye × Yıllık Plan (₺299)</span>
+                                    <span class="text-white font-semibold">₺1,495</span>
+                                </div>
+                                <div class="flex justify-between text-gray-400 mt-1">
+                                    <span>Kurumsal İndirim (%10)</span>
+                                    <span class="text-green-400">-₺149.50</span>
+                                </div>
+                                <div class="flex justify-between text-white font-bold mt-2 pt-2 border-t border-white/10">
+                                    <span>Toplam</span>
+                                    <span>₺1,345.50</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center text-white font-bold flex-shrink-0">4</div>
+                        <div class="flex-1 bg-white/5 rounded-xl p-4">
+                            <h3 class="text-white font-semibold mb-2">Ödeme</h3>
+                            <p class="text-gray-400 text-sm">Subscription modülünün ödeme sayfasına yönlendirilir. Kredi kartı, havale vb. seçenekler.</p>
+                            <div class="mt-2 text-xs text-purple-400 font-mono">/corporate/subscriptions/checkout → Subscription Module Payment Gateway</div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center text-white font-bold flex-shrink-0">✓</div>
+                        <div class="flex-1 bg-green-500/10 border border-green-500/30 rounded-xl p-4">
+                            <h3 class="text-green-400 font-semibold mb-2">Tamamlandı!</h3>
+                            <p class="text-gray-400 text-sm">Ödeme başarılı olduğunda tüm seçilen üyelerin subscription'ları otomatik olarak uzatılır/aktifleştirilir.</p>
+                            <ul class="mt-2 text-sm text-gray-400 space-y-1">
+                                <li>✅ subscriptions tablosuna kayıt eklenir</li>
+                                <li>✅ invoices tablosuna fatura kaydı oluşturulur</li>
+                                <li>✅ Üyelere e-posta bildirimi gönderilir</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- UI Mockup -->
+        <div class="bg-slate-800/50 border border-white/10 rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6">
+                <i class="fas fa-desktop mr-3 text-cyan-400"></i>UI Taslağı
+            </h2>
+
+            <!-- Mockup -->
+            <div class="bg-slate-900 rounded-xl overflow-hidden border border-white/10">
+                <!-- Header -->
+                <div class="bg-gradient-to-r from-purple-500/20 to-pink-500/20 p-6 border-b border-white/10">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Üyelikleri Yönet</h3>
+                            <p class="text-gray-400 text-sm">Kurumsal üyelerinizin premium üyeliklerini yönetin</p>
+                        </div>
+                        <a href="#" class="px-4 py-2 bg-white/10 text-white rounded-lg text-sm">
+                            <i class="fas fa-arrow-left mr-2"></i>Dashboard'a Dön
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="p-6">
+                    <!-- Plan Selection -->
+                    <div class="mb-6">
+                        <h4 class="text-white font-semibold mb-3">Plan Seçin</h4>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-white/5 border-2 border-purple-500 rounded-xl p-4 cursor-pointer">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-white font-semibold">Aylık Plan</span>
+                                    <span class="px-2 py-1 bg-purple-500/20 text-purple-400 rounded text-xs">Seçili</span>
+                                </div>
+                                <p class="text-2xl font-bold text-white">₺49 <span class="text-sm font-normal text-gray-400">/ay/üye</span></p>
+                            </div>
+                            <div class="bg-white/5 border border-white/10 rounded-xl p-4 cursor-pointer hover:border-white/30 transition">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-white font-semibold">Yıllık Plan</span>
+                                    <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">%20 Tasarruf</span>
+                                </div>
+                                <p class="text-2xl font-bold text-white">₺299 <span class="text-sm font-normal text-gray-400">/yıl/üye</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Member List -->
+                    <div class="mb-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="text-white font-semibold">Üyeleri Seçin</h4>
+                            <label class="flex items-center gap-2 text-sm text-gray-400 cursor-pointer">
+                                <input type="checkbox" class="rounded bg-white/10 border-white/20">
+                                <span>Tümünü Seç (3 üye)</span>
+                            </label>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-4 bg-white/5 rounded-lg p-3">
+                                <input type="checkbox" checked class="rounded bg-white/10 border-white/20">
+                                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">AY</div>
+                                <div class="flex-1">
+                                    <p class="text-white font-medium">Ahmet Yılmaz</p>
+                                    <p class="text-gray-500 text-sm">ahmet@sirket.com</p>
+                                </div>
+                                <span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">Süresi Dolmuş</span>
+                            </div>
+                            <div class="flex items-center gap-4 bg-white/5 rounded-lg p-3">
+                                <input type="checkbox" checked class="rounded bg-white/10 border-white/20">
+                                <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-teal-500 rounded-full flex items-center justify-center text-white font-bold">MK</div>
+                                <div class="flex-1">
+                                    <p class="text-white font-medium">Mehmet Kaya</p>
+                                    <p class="text-gray-500 text-sm">mehmet@sirket.com</p>
+                                </div>
+                                <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs">3 gün kaldı</span>
+                            </div>
+                            <div class="flex items-center gap-4 bg-white/5 rounded-lg p-3">
+                                <input type="checkbox" class="rounded bg-white/10 border-white/20">
+                                <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-500 rounded-full flex items-center justify-center text-white font-bold">ZD</div>
+                                <div class="flex-1">
+                                    <p class="text-white font-medium">Zeynep Demir</p>
+                                    <p class="text-gray-500 text-sm">zeynep@sirket.com</p>
+                                </div>
+                                <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">45 gün kaldı</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <p class="text-gray-400 text-sm">Seçilen Üye</p>
+                                <p class="text-white text-2xl font-bold">2 üye</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-gray-400 text-sm">Toplam Tutar</p>
+                                <p class="text-white text-2xl font-bold">₺98</p>
+                            </div>
+                        </div>
+                        <button class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl hover:opacity-90 transition">
+                            <i class="fas fa-credit-card mr-2"></i>Ödemeye Geç
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Steps -->
+        <div class="bg-orange-900/20 border border-orange-800 rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-orange-400 mb-6">
+                <i class="fas fa-tasks mr-3"></i>Yapılacaklar (Implementation Steps)
+            </h2>
+
+            <div class="space-y-4">
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-400 font-bold flex-shrink-0">1</div>
+                    <div>
+                        <h3 class="text-white font-semibold">Controller Oluştur</h3>
+                        <p class="text-gray-400 text-sm mt-1">CorporateSubscriptionController.php - index, plans, calculate, checkout, complete metodları</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-400 font-bold flex-shrink-0">2</div>
+                    <div>
+                        <h3 class="text-white font-semibold">Service Oluştur</h3>
+                        <p class="text-gray-400 text-sm mt-1">CorporateSubscriptionService.php - İş mantığı, fiyat hesaplama, subscription oluşturma</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-400 font-bold flex-shrink-0">3</div>
+                    <div>
+                        <h3 class="text-white font-semibold">Routes Ekle</h3>
+                        <p class="text-gray-400 text-sm mt-1">Modules/Muzibu/routes/web.php - /corporate/subscriptions/* route'ları</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-400 font-bold flex-shrink-0">4</div>
+                    <div>
+                        <h3 class="text-white font-semibold">View Oluştur</h3>
+                        <p class="text-gray-400 text-sm mt-1">subscriptions.blade.php - Alpine.js ile reaktif UI, plan seçimi, üye listesi</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-400 font-bold flex-shrink-0">5</div>
+                    <div>
+                        <h3 class="text-white font-semibold">Dashboard'a Buton Ekle</h3>
+                        <p class="text-gray-400 text-sm mt-1">Corporate dashboard'a "Üyelikleri Yönet" butonu ekle</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-400 font-bold flex-shrink-0">6</div>
+                    <div>
+                        <h3 class="text-white font-semibold">Subscription Modülü Entegrasyonu</h3>
+                        <p class="text-gray-400 text-sm mt-1">Mevcut ödeme altyapısını kullan, toplu subscription oluşturma</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="bg-slate-800/50 border border-white/10 rounded-2xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-4">
+                <i class="fas fa-sticky-note mr-3 text-yellow-400"></i>Önemli Notlar
+            </h2>
+            <ul class="space-y-3 text-gray-400">
+                <li class="flex items-start gap-3">
+                    <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                    <span><strong class="text-white">Tenant Aware:</strong> Bu özellik sadece tenant 1001 (Muzibu) için aktif olacak</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                    <span><strong class="text-white">Bağımlılık:</strong> Subscription modülünü service olarak kullanacak, doğrudan değiştirmeyecek</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                    <span><strong class="text-white">Kurumsal İndirim:</strong> Toplu alımlarda indirim uygulanabilir (opsiyonel)</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                    <span><strong class="text-white">Fatura:</strong> Tek fatura, tüm üyeler için detaylı döküm</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-12 pt-8 border-t border-white/10">
+            <p class="text-gray-500 text-sm">
+                <i class="fas fa-robot mr-2"></i>Claude AI tarafından oluşturuldu
+            </p>
+        </div>
+    </div>
+</body>
+</html>

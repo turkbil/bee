@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend 08: Playlist Yönetimi - Muzibu Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { slate: { 850: '#1a202e', 950: '#0f1419' } } } }
+        }
+    </script>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            input[type="checkbox"] { -webkit-appearance: checkbox; appearance: checkbox; }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <a href="../index.html" class="text-emerald-400 hover:text-emerald-300 no-print">← Geri</a>
+                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded text-sm no-print">🖨️ Yazdır</button>
+            </div>
+            <h1 class="text-3xl font-bold text-emerald-400 mb-2">Frontend 08: Playlist Yönetimi</h1>
+            <p class="text-slate-400">Playlist oluşturma, düzenleme, silme, şarkı ekleme/çıkarma</p>
+
+            <div class="mt-4 bg-slate-900 rounded-lg p-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold">İlerleme</span>
+                    <span class="text-sm" id="progress-text">0 / 15</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-3">
+                    <div id="progress-bar" class="bg-emerald-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+
+            <!-- Playlist Oluşturma -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">➕ Playlist Oluşturma</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-create-button">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Oluşturma Butonu</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Sidebar veya header'da "Yeni Playlist" butonu belirgin olmalı<br>
+                                ▸ Tıklandığında modal/overlay açılmalı<br>
+                                ▸ Keyboard shortcut: Ctrl+N veya Cmd+N (isteğe bağlı)<br>
+                                ▸ Guest kullanıcı için disabled (login gerekli mesajı)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-create-form">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Oluşturma Formu</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Form alanları: Playlist adı (zorunlu), açıklama (opsiyonel)<br>
+                                ▸ Playlist adı: Max 100 karakter, boş olamaz<br>
+                                ▸ Kapak görseli upload (opsiyonel) - Auto-generate seçeneği de olmalı<br>
+                                ▸ Public/Private toggle: Public herkes görebilir, Private sadece sahibi<br>
+                                ▸ "Oluştur" butonu active olmalı
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-create-save">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Kaydetme</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "Oluştur" butonuna basıldığında API'ye POST isteği gönderilmeli<br>
+                                ▸ Başarılı oluşturma: Toast mesajı "✅ Playlist oluşturuldu!"<br>
+                                ▸ Slug otomatik generate edilmeli (playlist adından)<br>
+                                ▸ Kullanıcı playlist detay sayfasına yönlendirilmeli<br>
+                                ▸ Sidebar'da "Playlistlerim" bölümüne otomatik eklensin
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-auto-cover">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Otomatik Kapak Oluşturma</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Kullanıcı kapak upload etmediyse otomatik grid oluştur<br>
+                                ▸ İlk 4 şarkının kapaklarından 2x2 grid (mosaic) oluştur<br>
+                                ▸ Şarkı yoksa veya az ise: Placeholder gradient background<br>
+                                ▸ Job ile arka planda generate edilmeli (GeneratePlaylistCover job)
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Playlist Düzenleme -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">✏️ Playlist Düzenleme</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-edit-access">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Düzenleme Erişimi</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Sadece playlist sahibi düzenleyebilmeli (owner check)<br>
+                                ▸ Playlist detay sayfasında "Düzenle" butonu görünmeli (sadece sahibi için)<br>
+                                ▸ Başkasının playlist'inde düzenle butonu görünmemeli<br>
+                                ▸ URL: /playlists/{slug}/edit (route middleware ile korumalı)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-edit-form">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Düzenleme Formu</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Mevcut veriler form alanlarına doldurulmuş olmalı<br>
+                                ▸ İsim, açıklama, kapak görseli düzenlenebilmeli<br>
+                                ▸ Public/Private toggle değiştirilebilmeli<br>
+                                ▸ "Kaydet" butonu ile değişiklikler API'ye gönderilmeli<br>
+                                ▸ Başarılı güncelleme: Toast "✅ Playlist güncellendi!"
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-song-reorder">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Şarkı Sıralaması</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Playlist detay sayfasında drag-drop ile şarkı sırası değiştirilebilmeli<br>
+                                ▸ Sadece playlist sahibi sıralayabilmeli<br>
+                                ▸ Sürüklerken visual feedback (shadow, opacity)<br>
+                                ▸ Bırakıldığında API'ye yeni sıra kaydedilmeli<br>
+                                ▸ Mobilde: Long press + drag
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Şarkı Ekleme/Çıkarma -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">🎵 Şarkı Ekleme/Çıkarma</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-add-song-menu">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Şarkı Ekleme (3-Dot Menu)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Her şarkı kartında 3-dot menu (kebab menu) olmalı<br>
+                                ▸ Menu açıldığında "Playlist'e Ekle" seçeneği görünmeli<br>
+                                ▸ Tıklanınca modal açılsın: Tüm playlistler listelenmiş<br>
+                                ▸ Checkbox ile birden fazla playlist seçilebilmeli<br>
+                                ▸ "Ekle" butonuna basıldığında seçilen playliste eklensin
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-add-duplicate-check">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Duplicate Kontrolü</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Şarkı zaten playlist'te varsa "Zaten ekli" mesajı gösterilmeli<br>
+                                ▸ Playlist seçim modal'ında zaten ekli olanlar işaretli (✓) olmalı<br>
+                                ▸ Duplicate eklemeye çalışılırsa warning toast göster<br>
+                                ▸ Ayar: Kullanıcı duplicate'e izin verebilir (settings'ten)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-remove-song">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Şarkı Çıkarma</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Playlist detay sayfasında her şarkı kartında "X" ikonu olmalı (sadece sahibi için)<br>
+                                ▸ Tıklandığında "Playlist'ten çıkar" onayı alınmalı<br>
+                                ▸ Onaylanınca API'ye DELETE isteği gönderilsin<br>
+                                ▸ Şarkı listeden kalkmalı (fade-out animasyonu)<br>
+                                ▸ Toast: "Şarkı playlist'ten çıkarıldı"
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-bulk-add">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Toplu Şarkı Ekleme</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Song listesinde checkbox ile çoklu seçim yapılabilmeli<br>
+                                ▸ Seçili şarkılar için "Playlist'e Ekle" butonu aktif olsun<br>
+                                ▸ Tıklandığında playlist seçim modal'ı açılsın<br>
+                                ▸ Toplu ekleme API: POST /api/playlists/{id}/songs/bulk<br>
+                                ▸ Toast: "✅ 15 şarkı eklendi!"
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Playlist Silme -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">🗑️ Playlist Silme</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-delete-button">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Silme Butonu</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Playlist detay/edit sayfasında "Sil" butonu olmalı (kırmızı renk)<br>
+                                ▸ Sadece playlist sahibi görebilmeli<br>
+                                ▸ Butona hover ile warning tooltip: "Playlist kalıcı olarak silinir"<br>
+                                ▸ Tehlikeli işlem vurgusu (icon + renk)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-delete-confirm">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Silme Onayı</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Tıklandığında onay modal'ı açılmalı<br>
+                                ▸ Modal başlık: "Playlist Silinecek!"<br>
+                                ▸ Mesaj: "'{Playlist Name}' kalıcı olarak silinecek. Bu işlem geri alınamaz!"<br>
+                                ▸ İki buton: "İptal" (gri) ve "Sil" (kırmızı)<br>
+                                ▸ ESC tuşu ile modal kapanmalı (iptal)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-delete-execute">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Silme İşlemi</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "Sil" butonuna basıldığında API'ye DELETE isteği gönderilmeli<br>
+                                ▸ Başarılı silme: Toast "✅ Playlist silindi"<br>
+                                ▸ Kullanıcı "Playlistlerim" sayfasına yönlendirilmeli<br>
+                                ▸ Cascade delete: Playlist + playlist_song pivot kayıtları silinsin<br>
+                                ▸ Medya dosyaları (kapak) silinsin (varsa)
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Diğer Özellikler -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">⭐ Diğer Özellikler</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-duplicate">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Playlist Kopyalama</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Başkasının public playlist'ini kopyalayabilme<br>
+                                ▸ "Kopyala" butonu başkasının playlist'inde görünsün<br>
+                                ▸ Tıklandığında: Tüm şarkılar kendi hesabına yeni playlist oluştur<br>
+                                ▸ İsim: "{Original Name} (Kopya)" olmalı<br>
+                                ▸ Toast: "✅ Playlist hesabınıza kopyalandı"
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-share">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Playlist Paylaşma</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "Paylaş" butonu: Link kopyala, sosyal medya paylaşımı<br>
+                                ▸ Copy link tıklandığında URL clipboard'a kopyalanmalı<br>
+                                ▸ Toast: "✅ Link kopyalandı!"<br>
+                                ▸ Social buttons: WhatsApp, Twitter, Facebook (isteğe bağlı)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-filter">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Playlist Filtreleme</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "Playlistlerim" sayfasında arama ve filtreleme olmalı<br>
+                                ▸ Arama: Playlist adı ile arama<br>
+                                ▸ Filtre: Public/Private, Şarkı sayısına göre sıralama<br>
+                                ▸ Sıralama: Yeni oluşturulan, En çok şarkılı, A-Z
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-8 flex gap-4 no-print">
+            <button onclick="resetProgress()" class="bg-red-600 hover:bg-red-500 px-6 py-3 rounded-lg text-white font-semibold">
+                🔄 İlerlemeyi Sıfırla
+            </button>
+            <button onclick="markAllComplete()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-3 rounded-lg text-white font-semibold">
+                ✅ Tümünü Tamamla
+            </button>
+        </div>
+
+        <div class="mt-12 text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+            <p>🎵 Muzibu.com.tr - Playlist Yönetimi Test Checklist</p>
+        </div>
+
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'muzibu_test_frontend_08_playlist';
+        const TOTAL_TESTS = 15;
+
+        function loadProgress() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+                    const testId = checkbox.dataset.test;
+                    if (data[testId]) checkbox.checked = true;
+                });
+            }
+            updateProgress();
+        }
+
+        function saveProgress() {
+            const data = {};
+            document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+                data[checkbox.dataset.test] = checkbox.checked;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const checked = document.querySelectorAll('.test-checkbox:checked').length;
+            const percentage = Math.round((checked / TOTAL_TESTS) * 100);
+            document.getElementById('progress-bar').style.width = percentage + '%';
+            document.getElementById('progress-text').textContent = `${checked} / ${TOTAL_TESTS}`;
+        }
+
+        function resetProgress() {
+            if (!confirm('⚠️ Tüm işaretlemeler silinecek! Emin misiniz?')) return;
+            localStorage.removeItem(STORAGE_KEY);
+            document.querySelectorAll('.test-checkbox').forEach(cb => cb.checked = false);
+            updateProgress();
+        }
+
+        function markAllComplete() {
+            document.querySelectorAll('.test-checkbox').forEach(cb => cb.checked = true);
+            saveProgress();
+        }
+
+        document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', saveProgress);
+        });
+
+        loadProgress();
+    </script>
+</body>
+</html>

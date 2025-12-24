@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend 10: Arama - Muzibu Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{slate:{850:'#1a202e',950:'#0f1419'}}}}}</script>
+    <style>@media print{.no-print{display:none;}input[type="checkbox"]{-webkit-appearance:checkbox;appearance:checkbox;}}</style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <a href="../index.html" class="text-emerald-400 hover:text-emerald-300 no-print">← Geri</a>
+                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded text-sm no-print">🖨️ Yazdır</button>
+            </div>
+            <h1 class="text-3xl font-bold text-emerald-400 mb-2">Frontend 10: Arama & Meilisearch</h1>
+            <p class="text-slate-400">Search, autocomplete, filters, Meilisearch integration</p>
+            <div class="mt-4 bg-slate-900 rounded-lg p-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold">İlerleme</span>
+                    <span class="text-sm" id="progress-text">0 / 10</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-3">
+                    <div id="progress-bar" class="bg-emerald-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+        <div class="space-y-6">
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">🔍 Arama UI & UX</h2>
+                <div class="space-y-4">
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="search-bar-global">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Global Search Bar</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Header'da her sayfada görünür search bar<br>
+                                ▸ Placeholder: "Şarkı, sanatçı, albüm ara..."<br>
+                                ▸ Keyboard shortcut: Ctrl+K veya / tuşu ile focus<br>
+                                ▸ Icon: Magnifying glass (🔍)
+                            </div>
+                        </div>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="search-autocomplete">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Autocomplete Dropdown</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Typing yaparken dropdown açılmalı (min 2 karakter)<br>
+                                ▸ Real-time suggestions: Şarkı, sanatçı, albüm, playlist<br>
+                                ▸ Kategorize edilmiş sonuçlar (başlıklarla ayrılmış)<br>
+                                ▸ Keyboard navigation: Arrow keys ile dolaşma, Enter ile seçim<br>
+                                ▸ Highlight matching text (bold/colored)
+                            </div>
+                        </div>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="search-results-page">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Arama Sonuçları Sayfası</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ URL: /search?q={query}<br>
+                                ▸ Başlık: "'{query}' için arama sonuçları"<br>
+                                ▸ Kategori tabları: Tümü, Şarkılar, Sanatçılar, Albümler, Playlistler<br>
+                                ▸ Sonuç sayısı gösterimi: "42 sonuç bulundu"
+                            </div>
+                        </div>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="search-no-results">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Sonuç Bulunamadı</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Empty state: "Hiçbir sonuç bulunamadı" mesajı<br>
+                                ▸ Öneriler: "Yazım hatası olabilir mi?", "Daha genel terimler kullanın"<br>
+                                ▸ Alternatif içerik: Popüler şarkılar/albümler göster<br>
+                                ▸ İllustrasyon veya icon
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">⚡ Meilisearch Integration</h2>
+                <div class="space-y-4">
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="search-meilisearch-api">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">API Integration</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Meilisearch endpoint kullanılmalı (typo-tolerant search)<br>
+                                ▸ API response time < 50ms (ultra-fast)<br>
+                                ▸ Indexed fields: title, artist_name, album_name, genre_names<br>
+                                ▸ Searchable attributes prioritized (title > artist > album)
+                            </div>
+                        </div>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="search-typo-tolerance">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Typo Tolerance</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Yazım hataları otomatik düzeltilmeli<br>
+                                ▸ Örnek: "tarkan" → "Tarkan", "sezen aksu" → "Sezen Aksu"<br>
+                                ▸ Turkish character mapping: ı ↔ i, ş ↔ s, ğ ↔ g vb.<br>
+                                ▸ Fuzzy matching (benzer kelimeler)
+                            </div>
+                        </div>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="search-faceted">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Faceted Search</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Filtre seçenekleri: Genre, Sector, Year, Duration<br>
+                                ▸ Multiple filter kombinasyonları<br>
+                                ▸ Filtre sayıları: "Pop (42)", "Jazz (18)"<br>
+                                ▸ Clear filters butonu
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">🎯 Gelişmiş Özellikler</h2>
+                <div class="space-y-4">
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="search-history">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Arama Geçmişi</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Son 10 arama kaydedilmeli (localStorage)<br>
+                                ▸ Search bar'a focus olunca geçmiş gösterilsin<br>
+                                ▸ Geçmiş itemlara tıklandığında arama tekrarlanmalı<br>
+                                ▸ "Geçmişi Temizle" seçeneği
+                            </div>
+                        </div>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="search-voice">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Sesli Arama (İsteğe Bağlı)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Microphone icon butonu<br>
+                                ▸ Web Speech API kullanımı<br>
+                                ▸ Voice input → text conversion → search<br>
+                                ▸ Browser support kontrolü
+                            </div>
+                        </div>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="search-performance">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Performance & Caching</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Debounce typing (300ms delay)<br>
+                                ▸ Cache frequent queries (client-side)<br>
+                                ▸ Cancel previous requests (avoid race conditions)<br>
+                                ▸ Loading state: Skeleton UI/spinner
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="mt-8 flex gap-4 no-print">
+            <button onclick="resetProgress()" class="bg-red-600 hover:bg-red-500 px-6 py-3 rounded-lg text-white font-semibold">🔄 İlerlemeyi Sıfırla</button>
+            <button onclick="markAllComplete()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-3 rounded-lg text-white font-semibold">✅ Tümünü Tamamla</button>
+        </div>
+        <div class="mt-12 text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+            <p>🎵 Muzibu.com.tr - Arama Test Checklist</p>
+        </div>
+    </div>
+    <script>
+        const STORAGE_KEY='muzibu_test_frontend_10_search';const TOTAL_TESTS=10;
+        function loadProgress(){const saved=localStorage.getItem(STORAGE_KEY);if(saved){const data=JSON.parse(saved);document.querySelectorAll('.test-checkbox').forEach(checkbox=>{if(data[checkbox.dataset.test])checkbox.checked=true;});}updateProgress();}
+        function saveProgress(){const data={};document.querySelectorAll('.test-checkbox').forEach(checkbox=>{data[checkbox.dataset.test]=checkbox.checked;});localStorage.setItem(STORAGE_KEY,JSON.stringify(data));updateProgress();}
+        function updateProgress(){const checked=document.querySelectorAll('.test-checkbox:checked').length;const percentage=Math.round((checked/TOTAL_TESTS)*100);document.getElementById('progress-bar').style.width=percentage+'%';document.getElementById('progress-text').textContent=`${checked} / ${TOTAL_TESTS}`;}
+        function resetProgress(){if(!confirm('⚠️ Tüm işaretlemeler silinecek! Emin misiniz?'))return;localStorage.removeItem(STORAGE_KEY);document.querySelectorAll('.test-checkbox').forEach(cb=>cb.checked=false);updateProgress();}
+        function markAllComplete(){document.querySelectorAll('.test-checkbox').forEach(cb=>cb.checked=true);saveProgress();}
+        document.querySelectorAll('.test-checkbox').forEach(checkbox=>{checkbox.addEventListener('change',saveProgress);});
+        loadProgress();
+    </script>
+</body>
+</html>

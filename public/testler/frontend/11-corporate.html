@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frontend 11: Corporate Features - Muzibu Test</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class',theme:{extend:{colors:{slate:{850:'#1a202e',950:'#0f1419'}}}}}</script>
+<style>@media print{.no-print{display:none;}input[type="checkbox"]{-webkit-appearance:checkbox;appearance:checkbox;}}</style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+<div class="container mx-auto px-4 py-8 max-w-5xl">
+<div class="mb-8">
+<div class="flex items-center justify-between mb-4">
+<a href="../index.html" class="text-emerald-400 hover:text-emerald-300 no-print">← Geri</a>
+<button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded text-sm no-print">🖨️ Yazdır</button>
+</div>
+<h1 class="text-3xl font-bold text-emerald-400 mb-2">Frontend 11: Corporate Features</h1>
+<p class="text-slate-400">Corporate dashboard, device management, content upload, subscription management</p>
+<div class="mt-4 bg-slate-900 rounded-lg p-4">
+<div class="flex justify-between items-center mb-2">
+<span class="text-sm font-semibold">İlerleme</span>
+<span class="text-sm" id="progress-text">0 / 18</span>
+</div>
+<div class="w-full bg-slate-800 rounded-full h-3">
+<div id="progress-bar" class="bg-emerald-500 h-3 rounded-full transition-all duration-300" style="width:0%"></div>
+</div>
+</div>
+</div>
+<div class="space-y-6">
+<div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+<h2 class="text-xl font-bold text-emerald-300 mb-4">🏢 Corporate Dashboard</h2>
+<div class="space-y-4">
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="corp-dashboard-access">
+<div class="flex-1">
+<div class="font-semibold text-slate-200 group-hover:text-emerald-300">Dashboard Erişimi</div>
+<div class="text-sm text-slate-400 mt-1">
+▸ URL: /corporate/dashboard<br>
+▸ Sadece corporate plan kullanıcıları erişebilmeli (middleware check)<br>
+▸ Free/Individual plan için upgrade modal gösterilmeli<br>
+▸ Başlık: "İşletme Yönetim Paneli"
+</div>
+</div>
+</label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="corp-dashboard-stats">
+<div class="flex-1">
+<div class="font-semibold text-slate-200 group-hover:text-emerald-300">İstatistik Kartları</div>
+<div class="text-sm text-slate-400 mt-1">
+▸ Aktif cihaz sayısı, toplam içerik sayısı, aylık dinleme süresi<br>
+▸ Subscription bitiş tarihi ve kalan gün<br>
+▸ Son yüklenen içerikler (recent uploads)<br>
+▸ Cihaz kullanım grafikleri (chart.js veya equivalent)
+</div>
+</div>
+</label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="corp-quick-actions">
+<div class="flex-1">
+<div class="font-semibold text-slate-200 group-hover:text-emerald-300">Hızlı İşlemler</div>
+<div class="text-sm text-slate-400 mt-1">
+▸ "Yeni Cihaz Ekle" butonu<br>
+▸ "İçerik Yükle" butonu<br>
+▸ "Abonelik Yönet" linki<br>
+▸ "Rapor İndir" butonu (CSV/PDF export)
+</div>
+</div>
+</label>
+</div>
+</div>
+<div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+<h2 class="text-xl font-bold text-emerald-300 mb-4">📱 Cihaz Yönetimi</h2>
+<div class="space-y-4">
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="corp-device-list">
+<div class="flex-1">
+<div class="font-semibold text-slate-200 group-hover:text-emerald-300">Cihaz Listesi</div>
+<div class="text-sm text-slate-400 mt-1">
+▸ Tüm kayıtlı cihazlar tablo formatında<br>
+▸ Kolon: Cihaz adı, device ID, IP, son aktif, durum (online/offline)<br>
+▸ Online cihazlar yeşil, offline gri badge<br>
+▸ Her cihazda: Düzenle, Sil, Remote Control butonları
+</div>
+</div>
+</label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="corp-device-add">
+<div class="flex-1">
+<div class="font-semibold text-slate-200 group-hover:text-emerald-300">Cihaz Ekleme</div>
+<div class="text-sm text-slate-400 mt-1">
+▸ "Yeni Cihaz Ekle" modal formu<br>
+▸ Alanlar: Cihaz adı, konum (opsiyonel), notlar<br>
+▸ Pairing code generate edilmeli (6 haneli kod)<br>
+▸ Kod ekranda gösterilmeli: "Cihazda bu kodu girin: ABC123"<br>
+▸ QR code option (mobile devices için)
+</div>
+</div>
+</label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="corp-device-remote">
+<div class="flex-1">
+<div class="font-semibold text-slate-200 group-hover:text-emerald-300">Remote Control</div>
+<div class="text-sm text-slate-400 mt-1">
+▸ Cihaz detay sayfası: Player kontrol paneli<br>
+▸ Play/Pause, Next, Previous butonları<br>
+▸ Volume slider (uzaktan ses ayarı)<br>
+▸ Real-time sync (WebSocket/Pusher kullanımı)<br>
+▸ "Şu anda çalıyor" bilgisi gösterilmeli
+</div>
+</div>
+</label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="corp-device-playlist-assign">
+<div class="flex-1">
+<div class="font-semibold text-slate-200 group-hover:text-emerald-300">Playlist Atama</div>
+<div class="text-sm text-slate-400 mt-1">
+▸ Her cihaza özel playlist atanabilmeli<br>
+▸ Dropdown: Tüm corporate playlists listesi<br>
+▸ Zaman bazlı atama: Sabah/Öğle/Akşam farklı playlistler<br>
+▸ Auto-play option: Cihaz açılınca otomatik başlat
+</div>
+</div>
+</label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="corp-device-remove">
+<div class="flex-1">
+<div class="font-semibold text-slate-200 group-hover:text-emerald-300">Cihaz Silme</div>
+<div class="text-sm text-slate-400 mt-1">
+▸ "Sil" butonu kırmızı, onay modal'ı<br>
+▸ Onay: "Cihaz {name} kaldırılacak. Emin misiniz?"<br>
+▸ Silme işlemi: Device kaydı + pairing bilgileri temizlenmeli<br>
+▸ Toast: "Cihaz başarıyla kaldırıldı"
+</div>
+</div>
+</label>
+</div>
+</div>
+<div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+<h2 class="text-xl font-bold text-emerald-300 mb-4">📤 İçerik Yükleme</h2>
+<div class="space-y-4">
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="corp-upload-access">
+<div class="flex-1">
+<div class="font-semibold text-slate-200 group-hover:text-emerald-300">Upload Sayfası</div>
+<div class="text-sm text-slate-400 mt-1">
+▸ URL: /corporate/upload<br>
+▸ Sidebar'da "İçerik Yükle" linki<br>
+▸ Drag & drop zone büyük ve belirgin<br>
+▸ Desteklenen formatlar açıkça yazılmalı: MP3, WAV, FLAC
+</div>
+</div>
+</label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="corp-upload-bulk">
+<div class="flex-1">
+<div class="font-semibold text-slate-200 group-hover:text-emerald-300">Toplu Upload</div>
+<div class="text-sm text-slate-400 mt-1">
+▸ Multiple file selection (max 50 dosya/batch)<br>
+▸ Upload progress her dosya için ayrı gösterilmeli<br>
+▸ Başarılı/başarısız dosyalar ayrı renklerle<br>
+▸ Metadata extraction: ID3 taglerden otomatik bilgi çekme<br>
+▸ Background processing (Horizon jobs)
+</div>
+</div>
+</label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="corp-upload-metadata">
+<div class="flex-1">
+<div class="font-semibold text-slate-200 group-hover:text-emerald-300">Metadata Düzenleme</div>
+<div class="text-sm text-slate-400 mt-1">
+▸ Upload sonrası metadata review sayfası<br>
+▸ Her şarkı için: Title, Artist, Album, Genre düzenlenebilir<br>
+▸ Bulk edit option: Tüm şarkılara aynı artist/album atama<br>
+▸ "Kaydet ve Tamamla" butonu ile finalize
+</div>
+</div>
+</label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="corp-my-content">
+<div class="flex-1">
+<div class="font-semibold text-slate-200 group-hover:text-emerald-300">İçeriklerim</div>
+<div class="text-sm text-slate-400 mt-1">
+▸ URL: /corporate/my-content<br>
+▸ Yüklenen tüm şarkılar listelenmiş<br>
+▸ Filtreleme: Tarih, artist, upload status<br>
+▸ Bulk delete option<br>
+▸ CSV export: Tüm içerik listesini indir
+</div>
+</div>
+</label>
+</div>
+</div>
+<div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+<h2 class="text-xl font-bold text-emerald-300 mb-4">💳 Subscription Yönetimi</h2>
+<div class="space-y-4">
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="corp-subscription-view">
+<div class="flex-1">
+<div class="font-semibold text-slate-200 group-hover:text-emerald-300">Abonelik Bilgileri</div>
+<div class="text-sm text-slate-400 mt-1">
+▸ URL: /corporate/subscription<br>
+▸ Mevcut plan: Plan adı, fiyat, özellikler<br>
+▸ Bitiş tarihi: "31 Aralık 2025'te sona erecek"<br>
+▸ Otomatik yenileme durumu (on/off toggle)<br>
+▸ Ödeme geçmişi (invoice listesi)
+</div>
+</div>
+</label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="corp-subscription-upgrade">
+<div class="flex-1">
+<div class="font-semibold text-slate-200 group-hover:text-emerald-300">Plan Upgrade/Downgrade</div>
+<div class="text-sm text-slate-400 mt-1">
+▸ "Planı Değiştir" butonu<br>
+▸ Tüm planlar karşılaştırma tablosu<br>
+▸ Upgrade: Anında aktif, fark ücret tahsil edilir<br>
+▸ Downgrade: Dönem sonunda aktif olur<br>
+▸ Onay modal'ı ile süreç açıklanmalı
+</div>
+</div>
+</label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="corp-subscription-payment">
+<div class="flex-1">
+<div class="font-semibold text-slate-200 group-hover:text-emerald-300">Ödeme Yöntemi</div>
+<div class="text-sm text-slate-400 mt-1">
+▸ Kayıtlı kredi kartı bilgileri (masked: **** **** **** 1234)<br>
+▸ "Kart Ekle/Değiştir" butonu<br>
+▸ PayTR iframe integration<br>
+▸ Güvenli ödeme vurgusu (SSL badge, güvenlik ikonu)
+</div>
+</div>
+</label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="corp-subscription-cancel">
+<div class="flex-1">
+<div class="font-semibold text-slate-200 group-hover:text-emerald-300">Abonelik İptali</div>
+<div class="text-sm text-slate-400 mt-1">
+▸ "Aboneliği İptal Et" butonu (tehlikeli renk)<br>
+▸ Multi-step onay: Sebep seçimi + final confirm<br>
+▸ Bilgilendirme: "Dönem sonuna kadar kullanabilirsiniz"<br>
+▸ İptal sonrası feedback formu (isteğe bağlı)
+</div>
+</div>
+</label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="corp-subscription-invoice">
+<div class="flex-1">
+<div class="font-semibold text-slate-200 group-hover:text-emerald-300">Fatura Yönetimi</div>
+<div class="text-sm text-slate-400 mt-1">
+▸ Tüm faturalar kronolojik listede<br>
+▸ Her fatura: Tarih, tutar, durum (paid/pending), PDF indir<br>
+▸ Fatura adresi güncelleme formu<br>
+▸ E-fatura entegrasyonu (Türkiye için)
+</div>
+</div>
+</label>
+</div>
+</div>
+<div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+<h2 class="text-xl font-bold text-emerald-300 mb-4">📊 Raporlama</h2>
+<div class="space-y-4">
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="corp-reports-usage">
+<div class="flex-1">
+<div class="font-semibold text-slate-200 group-hover:text-emerald-300">Kullanım Raporları</div>
+<div class="text-sm text-slate-400 mt-1">
+▸ Cihaz bazlı kullanım: Hangi cihaz ne kadar dinlendi<br>
+▸ Zaman bazlı analiz: Saatlik/günlük dağılım grafikleri<br>
+▸ En çok çalınan şarkılar (top 50)<br>
+▸ Export: PDF/CSV formatlarında indir
+</div>
+</div>
+</label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="corp-reports-content">
+<div class="flex-1">
+<div class="font-semibold text-slate-200 group-hover:text-emerald-300">İçerik Raporları</div>
+<div class="text-sm text-slate-400 mt-1">
+▸ Toplam içerik sayısı ve storage kullanımı<br>
+▸ Genre/sector dağılımı (pie chart)<br>
+▸ Upload trendi (aylık grafik)<br>
+▸ En az dinlenen içerikler (cleanup için)
+</div>
+</div>
+</label>
+</div>
+</div>
+</div>
+<div class="mt-8 flex gap-4 no-print">
+<button onclick="resetProgress()" class="bg-red-600 hover:bg-red-500 px-6 py-3 rounded-lg text-white font-semibold">🔄 İlerlemeyi Sıfırla</button>
+<button onclick="markAllComplete()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-3 rounded-lg text-white font-semibold">✅ Tümünü Tamamla</button>
+</div>
+<div class="mt-12 text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+<p>🎵 Muzibu.com.tr - Corporate Features Test Checklist</p>
+</div>
+</div>
+<script>
+const STORAGE_KEY='muzibu_test_frontend_11_corporate';const TOTAL_TESTS=18;
+function loadProgress(){const saved=localStorage.getItem(STORAGE_KEY);if(saved){const data=JSON.parse(saved);document.querySelectorAll('.test-checkbox').forEach(checkbox=>{if(data[checkbox.dataset.test])checkbox.checked=true;});}updateProgress();}
+function saveProgress(){const data={};document.querySelectorAll('.test-checkbox').forEach(checkbox=>{data[checkbox.dataset.test]=checkbox.checked;});localStorage.setItem(STORAGE_KEY,JSON.stringify(data));updateProgress();}
+function updateProgress(){const checked=document.querySelectorAll('.test-checkbox:checked').length;const percentage=Math.round((checked/TOTAL_TESTS)*100);document.getElementById('progress-bar').style.width=percentage+'%';document.getElementById('progress-text').textContent=`${checked} / ${TOTAL_TESTS}`;}
+function resetProgress(){if(!confirm('⚠️ Tüm işaretlemeler silinecek! Emin misiniz?'))return;localStorage.removeItem(STORAGE_KEY);document.querySelectorAll('.test-checkbox').forEach(cb=>cb.checked=false);updateProgress();}
+function markAllComplete(){document.querySelectorAll('.test-checkbox').forEach(cb=>cb.checked=true);saveProgress();}
+document.querySelectorAll('.test-checkbox').forEach(checkbox=>{checkbox.addEventListener('change',saveProgress);});
+loadProgress();
+</script>
+</body>
+</html>

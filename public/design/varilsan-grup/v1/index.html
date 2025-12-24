@@ -1,0 +1,833 @@
+<html lang="tr" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true', mobileNavOpen: false, activeMenu: null, currentSlide: 0 }" :class="{ 'dark': darkMode }" class="dark"><head><style>body {transition: opacity ease-in 0.2s; } 
+body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relative; } 
+</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VARİLSAN GRUP | Endüstriyel Döngünün Mimarı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer="" src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
+                            400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8',
+                            800: '#1e40af', 900: '#1e3a8a', 950: '#172554'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        [x-cloak] { display: none !important; }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 4s ease infinite;
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Mega Menu */
+        .mega-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            padding-top: 12px;
+            min-width: 280px;
+        }
+        .mega-menu.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Slider - only fade */
+        .slide {
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        /* Floating animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-float-slow { animation: float 8s ease-in-out infinite; }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0px}.bottom-20{bottom:5rem}.bottom-8{bottom:2rem}.left-1\/2{left:50%}.left-10{left:2.5rem}.left-20{left:5rem}.right-10{right:2.5rem}.right-20{right:5rem}.right-3{right:0.75rem}.top-0{top:0px}.top-20{top:5rem}.top-3{top:0.75rem}.z-20{z-index:20}.z-50{z-index:50}.z-0{z-index:0}.z-10{z-index:10}.mx-auto{margin-left:auto;margin-right:auto}.-mt-0\.5{margin-top:-0.125rem}.mb-10{margin-bottom:2.5rem}.mb-12{margin-bottom:3rem}.mb-14{margin-bottom:3.5rem}.mb-2{margin-bottom:0.5rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.ml-1{margin-left:0.25rem}.mr-2{margin-right:0.5rem}.mt-1{margin-top:0.25rem}.mt-10{margin-top:2.5rem}.mt-4{margin-top:1rem}.block{display:block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.h-10{height:2.5rem}.h-11{height:2.75rem}.h-14{height:3.5rem}.h-20{height:5rem}.h-3{height:0.75rem}.h-44{height:11rem}.h-48{height:12rem}.h-56{height:14rem}.h-64{height:16rem}.h-72{height:18rem}.h-8{height:2rem}.h-80{height:20rem}.h-9{height:2.25rem}.h-\[85vh\]{height:85vh}.h-full{height:100%}.min-h-\[600px\]{min-height:600px}.w-10{width:2.5rem}.w-11{width:2.75rem}.w-14{width:3.5rem}.w-3{width:0.75rem}.w-56{width:14rem}.w-64{width:16rem}.w-72{width:18rem}.w-8{width:2rem}.w-80{width:20rem}.w-9{width:2.25rem}.w-full{width:100%}.min-w-\[280px\]{min-width:280px}.max-w-2xl{max-width:42rem}.max-w-lg{max-width:32rem}.max-w-screen-2xl{max-width:1536px}.-translate-x-1\/2{--tw-translate-x:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-pointer{cursor:pointer}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-wrap{flex-wrap:wrap}.items-end{align-items:flex-end}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-10{gap:2.5rem}.gap-12{gap:3rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-2\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.625rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.625rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-blue-100{--tw-border-opacity:1;border-color:rgb(219 234 254 / var(--tw-border-opacity, 1))}.border-gray-200{--tw-border-opacity:1;border-color:rgb(229 231 235 / var(--tw-border-opacity, 1))}.border-gray-700{--tw-border-opacity:1;border-color:rgb(55 65 81 / var(--tw-border-opacity, 1))}.border-gray-800{--tw-border-opacity:1;border-color:rgb(31 41 55 / var(--tw-border-opacity, 1))}.border-green-100{--tw-border-opacity:1;border-color:rgb(220 252 231 / var(--tw-border-opacity, 1))}.border-purple-100{--tw-border-opacity:1;border-color:rgb(243 232 255 / var(--tw-border-opacity, 1))}.border-white{--tw-border-opacity:1;border-color:rgb(255 255 255 / var(--tw-border-opacity, 1))}.border-white\/10{border-color:rgb(255 255 255 / 0.1)}.border-white\/30{border-color:rgb(255 255 255 / 0.3)}.bg-blue-100{--tw-bg-opacity:1;background-color:rgb(219 234 254 / var(--tw-bg-opacity, 1))}.bg-blue-400\/10{background-color:rgb(96 165 250 / 0.1)}.bg-blue-500\/20{background-color:rgb(59 130 246 / 0.2)}.bg-blue-600{--tw-bg-opacity:1;background-color:rgb(37 99 235 / var(--tw-bg-opacity, 1))}.bg-blue-600\/30{background-color:rgb(37 99 235 / 0.3)}.bg-cyan-600{--tw-bg-opacity:1;background-color:rgb(8 145 178 / var(--tw-bg-opacity, 1))}.bg-emerald-400\/10{background-color:rgb(52 211 153 / 0.1)}.bg-gray-100{--tw-bg-opacity:1;background-color:rgb(243 244 246 / var(--tw-bg-opacity, 1))}.bg-gray-50{--tw-bg-opacity:1;background-color:rgb(249 250 251 / var(--tw-bg-opacity, 1))}.bg-gray-800{--tw-bg-opacity:1;background-color:rgb(31 41 55 / var(--tw-bg-opacity, 1))}.bg-gray-800\/50{background-color:rgb(31 41 55 / 0.5)}.bg-gray-900{--tw-bg-opacity:1;background-color:rgb(17 24 39 / var(--tw-bg-opacity, 1))}.bg-green-100{--tw-bg-opacity:1;background-color:rgb(220 252 231 / var(--tw-bg-opacity, 1))}.bg-green-500\/20{background-color:rgb(34 197 94 / 0.2)}.bg-green-600{--tw-bg-opacity:1;background-color:rgb(22 163 74 / var(--tw-bg-opacity, 1))}.bg-green-600\/30{background-color:rgb(22 163 74 / 0.3)}.bg-orange-100{--tw-bg-opacity:1;background-color:rgb(255 237 213 / var(--tw-bg-opacity, 1))}.bg-orange-600{--tw-bg-opacity:1;background-color:rgb(234 88 12 / var(--tw-bg-opacity, 1))}.bg-purple-500\/20{background-color:rgb(168 85 247 / 0.2)}.bg-purple-600{--tw-bg-opacity:1;background-color:rgb(147 51 234 / var(--tw-bg-opacity, 1))}.bg-purple-600\/30{background-color:rgb(147 51 234 / 0.3)}.bg-transparent{background-color:transparent}.bg-violet-400\/10{background-color:rgb(167 139 250 / 0.1)}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/10{background-color:rgb(255 255 255 / 0.1)}.bg-white\/40{background-color:rgb(255 255 255 / 0.4)}.bg-gradient-to-br{background-image:linear-gradient(to bottom right, var(--tw-gradient-stops))}.bg-gradient-to-r{background-image:linear-gradient(to right, var(--tw-gradient-stops))}.from-blue-100{--tw-gradient-from:#dbeafe var(--tw-gradient-from-position);--tw-gradient-to:rgb(219 234 254 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-blue-50{--tw-gradient-from:#eff6ff var(--tw-gradient-from-position);--tw-gradient-to:rgb(239 246 255 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-blue-500{--tw-gradient-from:#3b82f6 var(--tw-gradient-from-position);--tw-gradient-to:rgb(59 130 246 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-blue-600{--tw-gradient-from:#2563eb var(--tw-gradient-from-position);--tw-gradient-to:rgb(37 99 235 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-blue-900{--tw-gradient-from:#1e3a8a var(--tw-gradient-from-position);--tw-gradient-to:rgb(30 58 138 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-cyan-100{--tw-gradient-from:#cffafe var(--tw-gradient-from-position);--tw-gradient-to:rgb(207 250 254 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-green-100{--tw-gradient-from:#dcfce7 var(--tw-gradient-from-position);--tw-gradient-to:rgb(220 252 231 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-green-400{--tw-gradient-from:#4ade80 var(--tw-gradient-from-position);--tw-gradient-to:rgb(74 222 128 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-green-50{--tw-gradient-from:#f0fdf4 var(--tw-gradient-from-position);--tw-gradient-to:rgb(240 253 244 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-green-500{--tw-gradient-from:#22c55e var(--tw-gradient-from-position);--tw-gradient-to:rgb(34 197 94 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-green-900{--tw-gradient-from:#14532d var(--tw-gradient-from-position);--tw-gradient-to:rgb(20 83 45 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-orange-100{--tw-gradient-from:#ffedd5 var(--tw-gradient-from-position);--tw-gradient-to:rgb(255 237 213 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-purple-400{--tw-gradient-from:#c084fc var(--tw-gradient-from-position);--tw-gradient-to:rgb(192 132 252 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-purple-50{--tw-gradient-from:#faf5ff var(--tw-gradient-from-position);--tw-gradient-to:rgb(250 245 255 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-purple-500{--tw-gradient-from:#a855f7 var(--tw-gradient-from-position);--tw-gradient-to:rgb(168 85 247 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-purple-900{--tw-gradient-from:#581c87 var(--tw-gradient-from-position);--tw-gradient-to:rgb(88 28 135 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-blue-800{--tw-gradient-to:rgb(30 64 175 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #1e40af var(--tw-gradient-via-position), var(--tw-gradient-to)}.via-emerald-800{--tw-gradient-to:rgb(6 95 70 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #065f46 var(--tw-gradient-via-position), var(--tw-gradient-to)}.via-violet-800{--tw-gradient-to:rgb(91 33 182 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #5b21b6 var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-amber-50{--tw-gradient-to:#fffbeb var(--tw-gradient-to-position)}.to-blue-50{--tw-gradient-to:#eff6ff var(--tw-gradient-to-position)}.to-blue-700{--tw-gradient-to:#1d4ed8 var(--tw-gradient-to-position)}.to-blue-800{--tw-gradient-to:#1e40af var(--tw-gradient-to-position)}.to-blue-950{--tw-gradient-to:#172554 var(--tw-gradient-to-position)}.to-emerald-300{--tw-gradient-to:#6ee7b7 var(--tw-gradient-to-position)}.to-emerald-50{--tw-gradient-to:#ecfdf5 var(--tw-gradient-to-position)}.to-emerald-700{--tw-gradient-to:#047857 var(--tw-gradient-to-position)}.to-green-950{--tw-gradient-to:#052e16 var(--tw-gradient-to-position)}.to-pink-400{--tw-gradient-to:#f472b6 var(--tw-gradient-to-position)}.to-purple-950{--tw-gradient-to:#3b0764 var(--tw-gradient-to-position)}.to-teal-50{--tw-gradient-to:#f0fdfa var(--tw-gradient-to-position)}.to-violet-700{--tw-gradient-to:#6d28d9 var(--tw-gradient-to-position)}.to-white{--tw-gradient-to:#fff var(--tw-gradient-to-position)}.bg-clip-text{-webkit-background-clip:text;background-clip:text}.p-10{padding:2.5rem}.p-2{padding:0.5rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-8{padding-left:2rem;padding-right:2rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-16{padding-top:4rem;padding-bottom:4rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.py-20{padding-top:5rem;padding-bottom:5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-3\.5{padding-top:0.875rem;padding-bottom:0.875rem}.py-4{padding-top:1rem;padding-bottom:1rem}.pb-8{padding-bottom:2rem}.pt-16{padding-top:4rem}.pt-8{padding-top:2rem}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-5xl{font-size:3rem;line-height:1}.text-7xl{font-size:4.5rem;line-height:1}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-light{font-weight:300}.font-medium{font-weight:500}.font-semibold{font-weight:600}.text-blue-100{--tw-text-opacity:1;color:rgb(219 234 254 / var(--tw-text-opacity, 1))}.text-blue-200{--tw-text-opacity:1;color:rgb(191 219 254 / var(--tw-text-opacity, 1))}.text-blue-300{--tw-text-opacity:1;color:rgb(147 197 253 / var(--tw-text-opacity, 1))}.text-blue-400{--tw-text-opacity:1;color:rgb(96 165 250 / var(--tw-text-opacity, 1))}.text-blue-500{--tw-text-opacity:1;color:rgb(59 130 246 / var(--tw-text-opacity, 1))}.text-blue-600{--tw-text-opacity:1;color:rgb(37 99 235 / var(--tw-text-opacity, 1))}.text-blue-700{--tw-text-opacity:1;color:rgb(29 78 216 / var(--tw-text-opacity, 1))}.text-blue-900{--tw-text-opacity:1;color:rgb(30 58 138 / var(--tw-text-opacity, 1))}.text-cyan-300{--tw-text-opacity:1;color:rgb(103 232 249 / var(--tw-text-opacity, 1))}.text-gray-300{--tw-text-opacity:1;color:rgb(209 213 219 / var(--tw-text-opacity, 1))}.text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity, 1))}.text-gray-500{--tw-text-opacity:1;color:rgb(107 114 128 / var(--tw-text-opacity, 1))}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity, 1))}.text-gray-700{--tw-text-opacity:1;color:rgb(55 65 81 / var(--tw-text-opacity, 1))}.text-gray-900{--tw-text-opacity:1;color:rgb(17 24 39 / var(--tw-text-opacity, 1))}.text-green-100{--tw-text-opacity:1;color:rgb(220 252 231 / var(--tw-text-opacity, 1))}.text-green-200{--tw-text-opacity:1;color:rgb(187 247 208 / var(--tw-text-opacity, 1))}.text-green-300{--tw-text-opacity:1;color:rgb(134 239 172 / var(--tw-text-opacity, 1))}.text-green-400{--tw-text-opacity:1;color:rgb(74 222 128 / var(--tw-text-opacity, 1))}.text-green-500{--tw-text-opacity:1;color:rgb(34 197 94 / var(--tw-text-opacity, 1))}.text-green-600{--tw-text-opacity:1;color:rgb(22 163 74 / var(--tw-text-opacity, 1))}.text-green-900{--tw-text-opacity:1;color:rgb(20 83 45 / var(--tw-text-opacity, 1))}.text-orange-300{--tw-text-opacity:1;color:rgb(253 186 116 / var(--tw-text-opacity, 1))}.text-orange-600{--tw-text-opacity:1;color:rgb(234 88 12 / var(--tw-text-opacity, 1))}.text-purple-100{--tw-text-opacity:1;color:rgb(243 232 255 / var(--tw-text-opacity, 1))}.text-purple-200{--tw-text-opacity:1;color:rgb(233 213 255 / var(--tw-text-opacity, 1))}.text-purple-400{--tw-text-opacity:1;color:rgb(192 132 252 / var(--tw-text-opacity, 1))}.text-purple-500{--tw-text-opacity:1;color:rgb(168 85 247 / var(--tw-text-opacity, 1))}.text-purple-600{--tw-text-opacity:1;color:rgb(147 51 234 / var(--tw-text-opacity, 1))}.text-purple-900{--tw-text-opacity:1;color:rgb(88 28 135 / var(--tw-text-opacity, 1))}.text-transparent{color:transparent}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-white\/30{color:rgb(255 255 255 / 0.3)}.text-white\/70{color:rgb(255 255 255 / 0.7)}.text-yellow-400{--tw-text-opacity:1;color:rgb(250 204 21 / var(--tw-text-opacity, 1))}.opacity-10{opacity:0.1}.opacity-0{opacity:0}.opacity-100{opacity:1}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.blur-3xl{--tw-blur:blur(64px);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.backdrop-blur-sm{--tw-backdrop-blur:blur(4px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.hover\:border-blue-300:hover{--tw-border-opacity:1;border-color:rgb(147 197 253 / var(--tw-border-opacity, 1))}.hover\:border-blue-500:hover{--tw-border-opacity:1;border-color:rgb(59 130 246 / var(--tw-border-opacity, 1))}.hover\:border-cyan-300:hover{--tw-border-opacity:1;border-color:rgb(103 232 249 / var(--tw-border-opacity, 1))}.hover\:border-green-300:hover{--tw-border-opacity:1;border-color:rgb(134 239 172 / var(--tw-border-opacity, 1))}.hover\:border-green-500:hover{--tw-border-opacity:1;border-color:rgb(34 197 94 / var(--tw-border-opacity, 1))}.hover\:border-orange-300:hover{--tw-border-opacity:1;border-color:rgb(253 186 116 / var(--tw-border-opacity, 1))}.hover\:border-orange-500:hover{--tw-border-opacity:1;border-color:rgb(249 115 22 / var(--tw-border-opacity, 1))}.hover\:border-purple-500:hover{--tw-border-opacity:1;border-color:rgb(168 85 247 / var(--tw-border-opacity, 1))}.hover\:bg-blue-50:hover{--tw-bg-opacity:1;background-color:rgb(239 246 255 / var(--tw-bg-opacity, 1))}.hover\:bg-blue-600:hover{--tw-bg-opacity:1;background-color:rgb(37 99 235 / var(--tw-bg-opacity, 1))}.hover\:bg-blue-700:hover{--tw-bg-opacity:1;background-color:rgb(29 78 216 / var(--tw-bg-opacity, 1))}.hover\:bg-gray-100:hover{--tw-bg-opacity:1;background-color:rgb(243 244 246 / var(--tw-bg-opacity, 1))}.hover\:bg-gray-700:hover{--tw-bg-opacity:1;background-color:rgb(55 65 81 / var(--tw-bg-opacity, 1))}.hover\:bg-green-50:hover{--tw-bg-opacity:1;background-color:rgb(240 253 244 / var(--tw-bg-opacity, 1))}.hover\:bg-purple-50:hover{--tw-bg-opacity:1;background-color:rgb(250 245 255 / var(--tw-bg-opacity, 1))}.hover\:bg-white\/10:hover{background-color:rgb(255 255 255 / 0.1)}.hover\:bg-white\/60:hover{background-color:rgb(255 255 255 / 0.6)}.hover\:text-blue-400:hover{--tw-text-opacity:1;color:rgb(96 165 250 / var(--tw-text-opacity, 1))}.hover\:text-blue-600:hover{--tw-text-opacity:1;color:rgb(37 99 235 / var(--tw-text-opacity, 1))}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.hover\:underline:hover{-webkit-text-decoration-line:underline;text-decoration-line:underline}.hover\:shadow-lg:hover{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.dark\:border-blue-800\/30:is(.dark *){border-color:rgb(30 64 175 / 0.3)}.dark\:border-gray-700:is(.dark *){--tw-border-opacity:1;border-color:rgb(55 65 81 / var(--tw-border-opacity, 1))}.dark\:border-gray-800:is(.dark *){--tw-border-opacity:1;border-color:rgb(31 41 55 / var(--tw-border-opacity, 1))}.dark\:border-green-800\/30:is(.dark *){border-color:rgb(22 101 52 / 0.3)}.dark\:border-purple-800\/30:is(.dark *){border-color:rgb(107 33 168 / 0.3)}.dark\:bg-blue-900\/40:is(.dark *){background-color:rgb(30 58 138 / 0.4)}.dark\:bg-gray-700:is(.dark *){--tw-bg-opacity:1;background-color:rgb(55 65 81 / var(--tw-bg-opacity, 1))}.dark\:bg-gray-800:is(.dark *){--tw-bg-opacity:1;background-color:rgb(31 41 55 / var(--tw-bg-opacity, 1))}.dark\:bg-gray-900:is(.dark *){--tw-bg-opacity:1;background-color:rgb(17 24 39 / var(--tw-bg-opacity, 1))}.dark\:bg-gray-950:is(.dark *){--tw-bg-opacity:1;background-color:rgb(3 7 18 / var(--tw-bg-opacity, 1))}.dark\:bg-green-900\/40:is(.dark *){background-color:rgb(20 83 45 / 0.4)}.dark\:bg-orange-900\/40:is(.dark *){background-color:rgb(124 45 18 / 0.4)}.dark\:from-blue-900\/20:is(.dark *){--tw-gradient-from:rgb(30 58 138 / 0.2) var(--tw-gradient-from-position);--tw-gradient-to:rgb(30 58 138 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.dark\:from-blue-900\/30:is(.dark *){--tw-gradient-from:rgb(30 58 138 / 0.3) var(--tw-gradient-from-position);--tw-gradient-to:rgb(30 58 138 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.dark\:from-cyan-900\/30:is(.dark *){--tw-gradient-from:rgb(22 78 99 / 0.3) var(--tw-gradient-from-position);--tw-gradient-to:rgb(22 78 99 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.dark\:from-green-900\/20:is(.dark *){--tw-gradient-from:rgb(20 83 45 / 0.2) var(--tw-gradient-from-position);--tw-gradient-to:rgb(20 83 45 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.dark\:from-green-900\/30:is(.dark *){--tw-gradient-from:rgb(20 83 45 / 0.3) var(--tw-gradient-from-position);--tw-gradient-to:rgb(20 83 45 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.dark\:from-orange-900\/30:is(.dark *){--tw-gradient-from:rgb(124 45 18 / 0.3) var(--tw-gradient-from-position);--tw-gradient-to:rgb(124 45 18 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.dark\:from-purple-900\/20:is(.dark *){--tw-gradient-from:rgb(88 28 135 / 0.2) var(--tw-gradient-from-position);--tw-gradient-to:rgb(88 28 135 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.dark\:to-amber-800\/20:is(.dark *){--tw-gradient-to:rgb(146 64 14 / 0.2) var(--tw-gradient-to-position)}.dark\:to-blue-800\/20:is(.dark *){--tw-gradient-to:rgb(30 64 175 / 0.2) var(--tw-gradient-to-position)}.dark\:to-emerald-800\/20:is(.dark *){--tw-gradient-to:rgb(6 95 70 / 0.2) var(--tw-gradient-to-position)}.dark\:to-gray-900:is(.dark *){--tw-gradient-to:#111827 var(--tw-gradient-to-position)}.dark\:to-teal-800\/20:is(.dark *){--tw-gradient-to:rgb(17 94 89 / 0.2) var(--tw-gradient-to-position)}.dark\:text-blue-300:is(.dark *){--tw-text-opacity:1;color:rgb(147 197 253 / var(--tw-text-opacity, 1))}.dark\:text-blue-400:is(.dark *){--tw-text-opacity:1;color:rgb(96 165 250 / var(--tw-text-opacity, 1))}.dark\:text-blue-600:is(.dark *){--tw-text-opacity:1;color:rgb(37 99 235 / var(--tw-text-opacity, 1))}.dark\:text-cyan-600:is(.dark *){--tw-text-opacity:1;color:rgb(8 145 178 / var(--tw-text-opacity, 1))}.dark\:text-gray-200:is(.dark *){--tw-text-opacity:1;color:rgb(229 231 235 / var(--tw-text-opacity, 1))}.dark\:text-gray-400:is(.dark *){--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity, 1))}.dark\:text-green-400:is(.dark *){--tw-text-opacity:1;color:rgb(74 222 128 / var(--tw-text-opacity, 1))}.dark\:text-green-600:is(.dark *){--tw-text-opacity:1;color:rgb(22 163 74 / var(--tw-text-opacity, 1))}.dark\:text-orange-400:is(.dark *){--tw-text-opacity:1;color:rgb(251 146 60 / var(--tw-text-opacity, 1))}.dark\:text-orange-600:is(.dark *){--tw-text-opacity:1;color:rgb(234 88 12 / var(--tw-text-opacity, 1))}.dark\:text-purple-400:is(.dark *){--tw-text-opacity:1;color:rgb(192 132 252 / var(--tw-text-opacity, 1))}.dark\:text-white:is(.dark *){--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.dark\:hover\:border-blue-600:hover:is(.dark *){--tw-border-opacity:1;border-color:rgb(37 99 235 / var(--tw-border-opacity, 1))}.dark\:hover\:border-cyan-600:hover:is(.dark *){--tw-border-opacity:1;border-color:rgb(8 145 178 / var(--tw-border-opacity, 1))}.dark\:hover\:border-green-600:hover:is(.dark *){--tw-border-opacity:1;border-color:rgb(22 163 74 / var(--tw-border-opacity, 1))}.dark\:hover\:border-orange-600:hover:is(.dark *){--tw-border-opacity:1;border-color:rgb(234 88 12 / var(--tw-border-opacity, 1))}.dark\:hover\:bg-gray-700:hover:is(.dark *){--tw-bg-opacity:1;background-color:rgb(55 65 81 / var(--tw-bg-opacity, 1))}.dark\:hover\:bg-gray-800:hover:is(.dark *){--tw-bg-opacity:1;background-color:rgb(31 41 55 / var(--tw-bg-opacity, 1))}.dark\:hover\:text-blue-400:hover:is(.dark *){--tw-text-opacity:1;color:rgb(96 165 250 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:flex{display:flex}}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.md\:text-4xl{font-size:2.25rem;line-height:2.5rem}.md\:text-5xl{font-size:3rem;line-height:1}.md\:text-6xl{font-size:3.75rem;line-height:1}}@media (min-width: 1024px){.lg\:block{display:block}.lg\:flex{display:flex}.lg\:hidden{display:none}.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.lg\:p-16{padding:4rem}.lg\:px-8{padding-left:2rem;padding-right:2rem}.lg\:text-7xl{font-size:4.5rem;line-height:1}}</style></head>
+<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
+
+    <!-- Top Bar -->
+    <div class="bg-gray-900 text-white py-2.5 text-sm">
+        <div class="max-w-screen-2xl mx-auto px-4 lg:px-8 flex justify-between items-center">
+            <div class="flex items-center gap-6">
+                <a href="tel:+902121234567" class="flex items-center gap-2 hover:text-blue-400 transition-colors">
+                    <i class="fas fa-phone text-xs"></i>
+                    <span>+90 212 123 45 67</span>
+                </a>
+                <a href="mailto:info@varilsan.com" class="hidden sm:flex items-center gap-2 hover:text-blue-400 transition-colors">
+                    <i class="fas fa-envelope text-xs"></i>
+                    <span>info@varilsan.com</span>
+                </a>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <a href="#" class="hover:text-blue-400 transition-colors"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="hover:text-blue-400 transition-colors"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="hover:text-blue-400 transition-colors"><i class="fab fa-youtube"></i></a>
+                </div>
+                <span class="text-gray-600">|</span>
+                <select class="bg-transparent text-sm cursor-pointer focus:outline-none">
+                    <option value="tr">TR</option>
+                    <option value="en">EN</option>
+                </select>
+                <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)" class="w-8 h-8 rounded-full bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-colors">
+                    <i class="fas fa-sun text-yellow-400" x-show="darkMode" style=""></i>
+                    <i class="fas fa-moon text-gray-300" x-show="!darkMode" style="display: none;"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50">
+        <div class="max-w-screen-2xl mx-auto px-4 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-3">
+                    <div class="w-11 h-11 bg-blue-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-industry text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold text-gray-900 dark:text-white">VARİLSAN</span>
+                        <span class="text-xl font-light text-blue-600">GRUP</span>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 -mt-0.5">Endüstriyel Döngünün Mimarı</p>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden lg:flex items-center gap-1">
+                    <a href="#" class="px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">Ana Sayfa</a>
+
+                    <!-- Kurumsal -->
+                    <div class="relative" @mouseenter="activeMenu = 'kurumsal'" @mouseleave="activeMenu = null">
+                        <button class="px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors flex items-center gap-1">
+                            Kurumsal <i class="fas fa-chevron-down text-xs ml-1"></i>
+                        </button>
+                        <div class="mega-menu" :class="activeMenu === 'kurumsal' ? 'show' : ''">
+                            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 p-4 min-w-[280px]">
+                                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <div class="w-9 h-9 bg-blue-100 dark:bg-blue-900/40 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-building text-blue-600 dark:text-blue-400"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-medium text-gray-900 dark:text-white block">Hakkımızda</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Grup tarihçesi</span>
+                                    </div>
+                                </a>
+                                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <div class="w-9 h-9 bg-blue-100 dark:bg-blue-900/40 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-bullseye text-blue-600 dark:text-blue-400"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-medium text-gray-900 dark:text-white block">Vizyon &amp; Misyon</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Hedeflerimiz</span>
+                                    </div>
+                                </a>
+                                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <div class="w-9 h-9 bg-blue-100 dark:bg-blue-900/40 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-certificate text-blue-600 dark:text-blue-400"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-medium text-gray-900 dark:text-white block">Sertifikalar</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">UN, ISO lisansları</span>
+                                    </div>
+                                </a>
+                                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <div class="w-9 h-9 bg-blue-100 dark:bg-blue-900/40 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-newspaper text-blue-600 dark:text-blue-400"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-medium text-gray-900 dark:text-white block">Blog &amp; Haberler</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Sektör haberleri</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Şirketler -->
+                    <div class="relative" @mouseenter="activeMenu = 'sirketler'" @mouseleave="activeMenu = null">
+                        <button class="px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors flex items-center gap-1">
+                            Şirketler <i class="fas fa-chevron-down text-xs ml-1"></i>
+                        </button>
+                        <div class="mega-menu" :class="activeMenu === 'sirketler' ? 'show' : ''">
+                            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 p-4 min-w-[280px]">
+                                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors">
+                                    <div class="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-industry text-white"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-medium text-gray-900 dark:text-white block">Varilsan Polimer</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Üretim Tesisi</span>
+                                    </div>
+                                </a>
+                                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-green-50 dark:hover:bg-gray-700 transition-colors">
+                                    <div class="w-9 h-9 bg-green-600 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-recycle text-white"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-medium text-gray-900 dark:text-white block">Varilsan Ambalaj</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Geri Dönüşüm</span>
+                                    </div>
+                                </a>
+                                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-purple-50 dark:hover:bg-gray-700 transition-colors">
+                                    <div class="w-9 h-9 bg-purple-600 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-sync-alt text-white"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-medium text-gray-900 dark:text-white block">Varilsan Plastik</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Geri Dönüşüm</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ürünler -->
+                    <div class="relative" @mouseenter="activeMenu = 'urunler'" @mouseleave="activeMenu = null">
+                        <button class="px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors flex items-center gap-1">
+                            Ürünler <i class="fas fa-chevron-down text-xs ml-1"></i>
+                        </button>
+                        <div class="mega-menu" :class="activeMenu === 'urunler' ? 'show' : ''">
+                            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 p-4 min-w-[280px]">
+                                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <div class="w-9 h-9 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-cube text-blue-600 dark:text-blue-400"></i>
+                                    </div>
+                                    <span class="font-medium text-gray-900 dark:text-white">IBC Tank (1000L)</span>
+                                </a>
+                                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <div class="w-9 h-9 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-oil-can text-blue-600 dark:text-blue-400"></i>
+                                    </div>
+                                    <span class="font-medium text-gray-900 dark:text-white">Plastik Varil (30-220L)</span>
+                                </a>
+                                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <div class="w-9 h-9 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-fill-drip text-blue-600 dark:text-blue-400"></i>
+                                    </div>
+                                    <span class="font-medium text-gray-900 dark:text-white">Bidon (5-30L)</span>
+                                </a>
+                                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <div class="w-9 h-9 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-recycle text-green-600 dark:text-green-400"></i>
+                                    </div>
+                                    <span class="font-medium text-gray-900 dark:text-white">Yenilenmiş IBC</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hizmetler -->
+                    <div class="relative" @mouseenter="activeMenu = 'hizmetler'" @mouseleave="activeMenu = null">
+                        <button class="px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors flex items-center gap-1">
+                            Hizmetler <i class="fas fa-chevron-down text-xs ml-1"></i>
+                        </button>
+                        <div class="mega-menu" :class="activeMenu === 'hizmetler' ? 'show' : ''">
+                            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 p-4 min-w-[280px]">
+                                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <div class="w-9 h-9 bg-green-100 dark:bg-green-900/40 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-sync text-green-600 dark:text-green-400"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-medium text-gray-900 dark:text-white block">IBC Yenileme</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Reconditioning</span>
+                                    </div>
+                                </a>
+                                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <div class="w-9 h-9 bg-blue-100 dark:bg-blue-900/40 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-shower text-blue-600 dark:text-blue-400"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-medium text-gray-900 dark:text-white block">İç Yıkama</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Otomatik sistemler</span>
+                                    </div>
+                                </a>
+                                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <div class="w-9 h-9 bg-orange-100 dark:bg-orange-900/40 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-truck text-orange-600 dark:text-orange-400"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-medium text-gray-900 dark:text-white block">Lojistik</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">81 il teslimat</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="#" class="px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">İletişim</a>
+                </nav>
+
+                <!-- CTA -->
+                <div class="hidden lg:block">
+                    <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors">
+                        <i class="fas fa-file-alt mr-2"></i>Teklif Al
+                    </a>
+                </div>
+
+                <!-- Mobile Menu -->
+                <button @click="mobileNavOpen = !mobileNavOpen" class="lg:hidden p-2">
+                    <i class="fas fa-bars text-xl text-gray-700 dark:text-gray-200"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Nav -->
+        <div x-show="mobileNavOpen" class="lg:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-4 px-4" style="display: none;">
+            <nav class="space-y-2">
+                <a href="#" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 font-medium">Ana Sayfa</a>
+                <a href="#" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 font-medium">Kurumsal</a>
+                <a href="#" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 font-medium">Şirketler</a>
+                <a href="#" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 font-medium">Ürünler</a>
+                <a href="#" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 font-medium">Hizmetler</a>
+                <a href="#" class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 font-medium">İletişim</a>
+                <a href="#" class="block px-4 py-3 rounded-lg bg-blue-600 text-white text-center font-medium mt-4">Teklif Al</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Slider -->
+    <section class="relative h-[85vh] min-h-[600px] overflow-hidden" x-init="setInterval(() =&gt; currentSlide = (currentSlide + 1) % 3, 6000)">
+
+        <!-- Slide 1: Polimer -->
+        <div class="absolute inset-0 slide opacity-100 z-10" :class="currentSlide === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950"></div>
+            <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23ffffff&quot; fill-opacity=&quot;0.4&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+
+            <!-- Floating shapes -->
+            <div class="absolute top-20 left-10 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl animate-float"></div>
+            <div class="absolute bottom-20 right-20 w-80 h-80 bg-blue-400/10 rounded-full blur-3xl animate-float-slow"></div>
+
+            <div class="relative h-full max-w-screen-2xl mx-auto px-4 lg:px-8 flex items-center">
+                <div class="grid lg:grid-cols-2 gap-12 items-center w-full">
+                    <div>
+                        <div class="inline-flex items-center gap-2 bg-white/10 text-blue-200 px-4 py-2 rounded-full text-sm font-medium mb-6">
+                            <i class="fas fa-industry"></i>
+                            <span>Üretim Gücü</span>
+                        </div>
+                        <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6">
+                            Varilsan<br>
+                            <span class="gradient-text">Polimer</span>
+                        </h1>
+                        <p class="text-xl text-blue-100 mb-8 max-w-lg">
+                            Kusursuz form, endüstriyel performans. Yıllık 5.000 ton HDPE işleme kapasitesiyle UN onaylı ambalaj üretimi.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="#" class="bg-white text-blue-900 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition-colors inline-flex items-center gap-2">
+                                Ürünleri İncele <i class="fas fa-arrow-right"></i>
+                            </a>
+                            <a href="#" class="border-2 border-white/30 text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/10 transition-colors inline-flex items-center gap-2">
+                                <i class="fas fa-play-circle"></i> Tanıtım Filmi
+                            </a>
+                        </div>
+                    </div>
+                    <div class="hidden lg:flex justify-center">
+                        <div class="relative">
+                            <div class="w-72 h-72 bg-blue-500/20 rounded-full animate-pulse"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-56 h-56 bg-blue-600/30 rounded-3xl backdrop-blur-sm border border-white/10 flex items-center justify-center animate-float">
+                                    <i class="fas fa-industry text-7xl text-white/70"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Ambalaj -->
+        <div class="absolute inset-0 slide opacity-0 z-0" :class="currentSlide === 1 ? 'opacity-100 z-10' : 'opacity-0 z-0'">
+            <div class="absolute inset-0 bg-gradient-to-br from-green-900 via-emerald-800 to-green-950"></div>
+            <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23ffffff&quot; fill-opacity=&quot;0.4&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+
+            <div class="absolute top-20 right-10 w-64 h-64 bg-green-500/20 rounded-full blur-3xl animate-float"></div>
+            <div class="absolute bottom-20 left-20 w-80 h-80 bg-emerald-400/10 rounded-full blur-3xl animate-float-slow"></div>
+
+            <div class="relative h-full max-w-screen-2xl mx-auto px-4 lg:px-8 flex items-center">
+                <div class="grid lg:grid-cols-2 gap-12 items-center w-full">
+                    <div>
+                        <div class="inline-flex items-center gap-2 bg-white/10 text-green-200 px-4 py-2 rounded-full text-sm font-medium mb-6">
+                            <i class="fas fa-recycle"></i>
+                            <span>Döngüsel Ekonomi</span>
+                        </div>
+                        <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6">
+                            Varilsan<br>
+                            <span class="bg-gradient-to-r from-green-400 to-emerald-300 bg-clip-text text-transparent">Ambalaj</span>
+                        </h1>
+                        <p class="text-xl text-green-100 mb-8 max-w-lg">
+                            Geleceği yeniden şekillendiriyoruz. Lisanslı geri kazanım süreçleriyle endüstriyel ambalajları ekonomiye kazandırıyoruz.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="#" class="bg-white text-green-900 px-8 py-4 rounded-xl font-semibold hover:bg-green-50 transition-colors inline-flex items-center gap-2">
+                                Hizmetleri Gör <i class="fas fa-arrow-right"></i>
+                            </a>
+                            <a href="#" class="border-2 border-white/30 text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/10 transition-colors inline-flex items-center gap-2">
+                                <i class="fas fa-leaf"></i> Sürdürülebilirlik
+                            </a>
+                        </div>
+                    </div>
+                    <div class="hidden lg:flex justify-center">
+                        <div class="relative">
+                            <div class="w-72 h-72 bg-green-500/20 rounded-full animate-pulse"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-56 h-56 bg-green-600/30 rounded-3xl backdrop-blur-sm border border-white/10 flex items-center justify-center animate-float">
+                                    <i class="fas fa-recycle text-7xl text-white/70"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Plastik -->
+        <div class="absolute inset-0 slide opacity-0 z-0" :class="currentSlide === 2 ? 'opacity-100 z-10' : 'opacity-0 z-0'">
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-900 via-violet-800 to-purple-950"></div>
+            <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23ffffff&quot; fill-opacity=&quot;0.4&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+
+            <div class="absolute top-20 left-20 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl animate-float"></div>
+            <div class="absolute bottom-20 right-10 w-80 h-80 bg-violet-400/10 rounded-full blur-3xl animate-float-slow"></div>
+
+            <div class="relative h-full max-w-screen-2xl mx-auto px-4 lg:px-8 flex items-center">
+                <div class="grid lg:grid-cols-2 gap-12 items-center w-full">
+                    <div>
+                        <div class="inline-flex items-center gap-2 bg-white/10 text-purple-200 px-4 py-2 rounded-full text-sm font-medium mb-6">
+                            <i class="fas fa-sync-alt"></i>
+                            <span>Bölgesel Güç</span>
+                        </div>
+                        <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6">
+                            Varilsan<br>
+                            <span class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Plastik</span>
+                        </h1>
+                        <p class="text-xl text-purple-100 mb-8 max-w-lg">
+                            Ege'nin dönüşüm gücü. Tekstil ve tarım kimyası başta olmak üzere hızlı ve etkili geri kazanım çözümleri.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="#" class="bg-white text-purple-900 px-8 py-4 rounded-xl font-semibold hover:bg-purple-50 transition-colors inline-flex items-center gap-2">
+                                Detaylı Bilgi <i class="fas fa-arrow-right"></i>
+                            </a>
+                            <a href="#" class="border-2 border-white/30 text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/10 transition-colors inline-flex items-center gap-2">
+                                <i class="fas fa-truck-fast"></i> Hızlı Teslimat
+                            </a>
+                        </div>
+                    </div>
+                    <div class="hidden lg:flex justify-center">
+                        <div class="relative">
+                            <div class="w-72 h-72 bg-purple-500/20 rounded-full animate-pulse"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-56 h-56 bg-purple-600/30 rounded-3xl backdrop-blur-sm border border-white/10 flex items-center justify-center animate-float">
+                                    <i class="fas fa-sync-alt text-7xl text-white/70"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slider Dots -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
+            <button @click="currentSlide = 0" class="w-3 h-3 rounded-full transition-all bg-white w-8" :class="currentSlide === 0 ? 'bg-white w-8' : 'bg-white/40 hover:bg-white/60'"></button>
+            <button @click="currentSlide = 1" class="w-3 h-3 rounded-full transition-all bg-white/40 hover:bg-white/60" :class="currentSlide === 1 ? 'bg-white w-8' : 'bg-white/40 hover:bg-white/60'"></button>
+            <button @click="currentSlide = 2" class="w-3 h-3 rounded-full transition-all bg-white/40 hover:bg-white/60" :class="currentSlide === 2 ? 'bg-white w-8' : 'bg-white/40 hover:bg-white/60'"></button>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="bg-white dark:bg-gray-900 py-10 border-b border-gray-200 dark:border-gray-800">
+        <div class="max-w-screen-2xl mx-auto px-4 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <div class="text-4xl md:text-5xl font-bold text-blue-600 dark:text-blue-400">25+</div>
+                    <div class="text-gray-600 dark:text-gray-400 mt-1">Yıllık Tecrübe</div>
+                </div>
+                <div>
+                    <div class="text-4xl md:text-5xl font-bold text-blue-600 dark:text-blue-400">3</div>
+                    <div class="text-gray-600 dark:text-gray-400 mt-1">Üretim Tesisi</div>
+                </div>
+                <div>
+                    <div class="text-4xl md:text-5xl font-bold text-blue-600 dark:text-blue-400">1M+</div>
+                    <div class="text-gray-600 dark:text-gray-400 mt-1">Yıllık Üretim</div>
+                </div>
+                <div>
+                    <div class="text-4xl md:text-5xl font-bold text-blue-600 dark:text-blue-400">81</div>
+                    <div class="text-gray-600 dark:text-gray-400 mt-1">İl'e Teslimat</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products -->
+    <section class="py-20 bg-gray-50 dark:bg-gray-900">
+        <div class="max-w-screen-2xl mx-auto px-4 lg:px-8">
+            <div class="text-center mb-14">
+                <span class="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                    <i class="fas fa-box-open"></i> Ürün Kataloğu
+                </span>
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+                    <span class="gradient-text">Endüstriyel</span> Ambalaj Çözümleri
+                </h2>
+                <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                    UN onaylı, ISO sertifikalı, global standartlarda üretim
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- IBC Tank -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg transition-all">
+                    <div class="h-48 bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-900/30 dark:to-blue-800/20 flex items-center justify-center relative">
+                        <i class="fas fa-cube text-7xl text-blue-300 dark:text-blue-600"></i>
+                        <span class="absolute top-3 right-3 bg-blue-600 text-white px-2.5 py-1 rounded-full text-xs font-semibold">1000L</span>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">IBC Tank</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Gıda ve tehlikeli madde taşımacılığına uygun, UN onaylı.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                                <i class="fas fa-check-circle text-green-500"></i> UN Onaylı
+                            </span>
+                            <a href="#" class="text-blue-600 dark:text-blue-400 font-medium text-sm hover:underline">Detaylar →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plastik Varil -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:border-orange-300 dark:hover:border-orange-600 hover:shadow-lg transition-all">
+                    <div class="h-48 bg-gradient-to-br from-orange-100 to-amber-50 dark:from-orange-900/30 dark:to-amber-800/20 flex items-center justify-center relative">
+                        <i class="fas fa-oil-can text-7xl text-orange-300 dark:text-orange-600"></i>
+                        <span class="absolute top-3 right-3 bg-orange-600 text-white px-2.5 py-1 rounded-full text-xs font-semibold">30-220L</span>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Plastik Varil</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">HDPE hammadde, istiflenebilir, sızdırmazlık garantili.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                                <i class="fas fa-check-circle text-green-500"></i> ISO 9001
+                            </span>
+                            <a href="#" class="text-blue-600 dark:text-blue-400 font-medium text-sm hover:underline">Detaylar →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bidon -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:border-cyan-300 dark:hover:border-cyan-600 hover:shadow-lg transition-all">
+                    <div class="h-48 bg-gradient-to-br from-cyan-100 to-teal-50 dark:from-cyan-900/30 dark:to-teal-800/20 flex items-center justify-center relative">
+                        <i class="fas fa-fill-drip text-7xl text-cyan-300 dark:text-cyan-600"></i>
+                        <span class="absolute top-3 right-3 bg-cyan-600 text-white px-2.5 py-1 rounded-full text-xs font-semibold">5-30L</span>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Bidon</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Gıda onaylı, kimyasala dayanıklı, pratik çözümler.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                                <i class="fas fa-check-circle text-green-500"></i> Gıda Onaylı
+                            </span>
+                            <a href="#" class="text-blue-600 dark:text-blue-400 font-medium text-sm hover:underline">Detaylar →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yenilenmiş IBC -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:border-green-300 dark:hover:border-green-600 hover:shadow-lg transition-all">
+                    <div class="h-48 bg-gradient-to-br from-green-100 to-emerald-50 dark:from-green-900/30 dark:to-emerald-800/20 flex items-center justify-center relative">
+                        <i class="fas fa-recycle text-7xl text-green-300 dark:text-green-600"></i>
+                        <span class="absolute top-3 right-3 bg-green-600 text-white px-2.5 py-1 rounded-full text-xs font-semibold">Re-bottle</span>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Yenilenmiş IBC</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">%40 maliyet avantajı, aynı kalite standartları.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                                <i class="fas fa-leaf text-green-500"></i> Çevreci
+                            </span>
+                            <a href="#" class="text-blue-600 dark:text-blue-400 font-medium text-sm hover:underline">Detaylar →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-10">
+                <a href="#" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-xl font-semibold transition-colors">
+                    <i class="fas fa-th-large"></i> Tüm Ürünleri Görüntüle
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Companies -->
+    <section class="py-20 bg-white dark:bg-gray-950">
+        <div class="max-w-screen-2xl mx-auto px-4 lg:px-8">
+            <div class="text-center mb-14">
+                <span class="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                    <i class="fas fa-building"></i> Grup Şirketleri
+                </span>
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+                    Güçlü <span class="gradient-text">Yapı</span>, Tek Vizyon
+                </h2>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Polimer -->
+                <div class="bg-gradient-to-br from-blue-50 to-white dark:from-blue-900/20 dark:to-gray-900 rounded-2xl p-8 border border-blue-100 dark:border-blue-800/30 hover:shadow-lg transition-all">
+                    <div class="w-14 h-14 bg-blue-600 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-industry text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Varilsan Polimer</h3>
+                    <p class="text-blue-600 dark:text-blue-400 font-medium mb-4">Üretim Tesisi</p>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Yıllık 5.000 ton HDPE işleme kapasitesiyle UN onaylı ambalaj üretimi.</p>
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check text-blue-500"></i> IBC Tank Üretimi
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check text-blue-500"></i> Endüstriyel Bidonlar
+                        </li>
+                    </ul>
+                    <a href="#" class="text-blue-600 dark:text-blue-400 font-semibold hover:underline">Şirketi İncele →</a>
+                </div>
+
+                <!-- Ambalaj -->
+                <div class="bg-gradient-to-br from-green-50 to-white dark:from-green-900/20 dark:to-gray-900 rounded-2xl p-8 border border-green-100 dark:border-green-800/30 hover:shadow-lg transition-all">
+                    <div class="w-14 h-14 bg-green-600 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-recycle text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Varilsan Ambalaj</h3>
+                    <p class="text-green-600 dark:text-green-400 font-medium mb-4">Geri Dönüşüm</p>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Lisanslı süreçlerle endüstriyel ambalajları ekonomiye kazandırıyoruz.</p>
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check text-green-500"></i> IBC Yenileme
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check text-green-500"></i> Otomatik İç Yıkama
+                        </li>
+                    </ul>
+                    <a href="#" class="text-green-600 dark:text-green-400 font-semibold hover:underline">Şirketi İncele →</a>
+                </div>
+
+                <!-- Plastik -->
+                <div class="bg-gradient-to-br from-purple-50 to-white dark:from-purple-900/20 dark:to-gray-900 rounded-2xl p-8 border border-purple-100 dark:border-purple-800/30 hover:shadow-lg transition-all">
+                    <div class="w-14 h-14 bg-purple-600 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-sync-alt text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Varilsan Plastik</h3>
+                    <p class="text-purple-600 dark:text-purple-400 font-medium mb-4">Geri Dönüşüm</p>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Tekstil ve tarım kimyası için hızlı geri kazanım çözümleri.</p>
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check text-purple-500"></i> Yerinde Analiz
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check text-purple-500"></i> Hızlı Sevkiyat
+                        </li>
+                    </ul>
+                    <a href="#" class="text-purple-600 dark:text-purple-400 font-semibold hover:underline">Şirketi İncele →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Varilsan -->
+    <section class="py-20 bg-gray-900 text-white">
+        <div class="max-w-screen-2xl mx-auto px-4 lg:px-8">
+            <div class="text-center mb-14">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">Neden <span class="gradient-text">Varilsan</span>?</h2>
+                <p class="text-xl text-gray-400">25 yıllık tecrübe, global standartlar</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-gray-800/50 rounded-2xl p-6 text-center border border-gray-700 hover:border-blue-500 transition-colors">
+                    <div class="w-14 h-14 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-certificate text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">UN Sertifikalı</h3>
+                    <p class="text-gray-400 text-sm">Global kabul görmüş ürünler</p>
+                </div>
+
+                <div class="bg-gray-800/50 rounded-2xl p-6 text-center border border-gray-700 hover:border-green-500 transition-colors">
+                    <div class="w-14 h-14 bg-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-leaf text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Sürdürülebilir</h3>
+                    <p class="text-gray-400 text-sm">Döngüsel ekonomi modeli</p>
+                </div>
+
+                <div class="bg-gray-800/50 rounded-2xl p-6 text-center border border-gray-700 hover:border-orange-500 transition-colors">
+                    <div class="w-14 h-14 bg-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-truck-fast text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Hızlı Teslimat</h3>
+                    <p class="text-gray-400 text-sm">81 ile güvenilir lojistik</p>
+                </div>
+
+                <div class="bg-gray-800/50 rounded-2xl p-6 text-center border border-gray-700 hover:border-purple-500 transition-colors">
+                    <div class="w-14 h-14 bg-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-handshake text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Güvenilir Ortak</h3>
+                    <p class="text-gray-400 text-sm">25 yıllık sektör deneyimi</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog -->
+    <section class="py-20 bg-gray-50 dark:bg-gray-900">
+        <div class="max-w-screen-2xl mx-auto px-4 lg:px-8">
+            <div class="flex flex-wrap items-end justify-between gap-4 mb-12">
+                <div>
+                    <span class="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                        <i class="fas fa-newspaper"></i> Blog
+                    </span>
+                    <h2 class="text-4xl font-bold text-gray-900 dark:text-white">Sektörden <span class="gradient-text">Haberler</span></h2>
+                </div>
+                <a href="#" class="text-blue-600 dark:text-blue-400 font-semibold hover:underline">Tüm Yazılar →</a>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <article class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-all">
+                    <div class="h-44 bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
+                        <i class="fas fa-recycle text-5xl text-white/30"></i>
+                    </div>
+                    <div class="p-5">
+                        <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">15 Aralık 2024</div>
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">2025'te Döngüsel Ekonomi Trendleri</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Sürdürülebilirlik ve geri dönüşüm trendleri...</p>
+                        <a href="#" class="text-blue-600 dark:text-blue-400 font-medium text-sm hover:underline">Devamını Oku →</a>
+                    </div>
+                </article>
+
+                <article class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-all">
+                    <div class="h-44 bg-gradient-to-br from-green-500 to-emerald-700 flex items-center justify-center">
+                        <i class="fas fa-cube text-5xl text-white/30"></i>
+                    </div>
+                    <div class="p-5">
+                        <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">10 Aralık 2024</div>
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">IBC Tank Seçim Rehberi</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Doğru IBC tankı seçerken dikkat edilecekler...</p>
+                        <a href="#" class="text-blue-600 dark:text-blue-400 font-medium text-sm hover:underline">Devamını Oku →</a>
+                    </div>
+                </article>
+
+                <article class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-all">
+                    <div class="h-44 bg-gradient-to-br from-purple-500 to-violet-700 flex items-center justify-center">
+                        <i class="fas fa-certificate text-5xl text-white/30"></i>
+                    </div>
+                    <div class="p-5">
+                        <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">5 Aralık 2024</div>
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">UN Sertifikasyonu Neden Önemli?</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Tehlikeli madde taşımacılığında UN sertifikası...</p>
+                        <a href="#" class="text-blue-600 dark:text-blue-400 font-medium text-sm hover:underline">Devamını Oku →</a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-16 bg-white dark:bg-gray-950">
+        <div class="max-w-screen-2xl mx-auto px-4 lg:px-8">
+            <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-3xl p-10 lg:p-16 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Projeniz İçin Teklif Alın</h2>
+                <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">24 saat içinde size dönüş yapalım.</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="#" class="bg-white text-blue-700 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition-colors">
+                        <i class="fas fa-file-alt mr-2"></i> Online Teklif Al
+                    </a>
+                    <a href="tel:+902121234567" class="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/10 transition-colors">
+                        <i class="fas fa-phone mr-2"></i> Hemen Ara
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 pt-16 pb-8">
+        <div class="max-w-screen-2xl mx-auto px-4 lg:px-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+                <div>
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-industry text-white"></i>
+                        </div>
+                        <div>
+                            <span class="text-lg font-bold text-white">VARİLSAN</span>
+                            <span class="text-lg font-light text-blue-400">GRUP</span>
+                        </div>
+                    </div>
+                    <p class="text-sm mb-5">Türkiye'nin endüstriyel ambalajda en entegre grubu.</p>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-9 h-9 bg-gray-800 hover:bg-blue-600 rounded-lg flex items-center justify-center transition-colors"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="w-9 h-9 bg-gray-800 hover:bg-blue-600 rounded-lg flex items-center justify-center transition-colors"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="w-9 h-9 bg-gray-800 hover:bg-blue-600 rounded-lg flex items-center justify-center transition-colors"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-5">Hızlı Linkler</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors">Hakkımızda</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Ürünler</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Hizmetler</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">İletişim</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-5">Şirketler</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors flex items-center gap-2"><i class="fas fa-industry text-blue-400"></i> Varilsan Polimer</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors flex items-center gap-2"><i class="fas fa-recycle text-green-400"></i> Varilsan Ambalaj</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors flex items-center gap-2"><i class="fas fa-sync-alt text-purple-400"></i> Varilsan Plastik</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-5">İletişim</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-blue-400"></i> Türkiye Geneli Hizmet</li>
+                        <li><a href="tel:+902121234567" class="flex items-center gap-2 hover:text-white transition-colors"><i class="fas fa-phone text-blue-400"></i> +90 212 123 45 67</a></li>
+                        <li><a href="mailto:info@varilsan.com" class="flex items-center gap-2 hover:text-white transition-colors"><i class="fas fa-envelope text-blue-400"></i> info@varilsan.com</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 flex flex-wrap justify-between items-center gap-4 text-sm">
+                <p>© 2024 Varilsan Grup. Tüm hakları saklıdır.</p>
+                <div class="flex gap-5">
+                    <a href="#" class="hover:text-white transition-colors">Gizlilik</a>
+                    <a href="#" class="hover:text-white transition-colors">Kullanım Şartları</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+</body></html>

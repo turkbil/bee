@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurumsal Erisim Kontrol Sistemi - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/20 text-purple-400 rounded-full text-sm mb-4">
+                <i class="fas fa-building"></i>
+                Muzibu Kurumsal Sistemi
+            </div>
+            <h1 class="text-3xl font-bold mb-2">Kurumsal Erisim Kontrol Sistemi</h1>
+            <p class="text-slate-400">Ana sube / Alt uye rol ayrimi ve davet kodu yonetimi</p>
+            <p class="text-slate-500 text-sm mt-2">23 Aralik 2025</p>
+        </div>
+
+        <!-- Basit Anlatim -->
+        <div class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-400 mb-4">
+                <i class="fas fa-lightbulb mr-2"></i>Basit Anlatim (Herkes Icin)
+            </h2>
+            <div class="space-y-4 text-slate-300">
+                <p>
+                    <strong>Ne yapilacak?</strong> Kurumsal sistemde iki tip kullanici var:
+                    <span class="text-yellow-400">Ana Sube (sahip)</span> ve
+                    <span class="text-blue-400">Alt Uyeler (calisanlar)</span>.
+                </p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li><strong>Ana Sube:</strong> Kurumsal dashboard'u gorebilir, uyelik satin alabilir, uyeleri yonetebilir</li>
+                    <li><strong>Alt Uyeler:</strong> Sadece hangi sirkete bagli olduklarini gorebilir, cikis yapabilir</li>
+                    <li><strong>Kurumsal Olmayan Uyeler:</strong> Davet kodu girerek bir sirkete katilabilir</li>
+                </ul>
+                <p class="text-slate-400 italic">
+                    Yani: Patron her seyi yonetir, calisanlar sadece baglilik durumunu gorur,
+                    disaridakiler kod girerek katilir.
+                </p>
+            </div>
+        </div>
+
+        <!-- Mevcut Durum -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-slate-300 mb-4">
+                <i class="fas fa-info-circle mr-2 text-blue-400"></i>Mevcut Durum
+            </h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-700/30 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">/corporate/dashboard</h3>
+                    <p class="text-sm text-slate-400">Ana dashboard - su an herkes gorebiliyor (yanlis!)</p>
+                </div>
+                <div class="bg-slate-700/30 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">/corporate/my-corporate</h3>
+                    <p class="text-sm text-slate-400">Alt uye sayfasi - bagli olunan sirket bilgisi</p>
+                </div>
+                <div class="bg-slate-700/30 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">/corporate/join</h3>
+                    <p class="text-sm text-slate-400">Davet kodu ile katilim sayfasi - ayri sayfa</p>
+                </div>
+                <div class="bg-slate-700/30 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">/dashboard</h3>
+                    <p class="text-sm text-slate-400">Normal dashboard - kurumsal bilgi yok</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Yapilacaklar -->
+        <div class="space-y-6">
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                <i class="fas fa-tasks text-purple-400"></i>
+                Yapilacaklar
+            </h2>
+
+            <!-- Task 1 -->
+            <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
+                <div class="bg-purple-500/20 px-6 py-4 border-b border-slate-700">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">1</span>
+                        <h3 class="text-lg font-semibold text-white">Dashboard Erisim Kontrolu</h3>
+                    </div>
+                </div>
+                <div class="p-6 space-y-4">
+                    <p class="text-slate-300">
+                        <code class="bg-slate-700 px-2 py-1 rounded">/corporate/dashboard</code>
+                        sayfasina erisim kisitlamasi ekle.
+                    </p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-yellow-400 mb-2"><i class="fas fa-code mr-2"></i>CorporateFrontController::dashboard()</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• Kullanici ana sube mi kontrol et (parent_id = null)</li>
+                            <li>• Ana sube degilse → /corporate/my-corporate'a yonlendir</li>
+                            <li>• Kurumsal hesabi yoksa → /corporate/join'e yonlendir</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-4">
+                        <h4 class="font-semibold text-blue-400 mb-2">Mantik Akisi</h4>
+                        <pre class="text-xs text-slate-300 overflow-x-auto">
+Kullanici giris yapar
+    ↓
+/corporate/dashboard'a gider
+    ↓
+├── Kurumsal hesabi yok? → /corporate/join'e yonlendir
+├── Alt uye mi? (parent_id != null) → /corporate/my-corporate'a yonlendir
+└── Ana sube mi? (parent_id = null) → Dashboard goster ✓
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task 2 -->
+            <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
+                <div class="bg-green-500/20 px-6 py-4 border-b border-slate-700">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">2</span>
+                        <h3 class="text-lg font-semibold text-white">Normal Dashboard'a Kurumsal Panel Ekle</h3>
+                    </div>
+                </div>
+                <div class="p-6 space-y-4">
+                    <p class="text-slate-300">
+                        <code class="bg-slate-700 px-2 py-1 rounded">/dashboard</code>
+                        sayfasinin alt kismina kurumsal durum paneli ekle.
+                    </p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-purple-400 mb-3"><i class="fas fa-palette mr-2"></i>UI Tasarimi</h4>
+
+                        <!-- Mockup: Kurumsal Olmayan -->
+                        <div class="bg-slate-800 border border-slate-600 rounded-lg p-4 mb-4">
+                            <p class="text-xs text-slate-500 mb-2">Kurumsal olmayan kullanici icin:</p>
+                            <div class="bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-purple-500/30 rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h5 class="text-white font-semibold"><i class="fas fa-building mr-2 text-purple-400"></i>Kurumsal Hesap</h5>
+                                        <p class="text-sm text-slate-400">Bir sirkete baglanmak icin davet kodu girin</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 mt-3">
+                                    <input type="text" placeholder="Davet kodunu girin..." class="flex-1 bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500">
+                                    <button class="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg text-sm font-medium">
+                                        <i class="fas fa-sign-in-alt mr-1"></i>Katil
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mockup: Alt Uye -->
+                        <div class="bg-slate-800 border border-slate-600 rounded-lg p-4 mb-4">
+                            <p class="text-xs text-slate-500 mb-2">Alt uye icin (kurumsal bagli):</p>
+                            <div class="bg-gradient-to-r from-blue-900/30 to-cyan-900/30 border border-blue-500/30 rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h5 class="text-white font-semibold"><i class="fas fa-building mr-2 text-blue-400"></i>ABC Sirket Ltd.</h5>
+                                        <p class="text-sm text-slate-400">Merkez Sube'ye baglisiniz</p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <a href="#" class="px-3 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg text-sm">
+                                            <i class="fas fa-eye mr-1"></i>Detay
+                                        </a>
+                                        <button class="px-3 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg text-sm">
+                                            <i class="fas fa-sign-out-alt mr-1"></i>Cik
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mockup: Ana Sube -->
+                        <div class="bg-slate-800 border border-slate-600 rounded-lg p-4">
+                            <p class="text-xs text-slate-500 mb-2">Ana sube icin:</p>
+                            <div class="bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-500/30 rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h5 class="text-white font-semibold">
+                                            <i class="fas fa-crown mr-2 text-yellow-400"></i>ABC Sirket Ltd.
+                                            <span class="ml-2 px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs rounded">Ana Sube</span>
+                                        </h5>
+                                        <p class="text-sm text-slate-400">5 uye • 3 aktif uyelik</p>
+                                    </div>
+                                    <a href="/corporate/dashboard" class="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg text-sm font-medium">
+                                        <i class="fas fa-cog mr-1"></i>Yonet
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task 3 -->
+            <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
+                <div class="bg-blue-500/20 px-6 py-4 border-b border-slate-700">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">3</span>
+                        <h3 class="text-lg font-semibold text-white">Dashboard Controller Guncellemesi</h3>
+                    </div>
+                </div>
+                <div class="p-6 space-y-4">
+                    <p class="text-slate-300">
+                        <code class="bg-slate-700 px-2 py-1 rounded">DashboardController</code>
+                        kurumsal durum bilgisini view'a gonderecek.
+                    </p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-yellow-400 mb-2"><i class="fas fa-database mr-2"></i>Gonderilecek Veri</h4>
+                        <pre class="text-xs text-slate-300 overflow-x-auto bg-slate-800 p-3 rounded">
+$corporateStatus = [
+    'has_corporate' => true/false,
+    'is_owner' => true/false,      // parent_id = null ise true
+    'account' => [
+        'company_name' => 'ABC Sirket',
+        'branch_name' => 'Merkez',
+        'member_count' => 5,
+        'active_subscriptions' => 3,
+        'invite_code' => 'ABC123'  // sadece owner icin
+    ],
+    'parent_company' => 'XYZ Holding'  // alt uye ise
+];
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task 4 -->
+            <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
+                <div class="bg-red-500/20 px-6 py-4 border-b border-slate-700">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white font-bold">4</span>
+                        <h3 class="text-lg font-semibold text-white">Davet Kodu ile Katilim (Inline)</h3>
+                    </div>
+                </div>
+                <div class="p-6 space-y-4">
+                    <p class="text-slate-300">
+                        Dashboard'daki panelden direkt davet kodunu gonderecek AJAX endpoint kullanilacak.
+                        Mevcut <code class="bg-slate-700 px-2 py-1 rounded">/corporate/join</code> POST endpoint'i kullanilabilir.
+                    </p>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-green-400 mb-2"><i class="fas fa-check-circle mr-2"></i>Mevcut Endpoint</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• POST /corporate/join - Davet kodu ile katilim</li>
+                            <li>• POST /corporate/leave - Kurumsal hesaptan cikis</li>
+                            <li>• Her ikisi de JSON response donduruyor ✓</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-yellow-900/20 border border-yellow-800 rounded-lg p-4">
+                        <h4 class="font-semibold text-yellow-400 mb-2"><i class="fas fa-exclamation-triangle mr-2"></i>Dikkat</h4>
+                        <p class="text-sm text-slate-300">
+                            Kullanici zaten bir kurumsala bagliysa davet kodu alani gosterilmeyecek.
+                            Baska kurumsala gecmek icin once cikmasi gerekiyor.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-xl p-6 mt-8">
+            <h2 class="text-xl font-bold text-blue-400 mb-4">
+                <i class="fas fa-wrench mr-2"></i>Teknik Detaylar (Gelistiriciler Icin)
+            </h2>
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-semibold text-white mb-2">Dosya Degisiklikleri</h4>
+                    <ul class="text-sm text-slate-300 space-y-2">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-file-code text-yellow-400 mt-1"></i>
+                            <span><strong>CorporateFrontController.php</strong> - dashboard() metoduna erisim kontrolu</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-file-code text-blue-400 mt-1"></i>
+                            <span><strong>DashboardController.php</strong> - Kurumsal durum bilgisi ekleme</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-file-code text-green-400 mt-1"></i>
+                            <span><strong>dashboard.blade.php</strong> - Kurumsal panel ekleme (alt kisim)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-file-code text-purple-400 mt-1"></i>
+                            <span><strong>dashboard-content.blade.php</strong> - SPA partial guncelleme</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-semibold text-white mb-2">Model Iliskileri</h4>
+                    <pre class="text-xs text-slate-300 overflow-x-auto">
+MuzibuCorporateAccount
+├── user_id (User ile iliski)
+├── parent_id (null = ana sube, dolu = alt uye)
+├── company_name
+├── branch_name
+└── invite_code (sadece ana subelerde)
+
+Ana Sube Kontrolu: parent_id === null
+Alt Uye Kontrolu: parent_id !== null
+                    </pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ozet -->
+        <div class="bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-purple-500/30 rounded-xl p-6 mt-8">
+            <h2 class="text-xl font-bold text-white mb-4">
+                <i class="fas fa-list-check mr-2 text-purple-400"></i>Uygulama Ozeti
+            </h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-green-400">Yapilacak</h4>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li><i class="fas fa-check mr-2 text-green-400"></i>/corporate/dashboard erisim kisitla</li>
+                        <li><i class="fas fa-check mr-2 text-green-400"></i>/dashboard'a kurumsal panel ekle</li>
+                        <li><i class="fas fa-check mr-2 text-green-400"></i>Inline davet kodu girisi</li>
+                        <li><i class="fas fa-check mr-2 text-green-400"></i>Inline cikis butonu</li>
+                    </ul>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-blue-400">Mevcut Kullanilacak</h4>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li><i class="fas fa-recycle mr-2 text-blue-400"></i>POST /corporate/join endpoint</li>
+                        <li><i class="fas fa-recycle mr-2 text-blue-400"></i>POST /corporate/leave endpoint</li>
+                        <li><i class="fas fa-recycle mr-2 text-blue-400"></i>/corporate/my-corporate sayfasi</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-12 pt-8 border-t border-slate-800">
+            <p class="text-slate-500 text-sm">
+                <i class="fas fa-robot mr-2"></i>Claude AI tarafindan olusturuldu
+            </p>
+            <p class="text-slate-600 text-xs mt-2">Tenant 1001 - Muzibu</p>
+        </div>
+    </div>
+</body>
+</html>

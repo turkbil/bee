@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend 02: Ana Sayfa & Keşif - Muzibu Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{slate:{850:'#1a202e',950:'#0f1419'}}}}}</script>
+    <style>@media print{.no-print{display:none}input[type="checkbox"]{-webkit-appearance:checkbox;appearance:checkbox}}</style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <a href="../index.html" class="text-emerald-400 hover:text-emerald-300 no-print">← Geri</a>
+                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded text-sm no-print">🖨️ Yazdır</button>
+            </div>
+            <h1 class="text-3xl font-bold text-emerald-400 mb-2">Frontend 02: Ana Sayfa & Keşif</h1>
+            <p class="text-slate-400">Dashboard, öneriler, yeni çıkanlar, popüler içerikler</p>
+            <div class="mt-4 bg-slate-900 rounded-lg p-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold">İlerleme</span>
+                    <span class="text-sm" id="progress-text">0 / 10</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-3">
+                    <div id="progress-bar" class="bg-emerald-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">🏠 Ana Sayfa (Guest)</h2>
+                <div class="space-y-4">
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="home-hero">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Hero Section</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Büyük başlık: "Muzibu ile İş Yerinize Özel Müzik"<br>
+                                ▸ Açıklama metni ve CTA butonları: "Ücretsiz Dene", "Kurumsal Planlar"<br>
+                                ▸ Background görseli/video varsa yüklenmeli ve responsive olmalı<br>
+                                ▸ CTA butonları kayıt/giriş sayfasına yönlendirmeli
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="home-featured">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Öne Çıkan Playlist'ler</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Horizontal scroll section: Featured playlists<br>
+                                ▸ Her kart: Kapak, isim, şarkı sayısı<br>
+                                ▸ Kartlara tıklandığında playlist detay sayfasına gidilmeli<br>
+                                ▸ "Tümünü Gör" linki /playlists sayfasına yönlendirmeli
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="home-new-releases">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Yeni Çıkanlar (Albums)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ En son eklenen albümler gösterilmeli (created_at DESC, limit 8)<br>
+                                ▸ Grid layout: 4 sütun desktop, 2 sütun mobile<br>
+                                ▸ Album kartı: Kapak, isim, sanatçı, çıkış tarihi<br>
+                                ▸ Hover efekti: Play butonu ve favorilere ekle ikonu görünsün
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="home-popular">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Popüler Şarkılar</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Play count'a göre sıralanmış top 10 şarkı<br>
+                                ▸ Liste formatı: Numara, kapak, şarkı adı, sanatçı, play butonu<br>
+                                ▸ Play butonuna basıldığında şarkı queue'ya eklenmeli<br>
+                                ▸ Guest kullanıcı oynatabilmeli (premium limit yok ana sayfada)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="home-genres">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Türler (Genres)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Genre kartları: Renkli arka plan, isim, ikon<br>
+                                ▸ Tıklandığında genre detay sayfasına gidilmeli<br>
+                                ▸ Responsive grid: 6 sütun desktop, 3 sütun tablet, 2 sütun mobile<br>
+                                ▸ Hover animasyonu: Hafif büyüme efekti
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">📊 Dashboard (Auth Required)</h2>
+                <div class="space-y-4">
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="dash-welcome">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Hoşgeldin Mesajı</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "Hoşgeldin, {isim}!" başlığı<br>
+                                ▸ Subscription durumu badge: Free/Premium/Corporate<br>
+                                ▸ Premium değilse "Upgrade" CTA butonu<br>
+                                ▸ Son dinleme tarihi ve toplam dinleme süresi
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="dash-recent">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Son Dinlenenler</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Son 10 dinlenen şarkı listesi (listening_history tablosundan)<br>
+                                ▸ Horizontal scroll kartlar: Kapak, şarkı, sanatçı, dinlenme tarihi<br>
+                                ▸ Quick play butonu (tekrar dinle)<br>
+                                ▸ Boş liste: "Henüz şarkı dinlemediniz. Keşfetmeye başlayın!"
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="dash-favorites">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Favoriler Özeti</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Favori şarkı sayısı: "24 Favori Şarkı"<br>
+                                ▸ İlk 6 favori şarkı küçük kartlar halinde<br>
+                                ▸ "Tümünü Gör" linki /muzibu/favorites sayfasına gidilmeli<br>
+                                ▸ Boş liste: "Favorilere henüz şarkı eklemediniz"
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="dash-playlists">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Playlistlerim</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Kullanıcının oluşturduğu playlist sayısı ve ilk 4 playlist<br>
+                                ▸ "Yeni Playlist Oluştur" butonu belirgin olmalı<br>
+                                ▸ Playlist kartları: Kapak, isim, şarkı sayısı, düzenle butonu<br>
+                                ▸ "Tümünü Gör" linki /muzibu/my-playlists sayfasına gitmeli
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="dash-recommendations">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Önerilen İçerikler</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Kullanıcının dinleme geçmişine göre öneriler (benzer genre/artist)<br>
+                                ▸ "Senin İçin Seçtiklerimiz" başlığı<br>
+                                ▸ 8 önerilen şarkı/album kartı<br>
+                                ▸ Her kart tıklanabilir ve detay sayfasına gitmeli
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 flex gap-4 no-print">
+            <button onclick="resetProgress()" class="bg-red-600 hover:bg-red-500 px-6 py-3 rounded-lg text-white font-semibold">🔄 İlerlemeyi Sıfırla</button>
+            <button onclick="markAllComplete()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-3 rounded-lg text-white font-semibold">✅ Tümünü Tamamla</button>
+        </div>
+
+        <div class="mt-12 text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+            <p>🎵 Muzibu.com.tr - Ana Sayfa Test Checklist</p>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY='muzibu_test_frontend_02_home';const TOTAL_TESTS=10;
+        function loadProgress(){const saved=localStorage.getItem(STORAGE_KEY);if(saved){const data=JSON.parse(saved);document.querySelectorAll('.test-checkbox').forEach(checkbox=>{if(data[checkbox.dataset.test])checkbox.checked=true;})}updateProgress();}
+        function saveProgress(){const data={};document.querySelectorAll('.test-checkbox').forEach(checkbox=>{data[checkbox.dataset.test]=checkbox.checked;});localStorage.setItem(STORAGE_KEY,JSON.stringify(data));updateProgress();}
+        function updateProgress(){const checked=document.querySelectorAll('.test-checkbox:checked').length;const percentage=Math.round((checked/TOTAL_TESTS)*100);document.getElementById('progress-bar').style.width=percentage+'%';document.getElementById('progress-text').textContent=`${checked} / ${TOTAL_TESTS}`;}
+        function resetProgress(){if(!confirm('⚠️ Tüm işaretlemeler silinecek! Emin misiniz?'))return;localStorage.removeItem(STORAGE_KEY);document.querySelectorAll('.test-checkbox').forEach(cb=>cb.checked=false);updateProgress();}
+        function markAllComplete(){document.querySelectorAll('.test-checkbox').forEach(cb=>cb.checked=true);saveProgress();}
+        document.querySelectorAll('.test-checkbox').forEach(checkbox=>{checkbox.addEventListener('change',saveProgress);});
+        loadProgress();
+    </script>
+</body>
+</html>

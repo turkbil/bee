@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Zincir Sistemi - Yeni Mimari Planı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #0f172a; }
+        .gradient-text { background: linear-gradient(135deg, #34d399, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    </style>
+</head>
+<body class="min-h-screen text-slate-300">
+    <div class="max-w-6xl mx-auto px-6 py-12">
+
+        <!-- Header -->
+        <header class="mb-12">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-green-500/20 text-green-400 text-sm rounded-full">🏗️ Mimari Plan</span>
+                <span class="px-3 py-1 bg-blue-500/20 text-blue-400 text-sm rounded-full">v2</span>
+                <span class="text-slate-500">23 Aralık 2025</span>
+            </div>
+            <h1 class="text-4xl font-bold gradient-text mb-4">Subscription Zincir Sistemi</h1>
+            <p class="text-xl text-slate-400">Ardışık subscription'lar ile üyelik süresi yönetimi</p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-400 mb-4">📝 Basit Anlatım (Herkes İçin)</h2>
+            <div class="space-y-4 text-slate-300">
+                <p><strong>Yeni Mantık Nasıl Çalışacak?</strong></p>
+                <ul class="list-disc ml-6 space-y-2">
+                    <li><strong>Her satın alma = Ayrı kayıt:</strong> Kullanıcı her paket aldığında subscriptions tablosuna yeni kayıt eklenir (bu doğru)</li>
+                    <li><strong>Kullanıcı tablosunda expires_at:</strong> Kullanıcının toplam üyelik bitiş tarihi burada tutulur</li>
+                    <li><strong>Zincir mantığı:</strong> Yeni subscription, bir öncekinin bittiği yerden başlar</li>
+                    <li><strong>Otomatik geçiş:</strong> Aktif subscription bitince, beklemedeki subscription otomatik aktif olur</li>
+                </ul>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 mt-4">
+                    <p class="font-semibold text-white mb-2">📌 Örnek Senaryo:</p>
+                    <div class="text-sm space-y-1">
+                        <p>1. Kullanıcı 1 aylık paket alıyor → Subscription #1 (Aktif: 23 Aralık - 23 Ocak)</p>
+                        <p>2. 10 gün sonra 3 aylık paket alıyor → Subscription #2 (Beklemede: 23 Ocak - 23 Nisan)</p>
+                        <p>3. 23 Ocak gelince → Subscription #1 "Süresi Doldu", Subscription #2 "Aktif" olur</p>
+                        <p>4. users.expires_at = 23 Nisan 2026</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Durum Akış Şeması -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-white mb-6">🔄 Subscription Durumları ve Akışı</h2>
+
+            <div class="grid grid-cols-4 gap-4 mb-6">
+                <div class="bg-yellow-500/20 border border-yellow-600 rounded-lg p-4 text-center">
+                    <div class="text-3xl mb-2">⏳</div>
+                    <p class="font-bold text-yellow-400">pending_payment</p>
+                    <p class="text-xs text-slate-400 mt-1">Ödeme Bekliyor</p>
+                </div>
+                <div class="bg-blue-500/20 border border-blue-600 rounded-lg p-4 text-center">
+                    <div class="text-3xl mb-2">⏸️</div>
+                    <p class="font-bold text-blue-400">pending</p>
+                    <p class="text-xs text-slate-400 mt-1">Beklemede</p>
+                </div>
+                <div class="bg-green-500/20 border border-green-600 rounded-lg p-4 text-center">
+                    <div class="text-3xl mb-2">✅</div>
+                    <p class="font-bold text-green-400">active</p>
+                    <p class="text-xs text-slate-400 mt-1">Aktif</p>
+                </div>
+                <div class="bg-red-500/20 border border-red-600 rounded-lg p-4 text-center">
+                    <div class="text-3xl mb-2">🔴</div>
+                    <p class="font-bold text-red-400">expired</p>
+                    <p class="text-xs text-slate-400 mt-1">Süresi Doldu</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 rounded-lg p-4">
+                <p class="text-sm font-mono text-slate-300">
+                    <span class="text-yellow-400">pending_payment</span>
+                    <span class="text-slate-500">→ (ödeme başarılı) →</span>
+                    <span class="text-blue-400">pending</span> veya <span class="text-green-400">active</span>
+                    <span class="text-slate-500">→ (süre dolunca) →</span>
+                    <span class="text-red-400">expired</span>
+                </p>
+                <p class="text-xs text-slate-500 mt-2">
+                    * Eğer ödeme anında aktif subscription yoksa → direkt "active"<br>
+                    * Eğer ödeme anında aktif subscription varsa → "pending" (sıraya girer)
+                </p>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-blue-400 mb-4">🔧 Teknik Detaylar (Geliştiriciler İçin)</h2>
+
+            <div class="space-y-6">
+                <!-- Veritabanı Değişiklikleri -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-3">📊 Veritabanı Değişiklikleri</h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-purple-400 font-medium mb-2">1. users tablosuna yeni sütun (Central DB):</p>
+                            <div class="bg-slate-900 rounded p-3 font-mono text-sm">
+                                <span class="text-green-400">subscription_expires_at</span> DATETIME NULL<br>
+                                <span class="text-slate-500">-- Kullanıcının toplam üyelik bitiş tarihi</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-purple-400 font-medium mb-2">2. subscriptions.status enum güncelleme:</p>
+                            <div class="bg-slate-900 rounded p-3 font-mono text-sm">
+                                ENUM('pending_payment', 'pending', 'active', 'expired', 'cancelled')
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Satın Alma Akışı -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-3">🛒 Yeni Satın Alma Akışı</h3>
+
+                    <div class="space-y-3 text-sm">
+                        <div class="flex gap-3">
+                            <span class="bg-yellow-500/30 text-yellow-300 px-2 py-1 rounded text-xs">CHECKOUT</span>
+                            <div>
+                                <p class="text-white">Subscription oluştur (status: pending_payment)</p>
+                                <p class="text-slate-400">started_at ve current_period_end henüz belirlenmez</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3">
+                            <span class="bg-green-500/30 text-green-300 px-2 py-1 rounded text-xs">CALLBACK</span>
+                            <div>
+                                <p class="text-white">Ödeme başarılı → Tarihleri hesapla:</p>
+                                <div class="bg-slate-900 rounded p-2 mt-1 font-mono text-xs">
+                                    <p class="text-slate-400">// Mevcut aktif/pending subscription var mı?</p>
+                                    <p>$lastSub = Subscription::where('user_id', $userId)</p>
+                                    <p class="ml-4">->whereIn('status', ['active', 'pending'])</p>
+                                    <p class="ml-4">->orderBy('current_period_end', 'desc')->first();</p>
+                                    <br>
+                                    <p class="text-slate-400">// Yeni subscription başlangıcı</p>
+                                    <p><span class="text-green-400">$startDate</span> = $lastSub ? $lastSub->current_period_end : now();</p>
+                                    <p><span class="text-green-400">$endDate</span> = $startDate->addDays($durationDays);</p>
+                                    <br>
+                                    <p class="text-slate-400">// Status belirleme</p>
+                                    <p><span class="text-green-400">$status</span> = $lastSub ? 'pending' : 'active';</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3">
+                            <span class="bg-blue-500/30 text-blue-300 px-2 py-1 rounded text-xs">UPDATE</span>
+                            <div>
+                                <p class="text-white">users.subscription_expires_at güncelle</p>
+                                <div class="bg-slate-900 rounded p-2 mt-1 font-mono text-xs">
+                                    $user->subscription_expires_at = $endDate;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cron Job -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-3">⏰ Scheduler / Cron Job</h3>
+
+                    <div class="bg-slate-900 rounded p-3 font-mono text-sm">
+                        <p class="text-slate-400">// Her saat çalışacak command</p>
+                        <p class="text-purple-400">php artisan subscription:process-transitions</p>
+                        <br>
+                        <p class="text-slate-400">// 1. Süresi dolan active subscription'ları expired yap</p>
+                        <p>Subscription::where('status', 'active')</p>
+                        <p class="ml-4">->where('current_period_end', '&lt;', now())</p>
+                        <p class="ml-4">->update(['status' => 'expired']);</p>
+                        <br>
+                        <p class="text-slate-400">// 2. Sırası gelen pending subscription'ları active yap</p>
+                        <p>Subscription::where('status', 'pending')</p>
+                        <p class="ml-4">->where('current_period_start', '&lt;=', now())</p>
+                        <p class="ml-4">->update(['status' => 'active']);</p>
+                    </div>
+                </div>
+
+                <!-- Premium Kontrol -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-3">🔐 Premium Erişim Kontrolü</h3>
+
+                    <div class="bg-slate-900 rounded p-3 font-mono text-sm">
+                        <p class="text-slate-400">// Hızlı kontrol (users tablosundan)</p>
+                        <p>$isPremium = $user->subscription_expires_at > now();</p>
+                        <br>
+                        <p class="text-slate-400">// veya aktif subscription kontrolü</p>
+                        <p>$hasActiveSubscription = $user->subscriptions()</p>
+                        <p class="ml-4">->where('status', 'active')</p>
+                        <p class="ml-4">->where('current_period_end', '>', now())</p>
+                        <p class="ml-4">->exists();</p>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2">
+                        💡 users.subscription_expires_at ile hızlı kontrol yapılabilir,
+                        subscription tablosuna sorgu gerekmez.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Görsel Örnek -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-white mb-4">📊 Görsel Örnek: Zincir Subscription</h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="text-slate-400 border-b border-slate-700">
+                        <tr>
+                            <th class="text-left py-3 px-2">ID</th>
+                            <th class="text-left py-3 px-2">Plan</th>
+                            <th class="text-left py-3 px-2">Başlangıç</th>
+                            <th class="text-left py-3 px-2">Bitiş</th>
+                            <th class="text-left py-3 px-2">Status</th>
+                            <th class="text-left py-3 px-2">Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-3 px-2">101</td>
+                            <td class="py-3 px-2">1 Aylık</td>
+                            <td class="py-3 px-2">23 Ara 2025</td>
+                            <td class="py-3 px-2">23 Oca 2026</td>
+                            <td class="py-3 px-2"><span class="bg-green-500/30 text-green-300 px-2 py-1 rounded text-xs">active</span></td>
+                            <td class="py-3 px-2 text-slate-400">Şu an kullanılıyor</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-3 px-2">102</td>
+                            <td class="py-3 px-2">3 Aylık</td>
+                            <td class="py-3 px-2">23 Oca 2026</td>
+                            <td class="py-3 px-2">23 Nis 2026</td>
+                            <td class="py-3 px-2"><span class="bg-blue-500/30 text-blue-300 px-2 py-1 rounded text-xs">pending</span></td>
+                            <td class="py-3 px-2 text-slate-400">Sırada bekliyor</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-3 px-2">103</td>
+                            <td class="py-3 px-2">1 Yıllık</td>
+                            <td class="py-3 px-2">23 Nis 2026</td>
+                            <td class="py-3 px-2">23 Nis 2027</td>
+                            <td class="py-3 px-2"><span class="bg-blue-500/30 text-blue-300 px-2 py-1 rounded text-xs">pending</span></td>
+                            <td class="py-3 px-2 text-slate-400">En son sırada</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 p-3 bg-green-900/30 border border-green-700 rounded-lg">
+                <p class="text-green-400 font-medium">👤 users.subscription_expires_at = 23 Nisan 2027</p>
+                <p class="text-sm text-slate-400 mt-1">Kullanıcının toplam üyelik süresi (tüm subscription'ların toplamı)</p>
+            </div>
+        </section>
+
+        <!-- Yapılacaklar -->
+        <section class="bg-purple-900/20 border border-purple-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-purple-400 mb-4">📋 Yapılacaklar Listesi</h2>
+
+            <div class="space-y-4">
+                <!-- Migration -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="bg-purple-500/30 text-purple-300 px-3 py-1 rounded text-sm font-medium">1. Migration</span>
+                    </div>
+                    <ul class="list-disc ml-6 text-sm space-y-1">
+                        <li>users tablosuna <code class="bg-slate-700 px-1 rounded">subscription_expires_at</code> sütunu ekle (Central DB)</li>
+                        <li>subscriptions.status enum güncelle (pending_payment, pending, active, expired, cancelled)</li>
+                    </ul>
+                </div>
+
+                <!-- Model Güncelleme -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="bg-blue-500/30 text-blue-300 px-3 py-1 rounded text-sm font-medium">2. Model Güncelleme</span>
+                    </div>
+                    <ul class="list-disc ml-6 text-sm space-y-1">
+                        <li>User.php → subscription_expires_at cast, isPremium() helper</li>
+                        <li>Subscription.php → Yeni status scope'ları (pending, expired)</li>
+                    </ul>
+                </div>
+
+                <!-- Order Logic -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="bg-green-500/30 text-green-300 px-3 py-1 rounded text-sm font-medium">3. Satın Alma Mantığı</span>
+                    </div>
+                    <ul class="list-disc ml-6 text-sm space-y-1">
+                        <li>Order::activateSubscriptionItems() güncelle:
+                            <ul class="list-circle ml-4 mt-1 text-slate-400">
+                                <li>Son subscription bitiş tarihini bul</li>
+                                <li>Yeni subscription tarihlerini ona göre hesapla</li>
+                                <li>Aktif subscription varsa "pending", yoksa "active" yap</li>
+                                <li>users.subscription_expires_at güncelle</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Scheduler -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="bg-yellow-500/30 text-yellow-300 px-3 py-1 rounded text-sm font-medium">4. Scheduler Command</span>
+                    </div>
+                    <ul class="list-disc ml-6 text-sm space-y-1">
+                        <li>ProcessSubscriptionTransitions command oluştur</li>
+                        <li>Kernel.php'ye saatlik schedule ekle</li>
+                        <li>Active → Expired geçişi</li>
+                        <li>Pending → Active geçişi</li>
+                    </ul>
+                </div>
+
+                <!-- Mevcut Veri Düzeltme -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="bg-red-500/30 text-red-300 px-3 py-1 rounded text-sm font-medium">5. Mevcut Veri Düzeltme</span>
+                    </div>
+                    <ul class="list-disc ml-6 text-sm space-y-1">
+                        <li>Duplicate active subscription'ları düzelt (User 2 gibi)</li>
+                        <li>users.subscription_expires_at değerlerini hesapla ve doldur</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- İlgili Dosyalar -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-white mb-4">📁 Değişecek Dosyalar</h2>
+            <div class="font-mono text-sm space-y-3">
+                <div>
+                    <p class="text-purple-400">Migration (Yeni):</p>
+                    <p class="text-slate-400 ml-4">database/migrations/xxxx_add_subscription_expires_at_to_users.php</p>
+                    <p class="text-slate-400 ml-4">database/migrations/tenant/xxxx_update_subscriptions_status_enum.php</p>
+                </div>
+                <div>
+                    <p class="text-blue-400">Model:</p>
+                    <p class="text-slate-400 ml-4">app/Models/User.php → subscription_expires_at, isPremium()</p>
+                    <p class="text-slate-400 ml-4">Modules/Subscription/app/Models/Subscription.php → status scopes</p>
+                </div>
+                <div>
+                    <p class="text-green-400">Satın Alma:</p>
+                    <p class="text-slate-400 ml-4">Modules/Cart/app/Models/Order.php → activateSubscriptionItems()</p>
+                </div>
+                <div>
+                    <p class="text-yellow-400">Command (Yeni):</p>
+                    <p class="text-slate-400 ml-4">app/Console/Commands/ProcessSubscriptionTransitions.php</p>
+                    <p class="text-slate-400 ml-4">app/Console/Kernel.php → schedule</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm pt-8 border-t border-slate-800">
+            <p>Claude AI Mimari Plan • 23 Aralık 2025 • v2</p>
+            <p class="mt-1">Muzibu.com.tr - Subscription Zincir Sistemi</p>
+        </footer>
+
+    </div>
+</body>
+</html>

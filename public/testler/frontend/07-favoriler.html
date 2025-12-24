@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend 07: Favoriler - Muzibu Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { slate: { 850: '#1a202e', 950: '#0f1419' } } } }
+        }
+    </script>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            input[type="checkbox"] { -webkit-appearance: checkbox; appearance: checkbox; }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <a href="../index.html" class="text-emerald-400 hover:text-emerald-300 no-print">← Geri</a>
+                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded text-sm no-print">🖨️ Yazdır</button>
+            </div>
+            <h1 class="text-3xl font-bold text-emerald-400 mb-2">Frontend 07: Favoriler Sistemi</h1>
+            <p class="text-slate-400">Favorilere ekleme/çıkarma, favoriler sayfası, kalp ikonu toggle</p>
+
+            <div class="mt-4 bg-slate-900 rounded-lg p-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold">İlerleme</span>
+                    <span class="text-sm" id="progress-text">0 / 10</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-3">
+                    <div id="progress-bar" class="bg-emerald-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+
+            <!-- Favorilere Ekleme -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">❤️ Favorilere Ekleme</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="fav-add-song">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Şarkı Favorilere Ekleme</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Şarkı kartı/satırında kalp ikonu (♡) olmalı<br>
+                                ▸ Kalp ikonuna tıklandığında şarkı favorilere eklenmeli<br>
+                                ▸ İkon dolu kalbe (♥) dönüşmeli ve kırmızı renkte olmalı<br>
+                                ▸ API endpoint: POST /api/muzibu/favorite/add<br>
+                                ▸ Database: favorites tablosuna kayıt eklenmeli (user_id, favoriteable_type, favoriteable_id)<br>
+                                ▸ Toast mesajı: "✅ Favorilere eklendi"
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="fav-add-album">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Album Favorilere Ekleme</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Album detay sayfasında "Favorilere Ekle" butonu olmalı<br>
+                                ▸ Buton tıklandığında album favorilere eklenmeli<br>
+                                ▸ Buton metni "Favorilerden Çıkar" olarak değişmeli<br>
+                                ▸ Favoriteable polymorphic ilişkisi: type="album", id=album_id
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="fav-add-playlist">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Playlist Favorilere Ekleme</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Playlist detay sayfasında kalp ikonu olmalı<br>
+                                ▸ Toggle davranışı: Ekle/Çıkar<br>
+                                ▸ Playlist kartlarında favori durumu gösterilmeli (dolu/boş kalp)<br>
+                                ▸ User'ın kendi oluşturduğu playlist'lerde favori ikonu gösterilmemeli (gereksiz)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="fav-auth-required">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Giriş Zorunluluğu</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Guest kullanıcı (giriş yapmamış) favorilere ekleyemez<br>
+                                ▸ Kalp ikonuna tıklandığında "Giriş yapmalısınız" modal'ı açılmalı<br>
+                                ▸ Modal'da "Giriş Yap" ve "Kayıt Ol" butonları olmalı<br>
+                                ▸ Giriş yaptıktan sonra aynı sayfaya dönülmeli (redirect back)
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Favorilerden Çıkarma -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">💔 Favorilerden Çıkarma</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="fav-remove-toggle">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Toggle ile Çıkarma</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Favorideki şarkıda dolu kalp (♥) görünür<br>
+                                ▸ Tekrar tıklandığında favorilerden çıkarılır<br>
+                                ▸ İkon boş kalbe (♡) dönüşür<br>
+                                ▸ API: DELETE /api/muzibu/favorite/remove<br>
+                                ▸ Toast mesajı: "❌ Favorilerden çıkarıldı"
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="fav-remove-from-page">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Favoriler Sayfasından Çıkarma</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Favoriler sayfasında "Çıkar" butonu olmalı<br>
+                                ▸ Onay modal'ı: "Favorilerden çıkarılsın mı?"<br>
+                                ▸ Onaylanınca item listeden kaldırılmalı (fade-out animasyonu)<br>
+                                ▸ Liste boşaldıysa "Henüz favori eklemediniz" mesajı gösterilmeli
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Favoriler Sayfası -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">📄 Favoriler Sayfası</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="fav-page-layout">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Sayfa Düzeni</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Tab'lar: "Şarkılar", "Albümler", "Playlist'ler"<br>
+                                ▸ Her tab için ayrı liste görünümü<br>
+                                ▸ Favori sayısı tab başlığında gösterilmeli (ör: "Şarkılar (24)")<br>
+                                ▸ URL: /muzibu/favorites (auth required)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="fav-page-songs">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Favori Şarkılar Listesi</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Şarkı adı, sanatçı, album, süre gösterilmeli<br>
+                                ▸ Her şarkıda: Play butonu, Queue'ya ekle, Playlist'e ekle, Çıkar<br>
+                                ▸ "Tümünü Oynat" butonu en üstte olmalı (tüm favori şarkıları queue'ya ekler)<br>
+                                ▸ Boş liste mesajı: "Henüz favori şarkınız yok. Keşfetmeye başlayın!"
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="fav-page-albums">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Favori Albümler</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Grid görünüm: Album kapağı, isim, sanatçı<br>
+                                ▸ Album kartına tıklandığında detay sayfasına gidilmeli<br>
+                                ▸ Hover'da "Oynat" ve "Çıkar" butonları gösterilmeli<br>
+                                ▸ Pagination: 12 album/sayfa
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="fav-page-playlists">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Favori Playlist'ler</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Grid görünüm: Playlist kapağı, isim, şarkı sayısı<br>
+                                ▸ Playlist kartına tıklandığında detay sayfasına gidilmeli<br>
+                                ▸ "Kopyala" butonu: Favori playlist'i kendi hesabına kopyalar<br>
+                                ▸ Sıralama: En son eklenen en üstte
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-8 flex gap-4 no-print">
+            <button onclick="resetProgress()" class="bg-red-600 hover:bg-red-500 px-6 py-3 rounded-lg text-white font-semibold">
+                🔄 İlerlemeyi Sıfırla
+            </button>
+            <button onclick="markAllComplete()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-3 rounded-lg text-white font-semibold">
+                ✅ Tümünü Tamamla
+            </button>
+        </div>
+
+        <div class="mt-12 text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+            <p>🎵 Muzibu.com.tr - Favoriler Test Checklist</p>
+        </div>
+
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'muzibu_test_frontend_07_favorites';
+        const TOTAL_TESTS = 10;
+
+        function loadProgress() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+                    if (data[checkbox.dataset.test]) checkbox.checked = true;
+                });
+            }
+            updateProgress();
+        }
+
+        function saveProgress() {
+            const data = {};
+            document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+                data[checkbox.dataset.test] = checkbox.checked;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const checked = document.querySelectorAll('.test-checkbox:checked').length;
+            const percentage = Math.round((checked / TOTAL_TESTS) * 100);
+            document.getElementById('progress-bar').style.width = percentage + '%';
+            document.getElementById('progress-text').textContent = `${checked} / ${TOTAL_TESTS}`;
+        }
+
+        function resetProgress() {
+            if (!confirm('⚠️ Tüm işaretlemeler silinecek! Emin misiniz?')) return;
+            localStorage.removeItem(STORAGE_KEY);
+            document.querySelectorAll('.test-checkbox').forEach(cb => cb.checked = false);
+            updateProgress();
+        }
+
+        function markAllComplete() {
+            document.querySelectorAll('.test-checkbox').forEach(cb => cb.checked = true);
+            saveProgress();
+        }
+
+        document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', saveProgress);
+        });
+
+        loadProgress();
+    </script>
+</body>
+</html>

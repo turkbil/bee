@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu.com.tr - Test Checklist'leri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1a202e',
+                            950: '#0f1419'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @media print {
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+
+        <!-- Header -->
+        <div class="mb-10 text-center border-b border-slate-800 pb-8">
+            <h1 class="text-4xl font-bold text-white mb-3">
+                🎵 Muzibu.com.tr
+            </h1>
+            <p class="text-2xl text-slate-300 mb-2">
+                Manuel Test Checklist'leri
+            </p>
+            <p class="text-slate-400 text-sm">
+                Portable • LocalStorage • 30 Kategori
+            </p>
+        </div>
+
+        <!-- Progress Overview -->
+        <div class="bg-gradient-to-r from-emerald-900/30 to-purple-900/30 border border-slate-700 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-bold text-white mb-4">📊 Genel İlerleme</h2>
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-slate-900/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-emerald-400" id="frontend-progress">0%</div>
+                    <div class="text-sm text-slate-400">Frontend (15 Kategori)</div>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-purple-400" id="admin-progress">0%</div>
+                    <div class="text-sm text-slate-400">Admin Panel (15 Kategori)</div>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-blue-400" id="total-progress">0%</div>
+                    <div class="text-sm text-slate-400">Toplam (30 Kategori)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Frontend Categories -->
+        <div class="mb-10">
+            <h2 class="text-3xl font-bold text-emerald-400 mb-6 border-b border-emerald-900 pb-3">
+                🌐 Frontend Test Kategorileri
+            </h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <a href="frontend/01-kimlik-dogrulama.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-emerald-300 group-hover:text-emerald-200">01. Kimlik Doğrulama</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/12</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Kayıt, giriş, profil yönetimi</p>
+                </a>
+
+                <a href="frontend/02-ana-sayfa.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-emerald-300 group-hover:text-emerald-200">02. Ana Sayfa & Keşif</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/10</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Dashboard, öneriler, yeni çıkanlar</p>
+                </a>
+
+                <a href="frontend/03-katalog.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-emerald-300 group-hover:text-emerald-200">03. Katalog Sayfaları</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/20</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Playlists, Albums, Artists, Songs</p>
+                </a>
+
+                <a href="frontend/04-detay-sayfalar.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-emerald-300 group-hover:text-emerald-200">04. Detay Sayfaları</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/16</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Song, Album, Artist, Playlist detayları</p>
+                </a>
+
+                <a href="frontend/05-player.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-emerald-300 group-hover:text-emerald-200">05. Oynatıcı (Player)</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/25</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Play, pause, seek, volume, HLS</p>
+                </a>
+
+                <a href="frontend/06-queue.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-emerald-300 group-hover:text-emerald-200">06. Queue Yönetimi</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/12</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Kuyruk, sıralama, refill</p>
+                </a>
+
+                <a href="frontend/07-favoriler.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-emerald-300 group-hover:text-emerald-200">07. Favoriler</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/10</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Favorilere ekleme/çıkarma</p>
+                </a>
+
+                <a href="frontend/08-playlist-yonetimi.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-emerald-300 group-hover:text-emerald-200">08. Playlist Yönetimi</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/15</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Oluşturma, düzenleme, silme</p>
+                </a>
+
+                <a href="frontend/09-dinleme-gecmisi.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-emerald-300 group-hover:text-emerald-200">09. Dinleme Geçmişi</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/8</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Geçmiş, temizleme</p>
+                </a>
+
+                <a href="frontend/10-arama.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-emerald-300 group-hover:text-emerald-200">10. Arama Sistemi</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/10</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Search, autocomplete, sonuçlar</p>
+                </a>
+
+                <a href="frontend/11-corporate.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-emerald-300 group-hover:text-emerald-200">11. Corporate</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/18</span>
+                    </div>
+                    <p class="text-sm text-slate-400">İş yeri, join, dashboard</p>
+                </a>
+
+                <a href="frontend/12-subscription.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-emerald-300 group-hover:text-emerald-200">12. Subscription & Ödeme</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/14</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Plan seçimi, ödeme, PayTR</p>
+                </a>
+
+                <a href="frontend/13-spa-router.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-emerald-300 group-hover:text-emerald-200">13. SPA Router</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/8</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Navigasyon, player süreklilik</p>
+                </a>
+
+                <a href="frontend/14-responsive.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-emerald-300 group-hover:text-emerald-200">14. Responsive Tasarım</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/12</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Mobile, tablet, desktop</p>
+                </a>
+
+                <a href="frontend/15-performans.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-emerald-300 group-hover:text-emerald-200">15. Performans & Cache</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/10</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Yükleme hızı, cache</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Admin Categories -->
+        <div class="mb-10">
+            <h2 class="text-3xl font-bold text-purple-400 mb-6 border-b border-purple-900 pb-3">
+                ⚙️ Admin Panel Test Kategorileri
+            </h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <a href="admin/01-giris-yetkiler.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-purple-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-purple-300 group-hover:text-purple-200">01. Giriş & Yetkiler</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/8</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Admin login, role, permission</p>
+                </a>
+
+                <a href="admin/02-song-yonetimi.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-purple-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-purple-300 group-hover:text-purple-200">02. Song Yönetimi</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/20</span>
+                    </div>
+                    <p class="text-sm text-slate-400">CRUD, upload, metadata</p>
+                </a>
+
+                <a href="admin/03-album-yonetimi.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-purple-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-purple-300 group-hover:text-purple-200">03. Album Yönetimi</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/12</span>
+                    </div>
+                    <p class="text-sm text-slate-400">CRUD, şarkı ilişkileri</p>
+                </a>
+
+                <a href="admin/04-artist-yonetimi.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-purple-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-purple-300 group-hover:text-purple-200">04. Artist Yönetimi</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/10</span>
+                    </div>
+                    <p class="text-sm text-slate-400">CRUD, bio, image</p>
+                </a>
+
+                <a href="admin/05-playlist-yonetimi.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-purple-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-purple-300 group-hover:text-purple-200">05. Playlist Yönetimi</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/14</span>
+                    </div>
+                    <p class="text-sm text-slate-400">CRUD, şarkı ekleme</p>
+                </a>
+
+                <a href="admin/06-genre-yonetimi.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-purple-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-purple-300 group-hover:text-purple-200">06. Genre Yönetimi</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/8</span>
+                    </div>
+                    <p class="text-sm text-slate-400">CRUD, renkler, ikonlar</p>
+                </a>
+
+                <a href="admin/07-sector-yonetimi.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-purple-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-purple-300 group-hover:text-purple-200">07. Sector Yönetimi</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/8</span>
+                    </div>
+                    <p class="text-sm text-slate-400">CRUD, açıklama, görsel</p>
+                </a>
+
+                <a href="admin/08-radio-yonetimi.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-purple-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-purple-300 group-hover:text-purple-200">08. Radio Yönetimi</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/8</span>
+                    </div>
+                    <p class="text-sm text-slate-400">CRUD, stream URL</p>
+                </a>
+
+                <a href="admin/09-subscription-plan.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-purple-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-purple-300 group-hover:text-purple-200">09. Subscription Plan</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/10</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Plan ekleme, özellikler</p>
+                </a>
+
+                <a href="admin/10-user-yonetimi.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-purple-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-purple-300 group-hover:text-purple-200">10. User Yönetimi</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/10</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Liste, düzenleme, subscription</p>
+                </a>
+
+                <a href="admin/11-media-yonetimi.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-purple-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-purple-300 group-hover:text-purple-200">11. Media Yönetimi</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/10</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Upload, thumbmaker, WebP</p>
+                </a>
+
+                <a href="admin/12-hls-conversion.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-purple-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-purple-300 group-hover:text-purple-200">12. HLS Conversion</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/12</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Tekil/toplu dönüşüm</p>
+                </a>
+
+                <a href="admin/13-bulk-islemler.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-purple-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-purple-300 group-hover:text-purple-200">13. Bulk İşlemler</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/15</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Bulk upload, edit, delete</p>
+                </a>
+
+                <a href="admin/14-istatistikler.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-purple-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-purple-300 group-hover:text-purple-200">14. İstatistikler</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/10</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Dashboard stats, raporlar</p>
+                </a>
+
+                <a href="admin/15-sistem-ayarlari.html" class="group bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-purple-500 rounded-lg p-5 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-lg font-bold text-purple-300 group-hover:text-purple-200">15. Sistem Ayarları</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded">0/8</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Settings, cache yönetimi</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Export/Import -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-8 no-print">
+            <h3 class="text-xl font-bold text-blue-400 mb-4">💾 Export / Import</h3>
+            <div class="flex gap-4">
+                <button onclick="exportProgress()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg transition-colors">
+                    📥 Export Progress (JSON)
+                </button>
+                <label class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-lg transition-colors cursor-pointer">
+                    📤 Import Progress
+                    <input type="file" accept=".json" onchange="importProgress(event)" class="hidden">
+                </label>
+                <button onclick="clearAllProgress()" class="bg-red-600 hover:bg-red-500 text-white px-6 py-2 rounded-lg transition-colors">
+                    🗑️ Tüm İlerlemeyi Sil
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+            <p>🎵 Muzibu.com.tr - Test Checklist Sistemi</p>
+            <p class="mt-2">LocalStorage ile otomatik kayıt • Portable • 24 Aralık 2025</p>
+        </div>
+
+    </div>
+
+    <script>
+        // Export progress to JSON
+        function exportProgress() {
+            const allData = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('muzibu_test_')) {
+                    allData[key] = localStorage.getItem(key);
+                }
+            }
+
+            const dataStr = JSON.stringify(allData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `muzibu-test-progress-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Import progress from JSON
+        function importProgress(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    for (const [key, value] of Object.entries(data)) {
+                        localStorage.setItem(key, value);
+                    }
+                    alert('✅ İlerleme başarıyla yüklendi! Sayfa yenileniyor...');
+                    location.reload();
+                } catch (err) {
+                    alert('❌ Hata: Dosya okunamadı!');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Clear all progress
+        function clearAllProgress() {
+            if (!confirm('⚠️ Tüm test ilerlemesi silinecek! Emin misiniz?')) return;
+
+            const keys = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('muzibu_test_')) {
+                    keys.push(key);
+                }
+            }
+            keys.forEach(key => localStorage.removeItem(key));
+            alert('✅ Tüm ilerleme silindi!');
+            location.reload();
+        }
+
+        // Calculate progress (placeholder - will be calculated dynamically)
+        window.addEventListener('DOMContentLoaded', () => {
+            // Bu fonksiyon her checklist sayfasından veri çekerek hesaplayacak
+            // Şimdilik statik
+            document.getElementById('frontend-progress').textContent = '0%';
+            document.getElementById('admin-progress').textContent = '0%';
+            document.getElementById('total-progress').textContent = '0%';
+        });
+    </script>
+</body>
+</html>

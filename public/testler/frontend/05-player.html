@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend 05: Oynatıcı (Player) - Muzibu Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { slate: { 850: '#1a202e', 950: '#0f1419' } }
+                }
+            }
+        }
+    </script>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            input[type="checkbox"] { -webkit-appearance: checkbox; appearance: checkbox; }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <a href="../index.html" class="text-emerald-400 hover:text-emerald-300 no-print">← Geri</a>
+                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded text-sm no-print">🖨️ Yazdır</button>
+            </div>
+            <h1 class="text-3xl font-bold text-emerald-400 mb-2">Frontend 05: Oynatıcı (Player)</h1>
+            <p class="text-slate-400">Play, pause, seek, volume, HLS streaming, keyboard shortcuts, premium kontrol</p>
+
+            <!-- Progress Bar -->
+            <div class="mt-4 bg-slate-900 rounded-lg p-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold">İlerleme</span>
+                    <span class="text-sm" id="progress-text">0 / 25</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-3">
+                    <div id="progress-bar" class="bg-emerald-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Sections -->
+        <div class="space-y-6">
+
+            <!-- Temel Kontroller -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">🎮 Temel Kontroller</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-play-pause">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Play/Pause Tuşu</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Play tuşuna (▶️) basıldığında şarkı başlamalı ve ikon Pause'a (⏸️) dönüşmeli<br>
+                                ▸ Pause tuşuna basıldığında şarkı durdurulmalı ve ikon tekrar Play'e (▶️) dönüşmeli<br>
+                                ▸ Şarkı çalarken player'da animasyonlu "playing" göstergesi olmalı (dalga formu veya pulse efekti)<br>
+                                ▸ Yükleme sırasında loading göstergesi (spinner) görünmeli
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-next">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Next (İleri) Tuşu</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Next tuşuna (⏭️) basıldığında queue'daki bir sonraki şarkıya geçilmeli<br>
+                                ▸ Queue'da şarkı yoksa tuş disabled (gri/tıklanamaz) olmalı<br>
+                                ▸ Şarkı değiştiğinde player bilgileri (isim, sanatçı, kapak) anında güncellenmeli<br>
+                                ▸ Şarkı pozisyonu sıfırlanmalı (0:00'dan başlamalı)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-previous">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Previous (Geri) Tuşu</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Previous tuşuna (⏮️) basıldığında bir önceki şarkıya dönülmeli<br>
+                                ▸ Şarkının ilk 3 saniyesinden sonra basılırsa mevcut şarkı başa sarmalı<br>
+                                ▸ İlk şarkıdaysa disabled olmalı veya son şarkıya dönmeli (ayarlara göre)<br>
+                                ▸ Geçmiş şarkı bilgisi queue history'den çekilmeli
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-seek">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Seek (Zaman Çubuğu)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Progress bar üzerine tıklandığında o konuma atlamalı<br>
+                                ▸ Progress bar sürüklenebilir olmalı (drag ile istenen konuma gidilebilmeli)<br>
+                                ▸ Seek sırasında şarkı durdurulmamalı (akıcı olmalı)<br>
+                                ▸ Buffered (yüklenmiş) kısımlar progress bar'da farklı renkte gösterilmeli<br>
+                                ▸ Hover ile fare altındaki zaman gösterilmeli (tooltip)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-volume">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Volume (Ses Kontrolü)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Volume slider ile ses seviyesi 0-100 arası ayarlanabilmeli<br>
+                                ▸ Volume değeri localStorage'a kaydedilmeli (sayfa yenilenince korunmalı)<br>
+                                ▸ Volume ikonları dinamik olmalı: 🔇 (muted), 🔈 (low), 🔉 (medium), 🔊 (high)<br>
+                                ▸ Mouse wheel ile volume artırılıp azaltılabilmeli (player üzerindeyken)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-mute">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Mute/Unmute</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Volume ikonuna tıklandığında ses kesilmeli (mute)<br>
+                                ▸ Mute durumunda ikon 🔇 olmalı ve kırmızı renkte vurgulanmalı<br>
+                                ▸ Tekrar tıklandığında ses açılmalı ve önceki volume seviyesine dönmeli<br>
+                                ▸ "M" tuşu ile keyboard shortcut çalışmalı
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Oynatma Modları -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">🔁 Oynatma Modları</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-shuffle">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Shuffle (Karışık Çal)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Shuffle tuşuna (🔀) tıklandığında queue karıştırılmalı (random sıralama)<br>
+                                ▸ Shuffle aktifken tuş vurgulanmalı (renkli/bold)<br>
+                                ▸ Tekrar tıklandığında shuffle iptal edilmeli ve sıra normale dönmeli<br>
+                                ▸ Shuffle durumu localStorage'a kaydedilmeli (sayfa yenilenince korunmalı)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-repeat">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Repeat (Tekrarla)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Repeat tuşu (🔁) 3 moda sahip olmalı:<br>
+                                &nbsp;&nbsp;• Normal: Queue bitince durdur<br>
+                                &nbsp;&nbsp;• Repeat All (🔁): Queue bitince baştan başla<br>
+                                &nbsp;&nbsp;• Repeat One (🔂): Aynı şarkıyı tekrarla<br>
+                                ▸ Her tıklamada modlar arası geçiş yapmalı (Normal → All → One → Normal)<br>
+                                ▸ Aktif mod ikon ve renk ile belirtilmeli<br>
+                                ▸ Repeat durumu localStorage'a kaydedilmeli
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-autoplay">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Otomatik Devam (Autoplay)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Şarkı bittiğinde otomatik olarak sıradaki şarkı başlamalı<br>
+                                ▸ Queue boşaldığında auto-refill tetiklenmeli (yeni şarkılar eklenmeli)<br>
+                                ▸ Repeat One modunda aynı şarkı yeniden başlamalı<br>
+                                ▸ Normal modda queue bitince player durdurulmalı
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- HLS Streaming -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">📡 HLS Streaming</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-hls-available">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">HLS Dosyası Mevcut</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Şarkının HLS versiyonu varsa direkt HLS stream başlamalı (m3u8 dosyası)<br>
+                                ▸ HLS.js kütüphanesi ile adaptive bitrate streaming çalışmalı<br>
+                                ▸ Network hızına göre otomatik kalite ayarı yapılmalı<br>
+                                ▸ Console'da HLS bağlantı logları görünmeli (hata ayıklama için)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-hls-conversion">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">HLS Dönüşümü Beklemede</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ HLS yoksa arka planda dönüşüm job'u başlatılmalı<br>
+                                ▸ Dönüşüm sırasında MP3 fallback ile oynatılmalı (kesintisiz)<br>
+                                ▸ "Şarkı optimize ediliyor..." mesajı gösterilmeli<br>
+                                ▸ Dönüşüm tamamlanınca HLS'ye geçiş yapılmalı (sayfa yenilenmeden)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-hls-status-check">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">HLS Status Kontrolü</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ API endpoint'e periyodik status kontrolü yapılmalı (10 sn aralıkla)<br>
+                                ▸ Status: converting, completed, failed durumları kontrol edilmeli<br>
+                                ▸ Completed olunca player kaynağı HLS'ye değiştirilmeli<br>
+                                ▸ Failed olursa MP3 ile devam edilmeli ve hata loglanmalı
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-hls-fallback">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">MP3 Fallback</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ HLS yükleme hatası durumunda otomatik MP3'e geri dönülmeli<br>
+                                ▸ Browser HLS desteklemiyorsa direkt MP3 oynatılmalı<br>
+                                ▸ Fallback geçişi kullanıcıya fark ettirmeden olmalı (ses kesilmemeli)<br>
+                                ▸ Console'a fallback mesajı yazılmalı (debugging için)
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Görsel Bilgi -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">🎨 Görsel Bilgi & UI</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-song-info">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Şarkı Bilgileri</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Şarkı ismi, sanatçı ismi, album ismi gösterilmeli<br>
+                                ▸ Metin çok uzunsa scroll/marquee animasyonu olmalı<br>
+                                ▸ Şarkı değiştiğinde bilgiler anında güncellenmeli (smooth transition)<br>
+                                ▸ Tıklanınca ilgili detay sayfasına gidilmeli
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-album-cover">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Album Kapağı</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Şarkının kapak görseli player'da gösterilmeli<br>
+                                ▸ Kapak yoksa placeholder görseli olmalı<br>
+                                ▸ Şarkı değiştiğinde fade-in/fade-out efekti ile kapak değişmeli<br>
+                                ▸ Lazy loading ile optimize edilmeli (thumbmaker kullanılmalı)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-time-display">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Süre Gösterimi</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Geçen süre (current time) ve toplam süre (duration) gösterilmeli<br>
+                                ▸ Format: "2:34 / 4:18" şeklinde MM:SS formatında olmalı<br>
+                                ▸ Süre her saniye güncellenmeli (real-time)<br>
+                                ▸ Seek yapılınca anında güncellemeli
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-loading-state">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Loading State</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Şarkı yüklenirken spinner/loading göstergesi olmalı<br>
+                                ▸ Buffering sırasında "Yükleniyor..." mesajı gösterilmeli<br>
+                                ▸ Network yavaşsa kullanıcı bilgilendirilmeli<br>
+                                ▸ Yükleme bittikten sonra gösterge kaybolmalı
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Keyboard Shortcuts -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">⌨️ Keyboard Shortcuts</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-kbd-space">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Space - Play/Pause</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Space tuşuna basıldığında şarkı oynat/durdur yapmalı<br>
+                                ▸ Input/textarea içindeyken tetiklenmemeli (yazma engellenmesin)<br>
+                                ▸ Modal açıkken devre dışı kalmalı<br>
+                                ▸ Player odakta değilse de çalışmalı (global shortcut)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-kbd-arrows-lr">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Arrow Left/Right - Seek</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Arrow Left (←): 5 saniye geri sar<br>
+                                ▸ Arrow Right (→): 5 saniye ileri sar<br>
+                                ▸ Shift + Arrow: 10 saniye atlama<br>
+                                ▸ Seek feedback görseli olmalı (+5s, -5s gibi)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-kbd-arrows-ud">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Arrow Up/Down - Volume</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Arrow Up (↑): Volume +10%<br>
+                                ▸ Arrow Down (↓): Volume -10%<br>
+                                ▸ Volume feedback görseli olmalı (ekranda volume bar geçici gösterilsin)<br>
+                                ▸ 0-100 sınırları içinde kalmalı
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-kbd-m">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">M - Mute/Unmute</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "M" tuşu ile ses aç/kapa toggle yapmalı<br>
+                                ▸ Mute durumu görsel olarak belli olmalı (ikon değişimi)<br>
+                                ▸ Önceki volume seviyesi hatırlanmalı
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-kbd-shortcuts-help">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Shortcuts Yardım</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "?" tuşu ile klavye kısayolları modal'ı açılmalı<br>
+                                ▸ Tüm kısayollar listelenip açıklanmalı<br>
+                                ▸ ESC ile modal kapatılmalı
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Premium Kontrol -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">💎 Premium Kontrol</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-free-limit">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Free User Limiti (5 Şarkı/Gün)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Free kullanıcı günde max 5 şarkı dinleyebilmeli<br>
+                                ▸ 5. şarkıdan sonra limit modal'ı gösterilmeli<br>
+                                ▸ Modal'da kalan süre gösterilmeli ("23 saat 45 dakika sonra yenilenecek")<br>
+                                ▸ Upgrade linki belirgin olmalı
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-premium-unlimited">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Premium Unlimited</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Premium kullanıcı sınırsız şarkı dinleyebilmeli<br>
+                                ▸ Premium badge player'da gösterilmeli (💎 ikonu)<br>
+                                ▸ Limit kontrolü atlanmalı (API'de CheckPremiumSubscription middleware)<br>
+                                ▸ Premium bittiğinde otomatik free'ye düşmeli
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-limit-modal">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Limit Modal Görünümü</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Modal tasarım: Başlık, açıklama, timer, upgrade CTA<br>
+                                ▸ "Premium'a Geç" butonu subscription sayfasına yönlendirmeli<br>
+                                ▸ Modal kapatıldığında player durdurulmalı<br>
+                                ▸ ESC tuşu ile kapatılabilmeli
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="player-limit-reset">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Limit Reset (Gece 00:00)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Her gün gece 00:00'da limit sıfırlanmalı<br>
+                                ▸ Backend'de scheduled job ile reset yapılmalı<br>
+                                ▸ Kullanıcı limit resetinden haberdar edilmeli (bildirim/email isteğe bağlı)<br>
+                                ▸ Timezone doğru hesaplanmalı (Türkiye saati)
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Actions -->
+        <div class="mt-8 flex gap-4 no-print">
+            <button onclick="resetProgress()" class="bg-red-600 hover:bg-red-500 px-6 py-3 rounded-lg text-white font-semibold">
+                🔄 İlerlemeyi Sıfırla
+            </button>
+            <button onclick="markAllComplete()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-3 rounded-lg text-white font-semibold">
+                ✅ Tümünü Tamamla
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-12 text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+            <p>🎵 Muzibu.com.tr - Player Test Checklist</p>
+        </div>
+
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'muzibu_test_frontend_05_player';
+        const TOTAL_TESTS = 25;
+
+        // Load saved progress
+        function loadProgress() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+                    const testId = checkbox.dataset.test;
+                    if (data[testId]) {
+                        checkbox.checked = true;
+                    }
+                });
+            }
+            updateProgress();
+        }
+
+        // Save progress
+        function saveProgress() {
+            const data = {};
+            document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+                data[checkbox.dataset.test] = checkbox.checked;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            updateProgress();
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const checked = document.querySelectorAll('.test-checkbox:checked').length;
+            const percentage = Math.round((checked / TOTAL_TESTS) * 100);
+
+            document.getElementById('progress-bar').style.width = percentage + '%';
+            document.getElementById('progress-text').textContent = `${checked} / ${TOTAL_TESTS}`;
+        }
+
+        // Reset progress
+        function resetProgress() {
+            if (!confirm('⚠️ Tüm işaretlemeler silinecek! Emin misiniz?')) return;
+            localStorage.removeItem(STORAGE_KEY);
+            document.querySelectorAll('.test-checkbox').forEach(cb => cb.checked = false);
+            updateProgress();
+        }
+
+        // Mark all complete
+        function markAllComplete() {
+            document.querySelectorAll('.test-checkbox').forEach(cb => cb.checked = true);
+            saveProgress();
+        }
+
+        // Event listeners
+        document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', saveProgress);
+        });
+
+        // Initialize
+        loadProgress();
+    </script>
+</body>
+</html>

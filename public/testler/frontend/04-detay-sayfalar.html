@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend 04: Detay Sayfalar - Muzibu Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { slate: { 850: '#1a202e', 950: '#0f1419' } } } }
+        }
+    </script>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            input[type="checkbox"] { -webkit-appearance: checkbox; appearance: checkbox; }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <a href="../index.html" class="text-emerald-400 hover:text-emerald-300 no-print">← Geri</a>
+                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded text-sm no-print">🖨️ Yazdır</button>
+            </div>
+            <h1 class="text-3xl font-bold text-emerald-400 mb-2">Frontend 04: Detay Sayfalar</h1>
+            <p class="text-slate-400">Song, Album, Artist, Playlist detay sayfaları, ilişkili içerik, metadata</p>
+
+            <div class="mt-4 bg-slate-900 rounded-lg p-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold">İlerleme</span>
+                    <span class="text-sm" id="progress-text">0 / 16</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-3">
+                    <div id="progress-bar" class="bg-emerald-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+
+            <!-- Song Detay -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">🎵 Song Detay Sayfası</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-detail-layout">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Layout & Bilgiler</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ URL: /song/{slug} formatında olmalı<br>
+                                ▸ Hero section: Büyük kapak görseli (500x500), şarkı adı, sanatçı adı<br>
+                                ▸ Meta bilgiler: Album, genre(s), sector(s), duration, play count<br>
+                                ▸ "Çal" butonu belirgin olmalı (queue'ya ekle ve başlat)<br>
+                                ▸ Favorilere ekle/çıkar butonu olmalı
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-detail-actions">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Aksiyon Butonları</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "Çal" - Şarkıyı hemen başlat (queue temizle + play)<br>
+                                ▸ "Queue'ya Ekle" - Sona ekle ve devam et<br>
+                                ▸ "Sırada Sonraki" - Şu anki şarkıdan sonra ekle<br>
+                                ▸ "Playlist'e Ekle" - Modal açılır, playlist seçimi<br>
+                                ▸ "Paylaş" - Copy link, social media share buttons
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-detail-related">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">İlişkili İçerik</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "Aynı Albümden" bölümü - Albümdeki diğer şarkılar (max 10)<br>
+                                ▸ "Aynı Sanatçıdan" bölümü - Sanatçının diğer şarkıları (max 10)<br>
+                                ▸ "Benzer Şarkılar" - Aynı genre/sector'den öneriler (max 10)<br>
+                                ▸ Her şarkı tıklanabilir olmalı (SPA navigation)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="song-detail-seo">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">SEO & Meta Tags</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Title tag: "{Song Name} - {Artist Name} | Muzibu"<br>
+                                ▸ Meta description: "{Song} - {Artist} şarkısını dinle, playlist'ine ekle"<br>
+                                ▸ Open Graph tags: og:title, og:image (cover), og:type (music.song)<br>
+                                ▸ Canonical URL eklenmiş olmalı<br>
+                                ▸ JSON-LD structured data (MusicRecording schema)
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Album Detay -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">💿 Album Detay Sayfası</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="album-detail-layout">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Layout & Bilgiler</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ URL: /album/{slug}<br>
+                                ▸ Hero: Album kapağı (büyük), album adı, sanatçı adı, yıl<br>
+                                ▸ İstatistikler: Toplam şarkı sayısı, toplam süre, toplam dinlenme<br>
+                                ▸ "Tümünü Çal" butonu (tüm albümü queue'ya ekle)<br>
+                                ▸ "Karışık Çal" butonu (shuffle mode ile başlat)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="album-detail-tracklist">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Şarkı Listesi (Tracklist)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Tüm şarkılar sıralı olarak listelenmiş (track number, title, duration)<br>
+                                ▸ Her satırda: Play butonu, favorite butonu, 3-dot menu (queue ekle, playlist ekle)<br>
+                                ▸ Şarkı ismine tıklandığında detay sayfası açılmalı<br>
+                                ▸ Çalan şarkı highlight edilmeli (now playing indicator)<br>
+                                ▸ Hover efekti ile satır vurgulanmalı
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="album-detail-artist">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Sanatçı Bölümü</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Sanatçı avatar/fotoğrafı ve ismi görünmeli<br>
+                                ▸ "Sanatçıya Git" linki olmalı (artist detay sayfası)<br>
+                                ▸ Sanatçının diğer albümleri listelenmiş olmalı (max 6)<br>
+                                ▸ Album kartları tıklanabilir (SPA navigation)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="album-detail-seo">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">SEO & Meta Tags</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Title: "{Album Name} - {Artist} | Muzibu"<br>
+                                ▸ Meta description: "{Album} albümündeki tüm şarkıları dinle"<br>
+                                ▸ Open Graph: og:type (music.album), og:image (album cover)<br>
+                                ▸ JSON-LD: MusicAlbum schema
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Artist Detay -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">🎤 Artist Detay Sayfası</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="artist-detail-layout">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Layout & Bilgiler</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ URL: /artist/{slug}<br>
+                                ▸ Hero: Büyük artist banner/fotoğrafı, sanatçı adı<br>
+                                ▸ İstatistikler: Toplam şarkı, toplam albüm, toplam dinlenme<br>
+                                ▸ Biyografi/hakkında metni (varsa)<br>
+                                ▸ "Karışık Çal" butonu (tüm şarkıları shuffle)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="artist-detail-popular">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Popüler Şarkılar</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ En çok dinlenen 10 şarkı listelenmiş (play_count DESC)<br>
+                                ▸ Her şarkıda: Play butonu, favorite butonu, queue ekleme<br>
+                                ▸ "Tümünü Göster" linki olmalı (tüm şarkılar sayfasına git)<br>
+                                ▸ Şarkı kartları responsive olmalı
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="artist-detail-albums">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Albümler</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Tüm albümler grid layout'ta gösterilmeli<br>
+                                ▸ Her albüm kartı: Kapak, isim, yıl, şarkı sayısı<br>
+                                ▸ Hover ile "Çal" overlay butonu gösterilmeli<br>
+                                ▸ Album kartına tıklandığında album detay sayfası açılmalı
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="artist-detail-seo">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">SEO & Meta Tags</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Title: "{Artist Name} | Muzibu"<br>
+                                ▸ Meta description: "{Artist} sanatçısının tüm şarkıları ve albümleri"<br>
+                                ▸ Open Graph: og:type (music.musician)<br>
+                                ▸ JSON-LD: MusicGroup schema
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Playlist Detay -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">📝 Playlist Detay Sayfası</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-detail-layout">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Layout & Bilgiler</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ URL: /playlist/{slug}<br>
+                                ▸ Hero: Playlist kapağı (auto-generated veya custom), playlist adı<br>
+                                ▸ Oluşturan kullanıcı bilgisi (avatar, isim)<br>
+                                ▸ İstatistikler: Toplam şarkı, toplam süre, oluşturulma tarihi<br>
+                                ▸ Açıklama metni (varsa)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-detail-songs">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Şarkı Listesi</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Tüm şarkılar sıralı (drag-drop ile sıralama değiştirilebilir - sadece sahibi)<br>
+                                ▸ Her satır: Play, favorite, 3-dot menu (playlist'ten çıkar, queue ekle)<br>
+                                ▸ "Tümünü Çal" butonu (playlist queue'ya ekle)<br>
+                                ▸ "Karışık Çal" butonu (shuffle mode)<br>
+                                ▸ Boş playlist: "Henüz şarkı yok, şarkı ekle!" placeholder
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-detail-owner">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Sahip İşlemleri</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Playlist sahibiyse "Düzenle" butonu görünmeli<br>
+                                ▸ Düzenle: İsim, açıklama, kapak görseli değiştir<br>
+                                ▸ "Sil" butonu tehlikeli renkte, onay modal'ı ile<br>
+                                ▸ Başkasının playlist'iyse "Kopyala" butonu (kendi hesabına kopyala)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="playlist-detail-seo">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">SEO & Meta Tags</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Title: "{Playlist Name} | Muzibu"<br>
+                                ▸ Meta description: "{Playlist} - {User} tarafından oluşturuldu"<br>
+                                ▸ Open Graph: og:image (playlist cover)<br>
+                                ▸ JSON-LD: MusicPlaylist schema
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-8 flex gap-4 no-print">
+            <button onclick="resetProgress()" class="bg-red-600 hover:bg-red-500 px-6 py-3 rounded-lg text-white font-semibold">
+                🔄 İlerlemeyi Sıfırla
+            </button>
+            <button onclick="markAllComplete()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-3 rounded-lg text-white font-semibold">
+                ✅ Tümünü Tamamla
+            </button>
+        </div>
+
+        <div class="mt-12 text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+            <p>🎵 Muzibu.com.tr - Detay Sayfalar Test Checklist</p>
+        </div>
+
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'muzibu_test_frontend_04_detail';
+        const TOTAL_TESTS = 16;
+
+        function loadProgress() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+                    const testId = checkbox.dataset.test;
+                    if (data[testId]) checkbox.checked = true;
+                });
+            }
+            updateProgress();
+        }
+
+        function saveProgress() {
+            const data = {};
+            document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+                data[checkbox.dataset.test] = checkbox.checked;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const checked = document.querySelectorAll('.test-checkbox:checked').length;
+            const percentage = Math.round((checked / TOTAL_TESTS) * 100);
+            document.getElementById('progress-bar').style.width = percentage + '%';
+            document.getElementById('progress-text').textContent = `${checked} / ${TOTAL_TESTS}`;
+        }
+
+        function resetProgress() {
+            if (!confirm('⚠️ Tüm işaretlemeler silinecek! Emin misiniz?')) return;
+            localStorage.removeItem(STORAGE_KEY);
+            document.querySelectorAll('.test-checkbox').forEach(cb => cb.checked = false);
+            updateProgress();
+        }
+
+        function markAllComplete() {
+            document.querySelectorAll('.test-checkbox').forEach(cb => cb.checked = true);
+            saveProgress();
+        }
+
+        document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', saveProgress);
+        });
+
+        loadProgress();
+    </script>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend 01: Kimlik Doğrulama - Muzibu Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { slate: { 850: '#1a202e', 950: '#0f1419' } } } }
+        }
+    </script>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            input[type="checkbox"] { -webkit-appearance: checkbox; appearance: checkbox; }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <a href="../index.html" class="text-emerald-400 hover:text-emerald-300 no-print">← Geri</a>
+                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded text-sm no-print">🖨️ Yazdır</button>
+            </div>
+            <h1 class="text-3xl font-bold text-emerald-400 mb-2">Frontend 01: Kimlik Doğrulama & Hesap Yönetimi</h1>
+            <p class="text-slate-400">Kayıt, giriş, email doğrulama, profil yönetimi, şifre değiştirme</p>
+
+            <div class="mt-4 bg-slate-900 rounded-lg p-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold">İlerleme</span>
+                    <span class="text-sm" id="progress-text">0 / 12</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-3">
+                    <div id="progress-bar" class="bg-emerald-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+
+            <!-- Kayıt (Register) -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">📝 Kayıt (Register)</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="auth-register-form">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Kayıt Formu</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Form alanları: İsim, Soyisim, Email, Şifre, Şifre Tekrar<br>
+                                ▸ Tüm alanlar zorunlu (required) olmalı ve boş bırakılamamalı<br>
+                                ▸ Email formatı doğrulanmalı (regex: valid email)<br>
+                                ▸ Şifre minimum 8 karakter olmalı<br>
+                                ▸ İki şifre alanı eşleşmeli, eşleşmezse hata gösterilmeli<br>
+                                ▸ GDPR checkbox: "Kullanım şartlarını kabul ediyorum" (zorunlu)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="auth-register-success">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Başarılı Kayıt</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Form gönderildikten sonra "Kayıt başarılı!" mesajı gösterilmeli<br>
+                                ▸ Email doğrulama linki gönderildiği belirtilmeli<br>
+                                ▸ Kullanıcı otomatik giriş yapmalı veya login sayfasına yönlendirilmeli<br>
+                                ▸ Database'de user kaydı oluşturulmalı (users tablosunda)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="auth-email-verification">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Email Doğrulama</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Kayıt sonrası email'e doğrulama linki gönderilmeli<br>
+                                ▸ Link tıklanınca email verified olarak işaretlenmeli<br>
+                                ▸ Verified olmayan kullanıcı bazı özelliklere erişememeli (favoriler, playlist oluşturma)<br>
+                                ▸ "Email'inizi doğrulayın" banner'ı gösterilmeli<br>
+                                ▸ "Tekrar gönder" butonu çalışmalı (rate limit: 1 dakikada 1)
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Giriş (Login) -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">🔐 Giriş (Login)</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="auth-login-form">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Giriş Formu</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Email ve Şifre alanları olmalı<br>
+                                ▸ "Beni hatırla" checkbox'ı olmalı (session süresi uzar)<br>
+                                ▸ "Şifremi unuttum" linki olmalı<br>
+                                ▸ Email yoksa veya şifre yanlışsa "Kullanıcı adı veya şifre hatalı" gösterilmeli<br>
+                                ▸ Rate limiting: 5 başarısız denemeden sonra 15 dakika ban
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="auth-login-success">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Başarılı Giriş</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Doğru bilgilerle giriş yapıldığında dashboard'a yönlendirilmeli<br>
+                                ▸ Session başlatılmalı (Laravel auth session)<br>
+                                ▸ Header'da kullanıcı ismi ve profil ikonu görünmeli<br>
+                                ▸ "Giriş yap" butonu "Çıkış yap" olarak değişmeli
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="auth-logout">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Çıkış (Logout)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "Çıkış yap" butonuna basıldığında session sonlandırılmalı<br>
+                                ▸ Kullanıcı ana sayfaya veya login sayfasına yönlendirilmeli<br>
+                                ▸ Header guest moduna dönmeli (giriş/kayıt butonları görünsün)<br>
+                                ▸ Player state korunmalı (çalan şarkı durdurulmamalı)
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Şifremi Unuttum -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">🔑 Şifremi Unuttum</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="auth-password-reset-request">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Şifre Reset Talebi</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Email adresi girilince "Şifre sıfırlama linki gönderildi" mesajı gösterilmeli<br>
+                                ▸ Email'e reset linki gönderilmeli (1 saat geçerli)<br>
+                                ▸ Olmayan email için de aynı mesaj gösterilmeli (güvenlik - email enumeration önleme)<br>
+                                ▸ Rate limit: 1 dakikada 1 talep
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="auth-password-reset-complete">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Şifre Sıfırlama</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Reset linki tıklanınca "Yeni Şifre" formu açılmalı<br>
+                                ▸ Yeni şifre ve tekrarı alınmalı (minimum 8 karakter)<br>
+                                ▸ Token geçersizse/süresi dolmuşsa hata gösterilmeli<br>
+                                ▸ Başarılı reset sonrası login sayfasına yönlendirilmeli
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Profil Yönetimi -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">👤 Profil Yönetimi</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="auth-profile-view">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Profil Görüntüleme</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Profil sayfası: İsim, soyisim, email, profil fotoğrafı gösterilmeli<br>
+                                ▸ Kayıt tarihi ve subscription durumu görünmeli<br>
+                                ▸ Dinleme istatistikleri: Toplam şarkı, toplam süre<br>
+                                ▸ "Düzenle" butonu olmalı
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="auth-profile-edit">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Profil Düzenleme</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ İsim, soyisim güncellenebilmeli<br>
+                                ▸ Profil fotoğrafı upload edilebilmeli (max 2MB, jpg/png)<br>
+                                ▸ Email değiştirme için yeniden doğrulama gerekli olmalı<br>
+                                ▸ "Kaydet" butonuna basılınca değişiklikler database'e yazılmalı
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="auth-password-change">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Şifre Değiştirme</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Mevcut şifre, yeni şifre, yeni şifre tekrar alanları olmalı<br>
+                                ▸ Mevcut şifre yanlışsa hata gösterilmeli<br>
+                                ▸ Yeni şifre minimum 8 karakter olmalı<br>
+                                ▸ Başarılı değişiklik sonrası "Şifreniz güncellendi" mesajı ve logout
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="auth-account-delete">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Hesap Silme</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "Hesabımı Sil" butonu tehlikeli renkte (kırmızı) olmalı<br>
+                                ▸ Tıklanınca onay modal'ı açılmalı: "Hesabınız kalıcı olarak silinecek!"<br>
+                                ▸ Şifre ile onay alınmalı (güvenlik)<br>
+                                ▸ Silme işlemi: User, playlists, favorites cascade delete<br>
+                                ▸ İşlem sonrası ana sayfaya yönlendirilmeli
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-8 flex gap-4 no-print">
+            <button onclick="resetProgress()" class="bg-red-600 hover:bg-red-500 px-6 py-3 rounded-lg text-white font-semibold">
+                🔄 İlerlemeyi Sıfırla
+            </button>
+            <button onclick="markAllComplete()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-3 rounded-lg text-white font-semibold">
+                ✅ Tümünü Tamamla
+            </button>
+        </div>
+
+        <div class="mt-12 text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+            <p>🎵 Muzibu.com.tr - Kimlik Doğrulama Test Checklist</p>
+        </div>
+
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'muzibu_test_frontend_01_auth';
+        const TOTAL_TESTS = 12;
+
+        function loadProgress() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+                    const testId = checkbox.dataset.test;
+                    if (data[testId]) checkbox.checked = true;
+                });
+            }
+            updateProgress();
+        }
+
+        function saveProgress() {
+            const data = {};
+            document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+                data[checkbox.dataset.test] = checkbox.checked;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const checked = document.querySelectorAll('.test-checkbox:checked').length;
+            const percentage = Math.round((checked / TOTAL_TESTS) * 100);
+            document.getElementById('progress-bar').style.width = percentage + '%';
+            document.getElementById('progress-text').textContent = `${checked} / ${TOTAL_TESTS}`;
+        }
+
+        function resetProgress() {
+            if (!confirm('⚠️ Tüm işaretlemeler silinecek! Emin misiniz?')) return;
+            localStorage.removeItem(STORAGE_KEY);
+            document.querySelectorAll('.test-checkbox').forEach(cb => cb.checked = false);
+            updateProgress();
+        }
+
+        function markAllComplete() {
+            document.querySelectorAll('.test-checkbox').forEach(cb => cb.checked = true);
+            saveProgress();
+        }
+
+        document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', saveProgress);
+        });
+
+        loadProgress();
+    </script>
+</body>
+</html>

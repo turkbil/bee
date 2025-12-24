@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu HLS Timeout Hatası - Analiz ve Çözüm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1a202e',
+                            950: '#0f1419'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="dark bg-slate-950 text-slate-100">
+    <div class="max-w-6xl mx-auto p-6 space-y-8">
+
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-red-900/30 to-orange-900/30 border border-red-800/50 rounded-lg p-6">
+            <h1 class="text-3xl font-bold text-red-400 mb-2">🚨 Muzibu HLS Timeout Hatası</h1>
+            <p class="text-slate-300">Müzik çalma sisteminde 15 saniye timeout sorunu analizi ve çözüm önerileri</p>
+            <div class="mt-4 flex items-center gap-4 text-sm text-slate-400">
+                <span>📅 Tarih: 22 Aralık 2025</span>
+                <span>🏷️ Kategori: Bug Fix</span>
+                <span>⚡ Öncelik: YÜKSEK</span>
+            </div>
+        </div>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6">
+            <h2 class="text-xl font-bold text-green-400 mb-4">📝 Basit Anlatım (Herkes İçin)</h2>
+
+            <div class="space-y-4 text-slate-300">
+                <p class="text-lg font-medium">
+                    <strong>Sorun Nedir?</strong>
+                </p>
+                <p>
+                    Muzibu'da bir şarkı çalmaya çalıştığınızda, şarkının yüklenmesi 15 saniyeyi geçerse sistem "timeout" (zaman aşımı) hatası veriyor. Şarkı hiç başlamıyor veya çok geç başlıyor.
+                </p>
+
+                <p class="text-lg font-medium mt-6">
+                    <strong>Neden Oluyor?</strong>
+                </p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>Sunucu, şarkı dosyasını kullanıcıya göndermeden önce "izin kontrolü" yapıyor (premium üye mi? oturum açmış mı?)</li>
+                    <li>Bu kontroller bazen yavaş çalışıyor veya hata veriyor</li>
+                    <li>Şarkı dosyası hazır olsa bile, izin alınamadığı için kullanıcıya gönderilemiyor</li>
+                    <li>15 saniye geçince sistem "artık beklemeyeceğim" diyor ve hata veriyor</li>
+                </ul>
+
+                <p class="text-lg font-medium mt-6">
+                    <strong>Kullanıcı Deneyimi:</strong>
+                </p>
+                <ul class="list-disc list-inside space-y-2 ml-4 text-red-300">
+                    <li>Şarkıya tıklıyorsunuz → 15 saniye bekliyor → "Hata: Şarkı yüklenemedi" yazıyor</li>
+                    <li>Bazen otomatik olarak ikinci kez deniyor, o da başarısız olursa tamamen duruyor</li>
+                    <li>Bazı şarkılar açılırken bazıları hiç açılmıyor (tutarsız davranış)</li>
+                </ul>
+
+                <p class="text-lg font-medium mt-6">
+                    <strong>Neden Önemli?</strong>
+                </p>
+                <p class="bg-red-900/30 border border-red-800 rounded p-4">
+                    Bu hata, kullanıcıların Muzibu'da müzik dinlemesini <strong>tamamen engelliyor</strong>.
+                    Premium üyelik satan bir platformda, ödeme yapan kullanıcıların müzik dinleyememesi
+                    <strong>kritik bir sorun</strong>dur. Kullanıcı kaybına ve şikayetlere yol açar.
+                </p>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6">
+            <h2 class="text-xl font-bold text-blue-400 mb-4">🔧 Teknik Detaylar (Geliştiriciler İçin)</h2>
+
+            <div class="space-y-6">
+                <!-- Console Error -->
+                <div>
+                    <h3 class="text-lg font-semibold text-blue-300 mb-3">📋 Console Hatası:</h3>
+                    <div class="bg-slate-900 border border-slate-700 rounded p-4 font-mono text-sm overflow-x-auto">
+                        <div class="text-red-400">⚠️ HLS TIMEOUT: {</div>
+                        <div class="ml-4 text-slate-300">song: undefined,</div>
+                        <div class="ml-4 text-slate-300">timeout: '15000ms',</div>
+                        <div class="ml-4 text-slate-300">reason: 'HLS yüklenemedi (timeout)',</div>
+                        <div class="ml-4 text-slate-300">position_sec: 11</div>
+                        <div class="text-red-400">}</div>
+                        <div class="mt-2 text-yellow-400">🔁 HLS retry with new signed URL {reason: 'timeout', attempt: 1}</div>
+                    </div>
+                </div>
+
+                <!-- HLS URL -->
+                <div>
+                    <h3 class="text-lg font-semibold text-blue-300 mb-3">🔗 HLS Stream URL:</h3>
+                    <div class="bg-slate-900 border border-slate-700 rounded p-4 font-mono text-xs overflow-x-auto break-all">
+                        <span class="text-green-400">https://muzibu.com.tr/hls/muzibu/songs/354/playlist.m3u8</span>
+                        <span class="text-slate-400">?expires=1766426062&token=554108...&sig=81502...</span>
+                    </div>
+                    <p class="mt-2 text-sm text-slate-400">
+                        ✅ URL formatı doğru: <code class="text-yellow-400">/hls/muzibu/songs/{id}/{filename}</code>
+                    </p>
+                </div>
+
+                <!-- Curl Test -->
+                <div>
+                    <h3 class="text-lg font-semibold text-blue-300 mb-3">🧪 Curl Testi:</h3>
+                    <div class="bg-slate-900 border border-slate-700 rounded p-4">
+                        <div class="font-mono text-sm text-slate-300">
+                            <div class="text-yellow-400">$ curl -I https://muzibu.com.tr/hls/muzibu/songs/354/playlist.m3u8</div>
+                            <div class="mt-2 text-red-400">HTTP/2 401 ❌</div>
+                            <div class="text-slate-400">x-ratelimit-limit: 120</div>
+                            <div class="text-slate-400">x-ratelimit-remaining: 119</div>
+                        </div>
+                    </div>
+                    <p class="mt-2 text-sm text-red-300">
+                        ❌ Sorun: <strong>401 Unauthorized</strong> - Authentication başarısız oluyor
+                    </p>
+                </div>
+
+                <!-- İlgili Dosyalar -->
+                <div>
+                    <h3 class="text-lg font-semibold text-blue-300 mb-3">📁 İlgili Dosyalar:</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400">📄</span>
+                            <code class="text-yellow-400">public/themes/muzibu/js/player/core/player-core.js:2220</code>
+                            <span class="text-slate-400">→ HLS timeout logic (15 saniye)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400">📄</span>
+                            <code class="text-yellow-400">Modules/Muzibu/app/Http/Controllers/Api/SongStreamController.php:547</code>
+                            <span class="text-slate-400">→ serveHls() method (playlist + segment serve)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400">📄</span>
+                            <code class="text-yellow-400">Modules/Muzibu/Providers/MuzibuServiceProvider.php:187</code>
+                            <span class="text-slate-400">→ HLS route registration (throttle:120,1)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400">📄</span>
+                            <code class="text-yellow-400">app/Services/SignedUrlService.php:52</code>
+                            <span class="text-slate-400">→ generateHlsUrl() (token + signature generation)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Authentication Flow -->
+                <div>
+                    <h3 class="text-lg font-semibold text-blue-300 mb-3">🔐 Authentication Akışı:</h3>
+                    <div class="bg-slate-900 border border-slate-700 rounded p-4 space-y-3 text-sm">
+                        <div class="flex items-start gap-3">
+                            <span class="text-blue-400 font-bold">1.</span>
+                            <div>
+                                <p class="text-slate-200 font-medium">Frontend → <code class="text-yellow-400">/api/muzibu/songs/{id}/stream</code></p>
+                                <p class="text-slate-400 text-xs mt-1">User session check, premium validation, HLS URL generation</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-blue-400 font-bold">2.</span>
+                            <div>
+                                <p class="text-slate-200 font-medium">Backend → Signed URL oluşturur</p>
+                                <p class="text-slate-400 text-xs mt-1">Token: <code>mzb_login_token</code>, Expires: TTL, Signature: HMAC-SHA256</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-blue-400 font-bold">3.</span>
+                            <div>
+                                <p class="text-slate-200 font-medium">Player → <code class="text-yellow-400">/hls/muzibu/songs/{id}/playlist.m3u8</code></p>
+                                <p class="text-slate-400 text-xs mt-1">HLS.js otomatik istek gönderir (token, expires, sig parametreleri ile)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-red-400 font-bold">4.</span>
+                            <div>
+                                <p class="text-red-300 font-medium">❌ serveHls() → Token validation FAIL → 401</p>
+                                <p class="text-slate-400 text-xs mt-1">Olası sebepler: Expired token, session missing, signature mismatch</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-red-400 font-bold">5.</span>
+                            <div>
+                                <p class="text-red-300 font-medium">❌ HLS.js 15 saniye bekler → Timeout → Retry</p>
+                                <p class="text-slate-400 text-xs mt-1">Retry de başarısız olursa MP3 fallback'e geçer (veya hata verir)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sorun Analizi -->
+        <div class="bg-orange-900/20 border border-orange-800 rounded-lg p-6">
+            <h2 class="text-xl font-bold text-orange-400 mb-4">🔍 Sorun Analizi</h2>
+
+            <div class="space-y-6">
+                <!-- Olası Sebepler -->
+                <div>
+                    <h3 class="text-lg font-semibold text-orange-300 mb-3">⚠️ Olası Sebepler:</h3>
+                    <div class="space-y-4">
+                        <div class="bg-slate-900 border border-slate-700 rounded p-4">
+                            <h4 class="font-bold text-red-400 mb-2">1. Token Expired (En Olası)</h4>
+                            <p class="text-slate-300 text-sm mb-2">
+                                <code class="text-yellow-400">expires=1766426062</code> parametresi geçmiş olabilir.
+                                URL oluşturulduğu anda TTL hesaplanıyor ama player çalarken zaman geçiyor.
+                            </p>
+                            <div class="bg-slate-800 rounded p-3 text-xs font-mono mt-2">
+                                <div class="text-slate-400">// SignedUrlService.php:207-208</div>
+                                <div class="text-slate-200">$durationSeconds = (int) ($song->duration ?? 0);</div>
+                                <div class="text-slate-200">$ttlSeconds = max(480, min($durationSeconds + $bufferSeconds, 1800));</div>
+                                <div class="mt-2 text-red-300">→ Min 8 dk, Max 30 dk TTL</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900 border border-slate-700 rounded p-4">
+                            <h4 class="font-bold text-yellow-400 mb-2">2. Session/Cookie Missing</h4>
+                            <p class="text-slate-300 text-sm mb-2">
+                                HLS.js tarayıcı tarafından paralel istek gönderir. Cookie otomatik gönderilmiyor olabilir.
+                            </p>
+                            <div class="bg-slate-800 rounded p-3 text-xs font-mono mt-2">
+                                <div class="text-slate-400">// player-core.js:2292-2293</div>
+                                <div class="text-slate-200">xhrSetup: function(xhr, url) {</div>
+                                <div class="text-slate-200 ml-4">xhr.withCredentials = false; // 🔑 CRITICAL: Disable credentials</div>
+                                <div class="text-slate-200">}</div>
+                                <div class="mt-2 text-yellow-300">→ Credentials kapalı! Cookie gönderilmez!</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900 border border-slate-700 rounded p-4">
+                            <h4 class="font-bold text-blue-400 mb-2">3. Signature Mismatch</h4>
+                            <p class="text-slate-300 text-sm mb-2">
+                                Token oluşturulurken ve validate edilirken farklı signature hesaplanıyor olabilir.
+                            </p>
+                            <div class="bg-slate-800 rounded p-3 text-xs font-mono mt-2">
+                                <div class="text-slate-400">// SongStreamController.php:566-567</div>
+                                <div class="text-slate-200">$signatureBase = "/hls/muzibu/songs/{$songId}";</div>
+                                <div class="text-slate-200">$expectedSig = hash_hmac('sha256', "{$signatureBase}|{$token}|{$expires}", config('app.key'));</div>
+                                <div class="mt-2 text-blue-300">→ Token + expires + app.key ile HMAC-SHA256</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900 border border-slate-700 rounded p-4">
+                            <h4 class="font-bold text-purple-400 mb-2">4. Session Terminated (Device Limit)</h4>
+                            <p class="text-slate-300 text-sm mb-2">
+                                Kullanıcının oturumu başka cihazdan giriş yapılınca sonlandırılmış olabilir.
+                            </p>
+                            <div class="bg-slate-800 rounded p-3 text-xs font-mono mt-2">
+                                <div class="text-slate-400">// SongStreamController.php:585-601</div>
+                                <div class="text-slate-200">$sessionRow = DB::table('user_active_sessions')</div>
+                                <div class="text-slate-200 ml-4">->where('login_token', $token)->first();</div>
+                                <div class="mt-2 text-purple-300">→ Token DB'de yoksa 401 döner</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Debug Önerileri -->
+                <div>
+                    <h3 class="text-lg font-semibold text-orange-300 mb-3">🧪 Debug Önerileri:</h3>
+                    <div class="bg-slate-900 border border-slate-700 rounded p-4 space-y-3 text-sm">
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-400">1.</span>
+                            <div>
+                                <code class="text-yellow-400">storage/logs/laravel.log</code> dosyasını kontrol et
+                                <div class="text-slate-400 text-xs mt-1">→ "HLS serve denied" logları ara</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-400">2.</span>
+                            <div>
+                                Browser DevTools → Network tab → HLS isteklerini incele
+                                <div class="text-slate-400 text-xs mt-1">→ Request Headers'da token parametresini kontrol et</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-400">3.</span>
+                            <div>
+                                Console'da expires değerini timestamp'e çevir
+                                <div class="bg-slate-800 rounded p-2 mt-1 font-mono text-xs">
+                                    <span class="text-slate-400">new Date(</span><span class="text-yellow-400">1766426062</span><span class="text-slate-400"> * 1000)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-400">4.</span>
+                            <div>
+                                <code class="text-yellow-400">user_active_sessions</code> tablosunda token'ı kontrol et
+                                <div class="bg-slate-800 rounded p-2 mt-1 font-mono text-xs">
+                                    <span class="text-slate-400">SELECT * FROM user_active_sessions WHERE login_token = '554108...';</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Çözüm Önerileri -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6">
+            <h2 class="text-xl font-bold text-green-400 mb-4">✅ Çözüm Önerileri</h2>
+
+            <div class="space-y-6">
+                <!-- Hızlı Çözüm -->
+                <div>
+                    <h3 class="text-lg font-semibold text-green-300 mb-3">⚡ Hızlı Çözüm (Öncelikli):</h3>
+                    <div class="bg-slate-900 border border-slate-700 rounded p-4 space-y-4">
+                        <div>
+                            <h4 class="font-bold text-yellow-400 mb-2">1. TTL Süresini Artır</h4>
+                            <p class="text-slate-300 text-sm mb-3">
+                                Şu an max 30 dakika olan TTL'i artır. Uzun şarkılarda timeout riski azalır.
+                            </p>
+                            <div class="bg-slate-800 rounded p-3 font-mono text-xs">
+                                <div class="text-slate-400">// app/Services/SignedUrlService.php:54</div>
+                                <div class="text-red-400 line-through">$expiresInSeconds = 300, // 5 dakika</div>
+                                <div class="text-green-400">$expiresInSeconds = 3600, // 60 dakika ✅</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-yellow-400 mb-2">2. Frontend Timeout Süresini Artır</h4>
+                            <p class="text-slate-300 text-sm mb-3">
+                                15 saniye çok kısa. En az 30-45 saniye olmalı.
+                            </p>
+                            <div class="bg-slate-800 rounded p-3 font-mono text-xs">
+                                <div class="text-slate-400">// player-core.js:2215</div>
+                                <div class="text-red-400 line-through">const hlsTimeoutMs = 15000; // 15s</div>
+                                <div class="text-green-400">const hlsTimeoutMs = 45000; // 45s ✅</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-yellow-400 mb-2">3. HLS Retry Policy'yi Gevşet</h4>
+                            <p class="text-slate-300 text-sm mb-3">
+                                HLS.js timeout retry sayısını artır. Daha fazla şans tanı.
+                            </p>
+                            <div class="bg-slate-800 rounded p-3 font-mono text-xs">
+                                <div class="text-slate-400">// player-core.js:2254-2261</div>
+                                <div class="text-slate-200">keyLoadPolicy: {</div>
+                                <div class="text-slate-200 ml-4">default: {</div>
+                                <div class="text-red-400 ml-8 line-through">maxTimeToFirstByteMs: 15000,</div>
+                                <div class="text-green-400 ml-8">maxTimeToFirstByteMs: 30000, // 30s ✅</div>
+                                <div class="text-red-400 ml-8 line-through">maxLoadTimeMs: 30000,</div>
+                                <div class="text-green-400 ml-8">maxLoadTimeMs: 60000, // 60s ✅</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orta Vadeli Çözüm -->
+                <div>
+                    <h3 class="text-lg font-semibold text-green-300 mb-3">🔧 Orta Vadeli Çözüm:</h3>
+                    <div class="bg-slate-900 border border-slate-700 rounded p-4 space-y-4">
+                        <div>
+                            <h4 class="font-bold text-blue-400 mb-2">1. URL Refresh Mekanizması Ekle</h4>
+                            <p class="text-slate-300 text-sm mb-3">
+                                Şarkı çalarken URL expire olmadan önce otomatik yenile.
+                            </p>
+                            <div class="bg-slate-800 rounded p-3 font-mono text-xs">
+                                <div class="text-slate-400">// player-core.js (zaten var! satır 1948-1959)</div>
+                                <div class="text-green-400">✅ refreshHlsUrlForCurrentSong() metodu mevcut</div>
+                                <div class="text-yellow-300 mt-2">→ Daha erken tetiklenmeli (şu an TTL'in %20'si önce, %50 yapılabilir)</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-blue-400 mb-2">2. Daha Detaylı Error Logging</h4>
+                            <p class="text-slate-300 text-sm mb-3">
+                                401 hatası alındığında tam sebep loglanmalı (token missing? expired? signature fail?)
+                            </p>
+                            <div class="bg-slate-800 rounded p-3 font-mono text-xs">
+                                <div class="text-slate-400">// SongStreamController.php:570</div>
+                                <div class="text-green-400">Log::warning('HLS serve denied', [</div>
+                                <div class="text-green-400 ml-4">'reason' => 'EXACT_REASON', // ← Ekle</div>
+                                <div class="text-green-400 ml-4">'token_valid' => $token !== null,</div>
+                                <div class="text-green-400 ml-4">'signature_match' => $sig === $expectedSig,</div>
+                                <div class="text-green-400 ml-4">'is_expired' => Carbon::now()->timestamp > $expires,</div>
+                                <div class="text-green-400">]);</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-blue-400 mb-2">3. Graceful Degradation (MP3 Fallback)</h4>
+                            <p class="text-slate-300 text-sm mb-3">
+                                HLS başarısız olursa otomatik MP3'e geç. Kullanıcı hiç beklemeden dinlemeye devam etsin.
+                            </p>
+                            <div class="bg-slate-800 rounded p-3 font-mono text-xs">
+                                <div class="text-slate-400">// player-core.js:2228-2230 (zaten var!)</div>
+                                <div class="text-green-400">✅ MP3 fallback mevcut</div>
+                                <div class="text-yellow-300 mt-2">→ Daha hızlı tetiklenmeli (retry sayısı azaltılmalı: 1 → 0)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kalıcı Çözüm -->
+                <div>
+                    <h3 class="text-lg font-semibold text-green-300 mb-3">🏗️ Kalıcı Çözüm (Uzun Vadeli):</h3>
+                    <div class="bg-slate-900 border border-slate-700 rounded p-4 space-y-4">
+                        <div>
+                            <h4 class="font-bold text-purple-400 mb-2">1. CDN + Nginx Direct Serve</h4>
+                            <p class="text-slate-300 text-sm mb-3">
+                                HLS dosyalarını Laravel'den değil, doğrudan Nginx'ten serve et. Authentication Nginx modülü ile yap.
+                            </p>
+                            <ul class="list-disc list-inside text-sm text-slate-400 ml-4 space-y-1">
+                                <li>Nginx <code>ngx_http_auth_request_module</code> kullan</li>
+                                <li>Laravel sadece /auth-check endpoint'i sağla (hızlı token validation)</li>
+                                <li>Nginx statik dosyaları direkt serve eder (PHP overhead yok)</li>
+                                <li>CloudFlare/CloudFront gibi CDN ekle (global caching)</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-purple-400 mb-2">2. Redis Session Storage</h4>
+                            <p class="text-slate-300 text-sm mb-3">
+                                Session'ları dosya yerine Redis'te tut. Daha hızlı lookup, timeout riski azalır.
+                            </p>
+                            <div class="bg-slate-800 rounded p-3 font-mono text-xs">
+                                <div class="text-slate-400">// .env</div>
+                                <div class="text-green-400">SESSION_DRIVER=redis</div>
+                                <div class="text-green-400">CACHE_DRIVER=redis</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-purple-400 mb-2">3. Async HLS Validation</h4>
+                            <p class="text-slate-300 text-sm mb-3">
+                                Token validation'ı asenkron yap. İlk istek hemen dosyayı serve etsin, background'da validation çalışsın.
+                            </p>
+                            <p class="text-yellow-300 text-xs">
+                                ⚠️ Güvenlik riski var, dikkatli implement edilmeli (rate limiting + monitoring şart)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aksiyon Planı -->
+        <div class="bg-yellow-900/20 border border-yellow-800 rounded-lg p-6">
+            <h2 class="text-xl font-bold text-yellow-400 mb-4">📋 Aksiyon Planı (Adım Adım)</h2>
+
+            <div class="space-y-3">
+                <div class="flex items-start gap-3 bg-slate-900 border border-slate-700 rounded p-4">
+                    <span class="text-2xl">1️⃣</span>
+                    <div>
+                        <h4 class="font-bold text-yellow-300 mb-1">Debug: Log Analizi</h4>
+                        <p class="text-slate-300 text-sm">
+                            <code class="text-yellow-400">storage/logs/laravel.log</code> dosyasında "HLS serve denied" loglarını bul.
+                            Hangi sebeple 401 dönüyor? (token missing, expired, signature fail, session missing)
+                        </p>
+                        <div class="mt-2 text-xs text-slate-400">
+                            Tahmini süre: 10 dakika
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 bg-slate-900 border border-slate-700 rounded p-4">
+                    <span class="text-2xl">2️⃣</span>
+                    <div>
+                        <h4 class="font-bold text-yellow-300 mb-1">Quick Fix: Timeout Artır</h4>
+                        <p class="text-slate-300 text-sm">
+                            Frontend timeout: 15s → 45s<br>
+                            Backend TTL: 300s → 3600s (60 dakika)<br>
+                            HLS.js maxLoadTimeMs: 30s → 60s
+                        </p>
+                        <div class="mt-2 text-xs text-slate-400">
+                            Tahmini süre: 15 dakika
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 bg-slate-900 border border-slate-700 rounded p-4">
+                    <span class="text-2xl">3️⃣</span>
+                    <div>
+                        <h4 class="font-bold text-yellow-300 mb-1">Test: Gerçek Kullanıcı Senaryosu</h4>
+                        <p class="text-slate-300 text-sm">
+                            Premium üye hesabı ile giriş yap → Şarkı çal → Console'u izle →
+                            Hata devam ediyorsa log'a bak
+                        </p>
+                        <div class="mt-2 text-xs text-slate-400">
+                            Tahmini süre: 20 dakika
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 bg-slate-900 border border-slate-700 rounded p-4">
+                    <span class="text-2xl">4️⃣</span>
+                    <div>
+                        <h4 class="font-bold text-yellow-300 mb-1">İyileştir: Error Logging</h4>
+                        <p class="text-slate-300 text-sm">
+                            SongStreamController::serveHls() metoduna detaylı log ekle.
+                            Hangi validation'da fail oluyor göster.
+                        </p>
+                        <div class="mt-2 text-xs text-slate-400">
+                            Tahmini süre: 30 dakika
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 bg-slate-900 border border-slate-700 rounded p-4">
+                    <span class="text-2xl">5️⃣</span>
+                    <div>
+                        <h4 class="font-bold text-yellow-300 mb-1">Kalıcı: URL Refresh Optimize</h4>
+                        <p class="text-slate-300 text-sm">
+                            refreshHlsUrlForCurrentSong() metodunu daha erken tetikle (%20 → %50).
+                            Expire olmadan yenile.
+                        </p>
+                        <div class="mt-2 text-xs text-slate-400">
+                            Tahmini süre: 45 dakika
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 bg-slate-900 border border-slate-700 rounded p-4">
+                    <span class="text-2xl">6️⃣</span>
+                    <div>
+                        <h4 class="font-bold text-yellow-300 mb-1">Monitoring: Production İzleme</h4>
+                        <p class="text-slate-300 text-sm">
+                            Production'da 1 hafta izle. Timeout hataları azaldı mı? Kullanıcı şikayeti var mı?
+                        </p>
+                        <div class="mt-2 text-xs text-slate-400">
+                            Tahmini süre: 1 hafta
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-sm text-slate-500 pt-6 border-t border-slate-800">
+            <p>🤖 Bu rapor Claude AI tarafından oluşturulmuştur</p>
+            <p class="mt-1">📅 Oluşturulma Tarihi: 22 Aralık 2025</p>
+        </div>
+    </div>
+</body>
+</html>

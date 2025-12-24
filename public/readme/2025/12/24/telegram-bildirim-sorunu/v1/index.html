@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 AI Chatbot Telegram Bildirim Sorunu Analiz Raporu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1a202e',
+                            950: '#0f1419'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <!-- Header -->
+        <header class="mb-8 pb-6 border-b border-slate-700">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="text-5xl">🔍</div>
+                <div>
+                    <h1 class="text-3xl font-bold text-white">AI Chatbot Telegram Bildirim Sorunu</h1>
+                    <p class="text-slate-400 mt-1">Telefon Numarası Algılama & Bildirim Sistemi Analiz Raporu</p>
+                </div>
+            </div>
+            <div class="flex gap-4 text-sm text-slate-400">
+                <span>📅 24 Aralık 2025</span>
+                <span>🏢 Tuufi Multi-Tenant Platform</span>
+                <span>🤖 AI Chatbot Modülü</span>
+            </div>
+        </header>
+
+        <!-- 📝 Basit Anlatım -->
+        <section class="mb-8 bg-green-900/20 border border-green-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <span>📝</span>
+                <span>Basit Anlatım (Herkes İçin)</span>
+            </h2>
+
+            <div class="space-y-4 text-slate-200">
+                <p class="text-lg leading-relaxed">
+                    <strong>Sorun:</strong> AI sohbet botları müşterilerle konuşurken telefon numarası topluyor ama Telegram'dan bildirim gelmiyor.
+                </p>
+
+                <div class="bg-green-950/30 border border-green-800/50 rounded p-4">
+                    <p class="font-semibold text-green-300 mb-2">Ne Olması Gerekiyor?</p>
+                    <ol class="list-decimal list-inside space-y-2 text-slate-300">
+                        <li>Müşteri AI botla konuşuyor</li>
+                        <li>Müşteri telefon numarası veriyor (örn: "0555 123 4567")</li>
+                        <li>Sistem telefon numarasını algılıyor ✅</li>
+                        <li>Telegram'a bildirim gönderiyor ❌ (Bu kısım çalışmıyor!)</li>
+                        <li>Yönetici Telegram'dan anında haberdar oluyor</li>
+                    </ol>
+                </div>
+
+                <p class="text-lg leading-relaxed">
+                    <strong>Neden Önemli?</strong> Müşteri telefon numarası verdiğinde hemen aranması gerekir.
+                    Telegram bildirimi olmadan, bu değerli müşteri kayıtları gözden kaçıyor ve satış fırsatları kaybediliyor.
+                </p>
+
+                <div class="bg-red-900/20 border border-red-800 rounded p-4">
+                    <p class="font-semibold text-red-300 mb-2">🚨 Şu Anda Ne Oluyor?</p>
+                    <p class="text-slate-300">
+                        Sistem telefon numarasını algılıyor ama Telegram bildirimi gitmiyor.
+                        Kullanıcı "telefon numarası toplandı" diyor ama bildirim almıyor.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🔧 Teknik Detaylar -->
+        <section class="mb-8 bg-blue-900/20 border border-blue-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                <span>🔧</span>
+                <span>Teknik Detaylar (Geliştiriciler İçin)</span>
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Sistem Mimarisi -->
+                <div class="bg-blue-950/30 border border-blue-800/50 rounded p-4">
+                    <h3 class="text-xl font-semibold text-blue-300 mb-3">📐 Sistem Mimarisi</h3>
+
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <p class="font-semibold text-slate-200">1. Telefon Algılama Servisi</p>
+                            <p class="text-slate-400 ml-4">
+                                📁 <code class="bg-slate-800 px-2 py-1 rounded">Modules/AI/app/Services/PhoneNumberDetectionService.php</code>
+                            </p>
+                            <ul class="ml-8 mt-2 space-y-1 text-slate-300">
+                                <li>✅ Türk telefon formatlarını algılıyor (+90, 0, 5XX)</li>
+                                <li>✅ Regex pattern'ler esnek (boşluk, tire, nokta, parantez kabul ediyor)</li>
+                                <li>✅ <code>hasPhoneNumber()</code> - Mesajda telefon var mı kontrol</li>
+                                <li>✅ <code>extractPhoneNumbers()</code> - Telefon numaralarını çıkar</li>
+                                <li>✅ <code>formatPhoneNumber()</code> - Görsel format (0555 123 4567)</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <p class="font-semibold text-slate-200">2. Telegram Bildirim Servisi</p>
+                            <p class="text-slate-400 ml-4">
+                                📁 <code class="bg-slate-800 px-2 py-1 rounded">Modules/AI/app/Services/TelegramNotificationService.php</code>
+                            </p>
+                            <ul class="ml-8 mt-2 space-y-1 text-slate-300">
+                                <li>✅ <code>sendPhoneNumberAlert()</code> - Ana bildirim fonksiyonu</li>
+                                <li>✅ Config: <code>services.telegram-bot-api.token</code> & <code>chat_id</code></li>
+                                <li>✅ HTML format mesaj (bold, italic, link desteği)</li>
+                                <li>✅ Konuşma özeti + admin link içeriyor</li>
+                                <li>✅ Try-catch blok ile hata yönetimi (silent fail)</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <p class="font-semibold text-slate-200">3. Ana Controller - Tespit & Bildirim Akışı</p>
+                            <p class="text-slate-400 ml-4">
+                                📁 <code class="bg-slate-800 px-2 py-1 rounded">Modules/AI/app/Http/Controllers/Api/PublicAIController.php</code>
+                            </p>
+                            <ul class="ml-8 mt-2 space-y-1 text-slate-300">
+                                <li>✅ Satır 1207: <code>detectPhoneNumberAndLogToTelescope()</code> çağrılıyor</li>
+                                <li>✅ Satır 2299-2312: User mesajlarında telefon aranıyor</li>
+                                <li>✅ Satır 2351-2352: Telegram bildirim gönderiliyor</li>
+                                <li>⚠️ Satır 2353-2358: Hata catch ediliyor (silent fail - log yazılıyor)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Config Kontrolü -->
+                <div class="bg-blue-950/30 border border-blue-800/50 rounded p-4">
+                    <h3 class="text-xl font-semibold text-blue-300 mb-3">⚙️ Config Kontrolü</h3>
+
+                    <div class="space-y-2 text-sm">
+                        <p class="text-slate-200"><strong>1. Config Dosyası:</strong></p>
+                        <pre class="bg-slate-900 p-3 rounded text-xs overflow-x-auto text-green-400">config/services.php
+'telegram-bot-api' => [
+    'token' => env('TELEGRAM_BOT_TOKEN'),
+    'chat_id' => env('TELEGRAM_CHAT_ID'),
+]</pre>
+
+                        <p class="text-slate-200 mt-4"><strong>2. .env Dosyası:</strong></p>
+                        <pre class="bg-slate-900 p-3 rounded text-xs overflow-x-auto text-green-400">TELEGRAM_BOT_TOKEN=8344881512:AAGJQn3Z167ebNx67pwvGuKf1RbzTHazbt0
+TELEGRAM_CHAT_ID=-1002943373765</pre>
+
+                        <p class="text-green-300 mt-4">✅ Config doğru tanımlı!</p>
+                    </div>
+                </div>
+
+                <!-- Test Sonuçları -->
+                <div class="bg-green-950/30 border border-green-800/50 rounded p-4">
+                    <h3 class="text-xl font-semibold text-green-300 mb-3">🧪 Test Sonuçları</h3>
+
+                    <div class="space-y-3 text-sm">
+                        <p class="text-slate-200"><strong>Telegram API Bağlantı Testi:</strong></p>
+                        <pre class="bg-slate-900 p-3 rounded text-xs overflow-x-auto"><span class="text-blue-400">$ php artisan tinker --execute="...</span>
+<span class="text-green-400">Array (
+    [success] => 1
+    [message] => Telegram bağlantısı başarılı!
+    [response] => Array (
+        [ok] => 1
+        [result] => Array (
+            [message_id] => 59
+            [from] => iXtifBot
+            [chat] => iXtif İletişim Mesajlari
+        )
+    )
+)</span></pre>
+
+                        <p class="text-green-300 mt-4">✅ Telegram API çalışıyor! Bot mesaj gönderebiliyor.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🔍 Sorun Analizi -->
+        <section class="mb-8 bg-yellow-900/20 border border-yellow-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-yellow-400 mb-4 flex items-center gap-2">
+                <span>🔍</span>
+                <span>Sorun Analizi & Muhtemel Sebepler</span>
+            </h2>
+
+            <div class="space-y-4">
+                <p class="text-slate-200 text-lg mb-4">
+                    <strong>Ana Sorun:</strong> Sistem telefon numarası algılıyor ama Telegram bildirimi gitmiyor.
+                </p>
+
+                <div class="space-y-4">
+                    <!-- Sebep 1 -->
+                    <div class="bg-yellow-950/30 border border-yellow-800/50 rounded p-4">
+                        <h3 class="text-lg font-semibold text-yellow-300 mb-2">
+                            ❓ Muhtemel Sebep #1: Telefon Numarası Hiç Algılanmadı
+                        </h3>
+                        <p class="text-slate-300 mb-3">
+                            Kullanıcı "telefon numarası toplandı" diyor ama sistem gerçekten algılamadı olabilir.
+                        </p>
+                        <div class="bg-slate-900 p-3 rounded text-sm">
+                            <p class="text-slate-400 mb-2"><strong>Test Adımları:</strong></p>
+                            <ol class="list-decimal list-inside space-y-1 text-slate-300 ml-4">
+                                <li>Admin panelden AI konuşma kayıtlarını kontrol et</li>
+                                <li>Mesaj içeriğinde telefon formatını kontrol et</li>
+                                <li>Telefon AI'ın mesajında mı yoksa kullanıcının mesajında mı?</li>
+                                <li>Log dosyasında "Phone number detected" kaydı var mı?</li>
+                            </ol>
+                            <pre class="bg-slate-950 p-2 rounded mt-3 text-xs overflow-x-auto text-green-400">tail -n 500 storage/logs/laravel.log | grep "Phone number detected"</pre>
+                        </div>
+                    </div>
+
+                    <!-- Sebep 2 -->
+                    <div class="bg-yellow-950/30 border border-yellow-800/50 rounded p-4">
+                        <h3 class="text-lg font-semibold text-yellow-300 mb-2">
+                            ⚠️ Muhtemel Sebep #2: Telefon AI Mesajında (User Değil)
+                        </h3>
+                        <p class="text-slate-300 mb-3">
+                            Kod <strong>sadece USER mesajlarında</strong> telefon arıyor. AI'ın kendi mesajlarında telefonu görmezden geliyor.
+                        </p>
+                        <div class="bg-slate-900 p-3 rounded text-sm">
+                            <p class="text-slate-400 mb-2"><strong>Kod Mantığı:</strong></p>
+                            <pre class="bg-slate-950 p-2 rounded text-xs overflow-x-auto text-blue-400">// PublicAIController.php - Satır 2302-2304
+if ($message->role === 'assistant') {
+    continue; // AI mesajlarını atla
+}
+
+// Sadece USER mesajlarında telefon ara</pre>
+                            <p class="text-yellow-300 mt-3">
+                                ⚠️ Eğer telefon numarası AI'ın cevabında (örnek göstermek için) geçiyorsa algılanmıyor!
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Sebep 3 -->
+                    <div class="bg-yellow-950/30 border border-yellow-800/50 rounded p-4">
+                        <h3 class="text-lg font-semibold text-yellow-300 mb-2">
+                            🔇 Muhtemel Sebep #3: Silent Fail (Hata Yakalandı, Bildirim Gitmedi)
+                        </h3>
+                        <p class="text-slate-300 mb-3">
+                            Telegram servisi çalıştı ama bir hata oluştu ve try-catch bloğu hatasını yakaladı.
+                        </p>
+                        <div class="bg-slate-900 p-3 rounded text-sm">
+                            <p class="text-slate-400 mb-2"><strong>Kod Bloğu:</strong></p>
+                            <pre class="bg-slate-950 p-2 rounded text-xs overflow-x-auto text-blue-400">// Satır 2350-2358
+try {
+    $telegramService = new \Modules\AI\App\Services\TelegramNotificationService();
+    $telegramService->sendPhoneNumberAlert($conversation, $detectedPhones);
+} catch (\Exception $telegramError) {
+    // Silent fail - Telegram hatası ana akışı bozmasın
+    \Log::warning('⚠️ Telegram notification failed', [
+        'error' => $telegramError->getMessage(),
+    ]);
+}</pre>
+                            <p class="text-yellow-300 mt-3">
+                                ⚠️ Hata yakalandı ama sadece log yazıldı! Kullanıcı farketmedi.
+                            </p>
+                            <pre class="bg-slate-950 p-2 rounded mt-3 text-xs overflow-x-auto text-green-400">tail -n 500 storage/logs/laravel.log | grep "Telegram notification failed"</pre>
+                        </div>
+                    </div>
+
+                    <!-- Sebep 4 -->
+                    <div class="bg-yellow-950/30 border border-yellow-800/50 rounded p-4">
+                        <h3 class="text-lg font-semibold text-yellow-300 mb-2">
+                            📋 Muhtemel Sebep #4: Log Seviyesi Sorunu
+                        </h3>
+                        <p class="text-slate-300 mb-3">
+                            Log::info() kullanılıyor ama log seviyesi error olarak ayarlanmış olabilir.
+                        </p>
+                        <div class="bg-slate-900 p-3 rounded text-sm">
+                            <pre class="bg-slate-950 p-2 rounded text-xs overflow-x-auto text-green-400">grep "LOG_LEVEL" .env
+# Eğer LOG_LEVEL=error ise info logları yazılmaz!</pre>
+                        </div>
+                    </div>
+
+                    <!-- Sebep 5 -->
+                    <div class="bg-yellow-950/30 border border-yellow-800/50 rounded p-4">
+                        <h3 class="text-lg font-semibold text-yellow-300 mb-2">
+                            🔌 Muhtemel Sebep #5: Telegram API Rate Limit veya IP Block
+                        </h3>
+                        <p class="text-slate-300 mb-3">
+                            Telegram Bot API çok fazla istek gönderildiğinde rate limit uygular.
+                        </p>
+                        <div class="bg-slate-900 p-3 rounded text-sm">
+                            <p class="text-slate-400 mb-2"><strong>Telegram Limitleri:</strong></p>
+                            <ul class="list-disc list-inside space-y-1 text-slate-300 ml-4">
+                                <li>Aynı kullanıcıya: 1 mesaj/saniye</li>
+                                <li>Grup'a: 20 mesaj/dakika</li>
+                                <li>Aşırı istek: HTTP 429 (Too Many Requests)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ✅ Çözüm Önerileri -->
+        <section class="mb-8 bg-green-900/20 border border-green-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <span>✅</span>
+                <span>Çözüm Önerileri & Test Adımları</span>
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Adım 1 -->
+                <div class="bg-green-950/30 border border-green-800/50 rounded p-4">
+                    <h3 class="text-lg font-semibold text-green-300 mb-2">
+                        1️⃣ Log Kontrolü (İlk Adım)
+                    </h3>
+                    <div class="bg-slate-900 p-3 rounded text-sm">
+                        <pre class="text-xs overflow-x-auto text-green-400"># Telefon algılama logları
+tail -n 1000 storage/logs/laravel.log | grep -E "Phone number detected|Telegram"
+
+# Sadece Telegram hataları
+tail -n 1000 storage/logs/laravel.log | grep "Telegram notification failed"
+
+# Log seviyesi kontrolü
+grep LOG_LEVEL .env</pre>
+                    </div>
+                </div>
+
+                <!-- Adım 2 -->
+                <div class="bg-green-950/30 border border-green-800/50 rounded p-4">
+                    <h3 class="text-lg font-semibold text-green-300 mb-2">
+                        2️⃣ Manuel Test (Gerçek Konuşma Simülasyonu)
+                    </h3>
+                    <div class="bg-slate-900 p-3 rounded text-sm space-y-3">
+                        <p class="text-slate-300">Frontend'den AI chat aç, telefon numarası gönder:</p>
+                        <pre class="text-xs overflow-x-auto text-blue-400">User: "Merhaba, ürün hakkında bilgi alabilir miyim?"
+AI: "Tabii, size nasıl yardımcı olabilirim?"
+User: "Telefon numaramı bırakayım: 0555 123 4567"
+AI: "Teşekkürler, en kısa sürede sizi arayacağız."</pre>
+                        <p class="text-yellow-300 mt-2">⚠️ Telefon numarasını USER mesajında yazın (AI'ın cevabında değil!)</p>
+                        <p class="text-slate-300 mt-2">Telegram'da bildirim geldi mi kontrol et.</p>
+                    </div>
+                </div>
+
+                <!-- Adım 3 -->
+                <div class="bg-green-950/30 border border-green-800/50 rounded p-4">
+                    <h3 class="text-lg font-semibold text-green-300 mb-2">
+                        3️⃣ Database Kontrolü
+                    </h3>
+                    <div class="bg-slate-900 p-3 rounded text-sm">
+                        <pre class="text-xs overflow-x-auto text-green-400"># AI conversation kayıtlarını kontrol et
+php artisan tinker
+>>> $conv = \Modules\AI\App\Models\AIConversation::latest()->first();
+>>> $conv->messages->pluck('content', 'role');
+# Telefon numarası hangi role'de (user/assistant)?</pre>
+                    </div>
+                </div>
+
+                <!-- Adım 4 -->
+                <div class="bg-green-950/30 border border-green-800/50 rounded p-4">
+                    <h3 class="text-lg font-semibold text-green-300 mb-2">
+                        4️⃣ Debug Mode (Temporary - Üretimde Dikkatli!)
+                    </h3>
+                    <div class="bg-slate-900 p-3 rounded text-sm space-y-3">
+                        <p class="text-slate-300">TelegramNotificationService.php içine debug log ekle:</p>
+                        <pre class="text-xs overflow-x-auto text-blue-400">// sendPhoneNumberAlert() - Satır 26'dan sonra ekle
+\Log::info('🔔 TELEGRAM DEBUG: Function called', [
+    'conversation_id' => $conversation->id,
+    'phones' => $phoneNumbers,
+    'config_token' => substr($botToken ?? 'EMPTY', 0, 10).'...',
+    'config_chat_id' => $chatId ?? 'EMPTY',
+]);</pre>
+                        <p class="text-yellow-300 mt-2">Bu debug log ile fonksiyona girilip girilmediğini anlarsın.</p>
+                    </div>
+                </div>
+
+                <!-- Adım 5 -->
+                <div class="bg-green-950/30 border border-green-800/50 rounded p-4">
+                    <h3 class="text-lg font-semibold text-green-300 mb-2">
+                        5️⃣ Telegram Bot Status Kontrolü
+                    </h3>
+                    <div class="bg-slate-900 p-3 rounded text-sm">
+                        <pre class="text-xs overflow-x-auto text-green-400"># Bot info kontrolü
+curl "https://api.telegram.org/bot8344881512:AAGJQn3Z167ebNx67pwvGuKf1RbzTHazbt0/getMe"
+
+# Chat bilgisi
+curl "https://api.telegram.org/bot8344881512:AAGJQn3Z167ebNx67pwvGuKf1RbzTHazbt0/getChat?chat_id=-1002943373765"</pre>
+                    </div>
+                </div>
+
+                <!-- Adım 6 -->
+                <div class="bg-green-950/30 border border-green-800/50 rounded p-4">
+                    <h3 class="text-lg font-semibold text-green-300 mb-2">
+                        6️⃣ Alternatif: WhatsApp Bildirimi Kontrol Et
+                    </h3>
+                    <div class="bg-slate-900 p-3 rounded text-sm space-y-2">
+                        <p class="text-slate-300">Kodda WhatsApp bildirimi de var (satır 2360-2381).</p>
+                        <p class="text-yellow-300">WhatsApp bildirimi geliyor mu kontrol et. Eğer WhatsApp geliyorsa, sorun sadece Telegram'da demektir.</p>
+                        <pre class="text-xs overflow-x-auto text-green-400">tail -n 500 storage/logs/laravel.log | grep "WhatsApp"</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🎯 Sonuç & Öneriler -->
+        <section class="mb-8 bg-purple-900/20 border border-purple-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+                <span>🎯</span>
+                <span>Sonuç & Öneriler</span>
+            </h2>
+
+            <div class="space-y-4">
+                <div class="bg-purple-950/30 border border-purple-800/50 rounded p-4">
+                    <h3 class="text-xl font-semibold text-purple-300 mb-3">📊 Durum Özeti</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div class="bg-slate-900 p-3 rounded">
+                            <p class="font-semibold text-green-400 mb-2">✅ Çalışan Sistemler</p>
+                            <ul class="space-y-1 text-slate-300">
+                                <li>✅ PhoneNumberDetectionService</li>
+                                <li>✅ TelegramNotificationService (API bağlantısı OK)</li>
+                                <li>✅ Config (TELEGRAM_BOT_TOKEN & CHAT_ID)</li>
+                                <li>✅ Kod akışı (detectPhoneNumber fonksiyonu çağrılıyor)</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900 p-3 rounded">
+                            <p class="font-semibold text-red-400 mb-2">❌ Sorunlu Kısım</p>
+                            <ul class="space-y-1 text-slate-300">
+                                <li>❌ Telegram bildirimi gitmiyor</li>
+                                <li>❓ Telefon gerçekten algılanıyor mu?</li>
+                                <li>❓ Hata log'lanıyor mu?</li>
+                                <li>❓ Silent fail mi oluyor?</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-purple-950/30 border border-purple-800/50 rounded p-4">
+                    <h3 class="text-xl font-semibold text-purple-300 mb-3">💡 En Olası Sebepler</h3>
+                    <ol class="space-y-2 text-slate-300 list-decimal list-inside">
+                        <li><strong>Telefon AI mesajında:</strong> Kullanıcı değil AI telefon yazmış olabilir (kod sadece user mesajlarına bakıyor)</li>
+                        <li><strong>Telefon algılanmadı:</strong> Format uyumsuz veya regex yakalanamadı</li>
+                        <li><strong>Silent fail:</strong> Telegram servisi hata verdi ama catch bloğu sessizce yakaladı</li>
+                        <li><strong>Log seviyesi:</strong> Info loglar yazılmıyor olabilir</li>
+                    </ol>
+                </div>
+
+                <div class="bg-purple-950/30 border border-purple-800/50 rounded p-4">
+                    <h3 class="text-xl font-semibold text-purple-300 mb-3">🚀 Hızlı Çözüm Yol Haritası</h3>
+                    <ol class="space-y-3 text-slate-300 list-decimal list-inside">
+                        <li class="font-semibold">Log kontrolü yap (5 dakika)</li>
+                        <li class="font-semibold">Manuel test et (10 dakika)</li>
+                        <li class="font-semibold">Database'de conversation kayıtlarına bak (5 dakika)</li>
+                        <li class="font-semibold">Debug log ekle, tekrar test et (15 dakika)</li>
+                        <li class="font-semibold">Telegram Bot API durumunu kontrol et (5 dakika)</li>
+                    </ol>
+                    <p class="text-purple-300 mt-4 font-semibold">
+                        ⏱️ Toplam süre: ~40 dakika (sorun bulunana kadar)
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 📚 Teknik Referanslar -->
+        <section class="mb-8 bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-slate-300 mb-4 flex items-center gap-2">
+                <span>📚</span>
+                <span>Teknik Referanslar</span>
+            </h2>
+
+            <div class="space-y-3 text-sm text-slate-300">
+                <div>
+                    <p class="font-semibold text-slate-200">Dosya Lokasyonları:</p>
+                    <ul class="ml-4 space-y-1 text-xs font-mono bg-slate-900 p-3 rounded mt-2">
+                        <li>📁 Modules/AI/app/Services/PhoneNumberDetectionService.php</li>
+                        <li>📁 Modules/AI/app/Services/TelegramNotificationService.php</li>
+                        <li>📁 Modules/AI/app/Http/Controllers/Api/PublicAIController.php (satır 1207, 2285-2390)</li>
+                        <li>📁 config/services.php (satır 73-82)</li>
+                        <li>📁 .env (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID)</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <p class="font-semibold text-slate-200">Database Tabloları:</p>
+                    <ul class="ml-4 space-y-1 text-xs font-mono bg-slate-900 p-3 rounded mt-2">
+                        <li>🗄️ ai_conversations (Central DB - mysql connection)</li>
+                        <li>🗄️ ai_conversation_messages (Central DB - mysql connection)</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <p class="font-semibold text-slate-200">Telegram Bot Bilgileri:</p>
+                    <ul class="ml-4 space-y-1 text-xs font-mono bg-slate-900 p-3 rounded mt-2">
+                        <li>🤖 Bot Username: @iXtifBot</li>
+                        <li>💬 Chat: iXtif İletişim Mesajları (supergroup)</li>
+                        <li>🆔 Chat ID: -1002943373765</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <p class="font-semibold text-slate-200">Telegram API Docs:</p>
+                    <ul class="ml-4 space-y-1 text-xs bg-slate-900 p-3 rounded mt-2">
+                        <li><a href="https://core.telegram.org/bots/api" class="text-blue-400 hover:underline">https://core.telegram.org/bots/api</a></li>
+                        <li>Rate Limits: <a href="https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this" class="text-blue-400 hover:underline">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-6 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından üretildi</p>
+            <p class="mt-2">Tuufi Multi-Tenant Platform - AI Chatbot Analiz Raporu</p>
+            <p class="mt-2">📅 24 Aralık 2025</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend 06: Queue Yönetimi - Muzibu Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { slate: { 850: '#1a202e', 950: '#0f1419' } } } }
+        }
+    </script>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            input[type="checkbox"] { -webkit-appearance: checkbox; appearance: checkbox; }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <a href="../index.html" class="text-emerald-400 hover:text-emerald-300 no-print">← Geri</a>
+                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded text-sm no-print">🖨️ Yazdır</button>
+            </div>
+            <h1 class="text-3xl font-bold text-emerald-400 mb-2">Frontend 06: Queue Yönetimi</h1>
+            <p class="text-slate-400">Queue görünümü, sıralama, silme, auto-refill, queue overlay</p>
+
+            <div class="mt-4 bg-slate-900 rounded-lg p-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold">İlerleme</span>
+                    <span class="text-sm" id="progress-text">0 / 12</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-3">
+                    <div id="progress-bar" class="bg-emerald-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+
+            <!-- Queue Görünümü -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">📋 Queue Görünümü & Overlay</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="queue-overlay-open">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Queue Overlay Açılması</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Player'da "Queue" ikonu/butonu olmalı<br>
+                                ▸ Tıklandığında sağ taraftan overlay panel açılmalı (slide-in animasyonu)<br>
+                                ▸ Overlay genişliği: mobilde full-width, desktop'ta 400-500px<br>
+                                ▸ Arka planda backdrop (karartma) olmalı<br>
+                                ▸ ESC tuşu veya backdrop'a tıklandığında kapanmalı
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="queue-current-song">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Şu Anda Çalan (Now Playing)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Queue overlay'de ilk sırada "Şimdi Çalıyor" bölümü olmalı<br>
+                                ▸ Şarkı: Kapak görseli (küçük), isim, sanatçı, süre<br>
+                                ▸ "Şimdi Çalıyor" badge'i belirgin olmalı (yeşil/aktif renk)<br>
+                                ▸ Pulse animasyonu ile vurgulanmalı
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="queue-next-songs">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Sıradaki Şarkılar (Up Next)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "Sırada" başlığı altında sonraki şarkılar listelenmiş<br>
+                                ▸ Her şarkı kartı: Sıra numarası, kapak, isim, sanatçı, süre<br>
+                                ▸ Scroll edilebilir liste (max 50 şarkı görünür)<br>
+                                ▸ Queue boşsa "Sırada şarkı yok" placeholder göster
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Queue İşlemleri -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">⚙️ Queue İşlemleri</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="queue-reorder">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Sıralama (Drag & Drop)</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Queue'daki şarkılar drag-drop ile sıralanabilmeli<br>
+                                ▸ Sürüklerken şarkı kartı shadow/opacity değişmeli (visual feedback)<br>
+                                ▸ Bırakıldığında yeni sıraya eklenip API'ye kaydedilmeli<br>
+                                ▸ Şu anda çalan şarkı taşınamamalı (disabled)<br>
+                                ▸ Mobilde: Long press ile drag başlamalı
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="queue-remove-single">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Tekil Silme</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Her şarkı kartında "X" veya "Kaldır" ikonu olmalı<br>
+                                ▸ Tıklandığında şarkı queue'dan çıkarılmalı (slide-out animasyonu)<br>
+                                ▸ API'ye DELETE isteği gönderilmeli<br>
+                                ▸ Şu anda çalan şarkı silinemez, butonu disabled<br>
+                                ▸ Toast mesajı: "Şarkı queue'dan çıkarıldı"
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="queue-clear-all">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Tümünü Temizle</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Queue overlay'de "Tümünü Temizle" butonu olmalı<br>
+                                ▸ Tıklandığında onay modal'ı açılmalı: "Queue tamamen temizlenecek!"<br>
+                                ▸ Onaylanınca şu anda çalan hariç tüm şarkılar silinmeli<br>
+                                ▸ API'ye bulk delete isteği gönderilmeli<br>
+                                ▸ Player durmadan devam etmeli (current song korunur)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="queue-save-playlist">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Queue'yu Playlist Olarak Kaydet</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "Playlist Olarak Kaydet" butonu olmalı<br>
+                                ▸ Tıklandığında modal açılsın: Playlist ismi ve açıklama gir<br>
+                                ▸ Kaydet butonuna basıldığında yeni playlist oluşturulsun<br>
+                                ▸ Queue'daki tüm şarkılar playlist'e eklensin<br>
+                                ▸ Toast: "✅ Playlist oluşturuldu!" + playlist'e git linki
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Auto-Refill -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">🔄 Auto-Refill</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="queue-refill-trigger">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Tetikleme Koşulu</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Queue'da 3 veya daha az şarkı kaldığında auto-refill tetiklenmeli<br>
+                                ▸ API endpoint: POST /api/queue/refill<br>
+                                ▸ Background'da yeni şarkılar eklenmeli (kullanıcı fark etmemeli)<br>
+                                ▸ Refill sırasında player kesintisiz çalmalı
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="queue-refill-logic">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Refill Mantığı</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Kullanıcının listening history'sine göre öneri üret<br>
+                                ▸ Favori genre/sector bazlı şarkılar ekle (20 adet)<br>
+                                ▸ Benzer sanatçılardan şarkılar ekle<br>
+                                ▸ Popüler şarkılar karıştır (randomize)<br>
+                                ▸ Daha önce çalınmış şarkılar öncelik düşük
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="queue-refill-notification">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Refill Bildirimi</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Refill tamamlandığında küçük toast göster: "20 yeni şarkı eklendi"<br>
+                                ▸ Queue overlay açıksa otomatik güncellenip yeni şarkılar gösterilmeli<br>
+                                ▸ Queue uzunluğu artmalı (console'da log)<br>
+                                ▸ Kullanıcı dilerse refill'i kapatabilmeli (settings'ten)
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- State & Persistence -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">💾 State & Persistence</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="queue-sync-api">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">API Senkronizasyonu</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Queue değişiklikleri (ekle, çıkar, sırala) API'ye kaydedilmeli<br>
+                                ▸ Endpoint: GET /api/queue (load), POST /api/queue (add), DELETE /api/queue/{id}<br>
+                                ▸ Optimistic update: UI hemen güncellenir, arka planda API çağrılır<br>
+                                ▸ API hatası durumunda rollback (eski state'e dön)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="queue-session-persist">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Session Persistence</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Sayfa yenilendiğinde queue korunmalı (localStorage veya API'den yükle)<br>
+                                ▸ Çalan şarkının pozisyonu hatırlanmalı (kaldığı yerden devam)<br>
+                                ▸ Login/logout sonrası queue temizlenmeli (güvenlik)<br>
+                                ▸ Multi-device sync: Farklı cihazlarda aynı queue (isteğe bağlı feature)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="queue-history">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Queue History</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Daha önce çalınmış şarkılar "Geçmiş" bölümünde listelenmiş olmalı<br>
+                                ▸ Queue overlay'de tab: "Sırada" ve "Geçmiş"<br>
+                                ▸ Geçmiş şarkılara tıklandığında tekrar queue'ya eklenebilmeli<br>
+                                ▸ Geçmiş max 50 şarkı (daha eski olanlar silinir)
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-8 flex gap-4 no-print">
+            <button onclick="resetProgress()" class="bg-red-600 hover:bg-red-500 px-6 py-3 rounded-lg text-white font-semibold">
+                🔄 İlerlemeyi Sıfırla
+            </button>
+            <button onclick="markAllComplete()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-3 rounded-lg text-white font-semibold">
+                ✅ Tümünü Tamamla
+            </button>
+        </div>
+
+        <div class="mt-12 text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+            <p>🎵 Muzibu.com.tr - Queue Yönetimi Test Checklist</p>
+        </div>
+
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'muzibu_test_frontend_06_queue';
+        const TOTAL_TESTS = 12;
+
+        function loadProgress() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+                    const testId = checkbox.dataset.test;
+                    if (data[testId]) checkbox.checked = true;
+                });
+            }
+            updateProgress();
+        }
+
+        function saveProgress() {
+            const data = {};
+            document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+                data[checkbox.dataset.test] = checkbox.checked;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const checked = document.querySelectorAll('.test-checkbox:checked').length;
+            const percentage = Math.round((checked / TOTAL_TESTS) * 100);
+            document.getElementById('progress-bar').style.width = percentage + '%';
+            document.getElementById('progress-text').textContent = `${checked} / ${TOTAL_TESTS}`;
+        }
+
+        function resetProgress() {
+            if (!confirm('⚠️ Tüm işaretlemeler silinecek! Emin misiniz?')) return;
+            localStorage.removeItem(STORAGE_KEY);
+            document.querySelectorAll('.test-checkbox').forEach(cb => cb.checked = false);
+            updateProgress();
+        }
+
+        function markAllComplete() {
+            document.querySelectorAll('.test-checkbox').forEach(cb => cb.checked = true);
+            saveProgress();
+        }
+
+        document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', saveProgress);
+        });
+
+        loadProgress();
+    </script>
+</body>
+</html>

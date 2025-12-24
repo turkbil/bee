@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend 09: Dinleme Geçmişi - Muzibu Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { slate: { 850: '#1a202e', 950: '#0f1419' } } } }
+        }
+    </script>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            input[type="checkbox"] { -webkit-appearance: checkbox; appearance: checkbox; }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <a href="../index.html" class="text-emerald-400 hover:text-emerald-300 no-print">← Geri</a>
+                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded text-sm no-print">🖨️ Yazdır</button>
+            </div>
+            <h1 class="text-3xl font-bold text-emerald-400 mb-2">Frontend 09: Dinleme Geçmişi</h1>
+            <p class="text-slate-400">Listening history, recent plays, statistics, timeline</p>
+
+            <div class="mt-4 bg-slate-900 rounded-lg p-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold">İlerleme</span>
+                    <span class="text-sm" id="progress-text">0 / 8</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-3">
+                    <div id="progress-bar" class="bg-emerald-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+
+            <!-- Geçmiş Görünümü -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">📜 Dinleme Geçmişi Görünümü</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="history-page-access">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Sayfa Erişimi</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ URL: /listening-history veya /gecmis<br>
+                                ▸ Sidebar veya profile menüsünde "Dinleme Geçmişi" linki olmalı<br>
+                                ▸ Login gerekli: Guest kullanıcılar login sayfasına yönlendirilmeli<br>
+                                ▸ Sayfa başlığı: "Dinleme Geçmişim"
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="history-list-view">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Liste Görünümü</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Şarkılar chronological sırayla listelenmiş (en yeni en üstte)<br>
+                                ▸ Her item: Kapak, şarkı adı, sanatçı, dinlenme tarihi/saati<br>
+                                ▸ "X dakika/saat/gün önce" formatında relative time<br>
+                                ▸ Pagination: 50 item/sayfa<br>
+                                ▸ Infinite scroll (isteğe bağlı)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="history-grouped">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Gruplandırılmış Görünüm</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Tarih bazlı gruplama: "Bugün", "Dün", "Bu Hafta", "Bu Ay", "Daha Eski"<br>
+                                ▸ Her grup başlığı sticky header olmalı (scroll'da sabit kalsın)<br>
+                                ▸ Grup başlıklarında toplam dinleme sayısı gösterilmeli<br>
+                                ▸ Kullanıcı toggle ile flat/grouped view seçebilmeli
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Filtreleme & Arama -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">🔍 Filtreleme & Arama</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="history-search">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Arama</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Search bar: Şarkı adı, sanatçı adı ile arama<br>
+                                ▸ Real-time filtreleme (typing yaparken anında sonuç)<br>
+                                ▸ "Arama sonucu bulunamadı" placeholder<br>
+                                ▸ Clear search butonu (X ikonu)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="history-date-filter">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Tarih Filtresi</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Date range picker: Başlangıç - Bitiş tarihi seçimi<br>
+                                ▸ Preset seçenekler: Son 7 gün, Son 30 gün, Son 3 ay, Tüm zamanlar<br>
+                                ▸ Filtreleme anında uygulanmalı (reload yok)<br>
+                                ▸ URL query string'e eklenmeli (bookmark edilebilsin)
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- İstatistikler -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">📊 İstatistikler</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="history-stats-overview">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Genel İstatistikler</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Sayfa üstünde stats kartları: Toplam dinlenme, toplam süre, toplam şarkı<br>
+                                ▸ Bu ay/bu hafta/bugün breakdown'u<br>
+                                ▸ Ortalama günlük dinleme süresi<br>
+                                ▸ Animasyonlu counter (sayılar artarak gösterilsin)
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="history-top-songs">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">En Çok Dinlenenler</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "En Çok Dinlediğiniz Şarkılar" bölümü (top 10)<br>
+                                ▸ Her şarkıda: Play count badge, kapak, isim, sanatçı<br>
+                                ▸ Tıklanabilir (şarkı detay veya direkt çal)<br>
+                                ▸ Period seçimi: Bu hafta, bu ay, tüm zamanlar
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- İşlemler -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-emerald-300 mb-4">⚙️ İşlemler</h2>
+                <div class="space-y-4">
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="history-replay">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Tekrar Oynatma</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ Her şarkı kartında "Tekrar Çal" butonu olmalı<br>
+                                ▸ Tıklandığında şarkı queue'ya eklenip başlatılmalı<br>
+                                ▸ Şarkı zaten queue'daysa "Zaten sırada" toast göster<br>
+                                ▸ Batch play: Bir günü/haftayı toplu çal seçeneği
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+                        <input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="history-clear">
+                        <div class="flex-1">
+                            <div class="font-semibold text-slate-200 group-hover:text-emerald-300">Geçmişi Temizle</div>
+                            <div class="text-sm text-slate-400 mt-1">
+                                ▸ "Geçmişi Temizle" butonu (ayarlar/üst menüde)<br>
+                                ▸ Onay modal'ı: "Tüm dinleme geçmişi silinecek!"<br>
+                                ▸ Seçenek: Tümünü sil / Belirli tarih aralığını sil<br>
+                                ▸ İşlem sonrası: Toast "✅ Geçmiş temizlendi" + liste boş placeholder
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-8 flex gap-4 no-print">
+            <button onclick="resetProgress()" class="bg-red-600 hover:bg-red-500 px-6 py-3 rounded-lg text-white font-semibold">
+                🔄 İlerlemeyi Sıfırla
+            </button>
+            <button onclick="markAllComplete()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-3 rounded-lg text-white font-semibold">
+                ✅ Tümünü Tamamla
+            </button>
+        </div>
+
+        <div class="mt-12 text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+            <p>🎵 Muzibu.com.tr - Dinleme Geçmişi Test Checklist</p>
+        </div>
+
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'muzibu_test_frontend_09_history';
+        const TOTAL_TESTS = 8;
+
+        function loadProgress() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+                    const testId = checkbox.dataset.test;
+                    if (data[testId]) checkbox.checked = true;
+                });
+            }
+            updateProgress();
+        }
+
+        function saveProgress() {
+            const data = {};
+            document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+                data[checkbox.dataset.test] = checkbox.checked;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const checked = document.querySelectorAll('.test-checkbox:checked').length;
+            const percentage = Math.round((checked / TOTAL_TESTS) * 100);
+            document.getElementById('progress-bar').style.width = percentage + '%';
+            document.getElementById('progress-text').textContent = `${checked} / ${TOTAL_TESTS}`;
+        }
+
+        function resetProgress() {
+            if (!confirm('⚠️ Tüm işaretlemeler silinecek! Emin misiniz?')) return;
+            localStorage.removeItem(STORAGE_KEY);
+            document.querySelectorAll('.test-checkbox').forEach(cb => cb.checked = false);
+            updateProgress();
+        }
+
+        function markAllComplete() {
+            document.querySelectorAll('.test-checkbox').forEach(cb => cb.checked = true);
+            saveProgress();
+        }
+
+        document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', saveProgress);
+        });
+
+        loadProgress();
+    </script>
+</body>
+</html>

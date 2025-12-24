@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin 13: Bulk İşlemler - Muzibu Test</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class',theme:{extend:{colors:{slate:{850:'#1a202e',950:'#0f1419'}}}}}</script>
+<style>@media print{.no-print{display:none;}input[type="checkbox"]{-webkit-appearance:checkbox;appearance:checkbox;}}</style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+<div class="container mx-auto px-4 py-8 max-w-5xl">
+<div class="mb-8">
+<div class="flex items-center justify-between mb-4">
+<a href="../index.html" class="text-purple-400 hover:text-purple-300 no-print">← Geri</a>
+<button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded text-sm no-print">🖨️ Yazdır</button>
+</div>
+<h1 class="text-3xl font-bold text-purple-400 mb-2">Admin 13: Bulk İşlemler</h1>
+<p class="text-slate-400">Bulk upload, edit, delete</p>
+<div class="mt-4 bg-slate-900 rounded-lg p-4">
+<div class="flex justify-between items-center mb-2"><span class="text-sm font-semibold">İlerleme</span><span class="text-sm" id="progress-text">0 / 15</span></div>
+<div class="w-full bg-slate-800 rounded-full h-3"><div id="progress-bar" class="bg-purple-500 h-3 rounded-full transition-all duration-300" style="width:0%"></div></div>
+</div></div>
+<div class="space-y-6">
+<div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+<h2 class="text-xl font-bold text-purple-300 mb-4">Test Kategorileri</h2>
+<div class="space-y-4">
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="test-1">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-purple-300">Test Item</div>
+<div class="text-sm text-slate-400 mt-1">Test açıklaması</div></div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="test-2">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-purple-300">Test Item</div>
+<div class="text-sm text-slate-400 mt-1">Test açıklaması</div></div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="test-3">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-purple-300">Test Item</div>
+<div class="text-sm text-slate-400 mt-1">Test açıklaması</div></div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="test-4">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-purple-300">Test Item</div>
+<div class="text-sm text-slate-400 mt-1">Test açıklaması</div></div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="test-5">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-purple-300">Test Item</div>
+<div class="text-sm text-slate-400 mt-1">Test açıklaması</div></div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="test-6">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-purple-300">Test Item</div>
+<div class="text-sm text-slate-400 mt-1">Test açıklaması</div></div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="test-7">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-purple-300">Test Item</div>
+<div class="text-sm text-slate-400 mt-1">Test açıklaması</div></div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="test-8">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-purple-300">Test Item</div>
+<div class="text-sm text-slate-400 mt-1">Test açıklaması</div></div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="test-9">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-purple-300">Test Item</div>
+<div class="text-sm text-slate-400 mt-1">Test açıklaması</div></div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="test-10">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-purple-300">Test Item</div>
+<div class="text-sm text-slate-400 mt-1">Test açıklaması</div></div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="test-11">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-purple-300">Test Item</div>
+<div class="text-sm text-slate-400 mt-1">Test açıklaması</div></div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="test-12">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-purple-300">Test Item</div>
+<div class="text-sm text-slate-400 mt-1">Test açıklaması</div></div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="test-13">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-purple-300">Test Item</div>
+<div class="text-sm text-slate-400 mt-1">Test açıklaması</div></div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="test-14">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-purple-300">Test Item</div>
+<div class="text-sm text-slate-400 mt-1">Test açıklaması</div></div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="test-15">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-purple-300">Test Item</div>
+<div class="text-sm text-slate-400 mt-1">Test açıklaması</div></div></label>
+</div></div></div>
+<div class="mt-8 flex gap-4 no-print">
+<button onclick="resetProgress()" class="bg-red-600 hover:bg-red-500 px-6 py-3 rounded-lg text-white font-semibold">🔄 İlerlemeyi Sıfırla</button>
+<button onclick="markAllComplete()" class="bg-purple-600 hover:bg-purple-500 px-6 py-3 rounded-lg text-white font-semibold">✅ Tümünü Tamamla</button>
+</div>
+<div class="mt-12 text-center text-slate-500 text-sm border-t border-slate-800 pt-6"><p>🎵 Muzibu.com.tr - Bulk İşlemler Test Checklist</p></div>
+</div>
+<script>
+const STORAGE_bulk='muzibu_test_admin_13_bulk';const TOTAL_15=15;
+function loadProgress(){const saved=localStorage.getItem(STORAGE_bulk);if(saved){const data=JSON.parse(saved);document.querySelectorAll('.test-checkbox').forEach(checkbox=>{if(data[checkbox.dataset.test])checkbox.checked=true;});}updateProgress();}
+function saveProgress(){const data={};document.querySelectorAll('.test-checkbox').forEach(checkbox=>{data[checkbox.dataset.test]=checkbox.checked;});localStorage.setItem(STORAGE_bulk,JSON.stringify(data));updateProgress();}
+function updateProgress(){const checked=document.querySelectorAll('.test-checkbox:checked').length;const percentage=Math.round((checked/TOTAL_15)*100);document.getElementById('progress-bar').style.width=percentage+'%';document.getElementById('progress-text').textContent=`${checked} / ${TOTAL_15}`;}
+function resetProgress(){if(!confirm('⚠️ Tüm işaretlemeler silinecek! Emin misiniz?'))return;localStorage.removeItem(STORAGE_bulk);document.querySelectorAll('.test-checkbox').forEach(cb=>cb.checked=false);updateProgress();}
+function markAllComplete(){document.querySelectorAll('.test-checkbox').forEach(cb=>cb.checked=true);saveProgress();}
+document.querySelectorAll('.test-checkbox').forEach(checkbox=>{checkbox.addEventListener('change',saveProgress);});
+loadProgress();
+</script>
+</body>
+</html>

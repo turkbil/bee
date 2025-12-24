@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varilsan Grup - Uzmanlar Konseyi Master Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .gradient-hero { background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #134e4a 100%); }
+        .expert-card { transition: all 0.3s ease; }
+        .expert-card:hover { box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .section-anchor::before { content: ''; display: block; height: 80px; margin-top: -80px; visibility: hidden; }
+        .tur-badge { background: linear-gradient(135deg, var(--from), var(--to)); }
+        .nav-sticky { backdrop-filter: blur(12px); background: rgba(15, 23, 42, 0.95); }
+        .decision-win { border-left: 4px solid #10b981; background: linear-gradient(90deg, rgba(16,185,129,0.1) 0%, transparent 100%); }
+        .decision-lose { border-left: 4px solid #ef4444; background: linear-gradient(90deg, rgba(239,68,68,0.05) 0%, transparent 100%); }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased">
+
+    <!-- Sticky Navigation -->
+    <nav class="nav-sticky fixed top-0 left-0 right-0 z-50 border-b border-slate-700/50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-users text-blue-400 text-xl"></i>
+                    <span class="font-bold text-lg">Uzmanlar Konseyi</span>
+                    <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded text-xs">
+                        <i class="fas fa-check-circle"></i> Final
+                    </span>
+                </div>
+                <div class="hidden lg:flex items-center gap-4 text-sm">
+                    <a href="#tur1" class="hover:text-blue-400 transition">TUR-1</a>
+                    <a href="#tur2" class="hover:text-yellow-400 transition">TUR-2</a>
+                    <a href="#tur3" class="hover:text-purple-400 transition">TUR-3</a>
+                    <a href="#tur4" class="hover:text-emerald-400 transition">TUR-4</a>
+                    <a href="#sitemap" class="hover:text-pink-400 transition">Site Haritasi</a>
+                    <a href="#seo" class="hover:text-red-400 transition">SEO</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="gradient-hero pt-24 pb-16">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-300 px-4 py-2 rounded-full text-sm mb-6">
+                    <i class="fas fa-brain"></i>
+                    <span>8 Uzman | 4 Tur | 1 Master Plan</span>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                    <span class="text-blue-400">VARİLSAN GRUP</span>
+                </h1>
+                <p class="text-xl text-slate-300 max-w-3xl mx-auto mb-2">
+                    Uzmanlar Konseyi ile Tek Cati Web Stratejisi
+                </p>
+                <p class="text-sm text-slate-500">varilsan.com | 3 Sirket Birlestirme | 24 Aralik 2025</p>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+                <div class="bg-slate-800/50 rounded-xl p-4 text-center border border-slate-700/50">
+                    <div class="text-2xl font-bold text-blue-400">3</div>
+                    <div class="text-xs text-slate-400">Mevcut Site</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-4 text-center border border-slate-700/50">
+                    <div class="text-2xl font-bold text-emerald-400">1</div>
+                    <div class="text-xs text-slate-400">Birlesik Portal</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-4 text-center border border-slate-700/50">
+                    <div class="text-2xl font-bold text-purple-400">8</div>
+                    <div class="text-xs text-slate-400">Uzman Gorusu</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-4 text-center border border-slate-700/50">
+                    <div class="text-2xl font-bold text-yellow-400">12+</div>
+                    <div class="text-xs text-slate-400">Benchmark</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-12">
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- UZMANLAR KONSEYI TANITIM -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+
+        <section class="mb-16">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-users text-white text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold">Uzmanlar Konseyi</h2>
+                    <p class="text-slate-400 text-sm">8 Farkli Disiplin, Tek Karar</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Expert 1 -->
+                <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 expert-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-chess-king text-blue-400"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm">Strateji Mimari</p>
+                            <p class="text-xs text-slate-500">Da Vinci lensi</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400">Buyuk resim, konumlandirma, marka mimarisi</p>
+                </div>
+
+                <!-- Expert 2 -->
+                <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 expert-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-cogs text-yellow-400"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm">Urun Muhendisi</p>
+                            <p class="text-xs text-slate-500">Tesla lensi</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400">IBC/varil surecleri, teknik dogruluk</p>
+                </div>
+
+                <!-- Expert 3 -->
+                <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 expert-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-search text-red-400"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm">SEO Uzmani</p>
+                            <p class="text-xs text-slate-500">Bilgi Mimarisi</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400">URL yapisi, ic link, blog/urun iliskisi</p>
+                </div>
+
+                <!-- Expert 4 -->
+                <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 expert-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bg-pink-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-palette text-pink-400"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm">UX/UI Direktoru</p>
+                            <p class="text-xs text-slate-500">Modern B2B</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400">Ana sayfa akisi, CTA, erisilebilik</p>
+                </div>
+
+                <!-- Expert 5 -->
+                <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 expert-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-leaf text-emerald-400"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm">Surdurulebilirlik</p>
+                            <p class="text-xs text-slate-500">Uyum Danismani</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400">Dongusal ekonomi, UN/ADR, cevre lisans</p>
+                </div>
+
+                <!-- Expert 6 -->
+                <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 expert-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-chart-line text-orange-400"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm">B2B Donusum</p>
+                            <p class="text-xs text-slate-500">Lead Gen</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400">Teklif formu, CTA, friction azaltma</p>
+                </div>
+
+                <!-- Expert 7 -->
+                <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 expert-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-pen-nib text-cyan-400"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm">Metin Yazari</p>
+                            <p class="text-xs text-slate-500">Kurumsal Ton</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400">Slogan, hakkimizda, teknik guven dili</p>
+                </div>
+
+                <!-- Expert 8 -->
+                <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 expert-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bg-indigo-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-code text-indigo-400"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm">Tailwind Mimar</p>
+                            <p class="text-xs text-slate-500">Component</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400">Tasarim sistemi, reusable component</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- TUR-1: ARASTIRMA VE KANIT TOPLAMA -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+
+        <section id="tur1" class="section-anchor mb-16">
+            <div class="bg-gradient-to-r from-blue-900/40 to-blue-800/20 rounded-2xl p-6 border border-blue-500/30 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
+                        <span class="text-white font-bold">1</span>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold">TUR-1: Arastirma ve Kanit Toplama</h2>
+                        <p class="text-slate-400 text-sm">Mevcut Durum Analizi | Rakip Inceleme | Benchmark</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Varilsan Siteleri Analizi -->
+            <div class="grid lg:grid-cols-3 gap-6 mb-8">
+
+                <!-- varilsan.com.tr -->
+                <div class="bg-slate-800/50 rounded-2xl p-6 border border-emerald-500/30">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-recycle text-emerald-400 text-sm"></i>
+                        </div>
+                        <h3 class="font-semibold text-emerald-300">varilsan.com.tr</h3>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-3">Varilsan Ambalaj | Kocaeli</p>
+
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <p class="text-slate-400 font-medium mb-1">Menu Yapisi:</p>
+                            <p class="text-slate-300">Kurumsal, Urunler, UN&ADR, Galeriler, Belgelerimiz, Katalog, Iletisim</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 font-medium mb-1">Urunler:</p>
+                            <p class="text-slate-300">Metal Varil, IBC Tank, Plastik Varil, ReBottle IBC</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 font-medium mb-1">Guclu Yanlar:</p>
+                            <ul class="text-slate-300 text-xs space-y-1">
+                                <li><i class="fas fa-check text-emerald-400 mr-1"></i> UN&ADR sertifikasyon vurgusu</li>
+                                <li><i class="fas fa-check text-emerald-400 mr-1"></i> ReBottle konsepti mevcut</li>
+                                <li><i class="fas fa-check text-emerald-400 mr-1"></i> %95-97 geri kazanim orani</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 font-medium mb-1">Eksikler:</p>
+                            <ul class="text-slate-300 text-xs space-y-1">
+                                <li><i class="fas fa-times text-red-400 mr-1"></i> Blog icerigi yetersiz</li>
+                                <li><i class="fas fa-times text-red-400 mr-1"></i> Surec timeline yok</li>
+                                <li><i class="fas fa-times text-red-400 mr-1"></i> Modern tasarim degil</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- varilsan.com -->
+                <div class="bg-slate-800/50 rounded-2xl p-6 border border-purple-500/30">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-boxes text-purple-400 text-sm"></i>
+                        </div>
+                        <h3 class="font-semibold text-purple-300">varilsan.com</h3>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-3">Varilsan Plastik | Izmir</p>
+
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <p class="text-slate-400 font-medium mb-1">Menu Yapisi:</p>
+                            <p class="text-slate-300">Kurumsal, Urunler, Belgelerimiz, Galeriler, Fuar, Katalog, Iletisim</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 font-medium mb-1">Urunler:</p>
+                            <p class="text-slate-300">IBC Tank, Plastik Varil, Metal Varil</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 font-medium mb-1">Guclu Yanlar:</p>
+                            <ul class="text-slate-300 text-xs space-y-1">
+                                <li><i class="fas fa-check text-purple-400 mr-1"></i> Ege bolgesi odakli</li>
+                                <li><i class="fas fa-check text-purple-400 mr-1"></i> Temiz navigasyon</li>
+                                <li><i class="fas fa-check text-purple-400 mr-1"></i> Urun cesitliligi</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 font-medium mb-1">Eksikler:</p>
+                            <ul class="text-slate-300 text-xs space-y-1">
+                                <li><i class="fas fa-times text-red-400 mr-1"></i> Blog/haber yok</li>
+                                <li><i class="fas fa-times text-red-400 mr-1"></i> Hizmetler belirsiz</li>
+                                <li><i class="fas fa-times text-red-400 mr-1"></i> Ambalaj ile fark belirsiz</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- varilsanpolimer.com -->
+                <div class="bg-slate-800/50 rounded-2xl p-6 border border-blue-500/30">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-cogs text-blue-400 text-sm"></i>
+                        </div>
+                        <h3 class="font-semibold text-blue-300">varilsanpolimer.com</h3>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-3">Varilsan Polimer | Gebze/Kocaeli</p>
+
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <p class="text-slate-400 font-medium mb-1">Menu Yapisi:</p>
+                            <p class="text-slate-300">Anasayfa, Kurumsal, Urunler, Istiraklerimiz, Iletisim</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 font-medium mb-1">Urunler:</p>
+                            <p class="text-slate-300">HDPE Siyah VRP-1, HDPE Mavi VRP-1 (Granul)</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 font-medium mb-1">Guclu Yanlar:</p>
+                            <ul class="text-slate-300 text-xs space-y-1">
+                                <li><i class="fas fa-check text-blue-400 mr-1"></i> 5.000 ton/yil kapasite</li>
+                                <li><i class="fas fa-check text-blue-400 mr-1"></i> 25 yillik tecrube vurgusu</li>
+                                <li><i class="fas fa-check text-blue-400 mr-1"></i> WhatsApp entegrasyonu</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 font-medium mb-1">Celiski:</p>
+                            <div class="bg-amber-900/30 rounded-lg p-2 border border-amber-500/30">
+                                <p class="text-amber-300 text-xs"><i class="fas fa-exclamation-triangle mr-1"></i>
+                                    Kullanici beyani: "IBC tank uretimi + plastik bidon 30L-1000L"
+                                    <br>Site gercegi: Sadece HDPE granul gosteriliyor
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rakip Analizi -->
+            <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 mb-8">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-chess text-orange-400"></i>
+                    Rakip Analizi
+                </h3>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Greif -->
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="font-semibold text-slate-200">Greif</span>
+                            <span class="text-xs text-slate-500">Global</span>
+                        </div>
+                        <ul class="space-y-2 text-xs text-slate-400">
+                            <li><i class="fas fa-plus text-green-400 mr-1"></i> NitroPack optimizasyonu</li>
+                            <li><i class="fas fa-plus text-green-400 mr-1"></i> Elementor responsive mimari</li>
+                            <li><i class="fas fa-plus text-green-400 mr-1"></i> Profesyonel renk paleti</li>
+                            <li><i class="fas fa-minus text-red-400 mr-1"></i> Turkiye odakli degil</li>
+                        </ul>
+                        <p class="text-xs text-slate-500 mt-3 border-t border-slate-600 pt-2">
+                            <strong>Alinacak:</strong> Lazy loading, screen reader desteği
+                        </p>
+                    </div>
+
+                    <!-- Mauser -->
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="font-semibold text-slate-200">Mauser Packaging</span>
+                            <span class="text-xs text-slate-500">TR</span>
+                        </div>
+                        <ul class="space-y-2 text-xs text-slate-400">
+                            <li><i class="fas fa-plus text-green-400 mr-1"></i> Hiyerarsik mega menu</li>
+                            <li><i class="fas fa-plus text-green-400 mr-1"></i> "Recover Syst-M" inovasyon</li>
+                            <li><i class="fas fa-plus text-green-400 mr-1"></i> Surdurulebilirlik merkezi</li>
+                            <li><i class="fas fa-minus text-red-400 mr-1"></i> Cok genel, lokal degil</li>
+                        </ul>
+                        <p class="text-xs text-slate-500 mt-3 border-t border-slate-600 pt-2">
+                            <strong>Alinacak:</strong> Sticky header, broşür indirme CTA
+                        </p>
+                    </div>
+
+                    <!-- Deren -->
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="font-semibold text-slate-200">Deren Ambalaj</span>
+                            <span class="text-xs text-slate-500">TR</span>
+                        </div>
+                        <ul class="space-y-2 text-xs text-slate-400">
+                            <li><i class="fas fa-plus text-green-400 mr-1"></i> Ecobulk serileri detayli</li>
+                            <li><i class="fas fa-plus text-green-400 mr-1"></i> Kalite belgeleri gorunur</li>
+                            <li><i class="fas fa-plus text-green-400 mr-1"></i> Tehlikeli Madde Danismanligi</li>
+                            <li><i class="fas fa-minus text-red-400 mr-1"></i> Eski tasarim</li>
+                        </ul>
+                        <p class="text-xs text-slate-500 mt-3 border-t border-slate-600 pt-2">
+                            <strong>Alinacak:</strong> Sertifikasyon gorunurlugu, coklu dil
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Benchmark Pattern Listesi -->
+            <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-lightbulb text-yellow-400"></i>
+                    Benchmark Pattern Listesi (12+)
+                </h3>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="bg-slate-700/30 rounded-lg p-3">
+                        <p class="font-semibold text-sm text-slate-200 mb-1">1. Koc Holding</p>
+                        <p class="text-xs text-slate-400">"Gelecege. Birlikte" 4 sutun yapisi, card grid istatistik</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3">
+                        <p class="font-semibold text-sm text-slate-200 mb-1">2. Sabanci Holding</p>
+                        <p class="text-xs text-slate-400">Mega menu, is gruplari kart + CTA, accordion politikalar</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3">
+                        <p class="font-semibold text-sm text-slate-200 mb-1">3. Eczacibasi</p>
+                        <p class="text-xs text-slate-400">38+ marka portfolyosu tab sistemi, swiper galeri</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3">
+                        <p class="font-semibold text-sm text-slate-200 mb-1">4. Schutz GmbH</p>
+                        <p class="text-xs text-slate-400">IBC uzmanlik, dairesel tasarim, EcoVadis sertifikasyonu</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3">
+                        <p class="font-semibold text-sm text-slate-200 mb-1">5. Mondi Group</p>
+                        <p class="text-xs text-slate-400">MAP2030 stratejisi, product finder, endustri filtreleme</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3">
+                        <p class="font-semibold text-sm text-slate-200 mb-1">6. DS Smith</p>
+                        <p class="text-xs text-slate-400">"Simdi ve Ileri" stratejisi, Ellen MacArthur ortakligi</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3">
+                        <p class="font-semibold text-sm text-slate-200 mb-1">7. Greif Global</p>
+                        <p class="text-xs text-slate-400">Performans optimizasyonu, fluent tasarim</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3">
+                        <p class="font-semibold text-sm text-slate-200 mb-1">8. Mauser TR</p>
+                        <p class="text-xs text-slate-400">Heroic slider, card-based layout, CTA hiyerarsisi</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3">
+                        <p class="font-semibold text-sm text-slate-200 mb-1">9. Deren Ambalaj</p>
+                        <p class="text-xs text-slate-400">Urun kategorizasyonu, sertifika gorunurlugu</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3">
+                        <p class="font-semibold text-sm text-slate-200 mb-1">10. B2B Endustri Siteleri</p>
+                        <p class="text-xs text-slate-400">Trust band, timeline surec, form + dropdown</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3">
+                        <p class="font-semibold text-sm text-slate-200 mb-1">11. Kurumsal Holdingler</p>
+                        <p class="text-xs text-slate-400">Istirak karti, CTA yonlendirme, beyaz bosluk</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3">
+                        <p class="font-semibold text-sm text-slate-200 mb-1">12. Modern SaaS/B2B</p>
+                        <p class="text-xs text-slate-400">Gradient hero, glass morphism, subtle hover</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- TUR-2: FIKIR CARPISTIRMA -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+
+        <section id="tur2" class="section-anchor mb-16">
+            <div class="bg-gradient-to-r from-yellow-900/40 to-yellow-800/20 rounded-2xl p-6 border border-yellow-500/30 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-yellow-500 rounded-xl flex items-center justify-center">
+                        <span class="text-white font-bold">2</span>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold">TUR-2: Fikir Carpistirma</h2>
+                        <p class="text-slate-400 text-sm">Uzmanlar Arasi Tartisma | Itirazlar | Alternatifler</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tartisma 1: Ana Sayfa Yaklasimlari -->
+            <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 mb-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-comments text-yellow-400"></i>
+                    Tartisma 1: Ana Sayfa Yaklasimi
+                </h3>
+
+                <div class="space-y-4">
+                    <!-- Strateji Mimari -->
+                    <div class="bg-blue-900/20 rounded-xl p-4 border border-blue-500/20">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-chess-king text-blue-400"></i>
+                            <span class="font-semibold text-blue-300">Strateji Mimari:</span>
+                        </div>
+                        <p class="text-sm text-slate-300 mb-2">
+                            "Hero slider'da 3 sirket sirayla gostermeli. Ilk 10 saniyede 'tek cati, uc uzmanlik' algisi olusturmali."
+                        </p>
+                        <p class="text-xs text-slate-500">
+                            <strong>Oneri:</strong> Sirket odakli hero + hemen ardindan urun gami
+                        </p>
+                    </div>
+
+                    <!-- UX/UI Direktoru -->
+                    <div class="bg-pink-900/20 rounded-xl p-4 border border-pink-500/20">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-palette text-pink-400"></i>
+                            <span class="font-semibold text-pink-300">UX/UI Direktoru:</span>
+                        </div>
+                        <p class="text-sm text-slate-300 mb-2">
+                            "Itiraz: Slider 3 sirket gosterirse kullanici kafasi karisir. Oncelik urune mi yoksa sirkete mi?"
+                        </p>
+                        <p class="text-xs text-emerald-400">
+                            <strong>Alternatif:</strong> Hibrit yaklasim - Hero'da ana deger onerisi, hemen altinda 3 sirket kart olarak
+                        </p>
+                    </div>
+
+                    <!-- B2B Donusum -->
+                    <div class="bg-orange-900/20 rounded-xl p-4 border border-orange-500/20">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-chart-line text-orange-400"></i>
+                            <span class="font-semibold text-orange-300">B2B Donusum Uzmani:</span>
+                        </div>
+                        <p class="text-sm text-slate-300 mb-2">
+                            "Kullanici 'urun' aramaya geliyor, 'sirket' degil. Urun gami ilk gorunmeli."
+                        </p>
+                        <p class="text-xs text-yellow-400">
+                            <strong>Risk:</strong> Sirket odakli hero conversion dusurur. "Teklif Al" CTA hemen gorunmeli.
+                        </p>
+                    </div>
+
+                    <!-- Uzlasma -->
+                    <div class="bg-emerald-900/30 rounded-xl p-4 border border-emerald-500/30">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-handshake text-emerald-400"></i>
+                            <span class="font-semibold text-emerald-300">UZLASMA:</span>
+                        </div>
+                        <p class="text-sm text-slate-200">
+                            <strong>Hibrit Model Kabul:</strong> Hero slider'da 3 sirket (her biri farkli deger onerisi ile),
+                            hemen altinda "Urun Gami" section, sonra "Istiraklerimiz" kartlari.
+                            CTA her zaman gorunur (sticky header + hero icinde).
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tartisma 2: Ambalaj vs Plastik Farki -->
+            <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 mb-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-balance-scale text-purple-400"></i>
+                    Tartisma 2: Ambalaj vs Plastik - Ayni Is, Farkli Anlati
+                </h3>
+
+                <div class="space-y-4">
+                    <!-- Urun Muhendisi -->
+                    <div class="bg-yellow-900/20 rounded-xl p-4 border border-yellow-500/20">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-cogs text-yellow-400"></i>
+                            <span class="font-semibold text-yellow-300">Urun Muhendisi:</span>
+                        </div>
+                        <p class="text-sm text-slate-300 mb-2">
+                            "Teknik olarak ayni is: IBC yenileme, geri kazanim. Lokasyon farki: Istanbul vs Izmir."
+                        </p>
+                    </div>
+
+                    <!-- Metin Yazari -->
+                    <div class="bg-cyan-900/20 rounded-xl p-4 border border-cyan-500/20">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-pen-nib text-cyan-400"></i>
+                            <span class="font-semibold text-cyan-300">Metin Yazari:</span>
+                        </div>
+                        <p class="text-sm text-slate-300 mb-2">
+                            "Farkli hikaye ile ayristirmak zorunlu. Ambalaj: 'mevzuat/uyum/proses' dili.
+                            Plastik: 'urun/katalog/bolgesel' dili."
+                        </p>
+                        <div class="grid md:grid-cols-2 gap-3 mt-3">
+                            <div class="bg-emerald-900/20 rounded-lg p-2 border border-emerald-500/20">
+                                <p class="text-xs text-emerald-300 font-semibold">AMBALAJ:</p>
+                                <p class="text-xs text-slate-400">"Geleceği Yeniden Şekillendiriyoruz"</p>
+                                <p class="text-xs text-slate-500">Mevzuat, izlenebilirlik, surec</p>
+                            </div>
+                            <div class="bg-purple-900/20 rounded-lg p-2 border border-purple-500/20">
+                                <p class="text-xs text-purple-300 font-semibold">PLASTIK:</p>
+                                <p class="text-xs text-slate-400">"Ege'nin Donusum Gucu"</p>
+                                <p class="text-xs text-slate-500">Portfolyo, hiz, bolgesi avantaji</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Uzlasma -->
+                    <div class="bg-emerald-900/30 rounded-xl p-4 border border-emerald-500/30">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-handshake text-emerald-400"></i>
+                            <span class="font-semibold text-emerald-300">UZLASMA:</span>
+                        </div>
+                        <p class="text-sm text-slate-200">
+                            Her iki sirket icin ayri landing sayfasi, ayri slogan, ayri ton.
+                            Ancak 6 kanit tasi (UN/ADR, ISO, surec vb.) ortak kullanilacak.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tartisma 3: Polimer Celiskisi -->
+            <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-exclamation-triangle text-amber-400"></i>
+                    Tartisma 3: Polimer Celiskisi
+                </h3>
+
+                <div class="bg-amber-900/30 rounded-xl p-4 border border-amber-500/30 mb-4">
+                    <p class="text-amber-300 text-sm">
+                        <strong>Celiski:</strong> Kullanici "IBC tank uretimi + plastik bidon 30L-1000L" diyor.
+                        Site sadece HDPE granul gosteriyor. Hangisi dogru?
+                    </p>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="bg-blue-900/20 rounded-xl p-4 border border-blue-500/20">
+                        <p class="text-sm text-slate-300">
+                            <strong>Karar:</strong> Kullanici beyani esas alinacak. Polimer = Uretim odakli.
+                            Granul + IBC bileşenleri + Bidon (30L-1000L) uretimi.
+                        </p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3">
+                        <p class="text-xs text-slate-400">
+                            <i class="fas fa-info-circle text-blue-400 mr-1"></i>
+                            <strong>Dogrulanacak Soru:</strong> "Polimer tesisinde hangi urunler uretiliyor?
+                            Sadece granul mu, yoksa bidon ve IBC ic sise de mi?"
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- TUR-3: KARAR MATRISI -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+
+        <section id="tur3" class="section-anchor mb-16">
+            <div class="bg-gradient-to-r from-purple-900/40 to-purple-800/20 rounded-2xl p-6 border border-purple-500/30 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center">
+                        <span class="text-white font-bold">3</span>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold">TUR-3: Karar Matrisi</h2>
+                        <p class="text-slate-400 text-sm">Ana Yon Secimi | Puanlama | Final Karar</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secenekler -->
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">A</span>
+                        <h3 class="font-semibold">Urun Odakli</h3>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">Ilk once urun gami, sonra sirketler</p>
+                    <ul class="text-xs text-slate-500 space-y-1">
+                        <li>+ Hizli urun erisimi</li>
+                        <li>+ B2B alici odakli</li>
+                        <li>- Grup algisi zayif</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</span>
+                        <h3 class="font-semibold">Sirket Odakli</h3>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">Ilk once sirketler, sonra urunler</p>
+                    <ul class="text-xs text-slate-500 space-y-1">
+                        <li>+ Guclu grup algisi</li>
+                        <li>+ Kurumsal prestij</li>
+                        <li>- Urun erisimi yavas</li>
+                    </ul>
+                </div>
+
+                <div class="bg-emerald-900/30 rounded-2xl p-6 border border-emerald-500/30">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">C</span>
+                        <h3 class="font-semibold text-emerald-300">Hibrit (KAZANAN)</h3>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">Hero'da sirketler, hemen altinda urunler</p>
+                    <ul class="text-xs text-slate-400 space-y-1">
+                        <li><i class="fas fa-check text-emerald-400 mr-1"></i> Dengeli yaklasim</li>
+                        <li><i class="fas fa-check text-emerald-400 mr-1"></i> Grup + Urun birlikte</li>
+                        <li><i class="fas fa-check text-emerald-400 mr-1"></i> SEO icin ideal</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Puanlama Matrisi -->
+            <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+                <h3 class="text-lg font-semibold mb-4">Puanlama Matrisi (0-5)</h3>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-700">
+                                <th class="text-left py-3 px-2 text-slate-400">Kriter</th>
+                                <th class="text-center py-3 px-2 text-blue-400">A: Urun</th>
+                                <th class="text-center py-3 px-2 text-purple-400">B: Sirket</th>
+                                <th class="text-center py-3 px-2 text-emerald-400">C: Hibrit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3 px-2 text-slate-300">Netlik (ilk 10 sn)</td>
+                                <td class="text-center text-blue-300">4</td>
+                                <td class="text-center text-purple-300">3</td>
+                                <td class="text-center text-emerald-300 font-bold">5</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3 px-2 text-slate-300">Guven/Kurumsallik</td>
+                                <td class="text-center text-blue-300">3</td>
+                                <td class="text-center text-purple-300">5</td>
+                                <td class="text-center text-emerald-300 font-bold">5</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3 px-2 text-slate-300">Urun Pazarlama</td>
+                                <td class="text-center text-blue-300">5</td>
+                                <td class="text-center text-purple-300">2</td>
+                                <td class="text-center text-emerald-300 font-bold">4</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3 px-2 text-slate-300">SEO Genisleme</td>
+                                <td class="text-center text-blue-300">4</td>
+                                <td class="text-center text-purple-300">3</td>
+                                <td class="text-center text-emerald-300 font-bold">5</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3 px-2 text-slate-300">Donusum (Lead)</td>
+                                <td class="text-center text-blue-300">5</td>
+                                <td class="text-center text-purple-300">3</td>
+                                <td class="text-center text-emerald-300 font-bold">5</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3 px-2 text-slate-300">Uygulanabilirlik</td>
+                                <td class="text-center text-blue-300">4</td>
+                                <td class="text-center text-purple-300">4</td>
+                                <td class="text-center text-emerald-300 font-bold">5</td>
+                            </tr>
+                            <tr class="bg-slate-700/30 font-bold">
+                                <td class="py-3 px-2 text-slate-200">TOPLAM</td>
+                                <td class="text-center text-blue-400">25</td>
+                                <td class="text-center text-purple-400">20</td>
+                                <td class="text-center text-emerald-400 text-lg">29</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-6 bg-emerald-900/30 rounded-xl p-4 border border-emerald-500/30">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-trophy text-yellow-400"></i>
+                        <span class="font-semibold text-emerald-300">KAZANAN: Hibrit Model (C) - 29 Puan</span>
+                    </div>
+                    <p class="text-sm text-slate-300 mt-2">
+                        Hero slider'da 3 sirket (her biri ozgun deger onerisi ile), hemen altinda urun gami section,
+                        ardindan surec timeline, istirakler kartlari ve blog vitrini.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- TUR-4: NIHAI MASTER PLAN -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+
+        <section id="tur4" class="section-anchor mb-16">
+            <div class="bg-gradient-to-r from-emerald-900/40 to-emerald-800/20 rounded-2xl p-6 border border-emerald-500/30 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center">
+                        <span class="text-white font-bold">4</span>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold">TUR-4: Nihai Master Plan</h2>
+                        <p class="text-slate-400 text-sm">Secilen Yon ile Detayli Uygulama Plani</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4.3 Konumlandirma -->
+            <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 mb-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-crosshairs text-blue-400"></i>
+                    4.3 Konumlandirma
+                </h3>
+
+                <div class="space-y-4">
+                    <div class="bg-gradient-to-r from-blue-900/30 to-teal-900/30 rounded-xl p-4 border border-blue-500/20">
+                        <p class="text-xs text-slate-500 mb-1">GRUP DEGER ONERISI:</p>
+                        <p class="text-lg text-slate-200 font-medium">
+                            "Endustriyel ambalajin uretim ve yasam dongusu hizmetlerini uluslararasi
+                            standartlarda birlestiren, surdurulebilirligi operasyonun merkezine koyan sanayi grubu."
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-blue-900/20 rounded-xl p-4 border border-blue-500/20">
+                            <p class="text-xs text-blue-400 font-semibold mb-2">POLIMER:</p>
+                            <p class="text-sm text-slate-300">Hammaddeden urune uzanan uretim zincirinin ilk halkasi. Polimer altyapi ve uretim sureclerini kalite standardi ile yoneten uretim markasi.</p>
+                        </div>
+                        <div class="bg-emerald-900/20 rounded-xl p-4 border border-emerald-500/20">
+                            <p class="text-xs text-emerald-400 font-semibold mb-2">AMBALAJ:</p>
+                            <p class="text-sm text-slate-300">Endustriyel ambalajlarin toplanmasi, temizlenmesi, test edilmesi ve yenilenmesi sureclerini mevzuata uygun ve izlenebilir sekilde yoneten geri kazanim markasi.</p>
+                        </div>
+                        <div class="bg-purple-900/20 rounded-xl p-4 border border-purple-500/20">
+                            <p class="text-xs text-purple-400 font-semibold mb-2">PLASTIK:</p>
+                            <p class="text-sm text-slate-300">Ege Bolgesi'nin ambalaj cozum ortagi. Genis urun portfolyosu ve Izmir limani avantajiyla Bati Anadolu sanayisine hizmet veren urun markasi.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4.4 Motto/Slogan Havuzu -->
+            <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 mb-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-quote-left text-yellow-400"></i>
+                    4.4 Motto/Slogan Havuzu
+                </h3>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Grup -->
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <p class="text-xs text-blue-400 font-semibold mb-2">GRUP (10):</p>
+                        <ol class="text-xs text-slate-400 space-y-1 list-decimal list-inside">
+                            <li>"Endustriyel Dongunun Mimari"</li>
+                            <li>"Uretimin Gucu, Donusumun Gelecegi"</li>
+                            <li>"Sifir Atik Hedefinde Cozum Ortagi"</li>
+                            <li>"Standartlarla Calisir, Buyutur"</li>
+                            <li>"Tek Cati, Uc Uzmanlik"</li>
+                            <li>"Ambalajin Yasam Dongusunu Yonetiriz"</li>
+                            <li>"Kapasite + Kalite + Mevzuat"</li>
+                            <li>"Endustriyel Ambalajda Guven"</li>
+                            <li>"Surdurulebilirligin Endustriyel Adresi"</li>
+                            <li>"Dongusal Ekonominin Operasyonel Gucu"</li>
+                        </ol>
+                    </div>
+
+                    <!-- Polimer -->
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <p class="text-xs text-blue-400 font-semibold mb-2">POLIMER (8):</p>
+                        <ol class="text-xs text-slate-400 space-y-1 list-decimal list-inside">
+                            <li>"Kusursuz Form, Endustriyel Performans"</li>
+                            <li>"Uretimin Temeli: Standart Polimer"</li>
+                            <li>"Hammadde Disiplini, Urun Guvencesi"</li>
+                            <li>"Endustriyel Olcekte Polimer Uretimi"</li>
+                            <li>"Surec Kontroluyle Uretilen Guc"</li>
+                            <li>"Ambalajin Dayanimi Uretimde Baslar"</li>
+                            <li>"Granulden Gurura"</li>
+                            <li>"Uretim Hattinin Kalbi"</li>
+                        </ol>
+                    </div>
+
+                    <!-- Ambalaj -->
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <p class="text-xs text-emerald-400 font-semibold mb-2">AMBALAJ (8):</p>
+                        <ol class="text-xs text-slate-400 space-y-1 list-decimal list-inside">
+                            <li>"Gelecegi Yeniden Sekillendiriyoruz"</li>
+                            <li>"Yenile. Yeniden Kullan. Guvenle Tasi."</li>
+                            <li>"Dongusal Ekonomiyi Operasyona Donusturur"</li>
+                            <li>"Kontamine Ambalajda Mevzuata Uygun Cozum"</li>
+                            <li>"IBC Yenilemede Izlenebilir Surec"</li>
+                            <li>"Rebottle ile Ekonomik Alternatif"</li>
+                            <li>"Marmara'nin Geri Donusum Gucu"</li>
+                            <li>"Atiktan Degere"</li>
+                        </ol>
+                    </div>
+
+                    <!-- Plastik -->
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <p class="text-xs text-purple-400 font-semibold mb-2">PLASTIK (8):</p>
+                        <ol class="text-xs text-slate-400 space-y-1 list-decimal list-inside">
+                            <li>"Ege'nin Donusum Gucu"</li>
+                            <li>"Endustriyel Ambalajda Portfolyo"</li>
+                            <li>"Izmir'den Turkiye'ye Cozumler"</li>
+                            <li>"IBC'den Varile: Tek Standart"</li>
+                            <li>"Bati Anadolu'nun Partneri"</li>
+                            <li>"Urun Disiplini, Operasyon Guvencesi"</li>
+                            <li>"Ege OSB'lerinin Tercihi"</li>
+                            <li>"Liman Avantaji, Hiz Garantisi"</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4.6 Ana Sayfa Draft -->
+            <div id="sitemap" class="section-anchor bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 mb-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-sitemap text-pink-400"></i>
+                    4.5 Site Haritasi (IA)
+                </h3>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <p class="text-xs text-blue-400 font-semibold mb-2">UST MENU:</p>
+                        <ul class="text-xs text-slate-400 space-y-1">
+                            <li>Kurumsal (mega)</li>
+                            <li>Istiraklerimiz (mega)</li>
+                            <li>Urunler (mega)</li>
+                            <li>Hizmetler (mega)</li>
+                            <li>Kalite & Belgeler</li>
+                            <li>Blog</li>
+                            <li>Iletisim</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <p class="text-xs text-emerald-400 font-semibold mb-2">URUN KATEGORILERI:</p>
+                        <ul class="text-xs text-slate-400 space-y-1">
+                            <li>IBC Tank (1000L)</li>
+                            <li>Rebottle IBC</li>
+                            <li>Plastik Varil (60-200L)</li>
+                            <li>Metal Varil (200L)</li>
+                            <li>HDPE Granul</li>
+                            <li>Endustriyel Bidon (30-220L)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <p class="text-xs text-purple-400 font-semibold mb-2">HIZMETLER:</p>
+                        <ul class="text-xs text-slate-400 space-y-1">
+                            <li>Toplama & Lojistik</li>
+                            <li>Yikama & Temizleme</li>
+                            <li>IBC Yenileme</li>
+                            <li>Kalite Test</li>
+                            <li>UN/ADR Uygunluk</li>
+                            <li>Kontamine Geri Kazanim</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <p class="text-xs text-yellow-400 font-semibold mb-2">BLOG KATEGORILERI:</p>
+                        <ul class="text-xs text-slate-400 space-y-1">
+                            <li>Teknik Rehberler</li>
+                            <li>Surdurulebilirlik</li>
+                            <li>Sektor Haberleri</li>
+                            <li>Urun Karsilastirma</li>
+                            <li>Mevzuat & Uyum</li>
+                            <li>Vaka Calismalari</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4.6 Ana Sayfa Section-by-Section -->
+            <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 mb-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-layer-group text-cyan-400"></i>
+                    4.6 Ana Sayfa (Section-by-Section)
+                </h3>
+
+                <div class="space-y-4">
+                    <!-- Section 1: Hero -->
+                    <div class="bg-gradient-to-r from-sky-900/30 to-teal-900/30 rounded-xl p-4 border border-sky-500/20">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-6 h-6 bg-sky-500 rounded flex items-center justify-center text-white text-xs font-bold">1</span>
+                            <p class="font-semibold text-sky-300">HERO SLIDER (3 Sirket)</p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4 text-xs">
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Amac:</strong> Grup algisi + 3 uzmanlik tanitimi</p>
+                                <p class="text-slate-400 mb-1"><strong>H1:</strong> Her slide icin: "Uretimin Temeli" / "Gelecegi Yeniden Sekillendiriyoruz" / "Ege'nin Donusum Gucu"</p>
+                                <p class="text-slate-400"><strong>CTA:</strong> Urunleri Kesfet + Nasil Calisir?</p>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Bilesen:</strong> Full-width slider + istatistik kartlari + sertifika rozetleri</p>
+                                <p class="text-slate-400 mb-1"><strong>Hover:</strong> Golge derinligi artisi (scale yok)</p>
+                                <p class="text-slate-400"><strong>Responsive:</strong> Mobilde tek kolon, istatistikler 2x2 grid</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Urun Gami -->
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-6 h-6 bg-slate-600 rounded flex items-center justify-center text-white text-xs font-bold">2</span>
+                            <p class="font-semibold text-slate-300">URUN GAMI VITRINI</p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4 text-xs">
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Amac:</strong> Hizli urun erisimi, katalog hissi</p>
+                                <p class="text-slate-400 mb-1"><strong>H2:</strong> Endustriyel Ambalaj Cozumlerimiz</p>
+                                <p class="text-slate-400"><strong>CTA:</strong> Detaylari Gor + Tum Urunler</p>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Bilesen:</strong> 6 urun karti (3x2 grid), icon + baslik + kisa aciklama + tag'ler</p>
+                                <p class="text-slate-400"><strong>Responsive:</strong> Mobilde 1 kolon, tablet 2 kolon</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Surec Timeline -->
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-6 h-6 bg-slate-600 rounded flex items-center justify-center text-white text-xs font-bold">3</span>
+                            <p class="font-semibold text-slate-300">SUREC TIMELINE</p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4 text-xs">
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Amac:</strong> Izlenebilirlik, guven</p>
+                                <p class="text-slate-400 mb-1"><strong>H2:</strong> Yenileme Nasil Calisir?</p>
+                                <p class="text-slate-400"><strong>Adimlar:</strong> Toplama > Ayiklama > Temizleme > Test > Yenileme > Sevkiyat</p>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Bilesen:</strong> Yatay timeline (6 adim), gradient cizgi, icon kartlar</p>
+                                <p class="text-slate-400"><strong>Responsive:</strong> Mobilde dikey timeline</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Trust Band -->
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-6 h-6 bg-slate-600 rounded flex items-center justify-center text-white text-xs font-bold">4</span>
+                            <p class="font-semibold text-slate-300">GUVEN BANDI (Sertifikalar)</p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4 text-xs">
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Amac:</strong> Teknik guven, mevzuat uyumu</p>
+                                <p class="text-slate-400 mb-1"><strong>H2:</strong> Guvenin Temeli: Standartlar</p>
+                                <p class="text-slate-400"><strong>Icerik:</strong> 6 istatistik + 5 sertifika rozeti</p>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Bilesen:</strong> Dark section, istatistik grid (6), rozet satiri</p>
+                                <p class="text-slate-400"><strong>Rozetler:</strong> UN, ADR, ISO 9001, Gida Uygunluk, Cevre Lisansi</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 5: Istirakler -->
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-6 h-6 bg-slate-600 rounded flex items-center justify-center text-white text-xs font-bold">5</span>
+                            <p class="font-semibold text-slate-300">SIRKETLERIMIZ (3 Kart)</p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4 text-xs">
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Amac:</strong> Grup yapisi, uzmanlik alanlari</p>
+                                <p class="text-slate-400 mb-1"><strong>H2:</strong> Tek Cati, Uc Uzmanlik</p>
+                                <p class="text-slate-400"><strong>CTA:</strong> Sirketi Kesfet (her kart icin)</p>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Bilesen:</strong> 3 kart (Polimer/Ambalaj/Plastik), gradient border, icon + lokasyon + tag'ler</p>
+                                <p class="text-slate-400"><strong>Hover:</strong> Golge artisi, ikon renk gecisi</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 6: Blog -->
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-6 h-6 bg-slate-600 rounded flex items-center justify-center text-white text-xs font-bold">6</span>
+                            <p class="font-semibold text-slate-300">BLOG VITRINI (6 Kart)</p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4 text-xs">
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Amac:</strong> SEO, icerik pazarlama, otorite</p>
+                                <p class="text-slate-400 mb-1"><strong>H2:</strong> Guncel Yazilar</p>
+                                <p class="text-slate-400"><strong>CTA:</strong> Devamini Oku + Tum Yazilar</p>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Bilesen:</strong> 6 blog karti (3x2), kategori etiketi, tarih, okuma suresi</p>
+                                <p class="text-slate-400"><strong>Responsive:</strong> Mobilde 1 kolon, swipe destegi</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 7: CTA Band -->
+                    <div class="bg-gradient-to-r from-sky-900/30 to-teal-900/30 rounded-xl p-4 border border-sky-500/20">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-6 h-6 bg-sky-500 rounded flex items-center justify-center text-white text-xs font-bold">7</span>
+                            <p class="font-semibold text-sky-300">TEKLIF CTA BANDI + FORM</p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4 text-xs">
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Amac:</strong> Lead generation, donusum</p>
+                                <p class="text-slate-400 mb-1"><strong>H2:</strong> Projenizi Konusalim</p>
+                                <p class="text-slate-400"><strong>Alt:</strong> 48 saat icinde detayli teklif</p>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Form:</strong> Ad Soyad, Sirket, Email, Telefon, Urun/Hizmet (dropdown), Mesaj</p>
+                                <p class="text-slate-400"><strong>CTA:</strong> Teklif Talep Et</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4.11 SEO Plani -->
+            <div id="seo" class="section-anchor bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 mb-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-search text-red-400"></i>
+                    4.11 SEO Plani (Kritik 20 Sayfa)
+                </h3>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs">
+                        <thead>
+                            <tr class="border-b border-slate-700">
+                                <th class="text-left py-2 px-2 text-slate-400">Sayfa</th>
+                                <th class="text-left py-2 px-2 text-slate-400">Title</th>
+                                <th class="text-left py-2 px-2 text-slate-400">Slug</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-2">Ana Sayfa</td>
+                                <td class="py-2 px-2">Varilsan Grup | Endustriyel Ambalaj Cozumleri</td>
+                                <td class="py-2 px-2 text-blue-400">/</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-2">IBC Tank</td>
+                                <td class="py-2 px-2">IBC Tank 1000L | UN Onayli Endustriyel Tank</td>
+                                <td class="py-2 px-2 text-blue-400">/urunler/ibc-tank</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-2">Rebottle IBC</td>
+                                <td class="py-2 px-2">Rebottle IBC | Ekonomik ve Cevre Dostu</td>
+                                <td class="py-2 px-2 text-blue-400">/urunler/rebottle-ibc</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-2">IBC Yenileme</td>
+                                <td class="py-2 px-2">IBC Yenileme Hizmeti | Lisansli Tesis</td>
+                                <td class="py-2 px-2 text-blue-400">/hizmetler/ibc-yenileme</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-2">UN/ADR Rehber</td>
+                                <td class="py-2 px-2">UN ve ADR Nedir? | Kapsamli Teknik Rehber</td>
+                                <td class="py-2 px-2 text-blue-400">/blog/un-adr-nedir</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-2">Polimer Sirket</td>
+                                <td class="py-2 px-2">Varilsan Polimer | HDPE Granul Uretimi</td>
+                                <td class="py-2 px-2 text-blue-400">/istirakler/varilsan-polimer</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-2">Ambalaj Sirket</td>
+                                <td class="py-2 px-2">Varilsan Ambalaj | Geri Donusum ve IBC Yenileme</td>
+                                <td class="py-2 px-2 text-blue-400">/istirakler/varilsan-ambalaj</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-2">Plastik Sirket</td>
+                                <td class="py-2 px-2">Varilsan Plastik | Ege Bolgesi Ambalaj Cozumleri</td>
+                                <td class="py-2 px-2 text-blue-400">/istirakler/varilsan-plastik</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-4 bg-slate-700/30 rounded-xl p-4">
+                    <p class="text-xs text-slate-400 mb-2"><strong>Schema Markup:</strong></p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2 py-1 bg-blue-900/30 text-blue-300 rounded text-xs">Organization</span>
+                        <span class="px-2 py-1 bg-emerald-900/30 text-emerald-300 rounded text-xs">LocalBusiness (3x)</span>
+                        <span class="px-2 py-1 bg-purple-900/30 text-purple-300 rounded text-xs">Product</span>
+                        <span class="px-2 py-1 bg-yellow-900/30 text-yellow-300 rounded text-xs">Article</span>
+                        <span class="px-2 py-1 bg-pink-900/30 text-pink-300 rounded text-xs">FAQPage</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4.12 UI Tasarim Sistemi -->
+            <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 mb-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-palette text-indigo-400"></i>
+                    4.12 UI Tasarim Sistemi (Tailwind)
+                </h3>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <p class="text-xs text-slate-400 font-semibold mb-2">RENKLER:</p>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-sky-500 rounded"></div>
+                                <span class="text-xs text-slate-300">Primary: sky-500</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-teal-500 rounded"></div>
+                                <span class="text-xs text-slate-300">Secondary: teal-500</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-slate-900 rounded border border-slate-700"></div>
+                                <span class="text-xs text-slate-300">Dark: slate-900</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <p class="text-xs text-slate-400 font-semibold mb-2">TIPOGRAFI:</p>
+                        <ul class="text-xs text-slate-300 space-y-1">
+                            <li>Font: Inter</li>
+                            <li>H1: text-4xl md:text-5xl bold</li>
+                            <li>H2: text-3xl md:text-4xl bold</li>
+                            <li>H3: text-xl font-semibold</li>
+                            <li>Body: text-base/lg</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <p class="text-xs text-slate-400 font-semibold mb-2">SPACING:</p>
+                        <ul class="text-xs text-slate-300 space-y-1">
+                            <li>Section padding: py-24</li>
+                            <li>Container: max-w-7xl mx-auto px-4</li>
+                            <li>Card gap: gap-6 veya gap-8</li>
+                            <li>Border radius: rounded-xl, rounded-2xl</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-700/30 rounded-xl p-4">
+                        <p class="text-xs text-slate-400 font-semibold mb-2">HOVER/TRANSITION:</p>
+                        <ul class="text-xs text-slate-300 space-y-1">
+                            <li class="text-red-400">Scale yok!</li>
+                            <li>Box-shadow artisi</li>
+                            <li>Border color degisimi</li>
+                            <li>Opacity/underline</li>
+                            <li>transition-all duration-300</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4.13 Component Listesi -->
+            <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-puzzle-piece text-cyan-400"></i>
+                    4.13 Reusable Component Listesi
+                </h3>
+
+                <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-3">
+                    <div class="bg-slate-700/30 rounded-lg p-3 text-xs text-slate-400">
+                        <i class="fas fa-bars text-cyan-400 mr-1"></i> Header + Mega Menu
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3 text-xs text-slate-400">
+                        <i class="fas fa-images text-cyan-400 mr-1"></i> Hero Slider
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3 text-xs text-slate-400">
+                        <i class="fas fa-box text-cyan-400 mr-1"></i> Product Card
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3 text-xs text-slate-400">
+                        <i class="fas fa-building text-cyan-400 mr-1"></i> Company Card
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3 text-xs text-slate-400">
+                        <i class="fas fa-stream text-cyan-400 mr-1"></i> Timeline/Stepper
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3 text-xs text-slate-400">
+                        <i class="fas fa-newspaper text-cyan-400 mr-1"></i> Blog Card
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3 text-xs text-slate-400">
+                        <i class="fas fa-question-circle text-cyan-400 mr-1"></i> FAQ Accordion
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3 text-xs text-slate-400">
+                        <i class="fas fa-bullhorn text-cyan-400 mr-1"></i> CTA Band
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3 text-xs text-slate-400">
+                        <i class="fas fa-shield-alt text-cyan-400 mr-1"></i> Trust Badge Row
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3 text-xs text-slate-400">
+                        <i class="fas fa-chart-bar text-cyan-400 mr-1"></i> Stats Grid
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3 text-xs text-slate-400">
+                        <i class="fas fa-file-alt text-cyan-400 mr-1"></i> Contact Form
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3 text-xs text-slate-400">
+                        <i class="fas fa-th-large text-cyan-400 mr-1"></i> Footer (3 lokasyon)
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-800 py-8">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-robot text-blue-400"></i>
+                    <span class="text-slate-400 text-sm">Claude AI - Uzmanlar Konseyi</span>
+                </div>
+                <div class="text-slate-500 text-sm text-center">
+                    4 Tur | 8 Uzman | 1 Master Plan | 24 Aralik 2025
+                </div>
+                <a href="https://ixtif.com/readme/" class="text-blue-400 hover:text-blue-300 text-sm">
+                    <i class="fas fa-arrow-left mr-1"></i> Tum Raporlar
+                </a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

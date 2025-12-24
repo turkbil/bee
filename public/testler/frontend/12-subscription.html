@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frontend 12: Subscription & PayTR - Muzibu Test</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class',theme:{extend:{colors:{slate:{850:'#1a202e',950:'#0f1419'}}}}}</script>
+<style>@media print{.no-print{display:none;}input[type="checkbox"]{-webkit-appearance:checkbox;appearance:checkbox;}}</style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+<div class="container mx-auto px-4 py-8 max-w-5xl">
+<div class="mb-8">
+<div class="flex items-center justify-between mb-4">
+<a href="../index.html" class="text-emerald-400 hover:text-emerald-300 no-print">← Geri</a>
+<button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded text-sm no-print">🖨️ Yazdır</button>
+</div>
+<h1 class="text-3xl font-bold text-emerald-400 mb-2">Frontend 12: Subscription & PayTR</h1>
+<p class="text-slate-400">Plan selection, payment integration, upgrade/downgrade, invoicing</p>
+<div class="mt-4 bg-slate-900 rounded-lg p-4">
+<div class="flex justify-between items-center mb-2"><span class="text-sm font-semibold">İlerleme</span><span class="text-sm" id="progress-text">0 / 14</span></div>
+<div class="w-full bg-slate-800 rounded-full h-3"><div id="progress-bar" class="bg-emerald-500 h-3 rounded-full transition-all duration-300" style="width:0%"></div></div>
+</div>
+</div>
+<div class="space-y-6">
+<div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+<h2 class="text-xl font-bold text-emerald-300 mb-4">💎 Plan Seçimi</h2>
+<div class="space-y-4">
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="sub-plans-page">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-emerald-300">Planlar Sayfası</div>
+<div class="text-sm text-slate-400 mt-1">▸ URL: /plans veya /pricing<br>▸ 3 plan kartı: Free, Individual, Corporate<br>▸ Karşılaştırma tablosu: Özellik listesi checkbox/X ile<br>▸ Popüler plan badge ("En Popüler" Individual'de)<br>▸ Aylık/Yıllık toggle (%20 indirim vurgusu)</div>
+</div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="sub-plan-features">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-emerald-300">Özellik Listeleri</div>
+<div class="text-sm text-slate-400 mt-1">▸ Free: 5 şarkı/gün, reklamlı, tek cihaz<br>▸ Individual: Sınırsız, reklamsız, 3 cihaz, offline<br>▸ Corporate: Tüm Individual + toplu upload, cihaz yönetimi, raporlama<br>▸ Her plan kartında "Seç" veya "Upgrade" CTA</div>
+</div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="sub-plan-select">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-emerald-300">Plan Seçme</div>
+<div class="text-sm text-slate-400 mt-1">▸ "Seç" butonuna tıklandığında checkout'a yönlendir<br>▸ Zaten aynı plandaysa: "Mevcut planınız" mesajı<br>▸ Downgrade ise: "Dönem sonunda geçerli olacak" uyarısı<br>▸ Login gerekli: Guest user için register modal</div>
+</div></label>
+</div>
+</div>
+<div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+<h2 class="text-xl font-bold text-emerald-300 mb-4">💳 Ödeme & PayTR</h2>
+<div class="space-y-4">
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="sub-checkout-page">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-emerald-300">Checkout Sayfası</div>
+<div class="text-sm text-slate-400 mt-1">▸ URL: /checkout<br>▸ Seçilen plan özeti: İsim, fiyat, süre (aylık/yıllık)<br>▸ Fatura bilgileri formu: İsim, email, adres, TC/Vergi No<br>▸ Toplam tutar ve KDV breakdown<br>▸ Sözleşme checkbox: "Kullanım koşullarını kabul ediyorum"</div>
+</div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="sub-paytr-iframe">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-emerald-300">PayTR Iframe Integration</div>
+<div class="text-sm text-slate-400 mt-1">▸ "Ödemeye Geç" butonuna tıklandığında PayTR iframe açılmalı<br>▸ Iframe: Full screen modal overlay<br>▸ PayTR token generate edilmeli (backend)<br>▸ Güvenli ödeme vurgusu (SSL badge, güven logoları)<br>▸ Close butonu: "Ödemeyi iptal etmek istediğinizden emin misiniz?"</div>
+</div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="sub-paytr-callback">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-emerald-300">Ödeme Callback</div>
+<div class="text-sm text-slate-400 mt-1">▸ Başarılı ödeme: Success sayfasına redirect (/payment/success)<br>▸ Başarısız ödeme: Hata sayfası + sebep gösterimi<br>▸ Subscription otomatik aktif edilmeli (database update)<br>▸ Email gönderimi: "Ödemeniz alındı, abonelik aktif!"</div>
+</div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="sub-success-page">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-emerald-300">Success Sayfası</div>
+<div class="text-sm text-slate-400 mt-1">▸ Başlık: "🎉 Ödeme Başarılı!"<br>▸ Mesaj: "Aboneliğiniz aktif edildi. Şimdi sınırsız müziğin tadını çıkarın!"<br>▸ Plan özeti: Hangi plan, bitiş tarihi<br>▸ CTA: "Keşfetmeye Başla" (dashboard'a yönlendir)<br>▸ Fatura indirme linki</div>
+</div></label>
+</div>
+</div>
+<div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+<h2 class="text-xl font-bold text-emerald-300 mb-4">🔄 Upgrade/Downgrade</h2>
+<div class="space-y-4">
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="sub-upgrade-flow">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-emerald-300">Upgrade İşlemi</div>
+<div class="text-sm text-slate-400 mt-1">▸ Mevcut Individual → Corporate upgrade seçeneği<br>▸ Pro-rated ödeme: Kalan süre için fark hesaplanır<br>▸ "Fark tutar: 150 TL" bilgisi gösterilmeli<br>▸ Upgrade anında aktif olmalı<br>▸ Toast: "✅ Planınız Corporate'a yükseltildi!"</div>
+</div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="sub-downgrade-flow">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-emerald-300">Downgrade İşlemi</div>
+<div class="text-sm text-slate-400 mt-1">▸ Corporate → Individual downgrade seçeneği<br>▸ Uyarı: "Dönem sonunda (31 Aralık 2025) geçerli olacak"<br>▸ Özellik kaybı listesi: "Bu özellikleri kaybedeceksiniz..."<br>▸ Onay checkbox: "Anladım ve devam etmek istiyorum"<br>▸ İptal edilebilir: "Downgrade'i İptal Et" butonu</div>
+</div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="sub-renew-auto">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-emerald-300">Otomatik Yenileme</div>
+<div class="text-sm text-slate-400 mt-1">▸ Subscription ayarlarında toggle: Auto-renew ON/OFF<br>▸ ON: Dönem bitiminde otomatik ödeme + yenileme<br>▸ OFF: Dönem bitiminde Free plana düşer<br>▸ 7 gün önceden email hatırlatması<br>▸ Toggle değişikliği confirm edilmeli</div>
+</div></label>
+</div>
+</div>
+<div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+<h2 class="text-xl font-bold text-emerald-300 mb-4">📄 Fatura & Invoice</h2>
+<div class="space-y-4">
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="sub-invoice-list">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-emerald-300">Fatura Listesi</div>
+<div class="text-sm text-slate-400 mt-1">▸ URL: /account/invoices<br>▸ Tüm faturalar tablo formatında<br>▸ Kolon: Tarih, plan, tutar, durum (ödendi/beklemede), PDF<br>▸ Filtreleme: Tarih aralığı, durum<br>▸ Pagination: 20 fatura/sayfa</div>
+</div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="sub-invoice-pdf">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-emerald-300">PDF İndir</div>
+<div class="text-sm text-slate-400 mt-1">▸ Her fatura satırında "PDF İndir" ikonu<br>▸ PDF formatı: Logo, fatura no, tarih, tutar breakdown, KDV<br>▸ Fatura adresi bilgileri (kullanıcıdan alınan)<br>▸ QR code (e-fatura için - isteğe bağlı)</div>
+</div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="sub-billing-info">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-emerald-300">Fatura Bilgileri Güncelleme</div>
+<div class="text-sm text-slate-400 mt-1">▸ "Fatura Bilgilerimi Düzenle" formu<br>▸ Alanlar: Ad/Soyad, Şirket, TC/Vergi No, Adres<br>▸ Kaydet butonuna basıldığında güncellenmeli<br>▸ Bir sonraki faturadan geçerli olmalı</div>
+</div></label>
+<label class="flex items-start space-x-3 p-3 hover:bg-slate-800 rounded cursor-pointer group">
+<input type="checkbox" class="test-checkbox mt-1 w-5 h-5 rounded border-slate-600" data-test="sub-refund">
+<div class="flex-1"><div class="font-semibold text-slate-200 group-hover:text-emerald-300">İade Talebi (İsteğe Bağlı)</div>
+<div class="text-sm text-slate-400 mt-1">▸ 14 gün içinde iade hakkı (yasal zorunluluk)<br>▸ "İade Talep Et" butonu ilk 14 günde aktif<br>▸ Sebep formu: Dropdown + açıklama textarea<br>▸ Admin onayına gider, onaylanınca ödeme iade edilir</div>
+</div></label>
+</div>
+</div>
+</div>
+<div class="mt-8 flex gap-4 no-print">
+<button onclick="resetProgress()" class="bg-red-600 hover:bg-red-500 px-6 py-3 rounded-lg text-white font-semibold">🔄 İlerlemeyi Sıfırla</button>
+<button onclick="markAllComplete()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-3 rounded-lg text-white font-semibold">✅ Tümünü Tamamla</button>
+</div>
+<div class="mt-12 text-center text-slate-500 text-sm border-t border-slate-800 pt-6"><p>🎵 Muzibu.com.tr - Subscription Test Checklist</p></div>
+</div>
+<script>
+const STORAGE_KEY='muzibu_test_frontend_12_subscription';const TOTAL_TESTS=14;
+function loadProgress(){const saved=localStorage.getItem(STORAGE_KEY);if(saved){const data=JSON.parse(saved);document.querySelectorAll('.test-checkbox').forEach(checkbox=>{if(data[checkbox.dataset.test])checkbox.checked=true;});}updateProgress();}
+function saveProgress(){const data={};document.querySelectorAll('.test-checkbox').forEach(checkbox=>{data[checkbox.dataset.test]=checkbox.checked;});localStorage.setItem(STORAGE_KEY,JSON.stringify(data));updateProgress();}
+function updateProgress(){const checked=document.querySelectorAll('.test-checkbox:checked').length;const percentage=Math.round((checked/TOTAL_TESTS)*100);document.getElementById('progress-bar').style.width=percentage+'%';document.getElementById('progress-text').textContent=`${checked} / ${TOTAL_TESTS}`;}
+function resetProgress(){if(!confirm('⚠️ Tüm işaretlemeler silinecek! Emin misiniz?'))return;localStorage.removeItem(STORAGE_KEY);document.querySelectorAll('.test-checkbox').forEach(cb=>cb.checked=false);updateProgress();}
+function markAllComplete(){document.querySelectorAll('.test-checkbox').forEach(cb=>cb.checked=true);saveProgress();}
+document.querySelectorAll('.test-checkbox').forEach(checkbox=>{checkbox.addEventListener('change',saveProgress);});
+loadProgress();
+</script>
+</body>
+</html>

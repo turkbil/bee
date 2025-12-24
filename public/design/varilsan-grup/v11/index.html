@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varilsan Grup | Endustriyel Ambalaj Cozumleri - v11</title>
+    <meta name="description" content="Varilsan Grup - IBC Tank, Plastik Varil, Metal Varil uretimi ve yenileme hizmetleri. UN onayli, ADR uyumlu endustriyel ambalaj cozumleri.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        'varilsan': {
+                            'primary': '#0ea5e9',
+                            'secondary': '#0d9488',
+                            'dark': '#0f172a',
+                            'polimer': '#3b82f6',
+                            'ambalaj': '#10b981',
+                            'plastik': '#8b5cf6',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        [x-cloak] { display: none !important; }
+        .hero-gradient { background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 40%, #134e4a 100%); }
+        .text-gradient { background: linear-gradient(135deg, #0ea5e9, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .nav-link { position: relative; }
+        .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, #0ea5e9, #10b981); transition: width 0.3s ease; }
+        .nav-link:hover::after { width: 100%; }
+        .timeline-line { background: linear-gradient(180deg, #0ea5e9, #10b981); }
+        .btn-primary { background: linear-gradient(135deg, #0ea5e9, #0d9488); transition: all 0.3s ease; }
+        .btn-primary:hover { opacity: 0.9; box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3); }
+        .product-card { transition: all 0.3s ease; }
+        .product-card:hover { box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+        .slide-enter { animation: slideIn 0.5s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        .glass-card { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .sector-badge { transition: all 0.3s ease; }
+        .sector-badge:hover { background: rgba(14, 165, 233, 0.2); }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white text-slate-800">
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- HEADER - Sticky Navigation with Mega Menu -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <header x-data="{ mobileOpen: false, activeMenu: null }" class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
+
+        <!-- Top Bar -->
+        <div class="bg-slate-900 text-white text-sm hidden lg:block">
+            <div class="max-w-7xl mx-auto px-6 py-2 flex justify-between items-center">
+                <div class="flex items-center gap-6">
+                    <a href="tel:02626589258" class="flex items-center gap-2 hover:text-sky-400 transition">
+                        <i class="fas fa-phone text-xs"></i>
+                        <span>0262 658 92 58</span>
+                    </a>
+                    <span class="text-slate-600">|</span>
+                    <a href="tel:02324364158" class="flex items-center gap-2 hover:text-sky-400 transition">
+                        <i class="fas fa-phone text-xs"></i>
+                        <span>0232 436 41 58</span>
+                    </a>
+                    <a href="mailto:info@varilsan.com" class="flex items-center gap-2 hover:text-sky-400 transition">
+                        <i class="fas fa-envelope text-xs"></i>
+                        <span>info@varilsan.com</span>
+                    </a>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2 text-slate-400 text-xs">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Istanbul | Izmir</span>
+                    </div>
+                    <span class="text-slate-600">|</span>
+                    <a href="#" class="hover:text-sky-400 transition font-medium">TR</a>
+                    <a href="#" class="text-slate-400 hover:text-sky-400 transition">EN</a>
+                    <span class="text-slate-600">|</span>
+                    <div class="flex items-center gap-3">
+                        <a href="#" class="hover:text-sky-400 transition"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="hover:text-sky-400 transition"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="hover:text-sky-400 transition"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="hover:text-emerald-400 transition"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Navigation -->
+        <nav class="max-w-7xl mx-auto px-4 lg:px-6">
+            <div class="flex items-center justify-between h-20">
+
+                <!-- Logo -->
+                <a href="/" class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-sky-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg shadow-sky-500/20">
+                        <i class="fas fa-industry text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold text-slate-900">VARILSAN</span>
+                        <span class="text-xl font-light text-slate-500 ml-1">GRUP</span>
+                        <p class="text-xs text-slate-400 -mt-1">Endustriyel Dongunun Mimari</p>
+                    </div>
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex items-center gap-6">
+
+                    <!-- Kurumsal Mega Menu -->
+                    <div class="relative" @mouseenter="activeMenu = 'kurumsal'" @mouseleave="activeMenu = null">
+                        <button class="nav-link flex items-center gap-1 py-6 text-slate-700 hover:text-sky-600 font-medium">
+                            Kurumsal
+                            <i class="fas fa-chevron-down text-xs ml-1 transition-transform" :class="activeMenu === 'kurumsal' ? 'rotate-180' : ''"></i>
+                        </button>
+                        <div x-show="activeMenu === 'kurumsal'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="absolute top-full left-0 w-80 bg-white rounded-2xl shadow-2xl border border-slate-100 p-4">
+                            <div class="grid gap-1">
+                                <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-sky-50 transition group">
+                                    <div class="w-10 h-10 bg-sky-100 rounded-lg flex items-center justify-center group-hover:bg-sky-500 transition">
+                                        <i class="fas fa-building text-sky-500 group-hover:text-white transition"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-slate-800">Hakkimizda</p>
+                                        <p class="text-xs text-slate-500">Grup yapisi ve tarihce</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-sky-50 transition group">
+                                    <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center group-hover:bg-teal-500 transition">
+                                        <i class="fas fa-eye text-teal-500 group-hover:text-white transition"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-slate-800">Vizyon & Misyon</p>
+                                        <p class="text-xs text-slate-500">Hedeflerimiz ve degerlerimiz</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-sky-50 transition group">
+                                    <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center group-hover:bg-emerald-500 transition">
+                                        <i class="fas fa-leaf text-emerald-500 group-hover:text-white transition"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-slate-800">Surdurulebilirlik</p>
+                                        <p class="text-xs text-slate-500">Dongusal ekonomi yaklasimimiz</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-sky-50 transition group">
+                                    <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center group-hover:bg-amber-500 transition">
+                                        <i class="fas fa-history text-amber-500 group-hover:text-white transition"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-slate-800">Tarihce</p>
+                                        <p class="text-xs text-slate-500">25 yillik yolculugumuz</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Istiraklerimiz Mega Menu -->
+                    <div class="relative" @mouseenter="activeMenu = 'istirakler'" @mouseleave="activeMenu = null">
+                        <button class="nav-link flex items-center gap-1 py-6 text-slate-700 hover:text-sky-600 font-medium">
+                            Istiraklerimiz
+                            <i class="fas fa-chevron-down text-xs ml-1 transition-transform" :class="activeMenu === 'istirakler' ? 'rotate-180' : ''"></i>
+                        </button>
+                        <div x-show="activeMenu === 'istirakler'" x-cloak x-transition class="absolute top-full left-0 w-96 bg-white rounded-2xl shadow-2xl border border-slate-100 p-4">
+                            <p class="text-xs text-slate-400 font-medium mb-3 px-3">TEK CATI, UC UZMANLIK</p>
+                            <div class="grid gap-2">
+                                <a href="#" class="flex items-center gap-4 p-4 rounded-xl hover:bg-blue-50 transition group border border-transparent hover:border-blue-200">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+                                        <i class="fas fa-cogs text-white text-lg"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-semibold text-slate-800">Varilsan Polimer</p>
+                                        <p class="text-xs text-slate-500">Istanbul/Kocaeli | Uretim Odakli</p>
+                                        <div class="flex gap-1 mt-1">
+                                            <span class="px-2 py-0.5 bg-blue-100 text-blue-600 text-xs rounded">HDPE</span>
+                                            <span class="px-2 py-0.5 bg-blue-100 text-blue-600 text-xs rounded">Bidon</span>
+                                        </div>
+                                    </div>
+                                    <i class="fas fa-arrow-right text-blue-400 opacity-0 group-hover:opacity-100 transition"></i>
+                                </a>
+                                <a href="#" class="flex items-center gap-4 p-4 rounded-xl hover:bg-emerald-50 transition group border border-transparent hover:border-emerald-200">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                                        <i class="fas fa-recycle text-white text-lg"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-semibold text-slate-800">Varilsan Ambalaj</p>
+                                        <p class="text-xs text-slate-500">Kocaeli/Cayirova | Geri Donusum</p>
+                                        <div class="flex gap-1 mt-1">
+                                            <span class="px-2 py-0.5 bg-emerald-100 text-emerald-600 text-xs rounded">IBC Yenileme</span>
+                                            <span class="px-2 py-0.5 bg-emerald-100 text-emerald-600 text-xs rounded">Rebottle</span>
+                                        </div>
+                                    </div>
+                                    <i class="fas fa-arrow-right text-emerald-400 opacity-0 group-hover:opacity-100 transition"></i>
+                                </a>
+                                <a href="#" class="flex items-center gap-4 p-4 rounded-xl hover:bg-purple-50 transition group border border-transparent hover:border-purple-200">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/20">
+                                        <i class="fas fa-boxes text-white text-lg"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-semibold text-slate-800">Varilsan Plastik</p>
+                                        <p class="text-xs text-slate-500">Izmir/Kemalpasa | Urun Portfolyosu</p>
+                                        <div class="flex gap-1 mt-1">
+                                            <span class="px-2 py-0.5 bg-purple-100 text-purple-600 text-xs rounded">IBC</span>
+                                            <span class="px-2 py-0.5 bg-purple-100 text-purple-600 text-xs rounded">Varil</span>
+                                        </div>
+                                    </div>
+                                    <i class="fas fa-arrow-right text-purple-400 opacity-0 group-hover:opacity-100 transition"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Urunler Mega Menu -->
+                    <div class="relative" @mouseenter="activeMenu = 'urunler'" @mouseleave="activeMenu = null">
+                        <button class="nav-link flex items-center gap-1 py-6 text-slate-700 hover:text-sky-600 font-medium">
+                            Urunler
+                            <i class="fas fa-chevron-down text-xs ml-1 transition-transform" :class="activeMenu === 'urunler' ? 'rotate-180' : ''"></i>
+                        </button>
+                        <div x-show="activeMenu === 'urunler'" x-cloak x-transition class="absolute top-full left-1/2 -translate-x-1/2 w-[600px] bg-white rounded-2xl shadow-2xl border border-slate-100 p-6">
+                            <div class="grid grid-cols-2 gap-6">
+                                <div>
+                                    <p class="text-xs text-slate-400 font-medium mb-3">KONTEYNERLAR</p>
+                                    <div class="space-y-2">
+                                        <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-sky-50 transition">
+                                            <i class="fas fa-cube text-sky-500 w-5"></i>
+                                            <div>
+                                                <p class="font-medium text-slate-700 text-sm">IBC Tank</p>
+                                                <p class="text-xs text-slate-400">1000L, UN Onayli</p>
+                                            </div>
+                                        </a>
+                                        <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-teal-50 transition">
+                                            <i class="fas fa-sync-alt text-teal-500 w-5"></i>
+                                            <div>
+                                                <p class="font-medium text-slate-700 text-sm">Rebottle IBC</p>
+                                                <p class="text-xs text-slate-400">Ekonomik, Cevreci</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-400 font-medium mb-3">VARILLER</p>
+                                    <div class="space-y-2">
+                                        <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition">
+                                            <i class="fas fa-oil-can text-blue-500 w-5"></i>
+                                            <div>
+                                                <p class="font-medium text-slate-700 text-sm">Plastik Varil</p>
+                                                <p class="text-xs text-slate-400">60L, 120L, 200L</p>
+                                            </div>
+                                        </a>
+                                        <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-100 transition">
+                                            <i class="fas fa-drum text-slate-500 w-5"></i>
+                                            <div>
+                                                <p class="font-medium text-slate-700 text-sm">Metal Varil</p>
+                                                <p class="text-xs text-slate-400">200L, Yenilenmis</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-400 font-medium mb-3">HAMMADDE</p>
+                                    <div class="space-y-2">
+                                        <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-indigo-50 transition">
+                                            <i class="fas fa-circle text-indigo-500 w-5"></i>
+                                            <div>
+                                                <p class="font-medium text-slate-700 text-sm">HDPE Granul</p>
+                                                <p class="text-xs text-slate-400">Siyah, Mavi VRP-1</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-400 font-medium mb-3">BIDONLAR</p>
+                                    <div class="space-y-2">
+                                        <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-50 transition">
+                                            <i class="fas fa-box text-amber-500 w-5"></i>
+                                            <div>
+                                                <p class="font-medium text-slate-700 text-sm">Endustriyel Bidon</p>
+                                                <p class="text-xs text-slate-400">30L - 220L</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="border-t border-slate-100 mt-4 pt-4">
+                                <a href="#" class="flex items-center justify-center gap-2 text-sky-600 font-medium hover:text-sky-700 transition">
+                                    Tum Urunleri Goruntule <i class="fas fa-arrow-right text-sm"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hizmetler -->
+                    <div class="relative" @mouseenter="activeMenu = 'hizmetler'" @mouseleave="activeMenu = null">
+                        <button class="nav-link flex items-center gap-1 py-6 text-slate-700 hover:text-sky-600 font-medium">
+                            Hizmetler
+                            <i class="fas fa-chevron-down text-xs ml-1 transition-transform" :class="activeMenu === 'hizmetler' ? 'rotate-180' : ''"></i>
+                        </button>
+                        <div x-show="activeMenu === 'hizmetler'" x-cloak x-transition class="absolute top-full left-0 w-64 bg-white rounded-2xl shadow-2xl border border-slate-100 py-3">
+                            <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-sky-50 transition">
+                                <i class="fas fa-truck text-sky-500 w-5"></i>
+                                <span class="text-slate-700">Toplama & Lojistik</span>
+                            </a>
+                            <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-sky-50 transition">
+                                <i class="fas fa-shower text-teal-500 w-5"></i>
+                                <span class="text-slate-700">Yikama & Temizleme</span>
+                            </a>
+                            <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-sky-50 transition">
+                                <i class="fas fa-wrench text-emerald-500 w-5"></i>
+                                <span class="text-slate-700">IBC Yenileme</span>
+                            </a>
+                            <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-sky-50 transition">
+                                <i class="fas fa-clipboard-check text-amber-500 w-5"></i>
+                                <span class="text-slate-700">Kalite Test</span>
+                            </a>
+                            <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-sky-50 transition">
+                                <i class="fas fa-certificate text-purple-500 w-5"></i>
+                                <span class="text-slate-700">UN/ADR Uygunluk</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Kalite -->
+                    <a href="#" class="nav-link py-6 text-slate-700 hover:text-sky-600 font-medium">Kalite & Belgeler</a>
+
+                    <!-- Blog -->
+                    <a href="#" class="nav-link py-6 text-slate-700 hover:text-sky-600 font-medium">Blog</a>
+
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="hidden lg:flex items-center gap-3">
+                    <a href="tel:02626589258" class="flex items-center gap-2 px-4 py-2.5 text-slate-600 hover:text-sky-600 transition font-medium">
+                        <i class="fas fa-phone"></i>
+                        <span class="hidden xl:inline">Hemen Ara</span>
+                    </a>
+                    <a href="#iletisim" class="btn-primary px-6 py-2.5 text-white rounded-full font-medium text-sm shadow-lg shadow-sky-500/20">
+                        <i class="fas fa-paper-plane mr-2"></i>Teklif Al
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button @click="mobileOpen = !mobileOpen" class="lg:hidden p-2 text-slate-700">
+                    <i class="fas fa-bars text-xl" x-show="!mobileOpen"></i>
+                    <i class="fas fa-times text-xl" x-show="mobileOpen" x-cloak></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div x-show="mobileOpen" x-cloak x-transition class="lg:hidden bg-white border-t border-slate-100 shadow-xl max-h-[80vh] overflow-y-auto">
+            <div class="max-w-7xl mx-auto px-4 py-6 space-y-4">
+                <a href="#" class="block py-3 text-slate-700 font-medium border-b border-slate-100">Kurumsal</a>
+                <a href="#" class="block py-3 text-slate-700 font-medium border-b border-slate-100">Istiraklerimiz</a>
+                <a href="#" class="block py-3 text-slate-700 font-medium border-b border-slate-100">Urunler</a>
+                <a href="#" class="block py-3 text-slate-700 font-medium border-b border-slate-100">Hizmetler</a>
+                <a href="#" class="block py-3 text-slate-700 font-medium border-b border-slate-100">Kalite & Belgeler</a>
+                <a href="#" class="block py-3 text-slate-700 font-medium border-b border-slate-100">Blog</a>
+                <div class="pt-4 space-y-3">
+                    <a href="tel:02626589258" class="block w-full text-center py-3 border border-slate-200 text-slate-700 rounded-xl font-medium">
+                        <i class="fas fa-phone mr-2"></i>0262 658 92 58
+                    </a>
+                    <a href="#iletisim" class="block w-full text-center btn-primary py-3 text-white rounded-xl font-medium">
+                        <i class="fas fa-paper-plane mr-2"></i>Teklif Al
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- HERO SLIDER - 3 Companies with Enhanced Design -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <section x-data="{
+        currentSlide: 0,
+        slides: [
+            {
+                title: 'Uretimin Temeli',
+                subtitle: 'Kusursuz Form, Endustriyel Performans',
+                description: 'Yillik 5.000 ton HDPE isleme kapasitesiyle, 30 litreden 1000 litreye kadar UN onayli ambalajlar uretiyoruz. Kimya, gida ve ilac sanayisinin en zorlu standartlarini karsiliyoruz.',
+                company: 'Varilsan Polimer',
+                location: 'Istanbul / Kocaeli',
+                color: 'blue',
+                icon: 'fa-cogs',
+                cta: 'Urunleri Kesfet',
+                stats: { capacity: '5.000 ton', range: '30L-1000L', cert: 'UN Onayli' }
+            },
+            {
+                title: 'Gelecegi Yeniden Sekillendiriyoruz',
+                subtitle: 'Yenile. Yeniden Kullan. Guvenle Tasi.',
+                description: '%95-97 geri kazanim oraniyla endustriyel ambalajlari ekonomiye kazandiriyoruz. IBC yenileme, Rebottle ve lisansli geri donusum cozumleriyle dongusal ekonominin mimariyiz.',
+                company: 'Varilsan Ambalaj',
+                location: 'Kocaeli / Cayirova',
+                color: 'emerald',
+                icon: 'fa-recycle',
+                cta: 'Hizmetleri Gor',
+                stats: { capacity: '%97', range: 'Geri Kazanim', cert: 'Lisansli' }
+            },
+            {
+                title: 'Egenin Donusum Gucu',
+                subtitle: 'Endustriyel Ambalajda Portfolyo ve Sureklilik',
+                description: 'Izmir merkezli tesisimizden Ege sanayisine hizli ve etkili geri kazanim cozumleri sunuyoruz. Izmir limani avantaji ile ihracat odakli hizmet.',
+                company: 'Varilsan Plastik',
+                location: 'Izmir / Kemalpasa',
+                color: 'purple',
+                icon: 'fa-boxes',
+                cta: 'Teklif Al',
+                stats: { capacity: 'Ege', range: 'Bolgesi', cert: 'Lider' }
+            }
+        ],
+        init() {
+            setInterval(() => { this.currentSlide = (this.currentSlide + 1) % this.slides.length }, 7000)
+        }
+    }" class="hero-gradient min-h-screen flex items-center pt-32 lg:pt-40 pb-20 relative overflow-hidden">
+
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-20 right-20 w-[500px] h-[500px] bg-sky-500 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-20 left-20 w-[500px] h-[500px] bg-teal-500 rounded-full blur-3xl"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-purple-500 rounded-full blur-3xl"></div>
+        </div>
+
+        <!-- Grid Pattern Overlay -->
+        <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0); background-size: 40px 40px;"></div>
+
+        <div class="max-w-7xl mx-auto px-4 lg:px-6 relative z-10 w-full">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+
+                <!-- Content -->
+                <div class="text-white">
+                    <template x-for="(slide, index) in slides" :key="index">
+                        <div x-show="currentSlide === index" x-transition:enter="slide-enter" class="space-y-6">
+                            <!-- Company Badge -->
+                            <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full text-sm font-medium glass-card"
+                                 :class="{
+                                     'text-blue-300': slide.color === 'blue',
+                                     'text-emerald-300': slide.color === 'emerald',
+                                     'text-purple-300': slide.color === 'purple'
+                                 }">
+                                <i :class="'fas ' + slide.icon"></i>
+                                <span x-text="slide.company"></span>
+                                <span class="text-slate-500">|</span>
+                                <span class="text-slate-400 text-xs" x-text="slide.location"></span>
+                            </div>
+
+                            <!-- Title -->
+                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                                <span x-text="slide.title"></span>
+                            </h1>
+
+                            <!-- Subtitle -->
+                            <p class="text-xl md:text-2xl text-slate-300 font-light" x-text="slide.subtitle"></p>
+
+                            <!-- Description -->
+                            <p class="text-lg text-slate-400 max-w-xl leading-relaxed" x-text="slide.description"></p>
+
+                            <!-- Mini Stats -->
+                            <div class="flex gap-4 pt-2">
+                                <div class="text-center px-4 py-2 glass-card rounded-xl">
+                                    <div class="text-lg font-bold" :class="{
+                                        'text-blue-400': slide.color === 'blue',
+                                        'text-emerald-400': slide.color === 'emerald',
+                                        'text-purple-400': slide.color === 'purple'
+                                    }" x-text="slide.stats.capacity"></div>
+                                    <div class="text-xs text-slate-500" x-text="slide.stats.range"></div>
+                                </div>
+                                <div class="text-center px-4 py-2 glass-card rounded-xl">
+                                    <div class="text-lg font-bold text-white" x-text="slide.stats.cert"></div>
+                                    <div class="text-xs text-slate-500">Sertifikali</div>
+                                </div>
+                            </div>
+
+                            <!-- CTAs -->
+                            <div class="flex flex-wrap gap-4 pt-4">
+                                <a href="#" class="btn-primary px-8 py-4 text-white rounded-full font-semibold inline-flex items-center gap-2 shadow-xl shadow-sky-500/20">
+                                    <span x-text="slide.cta"></span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                                <a href="#surec" class="px-8 py-4 border border-white/30 text-white rounded-full font-semibold hover:bg-white/10 transition inline-flex items-center gap-2">
+                                    <i class="fas fa-play-circle"></i>
+                                    Nasil Calisir?
+                                </a>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Visual / Stats Card -->
+                <div class="hidden lg:block">
+                    <div class="relative">
+                        <!-- Main Visual Card -->
+                        <div class="glass-card rounded-3xl p-8">
+                            <!-- Stats Grid -->
+                            <div class="grid grid-cols-2 gap-4 mb-6">
+                                <div class="text-center p-5 bg-white/5 rounded-2xl border border-white/5">
+                                    <div class="text-4xl font-bold text-white mb-1">25+</div>
+                                    <div class="text-slate-400 text-sm">Yillik Deneyim</div>
+                                </div>
+                                <div class="text-center p-5 bg-white/5 rounded-2xl border border-white/5">
+                                    <div class="text-4xl font-bold text-white mb-1">5.000</div>
+                                    <div class="text-slate-400 text-sm">Ton/Yil Kapasite</div>
+                                </div>
+                                <div class="text-center p-5 bg-white/5 rounded-2xl border border-white/5">
+                                    <div class="text-4xl font-bold text-emerald-400 mb-1">%97</div>
+                                    <div class="text-slate-400 text-sm">Geri Kazanim</div>
+                                </div>
+                                <div class="text-center p-5 bg-white/5 rounded-2xl border border-white/5">
+                                    <div class="text-4xl font-bold text-white mb-1">2</div>
+                                    <div class="text-slate-400 text-sm">Uretim Tesisi</div>
+                                </div>
+                            </div>
+
+                            <!-- Sectors -->
+                            <div class="mb-6">
+                                <p class="text-xs text-slate-500 mb-3">HIZMET VERDIGIMIZ SEKTORLER</p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="sector-badge px-3 py-1.5 bg-white/5 rounded-full text-xs text-slate-300 border border-white/10">
+                                        <i class="fas fa-flask mr-1 text-sky-400"></i> Kimya
+                                    </span>
+                                    <span class="sector-badge px-3 py-1.5 bg-white/5 rounded-full text-xs text-slate-300 border border-white/10">
+                                        <i class="fas fa-utensils mr-1 text-amber-400"></i> Gida
+                                    </span>
+                                    <span class="sector-badge px-3 py-1.5 bg-white/5 rounded-full text-xs text-slate-300 border border-white/10">
+                                        <i class="fas fa-pills mr-1 text-pink-400"></i> Ilac
+                                    </span>
+                                    <span class="sector-badge px-3 py-1.5 bg-white/5 rounded-full text-xs text-slate-300 border border-white/10">
+                                        <i class="fas fa-tractor mr-1 text-emerald-400"></i> Tarim
+                                    </span>
+                                    <span class="sector-badge px-3 py-1.5 bg-white/5 rounded-full text-xs text-slate-300 border border-white/10">
+                                        <i class="fas fa-paint-brush mr-1 text-purple-400"></i> Boya
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Certification Badges -->
+                            <div class="pt-6 border-t border-white/10">
+                                <div class="flex justify-between items-center">
+                                    <div class="text-center">
+                                        <div class="w-14 h-14 bg-gradient-to-br from-sky-500/20 to-sky-600/20 rounded-xl flex items-center justify-center mb-2 border border-sky-500/30">
+                                            <span class="text-white font-bold text-sm">UN</span>
+                                        </div>
+                                        <span class="text-xs text-slate-400">Onayli</span>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="w-14 h-14 bg-gradient-to-br from-teal-500/20 to-teal-600/20 rounded-xl flex items-center justify-center mb-2 border border-teal-500/30">
+                                            <span class="text-white font-bold text-sm">ADR</span>
+                                        </div>
+                                        <span class="text-xs text-slate-400">Uyumlu</span>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="w-14 h-14 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center mb-2 border border-blue-500/30">
+                                            <span class="text-white font-bold text-sm">ISO</span>
+                                        </div>
+                                        <span class="text-xs text-slate-400">9001</span>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="w-14 h-14 bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 rounded-xl flex items-center justify-center mb-2 border border-emerald-500/30">
+                                            <i class="fas fa-leaf text-emerald-400"></i>
+                                        </div>
+                                        <span class="text-xs text-slate-400">Cevreci</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Floating Badge -->
+                        <div class="absolute -top-4 -right-4 bg-gradient-to-br from-amber-500 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg shadow-amber-500/30">
+                            <i class="fas fa-star mr-1"></i> 25 Yil
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide Indicators -->
+            <div class="flex justify-center gap-3 mt-12">
+                <template x-for="(slide, index) in slides" :key="index">
+                    <button @click="currentSlide = index"
+                            class="group flex items-center gap-2 transition-all duration-300"
+                            :class="currentSlide === index ? 'opacity-100' : 'opacity-50 hover:opacity-75'">
+                        <span class="w-3 h-3 rounded-full transition-all duration-300"
+                              :class="{
+                                  'bg-blue-400 w-8': currentSlide === index && slides[index].color === 'blue',
+                                  'bg-emerald-400 w-8': currentSlide === index && slides[index].color === 'emerald',
+                                  'bg-purple-400 w-8': currentSlide === index && slides[index].color === 'purple',
+                                  'bg-white/30': currentSlide !== index
+                              }">
+                        </span>
+                        <span class="text-xs text-white/50 hidden sm:inline" x-show="currentSlide === index" x-text="slide.company"></span>
+                    </button>
+                </template>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/50 animate-bounce">
+            <i class="fas fa-chevron-down text-2xl"></i>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- PRODUCTS SECTION - 6 Product Cards -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <section id="urunler" class="py-24 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 lg:px-6">
+
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="inline-block px-4 py-1.5 bg-sky-100 text-sky-600 rounded-full text-sm font-medium mb-4">
+                    Urun Gami
+                </span>
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+                    Endustriyel Ambalaj <span class="text-gradient">Cozumlerimiz</span>
+                </h2>
+                <p class="text-lg text-slate-600">
+                    UN onayli, ADR uyumlu urunlerimizle kimya, gida, ilac ve tarim sektorlerinin
+                    en zorlu standartlarini karsiliyoruz.
+                </p>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Product 1: IBC Tank -->
+                <div class="bg-white rounded-2xl overflow-hidden product-card group border border-slate-100">
+                    <div class="h-56 bg-gradient-to-br from-sky-100 to-sky-50 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-cube text-8xl text-sky-200 group-hover:text-sky-300 transition"></i>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-sky-500 text-white text-xs font-medium rounded-full shadow-lg shadow-sky-500/30">En Cok Satan</span>
+                        </div>
+                        <div class="absolute top-4 right-4">
+                            <span class="w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-sky-600 font-bold text-xs border border-sky-200">UN</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xl font-bold text-slate-900">IBC Tank</h3>
+                            <span class="text-xs text-slate-400">1000L</span>
+                        </div>
+                        <p class="text-slate-600 text-sm mb-4">
+                            1000 litre kapasiteli, plastik/metal/tahta paletli varyantlar. Gida ve tehlikeli madde tasimaciligina uygun.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-lg">HDPE</span>
+                            <span class="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-lg">Plastik Palet</span>
+                            <span class="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-lg">Metal Palet</span>
+                        </div>
+                        <a href="#" class="inline-flex items-center gap-2 text-sky-600 font-medium hover:text-sky-700 transition group-hover:gap-3">
+                            Detaylari Gor <i class="fas fa-arrow-right text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Product 2: Rebottle IBC -->
+                <div class="bg-white rounded-2xl overflow-hidden product-card group border border-slate-100">
+                    <div class="h-56 bg-gradient-to-br from-teal-100 to-teal-50 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-sync-alt text-8xl text-teal-200 group-hover:text-teal-300 transition"></i>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-teal-500 text-white text-xs font-medium rounded-full shadow-lg shadow-teal-500/30">Ekonomik</span>
+                        </div>
+                        <div class="absolute top-4 right-4">
+                            <span class="w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-teal-600 font-bold text-xs border border-teal-200">%30</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xl font-bold text-slate-900">Rebottle IBC</h3>
+                            <span class="text-xs text-slate-400">Hibrit</span>
+                        </div>
+                        <p class="text-slate-600 text-sm mb-4">
+                            Ic sise yeni, kafes ve palet yenilenmis. Maliyet avantajli ve cevre dostu alternatif. %30'a varan tasarruf.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-emerald-100 text-emerald-600 text-xs rounded-lg">Cevreci</span>
+                            <span class="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-lg">Yeni Ic Sise</span>
+                            <span class="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-lg">Yenilenmiş Kafes</span>
+                        </div>
+                        <a href="#" class="inline-flex items-center gap-2 text-sky-600 font-medium hover:text-sky-700 transition group-hover:gap-3">
+                            Detaylari Gor <i class="fas fa-arrow-right text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Product 3: Plastik Varil -->
+                <div class="bg-white rounded-2xl overflow-hidden product-card group border border-slate-100">
+                    <div class="h-56 bg-gradient-to-br from-blue-100 to-blue-50 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-oil-can text-8xl text-blue-200 group-hover:text-blue-300 transition"></i>
+                        </div>
+                        <div class="absolute top-4 right-4">
+                            <span class="w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-blue-600 font-bold text-xs border border-blue-200">UN</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xl font-bold text-slate-900">Plastik Varil</h3>
+                            <span class="text-xs text-slate-400">60-200L</span>
+                        </div>
+                        <p class="text-slate-600 text-sm mb-4">
+                            60L, 120L, 200L secenekleriyle. Yuksek yogunluklu polietilen, kimya ve tekstil sektoru icin ideal.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-lg">HDPE</span>
+                            <span class="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-lg">UN Sertifikali</span>
+                        </div>
+                        <a href="#" class="inline-flex items-center gap-2 text-sky-600 font-medium hover:text-sky-700 transition group-hover:gap-3">
+                            Detaylari Gor <i class="fas fa-arrow-right text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Product 4: Metal Varil -->
+                <div class="bg-white rounded-2xl overflow-hidden product-card group border border-slate-100">
+                    <div class="h-56 bg-gradient-to-br from-slate-200 to-slate-100 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-drum text-8xl text-slate-300 group-hover:text-slate-400 transition"></i>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-slate-600 text-white text-xs font-medium rounded-full">Yenilenmis</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xl font-bold text-slate-900">Metal Varil</h3>
+                            <span class="text-xs text-slate-400">200L</span>
+                        </div>
+                        <p class="text-slate-600 text-sm mb-4">
+                            200 litre kapakli veya cemberli variller. Geri kazanim ve yenileme surecleriyle ekonomiye kazandirilmis.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-lg">Celik</span>
+                            <span class="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-lg">Kapakli</span>
+                            <span class="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-lg">Cemberli</span>
+                        </div>
+                        <a href="#" class="inline-flex items-center gap-2 text-sky-600 font-medium hover:text-sky-700 transition group-hover:gap-3">
+                            Detaylari Gor <i class="fas fa-arrow-right text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Product 5: HDPE Granul -->
+                <div class="bg-white rounded-2xl overflow-hidden product-card group border border-slate-100">
+                    <div class="h-56 bg-gradient-to-br from-indigo-100 to-indigo-50 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-circle text-8xl text-indigo-200 group-hover:text-indigo-300 transition"></i>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-indigo-500 text-white text-xs font-medium rounded-full shadow-lg shadow-indigo-500/30">Hammadde</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xl font-bold text-slate-900">HDPE Granul</h3>
+                            <span class="text-xs text-slate-400">VRP-1</span>
+                        </div>
+                        <p class="text-slate-600 text-sm mb-4">
+                            Siyah ve mavi varyantlarda geri donusturulmus HDPE granul. Endustriyel kullanimda stabilite ve sureklilik.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-slate-800 text-white text-xs rounded-lg">Siyah</span>
+                            <span class="px-2 py-1 bg-blue-500 text-white text-xs rounded-lg">Mavi</span>
+                            <span class="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-lg">Geri Donusum</span>
+                        </div>
+                        <a href="#" class="inline-flex items-center gap-2 text-sky-600 font-medium hover:text-sky-700 transition group-hover:gap-3">
+                            Detaylari Gor <i class="fas fa-arrow-right text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Product 6: Endustriyel Bidon -->
+                <div class="bg-white rounded-2xl overflow-hidden product-card group border border-slate-100">
+                    <div class="h-56 bg-gradient-to-br from-amber-100 to-amber-50 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-box text-8xl text-amber-200 group-hover:text-amber-300 transition"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xl font-bold text-slate-900">Endustriyel Bidon</h3>
+                            <span class="text-xs text-slate-400">30-220L</span>
+                        </div>
+                        <p class="text-slate-600 text-sm mb-4">
+                            30L'den 220L'ye kadar istiflenebilir, sizdirmazlik garantili HDPE bidonlar.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-lg">HDPE</span>
+                            <span class="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-lg">Istiflenebilir</span>
+                        </div>
+                        <a href="#" class="inline-flex items-center gap-2 text-sky-600 font-medium hover:text-sky-700 transition group-hover:gap-3">
+                            Detaylari Gor <i class="fas fa-arrow-right text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View All CTA -->
+            <div class="text-center mt-12">
+                <a href="#" class="inline-flex items-center gap-2 px-8 py-4 border-2 border-sky-500 text-sky-600 rounded-full font-semibold hover:bg-sky-500 hover:text-white transition">
+                    Tum Urunleri Goruntule
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- PROCESS TIMELINE -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <section id="surec" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 lg:px-6">
+
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="inline-block px-4 py-1.5 bg-teal-100 text-teal-600 rounded-full text-sm font-medium mb-4">
+                    Surec
+                </span>
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+                    Yenileme <span class="text-gradient">Nasil Calisir?</span>
+                </h2>
+                <p class="text-lg text-slate-600">
+                    Endustriyel ambalajlarinizi lisansli sureclerle ekonomiye kazandiriyoruz.
+                    Her adimda izlenebilirlik ve mevzuata tam uyum.
+                </p>
+            </div>
+
+            <!-- Timeline -->
+            <div class="relative">
+                <!-- Timeline Line (Desktop) -->
+                <div class="hidden lg:block absolute top-24 left-0 right-0 h-1 bg-gradient-to-r from-sky-500 via-teal-500 to-emerald-500 rounded-full"></div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-6 gap-8 lg:gap-4">
+
+                    <!-- Step 1 -->
+                    <div class="text-center relative">
+                        <div class="lg:mb-8">
+                            <div class="w-16 h-16 bg-gradient-to-br from-sky-500 to-sky-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-sky-500/30 relative z-10">
+                                <i class="fas fa-truck text-white text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 rounded-2xl p-6 lg:mt-4 border border-slate-100">
+                            <span class="inline-block w-8 h-8 bg-sky-100 text-sky-600 rounded-full text-sm font-bold leading-8 mb-3">1</span>
+                            <h3 class="font-bold text-slate-900 mb-2">Toplama</h3>
+                            <p class="text-sm text-slate-600">Turkiye genelinde saha toplama hizmeti</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="text-center relative">
+                        <div class="lg:mb-8">
+                            <div class="w-16 h-16 bg-gradient-to-br from-sky-400 to-teal-500 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-teal-500/30 relative z-10">
+                                <i class="fas fa-search text-white text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 rounded-2xl p-6 lg:mt-4 border border-slate-100">
+                            <span class="inline-block w-8 h-8 bg-teal-100 text-teal-600 rounded-full text-sm font-bold leading-8 mb-3">2</span>
+                            <h3 class="font-bold text-slate-900 mb-2">Ayiklama</h3>
+                            <p class="text-sm text-slate-600">Kontamine ve uygun olmayan ayristirma</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="text-center relative">
+                        <div class="lg:mb-8">
+                            <div class="w-16 h-16 bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-teal-500/30 relative z-10">
+                                <i class="fas fa-shower text-white text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 rounded-2xl p-6 lg:mt-4 border border-slate-100">
+                            <span class="inline-block w-8 h-8 bg-teal-100 text-teal-600 rounded-full text-sm font-bold leading-8 mb-3">3</span>
+                            <h3 class="font-bold text-slate-900 mb-2">Temizleme</h3>
+                            <p class="text-sm text-slate-600">Endustriyel yikama ve sterilizasyon</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="text-center relative">
+                        <div class="lg:mb-8">
+                            <div class="w-16 h-16 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/30 relative z-10">
+                                <i class="fas fa-clipboard-check text-white text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 rounded-2xl p-6 lg:mt-4 border border-slate-100">
+                            <span class="inline-block w-8 h-8 bg-emerald-100 text-emerald-600 rounded-full text-sm font-bold leading-8 mb-3">4</span>
+                            <h3 class="font-bold text-slate-900 mb-2">Test</h3>
+                            <p class="text-sm text-slate-600">Kalite kontrol ve basinc testleri</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="text-center relative">
+                        <div class="lg:mb-8">
+                            <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/30 relative z-10">
+                                <i class="fas fa-wrench text-white text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 rounded-2xl p-6 lg:mt-4 border border-slate-100">
+                            <span class="inline-block w-8 h-8 bg-emerald-100 text-emerald-600 rounded-full text-sm font-bold leading-8 mb-3">5</span>
+                            <h3 class="font-bold text-slate-900 mb-2">Yenileme</h3>
+                            <p class="text-sm text-slate-600">Parca degisimi ve onarim islemleri</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 6 -->
+                    <div class="text-center relative">
+                        <div class="lg:mb-8">
+                            <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-green-500/30 relative z-10">
+                                <i class="fas fa-shipping-fast text-white text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 rounded-2xl p-6 lg:mt-4 border border-slate-100">
+                            <span class="inline-block w-8 h-8 bg-green-100 text-green-600 rounded-full text-sm font-bold leading-8 mb-3">6</span>
+                            <h3 class="font-bold text-slate-900 mb-2">Sevkiyat</h3>
+                            <p class="text-sm text-slate-600">Belgelendirme ve teslimat</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Process CTA -->
+            <div class="text-center mt-16">
+                <div class="inline-flex flex-wrap justify-center gap-4">
+                    <a href="#" class="btn-primary px-8 py-4 text-white rounded-full font-semibold inline-flex items-center gap-2 shadow-lg shadow-sky-500/20">
+                        <i class="fas fa-file-alt"></i>
+                        Surec Detaylarini Incele
+                    </a>
+                    <a href="#iletisim" class="px-8 py-4 border-2 border-slate-300 text-slate-700 rounded-full font-semibold hover:border-sky-500 hover:text-sky-600 transition inline-flex items-center gap-2">
+                        <i class="fas fa-phone"></i>
+                        Uzmaninizla Konusun
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- TRUST BAND - Certifications & Stats -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <section class="py-20 bg-slate-900 relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-5">
+            <div class="absolute top-0 left-0 w-96 h-96 bg-sky-500 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 right-0 w-96 h-96 bg-teal-500 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 lg:px-6 relative z-10">
+            <!-- Stats Row -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
+                <div class="text-center">
+                    <div class="text-5xl md:text-6xl font-bold text-white mb-2">25+</div>
+                    <div class="text-slate-400">Yillik Deneyim</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl md:text-6xl font-bold text-emerald-400 mb-2">%97</div>
+                    <div class="text-slate-400">Geri Kazanim Orani</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl md:text-6xl font-bold text-white mb-2">5.000</div>
+                    <div class="text-slate-400">Ton/Yil Kapasite</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl md:text-6xl font-bold text-sky-400 mb-2">500+</div>
+                    <div class="text-slate-400">Kurumsal Musteri</div>
+                </div>
+            </div>
+
+            <!-- Certifications -->
+            <div class="border-t border-slate-800 pt-12">
+                <p class="text-center text-slate-500 text-sm font-medium mb-8">BELGELER VE SERTIFIKALAR</p>
+                <div class="flex flex-wrap justify-center gap-6 md:gap-12">
+                    <div class="flex items-center gap-3 bg-slate-800/50 px-6 py-3 rounded-xl border border-slate-700">
+                        <div class="w-12 h-12 bg-gradient-to-br from-sky-500 to-sky-600 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-sm">UN</span>
+                        </div>
+                        <div>
+                            <p class="text-white font-semibold text-sm">UN Onayli</p>
+                            <p class="text-slate-500 text-xs">Tehlikeli Madde Tasimaciligi</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 bg-slate-800/50 px-6 py-3 rounded-xl border border-slate-700">
+                        <div class="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-sm">ADR</span>
+                        </div>
+                        <div>
+                            <p class="text-white font-semibold text-sm">ADR Uyumlu</p>
+                            <p class="text-slate-500 text-xs">Avrupa Yonetmeligi</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 bg-slate-800/50 px-6 py-3 rounded-xl border border-slate-700">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-sm">ISO</span>
+                        </div>
+                        <div>
+                            <p class="text-white font-semibold text-sm">ISO 9001:2015</p>
+                            <p class="text-slate-500 text-xs">Kalite Yonetim Sistemi</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 bg-slate-800/50 px-6 py-3 rounded-xl border border-slate-700">
+                        <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-leaf text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <p class="text-white font-semibold text-sm">Cevre Lisansi</p>
+                            <p class="text-slate-500 text-xs">T.C. Cevre Bakanligi</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- COMPANIES SECTION - 3 Subsidiaries -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <section id="istirakler" class="py-24 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 lg:px-6">
+
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="inline-block px-4 py-1.5 bg-purple-100 text-purple-600 rounded-full text-sm font-medium mb-4">
+                    Grup Yapisi
+                </span>
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+                    Tek Cati, <span class="text-gradient">Uc Uzmanlik</span>
+                </h2>
+                <p class="text-lg text-slate-600">
+                    Her biri kendi alaninda uzman uc sirketimizle, endustriyel ambalaj sektorune
+                    uretimden geri donusume eksiksiz hizmet sunuyoruz.
+                </p>
+            </div>
+
+            <!-- Companies Grid -->
+            <div class="grid lg:grid-cols-3 gap-8">
+
+                <!-- Company 1: Varilsan Polimer -->
+                <div class="bg-white rounded-3xl overflow-hidden product-card group border border-slate-100">
+                    <div class="h-48 bg-gradient-to-br from-blue-500 to-blue-600 relative">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-cogs text-white/20 text-9xl"></i>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-blue-900/50 to-transparent"></div>
+                        <div class="absolute bottom-4 left-6 right-6">
+                            <div class="flex items-center gap-3">
+                                <div class="w-14 h-14 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-cogs text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-white">Varilsan Polimer</h3>
+                                    <p class="text-blue-200 text-sm">Uretim Odakli</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 text-slate-500 text-sm mb-4">
+                            <i class="fas fa-map-marker-alt text-blue-500"></i>
+                            <span>Istanbul / Kocaeli</span>
+                        </div>
+                        <p class="text-slate-600 mb-4">
+                            Yillik 5.000 ton HDPE isleme kapasitesiyle, 30 litreden 1000 litreye kadar
+                            UN onayli endustriyel ambalaj uretimi yapiyoruz.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="px-3 py-1 bg-blue-100 text-blue-600 text-xs font-medium rounded-full">IBC Tank</span>
+                            <span class="px-3 py-1 bg-blue-100 text-blue-600 text-xs font-medium rounded-full">Plastik Varil</span>
+                            <span class="px-3 py-1 bg-blue-100 text-blue-600 text-xs font-medium rounded-full">HDPE Granul</span>
+                            <span class="px-3 py-1 bg-blue-100 text-blue-600 text-xs font-medium rounded-full">Bidon</span>
+                        </div>
+                        <a href="#" class="inline-flex items-center gap-2 text-blue-600 font-semibold hover:gap-3 transition-all">
+                            Sirketi Incele <i class="fas fa-arrow-right text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Company 2: Varilsan Ambalaj -->
+                <div class="bg-white rounded-3xl overflow-hidden product-card group border border-slate-100">
+                    <div class="h-48 bg-gradient-to-br from-emerald-500 to-emerald-600 relative">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-recycle text-white/20 text-9xl"></i>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/50 to-transparent"></div>
+                        <div class="absolute bottom-4 left-6 right-6">
+                            <div class="flex items-center gap-3">
+                                <div class="w-14 h-14 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-recycle text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-white">Varilsan Ambalaj</h3>
+                                    <p class="text-emerald-200 text-sm">Geri Donusum Merkezi</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 text-slate-500 text-sm mb-4">
+                            <i class="fas fa-map-marker-alt text-emerald-500"></i>
+                            <span>Kocaeli / Cayirova</span>
+                        </div>
+                        <p class="text-slate-600 mb-4">
+                            %95-97 geri kazanim oraniyla endustriyel ambalajlari ekonomiye kazandiriyoruz.
+                            IBC yenileme, Rebottle ve lisansli geri donusum cozumleri.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="px-3 py-1 bg-emerald-100 text-emerald-600 text-xs font-medium rounded-full">IBC Yenileme</span>
+                            <span class="px-3 py-1 bg-emerald-100 text-emerald-600 text-xs font-medium rounded-full">Rebottle</span>
+                            <span class="px-3 py-1 bg-emerald-100 text-emerald-600 text-xs font-medium rounded-full">Metal Varil</span>
+                            <span class="px-3 py-1 bg-emerald-100 text-emerald-600 text-xs font-medium rounded-full">Yikama</span>
+                        </div>
+                        <a href="#" class="inline-flex items-center gap-2 text-emerald-600 font-semibold hover:gap-3 transition-all">
+                            Sirketi Incele <i class="fas fa-arrow-right text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Company 3: Varilsan Plastik -->
+                <div class="bg-white rounded-3xl overflow-hidden product-card group border border-slate-100">
+                    <div class="h-48 bg-gradient-to-br from-purple-500 to-purple-600 relative">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-boxes text-white/20 text-9xl"></i>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-purple-900/50 to-transparent"></div>
+                        <div class="absolute bottom-4 left-6 right-6">
+                            <div class="flex items-center gap-3">
+                                <div class="w-14 h-14 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-boxes text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-white">Varilsan Plastik</h3>
+                                    <p class="text-purple-200 text-sm">Ege Bolgesi Lideri</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 text-slate-500 text-sm mb-4">
+                            <i class="fas fa-map-marker-alt text-purple-500"></i>
+                            <span>Izmir / Kemalpasa</span>
+                        </div>
+                        <p class="text-slate-600 mb-4">
+                            Izmir merkezli tesisimizden Ege sanayisine hizli ve etkili
+                            endustriyel ambalaj cozumleri sunuyoruz. Liman avantajiyla ihracat odakli.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="px-3 py-1 bg-purple-100 text-purple-600 text-xs font-medium rounded-full">IBC Tank</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-600 text-xs font-medium rounded-full">Plastik Varil</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-600 text-xs font-medium rounded-full">Metal Varil</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-600 text-xs font-medium rounded-full">Ihracat</span>
+                        </div>
+                        <a href="#" class="inline-flex items-center gap-2 text-purple-600 font-semibold hover:gap-3 transition-all">
+                            Sirketi Incele <i class="fas fa-arrow-right text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map / Locations Preview -->
+            <div class="mt-16 bg-white rounded-3xl p-8 border border-slate-200">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Turkiye Genelinde Hizmet</h3>
+                        <p class="text-slate-600">Istanbul, Izmir ve Kocaeli'deki tesislerimizle tum Turkiye'ye ulasiyoruz.</p>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="text-center px-6 py-3 bg-slate-50 rounded-xl">
+                            <div class="text-2xl font-bold text-slate-900">3</div>
+                            <div class="text-xs text-slate-500">Tesis</div>
+                        </div>
+                        <div class="text-center px-6 py-3 bg-slate-50 rounded-xl">
+                            <div class="text-2xl font-bold text-slate-900">81</div>
+                            <div class="text-xs text-slate-500">Il'e Sevkiyat</div>
+                        </div>
+                        <div class="text-center px-6 py-3 bg-slate-50 rounded-xl">
+                            <div class="text-2xl font-bold text-sky-600">7/24</div>
+                            <div class="text-xs text-slate-500">Destek</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- BLOG SECTION - 6 Article Cards -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <section id="blog" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 lg:px-6">
+
+            <!-- Section Header -->
+            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+                <div>
+                    <span class="inline-block px-4 py-1.5 bg-amber-100 text-amber-600 rounded-full text-sm font-medium mb-4">
+                        Blog & Bilgi
+                    </span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">
+                        Sektor <span class="text-gradient">Haberler</span>
+                    </h2>
+                </div>
+                <a href="#" class="inline-flex items-center gap-2 text-sky-600 font-semibold hover:text-sky-700 transition">
+                    Tum Yazilar <i class="fas fa-arrow-right text-sm"></i>
+                </a>
+            </div>
+
+            <!-- Blog Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Blog 1 -->
+                <article class="bg-white rounded-2xl overflow-hidden product-card group border border-slate-100">
+                    <div class="h-48 bg-gradient-to-br from-sky-100 to-sky-50 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-box-open text-6xl text-sky-200 group-hover:text-sky-300 transition"></i>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-sky-500 text-white text-xs font-medium rounded-full">Urun</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-4 text-xs text-slate-500 mb-3">
+                            <span><i class="far fa-calendar mr-1"></i> 20 Aralik 2024</span>
+                            <span><i class="far fa-clock mr-1"></i> 5 dk okuma</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-sky-600 transition">
+                            IBC Tank Seciminde Dikkat Edilmesi Gerekenler
+                        </h3>
+                        <p class="text-slate-600 text-sm mb-4 line-clamp-2">
+                            Endustriyel ambalaj seciminde dogru IBC tank secimi, operasyonel verimlilik ve maliyet optimizasyonu acisindan kritik onem tasiyor.
+                        </p>
+                        <a href="#" class="inline-flex items-center gap-2 text-sky-600 text-sm font-medium hover:gap-3 transition-all">
+                            Devamini Oku <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Blog 2 -->
+                <article class="bg-white rounded-2xl overflow-hidden product-card group border border-slate-100">
+                    <div class="h-48 bg-gradient-to-br from-emerald-100 to-emerald-50 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-recycle text-6xl text-emerald-200 group-hover:text-emerald-300 transition"></i>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-emerald-500 text-white text-xs font-medium rounded-full">Surdurulebilirlik</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-4 text-xs text-slate-500 mb-3">
+                            <span><i class="far fa-calendar mr-1"></i> 18 Aralik 2024</span>
+                            <span><i class="far fa-clock mr-1"></i> 7 dk okuma</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-sky-600 transition">
+                            Dongusal Ekonomi ve Endustriyel Ambalaj
+                        </h3>
+                        <p class="text-slate-600 text-sm mb-4 line-clamp-2">
+                            Geri kazanim ve yeniden kullanim, modern endustride cevre bilincinin yansimasi. IBC yenileme sureci nasil calisir?
+                        </p>
+                        <a href="#" class="inline-flex items-center gap-2 text-sky-600 text-sm font-medium hover:gap-3 transition-all">
+                            Devamini Oku <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Blog 3 -->
+                <article class="bg-white rounded-2xl overflow-hidden product-card group border border-slate-100">
+                    <div class="h-48 bg-gradient-to-br from-amber-100 to-amber-50 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-certificate text-6xl text-amber-200 group-hover:text-amber-300 transition"></i>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-amber-500 text-white text-xs font-medium rounded-full">Mevzuat</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-4 text-xs text-slate-500 mb-3">
+                            <span><i class="far fa-calendar mr-1"></i> 15 Aralik 2024</span>
+                            <span><i class="far fa-clock mr-1"></i> 10 dk okuma</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-sky-600 transition">
+                            UN Onayi ve ADR Uyumluluk Rehberi
+                        </h3>
+                        <p class="text-slate-600 text-sm mb-4 line-clamp-2">
+                            Tehlikeli madde tasimaciligi yapan firmalar icin zorunlu UN ve ADR sertifikalari hakkinda bilmeniz gerekenler.
+                        </p>
+                        <a href="#" class="inline-flex items-center gap-2 text-sky-600 text-sm font-medium hover:gap-3 transition-all">
+                            Devamini Oku <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Blog 4 -->
+                <article class="bg-white rounded-2xl overflow-hidden product-card group border border-slate-100">
+                    <div class="h-48 bg-gradient-to-br from-blue-100 to-blue-50 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-flask text-6xl text-blue-200 group-hover:text-blue-300 transition"></i>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded-full">Sektor</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-4 text-xs text-slate-500 mb-3">
+                            <span><i class="far fa-calendar mr-1"></i> 12 Aralik 2024</span>
+                            <span><i class="far fa-clock mr-1"></i> 6 dk okuma</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-sky-600 transition">
+                            Kimya Endustrisi Icin Ambalaj Cozumleri
+                        </h3>
+                        <p class="text-slate-600 text-sm mb-4 line-clamp-2">
+                            Kimyasal maddeler icin dogru ambalaj secimi ve depolama kosullari. Sektor spesifik gereksinimler.
+                        </p>
+                        <a href="#" class="inline-flex items-center gap-2 text-sky-600 text-sm font-medium hover:gap-3 transition-all">
+                            Devamini Oku <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Blog 5 -->
+                <article class="bg-white rounded-2xl overflow-hidden product-card group border border-slate-100">
+                    <div class="h-48 bg-gradient-to-br from-teal-100 to-teal-50 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-sync-alt text-6xl text-teal-200 group-hover:text-teal-300 transition"></i>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-teal-500 text-white text-xs font-medium rounded-full">Inovasyon</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-4 text-xs text-slate-500 mb-3">
+                            <span><i class="far fa-calendar mr-1"></i> 10 Aralik 2024</span>
+                            <span><i class="far fa-clock mr-1"></i> 4 dk okuma</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-sky-600 transition">
+                            Rebottle Teknolojisi: Ekonomi ve Cevre Dostu
+                        </h3>
+                        <p class="text-slate-600 text-sm mb-4 line-clamp-2">
+                            Hibrit IBC sistemleri ile hem maliyet avantaji hem cevre duyarliligi. Rebottle konseptinin avantajlari.
+                        </p>
+                        <a href="#" class="inline-flex items-center gap-2 text-sky-600 text-sm font-medium hover:gap-3 transition-all">
+                            Devamini Oku <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Blog 6 -->
+                <article class="bg-white rounded-2xl overflow-hidden product-card group border border-slate-100">
+                    <div class="h-48 bg-gradient-to-br from-purple-100 to-purple-50 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-truck-loading text-6xl text-purple-200 group-hover:text-purple-300 transition"></i>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-purple-500 text-white text-xs font-medium rounded-full">Lojistik</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-4 text-xs text-slate-500 mb-3">
+                            <span><i class="far fa-calendar mr-1"></i> 8 Aralik 2024</span>
+                            <span><i class="far fa-clock mr-1"></i> 5 dk okuma</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-sky-600 transition">
+                            IBC Tank Lojistigi: Verimli Tasima Rehberi
+                        </h3>
+                        <p class="text-slate-600 text-sm mb-4 line-clamp-2">
+                            Endustriyel ambalaj tasimaciligi icin lojistik optimizasyonu ve maliyet dusurme stratejileri.
+                        </p>
+                        <a href="#" class="inline-flex items-center gap-2 text-sky-600 text-sm font-medium hover:gap-3 transition-all">
+                            Devamini Oku <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- CTA BAND - Quote Request Form -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <section id="iletisim" class="py-24 hero-gradient relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-10 right-10 w-96 h-96 bg-sky-500 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-10 left-10 w-96 h-96 bg-teal-500 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 lg:px-6 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+                <!-- Left Content -->
+                <div class="text-white">
+                    <span class="inline-block px-4 py-1.5 bg-white/10 text-white rounded-full text-sm font-medium mb-6 border border-white/20">
+                        <i class="fas fa-paper-plane mr-2"></i>Hizli Teklif
+                    </span>
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+                        Projeniz Icin<br>
+                        <span class="text-sky-300">Ozel Fiyat</span> Alin
+                    </h2>
+                    <p class="text-lg text-slate-300 mb-8 max-w-xl">
+                        IBC tank, varil, bidon veya geri donusum hizmetleri icin ihtiyaciniza ozel
+                        teklif alin. En kisa surede size donelim.
+                    </p>
+
+                    <!-- Contact Info -->
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/20">
+                                <i class="fas fa-phone text-sky-300"></i>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 text-sm">Satis Hatti</p>
+                                <a href="tel:02626589258" class="text-white font-semibold hover:text-sky-300 transition">0262 658 92 58</a>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/20">
+                                <i class="fab fa-whatsapp text-emerald-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 text-sm">WhatsApp</p>
+                                <a href="#" class="text-white font-semibold hover:text-emerald-300 transition">0532 XXX XX XX</a>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/20">
+                                <i class="fas fa-envelope text-amber-300"></i>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 text-sm">E-posta</p>
+                                <a href="mailto:info@varilsan.com" class="text-white font-semibold hover:text-amber-300 transition">info@varilsan.com</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Form -->
+                <div class="bg-white rounded-3xl p-8 shadow-2xl">
+                    <h3 class="text-xl font-bold text-slate-900 mb-6">Teklif Formu</h3>
+                    <form class="space-y-4">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Ad Soyad *</label>
+                                <input type="text" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition" placeholder="Adiniz Soyadiniz">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Telefon *</label>
+                                <input type="tel" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition" placeholder="05XX XXX XX XX">
+                            </div>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">E-posta</label>
+                                <input type="email" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition" placeholder="ornek@sirket.com">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Firma Adi</label>
+                                <input type="text" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition" placeholder="Sirket Unvani">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Ilgilendiginiz Urun/Hizmet *</label>
+                            <select class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition bg-white">
+                                <option value="">Seciniz...</option>
+                                <option value="ibc">IBC Tank (Yeni)</option>
+                                <option value="rebottle">Rebottle IBC</option>
+                                <option value="plastik-varil">Plastik Varil</option>
+                                <option value="metal-varil">Metal Varil</option>
+                                <option value="bidon">Endustriyel Bidon</option>
+                                <option value="hdpe">HDPE Granul</option>
+                                <option value="yenileme">IBC Yenileme Hizmeti</option>
+                                <option value="toplama">Toplama Hizmeti</option>
+                                <option value="diger">Diger</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Mesajiniz</label>
+                            <textarea rows="3" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition resize-none" placeholder="Ihtiyacinizi kisaca aciklayiniz..."></textarea>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="kvkk" class="mt-1 w-4 h-4 text-sky-600 border-slate-300 rounded focus:ring-sky-500">
+                            <label for="kvkk" class="text-sm text-slate-600">
+                                <a href="#" class="text-sky-600 hover:underline">KVKK Aydinlatma Metni</a>'ni okudum, kabul ediyorum.
+                            </label>
+                        </div>
+                        <button type="submit" class="w-full btn-primary py-4 text-white rounded-xl font-semibold text-lg shadow-lg shadow-sky-500/30">
+                            <i class="fas fa-paper-plane mr-2"></i>Teklif Talep Et
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- FOOTER - 3 Locations -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <footer class="bg-slate-900 text-white">
+
+        <!-- Main Footer -->
+        <div class="max-w-7xl mx-auto px-4 lg:px-6 py-16">
+            <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-12">
+
+                <!-- Brand Column -->
+                <div class="lg:col-span-2">
+                    <a href="/" class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-sky-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg">
+                            <i class="fas fa-industry text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <span class="text-xl font-bold text-white">VARILSAN</span>
+                            <span class="text-xl font-light text-slate-400 ml-1">GRUP</span>
+                        </div>
+                    </a>
+                    <p class="text-slate-400 mb-6 max-w-sm">
+                        25 yillik tecrubemizle endustriyel ambalaj sektorune uretimden geri donusume
+                        eksiksiz cozumler sunuyoruz. Dongusal ekonominin mimariyiz.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 hover:bg-sky-600 hover:text-white transition">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 hover:bg-pink-600 hover:text-white transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 hover:bg-red-600 hover:text-white transition">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 hover:bg-emerald-600 hover:text-white transition">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Kurumsal</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Hakkimizda</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Vizyon & Misyon</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Surdurulebilirlik</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Tarihce</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Kariyer</a></li>
+                    </ul>
+                </div>
+
+                <!-- Products -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Urunler</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">IBC Tank</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Rebottle IBC</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Plastik Varil</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Metal Varil</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">HDPE Granul</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Bidonlar</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Hizmetler</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">IBC Yenileme</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Toplama & Lojistik</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Yikama & Temizleme</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Kalite Test</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">UN/ADR Uygunluk</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Locations -->
+        <div class="border-t border-slate-800">
+            <div class="max-w-7xl mx-auto px-4 lg:px-6 py-12">
+                <h4 class="text-white font-semibold mb-8 text-center">Tesislerimiz</h4>
+                <div class="grid md:grid-cols-3 gap-8">
+
+                    <!-- Location 1: Varilsan Polimer -->
+                    <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-cogs text-blue-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-white font-semibold">Varilsan Polimer</h5>
+                                <p class="text-slate-500 text-xs">Istanbul / Kocaeli</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2 text-sm">
+                            <p class="text-slate-400">
+                                <i class="fas fa-map-marker-alt text-blue-400 w-4 mr-2"></i>
+                                Gebze OSB, Kocaeli
+                            </p>
+                            <p class="text-slate-400">
+                                <i class="fas fa-phone text-blue-400 w-4 mr-2"></i>
+                                <a href="tel:02626589258" class="hover:text-white transition">0262 658 92 58</a>
+                            </p>
+                            <p class="text-slate-400">
+                                <i class="fas fa-envelope text-blue-400 w-4 mr-2"></i>
+                                <a href="mailto:polimer@varilsan.com" class="hover:text-white transition">polimer@varilsan.com</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Location 2: Varilsan Ambalaj -->
+                    <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-recycle text-emerald-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-white font-semibold">Varilsan Ambalaj</h5>
+                                <p class="text-slate-500 text-xs">Kocaeli / Cayirova</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2 text-sm">
+                            <p class="text-slate-400">
+                                <i class="fas fa-map-marker-alt text-emerald-400 w-4 mr-2"></i>
+                                Cayirova, Kocaeli
+                            </p>
+                            <p class="text-slate-400">
+                                <i class="fas fa-phone text-emerald-400 w-4 mr-2"></i>
+                                <a href="tel:02626589258" class="hover:text-white transition">0262 658 92 58</a>
+                            </p>
+                            <p class="text-slate-400">
+                                <i class="fas fa-envelope text-emerald-400 w-4 mr-2"></i>
+                                <a href="mailto:ambalaj@varilsan.com" class="hover:text-white transition">ambalaj@varilsan.com</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Location 3: Varilsan Plastik -->
+                    <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-boxes text-purple-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-white font-semibold">Varilsan Plastik</h5>
+                                <p class="text-slate-500 text-xs">Izmir / Kemalpasa</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2 text-sm">
+                            <p class="text-slate-400">
+                                <i class="fas fa-map-marker-alt text-purple-400 w-4 mr-2"></i>
+                                Kemalpasa OSB, Izmir
+                            </p>
+                            <p class="text-slate-400">
+                                <i class="fas fa-phone text-purple-400 w-4 mr-2"></i>
+                                <a href="tel:02324364158" class="hover:text-white transition">0232 436 41 58</a>
+                            </p>
+                            <p class="text-slate-400">
+                                <i class="fas fa-envelope text-purple-400 w-4 mr-2"></i>
+                                <a href="mailto:plastik@varilsan.com" class="hover:text-white transition">plastik@varilsan.com</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="border-t border-slate-800">
+            <div class="max-w-7xl mx-auto px-4 lg:px-6 py-6">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p class="text-slate-500 text-sm text-center md:text-left">
+                        © 2024 Varilsan Grup. Tum haklari saklidir.
+                    </p>
+                    <div class="flex items-center gap-6 text-sm">
+                        <a href="#" class="text-slate-500 hover:text-white transition">Gizlilik Politikasi</a>
+                        <a href="#" class="text-slate-500 hover:text-white transition">KVKK</a>
+                        <a href="#" class="text-slate-500 hover:text-white transition">Cerez Politikasi</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Design Info Badge -->
+    <div class="fixed bottom-4 left-4 z-50">
+        <div class="bg-slate-900/90 backdrop-blur-md text-white px-4 py-2 rounded-lg text-xs flex items-center gap-2 shadow-xl">
+            <i class="fas fa-palette text-emerald-400"></i>
+            <span>v11 - Uzmanlar Konseyi Edition</span>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button x-data="{ show: false }"
+            x-show="show"
+            x-cloak
+            @scroll.window="show = window.scrollY > 500"
+            @click="window.scrollTo({ top: 0, behavior: 'smooth' })"
+            class="fixed bottom-8 right-8 w-12 h-12 bg-sky-500 text-white rounded-full shadow-lg hover:bg-sky-600 transition flex items-center justify-center z-40">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+</body>
+</html>

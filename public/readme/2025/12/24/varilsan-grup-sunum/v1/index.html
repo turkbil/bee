@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="tr" x-data="{ darkMode: false, activeTab: 'kisa', searchQuery: '', openAccordion: null }" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VARİLSAN GRUP — Ön Sunum</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .bg-grain { background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); opacity: 0.03; }
+        .text-gradient { background: linear-gradient(135deg, #1e40af 0%, #7c3aed 50%, #db2777 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .text-gradient-dark { background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #f472b6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15); transform: scale(1.01); }
+        html { scroll-behavior: smooth; }
+        .glow { box-shadow: 0 0 60px rgba(59, 130, 246, 0.15); }
+        .glow-purple { box-shadow: 0 0 60px rgba(124, 58, 237, 0.15); }
+    </style>
+</head>
+<body class="font-sans bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 transition-colors duration-300">
+    <!-- Grain Overlay -->
+    <div class="fixed inset-0 bg-grain pointer-events-none z-50"></div>
+
+    <!-- Progress Bar -->
+    <div class="fixed top-0 left-0 w-full h-1 bg-slate-200 dark:bg-slate-800 z-50" x-data="{ progress: 0 }"
+         x-init="window.addEventListener('scroll', () => { progress = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100 })">
+        <div class="h-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 transition-all duration-150" :style="'width: ' + progress + '%'"></div>
+    </div>
+
+    <!-- Sticky Navbar -->
+    <nav class="fixed top-1 left-0 right-0 z-40 px-4 py-2" x-data="{ scrolled: false, mobileMenu: false }"
+         @scroll.window="scrolled = window.scrollY > 50">
+        <div class="max-w-7xl mx-auto rounded-2xl px-6 py-3 transition-all duration-300"
+             :class="scrolled ? 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-lg' : 'bg-transparent'">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="#kapak" class="text-xl font-bold">
+                    <span class="text-gradient dark:text-gradient-dark">VARİLSAN</span>
+                    <span class="text-slate-600 dark:text-slate-400 font-light">GRUP</span>
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex items-center gap-1 text-sm">
+                    <a href="#neden" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Neden?</a>
+                    <a href="#markalar" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Markalar</a>
+                    <a href="#urunler" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Ürünler</a>
+                    <a href="#surec" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Süreç</a>
+                    <a href="#belgeler" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Belgeler</a>
+                    <a href="#hakkimizda" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Hakkımızda</a>
+                    <a href="#iletisim" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">İletişim</a>
+                    <a href="#ekler" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Ekler</a>
+                </div>
+
+                <!-- Dark Mode Toggle -->
+                <div class="flex items-center gap-4">
+                    <button @click="darkMode = !darkMode" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+                        <svg x-show="!darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                        <svg x-show="darkMode" x-cloak class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    </button>
+                    <!-- Mobile Menu Button -->
+                    <button @click="mobileMenu = !mobileMenu" class="lg:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div x-show="mobileMenu" x-cloak x-transition class="lg:hidden mt-4 pb-2 border-t border-slate-200 dark:border-slate-700 pt-4">
+                <div class="flex flex-col gap-1 text-sm">
+                    <a href="#neden" @click="mobileMenu = false" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">Neden?</a>
+                    <a href="#markalar" @click="mobileMenu = false" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">Markalar</a>
+                    <a href="#urunler" @click="mobileMenu = false" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">Ürünler</a>
+                    <a href="#surec" @click="mobileMenu = false" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">Süreç</a>
+                    <a href="#belgeler" @click="mobileMenu = false" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">Belgeler</a>
+                    <a href="#hakkimizda" @click="mobileMenu = false" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">Hakkımızda</a>
+                    <a href="#iletisim" @click="mobileMenu = false" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">İletişim</a>
+                    <a href="#ekler" @click="mobileMenu = false" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">Ekler</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- SLIDE 1: KAPAK -->
+    <section id="kapak" class="min-h-screen flex items-center justify-center relative overflow-hidden">
+        <!-- Background Glow -->
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"></div>
+
+        <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
+            <div class="reveal">
+                <span class="inline-block px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm font-medium mb-8">
+                    Tek Çatı Kurumsal Web Sitesi Projesi
+                </span>
+            </div>
+
+            <h1 class="reveal text-6xl md:text-8xl font-black mb-6">
+                <span class="text-gradient dark:text-gradient-dark">VARİLSAN</span>
+                <span class="block text-slate-400 dark:text-slate-500 text-4xl md:text-5xl font-light mt-2">GRUP</span>
+            </h1>
+
+            <p class="reveal text-xl md:text-2xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto mb-8 leading-relaxed">
+                Ürün Odaklı Pazarlama + Grup Mimari
+            </p>
+
+            <div class="reveal flex flex-wrap justify-center gap-4 text-sm text-slate-500 dark:text-slate-400 mb-12">
+                <span class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800">Varilsan Polimer</span>
+                <span class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800">Varilsan Ambalaj</span>
+                <span class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800">Varilsan Plastik</span>
+            </div>
+
+            <div class="reveal">
+                <p class="text-slate-500 dark:text-slate-400 mb-2">Amaç</p>
+                <p class="text-lg text-slate-700 dark:text-slate-300 max-w-2xl mx-auto">
+                    3 markayı tek çatı altında birleştirip ürün gamlarını ve pazarlamayı öne çıkarmak.
+                </p>
+            </div>
+
+            <div class="reveal mt-12 text-sm text-slate-400">
+                24.12.2025
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div class="reveal absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+                <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 2: NEDEN TEK ÇATI? -->
+    <section id="neden" class="py-24 md:py-32 bg-slate-50 dark:bg-slate-800/50">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="reveal text-center mb-16">
+                <span class="text-sm font-medium text-blue-600 dark:text-blue-400 tracking-wider uppercase">Slide 2</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-4 mb-4">
+                    <span class="text-gradient dark:text-gradient-dark">Neden Tek Çatı?</span>
+                </h2>
+                <p class="text-xl text-slate-600 dark:text-slate-400">3 Site → 1 Güçlü Grup Platformu</p>
+            </div>
+
+            <div class="reveal grid md:grid-cols-2 gap-8 mb-16">
+                <!-- Bugünkü Durum -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 card-hover border border-slate-200 dark:border-slate-700">
+                    <div class="w-12 h-12 rounded-2xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-6">
+                        <span class="text-2xl">😕</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-slate-800 dark:text-slate-200">Bugünkü Durum</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Üç ayrı site, farklı tasarım ve içerik dili; ürün ve kurumsal anlatım parçalı.
+                    </p>
+                </div>
+
+                <!-- Hedef Durum -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 card-hover border border-slate-200 dark:border-slate-700 glow">
+                    <div class="w-12 h-12 rounded-2xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-6">
+                        <span class="text-2xl">🎯</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-slate-800 dark:text-slate-200">Hedef Durum</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Tek çatı algısı + hızlı ürün erişimi + güçlü güven/uyum kanıtları + blog ile otorite.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Kazanımlar -->
+            <div class="reveal bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl p-8 md:p-12 text-white">
+                <h3 class="text-2xl font-bold mb-8">Kazanımlar</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">✓</div>
+                        <p>Tek "Varilsan Grup" algısı: güven ve kurumsallık</p>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">✓</div>
+                        <p>Ürün gamında tek katalog hissi</p>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">✓</div>
+                        <p>Süreç/uyum anlatımıyla fark yaratma (UN/ADR, çevre lisansları, belgeler)</p>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">✓</div>
+                        <p>SEO ölçeklenebilirliği + blog omurgası</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 3: KPI -->
+    <section id="kpi" class="py-24 md:py-32">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="reveal text-center mb-16">
+                <span class="text-sm font-medium text-blue-600 dark:text-blue-400 tracking-wider uppercase">Slide 3</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-4 mb-4">
+                    <span class="text-gradient dark:text-gradient-dark">Başarı Kriterleri</span>
+                </h2>
+                <p class="text-xl text-slate-600 dark:text-slate-400">Başarıyı nasıl ölçeceğiz?</p>
+            </div>
+
+            <div class="reveal grid gap-4">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 card-hover border border-slate-200 dark:border-slate-700 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">1</div>
+                    <p class="text-slate-700 dark:text-slate-300">Ürün sayfalarında "Teklif Al / İletişim" dönüşümleri</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 card-hover border border-slate-200 dark:border-slate-700 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 font-bold">2</div>
+                    <p class="text-slate-700 dark:text-slate-300">Ürün kategorilerinden hedef sayfalara tıklama oranı</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 card-hover border border-slate-200 dark:border-slate-700 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center text-pink-600 dark:text-pink-400 font-bold">3</div>
+                    <p class="text-slate-700 dark:text-slate-300">Blog vitrininden blog içeriğine geçiş + organik trafik artışı</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 card-hover border border-slate-200 dark:border-slate-700 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400 font-bold">4</div>
+                    <p class="text-slate-700 dark:text-slate-300">"Belgeler / Uyum" sayfalarında güven etkileşimi</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 card-hover border border-slate-200 dark:border-slate-700 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold">5</div>
+                    <p class="text-slate-700 dark:text-slate-300">Mobilde hız + okunabilirlik (kurumsal B2B standardı)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 4: GRUP KONUMLANDIRMA -->
+    <section id="konumlandirma" class="py-24 md:py-32 bg-slate-900 dark:bg-slate-950 text-white relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/20 to-pink-600/20"></div>
+        <div class="max-w-4xl mx-auto px-6 relative z-10">
+            <div class="reveal text-center">
+                <span class="text-sm font-medium text-blue-400 tracking-wider uppercase">Slide 4</span>
+                <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-8">Grup Konumlandırma</h2>
+
+                <blockquote class="text-2xl md:text-3xl lg:text-4xl font-light leading-relaxed text-white/90">
+                    "Endüstriyel ambalajın üretim ve yaşam döngüsü hizmetlerini uluslararası standartlarda birleştiren; <span class="text-blue-400 font-medium">sürdürülebilirliği</span> operasyonun merkezine koyan sanayi grubu."
+                </blockquote>
+
+                <div class="mt-12 flex justify-center">
+                    <div class="w-24 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 5: MARKA MİMARİSİ -->
+    <section id="markalar" class="py-24 md:py-32">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="reveal text-center mb-16">
+                <span class="text-sm font-medium text-blue-600 dark:text-blue-400 tracking-wider uppercase">Slide 5</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-4 mb-4">
+                    <span class="text-gradient dark:text-gradient-dark">Marka Mimarisi</span>
+                </h2>
+                <p class="text-xl text-slate-600 dark:text-slate-400">Tek Çatı, Üç Uzmanlık</p>
+            </div>
+
+            <div class="reveal grid md:grid-cols-3 gap-8">
+                <!-- Polimer -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 card-hover border border-slate-200 dark:border-slate-700 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="relative">
+                        <div class="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-6">
+                            <span class="text-3xl">🏭</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2 text-blue-600 dark:text-blue-400">VARİLSAN POLİMER</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Üretim Temeli</p>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Hammaddeden ürüne uzanan zincirin ilk halkası: polimer altyapı ve üretim disiplininin markası.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Ambalaj -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 card-hover border border-slate-200 dark:border-slate-700 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="relative">
+                        <div class="w-16 h-16 rounded-2xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-6">
+                            <span class="text-3xl">♻️</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2 text-green-600 dark:text-green-400">VARİLSAN AMBALAJ</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Geri Kazanım</p>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Toplama → temizleme → test → yenileme süreçlerini mevzuata uygun ve izlenebilir şekilde yöneten geri kazanım markası.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Plastik -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 card-hover border border-slate-200 dark:border-slate-700 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="relative">
+                        <div class="w-16 h-16 rounded-2xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-6">
+                            <span class="text-3xl">📦</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2 text-purple-600 dark:text-purple-400">VARİLSAN PLASTİK</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Bölgesel Güç</p>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Ege Bölgesi'nin çözüm ortağı: geniş ürün portföyü + İzmir limanı avantajıyla bölgesel erişim.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stratejik Not -->
+            <div class="reveal mt-12 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl p-6">
+                <p class="text-amber-800 dark:text-amber-200 text-sm">
+                    <strong>📌 Stratejik Ayrışma:</strong> Ambalaj = "hizmet / proses dili" • Plastik = "ürün / katalog dili" (iki sitede aynı ürünler olsa bile anlatım farkı kurulur).
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 6: ÜRÜN GAMI -->
+    <section id="urunler" class="py-24 md:py-32 bg-slate-50 dark:bg-slate-800/50">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="reveal text-center mb-16">
+                <span class="text-sm font-medium text-blue-600 dark:text-blue-400 tracking-wider uppercase">Slide 6</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-4 mb-4">
+                    <span class="text-gradient dark:text-gradient-dark">Ürün Gamı</span>
+                </h2>
+                <p class="text-xl text-slate-600 dark:text-slate-400">Endüstriyel Ambalaj Çözümlerimiz</p>
+            </div>
+
+            <div class="reveal grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- IBC Tank -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden card-hover border border-slate-200 dark:border-slate-700">
+                    <div class="h-48 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/30 flex items-center justify-center">
+                        <span class="text-6xl">🧊</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-slate-800 dark:text-slate-200">IBC Tank</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm">1000L kapasiteli endüstriyel konteyner</p>
+                    </div>
+                </div>
+
+                <!-- Rebottle IBC -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden card-hover border border-slate-200 dark:border-slate-700">
+                    <div class="h-48 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900/30 dark:to-green-800/30 flex items-center justify-center">
+                        <span class="text-6xl">🔄</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-slate-800 dark:text-slate-200">Rebottle IBC</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm">İçi yeni şişe, dış kafes/palet yenilenmiş</p>
+                    </div>
+                </div>
+
+                <!-- Plastik Varil -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden card-hover border border-slate-200 dark:border-slate-700">
+                    <div class="h-48 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/30 dark:to-purple-800/30 flex items-center justify-center">
+                        <span class="text-6xl">🛢️</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-slate-800 dark:text-slate-200">Plastik Varil</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm">60–200L segmenti</p>
+                    </div>
+                </div>
+
+                <!-- Metal Varil -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden card-hover border border-slate-200 dark:border-slate-700">
+                    <div class="h-48 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center">
+                        <span class="text-6xl">⚙️</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-slate-800 dark:text-slate-200">Metal Varil</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm">Dayanıklı metal ambalaj çözümleri</p>
+                    </div>
+                </div>
+
+                <!-- HDPE Granül -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden card-hover border border-slate-200 dark:border-slate-700">
+                    <div class="h-48 bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-900/30 dark:to-amber-800/30 flex items-center justify-center">
+                        <span class="text-6xl">🔶</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-slate-800 dark:text-slate-200">HDPE Granül</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm">Polimer hammadde</p>
+                    </div>
+                </div>
+
+                <!-- Endüstriyel Bidon -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden card-hover border border-slate-200 dark:border-slate-700 relative">
+                    <div class="absolute top-4 right-4 px-2 py-1 bg-amber-500 text-white text-xs rounded-lg font-medium">DOĞRULANACAK</div>
+                    <div class="h-48 bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-900/30 dark:to-pink-800/30 flex items-center justify-center">
+                        <span class="text-6xl">🫙</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-slate-800 dark:text-slate-200">Endüstriyel Bidon</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm">30–220L portföy</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 7: SÜREÇ -->
+    <section id="surec" class="py-24 md:py-32">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="reveal text-center mb-16">
+                <span class="text-sm font-medium text-blue-600 dark:text-blue-400 tracking-wider uppercase">Slide 7</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-4 mb-4">
+                    <span class="text-gradient dark:text-gradient-dark">Süreç Anlatımı</span>
+                </h2>
+                <p class="text-xl text-slate-600 dark:text-slate-400">Yenileme Nasıl Çalışır?</p>
+            </div>
+
+            <!-- Timeline -->
+            <div class="reveal relative">
+                <!-- Line -->
+                <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-green-500 -translate-x-1/2"></div>
+
+                <div class="space-y-8 md:space-y-0">
+                    <!-- Step 1 -->
+                    <div class="md:flex items-center gap-8">
+                        <div class="md:w-1/2 md:text-right md:pr-12">
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 card-hover border border-slate-200 dark:border-slate-700 inline-block">
+                                <span class="text-3xl mb-2 block">📥</span>
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-slate-200">Toplama</h3>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm mt-2">Kullanılmış ambalajların toplanması</p>
+                            </div>
+                        </div>
+                        <div class="hidden md:flex w-12 h-12 rounded-full bg-blue-500 text-white items-center justify-center font-bold text-lg z-10 relative">1</div>
+                        <div class="md:w-1/2"></div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="md:flex items-center gap-8">
+                        <div class="md:w-1/2"></div>
+                        <div class="hidden md:flex w-12 h-12 rounded-full bg-indigo-500 text-white items-center justify-center font-bold text-lg z-10 relative">2</div>
+                        <div class="md:w-1/2 md:pl-12">
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 card-hover border border-slate-200 dark:border-slate-700 inline-block">
+                                <span class="text-3xl mb-2 block">🔍</span>
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-slate-200">Ayıklama</h3>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm mt-2">Ürünlerin sınıflandırılması</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="md:flex items-center gap-8">
+                        <div class="md:w-1/2 md:text-right md:pr-12">
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 card-hover border border-slate-200 dark:border-slate-700 inline-block">
+                                <span class="text-3xl mb-2 block">🧼</span>
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-slate-200">Temizleme</h3>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm mt-2">Profesyonel temizlik süreçleri</p>
+                            </div>
+                        </div>
+                        <div class="hidden md:flex w-12 h-12 rounded-full bg-violet-500 text-white items-center justify-center font-bold text-lg z-10 relative">3</div>
+                        <div class="md:w-1/2"></div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="md:flex items-center gap-8">
+                        <div class="md:w-1/2"></div>
+                        <div class="hidden md:flex w-12 h-12 rounded-full bg-purple-500 text-white items-center justify-center font-bold text-lg z-10 relative">4</div>
+                        <div class="md:w-1/2 md:pl-12">
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 card-hover border border-slate-200 dark:border-slate-700 inline-block">
+                                <span class="text-3xl mb-2 block">🧪</span>
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-slate-200">Test</h3>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm mt-2">Kalite kontrol testleri</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="md:flex items-center gap-8">
+                        <div class="md:w-1/2 md:text-right md:pr-12">
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 card-hover border border-slate-200 dark:border-slate-700 inline-block">
+                                <span class="text-3xl mb-2 block">🔧</span>
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-slate-200">Yenileme</h3>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm mt-2">Ürünün yeniden kullanıma hazırlanması</p>
+                            </div>
+                        </div>
+                        <div class="hidden md:flex w-12 h-12 rounded-full bg-fuchsia-500 text-white items-center justify-center font-bold text-lg z-10 relative">5</div>
+                        <div class="md:w-1/2"></div>
+                    </div>
+
+                    <!-- Step 6 -->
+                    <div class="md:flex items-center gap-8">
+                        <div class="md:w-1/2"></div>
+                        <div class="hidden md:flex w-12 h-12 rounded-full bg-green-500 text-white items-center justify-center font-bold text-lg z-10 relative">6</div>
+                        <div class="md:w-1/2 md:pl-12">
+                            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 card-hover border border-slate-200 dark:border-slate-700 inline-block">
+                                <span class="text-3xl mb-2 block">🚚</span>
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-slate-200">Sevkiyat</h3>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm mt-2">Müşteriye teslimat</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reveal mt-12 text-center">
+                <p class="text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 rounded-2xl p-6 inline-block">
+                    <strong>Amaç:</strong> İzlenebilirlik + mevzuata uygunluk + kalite güvencesi
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 8: UYUM & BELGELER -->
+    <section id="belgeler" class="py-24 md:py-32 bg-slate-50 dark:bg-slate-800/50">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="reveal text-center mb-16">
+                <span class="text-sm font-medium text-blue-600 dark:text-blue-400 tracking-wider uppercase">Slide 8</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-4 mb-4">
+                    <span class="text-gradient dark:text-gradient-dark">Uyum & Belgeler</span>
+                </h2>
+                <p class="text-xl text-slate-600 dark:text-slate-400">Güvenin Temeli: Standartlar</p>
+            </div>
+
+            <!-- Badges Grid -->
+            <div class="reveal grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 text-center card-hover border border-slate-200 dark:border-slate-700">
+                    <div class="w-16 h-16 mx-auto rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-4">
+                        <span class="text-2xl font-bold text-blue-600 dark:text-blue-400">UN</span>
+                    </div>
+                    <p class="text-sm font-medium text-slate-700 dark:text-slate-300">UN Sertifikası</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 text-center card-hover border border-slate-200 dark:border-slate-700">
+                    <div class="w-16 h-16 mx-auto rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mb-4">
+                        <span class="text-2xl font-bold text-orange-600 dark:text-orange-400">ADR</span>
+                    </div>
+                    <p class="text-sm font-medium text-slate-700 dark:text-slate-300">ADR Uyumu</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 text-center card-hover border border-slate-200 dark:border-slate-700">
+                    <div class="w-16 h-16 mx-auto rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-4">
+                        <span class="text-2xl font-bold text-green-600 dark:text-green-400">ISO</span>
+                    </div>
+                    <p class="text-sm font-medium text-slate-700 dark:text-slate-300">ISO Standartları</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 text-center card-hover border border-slate-200 dark:border-slate-700">
+                    <div class="w-16 h-16 mx-auto rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mb-4">
+                        <span class="text-xl">🌿</span>
+                    </div>
+                    <p class="text-sm font-medium text-slate-700 dark:text-slate-300">Çevre İzinleri</p>
+                </div>
+            </div>
+
+            <!-- B2B Trust Note -->
+            <div class="reveal bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-8 text-white">
+                <h3 class="text-xl font-bold mb-4">📋 Bu Bölüm "B2B Güven Motoru" Olacak</h3>
+                <div class="grid md:grid-cols-2 gap-4 text-sm">
+                    <div class="flex items-center gap-3">
+                        <span class="w-2 h-2 bg-white rounded-full"></span>
+                        <span>Ambalaj Yenileme Onay Sertifikası</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="w-2 h-2 bg-white rounded-full"></span>
+                        <span>Çevre İzin ve Lisans Belgesi</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="w-2 h-2 bg-white rounded-full"></span>
+                        <span>Tesis Onayları / Faaliyet Belgeleri</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="w-2 h-2 bg-white rounded-full"></span>
+                        <span>SERRED Üyeliği (Geri Kazanım)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 9: HERO KURGUSU -->
+    <section id="hero" class="py-24 md:py-32">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="reveal text-center mb-16">
+                <span class="text-sm font-medium text-blue-600 dark:text-blue-400 tracking-wider uppercase">Slide 9</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-4 mb-4">
+                    <span class="text-gradient dark:text-gradient-dark">Hero Kurgusu</span>
+                </h2>
+                <p class="text-xl text-slate-600 dark:text-slate-400">Açılış: Hibrit Model — 3 Slide / 3 Mesaj</p>
+            </div>
+
+            <div class="reveal grid md:grid-cols-3 gap-6">
+                <!-- Slide 1: Polimer -->
+                <div class="bg-gradient-to-br from-blue-500 to-blue-700 rounded-3xl p-8 text-white card-hover">
+                    <span class="text-xs bg-white/20 px-3 py-1 rounded-full">Slide 1</span>
+                    <h3 class="text-2xl font-bold mt-6 mb-2">POLİMER</h3>
+                    <p class="text-blue-100 text-sm mb-6">"Üretimin Temeli"</p>
+                    <div class="bg-white/10 rounded-xl p-4 mb-4">
+                        <p class="text-sm font-medium mb-2">H1 Seçenekleri:</p>
+                        <ul class="text-sm text-blue-100 space-y-1">
+                            <li>• "Üretimin Temeli"</li>
+                            <li>• "Hammadde Disiplini, Ürün Güvencesi"</li>
+                        </ul>
+                    </div>
+                    <p class="text-sm text-blue-100 mb-4">Alt metin: "Endüstriyel performans için standart polimer üretimi."</p>
+                    <div class="flex gap-2 text-xs">
+                        <span class="bg-white/20 px-3 py-1 rounded-lg">Ürünleri Keşfet</span>
+                        <span class="bg-white/30 px-3 py-1 rounded-lg">Teklif Al</span>
+                    </div>
+                </div>
+
+                <!-- Slide 2: Ambalaj -->
+                <div class="bg-gradient-to-br from-green-500 to-emerald-700 rounded-3xl p-8 text-white card-hover">
+                    <span class="text-xs bg-white/20 px-3 py-1 rounded-full">Slide 2</span>
+                    <h3 class="text-2xl font-bold mt-6 mb-2">AMBALAJ</h3>
+                    <p class="text-green-100 text-sm mb-6">"Geleceği Yeniden Şekillendiriyoruz"</p>
+                    <div class="bg-white/10 rounded-xl p-4 mb-4">
+                        <p class="text-sm font-medium mb-2">H1 Seçenekleri:</p>
+                        <ul class="text-sm text-green-100 space-y-1">
+                            <li>• "Geleceği Yeniden Şekillendiriyoruz"</li>
+                            <li>• "Yenile. Yeniden Kullan. Güvenle Taşı."</li>
+                        </ul>
+                    </div>
+                    <p class="text-sm text-green-100 mb-4">Alt metin: "İzlenebilir yenileme süreçleriyle ekonomik ve çevreci ambalaj çözümleri."</p>
+                    <div class="flex gap-2 text-xs">
+                        <span class="bg-white/20 px-3 py-1 rounded-lg">Nasıl Çalışır?</span>
+                        <span class="bg-white/30 px-3 py-1 rounded-lg">Teklif Al</span>
+                    </div>
+                </div>
+
+                <!-- Slide 3: Plastik -->
+                <div class="bg-gradient-to-br from-purple-500 to-violet-700 rounded-3xl p-8 text-white card-hover">
+                    <span class="text-xs bg-white/20 px-3 py-1 rounded-full">Slide 3</span>
+                    <h3 class="text-2xl font-bold mt-6 mb-2">PLASTİK</h3>
+                    <p class="text-purple-100 text-sm mb-6">"Ege'nin Dönüşüm Gücü"</p>
+                    <div class="bg-white/10 rounded-xl p-4 mb-4">
+                        <p class="text-sm font-medium mb-2">H1 Seçenekleri:</p>
+                        <ul class="text-sm text-purple-100 space-y-1">
+                            <li>• "Ege'nin Dönüşüm Gücü"</li>
+                            <li>• "IBC'den Varile: Tek Standart"</li>
+                        </ul>
+                    </div>
+                    <p class="text-sm text-purple-100 mb-4">Alt metin: "Geniş ürün portföyü, hızlı tedarik, bölgesel avantaj."</p>
+                    <div class="flex gap-2 text-xs">
+                        <span class="bg-white/20 px-3 py-1 rounded-lg">Ürünleri Keşfet</span>
+                        <span class="bg-white/30 px-3 py-1 rounded-lg">İletişim</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reveal mt-8 text-center">
+                <p class="text-slate-500 dark:text-slate-400 text-sm">
+                    Karar: Hero'da 3 şirket sırayla → hemen altında ürün gamı → süreç → kanıtlar → şirket kartları → blog vitrin
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 10: MOTTO / SLOGAN -->
+    <section id="motto" class="py-24 md:py-32 bg-slate-900 dark:bg-slate-950 text-white">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="reveal text-center mb-16">
+                <span class="text-sm font-medium text-blue-400 tracking-wider uppercase">Slide 10</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-4 mb-4">Motto / Slogan Havuzu</h2>
+                <p class="text-xl text-slate-400">Sunumda "Seç-1"</p>
+            </div>
+
+            <!-- Ana Grup Mottoları -->
+            <div class="reveal mb-12">
+                <h3 class="text-xl font-bold mb-6 text-blue-400">Grup (Seçilecek 1 Ana Motto)</h3>
+                <div class="grid gap-3">
+                    <div class="bg-slate-800 rounded-xl p-4 flex items-center gap-4 card-hover border border-slate-700">
+                        <input type="radio" name="motto" class="w-5 h-5 accent-blue-500">
+                        <span class="text-lg">"Tek Çatı, Üç Uzmanlık"</span>
+                    </div>
+                    <div class="bg-slate-800 rounded-xl p-4 flex items-center gap-4 card-hover border border-slate-700">
+                        <input type="radio" name="motto" class="w-5 h-5 accent-blue-500">
+                        <span class="text-lg">"Üretimin Gücü, Dönüşümün Geleceği"</span>
+                    </div>
+                    <div class="bg-slate-800 rounded-xl p-4 flex items-center gap-4 card-hover border border-slate-700">
+                        <input type="radio" name="motto" class="w-5 h-5 accent-blue-500">
+                        <span class="text-lg">"Endüstriyel Ambalajda Güven"</span>
+                    </div>
+                    <div class="bg-slate-800 rounded-xl p-4 flex items-center gap-4 card-hover border border-slate-700">
+                        <input type="radio" name="motto" class="w-5 h-5 accent-blue-500">
+                        <span class="text-lg">"Ambalajın Yaşam Döngüsünü Yönetiriz"</span>
+                    </div>
+                    <div class="bg-slate-800 rounded-xl p-4 flex items-center gap-4 card-hover border border-slate-700">
+                        <input type="radio" name="motto" class="w-5 h-5 accent-blue-500">
+                        <span class="text-lg">"Döngüsel Ekonominin Operasyonel Gücü"</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Şirket Bazlı Sloganlar -->
+            <div class="reveal grid md:grid-cols-3 gap-6">
+                <div class="bg-blue-900/30 border border-blue-800 rounded-2xl p-6">
+                    <h4 class="font-bold text-blue-400 mb-4">Polimer</h4>
+                    <p class="text-slate-300">"Üretimin Temeli: Standart Polimer"</p>
+                </div>
+                <div class="bg-green-900/30 border border-green-800 rounded-2xl p-6">
+                    <h4 class="font-bold text-green-400 mb-4">Ambalaj</h4>
+                    <p class="text-slate-300">"Rebottle ile Ekonomik Alternatif"</p>
+                </div>
+                <div class="bg-purple-900/30 border border-purple-800 rounded-2xl p-6">
+                    <h4 class="font-bold text-purple-400 mb-4">Plastik</h4>
+                    <p class="text-slate-300">"İzmir'den Türkiye'ye Çözümler"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 11: MİSYON / VİZYON / DEĞERLER -->
+    <section id="misyon" class="py-24 md:py-32">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="reveal text-center mb-16">
+                <span class="text-sm font-medium text-blue-600 dark:text-blue-400 tracking-wider uppercase">Slide 11</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-4 mb-4">
+                    <span class="text-gradient dark:text-gradient-dark">Misyon / Vizyon / Değerler</span>
+                </h2>
+            </div>
+
+            <div class="reveal grid md:grid-cols-2 gap-8 mb-12">
+                <!-- Misyon -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 card-hover border border-slate-200 dark:border-slate-700">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-6">
+                        <span class="text-2xl">🎯</span>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-slate-800 dark:text-slate-200">Misyon</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Endüstriyel ambalajın üretim, yenileme ve tedarik süreçlerini; izlenebilirlik, mevzuat uyumu ve kalite disipliniyle yöneterek sanayiye güvenilir çözümler sunmak.
+                    </p>
+                </div>
+
+                <!-- Vizyon -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 card-hover border border-slate-200 dark:border-slate-700">
+                    <div class="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-6">
+                        <span class="text-2xl">🔭</span>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-slate-800 dark:text-slate-200">Vizyon</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Türkiye'de tek çatı altında yapılandırılmış, uluslararası standartlarda çalışan ve sürdürülebilirlikte örnek gösterilen endüstriyel ambalaj grubu olmak.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Değerler -->
+            <div class="reveal">
+                <h3 class="text-xl font-bold mb-6 text-center text-slate-800 dark:text-slate-200">Değerlerimiz</h3>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <span class="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full font-medium">Standartlara Bağlılık</span>
+                    <span class="px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-full font-medium">İzlenebilir Süreç</span>
+                    <span class="px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full font-medium">Sürdürülebilirlik Odağı</span>
+                    <span class="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-full font-medium">Müşteri Memnuniyeti</span>
+                    <span class="px-6 py-3 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-full font-medium">Operasyonel Hız ve Şeffaflık</span>
+                </div>
+            </div>
+
+            <div class="reveal mt-8 bg-slate-100 dark:bg-slate-800 rounded-2xl p-6 text-center">
+                <p class="text-slate-600 dark:text-slate-400 text-sm italic">
+                    Not: Polimer tarafında "insana ve çevreye saygılı, kalite ve müşteri memnuniyetini ilke edinmiş" söylemi mevcut sitede de geçiyor.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 12: HAKKIMIZDA -->
+    <section id="hakkimizda" class="py-24 md:py-32 bg-slate-50 dark:bg-slate-800/50">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="reveal text-center mb-16">
+                <span class="text-sm font-medium text-blue-600 dark:text-blue-400 tracking-wider uppercase">Slide 12</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-4 mb-4">
+                    <span class="text-gradient dark:text-gradient-dark">Hakkımızda</span>
+                </h2>
+                <p class="text-xl text-slate-600 dark:text-slate-400">3 Farklı Uzunluk Seçeneği</p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="reveal">
+                <div class="flex justify-center gap-2 mb-8">
+                    <button @click="activeTab = 'kisa'" :class="activeTab === 'kisa' ? 'bg-blue-600 text-white' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'" class="px-6 py-3 rounded-xl font-medium transition">
+                        2 Cümle
+                    </button>
+                    <button @click="activeTab = 'orta'" :class="activeTab === 'orta' ? 'bg-blue-600 text-white' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'" class="px-6 py-3 rounded-xl font-medium transition">
+                        Orta
+                    </button>
+                    <button @click="activeTab = 'uzun'" :class="activeTab === 'uzun' ? 'bg-blue-600 text-white' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400'" class="px-6 py-3 rounded-xl font-medium transition">
+                        Uzun
+                    </button>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 md:p-12 border border-slate-200 dark:border-slate-700">
+                    <!-- Kısa -->
+                    <div x-show="activeTab === 'kisa'" x-transition>
+                        <h3 class="text-xl font-bold mb-4 text-slate-800 dark:text-slate-200">Grup — 2 Cümle</h3>
+                        <p class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Varilsan Grup, endüstriyel ambalajın yaşam döngüsünü "üretimden yenilemeye" tek çatı altında birleştirir. Ürün gamı, süreç yönetimi ve uyum belgeleriyle sanayiye güvenilir çözüm ortağı olur.
+                        </p>
+                    </div>
+
+                    <!-- Orta -->
+                    <div x-show="activeTab === 'orta'" x-cloak x-transition>
+                        <h3 class="text-xl font-bold mb-4 text-slate-800 dark:text-slate-200">Grup — Orta</h3>
+                        <p class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Varilsan Grup; Polimer, Ambalaj ve Plastik iştirakleriyle endüstriyel ambalajın üretim ve geri kazanım süreçlerini tek çatı altında toplar. Ürün odaklı katalog yaklaşımını, izlenebilir yenileme süreçleri ve uyum/standart yönetimiyle güçlendirir.
+                        </p>
+                    </div>
+
+                    <!-- Uzun -->
+                    <div x-show="activeTab === 'uzun'" x-cloak x-transition>
+                        <h3 class="text-xl font-bold mb-4 text-slate-800 dark:text-slate-200">Grup — Uzun</h3>
+                        <p class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Varilsan Grup, endüstriyel ambalajın sadece "ürün" değil, bir "operasyon" olduğu yaklaşımıyla hareket eder. Polimer tarafında hammaddeden başlayan kalite disiplini; Ambalaj tarafında toplama–temizleme–test–yenileme adımlarıyla izlenebilirliğe dönüşür; Plastik tarafında ise geniş ürün portföyü ve bölgesel erişim avantajıyla hızlı tedarik gücüne bağlanır. Böylece müşteriler için tek muhatap, tek standart ve ölçeklenebilir bir çözüm yapısı kurar.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 13: BLOG VİTRİNİ -->
+    <section id="blog" class="py-24 md:py-32">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="reveal text-center mb-16">
+                <span class="text-sm font-medium text-blue-600 dark:text-blue-400 tracking-wider uppercase">Slide 13</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-4 mb-4">
+                    <span class="text-gradient dark:text-gradient-dark">Blog Vitrini</span>
+                </h2>
+                <p class="text-xl text-slate-600 dark:text-slate-400">Güncel Yazılar (Anasayfada 6 Kart)</p>
+            </div>
+
+            <div class="reveal grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden card-hover border border-slate-200 dark:border-slate-700">
+                    <div class="h-40 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/30"></div>
+                    <div class="p-6">
+                        <span class="text-xs text-blue-600 dark:text-blue-400 font-medium">IBC</span>
+                        <h3 class="text-lg font-bold mt-2 text-slate-800 dark:text-slate-200">Rebottle IBC Nedir? Avantajları ve Kullanım Alanları</h3>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden card-hover border border-slate-200 dark:border-slate-700">
+                    <div class="h-40 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900/30 dark:to-green-800/30"></div>
+                    <div class="p-6">
+                        <span class="text-xs text-green-600 dark:text-green-400 font-medium">Geri Dönüşüm</span>
+                        <h3 class="text-lg font-bold mt-2 text-slate-800 dark:text-slate-200">IBC Tank Geri Dönüşümü Nasıl Yapılır? Süreç ve Kontroller</h3>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden card-hover border border-slate-200 dark:border-slate-700">
+                    <div class="h-40 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/30 dark:to-purple-800/30"></div>
+                    <div class="p-6">
+                        <span class="text-xs text-purple-600 dark:text-purple-400 font-medium">Varil</span>
+                        <h3 class="text-lg font-bold mt-2 text-slate-800 dark:text-slate-200">Varil Geri Kazanımı: Standartlara Uygun Yenileme Neden Önemli?</h3>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden card-hover border border-slate-200 dark:border-slate-700">
+                    <div class="h-40 bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30"></div>
+                    <div class="p-6">
+                        <span class="text-xs text-orange-600 dark:text-orange-400 font-medium">Uyum</span>
+                        <h3 class="text-lg font-bold mt-2 text-slate-800 dark:text-slate-200">UN & ADR Nedir? Endüstriyel Ambalajda Uyum Rehberi</h3>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden card-hover border border-slate-200 dark:border-slate-700">
+                    <div class="h-40 bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900/30 dark:to-red-800/30"></div>
+                    <div class="p-6">
+                        <span class="text-xs text-red-600 dark:text-red-400 font-medium">Güvenlik</span>
+                        <h3 class="text-lg font-bold mt-2 text-slate-800 dark:text-slate-200">Kontamine Atık Geri Kazanımı: Mevzuat, Güvenlik ve İzlenebilirlik</h3>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden card-hover border border-slate-200 dark:border-slate-700">
+                    <div class="h-40 bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-900/30 dark:to-amber-800/30"></div>
+                    <div class="p-6">
+                        <span class="text-xs text-amber-600 dark:text-amber-400 font-medium">Polimer</span>
+                        <h3 class="text-lg font-bold mt-2 text-slate-800 dark:text-slate-200">HDPE Granül Nedir? Üretim Süreci ve Endüstriyel Kullanımlar</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 14: SİTE HARİTASI -->
+    <section id="sitemap" class="py-24 md:py-32 bg-slate-50 dark:bg-slate-800/50">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="reveal text-center mb-16">
+                <span class="text-sm font-medium text-blue-600 dark:text-blue-400 tracking-wider uppercase">Slide 14</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-4 mb-4">
+                    <span class="text-gradient dark:text-gradient-dark">Site Haritası</span>
+                </h2>
+                <p class="text-xl text-slate-600 dark:text-slate-400">Üst Menü (Mega Menü)</p>
+            </div>
+
+            <div class="reveal bg-white dark:bg-slate-800 rounded-3xl p-8 border border-slate-200 dark:border-slate-700">
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+                    <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 text-center">
+                        <span class="text-2xl mb-2 block">🏢</span>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Kurumsal</span>
+                        <span class="text-xs text-blue-600 dark:text-blue-400 block mt-1">mega</span>
+                    </div>
+                    <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 text-center">
+                        <span class="text-2xl mb-2 block">🏭</span>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300">İştiraklerimiz</span>
+                        <span class="text-xs text-green-600 dark:text-green-400 block mt-1">mega</span>
+                    </div>
+                    <div class="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-4 text-center">
+                        <span class="text-2xl mb-2 block">📦</span>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Ürünler</span>
+                        <span class="text-xs text-purple-600 dark:text-purple-400 block mt-1">mega</span>
+                    </div>
+                    <div class="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-4 text-center">
+                        <span class="text-2xl mb-2 block">⚙️</span>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Hizmetler</span>
+                        <span class="text-xs text-orange-600 dark:text-orange-400 block mt-1">mega</span>
+                    </div>
+                    <div class="bg-slate-100 dark:bg-slate-700 rounded-xl p-4 text-center">
+                        <span class="text-2xl mb-2 block">📋</span>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Kalite & Belgeler</span>
+                    </div>
+                    <div class="bg-slate-100 dark:bg-slate-700 rounded-xl p-4 text-center">
+                        <span class="text-2xl mb-2 block">📰</span>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Blog</span>
+                    </div>
+                    <div class="bg-slate-100 dark:bg-slate-700 rounded-xl p-4 text-center">
+                        <span class="text-2xl mb-2 block">📞</span>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300">İletişim</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 15: İLETİŞİM & LOKASYON -->
+    <section id="iletisim" class="py-24 md:py-32">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="reveal text-center mb-16">
+                <span class="text-sm font-medium text-blue-600 dark:text-blue-400 tracking-wider uppercase">Slide 15</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-4 mb-4">
+                    <span class="text-gradient dark:text-gradient-dark">İletişim & Lokasyon</span>
+                </h2>
+            </div>
+
+            <div class="reveal grid md:grid-cols-3 gap-6">
+                <!-- Ambalaj -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 card-hover border border-slate-200 dark:border-slate-700 text-center">
+                    <div class="w-16 h-16 mx-auto rounded-2xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-6">
+                        <span class="text-3xl">♻️</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-slate-800 dark:text-slate-200">Varilsan Ambalaj</h3>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">Kocaeli / Çayırova</p>
+                    <div class="bg-slate-100 dark:bg-slate-700 rounded-xl h-32 mb-4 flex items-center justify-center text-slate-400">
+                        [Harita Placeholder]
+                    </div>
+                    <p class="text-blue-600 dark:text-blue-400 font-medium">0262 658 92 58</p>
+                </div>
+
+                <!-- Plastik -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 card-hover border border-slate-200 dark:border-slate-700 text-center">
+                    <div class="w-16 h-16 mx-auto rounded-2xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-6">
+                        <span class="text-3xl">📦</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-slate-800 dark:text-slate-200">Varilsan Plastik</h3>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">İzmir / Kemalpaşa</p>
+                    <div class="bg-slate-100 dark:bg-slate-700 rounded-xl h-32 mb-4 flex items-center justify-center text-slate-400">
+                        [Harita Placeholder]
+                    </div>
+                    <p class="text-blue-600 dark:text-blue-400 font-medium">0232 436 41 58</p>
+                </div>
+
+                <!-- Polimer -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 card-hover border border-slate-200 dark:border-slate-700 text-center">
+                    <div class="w-16 h-16 mx-auto rounded-2xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-6">
+                        <span class="text-3xl">🏭</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-slate-800 dark:text-slate-200">Varilsan Polimer</h3>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">Kocaeli / Gebze</p>
+                    <div class="bg-slate-100 dark:bg-slate-700 rounded-xl h-32 mb-4 flex items-center justify-center text-slate-400">
+                        [Harita Placeholder]
+                    </div>
+                    <p class="text-blue-600 dark:text-blue-400 font-medium">0533 080 10 90</p>
+                </div>
+            </div>
+
+            <div class="reveal mt-8 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl p-6 text-center">
+                <p class="text-amber-800 dark:text-amber-200 text-sm">
+                    ⚠️ <strong>Not:</strong> Mevcut içeriklerde Kocaeli/Çayırova ve İzmir görünüyor. Bu bölüm müşteriden doğrulanacak.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 16: KRİTİK DOĞRULAMA -->
+    <section id="dogrulama" class="py-24 md:py-32 bg-slate-50 dark:bg-slate-800/50">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="reveal text-center mb-16">
+                <span class="text-sm font-medium text-blue-600 dark:text-blue-400 tracking-wider uppercase">Slide 16</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-4 mb-4">
+                    <span class="text-gradient dark:text-gradient-dark">Kritik Doğrulama</span>
+                </h2>
+                <p class="text-xl text-slate-600 dark:text-slate-400">Toplantı Öncesi Checklist</p>
+            </div>
+
+            <div class="reveal bg-white dark:bg-slate-800 rounded-3xl p-8 border border-slate-200 dark:border-slate-700">
+                <div class="space-y-4">
+                    <label class="flex items-start gap-4 p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                        <input type="checkbox" class="w-5 h-5 mt-1 accent-blue-500 rounded">
+                        <div>
+                            <p class="font-medium text-slate-800 dark:text-slate-200">Polimer Ürün Portföyü</p>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Müşteri "IBC + 30–1000L bidon" diyor; sitede "HDPE granül" öne çıkıyor.</p>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start gap-4 p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                        <input type="checkbox" class="w-5 h-5 mt-1 accent-blue-500 rounded">
+                        <div>
+                            <p class="font-medium text-slate-800 dark:text-slate-200">Ambalaj vs Plastik Ayrımı</p>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">İçerik ve mesajlaşma netleştirilecek (proses vs katalog yaklaşımı).</p>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start gap-4 p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                        <input type="checkbox" class="w-5 h-5 mt-1 accent-blue-500 rounded">
+                        <div>
+                            <p class="font-medium text-slate-800 dark:text-slate-200">UN/ADR + Çevre Lisansları</p>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Diğer belgelerin güncel listesi (hangi şirket hangi belgeye sahip).</p>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start gap-4 p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                        <input type="checkbox" class="w-5 h-5 mt-1 accent-blue-500 rounded">
+                        <div>
+                            <p class="font-medium text-slate-800 dark:text-slate-200">Lokasyon / Adres / Telefon / Email</p>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">3 şirket için doğrulama.</p>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start gap-4 p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                        <input type="checkbox" class="w-5 h-5 mt-1 accent-blue-500 rounded">
+                        <div>
+                            <p class="font-medium text-slate-800 dark:text-slate-200">"Sayılarla Varilsan"</p>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Geri kazanım oranları, kapasite, yıllık tonaj vb. (sunumda net sayılar kullanılacaksa teyit).</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EKLER BÖLÜMÜ -->
+    <section id="ekler" class="py-24 md:py-32 bg-slate-900 dark:bg-slate-950 text-white">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="reveal text-center mb-16">
+                <span class="text-sm font-medium text-blue-400 tracking-wider uppercase">Appendix</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-4 mb-4">Ekler</h2>
+                <p class="text-xl text-slate-400">Detaylı Referans Bilgileri</p>
+            </div>
+
+            <!-- Search -->
+            <div class="reveal mb-8">
+                <div class="relative">
+                    <input type="text" x-model="searchQuery" placeholder="Eklerde ara..." class="w-full px-6 py-4 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-blue-500">
+                    <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+            </div>
+
+            <!-- Accordion -->
+            <div class="reveal space-y-4">
+                <!-- A) Slogan Havuzu -->
+                <div class="bg-slate-800 rounded-2xl overflow-hidden" x-show="'slogan havuzu motto alternatif'.includes(searchQuery.toLowerCase()) || searchQuery === ''">
+                    <button @click="openAccordion = openAccordion === 'A' ? null : 'A'" class="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-slate-700/50 transition">
+                        <span class="text-lg font-medium">A) Slogan Havuzu Tam Liste</span>
+                        <svg class="w-5 h-5 transition-transform" :class="openAccordion === 'A' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div x-show="openAccordion === 'A'" x-collapse>
+                        <div class="px-6 pb-6 text-slate-300 space-y-2">
+                            <p>• "Tek Çatı, Üç Uzmanlık"</p>
+                            <p>• "Üretimin Gücü, Dönüşümün Geleceği"</p>
+                            <p>• "Endüstriyel Ambalajda Güven"</p>
+                            <p>• "Ambalajın Yaşam Döngüsünü Yönetiriz"</p>
+                            <p>• "Döngüsel Ekonominin Operasyonel Gücü"</p>
+                            <p>• "Üretimden Yenilemeye: Tek Standart"</p>
+                            <p>• "Sürdürülebilir Ambalaj, Güvenilir Çözüm"</p>
+                            <p>• "Endüstrinin Ambalaj Ortağı"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B) Blog Fikirleri -->
+                <div class="bg-slate-800 rounded-2xl overflow-hidden" x-show="'blog fikir içerik makale'.includes(searchQuery.toLowerCase()) || searchQuery === ''">
+                    <button @click="openAccordion = openAccordion === 'B' ? null : 'B'" class="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-slate-700/50 transition">
+                        <span class="text-lg font-medium">B) Blog Fikirleri (12+)</span>
+                        <svg class="w-5 h-5 transition-transform" :class="openAccordion === 'B' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div x-show="openAccordion === 'B'" x-collapse>
+                        <div class="px-6 pb-6 text-slate-300 space-y-2 text-sm">
+                            <p>1. Rebottle IBC Nedir? Avantajları ve Kullanım Alanları</p>
+                            <p>2. IBC Tank Geri Dönüşümü Nasıl Yapılır? Süreç ve Kontroller</p>
+                            <p>3. Varil Geri Kazanımı: Standartlara Uygun Yenileme Neden Önemli?</p>
+                            <p>4. UN & ADR Nedir? Endüstriyel Ambalajda Uyum Rehberi</p>
+                            <p>5. Kontamine Atık Geri Kazanımı: Mevzuat, Güvenlik ve İzlenebilirlik</p>
+                            <p>6. HDPE Granül Nedir? Üretim Süreci ve Endüstriyel Kullanımlar</p>
+                            <p>7. Plastik Varil vs Metal Varil: Hangisi Sizin İçin Doğru?</p>
+                            <p>8. Endüstriyel Ambalajda Sürdürülebilirlik Neden Önemli?</p>
+                            <p>9. IBC Tank Seçerken Dikkat Edilmesi Gerekenler</p>
+                            <p>10. Geri Kazanım Tesisi Nasıl Çalışır? Adım Adım Süreç</p>
+                            <p>11. Tehlikeli Madde Taşımacılığında Ambalaj Standartları</p>
+                            <p>12. Döngüsel Ekonomi ve Endüstriyel Ambalajın Geleceği</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- C) SEO Plan Tablosu -->
+                <div class="bg-slate-800 rounded-2xl overflow-hidden" x-show="'seo anahtar kelime sayfa slug'.includes(searchQuery.toLowerCase()) || searchQuery === ''">
+                    <button @click="openAccordion = openAccordion === 'C' ? null : 'C'" class="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-slate-700/50 transition">
+                        <span class="text-lg font-medium">C) SEO Plan Tablosu (20+ Satır)</span>
+                        <svg class="w-5 h-5 transition-transform" :class="openAccordion === 'C' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div x-show="openAccordion === 'C'" x-collapse>
+                        <div class="px-6 pb-6 overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead class="text-slate-400 border-b border-slate-700">
+                                    <tr>
+                                        <th class="py-2 pr-4">Sayfa</th>
+                                        <th class="py-2 pr-4">Slug</th>
+                                        <th class="py-2">Hedef Anahtar Kelime</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-slate-300">
+                                    <tr class="border-b border-slate-700/50"><td class="py-2 pr-4">Ana Sayfa</td><td class="pr-4">/</td><td>endüstriyel ambalaj</td></tr>
+                                    <tr class="border-b border-slate-700/50"><td class="py-2 pr-4">Hakkımızda</td><td class="pr-4">/hakkimizda</td><td>varilsan grup</td></tr>
+                                    <tr class="border-b border-slate-700/50"><td class="py-2 pr-4">IBC Tank</td><td class="pr-4">/urunler/ibc-tank</td><td>ibc tank satış</td></tr>
+                                    <tr class="border-b border-slate-700/50"><td class="py-2 pr-4">Rebottle IBC</td><td class="pr-4">/urunler/rebottle-ibc</td><td>rebottle ibc nedir</td></tr>
+                                    <tr class="border-b border-slate-700/50"><td class="py-2 pr-4">Plastik Varil</td><td class="pr-4">/urunler/plastik-varil</td><td>plastik varil fiyatları</td></tr>
+                                    <tr class="border-b border-slate-700/50"><td class="py-2 pr-4">Metal Varil</td><td class="pr-4">/urunler/metal-varil</td><td>metal varil üretici</td></tr>
+                                    <tr class="border-b border-slate-700/50"><td class="py-2 pr-4">HDPE Granül</td><td class="pr-4">/urunler/hdpe-granul</td><td>hdpe granül satış</td></tr>
+                                    <tr class="border-b border-slate-700/50"><td class="py-2 pr-4">Bidon</td><td class="pr-4">/urunler/endustriyel-bidon</td><td>endüstriyel bidon</td></tr>
+                                    <tr class="border-b border-slate-700/50"><td class="py-2 pr-4">Geri Kazanım</td><td class="pr-4">/hizmetler/geri-kazanim</td><td>ambalaj geri kazanım</td></tr>
+                                    <tr class="border-b border-slate-700/50"><td class="py-2 pr-4">Yenileme Süreci</td><td class="pr-4">/hizmetler/yenileme</td><td>ibc yenileme</td></tr>
+                                    <tr class="border-b border-slate-700/50"><td class="py-2 pr-4">Belgeler</td><td class="pr-4">/belgeler</td><td>un adr sertifika</td></tr>
+                                    <tr class="border-b border-slate-700/50"><td class="py-2 pr-4">Polimer</td><td class="pr-4">/istirakler/polimer</td><td>varilsan polimer</td></tr>
+                                    <tr class="border-b border-slate-700/50"><td class="py-2 pr-4">Ambalaj</td><td class="pr-4">/istirakler/ambalaj</td><td>varilsan ambalaj</td></tr>
+                                    <tr class="border-b border-slate-700/50"><td class="py-2 pr-4">Plastik</td><td class="pr-4">/istirakler/plastik</td><td>varilsan plastik izmir</td></tr>
+                                    <tr class="border-b border-slate-700/50"><td class="py-2 pr-4">Blog</td><td class="pr-4">/blog</td><td>endüstriyel ambalaj blog</td></tr>
+                                    <tr class="border-b border-slate-700/50"><td class="py-2 pr-4">İletişim</td><td class="pr-4">/iletisim</td><td>varilsan iletişim</td></tr>
+                                    <tr class="border-b border-slate-700/50"><td class="py-2 pr-4">Blog: Rebottle</td><td class="pr-4">/blog/rebottle-ibc-nedir</td><td>rebottle ibc avantajları</td></tr>
+                                    <tr class="border-b border-slate-700/50"><td class="py-2 pr-4">Blog: UN/ADR</td><td class="pr-4">/blog/un-adr-rehberi</td><td>un adr nedir</td></tr>
+                                    <tr class="border-b border-slate-700/50"><td class="py-2 pr-4">Blog: HDPE</td><td class="pr-4">/blog/hdpe-granul-nedir</td><td>hdpe granül kullanım</td></tr>
+                                    <tr><td class="py-2 pr-4">Blog: Varil Geri Kazanım</td><td class="pr-4">/blog/varil-geri-kazanim</td><td>varil geri dönüşüm</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- D) Belgeler Listesi -->
+                <div class="bg-slate-800 rounded-2xl overflow-hidden" x-show="'belge sertifika lisans izin'.includes(searchQuery.toLowerCase()) || searchQuery === ''">
+                    <button @click="openAccordion = openAccordion === 'D' ? null : 'D'" class="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-slate-700/50 transition">
+                        <span class="text-lg font-medium">D) Belgeler Listesi</span>
+                        <svg class="w-5 h-5 transition-transform" :class="openAccordion === 'D' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div x-show="openAccordion === 'D'" x-collapse>
+                        <div class="px-6 pb-6">
+                            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                                <div class="bg-slate-700/50 rounded-xl p-4">
+                                    <h4 class="font-medium text-blue-400 mb-2">Uluslararası Standartlar</h4>
+                                    <ul class="text-slate-300 space-y-1">
+                                        <li>• UN Sertifikası</li>
+                                        <li>• ADR Uyum Belgesi</li>
+                                        <li>• ISO 9001</li>
+                                        <li>• ISO 14001</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-slate-700/50 rounded-xl p-4">
+                                    <h4 class="font-medium text-green-400 mb-2">Çevre & Lisanslar</h4>
+                                    <ul class="text-slate-300 space-y-1">
+                                        <li>• Çevre İzin ve Lisans Belgesi</li>
+                                        <li>• Ambalaj Yenileme Onay Sertifikası</li>
+                                        <li>• SERRED Üyeliği</li>
+                                        <li>• Tesis Faaliyet Belgeleri</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- E) Toplantı Soruları -->
+                <div class="bg-slate-800 rounded-2xl overflow-hidden" x-show="'toplantı soru doğrulama'.includes(searchQuery.toLowerCase()) || searchQuery === ''">
+                    <button @click="openAccordion = openAccordion === 'E' ? null : 'E'" class="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-slate-700/50 transition">
+                        <span class="text-lg font-medium">E) Toplantı Soruları (Doğrulama)</span>
+                        <svg class="w-5 h-5 transition-transform" :class="openAccordion === 'E' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div x-show="openAccordion === 'E'" x-collapse>
+                        <div class="px-6 pb-6 text-slate-300 space-y-3 text-sm">
+                            <p>1. Polimer şirketi hangi ürünleri üretiyor? (IBC + Bidon mu, HDPE Granül mü?)</p>
+                            <p>2. Ambalaj ve Plastik şirketleri arasındaki fark tam olarak nedir?</p>
+                            <p>3. Hangi şirket hangi belgelere sahip? (UN, ADR, ISO, Çevre İzni)</p>
+                            <p>4. Lokasyon bilgileri doğru mu? (Çayırova, Kemalpaşa, Gebze)</p>
+                            <p>5. "Sayılarla Varilsan" için kullanabileceğimiz veriler var mı?</p>
+                            <p>6. Mevcut müşteri referansları paylaşılabilir mi?</p>
+                            <p>7. Favori slogan hangisi? (Tek Çatı, Üç Uzmanlık vs.)</p>
+                            <p>8. Hero slide'larının sıralaması doğru mu? (Polimer→Ambalaj→Plastik)</p>
+                            <p>9. Blog içerikleri için öncelikli konular hangileri?</p>
+                            <p>10. Teklif formu hangi bilgileri toplamalı?</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-12 bg-slate-950 text-white">
+        <div class="max-w-5xl mx-auto px-6 text-center">
+            <p class="text-slate-500 text-sm mb-4">Bu sunum Claude AI tarafından hazırlanmıştır.</p>
+            <p class="text-slate-600 text-xs">24 Aralık 2025 • VARİLSAN GRUP Ön Sunum</p>
+        </div>
+    </footer>
+
+    <!-- Reveal Animation Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reveals = document.querySelectorAll('.reveal');
+
+            function checkReveal() {
+                reveals.forEach(el => {
+                    const windowHeight = window.innerHeight;
+                    const elementTop = el.getBoundingClientRect().top;
+                    const elementVisible = 150;
+
+                    if (elementTop < windowHeight - elementVisible) {
+                        el.classList.add('active');
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', checkReveal);
+            checkReveal(); // Initial check
+        });
+    </script>
+</body>
+</html>

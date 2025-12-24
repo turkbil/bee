@@ -1,1 +1,1126 @@
-v20/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üyelik Sistemi - Admin Panel Taslakları v20</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .toc {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+
+        .toc h3 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+        }
+
+        .toc ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+
+        .toc a {
+            color: #94a3b8;
+            text-decoration: none;
+            padding: 8px 12px;
+            display: block;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .toc a:hover {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        section {
+            margin-bottom: 60px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            padding-top: 20px;
+            border-top: 1px solid #334155;
+        }
+
+        .decision-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .decision-box h3 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+
+        .decision-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .decision-item .label {
+            width: 200px;
+            color: #94a3b8;
+        }
+
+        .decision-item .value {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .mockup {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .mockup-header {
+            background: #0f172a;
+            padding: 15px 20px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mockup-title {
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        .mockup-badge {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .mockup-body {
+            padding: 20px;
+        }
+
+        .mockup-toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .mock-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: none;
+        }
+
+        .mock-btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .mock-btn-secondary {
+            background: #334155;
+            color: #e2e8f0;
+        }
+
+        .mock-btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .mock-search {
+            flex: 1;
+            min-width: 200px;
+            padding: 8px 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #e2e8f0;
+        }
+
+        .mock-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .mock-table th,
+        .mock-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        .mock-table th {
+            background: #0f172a;
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .mock-table td {
+            color: #cbd5e1;
+        }
+
+        .mock-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .status-trial {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+
+        .status-expired {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .status-pending {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .mock-form {
+            display: grid;
+            gap: 20px;
+        }
+
+        .mock-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mock-form-group label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .mock-input {
+            padding: 10px 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #e2e8f0;
+        }
+
+        .mock-form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .file-list {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .file-list h4 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .file-item {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            padding: 4px 0;
+        }
+
+        .note-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .note-box p {
+            color: #a7f3d0;
+        }
+
+        .widget-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .widget-card {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .widget-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+
+        .widget-label {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .mockup-toolbar { flex-direction: column; }
+            .mock-table { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Admin Panel Taslakları</h1>
+            <div class="meta">
+                Tarih: 2025-11-23 |
+                Versiyon: 20 (UI/UX Taslakları) |
+                Durum: Onay Bekliyor
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc">
+            <h3>İçindekiler</h3>
+            <ul>
+                <li><a href="#karar">1. Modül vs Route Kararı</a></li>
+                <li><a href="#plan-liste">2. Abonelik Planları - Liste</a></li>
+                <li><a href="#plan-form">3. Abonelik Planları - Form</a></li>
+                <li><a href="#kupon-liste">4. Kupon Yönetimi - Liste</a></li>
+                <li><a href="#kupon-form">5. Kupon Yönetimi - Form</a></li>
+                <li><a href="#abonelik-liste">6. Abonelikler - Liste</a></li>
+                <li><a href="#user-update">7. Kullanıcı Listesi - Güncelleme</a></li>
+                <li><a href="#user-detail">8. Kullanıcı Detay - Yeni Sekmeler</a></li>
+                <li><a href="#dashboard">9. Dashboard Widget'ları</a></li>
+            </ul>
+        </div>
+
+        <!-- Decision -->
+        <section id="karar">
+            <h2>1. Modül vs Route Kararı</h2>
+
+            <div class="decision-box">
+                <h3>Yapı Kararı</h3>
+                <div class="decision-item">
+                    <span class="label">Abonelik Plan Yönetimi:</span>
+                    <span class="value">UserManagement Modülü (Mevcut)</span>
+                </div>
+                <div class="decision-item">
+                    <span class="label">Kupon Yönetimi:</span>
+                    <span class="value">UserManagement Modülü (Mevcut)</span>
+                </div>
+                <div class="decision-item">
+                    <span class="label">Abonelik Listesi:</span>
+                    <span class="value">UserManagement Modülü (Mevcut)</span>
+                </div>
+                <div class="decision-item">
+                    <span class="label">Kullanıcı Güncellemesi:</span>
+                    <span class="value">UserManagement Modülü (Mevcut)</span>
+                </div>
+                <div class="decision-item">
+                    <span class="label">Dashboard Widget:</span>
+                    <span class="value">Ana Dashboard (routes/admin)</span>
+                </div>
+            </div>
+
+            <div class="note-box">
+                <p><strong>Neden UserManagement?</strong> Tüm üyelik özellikleri kullanıcı ile doğrudan ilişkili. Mevcut UserManagement modülüne entegre edilecek - yeni modül oluşturmaya gerek yok.</p>
+            </div>
+        </section>
+
+        <!-- Subscription Plans List -->
+        <section id="plan-liste">
+            <h2>2. Abonelik Planları - Liste</h2>
+
+            <div class="mockup">
+                <div class="mockup-header">
+                    <span class="mockup-title">Abonelik Planları</span>
+                    <span class="mockup-badge">Livewire Component</span>
+                </div>
+                <div class="mockup-body">
+                    <div class="mockup-toolbar">
+                        <button class="mock-btn mock-btn-primary">+ Yeni Plan</button>
+                        <input type="text" class="mock-search" placeholder="Plan ara...">
+                        <select class="mock-input" style="width: auto;">
+                            <option>Tüm Durumlar</option>
+                            <option>Aktif</option>
+                            <option>Pasif</option>
+                        </select>
+                    </div>
+                    <table class="mock-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox"></th>
+                                <th>Plan Adı</th>
+                                <th>Periyot</th>
+                                <th>Fiyat</th>
+                                <th>Özellikler</th>
+                                <th>Aboneler</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td><strong>Aylık Premium</strong></td>
+                                <td>Aylık</td>
+                                <td>299 TL</td>
+                                <td>3 Cihaz, HD</td>
+                                <td>156</td>
+                                <td><span class="mock-status status-active">Aktif</span></td>
+                                <td>
+                                    <button class="mock-btn mock-btn-secondary">Düzenle</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td><strong>Yıllık Premium</strong></td>
+                                <td>Yıllık</td>
+                                <td>2.999 TL</td>
+                                <td>5 Cihaz, 4K</td>
+                                <td>89</td>
+                                <td><span class="mock-status status-active">Aktif</span></td>
+                                <td>
+                                    <button class="mock-btn mock-btn-secondary">Düzenle</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td><strong>Kurumsal</strong></td>
+                                <td>Yıllık</td>
+                                <td>9.999 TL</td>
+                                <td>Sınırsız, API</td>
+                                <td>12</td>
+                                <td><span class="mock-status status-active">Aktif</span></td>
+                                <td>
+                                    <button class="mock-btn mock-btn-secondary">Düzenle</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="file-list">
+                <h4>Oluşturulacak Dosyalar:</h4>
+                <div class="file-item">Modules/UserManagement/app/Http/Livewire/SubscriptionPlanComponent.php</div>
+                <div class="file-item">Modules/UserManagement/app/Http/Livewire/SubscriptionPlanManageComponent.php</div>
+                <div class="file-item">Modules/UserManagement/resources/views/livewire/subscription-plan-component.blade.php</div>
+                <div class="file-item">Modules/UserManagement/resources/views/livewire/subscription-plan-manage-component.blade.php</div>
+                <div class="file-item">Modules/UserManagement/routes/admin.php (route ekleme)</div>
+            </div>
+        </section>
+
+        <!-- Subscription Plan Form -->
+        <section id="plan-form">
+            <h2>3. Abonelik Planları - Form</h2>
+
+            <div class="mockup">
+                <div class="mockup-header">
+                    <span class="mockup-title">Plan Düzenle: Aylık Premium</span>
+                    <span class="mockup-badge">Manage Component</span>
+                </div>
+                <div class="mockup-body">
+                    <div class="mock-form">
+                        <div class="mock-form-row">
+                            <div class="mock-form-group">
+                                <label>Plan Adı *</label>
+                                <input type="text" class="mock-input" value="Aylık Premium">
+                            </div>
+                            <div class="mock-form-group">
+                                <label>Slug</label>
+                                <input type="text" class="mock-input" value="aylik-premium">
+                            </div>
+                        </div>
+
+                        <div class="mock-form-row">
+                            <div class="mock-form-group">
+                                <label>Fiyat (TL) *</label>
+                                <input type="number" class="mock-input" value="299">
+                            </div>
+                            <div class="mock-form-group">
+                                <label>Periyot *</label>
+                                <select class="mock-input">
+                                    <option selected>Aylık</option>
+                                    <option>Yıllık</option>
+                                    <option>Haftalık</option>
+                                </select>
+                            </div>
+                            <div class="mock-form-group">
+                                <label>Periyot Sayısı</label>
+                                <input type="number" class="mock-input" value="1">
+                            </div>
+                        </div>
+
+                        <div class="mock-form-row">
+                            <div class="mock-form-group">
+                                <label>Cihaz Limiti</label>
+                                <input type="number" class="mock-input" value="3">
+                            </div>
+                            <div class="mock-form-group">
+                                <label>Deneme Günü</label>
+                                <input type="number" class="mock-input" value="7">
+                            </div>
+                            <div class="mock-form-group">
+                                <label>Sıralama</label>
+                                <input type="number" class="mock-input" value="1">
+                            </div>
+                        </div>
+
+                        <div class="mock-form-group">
+                            <label>Özellikler (JSON)</label>
+                            <textarea class="mock-input" rows="4">["HD Kalite", "3 Cihaz", "İndirme", "Reklamsız"]</textarea>
+                        </div>
+
+                        <div class="mock-form-group">
+                            <label>Açıklama</label>
+                            <textarea class="mock-input" rows="3">Bireysel kullanıcılar için ideal aylık plan.</textarea>
+                        </div>
+
+                        <div class="mock-form-row">
+                            <div class="mock-form-group">
+                                <label><input type="checkbox" checked> Aktif</label>
+                            </div>
+                            <div class="mock-form-group">
+                                <label><input type="checkbox"> Öne Çıkan</label>
+                            </div>
+                            <div class="mock-form-group">
+                                <label><input type="checkbox"> Kurumsal Plan</label>
+                            </div>
+                        </div>
+
+                        <div class="mockup-toolbar">
+                            <button class="mock-btn mock-btn-primary">Kaydet</button>
+                            <button class="mock-btn mock-btn-secondary">İptal</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Coupon List -->
+        <section id="kupon-liste">
+            <h2>4. Kupon Yönetimi - Liste</h2>
+
+            <div class="mockup">
+                <div class="mockup-header">
+                    <span class="mockup-title">Kuponlar</span>
+                    <span class="mockup-badge">Livewire Component</span>
+                </div>
+                <div class="mockup-body">
+                    <div class="mockup-toolbar">
+                        <button class="mock-btn mock-btn-primary">+ Yeni Kupon</button>
+                        <input type="text" class="mock-search" placeholder="Kupon kodu ara...">
+                        <select class="mock-input" style="width: auto;">
+                            <option>Tüm Tipler</option>
+                            <option>Yüzde</option>
+                            <option>Sabit</option>
+                        </select>
+                    </div>
+                    <table class="mock-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox"></th>
+                                <th>Kupon Kodu</th>
+                                <th>İndirim</th>
+                                <th>Kullanım</th>
+                                <th>Limit</th>
+                                <th>Geçerlilik</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td><strong>HOSGELDIN20</strong></td>
+                                <td>%20</td>
+                                <td>45</td>
+                                <td>100</td>
+                                <td>2024-12-31</td>
+                                <td><span class="mock-status status-active">Aktif</span></td>
+                                <td>
+                                    <button class="mock-btn mock-btn-secondary">Düzenle</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td><strong>YILLIK50</strong></td>
+                                <td>50 TL</td>
+                                <td>12</td>
+                                <td>50</td>
+                                <td>2024-12-31</td>
+                                <td><span class="mock-status status-active">Aktif</span></td>
+                                <td>
+                                    <button class="mock-btn mock-btn-secondary">Düzenle</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td><strong>SUMMER2024</strong></td>
+                                <td>%30</td>
+                                <td>200</td>
+                                <td>200</td>
+                                <td>2024-09-01</td>
+                                <td><span class="mock-status status-expired">Süresi Doldu</span></td>
+                                <td>
+                                    <button class="mock-btn mock-btn-secondary">Düzenle</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="file-list">
+                <h4>Oluşturulacak Dosyalar:</h4>
+                <div class="file-item">Modules/UserManagement/app/Http/Livewire/CouponComponent.php</div>
+                <div class="file-item">Modules/UserManagement/app/Http/Livewire/CouponManageComponent.php</div>
+                <div class="file-item">Modules/UserManagement/resources/views/livewire/coupon-component.blade.php</div>
+                <div class="file-item">Modules/UserManagement/resources/views/livewire/coupon-manage-component.blade.php</div>
+            </div>
+        </section>
+
+        <!-- Coupon Form -->
+        <section id="kupon-form">
+            <h2>5. Kupon Yönetimi - Form</h2>
+
+            <div class="mockup">
+                <div class="mockup-header">
+                    <span class="mockup-title">Yeni Kupon Oluştur</span>
+                    <span class="mockup-badge">Manage Component</span>
+                </div>
+                <div class="mockup-body">
+                    <div class="mock-form">
+                        <div class="mock-form-row">
+                            <div class="mock-form-group">
+                                <label>Kupon Kodu *</label>
+                                <input type="text" class="mock-input" placeholder="HOSGELDIN20">
+                            </div>
+                            <div class="mock-form-group">
+                                <label>İndirim Tipi *</label>
+                                <select class="mock-input">
+                                    <option>Yüzde (%)</option>
+                                    <option>Sabit Tutar (TL)</option>
+                                </select>
+                            </div>
+                            <div class="mock-form-group">
+                                <label>İndirim Değeri *</label>
+                                <input type="number" class="mock-input" placeholder="20">
+                            </div>
+                        </div>
+
+                        <div class="mock-form-row">
+                            <div class="mock-form-group">
+                                <label>Minimum Tutar</label>
+                                <input type="number" class="mock-input" placeholder="100">
+                            </div>
+                            <div class="mock-form-group">
+                                <label>Maksimum İndirim</label>
+                                <input type="number" class="mock-input" placeholder="500">
+                            </div>
+                            <div class="mock-form-group">
+                                <label>Kullanım Limiti</label>
+                                <input type="number" class="mock-input" placeholder="100">
+                            </div>
+                        </div>
+
+                        <div class="mock-form-row">
+                            <div class="mock-form-group">
+                                <label>Başlangıç Tarihi</label>
+                                <input type="date" class="mock-input">
+                            </div>
+                            <div class="mock-form-group">
+                                <label>Bitiş Tarihi</label>
+                                <input type="date" class="mock-input">
+                            </div>
+                        </div>
+
+                        <div class="mock-form-group">
+                            <label>Geçerli Planlar</label>
+                            <select class="mock-input" multiple style="height: 100px;">
+                                <option>Tüm Planlar</option>
+                                <option>Aylık Premium</option>
+                                <option>Yıllık Premium</option>
+                                <option>Kurumsal</option>
+                            </select>
+                        </div>
+
+                        <div class="mock-form-row">
+                            <div class="mock-form-group">
+                                <label><input type="checkbox" checked> Aktif</label>
+                            </div>
+                            <div class="mock-form-group">
+                                <label><input type="checkbox"> Tek Kullanımlık</label>
+                            </div>
+                            <div class="mock-form-group">
+                                <label><input type="checkbox"> İlk Abonelik</label>
+                            </div>
+                        </div>
+
+                        <div class="mockup-toolbar">
+                            <button class="mock-btn mock-btn-primary">Kaydet</button>
+                            <button class="mock-btn mock-btn-secondary">İptal</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Subscriptions List -->
+        <section id="abonelik-liste">
+            <h2>6. Abonelikler - Liste</h2>
+
+            <div class="mockup">
+                <div class="mockup-header">
+                    <span class="mockup-title">Abonelikler</span>
+                    <span class="mockup-badge">Livewire Component</span>
+                </div>
+                <div class="mockup-body">
+                    <div class="mockup-toolbar">
+                        <input type="text" class="mock-search" placeholder="Kullanıcı ara...">
+                        <select class="mock-input" style="width: auto;">
+                            <option>Tüm Durumlar</option>
+                            <option>Aktif</option>
+                            <option>Deneme</option>
+                            <option>İptal</option>
+                            <option>Süresi Dolmuş</option>
+                        </select>
+                        <select class="mock-input" style="width: auto;">
+                            <option>Tüm Planlar</option>
+                            <option>Aylık Premium</option>
+                            <option>Yıllık Premium</option>
+                        </select>
+                    </div>
+                    <table class="mock-table">
+                        <thead>
+                            <tr>
+                                <th>Kullanıcı</th>
+                                <th>Plan</th>
+                                <th>Başlangıç</th>
+                                <th>Bitiş</th>
+                                <th>Ödeme</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <strong>Ahmet Yılmaz</strong><br>
+                                    <small style="color: #94a3b8;">ahmet@email.com</small>
+                                </td>
+                                <td>Yıllık Premium</td>
+                                <td>2024-01-15</td>
+                                <td>2025-01-15</td>
+                                <td>2.999 TL</td>
+                                <td><span class="mock-status status-active">Aktif</span></td>
+                                <td>
+                                    <button class="mock-btn mock-btn-secondary">Detay</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Ayşe Kaya</strong><br>
+                                    <small style="color: #94a3b8;">ayse@email.com</small>
+                                </td>
+                                <td>Aylık Premium</td>
+                                <td>2024-11-01</td>
+                                <td>2024-11-30</td>
+                                <td>299 TL</td>
+                                <td><span class="mock-status status-trial">Deneme</span></td>
+                                <td>
+                                    <button class="mock-btn mock-btn-secondary">Detay</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Mehmet Demir</strong><br>
+                                    <small style="color: #94a3b8;">mehmet@email.com</small>
+                                </td>
+                                <td>Aylık Premium</td>
+                                <td>2024-10-01</td>
+                                <td>2024-10-31</td>
+                                <td>299 TL</td>
+                                <td><span class="mock-status status-expired">Süresi Doldu</span></td>
+                                <td>
+                                    <button class="mock-btn mock-btn-secondary">Detay</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="file-list">
+                <h4>Oluşturulacak Dosyalar:</h4>
+                <div class="file-item">Modules/UserManagement/app/Http/Livewire/SubscriptionComponent.php</div>
+                <div class="file-item">Modules/UserManagement/resources/views/livewire/subscription-component.blade.php</div>
+            </div>
+        </section>
+
+        <!-- User List Update -->
+        <section id="user-update">
+            <h2>7. Kullanıcı Listesi - Güncelleme</h2>
+
+            <div class="note-box">
+                <p><strong>Mevcut UserComponent güncellenmeli:</strong> Tabloya yeni kolonlar eklenmeli, filtrelere yeni seçenekler eklenmeli.</p>
+            </div>
+
+            <div class="mockup">
+                <div class="mockup-header">
+                    <span class="mockup-title">Kullanıcılar (Güncellenmiş)</span>
+                    <span class="mockup-badge">Mevcut Component Güncelleme</span>
+                </div>
+                <div class="mockup-body">
+                    <div class="mockup-toolbar">
+                        <button class="mock-btn mock-btn-primary">+ Yeni Kullanıcı</button>
+                        <input type="text" class="mock-search" placeholder="Kullanıcı ara...">
+                        <select class="mock-input" style="width: auto;">
+                            <option>Abonelik Durumu</option>
+                            <option>Aktif Abonelik</option>
+                            <option>Deneme</option>
+                            <option>Abonelik Yok</option>
+                        </select>
+                        <select class="mock-input" style="width: auto;">
+                            <option>Onay Durumu</option>
+                            <option>Onaylı</option>
+                            <option>Onay Bekliyor</option>
+                        </select>
+                    </div>
+                    <table class="mock-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox"></th>
+                                <th>Kullanıcı</th>
+                                <th>E-posta</th>
+                                <th>Abonelik</th>
+                                <th>Cihazlar</th>
+                                <th>Onay</th>
+                                <th>Kayıt</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td><strong>Ahmet Yılmaz</strong></td>
+                                <td>ahmet@email.com</td>
+                                <td><span class="mock-status status-active">Yıllık Premium</span></td>
+                                <td>2/5</td>
+                                <td><span class="mock-status status-active">Onaylı</span></td>
+                                <td>2024-01-15</td>
+                                <td>
+                                    <button class="mock-btn mock-btn-secondary">Düzenle</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td><strong>Ayşe Kaya</strong></td>
+                                <td>ayse@email.com</td>
+                                <td><span class="mock-status status-trial">Deneme (3 gün)</span></td>
+                                <td>1/3</td>
+                                <td><span class="mock-status status-active">Onaylı</span></td>
+                                <td>2024-11-20</td>
+                                <td>
+                                    <button class="mock-btn mock-btn-secondary">Düzenle</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td><strong>Mehmet Demir</strong></td>
+                                <td>mehmet@email.com</td>
+                                <td><span class="mock-status status-expired">Yok</span></td>
+                                <td>0/1</td>
+                                <td><span class="mock-status status-pending">Bekliyor</span></td>
+                                <td>2024-11-22</td>
+                                <td>
+                                    <button class="mock-btn mock-btn-secondary">Düzenle</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="file-list">
+                <h4>Güncellenecek Dosyalar:</h4>
+                <div class="file-item">Modules/UserManagement/app/Http/Livewire/UserComponent.php (güncelleme)</div>
+                <div class="file-item">Modules/UserManagement/resources/views/livewire/user-component.blade.php (güncelleme)</div>
+            </div>
+        </section>
+
+        <!-- User Detail Tabs -->
+        <section id="user-detail">
+            <h2>8. Kullanıcı Detay - Yeni Sekmeler</h2>
+
+            <div class="note-box">
+                <p><strong>Mevcut UserManageComponent'e yeni sekmeler eklenmeli:</strong> Cihazlar, Abonelik Geçmişi, Giriş Logları</p>
+            </div>
+
+            <div class="mockup">
+                <div class="mockup-header">
+                    <span class="mockup-title">Kullanıcı: Ahmet Yılmaz - Cihazlar Sekmesi</span>
+                    <span class="mockup-badge">Yeni Sekme</span>
+                </div>
+                <div class="mockup-body">
+                    <div class="mockup-toolbar" style="border-bottom: 1px solid #334155; padding-bottom: 15px;">
+                        <button class="mock-btn mock-btn-secondary">Genel</button>
+                        <button class="mock-btn mock-btn-secondary">Roller</button>
+                        <button class="mock-btn mock-btn-primary">Cihazlar</button>
+                        <button class="mock-btn mock-btn-secondary">Abonelik</button>
+                        <button class="mock-btn mock-btn-secondary">Giriş Logları</button>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <span style="color: #94a3b8;">Aktif Cihazlar: 2/5</span>
+                            <button class="mock-btn mock-btn-danger">Tümünü Çıkış Yap</button>
+                        </div>
+
+                        <table class="mock-table">
+                            <thead>
+                                <tr>
+                                    <th>Cihaz</th>
+                                    <th>IP Adresi</th>
+                                    <th>Konum</th>
+                                    <th>Son Aktivite</th>
+                                    <th>İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <strong>Chrome / Windows</strong><br>
+                                        <small style="color: #10b981;">Şu anki oturum</small>
+                                    </td>
+                                    <td>192.168.1.1</td>
+                                    <td>İstanbul, TR</td>
+                                    <td>Şimdi</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Safari / iPhone</strong>
+                                    </td>
+                                    <td>192.168.1.2</td>
+                                    <td>Ankara, TR</td>
+                                    <td>2 saat önce</td>
+                                    <td>
+                                        <button class="mock-btn mock-btn-danger">Çıkış</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mockup">
+                <div class="mockup-header">
+                    <span class="mockup-title">Kullanıcı: Ahmet Yılmaz - Abonelik Sekmesi</span>
+                    <span class="mockup-badge">Yeni Sekme</span>
+                </div>
+                <div class="mockup-body">
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #60a5fa; margin-bottom: 15px;">Mevcut Abonelik</h4>
+                        <div style="background: #0f172a; padding: 15px; border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <div>
+                                    <strong style="color: #fbbf24;">Yıllık Premium</strong><br>
+                                    <small style="color: #94a3b8;">Bitiş: 2025-01-15 (56 gün kaldı)</small>
+                                </div>
+                                <div>
+                                    <button class="mock-btn mock-btn-secondary">Plan Değiştir</button>
+                                    <button class="mock-btn mock-btn-danger">İptal Et</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 style="color: #60a5fa; margin-bottom: 15px;">Abonelik Geçmişi</h4>
+                    <table class="mock-table">
+                        <thead>
+                            <tr>
+                                <th>Plan</th>
+                                <th>Dönem</th>
+                                <th>Tutar</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Yıllık Premium</td>
+                                <td>2024-01-15 - 2025-01-15</td>
+                                <td>2.999 TL</td>
+                                <td><span class="mock-status status-active">Aktif</span></td>
+                            </tr>
+                            <tr>
+                                <td>Aylık Premium</td>
+                                <td>2023-12-01 - 2024-01-01</td>
+                                <td>299 TL</td>
+                                <td><span class="mock-status status-expired">Tamamlandı</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="file-list">
+                <h4>Güncellenecek Dosyalar:</h4>
+                <div class="file-item">Modules/UserManagement/app/Http/Livewire/UserManageComponent.php (güncelleme)</div>
+                <div class="file-item">Modules/UserManagement/resources/views/livewire/user-manage-component.blade.php (güncelleme)</div>
+            </div>
+        </section>
+
+        <!-- Dashboard Widgets -->
+        <section id="dashboard">
+            <h2>9. Dashboard Widget'ları</h2>
+
+            <div class="mockup">
+                <div class="mockup-header">
+                    <span class="mockup-title">Admin Dashboard - Üyelik Widget'ları</span>
+                    <span class="mockup-badge">Ana Dashboard</span>
+                </div>
+                <div class="mockup-body">
+                    <div class="widget-grid">
+                        <div class="widget-card">
+                            <div class="widget-number">245</div>
+                            <div class="widget-label">Aktif Abonelik</div>
+                        </div>
+                        <div class="widget-card">
+                            <div class="widget-number" style="color: #f59e0b;">23</div>
+                            <div class="widget-label">Deneme Süresi</div>
+                        </div>
+                        <div class="widget-card">
+                            <div class="widget-number" style="color: #10b981;">12.450 TL</div>
+                            <div class="widget-label">Bu Ay Gelir</div>
+                        </div>
+                        <div class="widget-card">
+                            <div class="widget-number" style="color: #ef4444;">8</div>
+                            <div class="widget-label">Yenileme Bekliyor</div>
+                        </div>
+                    </div>
+
+                    <div style="background: #0f172a; padding: 15px; border-radius: 8px;">
+                        <h4 style="color: #60a5fa; margin-bottom: 15px;">Son Abonelikler</h4>
+                        <table class="mock-table">
+                            <thead>
+                                <tr>
+                                    <th>Kullanıcı</th>
+                                    <th>Plan</th>
+                                    <th>Tutar</th>
+                                    <th>Tarih</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Ahmet Yılmaz</td>
+                                    <td>Yıllık Premium</td>
+                                    <td>2.999 TL</td>
+                                    <td>Bugün</td>
+                                </tr>
+                                <tr>
+                                    <td>Ayşe Kaya</td>
+                                    <td>Aylık Premium</td>
+                                    <td>299 TL</td>
+                                    <td>Dün</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-list">
+                <h4>Oluşturulacak Dosyalar:</h4>
+                <div class="file-item">app/Http/Livewire/Admin/SubscriptionStatsWidget.php</div>
+                <div class="file-item">resources/views/livewire/admin/subscription-stats-widget.blade.php</div>
+                <div class="file-item">resources/views/admin/dashboard.blade.php (widget ekleme)</div>
+            </div>
+        </section>
+
+        <footer>
+            Claude AI tarafindan olusturuldu - 2025-11-23<br>
+            <strong>Onay bekliyor - "UYGUNDUR" ile devam edilecek</strong>
+        </footer>
+    </div>
+</body>
+</html>

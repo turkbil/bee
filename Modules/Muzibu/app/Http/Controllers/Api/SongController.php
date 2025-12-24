@@ -65,7 +65,7 @@ class SongController extends Controller
                         'album_id' => $album?->album_id,
                         'album_title' => $album?->title,
                         'album_slug' => $album?->slug,
-                        'album_cover' => $album?->media_id,
+                        'album_cover' => $song->media_id ?? $album?->media_id,
                         'artist_id' => $artist?->artist_id,
                         'artist_title' => $artist?->title,
                         'artist_slug' => $artist?->slug,

@@ -1,1 +1,567 @@
-v4/index.html
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Component Plan - İç Sayfalardan Başla</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'muzibu-coral': '#ff7f50',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100">
+
+    <header class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-b border-slate-700 sticky top-0 z-50 backdrop-blur">
+        <div class="container mx-auto px-6 py-6">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-muzibu-coral rounded-xl flex items-center justify-center">
+                    <i class="fas fa-puzzle-piece text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold text-white">Muzibu Component Plan</h1>
+                    <p class="text-slate-400">17 Component - İç Sayfalardan Başla Stratejisi</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12 max-w-6xl">
+
+        <!-- Strateji Açıklama -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-br from-green-900/20 to-emerald-900/20 border border-green-800 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-white mb-4">
+                    <i class="fas fa-lightbulb text-green-400 mr-2"></i>Strateji: İç Sayfalardan Başla
+                </h2>
+
+                <div class="space-y-6">
+                    <div class="bg-green-900/20 border border-green-700 rounded-xl p-6">
+                        <h3 class="text-xl font-bold text-green-300 mb-4">✅ Neden İç Sayfalardan Başlamalıyız?</h3>
+                        <div class="grid md:grid-cols-2 gap-4 text-slate-200">
+                            <div class="space-y-2">
+                                <div class="flex items-start gap-2">
+                                    <i class="fas fa-check text-green-400 mt-1"></i>
+                                    <span>İç sayfalarda test ederek ilerleriz</span>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <i class="fas fa-check text-green-400 mt-1"></i>
+                                    <span>Component çalıştığını görürüz</span>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <i class="fas fa-check text-green-400 mt-1"></i>
+                                    <span>Hata varsa erken tespit ederiz</span>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex items-start gap-2">
+                                    <i class="fas fa-check text-green-400 mt-1"></i>
+                                    <span>Component hazır olduktan sonra anasayfaya ekleriz</span>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <i class="fas fa-check text-green-400 mt-1"></i>
+                                    <span>Anasayfa için özel component gerekmez</span>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <i class="fas fa-check text-green-400 mt-1"></i>
+                                    <span>Aynı component'leri kullanırız</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 rounded-xl p-6 border border-slate-700">
+                        <h3 class="text-xl font-bold text-white mb-4">📋 Genel Akış</h3>
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">1</div>
+                                <span class="text-slate-300">İç Sayfa Component</span>
+                            </div>
+                            <i class="fas fa-arrow-right text-slate-600"></i>
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
+                                <span class="text-slate-300">Test Et</span>
+                            </div>
+                            <i class="fas fa-arrow-right text-slate-600"></i>
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-sm">3</div>
+                                <span class="text-slate-300">Anasayfaya Uygula</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- YENİ ÖNCELİK SIRASI -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-muzibu-coral to-orange-600 rounded-xl p-5 mb-6">
+                <h2 class="text-3xl font-bold text-white">
+                    <i class="fas fa-list-ol mr-2"></i>YENİ ÖNCELİK SIRASI
+                </h2>
+            </div>
+
+            <div class="space-y-8">
+                <!-- FAZ 1: Detay Sayfalar -->
+                <div class="bg-slate-900 border-l-4 border-red-500 rounded-xl p-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl">1</div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">FAZ 1: DETAY SAYFA COMPONENTS</h3>
+                            <p class="text-slate-400">2-3 gün • albums/show, playlists/show için</p>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-slate-950 rounded-xl p-6 border border-red-700/50">
+                            <h4 class="font-bold text-red-300 mb-4 text-lg">
+                                <i class="fas fa-puzzle-piece mr-2"></i>Yapılacak Component'ler
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="bg-slate-900 rounded-lg p-3 border border-slate-800">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-semibold text-white">1. song-row</span>
+                                        <span class="text-xs px-2 py-1 bg-red-900/30 rounded text-red-300">ÖNCELİK 1</span>
+                                    </div>
+                                    <p class="text-sm text-slate-400">Şarkı liste satırı - en çok kullanılan!</p>
+                                </div>
+
+                                <div class="bg-slate-900 rounded-lg p-3 border border-slate-800">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-semibold text-white">2. context-menu</span>
+                                        <span class="text-xs px-2 py-1 bg-red-900/30 rounded text-red-300">ÖNCELİK 1</span>
+                                    </div>
+                                    <p class="text-sm text-slate-400">Sağ tık menü - her yerde lazım</p>
+                                </div>
+
+                                <div class="bg-slate-900 rounded-lg p-3 border border-slate-800">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-semibold text-white">3. empty-state</span>
+                                        <span class="text-xs px-2 py-1 bg-orange-900/30 rounded text-orange-300">ÖNCELİK 2</span>
+                                    </div>
+                                    <p class="text-sm text-slate-400">Boş durum mesajı</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 rounded-xl p-6 border border-red-700/50">
+                            <h4 class="font-bold text-red-300 mb-4 text-lg">
+                                <i class="fas fa-file-code mr-2"></i>Test Edilecek Sayfalar
+                            </h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-center gap-2 p-2 bg-slate-900 rounded">
+                                    <i class="fas fa-compact-disc text-blue-400"></i>
+                                    <code class="text-green-400 text-xs">albums/show.blade.php</code>
+                                </div>
+                                <p class="text-slate-400 text-xs ml-8 mb-3">
+                                    → Şarkı listesinde <code class="text-blue-400">&lt;x-muzibu.song-row&gt;</code> kullan
+                                </p>
+
+                                <div class="flex items-center gap-2 p-2 bg-slate-900 rounded">
+                                    <i class="fas fa-list-music text-green-400"></i>
+                                    <code class="text-green-400 text-xs">playlists/show.blade.php</code>
+                                </div>
+                                <p class="text-slate-400 text-xs ml-8 mb-3">
+                                    → Şarkı listesinde <code class="text-blue-400">&lt;x-muzibu.song-row&gt;</code> kullan
+                                </p>
+
+                                <div class="flex items-center gap-2 p-2 bg-slate-900 rounded">
+                                    <i class="fas fa-heart text-pink-400"></i>
+                                    <code class="text-green-400 text-xs">favorites/index.blade.php</code>
+                                </div>
+                                <p class="text-slate-400 text-xs ml-8">
+                                    → Şarkı listesinde <code class="text-blue-400">&lt;x-muzibu.song-row&gt;</code> kullan
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-900/20 border border-blue-700 rounded-lg p-4">
+                        <h4 class="font-semibold text-blue-300 mb-2">
+                            <i class="fas fa-code mr-2"></i>Örnek Kullanım
+                        </h4>
+                        <div class="bg-slate-950 rounded p-3 border border-slate-700 overflow-x-auto">
+<pre class="text-xs"><code class="text-slate-400">{{-- albums/show.blade.php --}}
+
+&lt;!-- Şarkı listesi --&gt;
+@foreach($album->songs as $song)
+    <span class="text-green-400">&lt;x-muzibu.song-row
+        :song="$song"
+        :index="$loop->iteration"
+        :showCover="true"
+        :showArtist="false"
+    /&gt;</span>
+@endforeach
+
+@if($album->songs->isEmpty())
+    <span class="text-green-400">&lt;x-muzibu.empty-state
+        icon="music"
+        title="Şarkı Yok"
+        message="Bu albümde henüz şarkı bulunmuyor"
+    /&gt;</span>
+@endif</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAZ 2: Liste Sayfalar -->
+                <div class="bg-slate-900 border-l-4 border-orange-500 rounded-xl p-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-xl">2</div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">FAZ 2: LİSTE SAYFA COMPONENTS</h3>
+                            <p class="text-slate-400">2 gün • albums/index, playlists/index, artists/index için</p>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-slate-950 rounded-xl p-6 border border-orange-700/50">
+                            <h4 class="font-bold text-orange-300 mb-4 text-lg">Yapılacak Component'ler</h4>
+                            <div class="space-y-3 text-sm">
+                                <div class="bg-slate-900 rounded p-3 border border-slate-800">
+                                    <span class="font-semibold text-white">4. album-card</span>
+                                    <p class="text-slate-400 text-xs mt-1">Albüm grid kartı</p>
+                                </div>
+                                <div class="bg-slate-900 rounded p-3 border border-slate-800">
+                                    <span class="font-semibold text-white">5. playlist-card</span>
+                                    <p class="text-slate-400 text-xs mt-1">Playlist grid kartı</p>
+                                </div>
+                                <div class="bg-slate-900 rounded p-3 border border-slate-800">
+                                    <span class="font-semibold text-white">6. artist-card</span>
+                                    <p class="text-slate-400 text-xs mt-1">Sanatçı kartı (yuvarlak)</p>
+                                </div>
+                                <div class="bg-slate-900 rounded p-3 border border-slate-800">
+                                    <span class="font-semibold text-white">7. genre-card</span>
+                                    <p class="text-slate-400 text-xs mt-1">Tür kartı (gradient)</p>
+                                </div>
+                                <div class="bg-slate-900 rounded p-3 border border-slate-800">
+                                    <span class="font-semibold text-white">8. sector-card</span>
+                                    <p class="text-slate-400 text-xs mt-1">Sektör kartı</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 rounded-xl p-6 border border-orange-700/50">
+                            <h4 class="font-bold text-orange-300 mb-4 text-lg">Test Edilecek Sayfalar</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="p-2 bg-slate-900 rounded">
+                                    <code class="text-green-400 text-xs">albums/index.blade.php</code>
+                                </div>
+                                <div class="p-2 bg-slate-900 rounded">
+                                    <code class="text-green-400 text-xs">playlists/index.blade.php</code>
+                                </div>
+                                <div class="p-2 bg-slate-900 rounded">
+                                    <code class="text-green-400 text-xs">artists/index.blade.php</code>
+                                </div>
+                                <div class="p-2 bg-slate-900 rounded">
+                                    <code class="text-green-400 text-xs">genres/index.blade.php</code>
+                                </div>
+                                <div class="p-2 bg-slate-900 rounded">
+                                    <code class="text-green-400 text-xs">sectors/index.blade.php</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-900/20 border border-blue-700 rounded-lg p-4">
+                        <h4 class="font-semibold text-blue-300 mb-2">Örnek Kullanım</h4>
+                        <div class="bg-slate-950 rounded p-3 border border-slate-700 overflow-x-auto">
+<pre class="text-xs"><code class="text-slate-400">{{-- albums/index.blade.php --}}
+
+&lt;div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"&gt;
+    @foreach($albums as $album)
+        <span class="text-green-400">&lt;x-muzibu.album-card :album="$album" /&gt;</span>
+    @endforeach
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAZ 3: Anasayfa -->
+                <div class="bg-slate-900 border-l-4 border-green-500 rounded-xl p-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl">3</div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">FAZ 3: ANASAYFA</h3>
+                            <p class="text-slate-400">1 gün • Hazır component'leri kullan</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-900/20 border border-green-700 rounded-xl p-6 mb-6">
+                        <h4 class="font-bold text-green-300 mb-4 text-lg">
+                            <i class="fas fa-lightbulb mr-2"></i>Önemli Not
+                        </h4>
+                        <div class="space-y-3 text-slate-200">
+                            <p>
+                                <i class="fas fa-check text-green-400 mr-2"></i>
+                                <strong>YENİ COMPONENT YAPILMAYACAK!</strong>
+                            </p>
+                            <p>
+                                <i class="fas fa-check text-green-400 mr-2"></i>
+                                Faz 1 ve 2'deki hazır component'leri kullanacağız
+                            </p>
+                            <p>
+                                <i class="fas fa-check text-green-400 mr-2"></i>
+                                Sadece layout düzenleyeceğiz (grid, horizontal scroll)
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-slate-950 rounded-xl p-6 border border-green-700/50">
+                            <h4 class="font-bold text-green-300 mb-4">Anasayfa Bölümleri</h4>
+                            <div class="space-y-3 text-sm">
+                                <div class="bg-slate-900 rounded p-3 border border-slate-800">
+                                    <div class="font-semibold text-white mb-1">Quick Access (2x4 grid)</div>
+                                    <p class="text-slate-400 text-xs">→ <code class="text-blue-400">playlist-quick-card</code> (yeni!)</p>
+                                </div>
+                                <div class="bg-slate-900 rounded p-3 border border-slate-800">
+                                    <div class="font-semibold text-white mb-1">Featured Playlists</div>
+                                    <p class="text-slate-400 text-xs">→ <code class="text-blue-400">playlist-card</code> (hazır!)</p>
+                                </div>
+                                <div class="bg-slate-900 rounded p-3 border border-slate-800">
+                                    <div class="font-semibold text-white mb-1">New Albums</div>
+                                    <p class="text-slate-400 text-xs">→ <code class="text-blue-400">album-card</code> (hazır!)</p>
+                                </div>
+                                <div class="bg-slate-900 rounded p-3 border border-slate-800">
+                                    <div class="font-semibold text-white mb-1">Popular Songs</div>
+                                    <p class="text-slate-400 text-xs">→ <code class="text-blue-400">song-card</code> (yeni!)</p>
+                                </div>
+                                <div class="bg-slate-900 rounded p-3 border border-slate-800">
+                                    <div class="font-semibold text-white mb-1">Genres</div>
+                                    <p class="text-slate-400 text-xs">→ <code class="text-blue-400">genre-card</code> (hazır!)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 rounded-xl p-6 border border-green-700/50">
+                            <h4 class="font-bold text-green-300 mb-4">Ek Component'ler</h4>
+                            <div class="space-y-3 text-sm">
+                                <div class="bg-slate-900 rounded p-3 border border-slate-800">
+                                    <span class="font-semibold text-white">9. playlist-quick-card</span>
+                                    <p class="text-slate-400 text-xs mt-1">Yatay kart (Spotify tarzı)</p>
+                                </div>
+                                <div class="bg-slate-900 rounded p-3 border border-slate-800">
+                                    <span class="font-semibold text-white">10. song-card</span>
+                                    <p class="text-slate-400 text-xs mt-1">Şarkı grid kartı</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAZ 4: Ekstralar -->
+                <div class="bg-slate-900 border-l-4 border-purple-500 rounded-xl p-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xl">4</div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">FAZ 4: EKSTRA COMPONENTS</h3>
+                            <p class="text-slate-400">2 gün • Özel component'ler, modals</p>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-slate-950 rounded-lg p-4 border border-purple-700/50">
+                            <h4 class="font-semibold text-purple-300 mb-2 text-sm">Özel Components</h4>
+                            <ul class="space-y-1 text-xs text-slate-400">
+                                <li>• song-queue-item</li>
+                                <li>• song-sidebar-item</li>
+                                <li>• radio-card</li>
+                                <li>• loading-skeleton</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-slate-950 rounded-lg p-4 border border-purple-700/50">
+                            <h4 class="font-semibold text-purple-300 mb-2 text-sm">Modals</h4>
+                            <ul class="space-y-1 text-xs text-slate-400">
+                                <li>• rating-modal</li>
+                                <li>• playlist-select-modal</li>
+                                <li>• create-playlist-modal</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-slate-950 rounded-lg p-4 border border-purple-700/50">
+                            <h4 class="font-semibold text-purple-300 mb-2 text-sm">Overlays</h4>
+                            <ul class="space-y-1 text-xs text-slate-400">
+                                <li>• queue-overlay</li>
+                                <li>• lyrics-overlay</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toplam Süre -->
+            <div class="bg-gradient-to-r from-muzibu-coral to-orange-600 rounded-2xl p-8 mt-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold text-white mb-2">TOPLAM SÜRE</h3>
+                        <p class="text-white/80">17 Component • 4 Faz</p>
+                    </div>
+                    <div class="text-5xl font-bold text-white">7-8 GÜN</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- İLK ADIM -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-br from-slate-900 to-slate-800 border-2 border-red-500 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-white mb-6">
+                    <i class="fas fa-rocket text-red-400 mr-3"></i>İLK ADIM: song-row Component
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-bold text-red-300 mb-4">1. Component Dosyasını Oluştur</h3>
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700 mb-4">
+                            <p class="text-sm text-slate-400 mb-2">Dosya:</p>
+                            <code class="text-green-400 text-sm">resources/views/components/muzibu/song-row.blade.php</code>
+                        </div>
+
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700 overflow-x-auto">
+<pre class="text-xs"><code class="text-green-400">{{-- song-row.blade.php --}}
+@props(['song', 'index', 'showCover' => true, 'showArtist' => true])
+
+&lt;div class="flex items-center gap-3 p-2 rounded
+            hover:bg-white/5 group cursor-pointer"
+     @click="playSong({{ $song->id }})"
+     @contextmenu.prevent="openContextMenu($event, 'song', {{ $song->id }})"&gt;
+
+    {{-- Sıra No / Play Icon --}}
+    &lt;span class="w-6 text-center text-slate-500"&gt;
+        &lt;span class="group-hover:hidden"&gt;{{ $index }}&lt;/span&gt;
+        &lt;i class="fas fa-play hidden group-hover:block text-white"&gt;&lt;/i&gt;
+    &lt;/span&gt;
+
+    {{-- Cover --}}
+    @if($showCover)
+    &lt;img src="{{ $song->cover_url }}"
+         class="w-10 h-10 rounded"&gt;
+    @endif
+
+    {{-- Title + Artist --}}
+    &lt;div class="flex-1 min-w-0"&gt;
+        &lt;div class="text-white truncate"&gt;{{ $song->title }}&lt;/div&gt;
+        @if($showArtist)
+        &lt;div class="text-slate-400 text-sm truncate"&gt;
+            {{ $song->artist->name }}
+        &lt;/div&gt;
+        @endif
+    &lt;/div&gt;
+
+    {{-- Duration --}}
+    &lt;span class="text-slate-500 text-sm"&gt;
+        {{ $song->duration_formatted }}
+    &lt;/span&gt;
+
+    {{-- 3-dot Menu --}}
+    &lt;button class="opacity-0 group-hover:opacity-100"&gt;
+        &lt;i class="fas fa-ellipsis-v text-slate-400"&gt;&lt;/i&gt;
+    &lt;/button&gt;
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-bold text-red-300 mb-4">2. Test Et: albums/show.blade.php</h3>
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700 overflow-x-auto mb-4">
+<pre class="text-xs"><code class="text-slate-400">{{-- albums/show.blade.php --}}
+
+{{-- Şarkı Listesi --}}
+&lt;div class="mt-6"&gt;
+    @foreach($album->songs as $song)
+        <span class="text-green-400">&lt;x-muzibu.song-row
+            :song="$song"
+            :index="$loop->iteration"
+            :showCover="true"
+            :showArtist="false"
+        /&gt;</span>
+    @endforeach
+&lt;/div&gt;</code></pre>
+                        </div>
+
+                        <div class="bg-blue-900/20 border border-blue-700 rounded-lg p-4">
+                            <h4 class="font-semibold text-blue-300 mb-2">Test Adımları:</h4>
+                            <ol class="space-y-2 text-sm text-slate-300">
+                                <li>1. Albüm detay sayfasına git</li>
+                                <li>2. Şarkı listesini kontrol et</li>
+                                <li>3. Hover efekti çalışıyor mu?</li>
+                                <li>4. Sağ tık menü açılıyor mu?</li>
+                                <li>5. Çalışıyorsa → Diğer sayfalara uygula</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Component Listesi Özet -->
+        <section class="mb-12">
+            <div class="bg-slate-900 border border-slate-700 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-white mb-6">📋 Tüm Component Listesi (17 Adet)</h2>
+
+                <div class="grid md:grid-cols-4 gap-4">
+                    <div>
+                        <h3 class="font-semibold text-muzibu-coral mb-3 text-sm">Şarkı (4)</h3>
+                        <ul class="space-y-1 text-xs text-slate-400">
+                            <li>1. song-row</li>
+                            <li>2. song-card</li>
+                            <li>3. song-queue-item</li>
+                            <li>4. song-sidebar-item</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="font-semibold text-blue-400 mb-3 text-sm">Kartlar (7)</h3>
+                        <ul class="space-y-1 text-xs text-slate-400">
+                            <li>5. album-card</li>
+                            <li>6. playlist-card</li>
+                            <li>7. playlist-quick-card</li>
+                            <li>8. artist-card</li>
+                            <li>9. genre-card</li>
+                            <li>10. sector-card</li>
+                            <li>11. radio-card</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="font-semibold text-orange-400 mb-3 text-sm">Universal (3)</h3>
+                        <ul class="space-y-1 text-xs text-slate-400">
+                            <li>12. context-menu</li>
+                            <li>13. empty-state</li>
+                            <li>14. loading-skeleton</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="font-semibold text-purple-400 mb-3 text-sm">Modals (3)</h3>
+                        <ul class="space-y-1 text-xs text-slate-400">
+                            <li>15. rating-modal</li>
+                            <li>16. playlist-select-modal</li>
+                            <li>17. create-playlist-modal</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 border-t border-slate-700 py-6">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-slate-500 text-sm">Muzibu Component Plan - İç Sayfalardan Başla Stratejisi</p>
+            <p class="text-slate-600 text-xs mt-1">20 Aralık 2025</p>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,1 +1,547 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔴 İxtif.com - Google Analytics Veri Kaybı Sorunu</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .alert h2 {
+            color: #ef4444;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #fbbf24;
+        }
+
+        .problem-box {
+            background: rgba(239, 68, 68, 0.15);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #ef4444;
+        }
+
+        .solution-box {
+            background: rgba(16, 185, 129, 0.15);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #10b981;
+        }
+
+        .code-block {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            color: #a5f3fc;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre;
+            display: block;
+        }
+
+        .file-path {
+            color: #fbbf24;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .step {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .step h4 {
+            color: #60a5fa;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .step p {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .priority-critical { background: #dc2626; color: white; }
+        .priority-high { background: #f59e0b; color: white; }
+        .priority-medium { background: #3b82f6; color: white; }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+
+        .highlight {
+            background: rgba(251, 191, 36, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        ul, ol {
+            margin-left: 25px;
+            color: #cbd5e1;
+        }
+
+        ul li, ol li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .warning {
+            background: rgba(251, 191, 36, 0.1);
+            border-left: 4px solid #fbbf24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .success {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .badge-red { background: #dc2626; color: white; }
+        .badge-yellow { background: #f59e0b; color: white; }
+        .badge-green { background: #10b981; color: white; }
+        .badge-blue { background: #3b82f6; color: white; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background: rgba(30, 41, 59, 0.6);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔴 İxtif.com - Google Analytics Veri Kaybı Sorunu</h1>
+            <div class="meta">
+                <span>📅 Tarih: 2025-12-04</span>
+                <span>🎯 Tenant: ixtif.com (Tenant 2)</span>
+                <span>🔍 Durum: <span class="badge badge-red">KRİTİK SORUN TESPİT EDİLDİ</span></span>
+            </div>
+        </header>
+
+        <div class="alert">
+            <h2>⚠️ SORUN ÖZETİ</h2>
+            <p>İxtif.com sitesinde Google Analytics/Google Tag Manager verisi gelmiyor. Analiz sonucunda <strong>hard-coded GTM ID</strong> ve <strong>Settings eksikliği</strong> tespit edildi.</p>
+        </div>
+
+        <section>
+            <h2>🔍 SORUN ANALİZİ</h2>
+
+            <div class="problem-box">
+                <h3>1. Hard-Coded GTM ID Tespit Edildi</h3>
+                <span class="file-path">📁 resources/views/layouts/landing/minimal.blade.php:57</span>
+                <p><strong>Problem:</strong> GTM ID doğrudan kodda yazılmış, Settings'den çekilmiyor!</p>
+                <ul>
+                    <li>Bu ID muhtemelen <span class="tech-term">yanlış/eski/test ID</span></li>
+                    <li>Tenant 2 (ixtif.com) için <strong>özel ID olmalı</strong></li>
+                    <li>Minimal layout kullanılan tüm sayfalarda bu ID yükleniyor</li>
+                    <li>ID: <span class="highlight">GTM-P8HKHCG9</span></li>
+                </ul>
+            </div>
+
+            <div class="problem-box">
+                <h3>2. Settings Tablosunda GTM/GA4 ID Yok</h3>
+                <p><strong>Kontrol Edilen Alanlar (Tenant 2):</strong></p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Setting Key</th>
+                            <th>Değer</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>marketing_gtm_id</code></td>
+                            <td><span class="badge badge-red">BOŞ</span></td>
+                            <td>Tanımlı değil</td>
+                        </tr>
+                        <tr>
+                            <td><code>marketing_ga4_id</code></td>
+                            <td><span class="badge badge-red">BOŞ</span></td>
+                            <td>Tanımlı değil</td>
+                        </tr>
+                        <tr>
+                            <td><code>seo_google_tag_manager_id</code></td>
+                            <td><span class="badge badge-red">BOŞ</span></td>
+                            <td>Tanımlı değil</td>
+                        </tr>
+                        <tr>
+                            <td><code>seo_site_google_analytics_code</code></td>
+                            <td><span class="badge badge-red">BOŞ</span></td>
+                            <td>Tanımlı değil</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p><strong>Sonuç:</strong> Ana theme (ixtif header) hiçbir tracking kodu yüklemiyor çünkü Settings boş!</p>
+            </div>
+
+            <div class="problem-box">
+                <h3>3. Birden Fazla Layout - Karışık Durum</h3>
+                <p>İxtif.com sitesinde iki farklı layout var:</p>
+                <ul>
+                    <li><span class="badge badge-blue">Ana Layout</span> <code>resources/views/themes/ixtif/layouts/header.blade.php</code>
+                        <ul>
+                            <li>✅ Component-based (marketing.auto-platforms)</li>
+                            <li>✅ Settings'den GTM ID çeker</li>
+                            <li>❌ Ama Settings boş olduğu için hiçbir kod yüklemiyor</li>
+                        </ul>
+                    </li>
+                    <li><span class="badge badge-yellow">Landing Layout</span> <code>resources/views/layouts/landing/minimal.blade.php</code>
+                        <ul>
+                            <li>❌ Hard-coded GTM ID (GTM-P8HKHCG9)</li>
+                            <li>❌ Settings'den çekmiyor</li>
+                            <li>⚠️ Bu layout kullanılan sayfalarda yanlış ID yükleniyor</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <div class="warning">
+                    <strong>⚠️ Uyarı:</strong> Homepage veya bazı landing page'ler minimal layout kullanıyor olabilir. Bu yüzden yanlış GTM ID bazı sayfalarda görünüyor.
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>✅ ÇÖZÜM PLANI</h2>
+
+            <div class="step">
+                <h4>Adım 1: Doğru GTM/GA4 ID'lerini Belirle <span class="priority priority-critical">KRİTİK</span></h4>
+                <p><strong>Önce şunları kontrol et:</strong></p>
+                <ol>
+                    <li>Google Tag Manager paneline gir (tagmanager.google.com)</li>
+                    <li><span class="highlight">İxtif.com için ayrı bir GTM container oluştur</span> (eğer yoksa)</li>
+                    <li>GTM container ID'sini al (örn: GTM-XXXXXX)</li>
+                    <li>Google Analytics 4 property oluştur (eğer yoksa)</li>
+                    <li>GA4 Measurement ID'sini al (örn: G-XXXXXXXXXX)</li>
+                </ol>
+
+                <div class="warning">
+                    <strong>⚠️ Önemli:</strong> GTM-P8HKHCG9 ID'si muhtemelen yanlış/test ID. Google Tag Manager panelinde bu ID'ye sahip container var mı kontrol et!
+                </div>
+            </div>
+
+            <div class="step">
+                <h4>Adım 2: Settings Tablosuna GTM/GA4 ID'lerini Ekle <span class="priority priority-critical">KRİTİK</span></h4>
+                <p><strong>Laravel Tinker ile ekle:</strong></p>
+                <div class="code-block">
+                    <code>php artisan tinker
+
+// Tenant 2'ye geç (ixtif.com)
+tenant(2);
+
+// GTM ID ekle (doğru ID'yi kullan!)
+setting(['marketing_gtm_id' => 'GTM-YENI-DOGRU-ID']);
+
+// GA4 ID ekle
+setting(['marketing_ga4_id' => 'G-YENI-DOGRU-ID']);
+
+// Kontrol et
+echo setting('marketing_gtm_id');
+echo setting('marketing_ga4_id');</code>
+                </div>
+
+                <p><strong>Veya SQL ile direkt ekle:</strong></p>
+                <div class="code-block">
+                    <code>mariadb tenant_ixtif
+
+INSERT INTO settings (`key`, `value`, created_at, updated_at)
+VALUES ('marketing_gtm_id', 'GTM-YENI-DOGRU-ID', NOW(), NOW())
+ON DUPLICATE KEY UPDATE `value` = 'GTM-YENI-DOGRU-ID', updated_at = NOW();
+
+INSERT INTO settings (`key`, `value`, created_at, updated_at)
+VALUES ('marketing_ga4_id', 'G-YENI-DOGRU-ID', NOW(), NOW())
+ON DUPLICATE KEY UPDATE `value` = 'G-YENI-DOGRU-ID', updated_at = NOW();</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <h4>Adım 3: Hard-Coded GTM ID'sini Temizle <span class="priority priority-high">YÜKSEK</span></h4>
+                <p><strong>Dosya:</strong> <code>resources/views/layouts/landing/minimal.blade.php</code></p>
+
+                <p><strong>Line 52-57'yi bununla değiştir:</strong></p>
+                <div class="code-block">
+                    <code>@php
+    $gtmId = setting('marketing_gtm_id') ?: setting('seo_google_tag_manager_id');
+@endphp
+
+@if($gtmId)
+&lt;!-- Google Tag Manager --&gt;
+&lt;script&gt;(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','{{ $gtmId }}');&lt;/script&gt;
+@endif</code>
+                </div>
+
+                <p><strong>Line 63'ü bununla değiştir:</strong></p>
+                <div class="code-block">
+                    <code>@if($gtmId)
+&lt;noscript&gt;&lt;iframe src="https://www.googletagmanager.com/ns.html?id={{ $gtmId }}"
+height="0" width="0" style="display:none;visibility:hidden"&gt;&lt;/iframe&gt;&lt;/noscript&gt;
+@endif</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <h4>Adım 4: Cache Temizle ve Test Et <span class="priority priority-critical">KRİTİK</span></h4>
+
+                <p><strong>1. Tüm cache'leri temizle:</strong></p>
+                <div class="code-block">
+                    <code>php artisan view:clear
+php artisan config:clear
+php artisan route:clear
+php artisan responsecache:clear
+php artisan cache:clear
+
+# OPcache reset (Production)
+curl -s -k https://ixtif.com/opcache-reset.php</code>
+                </div>
+
+                <p><strong>2. Sitede GTM ID'sini kontrol et:</strong></p>
+                <div class="code-block">
+                    <code>curl -s -k "https://ixtif.com/" | grep -o "GTM-[A-Z0-9]*"
+
+# Beklenen sonuç: GTM-YENI-DOGRU-ID</code>
+                </div>
+
+                <p><strong>3. Google Tag Assistant ile test et:</strong></p>
+                <ol>
+                    <li>Chrome'da Tag Assistant aç (tagassistant.google.com)</li>
+                    <li>https://ixtif.com adresini gir</li>
+                    <li>GTM tag'lerinin yüklendiğini ve GA4 event'lerinin gönderildiğini kontrol et</li>
+                </ol>
+
+                <div class="success">
+                    <strong>✅ Başarı Kriteri:</strong> Tag Assistant'ta GTM container ID'nin doğru göründüğünü ve GA4 event'lerinin (page_view) gönderildiğini görmelisin.
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>📊 BEKLENEN SONUÇLAR</h2>
+
+            <div class="solution-box">
+                <h3>✅ Düzeltme Sonrası Durum</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Kontrol Noktası</th>
+                            <th>Şu Anki Durum</th>
+                            <th>Hedef Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Settings'te GTM ID</td>
+                            <td><span class="badge badge-red">YOK</span></td>
+                            <td><span class="badge badge-green">TANIMLI</span></td>
+                        </tr>
+                        <tr>
+                            <td>Settings'te GA4 ID</td>
+                            <td><span class="badge badge-red">YOK</span></td>
+                            <td><span class="badge badge-green">TANIMLI</span></td>
+                        </tr>
+                        <tr>
+                            <td>minimal.blade.php GTM</td>
+                            <td><span class="badge badge-red">HARD-CODED</span></td>
+                            <td><span class="badge badge-green">SETTINGS'DEN ÇEKİYOR</span></td>
+                        </tr>
+                        <tr>
+                            <td>Sitede yüklenen GTM ID</td>
+                            <td><span class="badge badge-red">GTM-P8HKHCG9 (Yanlış)</span></td>
+                            <td><span class="badge badge-green">GTM-DOGRU-ID</span></td>
+                        </tr>
+                        <tr>
+                            <td>GA4 Veri Akışı</td>
+                            <td><span class="badge badge-red">VERİ YOK</span></td>
+                            <td><span class="badge badge-green">VERİ GELİYOR</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <h2>⚠️ ÖNEMLİ UYARILAR</h2>
+
+            <div class="warning">
+                <h3>🔴 GTM-P8HKHCG9 ID'si Kontrol Edilmeli</h3>
+                <p>Bu ID Google Tag Manager panelinde mevcut mu ve doğru yapılandırılmış mı kontrol et:</p>
+                <ul>
+                    <li>Eğer bu ID <strong>başka bir site için</strong> oluşturulduysa → Yeni GTM container oluştur</li>
+                    <li>Eğer bu ID <strong>test amaçlı</strong>ysa → Production için yeni ID oluştur</li>
+                    <li>Eğer bu ID <strong>ixtif.com için doğru</strong> ama GA4 tag publish edilmemişse → GTM panelinde GA4 tag'i ekle ve publish et</li>
+                </ul>
+            </div>
+
+            <div class="warning">
+                <h3>🔴 Multi-Tenant Sistem</h3>
+                <p>Her tenant'ın <strong>kendi GTM/GA4 ID'si olmalı:</strong></p>
+                <ul>
+                    <li>Tenant 1 (tuufi.com) → Kendi GTM/GA4 ID'si</li>
+                    <li>Tenant 2 (ixtif.com) → Kendi GTM/GA4 ID'si</li>
+                    <li>Tenant 1001 (muzibu.com) → Kendi GTM/GA4 ID'si</li>
+                </ul>
+                <p>❌ Tüm tenant'lar için aynı GTM ID kullanılmamalı!</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 SONRAKİ ADIMLAR</h2>
+
+            <ol>
+                <li><strong>Google Tag Manager Paneli:</strong> İxtif.com için doğru GTM container ID'sini al</li>
+                <li><strong>Google Analytics 4:</strong> İxtif.com için GA4 property ve Measurement ID oluştur</li>
+                <li><strong>Settings Ekle:</strong> Yukarıdaki Adım 2'yi uygula</li>
+                <li><strong>Layout Düzelt:</strong> Yukarıdaki Adım 3'ü uygula</li>
+                <li><strong>Test:</strong> Yukarıdaki Adım 4'ü uygula</li>
+                <li><strong>24 Saat Bekle:</strong> GA4'te veri gelmeye başlaması 24 saat sürebilir</li>
+            </ol>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | 📅 2025-12-04 | 🎯 iXtif.com Analytics Sorunu
+        </footer>
+    </div>
+</body>
+</html>

@@ -110,8 +110,8 @@ class AlbumBulkUploadComponent extends Component
             // Metadata çıkar
             $metadata = $this->extractAudioMetadata($tempPath);
 
-            // Dosya adından title oluştur (uzantısız)
-            $titleFromFilename = pathinfo($originalName, PATHINFO_FILENAME);
+            // Dosya adından title oluştur (Türkçe imla kurallarına uygun)
+            $titleFromFilename = clean_filename_for_title($originalName);
             $title = $metadata['title'] ?? $titleFromFilename;
 
             // Unique ID oluştur

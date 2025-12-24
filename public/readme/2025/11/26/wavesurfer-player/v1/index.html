@@ -1,1 +1,667 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WaveSurfer.js Entegrasyonu - Muzibu Player</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin: 25px 0 15px;
+            color: #93c5fd;
+        }
+
+        .feature-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .plan-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .plan-item:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .plan-item h3 {
+            color: #60a5fa;
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+        }
+
+        .plan-item p, .plan-item ul {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+
+        .plan-item ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .plan-item li {
+            margin-bottom: 8px;
+        }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .success-box {
+            background: rgba(34, 197, 94, 0.1);
+            border-left: 4px solid #22c55e;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .file-path {
+            background: #1e293b;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #fbbf24;
+        }
+
+        .priority-high {
+            background: #dc2626;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .priority-medium {
+            background: #f59e0b;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-box {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .comparison-box.current {
+            border: 2px solid #ef4444;
+        }
+
+        .comparison-box.new {
+            border: 2px solid #22c55e;
+        }
+
+        .comparison-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .comparison-box.current .comparison-title {
+            color: #ef4444;
+        }
+
+        .comparison-box.new .comparison-title {
+            color: #22c55e;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        code {
+            background: #1e293b;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #fbbf24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌊 WaveSurfer.js Entegrasyonu</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-26 |
+                🎯 Tenant: muzibu.com (1001) |
+                👤 Talep: Player'a dalga formu görselleştirme ekleme
+            </div>
+        </header>
+
+        <!-- GENEL BAKIŞ -->
+        <section>
+            <h2>📊 Genel Bakış</h2>
+            
+            <div class="info-box">
+                <strong>WaveSurfer.js Nedir?</strong><br>
+                Ses dosyalarının dalga formunu (waveform) görselleştiren JavaScript kütüphanesi. 
+                Kullanıcılar dalga formuna tıklayarak şarkının istediği kısmına atlayabilir. 
+                8.000+ GitHub yıldızı ile endüstri standardı.
+            </div>
+
+            <div class="success-box">
+                <strong>Beklenen Faydalar:</strong>
+                <ul>
+                    <li>Kullanıcı şarkının hangi kısmında olduğunu görsel olarak görür</li>
+                    <li>Dalga formuna tıklayarak istediği yere atlayabilir (seek)</li>
+                    <li>Premium müzik uygulaması hissi (SoundCloud, Spotify benzeri)</li>
+                    <li>Şarkının dinamik yapısını görebilir (sessiz/yüksek sesli kısımlar)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- MEVCUT DURUM VS YENİ DURUM -->
+        <section>
+            <h2>🔄 Mevcut Durum vs. Yeni Durum</h2>
+
+            <div class="comparison-grid">
+                <div class="comparison-box current">
+                    <div class="comparison-title">❌ Mevcut Sistem</div>
+                    <ul>
+                        <li>Basit progress bar (düz çizgi)</li>
+                        <li>Sadece yeşil dolgu çizgisi</li>
+                        <li>Görsel geri bildirim yok</li>
+                        <li>Tıklayarak seek var ama sınırlı</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-box new">
+                    <div class="comparison-title">✅ Yeni Sistem (WaveSurfer.js)</div>
+                    <ul>
+                        <li>Gerçek dalga formu görselleştirme</li>
+                        <li>Şarkının yapısı görünür (intro, chorus, outro)</li>
+                        <li>Daha doğru seek (piksel hassasiyeti)</li>
+                        <li>Modern ve profesyonel görünüm</li>
+                        <li>Hover efektleri ve animasyonlar</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- TEKNİK MİMARİ -->
+        <section>
+            <h2>🏗️ Teknik Mimari</h2>
+
+            <div class="plan-item">
+                <h3>1. Kütüphane Seçimi</h3>
+                <p>
+                    <span class="tech-term">WaveSurfer.js v7</span> kullanılacak.
+                    CDN üzerinden yüklenecek, npm install'a gerek yok.
+                </p>
+                <div class="info-box" style="margin-top: 15px;">
+                    <strong>Neden WaveSurfer.js?</strong><br>
+                    • Hafif (50KB gzipped)<br>
+                    • Canvas tabanlı rendering (yüksek performans)<br>
+                    • Web Audio API ile uyumlu<br>
+                    • Responsive (mobil uyumlu)<br>
+                    • Kolay özelleştirme
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h3>2. Entegrasyon Noktası</h3>
+                <p>
+                    Mevcut <span class="file-path">player.blade.php</span> içindeki progress bar yerine WaveSurfer entegre edilecek.
+                </p>
+                <p style="margin-top: 10px;">
+                    <strong>Değiştirilecek Alan:</strong><br>
+                    Satır 449-456 arası: <code>.player-progress-bar</code> div'i
+                </p>
+            </div>
+
+            <div class="plan-item">
+                <h3>3. Howler.js ile Senkronizasyon</h3>
+                <p>
+                    Mevcut sistemde <span class="tech-term">Howler.js</span> kullanılıyor. 
+                    WaveSurfer sadece görselleştirme yapacak, ses çalma Howler.js'te kalacak.
+                </p>
+                <div class="warning-box" style="margin-top: 15px;">
+                    <strong>⚠️ Önemli Not:</strong><br>
+                    WaveSurfer'ın kendi audio engine'i kullanılmayacak! 
+                    Sadece görselleştirme için kullanılacak, playback Howler.js tarafında.
+                </div>
+            </div>
+        </section>
+
+        <!-- UYGULAMA ADIMLARI -->
+        <section>
+            <h2>🎯 Yapılacaklar (Adım Adım)</h2>
+
+            <div class="plan-item">
+                <h3><span class="step-number">1</span>CDN Ekleme <span class="priority-high">Yüksek Öncelik</span></h3>
+                <p>
+                    <span class="file-path">resources/views/themes/muzibu/layouts/app.blade.php</span> 
+                    dosyasına WaveSurfer.js CDN'ini ekleyeceğiz.
+                </p>
+                <p style="margin-top: 10px;">
+                    <strong>Konum:</strong> <code>&lt;head&gt;</code> bölümü, diğer script'lerden önce
+                </p>
+                <p style="margin-top: 5px;">
+                    <strong>CDN URL:</strong><br>
+                    <code>https://unpkg.com/wavesurfer.js@7</code>
+                </p>
+            </div>
+
+            <div class="plan-item">
+                <h3><span class="step-number">2</span>HTML Yapısı Güncelleme <span class="priority-high">Yüksek Öncelik</span></h3>
+                <p>
+                    Mevcut progress bar yerine WaveSurfer container ekleyeceğiz.
+                </p>
+                <p style="margin-top: 10px;">
+                    <strong>Değişim:</strong><br>
+                    • Eski: <code>&lt;div class="player-progress-bar"&gt;</code><br>
+                    • Yeni: <code>&lt;div id="waveform-container"&gt;</code>
+                </p>
+                <div class="info-box" style="margin-top: 15px;">
+                    <strong>Progressive Enhancement:</strong><br>
+                    WaveSurfer yüklenemezse fallback olarak eski progress bar gösterilecek.
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h3><span class="step-number">3</span>WaveSurfer Instance Oluşturma <span class="priority-high">Yüksek Öncelik</span></h3>
+                <p>
+                    Alpine.js'in <code>init()</code> fonksiyonunda WaveSurfer instance'ı oluşturulacak.
+                </p>
+                <p style="margin-top: 10px;">
+                    <strong>Temel Ayarlar:</strong>
+                </p>
+                <ul>
+                    <li><code>container</code>: '#waveform-container'</li>
+                    <li><code>waveColor</code>: '#4b5563' (gri, henüz çalınmamış kısım)</li>
+                    <li><code>progressColor</code>: '#1DB954' (yeşil, çalınan kısım)</li>
+                    <li><code>cursorColor</code>: '#ffffff' (beyaz cursor)</li>
+                    <li><code>barWidth</code>: 2 (dalga çubuğu genişliği)</li>
+                    <li><code>barGap</code>: 1 (çubuklar arası boşluk)</li>
+                    <li><code>height</code>: 60 (piksel, responsive olacak)</li>
+                    <li><code>backend</code>: 'WebAudio' (en iyi performans)</li>
+                    <li><code>interact</code>: true (tıklama ile seek)</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h3><span class="step-number">4</span>Ses Yükleme ve Waveform Oluşturma <span class="priority-medium">Orta Öncelik</span></h3>
+                <p>
+                    Her şarkı değiştiğinde WaveSurfer'a yeni ses dosyası yüklenecek.
+                </p>
+                <p style="margin-top: 10px;">
+                    <strong>Çalışma Mantığı:</strong>
+                </p>
+                <ul>
+                    <li>Şarkı değiştiğinde: <code>wavesurfer.load(url)</code> çağrılır</li>
+                    <li>WaveSurfer arka planda dalga formunu oluşturur</li>
+                    <li>Hazır olduğunda <code>ready</code> event'i tetiklenir</li>
+                    <li>Waveform gösterilir, kullanıcı etkileşime geçebilir</li>
+                </ul>
+                <div class="warning-box" style="margin-top: 15px;">
+                    <strong>⚠️ Performans Notu:</strong><br>
+                    İlk yüklemede 1-2 saniye sürebilir (ses dosyası decode edilir). 
+                    Bu süre zarfında loading animasyonu gösterilecek.
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h3><span class="step-number">5</span>Howler.js Senkronizasyonu <span class="priority-high">Yüksek Öncelik</span></h3>
+                <p>
+                    WaveSurfer sadece görsel, playback Howler.js'te. İkisi senkronize çalışacak.
+                </p>
+                <p style="margin-top: 10px;">
+                    <strong>Senkronizasyon Noktaları:</strong>
+                </p>
+                <ul>
+                    <li><strong>Play/Pause:</strong> Howler çaldığında WaveSurfer cursor'u hareket eder</li>
+                    <li><strong>Seek:</strong> WaveSurfer'a tıklanınca Howler'ın pozisyonu değişir</li>
+                    <li><strong>Progress Update:</strong> Howler'ın <code>requestAnimationFrame</code> loop'unda WaveSurfer güncellenir</li>
+                    <li><strong>Şarkı Değişimi:</strong> Yeni şarkı yüklenince her ikisi de sıfırlanır</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h3><span class="step-number">6</span>Event Listeners <span class="priority-medium">Orta Öncelik</span></h3>
+                <p>
+                    WaveSurfer'ın event'lerini dinleyip uygun aksiyonlar alacağız.
+                </p>
+                <p style="margin-top: 10px;">
+                    <strong>Dinlenecek Event'ler:</strong>
+                </p>
+                <ul>
+                    <li><code>ready</code>: Waveform hazır, loading kaldır</li>
+                    <li><code>loading</code>: Yükleniyor, progress göster</li>
+                    <li><code>click</code>: Kullanıcı tıkladı, seek yap</li>
+                    <li><code>error</code>: Hata oluştu, fallback göster</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h3><span class="step-number">7</span>CSS Styling <span class="priority-medium">Orta Öncelik</span></h3>
+                <p>
+                    WaveSurfer container'ını mevcut player tasarımına uygun şekilde stilize edeceğiz.
+                </p>
+                <p style="margin-top: 10px;">
+                    <strong>Tasarım İlkeleri:</strong>
+                </p>
+                <ul>
+                    <li>Mevcut player renklerine uyum (yeşil #1DB954)</li>
+                    <li>Dark mode destekli</li>
+                    <li>Hover efektleri (dalga rengi değişimi)</li>
+                    <li>Responsive (mobilde küçülür)</li>
+                    <li>Loading skeleton gösterimi</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h3><span class="step-number">8</span>Responsive Davranış <span class="priority-medium">Orta Öncelik</span></h3>
+                <p>
+                    Mobil cihazlarda daha küçük, masaüstünde daha büyük waveform.
+                </p>
+                <p style="margin-top: 10px;">
+                    <strong>Breakpoint'ler:</strong>
+                </p>
+                <ul>
+                    <li><strong>Mobil (< 768px):</strong> Height 40px, barWidth 1px</li>
+                    <li><strong>Tablet (768-1024px):</strong> Height 50px, barWidth 1.5px</li>
+                    <li><strong>Desktop (> 1024px):</strong> Height 60px, barWidth 2px</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h3><span class="step-number">9</span>Fallback Mekanizması <span class="priority-high">Yüksek Öncelik</span></h3>
+                <p>
+                    WaveSurfer yüklenemezse veya hata verirse eski progress bar gösterilecek.
+                </p>
+                <div class="info-box" style="margin-top: 10px;">
+                    <strong>Fallback Senaryoları:</strong><br>
+                    • CDN erişilemez → Eski progress bar<br>
+                    • Ses dosyası yüklenemedi → Eski progress bar<br>
+                    • Tarayıcı desteklemiyor → Eski progress bar<br>
+                    • JavaScript hatası → Eski progress bar
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h3><span class="step-number">10</span>Test ve Optimizasyon <span class="priority-medium">Orta Öncelik</span></h3>
+                <p>
+                    Canlıya çıkmadan önce kapsamlı test.
+                </p>
+                <p style="margin-top: 10px;">
+                    <strong>Test Senaryoları:</strong>
+                </p>
+                <ul>
+                    <li>Şarkı değişimi sırasında waveform güncelleniyor mu?</li>
+                    <li>Seek (tıklama ile atlama) çalışıyor mu?</li>
+                    <li>Play/pause sırasında senkronize mi?</li>
+                    <li>Mobilde responsive çalışıyor mu?</li>
+                    <li>Loading state düzgün gösteriliyor mu?</li>
+                    <li>Fallback mekanizması çalışıyor mu?</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- TEKNİK DETAYLAR -->
+        <section>
+            <h2>🔧 Teknik Detaylar</h2>
+
+            <div class="plan-item">
+                <h3>Alpine.js Entegrasyonu</h3>
+                <p>
+                    WaveSurfer instance'ı Alpine.js'in <code>$refs</code> içinde saklanacak.
+                </p>
+                <p style="margin-top: 10px;">
+                    <strong>Örnek Yapı:</strong>
+                </p>
+                <ul>
+                    <li><code>this.wavesurfer</code>: WaveSurfer instance</li>
+                    <li><code>this.isWaveformReady</code>: Boolean (hazır mı?)</li>
+                    <li><code>this.waveformError</code>: Boolean (hata var mı?)</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h3>Performans Optimizasyonu</h3>
+                <p>
+                    Waveform rendering performanslı olmalı, UI donmamalı.
+                </p>
+                <p style="margin-top: 10px;">
+                    <strong>Optimizasyon Stratejileri:</strong>
+                </p>
+                <ul>
+                    <li><code>requestAnimationFrame</code> kullanımı (smooth progress)</li>
+                    <li>Debouncing (window resize sırasında)</li>
+                    <li>Canvas rendering (DOM manipulation yok)</li>
+                    <li>Lazy loading (sadece görünürse yükle)</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h3>Bellek Yönetimi</h3>
+                <p>
+                    Şarkı değiştikçe eski waveform temizlenmeli (memory leak önleme).
+                </p>
+                <p style="margin-top: 10px;">
+                    <strong>Cleanup İşlemleri:</strong>
+                </p>
+                <ul>
+                    <li>Şarkı değişince: <code>wavesurfer.destroy()</code></li>
+                    <li>Yeni instance oluştur</li>
+                    <li>Event listener'ları temizle</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- RİSKLER VE ÇÖZÜMLER -->
+        <section>
+            <h2>⚠️ Riskler ve Çözümler</h2>
+
+            <div class="plan-item">
+                <h3>Risk 1: Yavaş Yüklenme</h3>
+                <p>
+                    <strong>Sorun:</strong> Büyük ses dosyaları (5+ MB) waveform oluştururken yavaş olabilir.
+                </p>
+                <p style="margin-top: 10px;">
+                    <strong>Çözüm:</strong><br>
+                    • Loading skeleton göster<br>
+                    • <code>barWidth: 2</code> (daha az detay = daha hızlı)<br>
+                    • Backend'de pre-generated waveform JSON'ları (ileride)
+                </p>
+            </div>
+
+            <div class="plan-item">
+                <h3>Risk 2: HLS Stream ile Uyumsuzluk</h3>
+                <p>
+                    <strong>Sorun:</strong> HLS stream'ler (m3u8) direkt WaveSurfer ile kullanılamaz.
+                </p>
+                <p style="margin-top: 10px;">
+                    <strong>Çözüm:</strong><br>
+                    • WaveSurfer için direkt MP3/M4A URL'i kullan<br>
+                    • HLS sadece Howler.js için<br>
+                    • Dual source: HLS (playback) + MP3 (waveform)
+                </p>
+            </div>
+
+            <div class="plan-item">
+                <h3>Risk 3: CORS Hatası</h3>
+                <p>
+                    <strong>Sorun:</strong> Ses dosyası farklı domain'deyse CORS hatası verebilir.
+                </p>
+                <p style="margin-top: 10px;">
+                    <strong>Çözüm:</strong><br>
+                    • <code>crossOrigin: 'anonymous'</code> ayarı<br>
+                    • Backend CORS header'ları düzenle<br>
+                    • Proxy kullan (gerekirse)
+                </p>
+            </div>
+        </section>
+
+        <!-- BEKLENEN SONUÇ -->
+        <section>
+            <h2>🎉 Beklenen Sonuç</h2>
+
+            <div class="success-box">
+                <strong>Kullanıcı Deneyimi:</strong>
+                <ul>
+                    <li>Şarkı çalarken gerçek zamanlı dalga formu görür</li>
+                    <li>Şarkının hangi kısmının sessiz/yüksek sesli olduğunu görür</li>
+                    <li>Dalga formuna tıklayarak istediği yere atlar</li>
+                    <li>Modern müzik uygulaması hissi (SoundCloud/Spotify benzeri)</li>
+                    <li>Responsive tasarım, her cihazda çalışır</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <strong>Teknik Kazanımlar:</strong>
+                <ul>
+                    <li>Daha doğru seek (piksel bazlı)</li>
+                    <li>Görsel geri bildirim</li>
+                    <li>Premium özellik eklendi</li>
+                    <li>Fallback mekanizması ile güvenli</li>
+                    <li>Performanslı ve optimize</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- İLERİDE EKLENEBİLECEKLER -->
+        <section>
+            <h2>🚀 İleride Eklenebilecekler (v2)</h2>
+
+            <div class="plan-item">
+                <h3>1. Pre-Generated Waveform JSON</h3>
+                <p>
+                    Backend'de şarkı yüklenirken waveform JSON'u oluştur, 
+                    frontend'de direkt yükle (çok daha hızlı).
+                </p>
+            </div>
+
+            <div class="plan-item">
+                <h3>2. Region Markers</h3>
+                <p>
+                    Şarkının intro, verse, chorus kısımlarını işaretle 
+                    (müzik teorisi analizi gerekir).
+                </p>
+            </div>
+
+            <div class="plan-item">
+                <h3>3. Minimap Plugin</h3>
+                <p>
+                    WaveSurfer'ın minimap plugin'i ile tüm şarkıyı küçük bir preview'da göster.
+                </p>
+            </div>
+
+            <div class="plan-item">
+                <h3>4. Spektrogram Modu</h3>
+                <p>
+                    Waveform yerine spektrogram gösterimi (frekans analizi).
+                </p>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu - Muzibu Premium System
+        </footer>
+    </div>
+</body>
+</html>

@@ -22,6 +22,12 @@ class MuzibuServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Load helpers
+        $helpersPath = module_path($this->name, 'app/Helpers/helpers.php');
+        if (file_exists($helpersPath)) {
+            require_once $helpersPath;
+        }
+
         $this->registerCommands();
         $this->registerCommandSchedules();
         $this->registerTranslations();

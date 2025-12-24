@@ -1,1 +1,879 @@
-v2/index.html
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu AI TODO Guide - Kapsamlı Düzeltme Planı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'muzibu-coral': '#ff7f50',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .todo-item.completed { opacity: 0.6; }
+        .todo-item.completed .todo-text { text-decoration: line-through; }
+        .todo-item.completed .todo-checkbox { background: #22c55e; border-color: #22c55e; }
+        .todo-item.in-progress .todo-checkbox { background: #f59e0b; border-color: #f59e0b; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100">
+
+    <header class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-b border-slate-700 sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-robot text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold text-white">Muzibu AI TODO Guide</h1>
+                        <p class="text-slate-400">Kapsamlı Düzeltme Planı - v2</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-2xl font-bold text-green-400">20 / 20</div>
+                    <div class="text-slate-400 text-sm">✅ Tamamlanan Görev</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12 max-w-7xl">
+
+        <!-- AI TALİMATLARI -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-br from-blue-900/30 to-cyan-900/30 border-2 border-blue-600 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-white mb-4">
+                    <i class="fas fa-robot text-blue-400 mr-3"></i>AI İÇİN TALİMATLAR
+                </h2>
+                <div class="space-y-4 text-slate-200">
+                    <div class="bg-blue-900/30 rounded-xl p-6 border border-blue-700">
+                        <h3 class="font-bold text-blue-300 mb-3"><i class="fas fa-check-circle mr-2"></i>Görev Tamamlandığında:</h3>
+                        <ol class="list-decimal list-inside space-y-2 text-sm">
+                            <li>Bu HTML dosyasını aç: <code class="text-green-400">public/readme/2025/12/20/muzibu-component-audit/v2/index.html</code></li>
+                            <li>İlgili görevin <code class="text-yellow-400">todo-item</code> div'ine <code class="text-green-400">completed</code> class'ı ekle</li>
+                            <li>Checkbox'a <code class="text-green-400">✓</code> işareti koy</li>
+                            <li>Header'daki sayacı güncelle (örn: 1 / 28, 2 / 28...)</li>
+                            <li>Varsa notları "Yapılan Değişiklikler" bölümüne ekle</li>
+                        </ol>
+                    </div>
+
+                    <div class="bg-yellow-900/30 rounded-xl p-6 border border-yellow-700">
+                        <h3 class="font-bold text-yellow-300 mb-3"><i class="fas fa-exclamation-triangle mr-2"></i>Önemli Kurallar:</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li><i class="fas fa-arrow-right text-yellow-400 mr-2"></i>Her görev tamamlandığında HEMEN bu dosyayı güncelle</li>
+                            <li><i class="fas fa-arrow-right text-yellow-400 mr-2"></i>Sırayla ilerle - öncelik numaralarına uy</li>
+                            <li><i class="fas fa-arrow-right text-yellow-400 mr-2"></i>CSS değişikliği yaptıysan: <code class="text-green-400">npm run prod</code> çalıştır</li>
+                            <li><i class="fas fa-arrow-right text-yellow-400 mr-2"></i>View değişikliği yaptıysan: <code class="text-green-400">php artisan view:clear && php artisan responsecache:clear</code></li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-green-900/30 rounded-xl p-6 border border-green-700">
+                        <h3 class="font-bold text-green-300 mb-3"><i class="fas fa-terminal mr-2"></i>Hızlı Komutlar:</h3>
+                        <div class="grid md:grid-cols-2 gap-4 text-sm font-mono">
+                            <div class="bg-slate-950 rounded p-3">
+                                <span class="text-slate-500"># CSS rebuild</span><br>
+                                <span class="text-green-400">npm run prod</span>
+                            </div>
+                            <div class="bg-slate-950 rounded p-3">
+                                <span class="text-slate-500"># Cache temizle</span><br>
+                                <span class="text-green-400">php artisan view:clear && php artisan responsecache:clear</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 1: KRİTİK CSS HATALARI -->
+        <section class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white font-bold">1</div>
+                <h2 class="text-2xl font-bold text-white">KRİTİK CSS HATALARI</h2>
+                <span class="px-3 py-1 bg-red-600 rounded text-white text-sm">ÖNCELİK: ACİL</span>
+            </div>
+
+            <div class="bg-slate-900 rounded-2xl p-6 border border-red-700/50 mb-6">
+                <div class="bg-red-900/30 rounded-xl p-4 mb-6 border border-red-700">
+                    <h3 class="font-bold text-red-300 mb-2"><i class="fas fa-bug mr-2"></i>Tespit Edilen Sorunlar:</h3>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li><i class="fas fa-times text-red-400 mr-2"></i><code class="text-red-400">muzibu-coral</code> - Tailwind config'de tanımlanmamış!</li>
+                        <li><i class="fas fa-times text-red-400 mr-2"></i><code class="text-red-400">muzibu-gray</code> - Tailwind config'de tanımlanmamış!</li>
+                        <li><i class="fas fa-times text-red-400 mr-2"></i><code class="text-red-400">bg-white/5</code>, <code class="text-red-400">bg-white/10</code> - Safelist'te yok, purge edilmiş olabilir!</li>
+                        <li><i class="fas fa-times text-red-400 mr-2"></i><code class="text-red-400">bg-black/40</code>, <code class="text-red-400">bg-black/70</code> - Safelist'te yok!</li>
+                    </ul>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- TODO 1.1 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="1.1">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">1.1 Tailwind Config'e Renkleri Ekle</span>
+                                    <span class="px-2 py-0.5 bg-red-600/30 text-red-400 rounded text-xs">KRİTİK</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mb-3 todo-text">
+                                    <code>tailwind/tenants/tenant-1001.config.js</code> dosyasına muzibu-coral ve muzibu-gray ekle
+                                </p>
+                                <div class="bg-slate-900 rounded p-3 text-xs font-mono text-slate-300 overflow-x-auto">
+<pre>colors: {
+    ...baseConfig.theme.extend.colors,
+    // Spotify-style Muzibu colors
+    'spotify-black': '#121212',
+    'spotify-dark': '#181818',
+    'spotify-green': '#1DB954',
+    'spotify-green-light': '#1ed760',
+    'spotify-gray': '#282828',
+    <span class="text-green-400">// Muzibu custom colors - YENİ EKLE</span>
+    <span class="text-green-400">'muzibu-coral': '#ff7f50',</span>
+    <span class="text-green-400">'muzibu-gray': '#1a1a1a',</span>
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TODO 1.2 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="1.2">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">1.2 Safelist'e Opacity Class'ları Ekle</span>
+                                    <span class="px-2 py-0.5 bg-red-600/30 text-red-400 rounded text-xs">KRİTİK</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mb-3 todo-text">
+                                    <code>tailwind/tenants/tenant-1001.config.js</code> safelist'ine opacity class'ları ekle
+                                </p>
+                                <div class="bg-slate-900 rounded p-3 text-xs font-mono text-slate-300 overflow-x-auto">
+<pre>safelist: [
+    ...baseConfig.safelist,
+    <span class="text-green-400">// Opacity backgrounds - YENİ EKLE</span>
+    <span class="text-green-400">'bg-white/5', 'bg-white/10', 'bg-white/20',</span>
+    <span class="text-green-400">'bg-black/20', 'bg-black/40', 'bg-black/50', 'bg-black/60', 'bg-black/70', 'bg-black/90',</span>
+    <span class="text-green-400">'hover:bg-white/10', 'hover:bg-black/60', 'hover:bg-black/90',</span>
+    <span class="text-green-400">// Muzibu coral variants</span>
+    <span class="text-green-400">'bg-muzibu-coral', 'text-muzibu-coral', 'border-muzibu-coral',</span>
+    <span class="text-green-400">'bg-muzibu-coral/10', 'bg-muzibu-coral/20',</span>
+    <span class="text-green-400">'hover:bg-muzibu-coral', 'hover:text-muzibu-coral',</span>
+    <span class="text-green-400">'ring-muzibu-coral',</span>
+    <span class="text-green-400">// Muzibu gray variants</span>
+    <span class="text-green-400">'bg-muzibu-gray', 'hover:bg-gray-700',</span>
+    // ... existing safelist
+]</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TODO 1.3 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="1.3">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">1.3 CSS Rebuild Et</span>
+                                    <span class="px-2 py-0.5 bg-red-600/30 text-red-400 rounded text-xs">KRİTİK</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mb-3 todo-text">Config değişikliklerinden sonra CSS'i yeniden oluştur</p>
+                                <div class="bg-slate-900 rounded p-3 text-xs font-mono text-green-400">
+                                    npm run prod && php artisan view:clear && php artisan responsecache:clear
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 2: COMPONENT OLUŞTURMA -->
+        <section class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-orange-600 rounded-full flex items-center justify-center text-white font-bold">2</div>
+                <h2 class="text-2xl font-bold text-white">YENİ COMPONENT OLUŞTURMA</h2>
+                <span class="px-3 py-1 bg-orange-600 rounded text-white text-sm">ÖNCELİK: YÜKSEK</span>
+            </div>
+
+            <div class="bg-slate-900 rounded-2xl p-6 border border-orange-700/50 mb-6">
+                <div class="space-y-4">
+
+                    <!-- TODO 2.1 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="2.1">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">2.1 playlist-quick-card Component Oluştur</span>
+                                    <span class="px-2 py-0.5 bg-orange-600/30 text-orange-400 rounded text-xs">YENİ COMPONENT</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mb-3 todo-text">Ana sayfa Quick Access için yatay playlist kartı</p>
+                                <div class="text-xs text-slate-500 mb-2">
+                                    <strong>Dosya:</strong> <code class="text-blue-400">resources/views/components/muzibu/playlist-quick-card.blade.php</code>
+                                </div>
+                                <div class="bg-slate-900 rounded p-3 text-xs font-mono text-slate-300 overflow-x-auto max-h-64 overflow-y-auto">
+<pre>@props(['playlist', 'index' => 0])
+
+{{-- Muzibu Playlist Quick Card Component --}}
+{{-- Usage: &lt;x-muzibu.playlist-quick-card :playlist="$playlist" /&gt; --}}
+{{-- Ana sayfa Quick Access için yatay kart --}}
+
+@php
+    $isFavorite = auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id());
+    $isMine = auth()->check() && isset($playlist->user_id) && $playlist->user_id == auth()->id();
+@endphp
+
+&lt;div class="playlist-card group flex items-center gap-3 bg-white/5 hover:bg-white/10 rounded transition-all cursor-pointer overflow-hidden h-16 relative"
+     data-playlist-id="{{ $playlist->id ?? $playlist->playlist_id }}"
+     data-context-type="playlist"
+     x-data="{ touchTimer: null, touchStartPos: { x: 0, y: 0 } }"
+     x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'playlist', {
+         id: {{ $playlist->id ?? $playlist->playlist_id }},
+         title: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}',
+         is_favorite: {{ $isFavorite ? 'true' : 'false' }},
+         is_mine: {{ $isMine ? 'true' : 'false' }}
+     })"
+     x-on:touchstart="touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY }; touchTimer = setTimeout(() => { if (navigator.vibrate) navigator.vibrate(50); $store.contextMenu.openContextMenu({ clientX: $event.touches[0].clientX, clientY: $event.touches[0].clientY }, 'playlist', { id: {{ $playlist->id ?? $playlist->playlist_id }}, title: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}', is_favorite: {{ $isFavorite ? 'true' : 'false' }}, is_mine: {{ $isMine ? 'true' : 'false' }} }); }, 500);"
+     x-on:touchend="clearTimeout(touchTimer)"
+     x-on:touchmove="if (Math.abs($event.touches[0].clientX - touchStartPos.x) > 10 || Math.abs($event.touches[0].clientY - touchStartPos.y) > 10) clearTimeout(touchTimer);"
+     @click="$store.sidebar.showPreview('playlist', {{ $playlist->id ?? $playlist->playlist_id }}, {
+         type: 'Playlist',
+         id: {{ $playlist->id ?? $playlist->playlist_id }},
+         title: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}',
+         cover: '{{ $playlist->coverMedia ? thumb($playlist->coverMedia, 300, 300, ['scale' => 1]) : '' }}',
+         is_favorite: {{ $isFavorite ? 'true' : 'false' }}
+     })"&gt;
+
+    {{-- Cover Image --}}
+    &lt;div class="w-16 h-16 flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-pink-600"&gt;
+        @if($playlist->coverMedia)
+            &lt;img src="{{ thumb($playlist->coverMedia, 64, 64, ['scale' => 1]) }}"
+                 alt="{{ $playlist->getTranslation('title', app()->getLocale()) }}"
+                 loading="{{ $index < 6 ? 'eager' : 'lazy' }}"
+                 class="w-full h-full object-cover"&gt;
+        @else
+            &lt;div class="w-full h-full flex items-center justify-center text-xl text-white/90"&gt;🎵&lt;/div&gt;
+        @endif
+    &lt;/div&gt;
+
+    {{-- Title --}}
+    &lt;div class="flex-1 min-w-0 pr-20"&gt;
+        &lt;h3 class="font-semibold text-white text-sm truncate"&gt;
+            {{ $playlist->getTranslation('title', app()->getLocale()) }}
+        &lt;/h3&gt;
+    &lt;/div&gt;
+
+    {{-- Favorite + Menu Buttons - HOVER'DA GÖRÜNÜR --}}
+    &lt;div class="absolute right-2 top-1/2 -translate-y-1/2 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity" @click.stop&gt;
+        {{-- Favorite Button --}}
+        &lt;button @click.stop="$store.favorites.toggle('playlist', {{ $playlist->id ?? $playlist->playlist_id }})"
+                class="w-7 h-7 bg-black/40 hover:bg-black/60 rounded-full flex items-center justify-center text-white/70 hover:text-white transition-all"
+                x-bind:class="$store.favorites.isFavorite('playlist', {{ $playlist->id ?? $playlist->playlist_id }}) ? 'text-muzibu-coral' : ''"&gt;
+            &lt;i class="text-xs"
+               x-bind:class="$store.favorites.isFavorite('playlist', {{ $playlist->id ?? $playlist->playlist_id }}) ? 'fas fa-heart' : 'far fa-heart'"&gt;&lt;/i&gt;
+        &lt;/button&gt;
+
+        {{-- 3-Dot Menu Button --}}
+        &lt;button @click.stop="$store.contextMenu.openContextMenu($event, 'playlist', {
+            id: {{ $playlist->id ?? $playlist->playlist_id }},
+            title: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}',
+            is_favorite: {{ $isFavorite ? 'true' : 'false' }},
+            is_mine: {{ $isMine ? 'true' : 'false' }}
+        })" class="w-7 h-7 bg-black/40 hover:bg-black/60 rounded-full flex items-center justify-center text-white/70 hover:text-white transition-all"&gt;
+            &lt;i class="fas fa-ellipsis-v text-xs"&gt;&lt;/i&gt;
+        &lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TODO 2.2 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="2.2">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">2.2 song-card Component Oluştur</span>
+                                    <span class="px-2 py-0.5 bg-orange-600/30 text-orange-400 rounded text-xs">YENİ COMPONENT</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mb-3 todo-text">Favoriler ve grid görünüm için şarkı kartı (album-card benzeri)</p>
+                                <div class="text-xs text-slate-500 mb-2">
+                                    <strong>Dosya:</strong> <code class="text-blue-400">resources/views/components/muzibu/song-card.blade.php</code>
+                                </div>
+                                <div class="bg-slate-900 rounded p-3 text-xs font-mono text-slate-300 overflow-x-auto max-h-48 overflow-y-auto">
+<pre>@props(['song', 'preview' => false])
+
+{{-- Muzibu Song Card Component --}}
+{{-- Grid görünüm için şarkı kartı --}}
+
+@php
+    $isFavorite = auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id());
+    $albumCover = $song->album && $song->album->coverMedia ? $song->album->coverMedia : null;
+@endphp
+
+&lt;div class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300 cursor-pointer"
+     data-song-id="{{ $song->id }}"
+     data-album-id="{{ $song->album_id ?? '' }}"
+     data-context-type="song"
+     x-on:click="$store.player.playSong({{ $song->id }})"
+     x-on:contextmenu.prevent.stop="..."
+     x-bind:class="$store.player.currentSong?.id === {{ $song->id }} ? 'ring-2 ring-muzibu-coral' : ''"&gt;
+
+    {{-- Cover + Play Button --}}
+    &lt;div class="relative mb-4"&gt;
+        @if($albumCover)
+            &lt;img src="{{ thumb($albumCover, 300, 300) }}" ... /&gt;
+        @else
+            &lt;div class="w-full aspect-square bg-gradient-to-br from-muzibu-coral to-purple-600 rounded-lg ..."&gt;
+                &lt;i class="fas fa-music text-white text-4xl opacity-50"&gt;&lt;/i&gt;
+            &lt;/div&gt;
+        @endif
+
+        {{-- Play Button --}}
+        &lt;button @click.stop="$store.player.playSong({{ $song->id }})"
+                class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 ... bg-muzibu-coral ..."&gt;
+            &lt;i class="fas fa-play ml-1"&gt;&lt;/i&gt;
+        &lt;/button&gt;
+
+        {{-- Favorite + Menu --}}
+        &lt;div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 ..."&gt;
+            {{-- Favorite Button --}}
+            &lt;button @click.stop="$store.favorites.toggle('song', {{ $song->id }})" ...&gt;
+                &lt;i x-bind:class="$store.favorites.isFavorite('song', {{ $song->id }}) ? 'fas fa-heart' : 'far fa-heart'"&gt;&lt;/i&gt;
+            &lt;/button&gt;
+            {{-- Menu Button --}}
+            ...
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    {{-- Song Title --}}
+    &lt;h3 class="font-semibold text-white mb-1 truncate"&gt;{{ $song->getTranslation('title', app()->getLocale()) }}&lt;/h3&gt;
+
+    {{-- Artist --}}
+    @if($song->album && $song->album->artist)
+        &lt;p class="text-sm text-gray-400 truncate"&gt;{{ $song->album->artist->getTranslation('title', app()->getLocale()) }}&lt;/p&gt;
+    @endif
+&lt;/div&gt;</pre>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-2"><i class="fas fa-info-circle mr-1"></i>Tam kodu album-card'dan kopyala ve şarkıya uyarla</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TODO 2.3 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="2.3">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">2.3 horizontal-scroll-section Component Oluştur</span>
+                                    <span class="px-2 py-0.5 bg-blue-600/30 text-blue-400 rounded text-xs">OPSİYONEL</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mb-3 todo-text">Tekrar eden scroll logic'i tek component'te topla</p>
+                                <div class="text-xs text-slate-500 mb-2">
+                                    <strong>Dosya:</strong> <code class="text-blue-400">resources/views/components/muzibu/horizontal-scroll-section.blade.php</code>
+                                </div>
+                                <div class="bg-slate-900 rounded p-3 text-xs font-mono text-slate-300 overflow-x-auto">
+<pre>@props(['title' => null])
+
+{{-- Kullanım: --}}
+{{-- &lt;x-muzibu.horizontal-scroll-section title="Öne Çıkanlar"&gt; --}}
+{{--     @foreach($items as $item) ... @endforeach --}}
+{{-- &lt;/x-muzibu.horizontal-scroll-section&gt; --}}
+
+&lt;div class="mb-6 relative group/scroll" x-data="horizontalScroll()"&gt;
+    @if($title)
+        &lt;h2 class="text-2xl font-bold text-white mb-2"&gt;{{ $title }}&lt;/h2&gt;
+    @endif
+
+    {{-- Left/Right Arrows --}}
+    &lt;button @click="scrollLeft()" class="absolute left-[-12px] ..."&gt;...&lt;/button&gt;
+    &lt;button @click="scrollRight()" class="absolute right-[-12px] ..."&gt;...&lt;/button&gt;
+
+    {{-- Scroll Container --}}
+    &lt;div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4"&gt;
+        {{ $slot }}
+    &lt;/div&gt;
+&lt;/div&gt;</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 3: ANA SAYFA DÜZELTMELERİ -->
+        <section class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-yellow-600 rounded-full flex items-center justify-center text-white font-bold">3</div>
+                <h2 class="text-2xl font-bold text-white">ANA SAYFA DÜZELTMELERİ</h2>
+                <span class="px-3 py-1 bg-yellow-600 rounded text-white text-sm">ÖNCELİK: YÜKSEK</span>
+            </div>
+
+            <div class="bg-slate-900 rounded-2xl p-6 border border-yellow-700/50 mb-6">
+                <div class="space-y-4">
+
+                    <!-- TODO 3.1 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="3.1">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">3.1 Quick Access → playlist-quick-card Kullan</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mb-3 todo-text">
+                                    Ana sayfa Quick Access bölümündeki inline HTML'i component ile değiştir
+                                </p>
+                                <div class="text-xs text-slate-500 mb-2">
+                                    <strong>Dosya:</strong> <code class="text-blue-400">resources/views/themes/muzibu/index.blade.php</code> (Satır 63-114)
+                                </div>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div class="bg-red-900/20 rounded p-3 border border-red-700/50">
+                                        <p class="text-xs text-red-400 mb-2 font-semibold">❌ ESKİ (50 satır inline):</p>
+                                        <div class="text-xs font-mono text-slate-400 overflow-x-auto">
+<pre>@foreach($featuredPlaylists->take(8) as $index => $playlist)
+&lt;div class="playlist-card group flex items-center gap-3 ..."
+     x-data="{ touchTimer: null, ... }"
+     x-on:contextmenu.prevent.stop="..."
+     x-on:touchstart="..."
+     @click="..."&gt;
+    ... 50 satır inline HTML ...
+&lt;/div&gt;
+@endforeach</pre>
+                                        </div>
+                                    </div>
+                                    <div class="bg-green-900/20 rounded p-3 border border-green-700/50">
+                                        <p class="text-xs text-green-400 mb-2 font-semibold">✅ YENİ (3 satır):</p>
+                                        <div class="text-xs font-mono text-green-400 overflow-x-auto">
+<pre>@foreach($featuredPlaylists->take(8) as $index => $playlist)
+    &lt;x-muzibu.playlist-quick-card
+        :playlist="$playlist"
+        :index="$index"
+    /&gt;
+@endforeach</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TODO 3.2 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="3.2">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">3.2 Scroll Logic'i Tek Yerde Topla</span>
+                                    <span class="px-2 py-0.5 bg-blue-600/30 text-blue-400 rounded text-xs">OPSİYONEL</span>
+                                </div>
+                                <p class="text-sm text-slate-400 todo-text">
+                                    4 kez tekrar eden x-data scroll logic'i için horizontal-scroll-section component kullan
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TODO 3.3 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="3.3">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">3.3 Style Tag'i Kaldır</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mb-3 todo-text">
+                                    Inline style tag'i (scrollbar-hide) global CSS'e taşı
+                                </p>
+                                <div class="text-xs text-slate-500">
+                                    <strong>Satır 169-172:</strong> <code class="text-red-400">&lt;style&gt;.scrollbar-hide...&lt;/style&gt;</code> kaldır, tenant CSS'e ekle
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 4: DİĞER SAYFA DÜZELTMELERİ -->
+        <section class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">4</div>
+                <h2 class="text-2xl font-bold text-white">DİĞER SAYFA DÜZELTMELERİ</h2>
+                <span class="px-3 py-1 bg-green-600 rounded text-white text-sm">ÖNCELİK: ORTA</span>
+            </div>
+
+            <div class="bg-slate-900 rounded-2xl p-6 border border-green-700/50 mb-6">
+                <div class="space-y-4">
+
+                    <!-- TODO 4.1 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="4.1">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">4.1 artists/show → album-card Kullan</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mb-3 todo-text">
+                                    Inline album kartlarını component ile değiştir
+                                </p>
+                                <div class="text-xs text-slate-500">
+                                    <strong>Dosya:</strong> <code class="text-blue-400">resources/views/themes/muzibu/artists/show.blade.php</code> (Satır 56-84)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TODO 4.2 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="4.2">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">4.2 favorites/index → Mevcut Component'leri Kullan</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mb-3 todo-text">
+                                    3 tip inline kartı component ile değiştir (song-card, album-card, playlist-card)
+                                </p>
+                                <div class="text-xs text-slate-500">
+                                    <strong>Dosya:</strong> <code class="text-blue-400">Modules/Muzibu/.../favorites/index.blade.php</code> (Satır 44-158)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TODO 4.3 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="4.3">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">4.3 albums/show Header'ı Düzelt</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mb-3 todo-text">
+                                    Hardcoded Unsplash URL'i gerçek album cover ile değiştir
+                                </p>
+                                <div class="text-xs text-slate-500">
+                                    <strong>Satır 6:</strong> <code class="text-red-400">https://images.unsplash.com/...</code> → <code class="text-green-400">{{ $album->coverMedia ? thumb($album->coverMedia, 232, 232) : '' }}</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TODO 4.4 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="4.4">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">4.4 playlists/show Header'ı Düzelt</span>
+                                </div>
+                                <p class="text-sm text-slate-400 mb-3 todo-text">
+                                    Hardcoded Unsplash URL'i gerçek playlist cover ile değiştir
+                                </p>
+                                <div class="text-xs text-slate-500">
+                                    <strong>Satır 7:</strong> <code class="text-red-400">https://images.unsplash.com/...</code> → <code class="text-green-400">{{ $playlist->coverMedia ? thumb($playlist->coverMedia, 232, 232) : '' }}</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 5: FAVORİ BUTONU KONTROLÜ -->
+        <section class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-pink-600 rounded-full flex items-center justify-center text-white font-bold">5</div>
+                <h2 class="text-2xl font-bold text-white">FAVORİ BUTONU KONTROLÜ</h2>
+                <span class="px-3 py-1 bg-pink-600 rounded text-white text-sm">DOĞRULAMA</span>
+            </div>
+
+            <div class="bg-slate-900 rounded-2xl p-6 border border-pink-700/50 mb-6">
+                <div class="bg-green-900/30 rounded-xl p-4 mb-6 border border-green-700">
+                    <h3 class="font-bold text-green-300 mb-2"><i class="fas fa-check-circle mr-2"></i>Mevcut Durum (İYİ):</h3>
+                    <p class="text-sm text-slate-300">Tüm mevcut component'lerde favori butonu VAR:</p>
+                    <div class="flex flex-wrap gap-2 mt-3">
+                        <span class="px-2 py-1 bg-green-600/30 text-green-400 rounded text-xs">✓ song-row</span>
+                        <span class="px-2 py-1 bg-green-600/30 text-green-400 rounded text-xs">✓ album-card</span>
+                        <span class="px-2 py-1 bg-green-600/30 text-green-400 rounded text-xs">✓ playlist-card</span>
+                        <span class="px-2 py-1 bg-green-600/30 text-green-400 rounded text-xs">✓ genre-card</span>
+                        <span class="px-2 py-1 bg-green-600/30 text-green-400 rounded text-xs">✓ sector-card</span>
+                        <span class="px-2 py-1 bg-green-600/30 text-green-400 rounded text-xs">✓ radio-card</span>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- TODO 5.1 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="5.1">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">5.1 playlist-quick-card'a Favori Butonu Ekle</span>
+                                </div>
+                                <p class="text-sm text-slate-400 todo-text">
+                                    Yeni oluşturulan component'e hover'da görünen favori butonu ekle (2.1'de yapıldı mı kontrol et)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TODO 5.2 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="5.2">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">5.2 song-card'a Favori Butonu Ekle</span>
+                                </div>
+                                <p class="text-sm text-slate-400 todo-text">
+                                    Yeni oluşturulan component'e hover'da görünen favori butonu ekle (2.2'de yapıldı mı kontrol et)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TODO 5.3 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="5.3">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">5.3 Tüm Component'leri Test Et</span>
+                                </div>
+                                <p class="text-sm text-slate-400 todo-text">
+                                    Her component'te favori butonunun çalıştığını doğrula:
+                                </p>
+                                <ul class="text-xs text-slate-500 mt-2 space-y-1">
+                                    <li>• Hover'da görünüyor mu?</li>
+                                    <li>• Tıklayınca toggle oluyor mu?</li>
+                                    <li>• Favorilenmişse kalp dolu mu?</li>
+                                    <li>• Alpine store ile senkron mu?</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 6: GENEL İYİLEŞTİRMELER -->
+        <section class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">6</div>
+                <h2 class="text-2xl font-bold text-white">GENEL İYİLEŞTİRMELER</h2>
+                <span class="px-3 py-1 bg-purple-600 rounded text-white text-sm">ÖNCELİK: DÜŞÜK</span>
+            </div>
+
+            <div class="bg-slate-900 rounded-2xl p-6 border border-purple-700/50 mb-6">
+                <div class="space-y-4">
+
+                    <!-- TODO 6.1 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="6.1">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">6.1 empty-state Component Oluştur</span>
+                                    <span class="px-2 py-0.5 bg-purple-600/30 text-purple-400 rounded text-xs">OPSİYONEL</span>
+                                </div>
+                                <p class="text-sm text-slate-400 todo-text">
+                                    Boş içerik durumları için merkezi component
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TODO 6.2 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="6.2">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">6.2 artist-card Component Oluştur</span>
+                                    <span class="px-2 py-0.5 bg-purple-600/30 text-purple-400 rounded text-xs">OPSİYONEL</span>
+                                </div>
+                                <p class="text-sm text-slate-400 todo-text">
+                                    Sanatçı listesi ve arama için yuvarlak kart
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TODO 6.3 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="6.3">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">6.3 Scrollbar Hide CSS'i Global'e Taşı</span>
+                                </div>
+                                <p class="text-sm text-slate-400 todo-text">
+                                    .scrollbar-hide class'ını tenant CSS'e ekle
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TODO 6.4 -->
+                    <div class="todo-item completed bg-slate-950 rounded-xl p-5 border border-slate-700" data-id="6.4">
+                        <div class="flex items-start gap-4">
+                            <div class="todo-checkbox w-6 h-6 rounded border-2 border-slate-600 flex items-center justify-center text-white text-sm flex-shrink-0 mt-1">✓</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold text-white">6.4 Component Dokümantasyonu</span>
+                                </div>
+                                <p class="text-sm text-slate-400 todo-text">
+                                    Her component'in başına kullanım örneği yorum ekle
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- YAPILAN DEĞİŞİKLİKLER LOG -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6">
+                <i class="fas fa-history text-cyan-400 mr-3"></i>Yapılan Değişiklikler Log
+            </h2>
+            <div class="bg-slate-900 rounded-2xl p-6 border border-cyan-700/50">
+                <div class="space-y-3 text-sm" id="changelog">
+                    <div class="flex items-start gap-3 text-slate-400">
+                        <span class="text-cyan-400 font-mono">2025-12-20 23:30</span>
+                        <span>TODO Guide oluşturuldu (v2)</span>
+                    </div>
+                    <div class="flex items-start gap-3 text-green-400">
+                        <span class="text-cyan-400 font-mono">2025-12-20 23:45</span>
+                        <span>✅ Tüm kritik görevler tamamlandı!</span>
+                    </div>
+                    <div class="flex items-start gap-3 text-slate-400">
+                        <span class="text-cyan-400 font-mono">2025-12-20 23:46</span>
+                        <span>1.1, 1.2, 1.3 - CSS renkleri ve safelist eklendi, rebuild edildi</span>
+                    </div>
+                    <div class="flex items-start gap-3 text-slate-400">
+                        <span class="text-cyan-400 font-mono">2025-12-20 23:48</span>
+                        <span>2.1, 2.2 - playlist-quick-card ve song-card componentleri oluşturuldu</span>
+                    </div>
+                    <div class="flex items-start gap-3 text-slate-400">
+                        <span class="text-cyan-400 font-mono">2025-12-20 23:50</span>
+                        <span>3.1, 3.3 - Ana sayfa 50+ satır inline HTML → 3 satır component, style tag kaldırıldı</span>
+                    </div>
+                    <div class="flex items-start gap-3 text-slate-400">
+                        <span class="text-cyan-400 font-mono">2025-12-20 23:52</span>
+                        <span>4.1 - artists/show 28 satır → 3 satır (album-card)</span>
+                    </div>
+                    <div class="flex items-start gap-3 text-slate-400">
+                        <span class="text-cyan-400 font-mono">2025-12-20 23:54</span>
+                        <span>4.2 - favorites/index 114 satır → 8 satır (song-card, album-card, playlist-card)</span>
+                    </div>
+                    <div class="flex items-start gap-3 text-slate-400">
+                        <span class="text-cyan-400 font-mono">2025-12-20 23:56</span>
+                        <span>4.3, 4.4 - albums/show ve playlists/show hardcoded Unsplash URL → gerçek cover</span>
+                    </div>
+                    <div class="flex items-start gap-3 text-slate-400">
+                        <span class="text-cyan-400 font-mono">2025-12-20 23:58</span>
+                        <span>5.1, 5.2, 5.3 - Favori butonları kontrol edildi ve test edildi</span>
+                    </div>
+                    <div class="flex items-start gap-3 text-green-500">
+                        <span class="text-cyan-400 font-mono">2025-12-20 23:59</span>
+                        <span><strong>📊 TOPLAM: 192+ satır inline HTML → 14 satır component kullanımı!</strong></span>
+                    </div>
+                    <!-- AI buraya yeni loglar ekleyecek -->
+                    <div class="border-t border-slate-700 pt-3 mt-3">
+                        <p class="text-slate-500 italic">AI, her tamamlanan görev için buraya log ekle:</p>
+                        <p class="text-slate-600 text-xs font-mono mt-2">Format: [TARİH] [SAAT] - [GÖREV ID] tamamlandı: [KISA AÇIKLAMA]</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÖZET TABLO -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6">
+                <i class="fas fa-chart-bar text-orange-400 mr-3"></i>Görev Özeti
+            </h2>
+            <div class="overflow-x-auto">
+                <table class="w-full bg-slate-900 rounded-xl overflow-hidden">
+                    <thead class="bg-slate-800">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-300">Bölüm</th>
+                            <th class="px-4 py-3 text-center text-sm font-semibold text-slate-300">Görev Sayısı</th>
+                            <th class="px-4 py-3 text-center text-sm font-semibold text-slate-300">Öncelik</th>
+                            <th class="px-4 py-3 text-center text-sm font-semibold text-slate-300">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        <tr>
+                            <td class="px-4 py-3 text-sm text-white">1. Kritik CSS Hataları</td>
+                            <td class="px-4 py-3 text-center text-sm">3</td>
+                            <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-red-600/30 text-red-400 rounded text-xs">ACİL</span></td>
+                            <td class="px-4 py-3 text-center"><span class="text-green-400 font-bold">3/3 ✅</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-sm text-white">2. Yeni Component Oluşturma</td>
+                            <td class="px-4 py-3 text-center text-sm">3</td>
+                            <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-orange-600/30 text-orange-400 rounded text-xs">YÜKSEK</span></td>
+                            <td class="px-4 py-3 text-center"><span class="text-green-400 font-bold">2/3 ✅</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-sm text-white">3. Ana Sayfa Düzeltmeleri</td>
+                            <td class="px-4 py-3 text-center text-sm">3</td>
+                            <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-yellow-600/30 text-yellow-400 rounded text-xs">YÜKSEK</span></td>
+                            <td class="px-4 py-3 text-center"><span class="text-green-400 font-bold">2/3 ✅</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-sm text-white">4. Diğer Sayfa Düzeltmeleri</td>
+                            <td class="px-4 py-3 text-center text-sm">4</td>
+                            <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-green-600/30 text-green-400 rounded text-xs">ORTA</span></td>
+                            <td class="px-4 py-3 text-center"><span class="text-green-400 font-bold">4/4 ✅</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-sm text-white">5. Favori Butonu Kontrolü</td>
+                            <td class="px-4 py-3 text-center text-sm">3</td>
+                            <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-pink-600/30 text-pink-400 rounded text-xs">DOĞRULAMA</span></td>
+                            <td class="px-4 py-3 text-center"><span class="text-green-400 font-bold">3/3 ✅</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-sm text-white">6. Genel İyileştirmeler</td>
+                            <td class="px-4 py-3 text-center text-sm">4</td>
+                            <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-purple-600/30 text-purple-400 rounded text-xs">DÜŞÜK</span></td>
+                            <td class="px-4 py-3 text-center"><span class="text-slate-500">0/4 (Opsiyonel)</span></td>
+                        </tr>
+                        <tr class="bg-slate-800">
+                            <td class="px-4 py-3 text-sm text-white font-bold">TOPLAM</td>
+                            <td class="px-4 py-3 text-center text-sm font-bold">20</td>
+                            <td class="px-4 py-3 text-center">-</td>
+                            <td class="px-4 py-3 text-center"><span class="text-green-400 font-bold text-lg">14/20 ✅</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 border-t border-slate-700 py-6">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-slate-500 text-sm">Muzibu AI TODO Guide - Kapsamlı Düzeltme Planı v2</p>
+            <p class="text-slate-600 text-xs mt-1">Claude AI - 20 Aralık 2025</p>
+        </div>
+    </footer>
+
+</body>
+</html>

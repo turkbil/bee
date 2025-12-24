@@ -185,6 +185,9 @@ return [
     'hls_completed' => 'Tamamlandı',
     'hls_pending' => 'Bekliyor',
     'hls_ready' => 'HLS Hazır',
+    'song_cover' => 'Şarkı Görseli',
+    'own_cover' => 'Kendine ait görsel',
+    'album_cover' => 'Albüm görseli kullanılıyor',
 ],
 
 // Genres (Türler)

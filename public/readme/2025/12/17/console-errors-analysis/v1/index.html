@@ -1,1 +1,232 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Console Hataları Analiz - Muzibu Player</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-slate-100 mb-2">🔍 Console Hataları Analiz</h1>
+            <p class="text-slate-400">Muzibu Player - Console'daki hataların sebepleri ve çözümleri</p>
+            <div class="mt-4 text-sm text-slate-500">
+                📅 17 Aralık 2025 • 🎯 Hata Analizi
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="bg-slate-900 border border-slate-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-slate-100 mb-4">📊 Özet</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-3xl font-bold text-red-400">2</div>
+                    <div class="text-sm text-slate-400">Ana Hata Tipi</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-3xl font-bold text-yellow-400">1</div>
+                    <div class="text-sm text-slate-400">Kritik Hata</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-3xl font-bold text-green-400">1</div>
+                    <div class="text-sm text-slate-400">Fallback Çalışıyor</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error 1: Autoplay Policy -->
+        <div class="bg-slate-900 border border-red-900/50 rounded-lg p-6 mb-6">
+            <div class="flex items-start gap-4 mb-4">
+                <div class="text-3xl">🚫</div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-semibold text-red-400 mb-2">HATA #1: NotAllowedError - Autoplay Policy</h3>
+                    <div class="bg-slate-950 rounded p-3 mb-4 font-mono text-sm text-red-300 overflow-x-auto">
+                        HLS play error: NotAllowedError: play() failed because the user didn't interact with the document first.
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-4 ml-16">
+                <div>
+                    <h4 class="font-semibold text-slate-200 mb-2">🔍 Sebep:</h4>
+                    <ul class="list-disc list-inside space-y-1 text-slate-300">
+                        <li><strong>Browser Autoplay Policy:</strong> Modern tarayıcılar kullanıcı etkileşimi olmadan ses çalmaya izin vermiyor</li>
+                        <li><strong>Preload Attempt:</strong> Sayfa yüklenirken son çalınan şarkıyı otomatik yüklemeye çalışıyor</li>
+                        <li><strong>HLS Audio Element:</strong> <code>audio.play()</code> çağrısı kullanıcı etkileşimi olmadan yapılıyor</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-slate-200 mb-2">📍 Kod Konumu:</h4>
+                    <div class="bg-slate-950 rounded p-3 font-mono text-sm text-slate-300">
+                        player-core.js:2102 → playHlsStream()<br>
+                        ↓<br>
+                        preloadLastPlayedSong() → init()
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-slate-200 mb-2">⚠️ Etki:</h4>
+                    <div class="bg-yellow-900/20 border border-yellow-900/50 rounded p-3">
+                        <p class="text-yellow-200"><strong>DÜ ŞÜK ÖNCELİK</strong> - Bu hata beklenen bir davranıştır!</p>
+                        <ul class="list-disc list-inside mt-2 text-slate-300 space-y-1">
+                            <li>Şarkı yine de yüklenir (PAUSE modunda)</li>
+                            <li>Kullanıcı play butonuna bastığında çalar</li>
+                            <li>Sistem doğru çalışıyor, sadece tarayıcı uyarısı</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-slate-200 mb-2">✅ Çözüm:</h4>
+                    <div class="bg-green-900/20 border border-green-900/50 rounded p-3">
+                        <p class="text-green-200 mb-2"><strong>MEVCUT:</strong> Sistem zaten doğru çalışıyor!</p>
+                        <ul class="list-disc list-inside text-slate-300 space-y-1">
+                            <li>✅ <code>autoplay: false</code> parametresi kullanılıyor</li>
+                            <li>✅ Şarkı PAUSE modunda bekliyor</li>
+                            <li>✅ Kullanıcı play basınca çalıyor</li>
+                        </ul>
+                        <p class="text-slate-400 mt-3 text-sm"><em>Bu hatayı tamamen kaldırmak için:</em></p>
+                        <ul class="list-disc list-inside text-slate-400 space-y-1 text-sm">
+                            <li>Opsiyonel: <code>audio.play()</code> çağrısını try-catch içine al ve hatayi sessizce yakala</li>
+                            <li>Opsiyonel: Preload'u tamamen kaldır (ama bu UX'i kötüleştirir)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error 2: HLS Key Load Error -->
+        <div class="bg-slate-900 border border-orange-900/50 rounded-lg p-6 mb-6">
+            <div class="flex items-start gap-4 mb-4">
+                <div class="text-3xl">🔑</div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-semibold text-orange-400 mb-2">HATA #2: keyLoadError - HLS Encryption Key</h3>
+                    <div class="bg-slate-950 rounded p-3 mb-4 font-mono text-sm text-orange-300 overflow-x-auto">
+                        ⚠️ HLS error (fallback to MP3): keyLoadError
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-4 ml-16">
+                <div>
+                    <h4 class="font-semibold text-slate-200 mb-2">🔍 Sebep:</h4>
+                    <ul class="list-disc list-inside space-y-1 text-slate-300">
+                        <li><strong>Deleted Song:</strong> Son çalınan şarkı (ID: 323) database'den silinmiş</li>
+                        <li><strong>Missing Key File:</strong> HLS encryption key dosyası bulunamıyor</li>
+                        <li><strong>404 Response:</strong> <code>/api/muzibu/songs/323/key</code> endpoint 404 döndürüyor</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-slate-200 mb-2">📍 Kod Konumu:</h4>
+                    <div class="bg-slate-950 rounded p-3 font-mono text-sm text-slate-300">
+                        player-core.js:2116 → HLS.Events.ERROR<br>
+                        ↓<br>
+                        keyLoadError → Fallback to MP3
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-slate-200 mb-2">⚠️ Etki:</h4>
+                    <div class="bg-orange-900/20 border border-orange-900/50 rounded p-3">
+                        <p class="text-orange-200"><strong>ORTA ÖNCELİK</strong> - Fallback sistemi çalışıyor ama hata gösteriyor</p>
+                        <ul class="list-disc list-inside mt-2 text-slate-300 space-y-1">
+                            <li>HLS stream başarısız olunca MP3 fallback devreye giriyor</li>
+                            <li>Şarkı yine de çalışıyor (MP3 formatında)</li>
+                            <li>Console'da hata mesajı görünüyor</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-slate-200 mb-2">✅ Çözüm Seçenekleri:</h4>
+                    <div class="space-y-3">
+                        <!-- Option 1 -->
+                        <div class="bg-green-900/20 border border-green-900/50 rounded p-3">
+                            <p class="text-green-200 mb-2"><strong>ÇÖZÜM 1:</strong> Preload'da 404 Kontrolü (Önerilen)</p>
+                            <div class="bg-slate-950 rounded p-3 font-mono text-xs text-slate-300 overflow-x-auto">
+async preloadLastPlayedSong() {
+    const response = await fetch(`/api/muzibu/songs/${song.song_id}/stream`);
+
+    // 🗑️ Skip if song deleted (404/500)
+    if (!response.ok) {
+        console.warn('Last played song not available');
+        return; // ← MEVCUT: Zaten var!
+    }
+
+    // Continue with preload...
+}
+                            </div>
+                            <p class="text-slate-400 mt-2 text-sm">✅ Bu kontrol zaten mevcut! Ama yine de HLS key hatası geliyor çünkü HLS.js kendi isteği yapıyor.</p>
+                        </div>
+
+                        <!-- Option 2 -->
+                        <div class="bg-blue-900/20 border border-blue-900/50 rounded p-3">
+                            <p class="text-blue-200 mb-2"><strong>ÇÖZÜM 2:</strong> HLS Error'u Sessizce Yakala</p>
+                            <div class="bg-slate-950 rounded p-3 font-mono text-xs text-slate-300 overflow-x-auto">
+this.hls.on(Hls.Events.ERROR, (event, data) => {
+    if (data.details === 'keyLoadError' && !data.fatal) {
+        // ⚠️ Sessizce yakala, console'a yazma
+        this.fallbackToMP3(); // Fallback yap
+        return;
+    }
+    // Diğer hatalar için warning göster
+});
+                            </div>
+                            <p class="text-slate-400 mt-2 text-sm">⚠️ Bu hata zaten fallback tetikliyor, ek aksiyona gerek yok.</p>
+                        </div>
+
+                        <!-- Option 3 -->
+                        <div class="bg-purple-900/20 border border-purple-900/50 rounded p-3">
+                            <p class="text-purple-200 mb-2"><strong>ÇÖZÜM 3:</strong> LocalStorage Temizliği (En Kolay)</p>
+                            <div class="bg-slate-950 rounded p-3 font-mono text-xs text-slate-300 overflow-x-auto">
+// Browser console'da çalıştır:
+localStorage.removeItem('muzibu_queue_state');
+localStorage.removeItem('muzibu_full_state');
+                            </div>
+                            <p class="text-slate-400 mt-2 text-sm">✅ En hızlı çözüm: Kullanıcı hard refresh yaptığında eski şarkı bilgisi temizlenecek.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Plan -->
+        <div class="bg-slate-900 border border-slate-800 rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-slate-100 mb-4">🎯 Aksiy on Planı</h2>
+            <div class="space-y-3">
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">1️⃣</span>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-slate-200 mb-1">Autoplay Error → GEREKSİZ</h3>
+                        <p class="text-slate-400 text-sm">Bu hata beklenen bir davranış. Sistem doğru çalışıyor. Try-catch ile sessizce yakalanabilir ama gerekli değil.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">2️⃣</span>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-slate-200 mb-1">HLS Key Error → LocalStorage Temizle</h3>
+                        <p class="text-slate-400 text-sm">Deleted song (ID: 323) localStorage'da kalmış. Kullanıcı hard refresh yapınca temizlenecek. Opsiyonel: Preload'da extra 404 check eklenebilir.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">3️⃣</span>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-slate-200 mb-1">İzleme → Console Temiz Kalmalı</h3>
+                        <p class="text-slate-400 text-sm">Hard refresh sonrası console'da sadece bu 2 hata görünecek. Yeni hatalar gelmemeli. console.log TAMAMEN temizlendi.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-8 pt-6 border-t border-slate-800 text-center text-sm text-slate-500">
+            <p>🤖 Bu rapor Claude Code tarafından otomatik oluşturuldu</p>
+            <p class="mt-1">Claude Sonnet 4.5 • 17 Aralık 2025</p>
+        </div>
+    </div>
+</body>
+</html>

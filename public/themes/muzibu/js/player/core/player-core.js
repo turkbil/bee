@@ -1852,8 +1852,12 @@ function muzibuApp() {
                         const nextSongs = await muzibuStore.refillQueue(1, 15); // offset=1 (mevcut şarkıdan sonraki)
 
                         if (nextSongs && nextSongs.length > 0) {
+                            // 🛡️ DUPLICATE FILTER: Mevcut şarkı ile aynı olanları filtrele
+                            const currentSongId = song.song_id;
+                            const uniqueNextSongs = nextSongs.filter(s => s.song_id !== currentSongId);
+
                             // Queue'ya ekle (mevcut şarkı zaten 0. index'te)
-                            this.queue = [song, ...nextSongs];
+                            this.queue = [song, ...uniqueNextSongs];
                         } else {
                             console.warn('⚠️ INSTANT QUEUE REFILL: API den şarkı gelmedi, sadece bu şarkı çalacak');
                         }
@@ -1899,6 +1903,12 @@ function muzibuApp() {
             this.currentSong = song;
             this.queueIndex = index;
             this.playTracked = false;
+
+            // 🎯 RECENTLY PLAYED: Şarkıyı exclude listesine ekle (tekrar gelmemesi için)
+            const playerStore = Alpine.store('player') || Alpine.store('muzibu');
+            if (playerStore && playerStore.addToRecentlyPlayed) {
+                playerStore.addToRecentlyPlayed(song.song_id);
+            }
 
             // Check if song is favorited (background, don't wait)
             this.checkFavoriteStatus(song.song_id);

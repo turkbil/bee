@@ -1,1 +1,955 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>11 KURAL FORMULU - AI Gercekci Fotograf Uretim Rehberi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #f59e0b, #ef4444, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: #94a3b8;
+            margin-bottom: 20px;
+        }
+
+        .meta {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .admin-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .admin-link {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .admin-link.secondary {
+            background: linear-gradient(135deg, #10b981, #14b8a6);
+        }
+
+        .goal-box {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(236, 72, 153, 0.2));
+            border: 2px solid #ef4444;
+            border-radius: 16px;
+            padding: 35px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .goal-box h2 {
+            color: #f87171;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .goal-box p {
+            font-size: 1.15rem;
+            color: #fca5a5;
+            margin-bottom: 10px;
+        }
+
+        .goal-box .highlight {
+            background: rgba(239, 68, 68, 0.3);
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            color: #fef2f2;
+        }
+
+        section {
+            margin-bottom: 60px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 .emoji {
+            font-size: 1.5rem;
+        }
+
+        .intro-text {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 4px solid #60a5fa;
+        }
+
+        .intro-text p {
+            color: #cbd5e1;
+            font-size: 1.05rem;
+            margin-bottom: 12px;
+        }
+
+        .intro-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .rules-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .rule-item {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 30px;
+            border-radius: 16px;
+            border-left: 5px solid;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .rule-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .rule-item.r1 { border-color: #22c55e; }
+        .rule-item.r2 { border-color: #3b82f6; }
+        .rule-item.r3 { border-color: #8b5cf6; }
+        .rule-item.r4 { border-color: #f59e0b; }
+        .rule-item.r5 { border-color: #ec4899; }
+        .rule-item.r6 { border-color: #eab308; }
+        .rule-item.r7 { border-color: #14b8a6; }
+        .rule-item.r8 { border-color: #f97316; background: rgba(249, 115, 22, 0.1); }
+        .rule-item.r9 { border-color: #ef4444; background: rgba(239, 68, 68, 0.15); }
+        .rule-item.r10 { border-color: #a855f7; }
+        .rule-item.r11 { border-color: #06b6d4; background: rgba(6, 182, 212, 0.1); }
+
+        .rule-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .rule-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .rule-title {
+            flex: 1;
+        }
+
+        .rule-title h3 {
+            color: #f1f5f9;
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .rule-title .english {
+            color: #64748b;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-new {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: white;
+        }
+
+        .badge-critical {
+            background: #ef4444;
+            color: white;
+        }
+
+        .badge-important {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .rule-description {
+            color: #94a3b8;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            padding-left: 60px;
+        }
+
+        .rule-why {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            margin-left: 60px;
+        }
+
+        .rule-why strong {
+            color: #60a5fa;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .rule-why p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        .rule-examples {
+            margin-left: 60px;
+        }
+
+        .example-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .example-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .example-bad, .example-good {
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.85rem;
+        }
+
+        .example-bad {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .example-bad::before {
+            content: "❌ YANLIS: ";
+            font-weight: 700;
+        }
+
+        .example-good {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #86efac;
+        }
+
+        .example-good::before {
+            content: "✅ DOGRU: ";
+            font-weight: 700;
+        }
+
+        /* LinkedIn Section */
+        .linkedin-section {
+            background: linear-gradient(135deg, #0077b5 0%, #00a0dc 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+        }
+
+        .linkedin-section h2 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .linkedin-post {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 12px;
+            font-size: 1rem;
+            line-height: 1.9;
+        }
+
+        .linkedin-post .hook {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0077b5;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        .linkedin-post p {
+            margin-bottom: 15px;
+            color: #444;
+        }
+
+        .linkedin-post .highlight-text {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .linkedin-post .rules-preview {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        .linkedin-post .cta {
+            background: linear-gradient(135deg, #0077b5, #00a0dc);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+
+        .linkedin-post .hashtags {
+            color: #0077b5;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Prompt Guide Section */
+        .prompt-guide {
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid #475569;
+            border-radius: 16px;
+            padding: 35px;
+            margin-bottom: 40px;
+        }
+
+        .prompt-guide h3 {
+            color: #f59e0b;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        .dual-lang {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .dual-lang {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .lang-column {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .lang-column h4 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lang-column ol {
+            padding-left: 20px;
+        }
+
+        .lang-column li {
+            color: #cbd5e1;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .lang-column li strong {
+            color: #f59e0b;
+        }
+
+        .full-prompt-box {
+            background: #0f172a;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 25px;
+            border: 1px solid #334155;
+        }
+
+        .full-prompt-box h4 {
+            color: #10b981;
+            margin-bottom: 15px;
+        }
+
+        .full-prompt-box pre {
+            color: #e2e8f0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>11 KURAL FORMULU</h1>
+            <p class="subtitle">Yapay Zeka ile Gercek Fotograf Gibi Gorunen Gorseller Uretme Rehberi</p>
+            <div class="meta">
+                26 Kasim 2025 | Nurullah Okatan
+            </div>
+            <div class="admin-links">
+                <a href="https://muzibu.com.tr/admin/mediamanagement/ai-generator" class="admin-link" target="_blank">
+                    🎨 AI Gorsel Uretici
+                </a>
+                <a href="https://muzibu.com.tr/admin/mediamanagement/thumbnail" class="admin-link secondary" target="_blank">
+                    🖼️ Thumbnail Kullanimi
+                </a>
+            </div>
+        </header>
+
+        <div class="goal-box">
+            <h2>🎯 TEMEL AMACIMIZ</h2>
+            <p>Yapay zekanin urettigi <strong>BELLI OLMAYAN</strong>, gercek bir fotografcinin cektigi gibi gorunen gorseller uretmek.</p>
+            <p>Insanlar baktıginda "Bu AI mi?" diye sormamalı. "Guzel fotograf!" demeli.</p>
+            <div class="highlight">
+                ⚠️ "AI gibi gorunuyor" = BASARISIZ SONUC<br>
+                ✅ "Gercek fotograf gibi" = HEDEFIMIZ
+            </div>
+        </div>
+
+        <!-- Admin Links Section -->
+        <section>
+            <h2><span class="emoji">🔗</span> Uygulama Linkleri</h2>
+            <div class="intro-text">
+                <p><strong>AI Gorsel Uretici:</strong> 11 Kural Formulu'nu otomatik uygulayan yapay zeka gorsel uretim aracimiz. Basit bir prompt girin, sistem arka planda tum kurallari uygulayarak profesyonel sonuc uretsin.</p>
+                <p><strong>Thumbnail Kullanimi:</strong> Uretilen gorsellerin web sitesinde optimize edilmis sekilde kullanimi icin thumbnail sistemi. Performans ve kalite dengesi.</p>
+            </div>
+        </section>
+
+        <!-- LinkedIn Post -->
+        <section class="linkedin-section">
+            <h2><span class="emoji">💼</span> LinkedIn Paylaşımı</h2>
+            <div class="linkedin-post">
+                <div class="hook">
+                    🎯 AI gorselleriniz neden "yapay" gorunuyor biliyor musunuz?<br>
+                    Cunku cogu kisi sadece "forklift in warehouse" yazıp sonuc bekliyor.
+                </div>
+
+                <p>Son 6 aydir yapay zeka gorsel uretimi uzerine yogun calismalar yapiyorum. Yuzlerce denemeden sonra bir formul gelistirdim:</p>
+
+                <p><span class="highlight-text">11 KURAL FORMULU</span></p>
+
+                <p>Bu formul, AI'in "steril" ve "mukemmel" gorunumunu kirarak gercek bir fotografcinin cektigi gibi sonuclar uretiyor.</p>
+
+                <div class="rules-preview">
+1. Photo Type → AI'ı fotograf moduna sok
+2. Subject + Action → Mikro hikaye anlat
+3. Environment + Time → Mekan + zaman/mevsim
+4. Camera Angle → Cekim acısı + amacı
+5. Composition → Kompozisyon teknigi
+6. Lighting → Detayli ısık kurulumu
+7. Camera + Lens → Spesifik ekipman
+8. Film Stock → Analog film referansı ⭐ YENİ
+9. Imperfections → KUSURLAR ⭐ KRİTİK
+10. Mood + Emotion → Atmosfer + duygu
+11. Post-Processing → Renk grade ⭐ YENİ
+                </div>
+
+                <p>En kritik kesfim: <strong>Kusurlar (Imperfections)</strong></p>
+
+                <p>Gercek fotograflarda lens tozu vardir, hafif vinyet vardir, hareket bulanikligi vardir. AI bunlari eklemezse sonuc "cok mukemmel" = "cok sahte" gorunur.</p>
+
+                <p>Ikinci kritik kesif: <strong>Film Stock referanslari</strong></p>
+
+                <p>"Kodak Portra 400 warm tones" veya "Fuji Velvia vivid saturation" gibi analog film referanslari, AI'in dijital sterilligini kiriyor.</p>
+
+                <div class="cta">
+                    Bu formulu acik kaynak olarak paylasiyorum. Siz de deneyin ve sonuclarinizi benimle paylasin!
+                </div>
+
+                <div class="hashtags">
+                    #YapayZeka #AI #AIArt #Fotograf #Tasarim #DigitalMarketing #ContentCreation #Innovation #Technology #Girişimcilik
+                </div>
+            </div>
+            <button class="copy-btn" onclick="copyLinkedIn()">📋 LinkedIn Postunu Kopyala</button>
+        </section>
+
+        <!-- 11 Rules Detailed -->
+        <section>
+            <h2><span class="emoji">📋</span> 11 Kural Detayli Aciklama</h2>
+
+            <div class="intro-text">
+                <p>Her kural belirli bir amaca hizmet eder. Siralama onemlidir cunku AI modelleri prompt'u bastan sona okur ve ilk kelimelere daha fazla agirlik verir.</p>
+                <p>Asagida her kuralin ne ise yaradigini, neden onemli oldugunu ve dogru/yanlis orneklerini bulacaksiniz.</p>
+            </div>
+
+            <div class="rules-list">
+                <!-- Rule 1 -->
+                <div class="rule-item r1">
+                    <div class="rule-header">
+                        <span class="rule-number">1</span>
+                        <div class="rule-title">
+                            <h3>Fotograf Tipi (Photo Type)</h3>
+                            <span class="english">Photo of, Editorial photograph of, Documentary shot of</span>
+                        </div>
+                    </div>
+                    <p class="rule-description">AI modelini "fotograf uretme" moduna sokar. Bu olmadan model resim, illustrasyon veya dijital art uretebilir.</p>
+                    <div class="rule-why">
+                        <strong>Neden Onemli?</strong>
+                        <p>AI modelleri cok yonlu calisir. "Photo of" ile baslamak, modele "bu bir fotograf olacak, resim degil" mesajini verir. Bu tek kelime, ciktinin tum karakterini belirler.</p>
+                    </div>
+                    <div class="rule-examples">
+                        <div class="example-row">
+                            <div class="example-bad">forklift in warehouse</div>
+                            <div class="example-good">Photo of forklift in warehouse</div>
+                        </div>
+                        <div class="example-row">
+                            <div class="example-bad">musician playing guitar</div>
+                            <div class="example-good">Editorial photograph of musician playing guitar</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rule 2 -->
+                <div class="rule-item r2">
+                    <div class="rule-header">
+                        <span class="rule-number">2</span>
+                        <div class="rule-title">
+                            <h3>Konu + Aksiyon (Subject + Action)</h3>
+                            <span class="english">What is the subject DOING? Micro-story approach</span>
+                        </div>
+                        <span class="badge badge-critical">MIKRO HIKAYE</span>
+                    </div>
+                    <p class="rule-description">Ana konu sadece "durmaz", bir sey YAPAR. Bu fotografa hayat katar ve gercekcilik saglar.</p>
+                    <div class="rule-why">
+                        <strong>Neden Onemli?</strong>
+                        <p>Gercek fotograflar anlik anları yakalar. Bir forklift operatoru sadece oturmaz - bir seyleri tasir, kontrol eder, dikkatli manevra yapar. Bu detay fotografa "hayat" katar.</p>
+                    </div>
+                    <div class="rule-examples">
+                        <div class="example-row">
+                            <div class="example-bad">forklift</div>
+                            <div class="example-good">forklift operator carefully maneuvering loaded pallets through narrow aisle</div>
+                        </div>
+                        <div class="example-row">
+                            <div class="example-bad">guitarist on stage</div>
+                            <div class="example-good">guitarist mid-strum, eyes closed, feeling the chord progression intensely</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rule 3 -->
+                <div class="rule-item r3">
+                    <div class="rule-header">
+                        <span class="rule-number">3</span>
+                        <div class="rule-title">
+                            <h3>Ortam + Zaman/Mevsim (Environment + Time/Season)</h3>
+                            <span class="english">Location with temporal context - when is this happening?</span>
+                        </div>
+                        <span class="badge badge-important">TEMPORAL</span>
+                    </div>
+                    <p class="rule-description">Sadece mekan degil, o anki ZAMAN ve MEVSIM de belirtilmeli. Sabah mi? Kis mi? Yagmurlu mu?</p>
+                    <div class="rule-why">
+                        <strong>Neden Onemli?</strong>
+                        <p>Ayni depo sabah sisi icinde, kis sogugunda veya yaz sicaginda tamamen farkli gorunur. Zaman detayi isigi, atmosferi ve duyguyu koklü sekilde degistirir.</p>
+                    </div>
+                    <div class="rule-examples">
+                        <div class="example-row">
+                            <div class="example-bad">warehouse</div>
+                            <div class="example-good">industrial warehouse on foggy winter morning, condensation on high windows, early shift</div>
+                        </div>
+                        <div class="example-row">
+                            <div class="example-bad">recording studio</div>
+                            <div class="example-good">dimly lit recording studio at 2am, coffee cups scattered, late night session atmosphere</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rule 4 -->
+                <div class="rule-item r4">
+                    <div class="rule-header">
+                        <span class="rule-number">4</span>
+                        <div class="rule-title">
+                            <h3>Kamera Acisi (Camera Angle)</h3>
+                            <span class="english">Eye-level, low angle, high angle, dutch angle, POV</span>
+                        </div>
+                    </div>
+                    <p class="rule-description">Cekim acisi + bu acinin AMACI. Neden bu acidan cekiliyor?</p>
+                    <div class="rule-why">
+                        <strong>Neden Onemli?</strong>
+                        <p>Alcak aci guc ve hakimiyet hissi verir. Goz hizasi yakinlik ve baglantiyi, yuksek aci ise genel bakis ve baglamı gosterir. Profesyonel fotografcilar aciyi rastgele secmez.</p>
+                    </div>
+                    <div class="rule-examples">
+                        <div class="example-row">
+                            <div class="example-bad">front view</div>
+                            <div class="example-good">low angle emphasizing power and scale of the machinery</div>
+                        </div>
+                        <div class="example-row">
+                            <div class="example-bad">side shot</div>
+                            <div class="example-good">eye-level angle for intimate connection with the performer</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rule 5 -->
+                <div class="rule-item r5">
+                    <div class="rule-header">
+                        <span class="rule-number">5</span>
+                        <div class="rule-title">
+                            <h3>Kompozisyon (Composition)</h3>
+                            <span class="english">Rule of thirds, golden ratio, centered, leading lines</span>
+                        </div>
+                    </div>
+                    <p class="rule-description">Fotografin icindeki elemanlarin yerlesimi. Rastgele degil, bilinçli kadrajlama.</p>
+                    <div class="rule-why">
+                        <strong>Neden Onemli?</strong>
+                        <p>Kompozisyon, izleyicinin gozunun nereye bakacagini yonlendirir. "Rule of thirds" ile konu sag kesisim noktasina yerlestirmek, fotografa profesyonel bir his katar.</p>
+                    </div>
+                    <div class="rule-examples">
+                        <div class="example-row">
+                            <div class="example-bad">subject in frame</div>
+                            <div class="example-good">rule of thirds with subject at right intersection, negative space on left creating tension</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rule 6 -->
+                <div class="rule-item r6">
+                    <div class="rule-header">
+                        <span class="rule-number">6</span>
+                        <div class="rule-title">
+                            <h3>Isik Kurulumu (Lighting)</h3>
+                            <span class="english">Golden hour, Rembrandt, split, rim light, practical lights</span>
+                        </div>
+                    </div>
+                    <p class="rule-description">Detayli isik tanimlamasi. Isik nereden geliyor? Renk sicakligi ne? Golge orani ne?</p>
+                    <div class="rule-why">
+                        <strong>Neden Onemli?</strong>
+                        <p>Isik, fotografin ruhudur. "Golden hour" sicak ve romantik, "Rembrandt lighting" dramatik ve sanatsal, "practical lights" ise dogal ve belgesel hissi verir.</p>
+                    </div>
+                    <div class="rule-examples">
+                        <div class="example-row">
+                            <div class="example-bad">good lighting</div>
+                            <div class="example-good">golden hour side light streaming through skylights, mixing with overhead fluorescent creating warm-cool contrast</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rule 7 -->
+                <div class="rule-item r7">
+                    <div class="rule-header">
+                        <span class="rule-number">7</span>
+                        <div class="rule-title">
+                            <h3>Kamera + Lens + Alan Derinligi (Camera + Lens + DoF)</h3>
+                            <span class="english">Canon R5 85mm f/1.4, Sony A7IV 35mm f/1.8, bokeh character</span>
+                        </div>
+                    </div>
+                    <p class="rule-description">Spesifik kamera ve lens. Sadece "DSLR" degil, marka + model + lens + diyafram + bokeh karakteri.</p>
+                    <div class="rule-why">
+                        <strong>Neden Onemli?</strong>
+                        <p>Her lens farkli karakter verir. 85mm f/1.4 kremsi bokeh ve konu izolasyonu, 35mm f/1.8 ise cevre baglami ve dogal perspektif saglar. AI bu detaylari biliyor.</p>
+                    </div>
+                    <div class="rule-examples">
+                        <div class="example-row">
+                            <div class="example-bad">professional camera</div>
+                            <div class="example-good">Canon EOS R5, 85mm f/1.4L, creamy bokeh, subject sharp at 2m, shallow depth of field</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rule 8 - NEW -->
+                <div class="rule-item r8">
+                    <div class="rule-header">
+                        <span class="rule-number">8</span>
+                        <div class="rule-title">
+                            <h3>Film Stoku (Film Stock)</h3>
+                            <span class="english">Kodak Portra 400, Fuji Velvia 50, Kodak Tri-X, Cinestill 800T</span>
+                        </div>
+                        <span class="badge badge-new">YENI KURAL</span>
+                    </div>
+                    <p class="rule-description">Analog film referansi. Bu, AI'in dijital sterilligini kiran en etkili yontemlerden biri.</p>
+                    <div class="rule-why">
+                        <strong>Neden Onemli?</strong>
+                        <p>Dijital fotograflar "cok temiz" gorunur. Analog film referanslari (Portra'nin sicak cilt tonlari, Velvia'nin canli renkleri, Tri-X'in klasik grain'i) fotografa karakter ve nostalji katar. AI bu film estetiklerini cok iyi biliyor.</p>
+                    </div>
+                    <div class="rule-examples">
+                        <div class="example-row">
+                            <div class="example-bad">film look</div>
+                            <div class="example-good">Kodak Portra 400 warm skin tones, soft contrast, subtle grain</div>
+                        </div>
+                        <div class="example-row">
+                            <div class="example-bad">vintage style</div>
+                            <div class="example-good">Fuji Velvia 50 vivid saturation, punchy colors, fine grain</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rule 9 - CRITICAL -->
+                <div class="rule-item r9">
+                    <div class="rule-header">
+                        <span class="rule-number">9</span>
+                        <div class="rule-title">
+                            <h3>Kusurlar (Imperfections)</h3>
+                            <span class="english">Lens dust, vignetting, chromatic aberration, motion blur, film grain</span>
+                        </div>
+                        <span class="badge badge-critical">EN KRITIK</span>
+                    </div>
+                    <p class="rule-description">GERCEKCILIK ICIN EN ONEMLI KURAL. Mukemmel = SAHTE. Gercek fotograflarda kusur vardir.</p>
+                    <div class="rule-why">
+                        <strong>Neden Onemli?</strong>
+                        <p>Gercek fotograflarda MUTLAKA kusur vardir: lens uzerinde toz, kose kararmalari (vinyet), yuksek kontrastli kenarlarda renk sapmasi (chromatic aberration), hareket eden nesnelerde bulaniklik, film grain... AI bunlari eklemezse sonuc "cok mukemmel" gorunur ve bu "sahte" demektir.</p>
+                    </div>
+                    <div class="rule-examples">
+                        <div class="example-row">
+                            <div class="example-bad">perfect image quality</div>
+                            <div class="example-good">subtle lens dust visible in light beams, slight vignetting at corners, micro chromatic aberration on high contrast edges</div>
+                        </div>
+                        <div class="example-row">
+                            <div class="example-bad">sharp and clear</div>
+                            <div class="example-good">natural film grain, slight motion blur on moving hands, authentic surface wear and scratches</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rule 10 -->
+                <div class="rule-item r10">
+                    <div class="rule-header">
+                        <span class="rule-number">10</span>
+                        <div class="rule-title">
+                            <h3>Atmosfer + Duygu (Mood + Emotion)</h3>
+                            <span class="english">Tension, serenity, energy, melancholy, nostalgia, determination</span>
+                        </div>
+                    </div>
+                    <p class="rule-description">Fotografin hissettirdigi duygu. Her iyi fotograf bir his uyandirmalidir.</p>
+                    <div class="rule-why">
+                        <strong>Neden Onemli?</strong>
+                        <p>Fotograflar sadece "gosterme" araci degil, "hissettirme" aracidir. "Sessiz kararlilik", "nostaljik sicaklik", "gergin beklenti" gibi duygular fotografa derinlik katar.</p>
+                    </div>
+                    <div class="rule-examples">
+                        <div class="example-row">
+                            <div class="example-bad">nice atmosphere</div>
+                            <div class="example-good">conveying quiet determination and focused concentration, authentic workplace energy</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rule 11 - NEW -->
+                <div class="rule-item r11">
+                    <div class="rule-header">
+                        <span class="rule-number">11</span>
+                        <div class="rule-title">
+                            <h3>Son Islem (Post-Processing)</h3>
+                            <span class="english">Cinematic color grading, desaturated film look, lifted blacks</span>
+                        </div>
+                        <span class="badge badge-new">YENI KURAL</span>
+                    </div>
+                    <p class="rule-description">Renk duzenleme ve color grade. AI'in steril tonlarini kiran son dokunustur.</p>
+                    <div class="rule-why">
+                        <strong>Neden Onemli?</strong>
+                        <p>Ham dijital fotograflar "flat" ve steril gorunur. Profesyonel fotografcilar MUTLAKA renk duzenleme yapar: sinematik teal-orange, desature film look, lifted blacks (golgeler tam siyah degil)... Bu detaylar fotografa "profesyonel dokunmus" hissi katar.</p>
+                    </div>
+                    <div class="rule-examples">
+                        <div class="example-row">
+                            <div class="example-bad">edited photo</div>
+                            <div class="example-good">cinematic teal and orange color grading, slightly desaturated, lifted blacks with crushed highlights</div>
+                        </div>
+                        <div class="example-row">
+                            <div class="example-bad">color corrected</div>
+                            <div class="example-good">warm vintage tones, subtle film grain overlay, slight color shift in shadows</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dual Language Prompt Guide -->
+        <section>
+            <h2><span class="emoji">🌍</span> Prompt Siralamasi (Turkce / Ingilizce)</h2>
+
+            <div class="prompt-guide">
+                <h3>11 Kural Siralamasi - Kopyala & Kullan</h3>
+
+                <div class="dual-lang">
+                    <div class="lang-column">
+                        <h4>🇹🇷 Turkce Siralama</h4>
+                        <ol>
+                            <li><strong>Fotograf Tipi:</strong> "Fotografi", "Editoryal fotograf", "Belgesel cekimi"</li>
+                            <li><strong>Konu + Aksiyon:</strong> Ne/kim + ne yapiyor (mikro hikaye)</li>
+                            <li><strong>Ortam + Zaman:</strong> Nerede + ne zaman/hangi mevsim</li>
+                            <li><strong>Kamera Acisi:</strong> Cekim acisi + amaci</li>
+                            <li><strong>Kompozisyon:</strong> Ucler kurali, altin oran, simetri</li>
+                            <li><strong>Isiklandirma:</strong> Isik kaynagi, yon, renk sicakligi</li>
+                            <li><strong>Kamera + Lens:</strong> Marka, model, mm, diyafram, bokeh</li>
+                            <li><strong>Film Stoku:</strong> Kodak Portra, Fuji Velvia, vb.</li>
+                            <li><strong>Kusurlar:</strong> Lens tozu, vinyet, grain, hareket bulanigi</li>
+                            <li><strong>Atmosfer:</strong> Duygu, his, atmosfer</li>
+                            <li><strong>Son Islem:</strong> Renk grade, ton ayari</li>
+                        </ol>
+                    </div>
+
+                    <div class="lang-column">
+                        <h4>🇬🇧 English Order</h4>
+                        <ol>
+                            <li><strong>Photo Type:</strong> "Photo of", "Editorial photograph", "Documentary shot"</li>
+                            <li><strong>Subject + Action:</strong> Who/what + doing what (micro-story)</li>
+                            <li><strong>Environment + Time:</strong> Where + when/what season</li>
+                            <li><strong>Camera Angle:</strong> Angle + purpose</li>
+                            <li><strong>Composition:</strong> Rule of thirds, golden ratio, symmetry</li>
+                            <li><strong>Lighting:</strong> Light source, direction, color temperature</li>
+                            <li><strong>Camera + Lens:</strong> Brand, model, mm, aperture, bokeh</li>
+                            <li><strong>Film Stock:</strong> Kodak Portra, Fuji Velvia, etc.</li>
+                            <li><strong>Imperfections:</strong> Lens dust, vignette, grain, motion blur</li>
+                            <li><strong>Mood:</strong> Emotion, feeling, atmosphere</li>
+                            <li><strong>Post-Processing:</strong> Color grade, tone adjustment</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="full-prompt-box">
+                    <h4>📝 Tam Ornek Prompt (Kopyala & Kullan)</h4>
+                    <pre id="full-prompt">Editorial photograph of forklift operator carefully maneuvering loaded pallets through narrow warehouse aisle, industrial warehouse on foggy winter morning with condensation on high windows and frost visible on metal shelving, early shift atmosphere with breath visible in cold air, low angle emphasizing power and scale of the machine, rule of thirds with operator at right intersection and negative space showing depth of warehouse, golden hour side light streaming through skylights mixing with overhead fluorescent ambient creating warm-cool color contrast, shot on Canon EOS R5 85mm f/1.4L creamy bokeh subject sharp at 2m shallow depth of field, Kodak Portra 400 warm neutral tones fine grain subtle color shift in shadows, subtle scratches on metal surfaces dust particles visible in light beams slight lens vignetting micro chromatic aberration on high contrast edges natural film grain, conveying industrial efficiency quiet determination focused concentration authentic workplace energy, industrial documentary grade slightly desaturated lifted shadows warm vintage undertones. Unbranded generic equipment, no manufacturer logos, no visible brand names, blank clean surfaces. NO text, NO labels, NO watermarks, authentic photograph only</pre>
+                    <button class="copy-btn" onclick="copyPrompt()">📋 Prompt'u Kopyala</button>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            11 Kural Formulu | Nurullah Okatan | Claude AI ile gelistirildi
+        </footer>
+    </div>
+
+    <script>
+        function copyLinkedIn() {
+            const text = `🎯 AI görselleriniz neden "yapay" görünüyor biliyor musunuz?
+Çünkü çoğu kişi sadece "forklift in warehouse" yazıp sonuç bekliyor.
+
+Son 6 aydır yapay zeka görsel üretimi üzerine yoğun çalışmalar yapıyorum. Yüzlerce denemeden sonra bir formül geliştirdim:
+
+11 KURAL FORMÜLÜ
+
+Bu formül, AI'ın "steril" ve "mükemmel" görünümünü kırarak gerçek bir fotoğrafçının çektiği gibi sonuçlar üretiyor.
+
+1. Photo Type → AI'ı fotoğraf moduna sok
+2. Subject + Action → Mikro hikaye anlat
+3. Environment + Time → Mekan + zaman/mevsim
+4. Camera Angle → Çekim açısı + amacı
+5. Composition → Kompozisyon tekniği
+6. Lighting → Detaylı ışık kurulumu
+7. Camera + Lens → Spesifik ekipman
+8. Film Stock → Analog film referansı ⭐ YENİ
+9. Imperfections → KUSURLAR ⭐ KRİTİK
+10. Mood + Emotion → Atmosfer + duygu
+11. Post-Processing → Renk grade ⭐ YENİ
+
+En kritik keşfim: Kusurlar (Imperfections)
+
+Gerçek fotoğraflarda lens tozu vardır, hafif vinyet vardır, hareket bulanıklığı vardır. AI bunları eklemezse sonuç "çok mükemmel" = "çok sahte" görünür.
+
+İkinci kritik keşif: Film Stock referansları
+
+"Kodak Portra 400 warm tones" veya "Fuji Velvia vivid saturation" gibi analog film referansları, AI'ın dijital sterilliğini kırıyor.
+
+Bu formülü açık kaynak olarak paylaşıyorum. Siz de deneyin ve sonuçlarınızı benimle paylaşın!
+
+#YapayZeka #AI #AIArt #Fotoğraf #Tasarım #DigitalMarketing #ContentCreation #Innovation #Technology #Girişimcilik`;
+
+            navigator.clipboard.writeText(text);
+            alert('LinkedIn postu kopyalandı!');
+        }
+
+        function copyPrompt() {
+            const text = document.getElementById('full-prompt').innerText;
+            navigator.clipboard.writeText(text);
+            alert('Prompt kopyalandı!');
+        }
+    </script>
+</body>
+</html>

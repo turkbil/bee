@@ -1,1 +1,567 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔴 Settings Cache Sorunu - N+1 Query Analizi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #f59e0b, #ea580c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .alert {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            border-left: 6px solid #fed7aa;
+        }
+
+        .alert h2 {
+            color: #fed7aa;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .alert p {
+            color: #fef3c7;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .problem-box {
+            background: rgba(234, 88, 12, 0.15);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #ea580c;
+            backdrop-filter: blur(10px);
+        }
+
+        .solution-box {
+            background: rgba(34, 197, 94, 0.15);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #22c55e;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .solution-box:hover {
+            transform: translateX(5px);
+            background: rgba(34, 197, 94, 0.25);
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .stat-value.bad { color: #ef4444; }
+        .stat-value.warning { color: #f59e0b; }
+        .stat-value.good { color: #22c55e; }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .query-list {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            border: 1px solid #334155;
+        }
+
+        .query-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 3px solid #3b82f6;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+        }
+
+        .query-item.duplicate {
+            background: rgba(239, 68, 68, 0.1);
+            border-left-color: #ef4444;
+        }
+
+        .count {
+            display: inline-block;
+            background: #ef4444;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-item {
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .comparison-item.before {
+            background: rgba(239, 68, 68, 0.15);
+            border: 2px solid #ef4444;
+        }
+
+        .comparison-item.after {
+            background: rgba(34, 197, 94, 0.15);
+            border: 2px solid #22c55e;
+        }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+
+        .explanation {
+            display: inline-block;
+            margin-left: 5px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        ul li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #60a5fa;
+            font-weight: bold;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .priority-critical { background: #dc2626; color: white; }
+        .priority-high { background: #f59e0b; color: white; }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔴 Settings Cache Sorunu</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-30 17:10 |
+                🎯 Tenant: ixtif.com (Tenant 2) |
+                👤 Kaynak: a-html.txt debug çıktısı |
+                🌐 URL: Homepage (/)
+            </div>
+        </header>
+
+        <div class="alert">
+            <h2>⚠️ N+1 QUERY SORUNU TESPİT EDİLDİ</h2>
+            <p>
+                Homepage'de <strong>89 query</strong> çalışıyor ve <strong>74 tanesi duplicate</strong>!
+                Settings cache sistemi çalışmıyor, her <code>setting()</code> çağrısı database'e gidiyor.
+            </p>
+        </div>
+
+        <section>
+            <h2>📊 Mevcut Durum</h2>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value bad">89</div>
+                    <div class="stat-label">Total Query Sayısı</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value bad">74</div>
+                    <div class="stat-label">Duplicate Query</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value warning">214ms</div>
+                    <div class="stat-label">Total Query Süresi</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value warning">~4.5s</div>
+                    <div class="stat-label">Sayfa Yükleme</div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>✅ İyi Haber: Session Sorunu Çözüldü!</h3>
+                <ul>
+                    <li>Session delete: 16.8s → 0ms ✅</li>
+                    <li>Session update: 5s → 0ms ✅</li>
+                    <li>Redis driver aktif ✅</li>
+                    <li>Total süre: 23.3s → 4.5s (5x hızlanma) ✅</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>🔍 Tekrarlanan Query'ler (N+1 Problemi)</h2>
+
+            <div class="problem-box">
+                <h3>1. site_title <span class="count">6x TEKRAR</span></h3>
+                <div class="query-list">
+                    <div class="query-item duplicate">
+                        SELECT * FROM settings WHERE key = 'site_title' AND is_active = 1 LIMIT 1
+                    </div>
+                </div>
+                <p>
+                    <span class="tech-term">site_title</span> ayarı 6 farklı yerde çağrılıyor:
+                    header, footer, meta tags, breadcrumb, title tag, copyright
+                </p>
+                <p><strong>Sebep:</strong> Her çağrıda database'e gidiyor, cache kullanılmıyor!</p>
+            </div>
+
+            <div class="problem-box">
+                <h3>2. site_logo <span class="count">4x TEKRAR</span></h3>
+                <div class="query-list">
+                    <div class="query-item duplicate">
+                        SELECT * FROM settings WHERE key = 'site_logo' AND is_active = 1 LIMIT 1
+                    </div>
+                </div>
+                <p>Logo ayarı header'da 4 farklı yerde çağrılıyor (desktop, mobile, sticky, footer)</p>
+            </div>
+
+            <div class="problem-box">
+                <h3>3. site_kontrast_logo <span class="count">3x TEKRAR</span></h3>
+                <div class="query-list">
+                    <div class="query-item duplicate">
+                        SELECT * FROM settings WHERE key = 'site_kontrast_logo' AND is_active = 1 LIMIT 1
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem-box">
+                <h3>4. settings_values <span class="count">7+ x TEKRAR</span></h3>
+                <div class="query-list">
+                    <div class="query-item duplicate">
+                        SELECT * FROM settings_values WHERE setting_id = 1 LIMIT 1
+                    </div>
+                </div>
+                <p>Aynı setting value'su defalarca sorgulanıyor!</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>💡 Kök Neden Analizi</h2>
+
+            <div class="info-box">
+                <h3>Neden Cache Çalışmıyor?</h3>
+                <p>
+                    CLAUDE.md'de belirtildiğine göre daha önce
+                    <span class="tech-term">Settings global cache</span> optimizasyonu yapılmış
+                    (700+ query → 2 query).
+                </p>
+
+                <p style="margin-top: 15px;">
+                    <strong>Ancak şu anda bu cache çalışmıyor!</strong>
+                </p>
+
+                <p style="margin-top: 15px;"><strong>Olası Sebepler:</strong></p>
+                <ul>
+                    <li>Cache süresi dolmuş olabilir</li>
+                    <li>Cache key'leri yanlış hesaplanıyor olabilir</li>
+                    <li>Redis cache çalışmıyor olabilir (settings için)</li>
+                    <li>Helper fonksiyonu cache'i atlamış olabilir</li>
+                    <li>Tenant bazlı cache key'leri düzgün çalışmıyor olabilir</li>
+                </ul>
+            </div>
+
+            <div class="problem-box">
+                <h3>Helper Fonksiyonu: setting()</h3>
+                <p>
+                    Konum: <code>Modules/SettingManagement/app/Helpers/setting_helpers.php</code>
+                </p>
+                <p>
+                    Bu fonksiyon her çağrıldığında database'e gidiyor.
+                    Oysa <span class="tech-term">global cache</span> kullanmalı!
+                </p>
+
+                <p style="margin-top: 15px;"><strong>Beklenen Davranış:</strong></p>
+                <ul>
+                    <li>İlk çağrıda tüm settings'leri cache'e al (tek query)</li>
+                    <li>Sonraki çağrılarda cache'den çek (0 query)</li>
+                    <li>Cache süresince database'e gitme!</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>✅ Çözüm Stratejisi</h2>
+
+            <div class="solution-box">
+                <h3>1. Settings Helper'ı İncele <span class="priority priority-critical">KRİTİK</span></h3>
+                <p>
+                    <code>Modules/SettingManagement/app/Helpers/setting_helpers.php</code> dosyasını kontrol et:
+                </p>
+                <ul>
+                    <li>Cache mantığı var mı?</li>
+                    <li>Cache key doğru mu?</li>
+                    <li>Tenant bazlı cache çalışıyor mu?</li>
+                    <li>Cache süresi ne kadar?</li>
+                </ul>
+            </div>
+
+            <div class="solution-box">
+                <h3>2. Global Settings Cache Ekle <span class="priority priority-critical">KRİTİK</span></h3>
+                <p>
+                    Eğer cache yoksa veya bozuksa, şu mantığı uygula:
+                </p>
+
+                <ul>
+                    <li>Request başında tüm settings'leri çek (tek query)</li>
+                    <li>Memory'de sakla (static array veya cache)</li>
+                    <li>setting() her çağrıldığında memory'den dön</li>
+                    <li>Cache lifetime: 1 saat veya kalıcı (settings nadiren değişir)</li>
+                </ul>
+
+                <p style="margin-top: 15px;"><strong>Beklenen Sonuç:</strong></p>
+                <div class="comparison">
+                    <div class="comparison-item before">
+                        <strong>❌ ŞİMDİ:</strong><br>
+                        site_title → 6 query<br>
+                        site_logo → 4 query<br>
+                        Toplam: 74 duplicate query
+                    </div>
+                    <div class="comparison-item after">
+                        <strong>✅ SONRA:</strong><br>
+                        Tüm settings → 1 query (ilk çağrı)<br>
+                        Sonraki çağrılar → 0 query<br>
+                        <strong>~85-95% azalma!</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solution-box">
+                <h3>3. AppServiceProvider'da Global Cache <span class="priority priority-high">YÜKSEK</span></h3>
+                <p>
+                    Alternatif çözüm: Settings'leri AppServiceProvider::boot()'da yükle
+                </p>
+                <ul>
+                    <li>Boot metodunda tüm settings'leri çek</li>
+                    <li>Cache'e veya config'e yaz</li>
+                    <li>Helper fonksiyonu config'den oku</li>
+                </ul>
+            </div>
+
+            <div class="solution-box">
+                <h3>4. View Composer Kullan <span class="priority priority-high">YÜKSEK</span></h3>
+                <p>
+                    Tüm view'lerde kullanılan settings'leri View Composer ile paylaş
+                </p>
+                <ul>
+                    <li>Tek sorguda tüm common settings'leri çek</li>
+                    <li>Tüm view'lere otomatik inject et</li>
+                    <li>Helper çağrısına gerek kalmaz</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>📈 Beklenen İyileşme</h2>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value good">89 → ~10</div>
+                    <div class="stat-label">Query Sayısı (%90 azalma)</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value good">74 → ~0</div>
+                    <div class="stat-label">Duplicate Query (%100 azalma)</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value good">214ms → ~50ms</div>
+                    <div class="stat-label">Query Süresi (%75 azalma)</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value good">4.5s → ~2s</div>
+                    <div class="stat-label">Sayfa Yükleme (2x hızlanma)</div>
+                </div>
+            </div>
+
+            <div class="comparison">
+                <div class="comparison-item before">
+                    <h3>❌ ŞİMDİ</h3>
+                    <ul>
+                        <li>89 query (74 duplicate)</li>
+                        <li>214ms query süresi</li>
+                        <li>4.5s sayfa yükleme</li>
+                        <li>Her setting çağrısı → DB query</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-item after">
+                    <h3>✅ CACHE SONRASI</h3>
+                    <ul>
+                        <li>~10 query (0 duplicate)</li>
+                        <li>~50ms query süresi</li>
+                        <li>~2s sayfa yükleme (hedef!)</li>
+                        <li>Settings → Memory/Cache'den</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 Sonraki Adımlar</h2>
+
+            <div class="solution-box">
+                <h3>Adım 1: Helper Dosyasını İncele</h3>
+                <ul>
+                    <li>setting_helpers.php'yi oku</li>
+                    <li>Cache mantığını kontrol et</li>
+                    <li>Neden çalışmadığını tespit et</li>
+                </ul>
+            </div>
+
+            <div class="solution-box">
+                <h3>Adım 2: Cache Sistemini Düzelt veya Ekle</h3>
+                <ul>
+                    <li>Global settings cache ekle</li>
+                    <li>Helper fonksiyonunu güncelle</li>
+                    <li>Tenant bazlı cache key'leri düzelt</li>
+                </ul>
+            </div>
+
+            <div class="solution-box">
+                <h3>Adım 3: Test Et</h3>
+                <ul>
+                    <li>Homepage'i yenile</li>
+                    <li>a-html.txt'yi kontrol et</li>
+                    <li>Query sayısının düştüğünü onayla</li>
+                    <li>Duplicate query'lerin kaybolduğunu doğrula</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | 2025-11-30
+        </footer>
+    </div>
+</body>
+</html>

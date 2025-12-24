@@ -17,6 +17,32 @@
             </x-tab-system>
 
             <div class="card-body">
+                {{-- ŞARKI COVER PREVIEW (Sadece Edit Modunda) --}}
+                @if($songId && isset($song))
+                    @php
+                        $coverUrl = $song->getCoverUrl(200, 200);
+                    @endphp
+                    @if($coverUrl)
+                        <div class="mb-4 p-3 bg-light rounded">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <img src="{{ $coverUrl }}" alt="Song Cover" class="rounded" style="width: 100px; height: 100px; object-fit: cover;">
+                                </div>
+                                <div class="col">
+                                    <h5 class="mb-1">{{ __('muzibu::admin.song_cover') }}</h5>
+                                    <p class="text-muted mb-0 small">
+                                        @if($song->media_id)
+                                            <i class="fas fa-check-circle text-success"></i> {{ __('muzibu::admin.own_cover') }}
+                                        @else
+                                            <i class="fas fa-info-circle text-info"></i> {{ __('muzibu::admin.album_cover') }}
+                                        @endif
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                @endif
+
                 <div class="tab-content" id="contentTabContent">
 
                     <!-- TEMEL BİLGİLER TAB - NO FADE for instant switching -->

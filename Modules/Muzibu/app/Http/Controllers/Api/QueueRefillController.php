@@ -190,13 +190,49 @@ class QueueRefillController extends Controller
             return [];
         }
 
-        // 🎯 Toplam şarkı sayısı (exclude öncesi)
-        $totalSongsBeforeExclude = $album->songs()->where('is_active', 1)->count();
+        // 🎯 Toplam şarkı sayısı (HLS-ready olanlar)
+        $totalSongsInAlbum = $album->songs()
+            ->where('is_active', 1)
+            ->whereNotNull('hls_path')
+            ->count();
+
+        // 🔄 EARLY TRANSITION CHECK: Tüm albüm şarkıları exclude'da mı?
+        // Eğer exclude listesi albüm şarkı sayısına eşit veya fazlaysa → Genre'ye geç
+        $albumSongIds = $album->songs()
+            ->where('is_active', 1)
+            ->whereNotNull('hls_path')
+            ->pluck('song_id')
+            ->toArray();
+
+        $excludedAlbumSongs = array_intersect($albumSongIds, $excludeSongIds);
+        $remainingInAlbum = count($albumSongIds) - count($excludedAlbumSongs);
+
+        // 🎵 Albüm tükendi mi? (tüm şarkılar dinlendi veya çok az kaldı)
+        if ($remainingInAlbum <= 0 || ($totalSongsInAlbum <= 5 && $remainingInAlbum <= 1)) {
+            // ✅ TRANSITION: Album → Genre
+            $lastSong = $album->songs()
+                ->where('is_active', 1)
+                ->orderBy('song_id', 'desc')
+                ->first();
+
+            if ($lastSong && $lastSong->genre_id) {
+                \Log::info('🔄 Context Transition: Album → Genre (album exhausted)', [
+                    'album_id' => $albumId,
+                    'genre_id' => $lastSong->genre_id,
+                    'total_in_album' => $totalSongsInAlbum,
+                    'excluded_count' => count($excludedAlbumSongs),
+                    'remaining' => $remainingInAlbum
+                ]);
+
+                // Genre'ye geçerken exclude listesini SIFIRLA (yeni context, yeni başlangıç)
+                return $this->getGenreSongs($lastSong->genre_id, 0, $limit, []);
+            }
+        }
 
         // 🎲 SQL SEVİYESİNDE RANDOM
         $songs = $album->songs()
             ->where('is_active', 1)
-            ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
+            ->whereNotNull('hls_path')
             ->when(!empty($excludeSongIds), function($query) use ($excludeSongIds) {
                 $query->whereNotIn('muzibu_songs.song_id', $excludeSongIds);
             })
@@ -205,32 +241,20 @@ class QueueRefillController extends Controller
             ->limit($limit)
             ->get();
 
-        // Yeterli şarkı gelmezse, exclude'sız tekrar dene
-        if ($songs->count() < $limit && !empty($excludeSongIds)) {
-            $songs = $album->songs()
-                ->where('is_active', 1)
-                ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
-                ->with(['album.artist'])
-                ->inRandomOrder()
-                ->limit($limit)
-                ->get();
-        }
-
-        // Album songs bitti mi?
+        // Album songs bitti mi? (fallback check)
         if ($songs->isEmpty()) {
-            // ✅ TRANSITION: Album → Genre (son şarkının genre'sine geç)
             $lastSong = $album->songs()
                 ->where('is_active', 1)
                 ->orderBy('song_id', 'desc')
                 ->first();
 
             if ($lastSong && $lastSong->genre_id) {
-                \Log::info('🔄 Context Transition: Album → Genre', [
+                \Log::info('🔄 Context Transition: Album → Genre (isEmpty fallback)', [
                     'album_id' => $albumId,
                     'genre_id' => $lastSong->genre_id
                 ]);
 
-                return $this->getGenreSongs($lastSong->genre_id, 0, $limit, $excludeSongIds);
+                return $this->getGenreSongs($lastSong->genre_id, 0, $limit, []);
             }
 
             return [];
@@ -238,7 +262,7 @@ class QueueRefillController extends Controller
 
         \Log::info('🎲 Album SQL random selection', [
             'album_id' => $albumId,
-            'total_songs' => $totalSongsBeforeExclude,
+            'total_songs' => $totalSongsInAlbum,
             'excluded' => count($excludeSongIds),
             'returned' => $songs->count()
         ]);
@@ -258,61 +282,83 @@ class QueueRefillController extends Controller
             return [];
         }
 
-        // 🎲 SQL SEVİYESİNDE RANDOM: Önce song ID'leri al (pivot table issue çözümü)
+        // 🎲 Önce song ID'leri al (pivot table issue çözümü)
         $songIds = DB::table('muzibu_playlist_song')
             ->where('playlist_id', $playlistId)
             ->pluck('song_id')
-            ->unique();
+            ->unique()
+            ->toArray();
 
-        if ($songIds->isEmpty()) {
+        if (empty($songIds)) {
             return [];
         }
 
-        $totalSongsBeforeExclude = $songIds->count();
-
-        // SQL random ile şarkıları çek
-        $songs = Song::whereIn('song_id', $songIds)
+        // 🎯 HLS-ready şarkı ID'lerini al
+        $hlsReadySongIds = Song::whereIn('song_id', $songIds)
             ->where('is_active', 1)
-            ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
-            ->when(!empty($excludeSongIds), fn($q) => $q->whereNotIn('song_id', $excludeSongIds))
-            ->with(['album.artist'])
-            ->inRandomOrder()
-            ->limit($limit)
-            ->get();
+            ->whereNotNull('hls_path')
+            ->pluck('song_id')
+            ->toArray();
 
-        // Yeterli şarkı gelmezse, exclude'sız tekrar dene
-        if ($songs->count() < $limit && !empty($excludeSongIds)) {
-            $songs = Song::whereIn('song_id', $songIds)
-                ->where('is_active', 1)
-                ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
-                ->with(['album.artist'])
-                ->inRandomOrder()
-                ->limit($limit)
-                ->get();
-        }
+        $totalSongsInPlaylist = count($hlsReadySongIds);
 
-        // Playlist songs bitti mi?
-        if ($songs->isEmpty()) {
+        // 🔄 EARLY TRANSITION CHECK: Tüm playlist şarkıları exclude'da mı?
+        $excludedPlaylistSongs = array_intersect($hlsReadySongIds, $excludeSongIds);
+        $remainingInPlaylist = count($hlsReadySongIds) - count($excludedPlaylistSongs);
+
+        // 🎵 Playlist tükendi mi?
+        if ($remainingInPlaylist <= 0 || ($totalSongsInPlaylist <= 10 && $remainingInPlaylist <= 1)) {
             // ✅ TRANSITION: Playlist → Genre (son 5 şarkının en çok genre'si)
-            $lastSongs = Song::whereIn('song_id', $songIds)
+            $lastSongs = Song::whereIn('song_id', $hlsReadySongIds)
                 ->where('is_active', 1)
                 ->orderBy('song_id', 'desc')
                 ->take(5)
                 ->get();
 
             if ($lastSongs->isNotEmpty()) {
-                // En çok kullanılan genre'yi bul
                 $genreCounts = $lastSongs->groupBy('genre_id')->map->count();
                 $mostCommonGenreId = $genreCounts->sortDesc()->keys()->first();
 
                 if ($mostCommonGenreId) {
-                    \Log::info('🔄 Context Transition: Playlist → Genre', [
+                    \Log::info('🔄 Context Transition: Playlist → Genre (playlist exhausted)', [
                         'playlist_id' => $playlistId,
                         'genre_id' => $mostCommonGenreId,
-                        'genre_count' => $genreCounts[$mostCommonGenreId]
+                        'total_in_playlist' => $totalSongsInPlaylist,
+                        'excluded_count' => count($excludedPlaylistSongs),
+                        'remaining' => $remainingInPlaylist
                     ]);
 
-                    return $this->getGenreSongs($mostCommonGenreId, 0, $limit, $excludeSongIds);
+                    return $this->getGenreSongs($mostCommonGenreId, 0, $limit, []);
+                }
+            }
+        }
+
+        // SQL random ile şarkıları çek
+        $songs = Song::whereIn('song_id', $hlsReadySongIds)
+            ->when(!empty($excludeSongIds), fn($q) => $q->whereNotIn('song_id', $excludeSongIds))
+            ->with(['album.artist'])
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+
+        // Playlist songs bitti mi? (fallback)
+        if ($songs->isEmpty()) {
+            $lastSongs = Song::whereIn('song_id', $hlsReadySongIds)
+                ->orderBy('song_id', 'desc')
+                ->take(5)
+                ->get();
+
+            if ($lastSongs->isNotEmpty()) {
+                $genreCounts = $lastSongs->groupBy('genre_id')->map->count();
+                $mostCommonGenreId = $genreCounts->sortDesc()->keys()->first();
+
+                if ($mostCommonGenreId) {
+                    \Log::info('🔄 Context Transition: Playlist → Genre (isEmpty fallback)', [
+                        'playlist_id' => $playlistId,
+                        'genre_id' => $mostCommonGenreId
+                    ]);
+
+                    return $this->getGenreSongs($mostCommonGenreId, 0, $limit, []);
                 }
             }
 
@@ -321,7 +367,7 @@ class QueueRefillController extends Controller
 
         \Log::info('🎲 Playlist SQL random selection', [
             'playlist_id' => $playlistId,
-            'total_songs' => $totalSongsBeforeExclude,
+            'total_songs' => $totalSongsInPlaylist,
             'excluded' => count($excludeSongIds),
             'returned' => $songs->count()
         ]);
@@ -763,7 +809,7 @@ class QueueRefillController extends Controller
                 'album_id' => $album?->album_id,
                 'album_title' => $album?->title,
                 'album_slug' => $album?->slug,
-                'album_cover' => $album?->media_id,
+                'album_cover' => $song->media_id ?? $album?->media_id,
                 'artist_id' => $artist?->artist_id,
                 'artist_title' => $artist?->title,
                 'artist_slug' => $artist?->slug,
@@ -948,7 +994,7 @@ class QueueRefillController extends Controller
             'album_id' => $album?->album_id,
             'album_title' => $album?->title,
             'album_slug' => $album?->slug,
-            'album_cover' => $album?->media_id,
+            'album_cover' => $song->media_id ?? $album?->media_id,
             'artist_id' => $artist?->artist_id,
             'artist_title' => $artist?->title,
             'artist_slug' => $artist?->slug,

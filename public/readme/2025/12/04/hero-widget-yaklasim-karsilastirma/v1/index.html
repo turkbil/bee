@@ -1,1 +1,822 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Widget Yaklaşım Karşılaştırması - FILE vs CUSTOM</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            margin-top: 30px;
+            color: #93c5fd;
+        }
+
+        .intro-box {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 30px;
+            border-radius: 16px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+        }
+
+        .intro-box p {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .intro-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .approach-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .approach-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            border-radius: 16px;
+            border: 3px solid transparent;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .approach-card:hover {
+            transform: translateY(-5px);
+            border-color: #3b82f6;
+        }
+
+        .approach-card.recommended {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .approach-card h4 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .approach-card.recommended h4 {
+            color: #34d399;
+        }
+
+        .approach-card p {
+            color: #cbd5e1;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .approach-card ul {
+            margin-left: 20px;
+            color: #cbd5e1;
+        }
+
+        .approach-card li {
+            margin-bottom: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        .badge-recommended {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge-advanced {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .badge-simple {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .comparison-table thead {
+            background: #1e293b;
+        }
+
+        .comparison-table th {
+            color: #60a5fa;
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #334155;
+        }
+
+        .comparison-table th:first-child {
+            width: 25%;
+        }
+
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid #334155;
+            color: #cbd5e1;
+            vertical-align: top;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .comparison-table .highlight {
+            background: rgba(16, 185, 129, 0.15);
+            font-weight: 600;
+            color: #34d399;
+        }
+
+        .code-block {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 3px solid #f59e0b;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #fbbf24;
+            overflow-x: auto;
+        }
+
+        .pros-cons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .pros-box, .cons-box {
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .pros-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid #10b981;
+        }
+
+        .pros-box h5 {
+            color: #34d399;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .cons-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid #ef4444;
+        }
+
+        .cons-box h5 {
+            color: #f87171;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .pros-box ul, .cons-box ul {
+            margin-left: 20px;
+            color: #cbd5e1;
+        }
+
+        .pros-box li, .cons-box li {
+            margin-bottom: 10px;
+        }
+
+        .recommendation-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(59, 130, 246, 0.2));
+            border: 3px solid #10b981;
+            padding: 35px;
+            border-radius: 16px;
+            margin: 40px 0;
+        }
+
+        .recommendation-box h3 {
+            color: #34d399;
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+        }
+
+        .recommendation-box p {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .recommendation-box ul {
+            margin-left: 25px;
+            color: #cbd5e1;
+            font-size: 1.05rem;
+        }
+
+        .recommendation-box li {
+            margin-bottom: 12px;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid #f59e0b;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .warning-box h4 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .warning-box p {
+            color: #fde68a;
+            line-height: 1.7;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid #3b82f6;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .info-box h4 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .info-box p {
+            color: #bfdbfe;
+            line-height: 1.7;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            .approach-grid { grid-template-columns: 1fr; }
+            .pros-cons-grid { grid-template-columns: 1fr; }
+            .comparison-table { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔀 Hero Widget Yaklaşım Karşılaştırması</h1>
+            <div class="meta">
+                <span>📅 Tarih: 2025-12-04</span>
+                <span>🎯 Tenant: ixtif.com</span>
+                <span>🔍 Analiz: FILE vs CUSTOM Widget Tipleri</span>
+            </div>
+        </header>
+
+        <!-- Introduction -->
+        <section>
+            <h2>📋 Genel Bakış</h2>
+            <div class="intro-box">
+                <p><strong>Soru:</strong> Hero widget için HTML yapısını sabit Blade view dosyasında mı tutalım, yoksa database'den mi çekelim?</p>
+                <p><strong>Analiz Kapsamı:</strong> WidgetManagement sistemi 3 farklı yaklaşım sunuyor. Her birinin avantaj, dezavantaj ve kullanım senaryolarını inceledik.</p>
+                <p><strong>Hedef:</strong> Hero widget için en uygun yaklaşımı belirlemek ve implementation stratejisi oluşturmak.</p>
+            </div>
+        </section>
+
+        <!-- Three Approaches -->
+        <section>
+            <h2>🎯 Üç Farklı Yaklaşım</h2>
+
+            <div class="approach-grid">
+                <!-- Approach 1: FILE -->
+                <div class="approach-card recommended">
+                    <h4>1. FILE Tipi Widget <span class="badge badge-recommended">ÖNERİLEN</span></h4>
+                    <p><strong>Blade View Dosyası</strong></p>
+                    <p>HTML yapısı sabit Blade dosyasında saklanır. İçerik Handlebars değişkenleri ile dinamik.</p>
+                    <div class="code-block">
+Widget.type = 'file'
+Widget.file_path = 'hero.ixtif-hero.view'
+
+Dosya:
+/resources/views/blocks/
+  hero/ixtif-hero/view.blade.php
+                    </div>
+                    <p><strong>Nasıl Çalışır?</strong></p>
+                    <ul>
+                        <li>Widget tablosunda sadece file_path tanımlı</li>
+                        <li>HTML yapısı Blade dosyasında</li>
+                        <li>TenantWidget.settings ile içerik dinamik</li>
+                        <li>Git ile versiyon kontrolü var</li>
+                    </ul>
+                </div>
+
+                <!-- Approach 2: CUSTOM (Widget) -->
+                <div class="approach-card">
+                    <h4>2. CUSTOM Tipi (Merkezi) <span class="badge badge-simple">ORTA SEVİYE</span></h4>
+                    <p><strong>Widget Tablosunda HTML</strong></p>
+                    <p>HTML yapısı Widget tablosunun content_html alanında saklanır. Tüm tenant'lar için aynı yapı.</p>
+                    <div class="code-block">
+Widget.type = 'custom'
+Widget.content_html = '&lt;section&gt;...&lt;/section&gt;'
+Widget.content_css = '.hero { ... }'
+Widget.content_js = 'function init() { ... }'
+                    </div>
+                    <p><strong>Nasıl Çalışır?</strong></p>
+                    <ul>
+                        <li>HTML tamamen database'de</li>
+                        <li>Tüm tenant'lar aynı HTML yapısı kullanır</li>
+                        <li>TenantWidget.settings ile içerik farklılaşır</li>
+                        <li>Admin panel üzerinden düzenlenebilir</li>
+                    </ul>
+                </div>
+
+                <!-- Approach 3: TenantWidget CUSTOM -->
+                <div class="approach-card">
+                    <h4>3. TenantWidget CUSTOM <span class="badge badge-advanced">İLERİ SEVİYE</span></h4>
+                    <p><strong>Her Tenant Kendi HTML'i</strong></p>
+                    <p>Her tenant tamamen farklı HTML yapısı kullanabilir. Maksimum esneklik.</p>
+                    <div class="code-block">
+TenantWidget.is_custom = true
+TenantWidget.custom_html = '&lt;div&gt;...&lt;/div&gt;'
+TenantWidget.custom_css = '.custom { ... }'
+TenantWidget.custom_js = 'custom code...'
+                    </div>
+                    <p><strong>Nasıl Çalışır?</strong></p>
+                    <ul>
+                        <li>Her tenant kendi HTML yapısını oluşturur</li>
+                        <li>Widget sadece template olarak kullanılır</li>
+                        <li>Tenant tamamen özelleştirebilir</li>
+                        <li>En esnek, en karmaşık yöntem</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detailed Comparison -->
+        <section>
+            <h2>📊 Detaylı Karşılaştırma Tablosu</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Özellik</th>
+                        <th>FILE Tipi</th>
+                        <th>CUSTOM (Merkezi)</th>
+                        <th>TenantWidget CUSTOM</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>HTML Konumu</strong></td>
+                        <td class="highlight">Blade dosyası</td>
+                        <td>Widget.content_html</td>
+                        <td>TenantWidget.custom_html</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Versiyon Kontrolü</strong></td>
+                        <td class="highlight">✅ Git ile tam kontrol</td>
+                        <td>❌ Database'de, git yok</td>
+                        <td>❌ Database'de, git yok</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kod Editörü</strong></td>
+                        <td class="highlight">✅ VSCode, PHPStorm</td>
+                        <td>⚠️ Admin panel textarea</td>
+                        <td>⚠️ Admin panel textarea</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Syntax Highlight</strong></td>
+                        <td class="highlight">✅ Tam destek</td>
+                        <td>❌ Basit textarea</td>
+                        <td>❌ Basit textarea</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Blade Directives</strong></td>
+                        <td class="highlight">✅ @if, @foreach, @include</td>
+                        <td>❌ Sadece Handlebars</td>
+                        <td>❌ Sadece Handlebars</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PHP Kodu</strong></td>
+                        <td class="highlight">✅ Kullanılabilir</td>
+                        <td>❌ Güvenlik riski</td>
+                        <td>❌ Güvenlik riski</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Handlebars Desteği</strong></td>
+                        <td>✅ Destekler</td>
+                        <td>✅ Destekler</td>
+                        <td>✅ Destekler</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Admin Düzenleme</strong></td>
+                        <td>❌ Dosya erişimi gerekir</td>
+                        <td class="highlight">✅ Admin panelden</td>
+                        <td class="highlight">✅ Admin panelden</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tenant Özelleştirme</strong></td>
+                        <td>⚠️ Settings ile sınırlı</td>
+                        <td>⚠️ Settings ile sınırlı</td>
+                        <td class="highlight">✅ Tam özelleştirme</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HTML Yapısı Değişikliği</strong></td>
+                        <td>❌ Dosyayı düzenle</td>
+                        <td class="highlight">✅ Admin panelden</td>
+                        <td class="highlight">✅ Tenant'a özel</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Performance</strong></td>
+                        <td class="highlight">⚡ En hızlı (OPcache)</td>
+                        <td>⚠️ DB query</td>
+                        <td>⚠️ DB query</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cache</strong></td>
+                        <td class="highlight">✅ Blade cache + OPcache</td>
+                        <td>⚠️ Widget cache</td>
+                        <td>⚠️ Widget cache</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Deployment</strong></td>
+                        <td class="highlight">✅ Git pull yeterli</td>
+                        <td>⚠️ DB sync gerekir</td>
+                        <td>⚠️ DB sync gerekir</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rollback</strong></td>
+                        <td class="highlight">✅ Git checkout</td>
+                        <td>⚠️ DB backup</td>
+                        <td>⚠️ DB backup</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Güvenlik</strong></td>
+                        <td class="highlight">✅ Yüksek (server-side)</td>
+                        <td>⚠️ XSS riski var</td>
+                        <td>⚠️ XSS riski yüksek</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Karmaşıklık</strong></td>
+                        <td class="highlight">🟢 Basit</td>
+                        <td>🟡 Orta</td>
+                        <td>🔴 Karmaşık</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kullanım Senaryosu</strong></td>
+                        <td class="highlight">Standart widget'lar</td>
+                        <td>Basit özelleştirmeler</td>
+                        <td>Tenant-specific tasarımlar</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Pros & Cons -->
+        <section>
+            <h2>⚖️ Avantaj & Dezavantajlar</h2>
+
+            <h3>1. FILE Tipi Widget</h3>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h5>✅ Avantajlar</h5>
+                    <ul>
+                        <li><strong>Git Versiyon Kontrolü:</strong> Tüm değişiklikler izlenebilir</li>
+                        <li><strong>Profesyonel Editör:</strong> VSCode, Blade syntax highlight</li>
+                        <li><strong>Blade Directives:</strong> @if, @foreach, @include kullanılabilir</li>
+                        <li><strong>PHP Kodu:</strong> Gerekirse route(), asset() gibi helper'lar</li>
+                        <li><strong>OPcache:</strong> PHP bytecode cache, maksimum hız</li>
+                        <li><strong>Güvenlik:</strong> Server-side render, XSS riski yok</li>
+                        <li><strong>Deployment:</strong> Git pull ile otomatik deploy</li>
+                        <li><strong>Rollback:</strong> Git checkout ile anında geri al</li>
+                        <li><strong>Team Collaboration:</strong> Kod review, pull request</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h5>❌ Dezavantajlar</h5>
+                    <ul>
+                        <li><strong>Dosya Erişimi:</strong> Admin panelden düzenlenemez</li>
+                        <li><strong>SSH Gerekli:</strong> Sunucuya erişim şart</li>
+                        <li><strong>Tenant Özelleştirme Sınırlı:</strong> HTML yapısı sabittir</li>
+                        <li><strong>Non-Technical User:</strong> Teknik bilgi gerekir</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>2. CUSTOM Tipi (Merkezi)</h3>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h5>✅ Avantajlar</h5>
+                    <ul>
+                        <li><strong>Admin Panel:</strong> Textarea ile düzenlenebilir</li>
+                        <li><strong>SSH Gereksiz:</strong> Web arayüzünden yönetim</li>
+                        <li><strong>Hızlı Düzenleme:</strong> Anında değişiklik</li>
+                        <li><strong>Merkezi Yönetim:</strong> Tek yerden tüm tenant'ları yönet</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h5>❌ Dezavantajlar</h5>
+                    <ul>
+                        <li><strong>Git Yok:</strong> Versiyon kontrolü manuel</li>
+                        <li><strong>Textarea:</strong> Syntax highlight yok</li>
+                        <li><strong>XSS Riski:</strong> HTML sanitize gerekir</li>
+                        <li><strong>DB Query:</strong> Her render'da database erişimi</li>
+                        <li><strong>Blade Directives Yok:</strong> Sadece Handlebars</li>
+                        <li><strong>Deployment:</strong> DB sync problemi</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>3. TenantWidget CUSTOM</h3>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h5>✅ Avantajlar</h5>
+                    <ul>
+                        <li><strong>Maksimum Esneklik:</strong> Her tenant farklı HTML</li>
+                        <li><strong>Tenant Özgürlüğü:</strong> Tamamen özelleştirilebilir</li>
+                        <li><strong>Admin Panel:</strong> Web arayüzünden yönetim</li>
+                        <li><strong>Multi-Design:</strong> Aynı widget, farklı tasarımlar</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h5>❌ Dezavantajlar</h5>
+                    <ul>
+                        <li><strong>Yüksek Karmaşıklık:</strong> Her tenant ayrı yönetim</li>
+                        <li><strong>XSS Riski Yüksek:</strong> Güvenlik açığı riski</li>
+                        <li><strong>Standardizasyon Yok:</strong> Her tenant farklı kod</li>
+                        <li><strong>Maintenance Zor:</strong> Toplu güncellemeler imkansız</li>
+                        <li><strong>Debug Problemi:</strong> Tenant bazlı hata ayıklama</li>
+                        <li><strong>Git Yok:</strong> Versiyon kontrolü yok</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Use Cases -->
+        <section>
+            <h2>🎯 Kullanım Senaryoları</h2>
+
+            <div class="info-box">
+                <h4>📌 FILE Tipi Ne Zaman Kullanılır?</h4>
+                <p><strong>Hero Widget Gibi Standart Komponentler İçin İdeal!</strong></p>
+                <ul style="margin-top: 15px; margin-left: 20px; color: #bfdbfe;">
+                    <li>Widget yapısı sabit, içerik değişken (Hero, About, Services)</li>
+                    <li>Profesyonel geliştirme ekibi var</li>
+                    <li>Git workflow kullanılıyor</li>
+                    <li>Güvenlik kritik</li>
+                    <li>Performance önemli</li>
+                    <li>Tenant'lar arasında tutarlı tasarım istiyorsunuz</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h4>📌 CUSTOM (Merkezi) Ne Zaman Kullanılır?</h4>
+                <p><strong>Basit, Sık Değişen Widget'lar İçin Uygun</strong></p>
+                <ul style="margin-top: 15px; margin-left: 20px; color: #bfdbfe;">
+                    <li>Banner, duyuru gibi basit HTML blokları</li>
+                    <li>Sık değişiklik yapılacak içerikler</li>
+                    <li>Non-technical user düzenleyecek</li>
+                    <li>Tüm tenant'lar aynı yapıyı kullanacak</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ TenantWidget CUSTOM Ne Zaman Kullanılır?</h4>
+                <p><strong>Dikkatli Kullanılmalı!</strong></p>
+                <ul style="margin-top: 15px; margin-left: 20px; color: #fde68a;">
+                    <li>Her tenant tamamen farklı tasarım istiyor</li>
+                    <li>White-label çözüm sunuyorsunuz</li>
+                    <li>Tenant'lar kendi developer'larını kullanıyor</li>
+                    <li>Güvenlik riskleri kabul edilebilir</li>
+                    <li><strong>Hero widget gibi kritik komponentler için ÖNERİLMEZ!</strong></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Technical Deep Dive -->
+        <section>
+            <h2>🔧 Teknik Detaylar</h2>
+
+            <h3>FILE Tipi Render Süreci</h3>
+            <div class="code-block">
+// WidgetService.php Line 435-447
+if ($widget->type === 'file' && !empty($widget->file_path)) {
+    $viewPath = 'widgetmanagement::blocks.' . $widget->file_path;
+    $settings = $tenantWidget->settings ?? [];
+    return view($viewPath, ['settings' => $settings])->render();
+}
+
+// Blade View:
+// resources/views/blocks/hero/ixtif-hero/view.blade.php
+&lt;section class="hero"&gt;
+    &lt;h1&gt;{{ $settings['title_line1'] ?? '' }}&lt;/h1&gt;
+    &lt;h1&gt;{{ $settings['title_line2'] ?? '' }}&lt;/h1&gt;
+&lt;/section&gt;
+            </div>
+
+            <h3>CUSTOM Tipi Render Süreci</h3>
+            <div class="code-block">
+// WidgetService.php Line 378-427
+if ($tenantWidget->is_custom) {
+    $html = $tenantWidget->custom_html;
+    $css = $tenantWidget->custom_css;
+    $js = $tenantWidget->custom_js;
+
+    // Handlebars değişkenlerini işle
+    $html = $this->renderService->processVariables($html, $settings);
+}
+
+// Database:
+TenantWidget.custom_html = '&lt;section&gt;{{widget.title}}&lt;/section&gt;'
+TenantWidget.settings = {"title": "Hero Title"}
+            </div>
+
+            <h3>Handlebars vs Blade Karşılaştırması</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Özellik</th>
+                        <th>Handlebars (CUSTOM)</th>
+                        <th>Blade (FILE)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Değişken</strong></td>
+                        <td>{{widget.title}}</td>
+                        <td class="highlight">{{ $settings['title'] }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Koşul</strong></td>
+                        <td>{{#if widget.show}}...{{/if}}</td>
+                        <td class="highlight">@if($settings['show'])...@endif</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Loop</strong></td>
+                        <td>{{#each items}}...{{/each}}</td>
+                        <td class="highlight">@foreach($items as $item)...@endforeach</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PHP Kodu</strong></td>
+                        <td>❌ Desteklenmez</td>
+                        <td class="highlight">✅ {{ route('shop') }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Include</strong></td>
+                        <td>❌ Desteklenmez</td>
+                        <td class="highlight">✅ @include('partial')</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Component</strong></td>
+                        <td>❌ Desteklenmez</td>
+                        <td class="highlight">✅ &lt;x-button /&gt;</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Recommendation -->
+        <section>
+            <div class="recommendation-box">
+                <h3>🎯 ÖNERİ: Hero Widget İçin FILE Tipi Kullan</h3>
+
+                <p><strong>Neden FILE Tipi?</strong></p>
+                <ul>
+                    <li><strong>Hero = Standart Komponent:</strong> Tüm tenant'larda benzer yapı olacak (başlık, açıklama, CTA, feature kartları)</li>
+                    <li><strong>Güvenlik:</strong> XSS riski yok, server-side render</li>
+                    <li><strong>Performance:</strong> OPcache ile maksimum hız</li>
+                    <li><strong>Git Workflow:</strong> Versiyon kontrolü, kod review, rollback</li>
+                    <li><strong>Blade Directives:</strong> @foreach ile feature kartları, @if ile koşullar</li>
+                    <li><strong>PHP Helpers:</strong> route(), cdn(), setting() kullanılabilir</li>
+                    <li><strong>Maintenance:</strong> Toplu güncellemeler kolay</li>
+                    <li><strong>Team Collaboration:</strong> Pull request ile ekip çalışması</li>
+                </ul>
+
+                <p style="margin-top: 25px;"><strong>Implementation Stratejisi:</strong></p>
+                <ul>
+                    <li><strong>Widget Tipi:</strong> FILE</li>
+                    <li><strong>Blade Dosyası:</strong> <code style="background: rgba(0,0,0,0.3); padding: 2px 8px; border-radius: 4px;">blocks/hero/ixtif-hero/view.blade.php</code></li>
+                    <li><strong>Settings:</strong> TenantWidget.settings JSON (title, description, CTA, image)</li>
+                    <li><strong>Items:</strong> 4 WidgetItem (feature kartları)</li>
+                    <li><strong>Handlebars:</strong> Settings değişkenleri için</li>
+                    <li><strong>Blade Loops:</strong> Feature kartları için @foreach</li>
+                </ul>
+
+                <div class="warning-box" style="margin-top: 25px;">
+                    <h4>⚠️ CUSTOM Tipi Ne Zaman Kullanılmalı?</h4>
+                    <p>Hero gibi kritik komponentler için <strong>ÖNERİLMEZ</strong>. Sadece basit banner, duyuru gibi sık değişen, güvenlik riski düşük içerikler için CUSTOM kullanılabilir.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Implementation Steps -->
+        <section>
+            <h2>🚀 Sonraki Adımlar</h2>
+
+            <div class="intro-box">
+                <p><strong>Karar:</strong> Hero widget için FILE tipi widget kullanacağız.</p>
+                <p><strong>Önceki Plan Geçerli:</strong> <a href="https://ixtif.com/readme/2025/12/04/hero-widget-implementation-plan/" style="color: #60a5fa;">Hero Widget Implementation Plan</a> dokümanındaki adımları takip edeceğiz.</p>
+                <p><strong>Değişiklik:</strong> Plan zaten FILE tipi için hazırlanmıştı, herhangi bir değişiklik gerekmiyor!</p>
+            </div>
+
+            <h3>İlk Adımlar</h3>
+            <ol style="margin-left: 25px; color: #cbd5e1; line-height: 2;">
+                <li>Git checkpoint oluştur (homepage.blade.php'nin mevcut hali)</li>
+                <li>Blade view dosyası oluştur: <code style="background: rgba(0,0,0,0.3); padding: 2px 8px; border-radius: 4px;">blocks/hero/ixtif-hero/view.blade.php</code></li>
+                <li>Widget kaydı oluştur (Central DB, type='file')</li>
+                <li>TenantWidget + 4 WidgetItem oluştur (İxtif tenant'ı için)</li>
+                <li>homepage.blade.php'den 81 satırı sil, @widget('hero') ekle</li>
+                <li>Test ve deploy</li>
+            </ol>
+        </section>
+
+        <footer>
+            <p>🤖 Claude AI tarafından oluşturuldu | 📅 2025-12-04</p>
+            <p style="margin-top: 10px;">Hero Widget Yaklaşım Karşılaştırması - FILE vs CUSTOM - v1</p>
+        </footer>
+    </div>
+</body>
+</html>

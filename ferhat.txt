@@ -1,0 +1,10 @@
+ checkbox - Kullanım Koşulları ve Üyelik Sözleşmesi ile Üyelik ve Satın Alım Faaliyetleri Kapsamında Aydınlatma Metni’ni okudum, kabul ediyorum.
+ radio - Aydınlatma metninde belirtilen hususlar doğrultusunda, kişisel verilerimin ürün/hizmet ve stratejik pazarlama faaliyetleri ile ticari elektronik ileti gönderimi kapsamında işlenmesine <strong>açık rıza göstermediğimi beyan ederim</strong>.
+ radio - Aydınlatma metninde belirtilen hususlar doğrultusunda, kişisel verilerimin ürün/hizmet ve stratejik pazarlama faaliyetleri ile ticari elektronik ileti gönderimi kapsamında işlenmesine <strong>açık rıza verdiğimi kabul ve beyan ederim</strong>.
+
+ linklemeler
+ Kullanım Koşulları ve Üyelik Sözleşmesi ifadesine link verilecek. id 3 olan sayfa içeriğini modal olarak gösterecek
+Üyelik ve Satın Alım Faaliyetleri Kapsamında Aydınlatma Metni’ni ifadesine link verilecek. id 4 olan sayfa içeriğini modal olarak gösterecek
+ radio inputlardaki Aydınlatma metninde ifadesine link verilecek. id 5 olan sayfa içeriğini modal olarak gösterecek
+
+linklere eklenecek modallar için iletişim sayfasında iletişim formundaki modallar örnek olarak alınacak.

@@ -1,1 +1,412 @@
-v4/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Context Hierarchy - Genre is Infinite Fallback</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                ♾️ Context Hierarchy v4
+            </h1>
+            <p class="text-2xl text-slate-300 mb-6">
+                Genre = Infinite Fallback - Her Şey Buraya Çıkar
+            </p>
+            <div class="flex gap-6 text-sm text-slate-400 mb-6">
+                <span>📅 5 Aralık 2025</span>
+                <span>🎯 v4 - Final Hierarchy</span>
+                <span>💾 Zero Migration</span>
+            </div>
+            <div class="bg-green-900/30 border-l-4 border-green-500 rounded-lg p-4">
+                <p class="text-green-200 text-lg font-bold">
+                    ✅ Genre = Son Nokta → Her Şey Infinite Olur!
+                </p>
+            </div>
+        </header>
+
+        <!-- HİYERARŞİ PYRAMID -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">🔺 Context Hiyerarşisi Piramidi</h2>
+            
+            <div class="bg-slate-800/50 rounded-lg p-8 mb-8">
+                <div class="space-y-6">
+                    <!-- Level 3: Top Level (User Entry Points) -->
+                    <div class="text-center">
+                        <p class="text-sm text-slate-500 mb-2">Level 3: Kullanıcı Giriş Noktaları</p>
+                        <div class="flex justify-center gap-3 flex-wrap">
+                            <div class="bg-pink-600/30 border border-pink-500 rounded px-4 py-2 text-pink-300 text-sm">Search</div>
+                            <div class="bg-lime-600/30 border border-lime-500 rounded px-4 py-2 text-lime-300 text-sm">Artist</div>
+                            <div class="bg-cyan-600/30 border border-cyan-500 rounded px-4 py-2 text-cyan-300 text-sm">Favorites</div>
+                            <div class="bg-pink-600/30 border border-pink-500 rounded px-4 py-2 text-pink-300 text-sm">Popular</div>
+                        </div>
+                        <div class="flex justify-center mt-3">
+                            <svg class="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Level 2: Middle Level (Containers) -->
+                    <div class="text-center">
+                        <p class="text-sm text-slate-500 mb-2">Level 2: Container'lar</p>
+                        <div class="flex justify-center gap-3 flex-wrap">
+                            <div class="bg-purple-600/30 border border-purple-500 rounded px-4 py-2 text-purple-300 text-sm">Album</div>
+                            <div class="bg-green-600/30 border border-green-500 rounded px-4 py-2 text-green-300 text-sm">Playlist</div>
+                        </div>
+                        <div class="flex justify-center mt-3">
+                            <svg class="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Level 1: Bottom Level (Infinite Fallback) -->
+                    <div class="text-center">
+                        <p class="text-sm text-slate-500 mb-2">Level 1: Infinite Fallback</p>
+                        <div class="flex justify-center">
+                            <div class="bg-blue-600 border-4 border-blue-400 rounded-lg px-8 py-4 text-white text-xl font-bold shadow-lg shadow-blue-500/50">
+                                🎭 GENRE ♾️
+                            </div>
+                        </div>
+                        <div class="flex justify-center mt-3">
+                            <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                        </div>
+                        <p class="text-green-400 font-bold mt-2">Loop (Başa Sarar)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-blue-900/20 border-l-4 border-blue-500 rounded-lg p-6">
+                <h3 class="font-bold text-blue-300 mb-3">💡 Hiyerarşi Mantığı:</h3>
+                <div class="space-y-2 text-slate-300 text-sm">
+                    <p>1. Kullanıcı herhangi bir noktadan girer (Search, Artist, Favorites, Popular, Playlist, Album)</p>
+                    <p>2. O context biter → Bir üst seviyeye geç (Search → Album, Album → Genre)</p>
+                    <p>3. En sonunda <strong class="text-blue-300">Genre</strong>'ye ulaş</p>
+                    <p>4. Genre hiç bitmez → Şarkılar biterse başa sarar (loop) → ♾️ Infinite</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10 CONTEXT GEÇİŞ AKIŞI -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">🔄 10 Context Geçiş Akışı</h2>
+            
+            <!-- Group 1: Direct to Genre -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-green-300 mb-4">✅ Grup 1: Direkt Genre (Infinite)</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-blue-500">
+                        <h4 class="font-bold text-blue-300 mb-2">1. Genre → Genre ♾️</h4>
+                        <p class="text-slate-400 text-sm">Genre şarkıları biter → Başa sar → Infinite loop</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group 2: One Step to Genre -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-purple-300 mb-4">🟣 Grup 2: Tek Adım → Genre (Infinite)</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-purple-500">
+                        <h4 class="font-bold text-purple-300 mb-2">2. Album → Genre ♾️</h4>
+                        <p class="text-slate-400 text-sm mb-2">Album biter → Genre'ye geç</p>
+                        <div class="bg-slate-900/50 rounded p-2 text-xs text-slate-500">
+                            Album(12) → Genre(9 - Jazz) → Jazz loop
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-green-500">
+                        <h4 class="font-bold text-green-300 mb-2">3. Playlist → Genre ♾️</h4>
+                        <p class="text-slate-400 text-sm mb-2">Playlist biter → Son şarkıların genre'sine geç</p>
+                        <div class="bg-slate-900/50 rounded p-2 text-xs text-slate-500">
+                            Playlist(23) → Son 5 şarkı → En çok genre(9) → Jazz loop
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group 3: Two Steps to Genre -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-pink-300 mb-4">🔴 Grup 3: İki Adım → Genre (Infinite)</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-pink-500">
+                        <h4 class="font-bold text-pink-300 mb-2">4. Popular → Album → Genre ♾️</h4>
+                        <p class="text-slate-400 text-sm mb-2">Popular biter → Son şarkıların albümü → Album biter → Genre</p>
+                        <div class="bg-slate-900/50 rounded p-2 text-xs text-slate-500">
+                            Popular(top100) → Album(12) → Genre(9) → Jazz loop
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-cyan-500">
+                        <h4 class="font-bold text-cyan-300 mb-2">5. Favorites → Album → Genre ♾️</h4>
+                        <p class="text-slate-400 text-sm mb-2">Favorites biter → Son şarkıların albümü → Album biter → Genre</p>
+                        <div class="bg-slate-900/50 rounded p-2 text-xs text-slate-500">
+                            Favorites(50) → Album(12) → Genre(9) → Jazz loop
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-lime-500">
+                        <h4 class="font-bold text-lime-300 mb-2">6. Artist → Album → Genre ♾️</h4>
+                        <p class="text-slate-400 text-sm mb-2">Artist biter → Son şarkıların albümü → Album biter → Genre</p>
+                        <div class="bg-slate-900/50 rounded p-2 text-xs text-slate-500">
+                            Artist(Miles Davis) → Album(12) → Genre(9) → Jazz loop
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-teal-500">
+                        <h4 class="font-bold text-teal-300 mb-2">7. Search → Album → Genre ♾️</h4>
+                        <p class="text-slate-400 text-sm mb-2">Search biter → Son şarkıların albümü → Album biter → Genre</p>
+                        <div class="bg-slate-900/50 rounded p-2 text-xs text-slate-500">
+                            Search("blue") → Album(12) → Genre(9) → Jazz loop
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group 4: Self-Looping (Special) -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-yellow-300 mb-4">🟡 Grup 4: Kendi İçinde Loop (Özel)</h3>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-red-500">
+                        <h4 class="font-bold text-red-300 mb-2">8. Sector → Sector ♾️</h4>
+                        <p class="text-slate-400 text-sm mb-2">Sector playlists'ten devam → Infinite sector music</p>
+                        <div class="bg-slate-900/50 rounded p-2 text-xs text-slate-500">
+                            Sector(3) → Playlists[12,15,18] → Loop
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-yellow-500">
+                        <h4 class="font-bold text-yellow-300 mb-2">9. Radio → Radio ♾️</h4>
+                        <p class="text-slate-400 text-sm mb-2">Radio playlists'ten devam → Infinite radio</p>
+                        <div class="bg-slate-900/50 rounded p-2 text-xs text-slate-500">
+                            Radio(5) → Playlists[12,15,18,23] → Loop
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-orange-500">
+                        <h4 class="font-bold text-orange-300 mb-2">10. Recent → Recent ♾️</h4>
+                        <p class="text-slate-400 text-sm mb-2">Son ID'den geriye doğru devam → Infinite recent</p>
+                        <div class="bg-slate-900/50 rounded p-2 text-xs text-slate-500">
+                            Recent(lastId:5000) → lastId:4990 → Loop
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FLOWCHART DİYAGRAMI -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-cyan-400">📊 Geçiş Flowchart'ı</h2>
+            
+            <div class="bg-slate-800/50 rounded-lg p-8">
+                <div class="space-y-8">
+                    <!-- Flow 1: Search Example -->
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <h3 class="font-bold text-teal-300 mb-4">Örnek 1: Search → Album → Genre → ♾️</h3>
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <div class="bg-teal-600 rounded px-4 py-2 text-white text-sm">Search: "blue"</div>
+                            <span class="text-slate-500">→</span>
+                            <div class="bg-teal-600 rounded px-4 py-2 text-white text-sm">35 sonuç</div>
+                            <span class="text-slate-500">→</span>
+                            <div class="bg-yellow-600 rounded px-4 py-2 text-white text-sm">Bitti!</div>
+                            <span class="text-slate-500">→</span>
+                            <div class="bg-purple-600 rounded px-4 py-2 text-white text-sm">Album: Kind of Blue</div>
+                            <span class="text-slate-500">→</span>
+                            <div class="bg-yellow-600 rounded px-4 py-2 text-white text-sm">Bitti!</div>
+                            <span class="text-slate-500">→</span>
+                            <div class="bg-blue-600 rounded px-4 py-2 text-white text-sm font-bold">Genre: Jazz ♾️</div>
+                        </div>
+                    </div>
+
+                    <!-- Flow 2: Playlist Example -->
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <h3 class="font-bold text-green-300 mb-4">Örnek 2: Playlist (500 şarkı) → Genre → ♾️</h3>
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <div class="bg-green-600 rounded px-4 py-2 text-white text-sm">Playlist: Epic Mix</div>
+                            <span class="text-slate-500">→</span>
+                            <div class="bg-green-600 rounded px-4 py-2 text-white text-sm">500 şarkı (offset chunk)</div>
+                            <span class="text-slate-500">→</span>
+                            <div class="bg-yellow-600 rounded px-4 py-2 text-white text-sm">Bitti!</div>
+                            <span class="text-slate-500">→</span>
+                            <div class="bg-blue-600 rounded px-4 py-2 text-white text-sm">Son 5 şarkı → Genre: Rock</div>
+                            <span class="text-slate-500">→</span>
+                            <div class="bg-blue-600 rounded px-4 py-2 text-white text-sm font-bold">Genre: Rock ♾️</div>
+                        </div>
+                    </div>
+
+                    <!-- Flow 3: Sector Example (Self Loop) -->
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <h3 class="font-bold text-red-300 mb-4">Örnek 3: Sector → Sector Playlists → ♾️ (Kendi İçinde)</h3>
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <div class="bg-red-600 rounded px-4 py-2 text-white text-sm">Sector: Restoran</div>
+                            <span class="text-slate-500">→</span>
+                            <div class="bg-red-600 rounded px-4 py-2 text-white text-sm">5 Playlist Pool</div>
+                            <span class="text-slate-500">→</span>
+                            <div class="bg-red-600 rounded px-4 py-2 text-white text-sm">Rastgele Şarkılar</div>
+                            <span class="text-slate-500">→</span>
+                            <div class="bg-green-600 rounded px-4 py-2 text-white text-sm font-bold">Sector Loop ♾️</div>
+                        </div>
+                        <p class="text-slate-400 text-sm mt-3">
+                            ⚠️ Sector ve Radio Genre'ye GEÇMİYOR! Kendi içinde sonsuz döngü.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GENRE INFINITE LOOP DETAYI -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">♾️ Genre Infinite Loop - Detaylı Açıklama</h2>
+            
+            <div class="bg-blue-900/20 border-l-4 border-blue-500 rounded-lg p-8 mb-6">
+                <h3 class="text-2xl font-bold text-blue-300 mb-4">Genre Hiç Bitmez!</h3>
+                <p class="text-slate-300 text-lg mb-4">
+                    Genre context'te şarkılar biterse ne olur? <strong class="text-white">Başa sarar ve devam eder!</strong>
+                </p>
+
+                <div class="bg-slate-900/50 rounded-lg p-6 mb-4">
+                    <h4 class="font-bold text-white mb-3">Senaryo:</h4>
+                    <ol class="space-y-2 text-slate-300 text-sm">
+                        <li><strong>1.</strong> Genre: Jazz (toplam 500 şarkı)</li>
+                        <li><strong>2.</strong> Kullanıcı müzik dinliyor → 500 şarkı çaldı</li>
+                        <li><strong>3.</strong> <span class="text-yellow-300">Jazz şarkıları bitti!</span></li>
+                        <li><strong>4.</strong> Backend API: <code class="bg-slate-950/50 px-2 py-1 rounded text-green-300">Genre 9'dan yeni şarkılar çek</code></li>
+                        <li><strong>5.</strong> Eğer hepsi çalındıysa → <span class="text-green-300">İlk şarkıdan başa dön!</span></li>
+                        <li><strong>6.</strong> Queue yeniden doldu → Müzik hiç durmadı</li>
+                        <li><strong>7.</strong> ♾️ Infinite loop</li>
+                    </ol>
+                </div>
+
+                <div class="bg-green-900/20 rounded-lg p-4">
+                    <p class="text-green-300 font-bold mb-2">✅ Sonuç:</p>
+                    <p class="text-slate-300 text-sm">
+                        Genre context'te müzik <strong class="text-white">ASLA DURMAZ</strong>. 
+                        500 şarkı bittiyse başa sarar, 1000 şarkı bittiyse yine başa sarar. 
+                        İşletmeler için mükemmel: Sabah aç, akşama kadar çalar!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Backend Logic Example -->
+            <div class="bg-slate-800/50 rounded-lg p-6">
+                <h3 class="font-bold text-cyan-300 mb-4">🔧 Backend Logic (Pseudo-code)</h3>
+                <div class="bg-slate-900/50 rounded p-4 font-mono text-xs text-slate-300 overflow-x-auto">
+<pre>
+case 'genre':
+    $genreId = $context['id'];
+    $excludeIds = $request->exclude_song_ids; // Queue'daki şarkılar
+    
+    // 1. Genre'den çalınmamış şarkıları çek
+    $songs = Song::where('genre_id', $genreId)
+        ->whereNotIn('song_id', $excludeIds)
+        ->inRandomOrder()
+        ->limit(10)
+        ->get();
+    
+    // 2. Eğer şarkı yoksa (hepsi çalındı) → Başa sar!
+    if ($songs->isEmpty()) {
+        $songs = Song::where('genre_id', $genreId)
+            ->inRandomOrder()
+            ->limit(10)
+            ->get();
+    }
+    
+    return $songs; // ♾️ Infinite!
+</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÖZET TABLO -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-indigo-400">📋 Final Özet Tablo</h2>
+            
+            <div class="bg-slate-800/50 rounded-lg overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-900/50">
+                        <tr>
+                            <th class="text-left p-4 text-indigo-300">Context</th>
+                            <th class="text-left p-4 text-indigo-300">Geçiş Akışı</th>
+                            <th class="text-center p-4 text-indigo-300">Infinite?</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-blue-300">1. Genre</td>
+                            <td class="p-4">Genre → Genre (loop)</td>
+                            <td class="p-4 text-center text-green-400 text-xl">♾️</td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-purple-300">2. Album</td>
+                            <td class="p-4">Album → Genre → Genre (loop)</td>
+                            <td class="p-4 text-center text-green-400 text-xl">♾️</td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-green-300">3. Playlist</td>
+                            <td class="p-4">Playlist → Genre → Genre (loop)</td>
+                            <td class="p-4 text-center text-green-400 text-xl">♾️</td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-red-300">4. Sector</td>
+                            <td class="p-4">Sector → Sector (self-loop)</td>
+                            <td class="p-4 text-center text-green-400 text-xl">♾️</td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-yellow-300">5. Radio</td>
+                            <td class="p-4">Radio → Radio (self-loop)</td>
+                            <td class="p-4 text-center text-green-400 text-xl">♾️</td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-pink-300">6. Popular</td>
+                            <td class="p-4">Popular → Album → Genre → Genre (loop)</td>
+                            <td class="p-4 text-center text-green-400 text-xl">♾️</td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-orange-300">7. Recent</td>
+                            <td class="p-4">Recent → Recent (backward loop by ID)</td>
+                            <td class="p-4 text-center text-green-400 text-xl">♾️</td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-cyan-300">8. Favorites</td>
+                            <td class="p-4">Favorites → Album → Genre → Genre (loop)</td>
+                            <td class="p-4 text-center text-green-400 text-xl">♾️</td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-lime-300">9. Artist</td>
+                            <td class="p-4">Artist → Album → Genre → Genre (loop)</td>
+                            <td class="p-4 text-center text-green-400 text-xl">♾️</td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-teal-300">10. Search</td>
+                            <td class="p-4">Search → Album → Genre → Genre (loop)</td>
+                            <td class="p-4 text-center text-green-400 text-xl">♾️</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 bg-green-900/20 border-l-4 border-green-500 rounded-lg p-6">
+                <p class="text-green-300 font-bold text-xl mb-2">✅ 10/10 Context = Infinite!</p>
+                <p class="text-slate-300">
+                    Her context type sonunda infinite loop'a giriyor. 
+                    <strong class="text-white">7 tanesi Genre'ye çıkıyor</strong>, 
+                    <strong class="text-yellow-300">3 tanesi kendi içinde dönüyor</strong>.
+                    Müzik <strong class="text-green-300">ASLA DURMUYOR!</strong>
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI - Context Hierarchy v4 FINAL</p>
+            <p class="mt-2">♾️ Genre = Infinite Fallback - Her Şey Buraya Çıkar</p>
+        </footer>
+    </div>
+</body>
+</html>

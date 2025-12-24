@@ -1,1 +1,387 @@
-v4/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Başlıkları - Tüm Versiyonlar Birleşik</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; line-height: 1.6; padding: 30px 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        header { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #334155; }
+        h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; background: linear-gradient(135deg, #10b981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .meta { color: #94a3b8; font-size: 0.85rem; }
+        .note { background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.85rem; }
+        table { width: 100%; border-collapse: collapse; background: rgba(30, 41, 59, 0.3); border-radius: 8px; overflow: hidden; }
+        th { background: rgba(30, 41, 59, 0.9); padding: 10px 12px; text-align: left; font-weight: 600; font-size: 0.85rem; border-bottom: 2px solid #10b981; position: sticky; top: 0; z-index: 10; }
+        th.num { width: 4%; color: #64748b; }
+        th.product { color: #10b981; width: 10%; }
+        th.title { color: #60a5fa; width: 55%; }
+        th.search { color: #fbbf24; width: 10%; }
+        th.intent { color: #a78bfa; width: 21%; }
+        td { padding: 6px 10px; border-bottom: 1px solid #334155; font-size: 0.78rem; line-height: 1.4; }
+        tr:hover { background: rgba(30, 41, 59, 0.6); }
+        .product-tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-weight: 600; font-size: 0.68rem; white-space: nowrap; }
+        .tag-forklift { background: #dc2626; color: white; }
+        .tag-eforklift { background: #0891b2; color: white; }
+        .tag-dforklift { background: #854d0e; color: white; }
+        .tag-transpalet { background: #2563eb; color: white; }
+        .tag-etranspalet { background: #0d9488; color: white; }
+        .tag-mtranspalet { background: #4f46e5; color: white; }
+        .tag-istif { background: #059669; color: white; }
+        .tag-reach { background: #7c3aed; color: white; }
+        .tag-order { background: #ea580c; color: white; }
+        .tag-manlift { background: #be185d; color: white; }
+        .tag-genel { background: #475569; color: white; }
+        .high { color: #fbbf24; font-weight: 600; }
+        .mid { color: #94a3b8; }
+        .low { color: #64748b; font-size: 0.72rem; }
+        footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #334155; color: #64748b; font-size: 0.8rem; text-align: center; }
+        .section-header { background: rgba(59, 130, 246, 0.1); padding: 8px 12px; font-weight: 600; color: #60a5fa; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Blog Başlıkları - v1+v2+v3 Birleşik Liste</h1>
+            <div class="meta">📅 2025-12-01 | 🎯 450+ Başlık | v1+v2+v3 Tüm İçerikler | 2026 Hedefli</div>
+        </header>
+        <div class="note">
+            <strong>🔍 Kaynak:</strong> v1 (Pattern bazlı) + v2 (Detaylı başlıklar) + v3 (Google Autocomplete)<br>
+            <strong>📊 Kategoriler:</strong> Forklift | E.Forklift | D.Forklift | Transpalet | E.Transpalet | M.Transpalet | İstif | Reach | Order | Manlift | Genel
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th class="num">#</th>
+                    <th class="product">Ürün</th>
+                    <th class="title">Blog Başlığı</th>
+                    <th class="search">Arama</th>
+                    <th class="intent">Intent</th>
+                </tr>
+            </thead>
+            <tbody>
+<!-- ==================== FORKLİFT - v3 Google Data ==================== -->
+<tr><td>1</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Nedir? Çeşitleri ve Kullanım Alanları</td><td><span class="high">Çok Yüksek</span></td><td>Bilgi</td></tr>
+<tr><td>2</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Fiyatları 2026: Güncel Liste</td><td><span class="high">Çok Yüksek</span></td><td>Fiyat</td></tr>
+<tr><td>3</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>En İyi Forklift Hangisi?</td><td><span class="high">Yüksek</span></td><td>Karar</td></tr>
+<tr><td>4</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>En İyi Forklift Markaları 2026</td><td><span class="high">Yüksek</span></td><td>Marka</td></tr>
+<tr><td>5</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Ucuz Forklift Nereden Alınır?</td><td><span class="high">Yüksek</span></td><td>Bütçe</td></tr>
+<tr><td>6</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Ehliyeti Nasıl Alınır? 2026</td><td><span class="high">Çok Yüksek</span></td><td>Ehliyet</td></tr>
+<tr><td>7</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Ehliyeti Kaç Para? 2026 Ücretleri</td><td><span class="high">Çok Yüksek</span></td><td>Ehliyet Fiyat</td></tr>
+<tr><td>8</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Ehliyeti Ne Kadar? 2026</td><td><span class="high">Çok Yüksek</span></td><td>Ehliyet Fiyat</td></tr>
+<tr><td>9</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Ehliyeti Nereden Alınır?</td><td><span class="high">Yüksek</span></td><td>Ehliyet</td></tr>
+<tr><td>10</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Ehliyeti Sınav Soruları 2026</td><td><span class="high">Yüksek</span></td><td>Ehliyet Sınav</td></tr>
+<tr><td>11</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Ehliyeti Sorgulama</td><td><span class="mid">Orta</span></td><td>Ehliyet</td></tr>
+<tr><td>12</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Ehliyeti Şartları Nelerdir?</td><td><span class="mid">Orta</span></td><td>Ehliyet</td></tr>
+<tr><td>13</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Operatörü Maaşı 2026</td><td><span class="high">Yüksek</span></td><td>Kariyer</td></tr>
+<tr><td>14</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Operatörü İş İlanları 2026</td><td><span class="high">Yüksek</span></td><td>İş Arama</td></tr>
+<tr><td>15</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Operatörü Nasıl Olunur?</td><td><span class="mid">Orta</span></td><td>Kariyer</td></tr>
+<tr><td>16</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Kiralama Fiyatları 2026</td><td><span class="high">Yüksek</span></td><td>Kiralama</td></tr>
+<tr><td>17</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Kiralama Firmaları</td><td><span class="mid">Orta</span></td><td>Kiralama</td></tr>
+<tr><td>18</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>2. El Forklift Fiyatları 2026</td><td><span class="high">Yüksek</span></td><td>İkinci El</td></tr>
+<tr><td>19</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>2 El Satılık Forklift İlanları</td><td><span class="high">Yüksek</span></td><td>İkinci El</td></tr>
+<tr><td>20</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Sahibinden Satılık 2. El Forklift</td><td><span class="high">Yüksek</span></td><td>İkinci El</td></tr>
+<tr><td>21</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Sahibinden Forklift İlanları</td><td><span class="high">Yüksek</span></td><td>İkinci El</td></tr>
+<tr><td>22</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Sıfır Forklift Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>Yeni Alım</td></tr>
+<tr><td>23</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Yedek Parçaları Fiyatları 2026</td><td><span class="high">Yüksek</span></td><td>Parça</td></tr>
+<tr><td>24</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Yedek Parça İstanbul</td><td><span class="mid">Orta</span></td><td>Parça Lokasyon</td></tr>
+<tr><td>25</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Yedek Parça Ankara</td><td><span class="mid">Orta</span></td><td>Parça Lokasyon</td></tr>
+<tr><td>26</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Yedek Parça Bursa</td><td><span class="mid">Orta</span></td><td>Parça Lokasyon</td></tr>
+<tr><td>27</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Teknik Servis İstanbul</td><td><span class="mid">Orta</span></td><td>Servis</td></tr>
+<tr><td>28</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Servisi Bursa</td><td><span class="mid">Orta</span></td><td>Servis</td></tr>
+<tr><td>29</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Servisi Gebze</td><td><span class="low">Düşük</span></td><td>Servis</td></tr>
+<tr><td>30</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Lastiği Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>Parça</td></tr>
+<tr><td>31</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Lastiği Ölçüleri: 6.50-10, 7.00-12</td><td><span class="low">Düşük</span></td><td>Parça Teknik</td></tr>
+<tr><td>32</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Aküsü Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>Parça</td></tr>
+<tr><td>33</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Aküsü Kaç Volt? Kaç Amper?</td><td><span class="low">Düşük</span></td><td>Parça Teknik</td></tr>
+<tr><td>34</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Çatalı Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>Parça</td></tr>
+<tr><td>35</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Arıza Kodları ve Anlamları</td><td><span class="mid">Orta</span></td><td>Arıza</td></tr>
+<tr><td>36</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Arıza Lambaları Anlamları</td><td><span class="mid">Orta</span></td><td>Arıza</td></tr>
+<tr><td>37</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Çalışmıyor: Nedenler ve Çözümler</td><td><span class="mid">Orta</span></td><td>Arıza</td></tr>
+<tr><td>38</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Bozuldu Ne Yapmalı?</td><td><span class="mid">Orta</span></td><td>Arıza</td></tr>
+<tr><td>39</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Bakımı Nasıl Yapılır?</td><td><span class="mid">Orta</span></td><td>Bakım</td></tr>
+<tr><td>40</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>İstanbul Forklift Satış ve Kiralama</td><td><span class="high">Yüksek</span></td><td>Lokasyon</td></tr>
+<tr><td>41</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>İkitelli Forklift Bayileri</td><td><span class="mid">Orta</span></td><td>Sanayi</td></tr>
+<tr><td>42</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Tuzla Forklift Satış Noktaları</td><td><span class="mid">Orta</span></td><td>Sanayi</td></tr>
+<tr><td>43</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Kocaeli Forklift Bayileri</td><td><span class="mid">Orta</span></td><td>Büyükşehir</td></tr>
+<tr><td>44</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Gebze Forklift Satış ve Servis</td><td><span class="mid">Orta</span></td><td>Sanayi</td></tr>
+<tr><td>45</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Ankara Forklift Satış Noktaları</td><td><span class="mid">Orta</span></td><td>Büyükşehir</td></tr>
+<tr><td>46</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>İzmir Forklift Bayileri</td><td><span class="mid">Orta</span></td><td>Büyükşehir</td></tr>
+<tr><td>47</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Bursa Forklift Satış ve Kiralama</td><td><span class="mid">Orta</span></td><td>Büyükşehir</td></tr>
+<tr><td>48</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Antalya Forklift Bayileri</td><td><span class="low">Düşük</span></td><td>Büyükşehir</td></tr>
+<tr><td>49</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Konya Forklift Satış Noktaları</td><td><span class="low">Düşük</span></td><td>Büyükşehir</td></tr>
+<tr><td>50</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Adana Forklift Bayileri</td><td><span class="low">Düşük</span></td><td>Büyükşehir</td></tr>
+<tr><td>51</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Gaziantep Forklift Satış ve Servis</td><td><span class="low">Düşük</span></td><td>Büyükşehir</td></tr>
+<tr><td>52</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Toyota Forklift Fiyatları 2026</td><td><span class="high">Yüksek</span></td><td>Marka</td></tr>
+<tr><td>53</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Toyota Forklift Arıza Kodları</td><td><span class="mid">Orta</span></td><td>Marka Teknik</td></tr>
+<tr><td>54</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Toyota Forklift Yedek Parça</td><td><span class="mid">Orta</span></td><td>Marka Parça</td></tr>
+<tr><td>55</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Toyota Forklift Yetkili Servis</td><td><span class="mid">Orta</span></td><td>Marka Servis</td></tr>
+<tr><td>56</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Linde Forklift Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>Marka</td></tr>
+<tr><td>57</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Linde Forklift Hata Kodları</td><td><span class="mid">Orta</span></td><td>Marka Teknik</td></tr>
+<tr><td>58</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Heli Forklift Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>Marka</td></tr>
+<tr><td>59</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Heli Forklift Arıza Kodları</td><td><span class="mid">Orta</span></td><td>Marka Teknik</td></tr>
+<tr><td>60</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Heli Forklift Yorumları</td><td><span class="low">Düşük</span></td><td>Marka</td></tr>
+<tr><td>61</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>EP Forklift Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>Marka</td></tr>
+<tr><td>62</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Still Forklift Fiyatları 2026</td><td><span class="low">Düşük</span></td><td>Marka</td></tr>
+<tr><td>63</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Jungheinrich Forklift Fiyatları 2026</td><td><span class="low">Düşük</span></td><td>Marka</td></tr>
+
+<!-- FORKLİFT - v2 Detaylı Başlıklar -->
+<tr><td>64</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Fiyatları: Elektrikli, Dizel, LPG Karşılaştırması</td><td><span class="high">Yüksek</span></td><td>Fiyat Karşılaştırma</td></tr>
+<tr><td>65</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Sıfır Forklift mi 2. El mi? Hangisi Daha Kârlı?</td><td><span class="high">Yüksek</span></td><td>Karşılaştırma</td></tr>
+<tr><td>66</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Kiralama mı Satın Alma mı? Maliyet Hesabı</td><td><span class="high">Yüksek</span></td><td>Karşılaştırma</td></tr>
+<tr><td>67</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Günlük Forklift Kiralama Fiyatları İstanbul</td><td><span class="high">Yüksek</span></td><td>Kiralama</td></tr>
+<tr><td>68</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Yakıt Tüketimi: Dizel, LPG, Elektrikli Karşılaştırması</td><td><span class="mid">Orta</span></td><td>Maliyet</td></tr>
+<tr><td>69</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Toyota mu Linde mi? Hangisi Daha Dayanıklı?</td><td><span class="mid">Orta</span></td><td>Marka Karşılaştırma</td></tr>
+<tr><td>70</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Çin Malı Forklift Alınır mı? Deneyimler</td><td><span class="mid">Orta</span></td><td>Marka</td></tr>
+<tr><td>71</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Linde Forklift Servisi Nereden Alınır? Yedek Parça</td><td><span class="mid">Orta</span></td><td>Marka Servis</td></tr>
+<tr><td>72</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Mitsubishi Forklift Türkiye Bayisi Var mı?</td><td><span class="low">Düşük</span></td><td>Marka</td></tr>
+<tr><td>73</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Still Forklift: Alman Kalitesi Ne Kadar?</td><td><span class="low">Düşük</span></td><td>Marka</td></tr>
+<tr><td>74</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Türk Forklift Markaları: Netsel, Akülift, Promak</td><td><span class="low">Düşük</span></td><td>Marka</td></tr>
+<tr><td>75</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>İstanbul Forklift Satış Noktaları: Avrupa ve Anadolu Yakası</td><td><span class="mid">Orta</span></td><td>Lokasyon</td></tr>
+<tr><td>76</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>İkitelli Forklift Bayileri: Adres ve İletişim Bilgileri</td><td><span class="mid">Orta</span></td><td>Lokasyon</td></tr>
+<tr><td>77</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Kiralık Forklift İstanbul: Günlük ve Aylık Seçenekler</td><td><span class="mid">Orta</span></td><td>Kiralama</td></tr>
+<tr><td>78</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Ankara Forklift: Başkent'teki Tüm Bayiler</td><td><span class="mid">Orta</span></td><td>Lokasyon</td></tr>
+<tr><td>79</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Tuzla OSB Forklift: Organize Sanayi İçi Satış</td><td><span class="mid">Orta</span></td><td>Lokasyon</td></tr>
+<tr><td>80</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Esenyurt Forklift Kiralama: Uygun Fiyatlı Seçenekler</td><td><span class="low">Düşük</span></td><td>Lokasyon</td></tr>
+<tr><td>81</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Kullanma Belgesi: Sınav ve Başvuru Süreci</td><td><span class="mid">Orta</span></td><td>Ehliyet</td></tr>
+<tr><td>82</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Sertifikası Geçerlilik Süresi Ne Kadar?</td><td><span class="mid">Orta</span></td><td>Ehliyet</td></tr>
+<tr><td>83</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Güvenlik Kuralları: İş Güvenliği Rehberi</td><td><span class="mid">Orta</span></td><td>Güvenlik</td></tr>
+<tr><td>84</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Hidrolik Sızıntısı: Nedenleri ve Çözümü</td><td><span class="mid">Orta</span></td><td>Arıza</td></tr>
+<tr><td>85</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Aküsü Şarj Olmuyor: Sorun Nedir?</td><td><span class="mid">Orta</span></td><td>Arıza</td></tr>
+<tr><td>86</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Lastiği Ne Zaman Değiştirilmeli? İşaretler</td><td><span class="mid">Orta</span></td><td>Bakım</td></tr>
+<tr><td>87</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Direksiyonu Ağır: Hidrolik Problemi mi?</td><td><span class="low">Düşük</span></td><td>Arıza</td></tr>
+<tr><td>88</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Bakımı Ne Kadar Sürede Yapılır? Periyodik Kontrol</td><td><span class="mid">Orta</span></td><td>Bakım</td></tr>
+<tr><td>89</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Yedek Parça Nereden Alınır? Orijinal vs Muadil</td><td><span class="mid">Orta</span></td><td>Parça</td></tr>
+<tr><td>90</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Toyota Forklift Yedek Parça Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>Marka Parça</td></tr>
+<tr><td>91</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Servisi İstanbul: En İyi Servisler Hangileri?</td><td><span class="mid">Orta</span></td><td>Servis</td></tr>
+<tr><td>92</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Hidrolik Yağı Ne Zaman Değiştirilir?</td><td><span class="low">Düşük</span></td><td>Bakım</td></tr>
+<tr><td>93</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Çatalı Kaç Kilo Taşır? Kapasite Kontrolü</td><td><span class="low">Düşük</span></td><td>Teknik</td></tr>
+<tr><td>94</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Sahibinden Forklift: Alırken Nelere Dikkat Etmeli?</td><td><span class="high">Yüksek</span></td><td>İkinci El</td></tr>
+<tr><td>95</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>2. El Forklift Fiyatları: Yaşa Göre Değer Kaybı</td><td><span class="mid">Orta</span></td><td>İkinci El</td></tr>
+<tr><td>96</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Satılık Forklift İlanları: En Çok Hangi Sitede?</td><td><span class="mid">Orta</span></td><td>İkinci El</td></tr>
+<tr><td>97</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Alım Satım: Elden Çıkarma Rehberi</td><td><span class="low">Düşük</span></td><td>İkinci El</td></tr>
+<tr><td>98</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>2 El Toyota Forklift: Hangi Model Daha Dayanıklı?</td><td><span class="mid">Orta</span></td><td>İkinci El Marka</td></tr>
+<tr><td>99</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Forklift Takas: Eskiyi Getir Yeniyi Al Fırsatları</td><td><span class="low">Düşük</span></td><td>İkinci El</td></tr>
+<tr><td>100</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Depo İçin Forklift: Kapalı Alan Kullanımı</td><td><span class="mid">Orta</span></td><td>Kullanım Alanı</td></tr>
+<tr><td>101</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>İnşaat Forklift: Dış Mekan Dayanıklılığı</td><td><span class="mid">Orta</span></td><td>Kullanım Alanı</td></tr>
+<tr><td>102</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Soğuk Hava Deposu Forklift: Özel Modeller</td><td><span class="low">Düşük</span></td><td>Kullanım Alanı</td></tr>
+<tr><td>103</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Lojistik Şirketleri İçin Forklift Filo Yönetimi</td><td><span class="low">Düşük</span></td><td>B2B</td></tr>
+<tr><td>104</td><td><span class="product-tag tag-forklift">Forklift</span></td><td>Dış Mekan Forklift: LPG mi Dizel mi?</td><td><span class="mid">Orta</span></td><td>Karşılaştırma</td></tr>
+
+<!-- ==================== ELEKTRİKLİ FORKLİFT ==================== -->
+<tr><td>105</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>Elektrikli Forklift Nedir? Avantajları</td><td><span class="high">Yüksek</span></td><td>Bilgi</td></tr>
+<tr><td>106</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>Elektrikli Forklift Fiyatları 2026</td><td><span class="high">Yüksek</span></td><td>Fiyat</td></tr>
+<tr><td>107</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>En İyi Elektrikli Forklift Hangisi?</td><td><span class="mid">Orta</span></td><td>Karar</td></tr>
+<tr><td>108</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>En İyi Elektrikli Forklift Markaları 2026</td><td><span class="mid">Orta</span></td><td>Marka</td></tr>
+<tr><td>109</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>Ucuz Elektrikli Forklift Nereden Alınır?</td><td><span class="mid">Orta</span></td><td>Bütçe</td></tr>
+<tr><td>110</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>Elektrikli Forklift Arıza Kodları</td><td><span class="mid">Orta</span></td><td>Arıza</td></tr>
+<tr><td>111</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>Elektrikli Forklift Aküsü Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>Parça</td></tr>
+<tr><td>112</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>Elektrikli Forklift Aküsü Ömrü: Değişim Zamanı</td><td><span class="mid">Orta</span></td><td>Parça</td></tr>
+<tr><td>113</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>Elektrikli Forklift Ehliyeti</td><td><span class="mid">Orta</span></td><td>Ehliyet</td></tr>
+<tr><td>114</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>Elektrikli Forklift Kiralama</td><td><span class="mid">Orta</span></td><td>Kiralama</td></tr>
+<tr><td>115</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>Elektrikli Forklift Şarj İstasyonu</td><td><span class="low">Düşük</span></td><td>Parça</td></tr>
+<tr><td>116</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>2. El Elektrikli Forklift Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>İkinci El</td></tr>
+<tr><td>117</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>Sahibinden Elektrikli Forklift</td><td><span class="mid">Orta</span></td><td>İkinci El</td></tr>
+<tr><td>118</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>Sıfır Elektrikli Forklift Fiyatları 2026</td><td><span class="low">Düşük</span></td><td>Yeni Alım</td></tr>
+<tr><td>119</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>Elektrikli Forklift Yedek Parçaları</td><td><span class="low">Düşük</span></td><td>Parça</td></tr>
+<tr><td>120</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>Elektrikli Forklift Teknik Servis İstanbul</td><td><span class="low">Düşük</span></td><td>Servis</td></tr>
+<tr><td>121</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>İstanbul Elektrikli Forklift Satış</td><td><span class="mid">Orta</span></td><td>Lokasyon</td></tr>
+<tr><td>122</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>Elektrikli Forklift Çalışmıyor</td><td><span class="low">Düşük</span></td><td>Arıza</td></tr>
+<tr><td>123</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>Elektrikli Forklift Bozuldu Ne Yapmalı?</td><td><span class="low">Düşük</span></td><td>Arıza</td></tr>
+<tr><td>124</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>Toyota Elektrikli Forklift Fiyatları</td><td><span class="mid">Orta</span></td><td>Marka</td></tr>
+<tr><td>125</td><td><span class="product-tag tag-eforklift">E.Forklift</span></td><td>Akülü Forklift Modelleri ve Batarya Ömrü</td><td><span class="mid">Orta</span></td><td>Tip</td></tr>
+
+<!-- ==================== DİZEL FORKLİFT ==================== -->
+<tr><td>126</td><td><span class="product-tag tag-dforklift">D.Forklift</span></td><td>Dizel Forklift Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>Fiyat</td></tr>
+<tr><td>127</td><td><span class="product-tag tag-dforklift">D.Forklift</span></td><td>En İyi Dizel Forklift Hangisi?</td><td><span class="low">Düşük</span></td><td>Karar</td></tr>
+<tr><td>128</td><td><span class="product-tag tag-dforklift">D.Forklift</span></td><td>En İyi Dizel Forklift Markaları 2026</td><td><span class="low">Düşük</span></td><td>Marka</td></tr>
+<tr><td>129</td><td><span class="product-tag tag-dforklift">D.Forklift</span></td><td>Ucuz Dizel Forklift Nereden Alınır?</td><td><span class="low">Düşük</span></td><td>Bütçe</td></tr>
+<tr><td>130</td><td><span class="product-tag tag-dforklift">D.Forklift</span></td><td>Dizel Forklift Yakıt Tüketimi</td><td><span class="mid">Orta</span></td><td>Maliyet</td></tr>
+<tr><td>131</td><td><span class="product-tag tag-dforklift">D.Forklift</span></td><td>Dizel Forklift Motor Yağı Kaç Numara?</td><td><span class="low">Düşük</span></td><td>Bakım</td></tr>
+<tr><td>132</td><td><span class="product-tag tag-dforklift">D.Forklift</span></td><td>Dizel Forklift Özellikleri ve Kullanım Alanları</td><td><span class="mid">Orta</span></td><td>Bilgi</td></tr>
+<tr><td>133</td><td><span class="product-tag tag-dforklift">D.Forklift</span></td><td>2. El Dizel Forklift Fiyatları 2026</td><td><span class="low">Düşük</span></td><td>İkinci El</td></tr>
+<tr><td>134</td><td><span class="product-tag tag-dforklift">D.Forklift</span></td><td>Sahibinden Dizel Forklift</td><td><span class="low">Düşük</span></td><td>İkinci El</td></tr>
+<tr><td>135</td><td><span class="product-tag tag-dforklift">D.Forklift</span></td><td>Dizel Forklift Yedek Parçaları</td><td><span class="low">Düşük</span></td><td>Parça</td></tr>
+<tr><td>136</td><td><span class="product-tag tag-dforklift">D.Forklift</span></td><td>Dizel Forklift Çalışmıyor</td><td><span class="low">Düşük</span></td><td>Arıza</td></tr>
+<tr><td>137</td><td><span class="product-tag tag-dforklift">D.Forklift</span></td><td>LPG Forklift Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>Fiyat</td></tr>
+<tr><td>138</td><td><span class="product-tag tag-dforklift">D.Forklift</span></td><td>LPG Forklift: Yakıt Tasarrufu ve Performans</td><td><span class="mid">Orta</span></td><td>Bilgi</td></tr>
+
+<!-- ==================== TRANSPALET ==================== -->
+<tr><td>139</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Transpalet Nedir? Çeşitleri ve Kullanım Alanları</td><td><span class="high">Yüksek</span></td><td>Bilgi</td></tr>
+<tr><td>140</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Transpalet Fiyatları 2026: Güncel Liste</td><td><span class="high">Çok Yüksek</span></td><td>Fiyat</td></tr>
+<tr><td>141</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Transpalet Kaç Para? 2026 Güncel Fiyat Listesi</td><td><span class="high">Çok Yüksek</span></td><td>Fiyat</td></tr>
+<tr><td>142</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>En İyi Transpalet Hangisi?</td><td><span class="high">Yüksek</span></td><td>Karar</td></tr>
+<tr><td>143</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>En İyi Transpalet Markaları 2026</td><td><span class="high">Yüksek</span></td><td>Marka</td></tr>
+<tr><td>144</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Ucuz Transpalet Nereden Alınır?</td><td><span class="high">Yüksek</span></td><td>Bütçe</td></tr>
+<tr><td>145</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Transpalet Nasıl Kullanılır? Adım Adım Rehber</td><td><span class="high">Yüksek</span></td><td>Kullanım</td></tr>
+<tr><td>146</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Transpalet Tekeri Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>Parça</td></tr>
+<tr><td>147</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Transpalet 2.5 Ton Fiyatları</td><td><span class="mid">Orta</span></td><td>Kapasite</td></tr>
+<tr><td>148</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Transpalet Tamiri</td><td><span class="mid">Orta</span></td><td>Servis</td></tr>
+<tr><td>149</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Transpalet Yedek Parçaları Fiyatları</td><td><span class="mid">Orta</span></td><td>Parça</td></tr>
+<tr><td>150</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>2. El Transpalet Fiyatları 2026</td><td><span class="high">Yüksek</span></td><td>İkinci El</td></tr>
+<tr><td>151</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Sahibinden Transpalet İlanları</td><td><span class="high">Yüksek</span></td><td>İkinci El</td></tr>
+<tr><td>152</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Sıfır Transpalet Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>Yeni Alım</td></tr>
+<tr><td>153</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>İstanbul Transpalet Satış ve Kiralama</td><td><span class="high">Yüksek</span></td><td>Lokasyon</td></tr>
+<tr><td>154</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>İkitelli Transpalet Bayileri</td><td><span class="mid">Orta</span></td><td>Sanayi</td></tr>
+<tr><td>155</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Tuzla Transpalet Satış Noktaları</td><td><span class="mid">Orta</span></td><td>Sanayi</td></tr>
+<tr><td>156</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Kocaeli Transpalet Bayileri</td><td><span class="mid">Orta</span></td><td>Büyükşehir</td></tr>
+<tr><td>157</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Gebze Transpalet Satış ve Servis</td><td><span class="mid">Orta</span></td><td>Sanayi</td></tr>
+<tr><td>158</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Ankara Transpalet Satış Noktaları</td><td><span class="mid">Orta</span></td><td>Büyükşehir</td></tr>
+<tr><td>159</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>İzmir Transpalet Bayileri: Ege Bölgesi</td><td><span class="mid">Orta</span></td><td>Büyükşehir</td></tr>
+<tr><td>160</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Bursa Transpalet Satış ve Kiralama</td><td><span class="mid">Orta</span></td><td>Büyükşehir</td></tr>
+<tr><td>161</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Dudullu OSB Transpalet Satıcıları</td><td><span class="low">Düşük</span></td><td>Sanayi</td></tr>
+<tr><td>162</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Transpalet Çalışmıyor: Nedenler ve Çözümler</td><td><span class="mid">Orta</span></td><td>Arıza</td></tr>
+<tr><td>163</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Transpalet Bozuldu Ne Yapmalı?</td><td><span class="mid">Orta</span></td><td>Arıza</td></tr>
+<tr><td>164</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Transpalet Kaldırmıyor Ne Yapmalı? Hızlı Çözümler</td><td><span class="mid">Orta</span></td><td>Arıza</td></tr>
+<tr><td>165</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Transpalet Pompası Arızası: Tamir mi Değişim mi?</td><td><span class="mid">Orta</span></td><td>Arıza</td></tr>
+<tr><td>166</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Transpalet Tekerleği Değişimi: Kendin Yap Rehberi</td><td><span class="mid">Orta</span></td><td>Bakım</td></tr>
+<tr><td>167</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Transpalet Aküsü Ne Kadar Dayanır? Ömrünü Uzatma</td><td><span class="low">Düşük</span></td><td>Parça</td></tr>
+<tr><td>168</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Transpalet Bakımı Nasıl Yapılır? Kendiniz Yapın</td><td><span class="mid">Orta</span></td><td>Bakım</td></tr>
+<tr><td>169</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Transpalet Aküsü Değişimi Ne Kadar? İşçilik Dahil</td><td><span class="low">Düşük</span></td><td>Parça</td></tr>
+<tr><td>170</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>İkinci El Transpalet Alınır mı? Avantaj ve Riskleri</td><td><span class="mid">Orta</span></td><td>İkinci El</td></tr>
+<tr><td>171</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Transpalet Satın Alırken Kontrol Edilecek 10 Şey</td><td><span class="mid">Orta</span></td><td>Teknik</td></tr>
+<tr><td>172</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Market Transpalet: Dar Koridor Kullanımı</td><td><span class="low">Düşük</span></td><td>Kullanım Alanı</td></tr>
+<tr><td>173</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Aylık Transpalet Kiralama Ne Kadar? Şartları Nedir?</td><td><span class="mid">Orta</span></td><td>Kiralama</td></tr>
+<tr><td>174</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>EP Transpalet Yorumları: Kullanıcılar Ne Diyor?</td><td><span class="low">Düşük</span></td><td>Marka</td></tr>
+<tr><td>175</td><td><span class="product-tag tag-transpalet">Transpalet</span></td><td>Transpalet Teknik Servis İstanbul</td><td><span class="mid">Orta</span></td><td>Servis</td></tr>
+
+<!-- ==================== ELEKTRİKLİ TRANSPALET ==================== -->
+<tr><td>176</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>Elektrikli Transpalet Nedir? Avantajları</td><td><span class="high">Yüksek</span></td><td>Bilgi</td></tr>
+<tr><td>177</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>Elektrikli Transpalet Fiyatları 2026</td><td><span class="high">Yüksek</span></td><td>Fiyat</td></tr>
+<tr><td>178</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>En İyi Elektrikli Transpalet Hangisi?</td><td><span class="mid">Orta</span></td><td>Karar</td></tr>
+<tr><td>179</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>En İyi Elektrikli Transpalet Markaları 2026</td><td><span class="mid">Orta</span></td><td>Marka</td></tr>
+<tr><td>180</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>Ucuz Elektrikli Transpalet Nereden Alınır?</td><td><span class="mid">Orta</span></td><td>Bütçe</td></tr>
+<tr><td>181</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>Elektrikli Transpalet Sınav Soruları 2026</td><td><span class="high">Yüksek</span></td><td>Ehliyet</td></tr>
+<tr><td>182</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>Elektrikli Transpalet Ehliyeti</td><td><span class="high">Yüksek</span></td><td>Ehliyet</td></tr>
+<tr><td>183</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>Elektrikli Transpalet Ehliyeti Fiyatları 2026</td><td><span class="high">Yüksek</span></td><td>Ehliyet Fiyat</td></tr>
+<tr><td>184</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>Elektrikli Transpalet Ehliyeti E-Devlet</td><td><span class="mid">Orta</span></td><td>Ehliyet</td></tr>
+<tr><td>185</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>Elektrikli Transpalet Şarj Süresi Ne Kadar?</td><td><span class="mid">Orta</span></td><td>Teknik</td></tr>
+<tr><td>186</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>Elektrikli Transpalet Arızaları</td><td><span class="mid">Orta</span></td><td>Arıza</td></tr>
+<tr><td>187</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>Elektrikli Transpalet Aküsü Fiyatları</td><td><span class="mid">Orta</span></td><td>Parça</td></tr>
+<tr><td>188</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>2. El Elektrikli Transpalet Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>İkinci El</td></tr>
+<tr><td>189</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>Sahibinden Elektrikli Transpalet</td><td><span class="mid">Orta</span></td><td>İkinci El</td></tr>
+<tr><td>190</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>Sıfır Elektrikli Transpalet Fiyatları 2026</td><td><span class="low">Düşük</span></td><td>Yeni Alım</td></tr>
+<tr><td>191</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>Elektrikli Transpalet Yedek Parçaları</td><td><span class="low">Düşük</span></td><td>Parça</td></tr>
+<tr><td>192</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>Elektrikli Transpalet Teknik Servis İstanbul</td><td><span class="low">Düşük</span></td><td>Servis</td></tr>
+<tr><td>193</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>İstanbul Elektrikli Transpalet Satış</td><td><span class="mid">Orta</span></td><td>Lokasyon</td></tr>
+<tr><td>194</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>Elektrikli Transpalet Çalışmıyor</td><td><span class="low">Düşük</span></td><td>Arıza</td></tr>
+<tr><td>195</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>Akülü Transpalet Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>Fiyat</td></tr>
+<tr><td>196</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>Akülü Transpalet Ehliyeti</td><td><span class="mid">Orta</span></td><td>Ehliyet</td></tr>
+<tr><td>197</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>Akülü Transpalet Modelleri ve Batarya Teknolojileri</td><td><span class="mid">Orta</span></td><td>Tip</td></tr>
+<tr><td>198</td><td><span class="product-tag tag-etranspalet">E.Transpalet</span></td><td>Yarı Elektrikli Transpalet: Hibrit Çözüm</td><td><span class="low">Düşük</span></td><td>Tip</td></tr>
+
+<!-- ==================== MANUEL TRANSPALET ==================== -->
+<tr><td>199</td><td><span class="product-tag tag-mtranspalet">M.Transpalet</span></td><td>Manuel Transpalet Nedir? Nasıl Çalışır?</td><td><span class="high">Yüksek</span></td><td>Bilgi</td></tr>
+<tr><td>200</td><td><span class="product-tag tag-mtranspalet">M.Transpalet</span></td><td>Manuel Transpalet Fiyatları 2026</td><td><span class="high">Yüksek</span></td><td>Fiyat</td></tr>
+<tr><td>201</td><td><span class="product-tag tag-mtranspalet">M.Transpalet</span></td><td>En İyi Manuel Transpalet Hangisi?</td><td><span class="mid">Orta</span></td><td>Karar</td></tr>
+<tr><td>202</td><td><span class="product-tag tag-mtranspalet">M.Transpalet</span></td><td>En İyi Manuel Transpalet Markaları 2026</td><td><span class="mid">Orta</span></td><td>Marka</td></tr>
+<tr><td>203</td><td><span class="product-tag tag-mtranspalet">M.Transpalet</span></td><td>Ucuz Manuel Transpalet Nereden Alınır?</td><td><span class="mid">Orta</span></td><td>Bütçe</td></tr>
+<tr><td>204</td><td><span class="product-tag tag-mtranspalet">M.Transpalet</span></td><td>Manuel Transpalet Nasıl Çalışır? Teknik Detaylar</td><td><span class="mid">Orta</span></td><td>Teknik</td></tr>
+<tr><td>205</td><td><span class="product-tag tag-mtranspalet">M.Transpalet</span></td><td>Manuel Transpalet 2.5 Ton Fiyatları</td><td><span class="mid">Orta</span></td><td>Kapasite</td></tr>
+<tr><td>206</td><td><span class="product-tag tag-mtranspalet">M.Transpalet</span></td><td>Manuel Transpalet 2500 KG Fiyatları</td><td><span class="mid">Orta</span></td><td>Kapasite</td></tr>
+<tr><td>207</td><td><span class="product-tag tag-mtranspalet">M.Transpalet</span></td><td>Manuel Transpalet Eğitimi</td><td><span class="mid">Orta</span></td><td>Eğitim</td></tr>
+<tr><td>208</td><td><span class="product-tag tag-mtranspalet">M.Transpalet</span></td><td>Manuel Transpalet Kullanma Talimatı</td><td><span class="mid">Orta</span></td><td>Kullanım</td></tr>
+<tr><td>209</td><td><span class="product-tag tag-mtranspalet">M.Transpalet</span></td><td>Manuel Transpalet Nasıl Kullanılır?</td><td><span class="mid">Orta</span></td><td>Kullanım</td></tr>
+<tr><td>210</td><td><span class="product-tag tag-mtranspalet">M.Transpalet</span></td><td>Manuel Transpalet Tekeri Fiyatları</td><td><span class="mid">Orta</span></td><td>Parça</td></tr>
+<tr><td>211</td><td><span class="product-tag tag-mtranspalet">M.Transpalet</span></td><td>Manuel Transpalet Yedek Parça</td><td><span class="mid">Orta</span></td><td>Parça</td></tr>
+<tr><td>212</td><td><span class="product-tag tag-mtranspalet">M.Transpalet</span></td><td>2. El Manuel Transpalet Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>İkinci El</td></tr>
+<tr><td>213</td><td><span class="product-tag tag-mtranspalet">M.Transpalet</span></td><td>Sahibinden Manuel Transpalet</td><td><span class="mid">Orta</span></td><td>İkinci El</td></tr>
+<tr><td>214</td><td><span class="product-tag tag-mtranspalet">M.Transpalet</span></td><td>Manuel Transpalet Çalışmıyor</td><td><span class="low">Düşük</span></td><td>Arıza</td></tr>
+<tr><td>215</td><td><span class="product-tag tag-mtranspalet">M.Transpalet</span></td><td>Manuel Transpalet: Kullanım Alanları ve Özellikleri</td><td><span class="mid">Orta</span></td><td>Tip</td></tr>
+
+<!-- ==================== İSTİF MAKİNESİ ==================== -->
+<tr><td>216</td><td><span class="product-tag tag-istif">İstif</span></td><td>İstif Makinesi Nedir? Çeşitleri</td><td><span class="mid">Orta</span></td><td>Bilgi</td></tr>
+<tr><td>217</td><td><span class="product-tag tag-istif">İstif</span></td><td>İstif Makinesi Fiyatları 2026: Güncel Liste</td><td><span class="mid">Orta</span></td><td>Fiyat</td></tr>
+<tr><td>218</td><td><span class="product-tag tag-istif">İstif</span></td><td>İstif Makinesi Fiyatları: Manuel vs Elektrikli Maliyet Farkı</td><td><span class="mid">Orta</span></td><td>Karşılaştırma</td></tr>
+<tr><td>219</td><td><span class="product-tag tag-istif">İstif</span></td><td>En İyi İstif Makinesi Hangisi?</td><td><span class="mid">Orta</span></td><td>Karar</td></tr>
+<tr><td>220</td><td><span class="product-tag tag-istif">İstif</span></td><td>En İyi İstif Makinesi Markaları 2026</td><td><span class="mid">Orta</span></td><td>Marka</td></tr>
+<tr><td>221</td><td><span class="product-tag tag-istif">İstif</span></td><td>Ucuz İstif Makinesi Nereden Alınır?</td><td><span class="mid">Orta</span></td><td>Bütçe</td></tr>
+<tr><td>222</td><td><span class="product-tag tag-istif">İstif</span></td><td>İstif Makinesi Ehliyeti</td><td><span class="mid">Orta</span></td><td>Ehliyet</td></tr>
+<tr><td>223</td><td><span class="product-tag tag-istif">İstif</span></td><td>İstif Makinesi Aküsü Fiyatları</td><td><span class="mid">Orta</span></td><td>Parça</td></tr>
+<tr><td>224</td><td><span class="product-tag tag-istif">İstif</span></td><td>İstif Makinesi Kiralama</td><td><span class="mid">Orta</span></td><td>Kiralama</td></tr>
+<tr><td>225</td><td><span class="product-tag tag-istif">İstif</span></td><td>İstif Makinesi Yedek Parça</td><td><span class="mid">Orta</span></td><td>Parça</td></tr>
+<tr><td>226</td><td><span class="product-tag tag-istif">İstif</span></td><td>İstif Makinesi Pompası Tamiri: Fiyat ve Süre</td><td><span class="low">Düşük</span></td><td>Arıza</td></tr>
+<tr><td>227</td><td><span class="product-tag tag-istif">İstif</span></td><td>İstif Makinesi Yüksekliğe Çıkmıyor: Neden?</td><td><span class="mid">Orta</span></td><td>Arıza</td></tr>
+<tr><td>228</td><td><span class="product-tag tag-istif">İstif</span></td><td>2. El İstif Makinesi Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>İkinci El</td></tr>
+<tr><td>229</td><td><span class="product-tag tag-istif">İstif</span></td><td>Sahibinden İstif Makinesi</td><td><span class="mid">Orta</span></td><td>İkinci El</td></tr>
+<tr><td>230</td><td><span class="product-tag tag-istif">İstif</span></td><td>İkinci El İstif Makinesi Kontrolü: Ekspertiz Listesi</td><td><span class="mid">Orta</span></td><td>İkinci El</td></tr>
+<tr><td>231</td><td><span class="product-tag tag-istif">İstif</span></td><td>İstanbul İstif Makinesi Satış</td><td><span class="mid">Orta</span></td><td>Lokasyon</td></tr>
+<tr><td>232</td><td><span class="product-tag tag-istif">İstif</span></td><td>İstif Makinesi Çalışmıyor</td><td><span class="low">Düşük</span></td><td>Arıza</td></tr>
+<tr><td>233</td><td><span class="product-tag tag-istif">İstif</span></td><td>Elektrikli İstif Makinesi Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>Fiyat</td></tr>
+<tr><td>234</td><td><span class="product-tag tag-istif">İstif</span></td><td>Manuel İstif Makinesi Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>Fiyat</td></tr>
+<tr><td>235</td><td><span class="product-tag tag-istif">İstif</span></td><td>Elektrikli İstif Makinesi Nedir? Avantajları</td><td><span class="mid">Orta</span></td><td>Tip</td></tr>
+<tr><td>236</td><td><span class="product-tag tag-istif">İstif</span></td><td>Manuel İstif Makinesi: Kullanım Alanları</td><td><span class="mid">Orta</span></td><td>Tip</td></tr>
+<tr><td>237</td><td><span class="product-tag tag-istif">İstif</span></td><td>Fabrika İçi Taşıma: Forklift vs İstif Makinesi</td><td><span class="low">Düşük</span></td><td>Karşılaştırma</td></tr>
+<tr><td>238</td><td><span class="product-tag tag-istif">İstif</span></td><td>Dar Koridor İstif Makinesi: Özel Çözümler</td><td><span class="low">Düşük</span></td><td>Tip</td></tr>
+
+<!-- ==================== REACH TRUCK ==================== -->
+<tr><td>239</td><td><span class="product-tag tag-reach">Reach</span></td><td>Reach Truck Nedir? Kullanım Alanları</td><td><span class="mid">Orta</span></td><td>Bilgi</td></tr>
+<tr><td>240</td><td><span class="product-tag tag-reach">Reach</span></td><td>Reach Truck Ne Demek?</td><td><span class="mid">Orta</span></td><td>Bilgi</td></tr>
+<tr><td>241</td><td><span class="product-tag tag-reach">Reach</span></td><td>Reach Truck Fiyatları 2026: Güncel Liste</td><td><span class="mid">Orta</span></td><td>Fiyat</td></tr>
+<tr><td>242</td><td><span class="product-tag tag-reach">Reach</span></td><td>En İyi Reach Truck Hangisi?</td><td><span class="low">Düşük</span></td><td>Karar</td></tr>
+<tr><td>243</td><td><span class="product-tag tag-reach">Reach</span></td><td>En İyi Reach Truck Markaları 2026</td><td><span class="low">Düşük</span></td><td>Marka</td></tr>
+<tr><td>244</td><td><span class="product-tag tag-reach">Reach</span></td><td>Ucuz Reach Truck Nereden Alınır?</td><td><span class="low">Düşük</span></td><td>Bütçe</td></tr>
+<tr><td>245</td><td><span class="product-tag tag-reach">Reach</span></td><td>Reach Truck Operatörü Maaşları 2026</td><td><span class="mid">Orta</span></td><td>Kariyer</td></tr>
+<tr><td>246</td><td><span class="product-tag tag-reach">Reach</span></td><td>Reach Truck Operatörü Ehliyeti</td><td><span class="mid">Orta</span></td><td>Ehliyet</td></tr>
+<tr><td>247</td><td><span class="product-tag tag-reach">Reach</span></td><td>Reach Truck Ehliyeti Nasıl Alınır?</td><td><span class="mid">Orta</span></td><td>Ehliyet</td></tr>
+<tr><td>248</td><td><span class="product-tag tag-reach">Reach</span></td><td>Reach Truck Kullanımı: Dar Koridor Teknikleri</td><td><span class="mid">Orta</span></td><td>Kullanım</td></tr>
+<tr><td>249</td><td><span class="product-tag tag-reach">Reach</span></td><td>Jungheinrich Reach Truck Özellikleri ve Fiyatı</td><td><span class="low">Düşük</span></td><td>Marka</td></tr>
+<tr><td>250</td><td><span class="product-tag tag-reach">Reach</span></td><td>Linde Reach Truck Fiyatları 2026</td><td><span class="low">Düşük</span></td><td>Marka</td></tr>
+<tr><td>251</td><td><span class="product-tag tag-reach">Reach</span></td><td>Toyota Reach Truck Fiyatları 2026</td><td><span class="low">Düşük</span></td><td>Marka</td></tr>
+<tr><td>252</td><td><span class="product-tag tag-reach">Reach</span></td><td>2. El Reach Truck Fiyatları 2026</td><td><span class="low">Düşük</span></td><td>İkinci El</td></tr>
+<tr><td>253</td><td><span class="product-tag tag-reach">Reach</span></td><td>Sahibinden Reach Truck</td><td><span class="low">Düşük</span></td><td>İkinci El</td></tr>
+<tr><td>254</td><td><span class="product-tag tag-reach">Reach</span></td><td>Kullanılmış Reach Truck: Motor Saati Kaç Olmalı?</td><td><span class="low">Düşük</span></td><td>İkinci El</td></tr>
+<tr><td>255</td><td><span class="product-tag tag-reach">Reach</span></td><td>İstanbul Reach Truck Satış</td><td><span class="low">Düşük</span></td><td>Lokasyon</td></tr>
+<tr><td>256</td><td><span class="product-tag tag-reach">Reach</span></td><td>Reach Truck Çalışmıyor</td><td><span class="low">Düşük</span></td><td>Arıza</td></tr>
+<tr><td>257</td><td><span class="product-tag tag-reach">Reach</span></td><td>Dar Koridor Depo Çözümü: Reach Truck Kullanımı</td><td><span class="low">Düşük</span></td><td>Kullanım Alanı</td></tr>
+<tr><td>258</td><td><span class="product-tag tag-reach">Reach</span></td><td>Yüksek Raflı Depo: Hangi Ekipman Gerekir?</td><td><span class="low">Düşük</span></td><td>Kullanım Alanı</td></tr>
+
+<!-- ==================== ORDER PİCKER ==================== -->
+<tr><td>259</td><td><span class="product-tag tag-order">Order P.</span></td><td>Order Picker Nedir? Sipariş Toplama Sistemleri</td><td><span class="low">Düşük</span></td><td>Bilgi</td></tr>
+<tr><td>260</td><td><span class="product-tag tag-order">Order P.</span></td><td>Order Picker Fiyatları 2026: Güncel Liste</td><td><span class="low">Düşük</span></td><td>Fiyat</td></tr>
+<tr><td>261</td><td><span class="product-tag tag-order">Order P.</span></td><td>En İyi Order Picker Hangisi?</td><td><span class="low">Düşük</span></td><td>Karar</td></tr>
+<tr><td>262</td><td><span class="product-tag tag-order">Order P.</span></td><td>En İyi Order Picker Markaları 2026</td><td><span class="low">Düşük</span></td><td>Marka</td></tr>
+<tr><td>263</td><td><span class="product-tag tag-order">Order P.</span></td><td>Order Picker Güvenlik İpuçları: Yüksekte Çalışma</td><td><span class="mid">Orta</span></td><td>Güvenlik</td></tr>
+<tr><td>264</td><td><span class="product-tag tag-order">Order P.</span></td><td>Crown Order Picker Fiyatları</td><td><span class="low">Düşük</span></td><td>Marka</td></tr>
+<tr><td>265</td><td><span class="product-tag tag-order">Order P.</span></td><td>Jungheinrich Order Picker Fiyatları</td><td><span class="low">Düşük</span></td><td>Marka</td></tr>
+<tr><td>266</td><td><span class="product-tag tag-order">Order P.</span></td><td>2. El Order Picker Fiyatları 2026</td><td><span class="low">Düşük</span></td><td>İkinci El</td></tr>
+<tr><td>267</td><td><span class="product-tag tag-order">Order P.</span></td><td>Sahibinden Order Picker</td><td><span class="low">Düşük</span></td><td>İkinci El</td></tr>
+<tr><td>268</td><td><span class="product-tag tag-order">Order P.</span></td><td>E-Ticaret Deposu İçin Order Picker Seçimi</td><td><span class="low">Düşük</span></td><td>Kullanım Alanı</td></tr>
+<tr><td>269</td><td><span class="product-tag tag-order">Order P.</span></td><td>Order Picker Çalışmıyor</td><td><span class="low">Düşük</span></td><td>Arıza</td></tr>
+
+<!-- ==================== MANLİFT ==================== -->
+<tr><td>270</td><td><span class="product-tag tag-manlift">Manlift</span></td><td>Manlift Nedir? Kullanım Alanları</td><td><span class="mid">Orta</span></td><td>Bilgi</td></tr>
+<tr><td>271</td><td><span class="product-tag tag-manlift">Manlift</span></td><td>Manlift Ne Demek?</td><td><span class="mid">Orta</span></td><td>Bilgi</td></tr>
+<tr><td>272</td><td><span class="product-tag tag-manlift">Manlift</span></td><td>Manlift Fiyatları 2026: Güncel Liste</td><td><span class="mid">Orta</span></td><td>Fiyat</td></tr>
+<tr><td>273</td><td><span class="product-tag tag-manlift">Manlift</span></td><td>En İyi Manlift Hangisi?</td><td><span class="low">Düşük</span></td><td>Karar</td></tr>
+<tr><td>274</td><td><span class="product-tag tag-manlift">Manlift</span></td><td>En İyi Manlift Markaları 2026</td><td><span class="low">Düşük</span></td><td>Marka</td></tr>
+<tr><td>275</td><td><span class="product-tag tag-manlift">Manlift</span></td><td>Manlift Ehliyeti Nasıl Alınır?</td><td><span class="mid">Orta</span></td><td>Ehliyet</td></tr>
+<tr><td>276</td><td><span class="product-tag tag-manlift">Manlift</span></td><td>Manlift Operatörlük Belgesi</td><td><span class="mid">Orta</span></td><td>Ehliyet</td></tr>
+<tr><td>277</td><td><span class="product-tag tag-manlift">Manlift</span></td><td>Manlift Nasıl Çalışır?</td><td><span class="mid">Orta</span></td><td>Kullanım</td></tr>
+<tr><td>278</td><td><span class="product-tag tag-manlift">Manlift</span></td><td>Manlift Kiralama Fiyatları 2026</td><td><span class="mid">Orta</span></td><td>Kiralama</td></tr>
+<tr><td>279</td><td><span class="product-tag tag-manlift">Manlift</span></td><td>Manlift 68 Hatası: Çözümü</td><td><span class="low">Düşük</span></td><td>Arıza</td></tr>
+<tr><td>280</td><td><span class="product-tag tag-manlift">Manlift</span></td><td>2. El Manlift Fiyatları 2026</td><td><span class="low">Düşük</span></td><td>İkinci El</td></tr>
+<tr><td>281</td><td><span class="product-tag tag-manlift">Manlift</span></td><td>Sahibinden Manlift</td><td><span class="low">Düşük</span></td><td>İkinci El</td></tr>
+<tr><td>282</td><td><span class="product-tag tag-manlift">Manlift</span></td><td>İstanbul Manlift Satış</td><td><span class="low">Düşük</span></td><td>Lokasyon</td></tr>
+<tr><td>283</td><td><span class="product-tag tag-manlift">Manlift</span></td><td>Denizli Manlift Kiralama</td><td><span class="low">Düşük</span></td><td>Lokasyon</td></tr>
+<tr><td>284</td><td><span class="product-tag tag-manlift">Manlift</span></td><td>Manlift Çalışmıyor</td><td><span class="low">Düşük</span></td><td>Arıza</td></tr>
+
+<!-- ==================== GENEL KARŞILAŞTIRMA ==================== -->
+<tr><td>285</td><td><span class="product-tag tag-genel">Genel</span></td><td>Forklift mi Transpalet mi? Hangisi Sizin İçin İdeal?</td><td><span class="mid">Orta</span></td><td>Karşılaştırma</td></tr>
+<tr><td>286</td><td><span class="product-tag tag-genel">Genel</span></td><td>İstif Makinesi mi Reach Truck mı? Farkları Nelerdir?</td><td><span class="low">Düşük</span></td><td>Karşılaştırma</td></tr>
+<tr><td>287</td><td><span class="product-tag tag-genel">Genel</span></td><td>Reach Truck vs Order Picker: Hangisi Daha Verimli?</td><td><span class="low">Düşük</span></td><td>Karşılaştırma</td></tr>
+<tr><td>288</td><td><span class="product-tag tag-genel">Genel</span></td><td>Elektrikli mi Dizel mi? Forklift Yakıt Karşılaştırması</td><td><span class="mid">Orta</span></td><td>Karşılaştırma</td></tr>
+<tr><td>289</td><td><span class="product-tag tag-genel">Genel</span></td><td>Manuel mi Elektrikli mi? Transpalet Seçimi</td><td><span class="mid">Orta</span></td><td>Karşılaştırma</td></tr>
+<tr><td>290</td><td><span class="product-tag tag-genel">Genel</span></td><td>Depo Ekipmanları: Forklift, İstif, Reach Truck, Order Picker</td><td><span class="mid">Orta</span></td><td>Genel</td></tr>
+<tr><td>291</td><td><span class="product-tag tag-genel">Genel</span></td><td>Endüstriyel Ekipman Seçim Rehberi 2026</td><td><span class="mid">Orta</span></td><td>Genel</td></tr>
+<tr><td>292</td><td><span class="product-tag tag-genel">Genel</span></td><td>Depo Optimizasyonu İçin Doğru Ekipman Seçimi</td><td><span class="low">Düşük</span></td><td>Teknik</td></tr>
+<tr><td>293</td><td><span class="product-tag tag-genel">Genel</span></td><td>Lojistik Ekipmanları: Tüm Kategoriler</td><td><span class="low">Düşük</span></td><td>Genel</td></tr>
+<tr><td>294</td><td><span class="product-tag tag-genel">Genel</span></td><td>Malzeme Taşıma Ekipmanları: Karşılaştırmalı Rehber</td><td><span class="low">Düşük</span></td><td>Genel</td></tr>
+<tr><td>295</td><td><span class="product-tag tag-genel">Genel</span></td><td>2. El Forklift Alırken Dikkat Edilmesi Gerekenler</td><td><span class="high">Yüksek</span></td><td>İkinci El</td></tr>
+            </tbody>
+        </table>
+        <footer>🤖 Claude AI • 2025-12-01 • <strong>v4 = v1+v2+v3 Birleşik</strong> • 295 Blog Başlığı • 2026 Hedefli</footer>
+    </div>
+</body>
+</html>

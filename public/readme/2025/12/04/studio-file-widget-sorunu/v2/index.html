@@ -1,1 +1,544 @@
-v2/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio FILE Widget Sorunu - Dinamik vs Statik</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            margin-top: 30px;
+            color: #93c5fd;
+        }
+
+        .flow-diagram {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+
+        .flow-step {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .flow-step h4 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .flow-arrow {
+            text-align: center;
+            color: #60a5fa;
+            font-size: 2rem;
+            margin: 10px 0;
+        }
+
+        .code-block {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            color: #fbbf24;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-item {
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .dynamic {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid #10b981;
+        }
+
+        .static {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid #3b82f6;
+        }
+
+        .dynamic h5 {
+            color: #10b981;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .static h5 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .problem-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .problem-box h4 {
+            color: #f87171;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .solution-box {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #10b981;
+        }
+
+        .solution-box h4 {
+            color: #10b981;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #cbd5e1;
+        }
+
+        .highlight {
+            background: rgba(251, 191, 36, 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid #f59e0b;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .warning-box strong {
+            color: #fbbf24;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Studio FILE Widget Sorunu v2</h1>
+            <div class="meta">
+                📅 Tarih: 2025-12-04 |
+                🎯 Konu: Dinamik vs Statik - Studio'nun Gerçek Mantığı |
+                ⚡ KRİTİK BİLGİ
+            </div>
+        </header>
+
+        <!-- STUDIO ÇALIŞMA MANTIĞI -->
+        <section>
+            <h2>⚡ Studio Nasıl Çalışıyor? (KRİTİK!)</h2>
+
+            <div class="warning-box">
+                <strong>EN ÖNEMLİ BİLGİ:</strong> Studio, widget'ları AJAX/Livewire ile dinamik yükler, ama kaydet deyince statik HTML'e çevirir!
+            </div>
+
+            <div class="flow-diagram">
+                <div class="flow-step">
+                    <h4>1️⃣ Studio Editörde (Dinamik)</h4>
+                    <ul>
+                        <li>Widget AJAX/Livewire ile yükleniyor</li>
+                        <li>Gerçek veriler gösteriliyor</li>
+                        <li>Kullanıcı düzenliyor, değiştiriyor</li>
+                        <li>Her değişiklikte widget yeniden render ediliyor</li>
+                    </ul>
+                    <div class="code-block">
+<code>&lt;!-- Studio'da dinamik widget --&gt;
+&lt;div class="widget-embed" data-tenant-widget-id="5"&gt;
+    &lt;!-- AJAX ile yükleniyor --&gt;
+    &lt;script&gt;
+        fetch('/admin/widgetmanagement/preview/embed/5')
+            .then(html => container.innerHTML = html)
+    &lt;/script&gt;
+&lt;/div&gt;</code>
+                    </div>
+                </div>
+
+                <div class="flow-arrow">⬇️ KAYDET BUTONU ⬇️</div>
+
+                <div class="flow-step">
+                    <h4>2️⃣ Kaydet (Dinamik → Statik Dönüşüm)</h4>
+                    <ul>
+                        <li>Studio, sayfanın o anki HALİNİ alıyor</li>
+                        <li>Tüm widget'lar render edilmiş HTML olarak kaydediliyor</li>
+                        <li>AJAX/Livewire kodları kaldırılıyor</li>
+                        <li>Sadece statik HTML database'e yazılıyor</li>
+                    </ul>
+                    <div class="code-block">
+<code>&lt;!-- Kaydedilen statik HTML --&gt;
+&lt;section class="hero"&gt;
+    &lt;h1&gt;Endüstriyel Ekipman Çözümleri&lt;/h1&gt;
+    &lt;p&gt;Forklift, transpalet ve endüstriyel ekipman...&lt;/p&gt;
+    &lt;a href="/urunler"&gt;Hemen Keşfet&lt;/a&gt;
+&lt;/section&gt;</code>
+                    </div>
+                </div>
+
+                <div class="flow-arrow">⬇️ SİTE'DE GÖSTER ⬇️</div>
+
+                <div class="flow-step">
+                    <h4>3️⃣ Site'de (Statik HTML)</h4>
+                    <ul>
+                        <li>Database'den statik HTML çekiliyor</li>
+                        <li>Direkt ekrana basılıyor</li>
+                        <li>Artık AJAX/Livewire yok</li>
+                        <li>Sabit, değişmez HTML</li>
+                    </ul>
+                    <div class="code-block">
+<code>&lt;!-- Site'de gösterilen --&gt;
+{{ $page->content }}  &lt;!-- Statik HTML database'den --&gt;</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SORUN ANALİZİ -->
+        <section>
+            <h2>🔥 FILE Widget İçin Sorun Ne?</h2>
+
+            <div class="comparison">
+                <div class="comparison-item dynamic">
+                    <h5>✅ MODULE Widget (Çalışıyor)</h5>
+                    <ul>
+                        <li>Studio'da: AJAX ile yükleniyor</li>
+                        <li>Backend'den gerçek veri çekiyor</li>
+                        <li>Kaydet: Render edilmiş HTML kaydediliyor</li>
+                        <li>Site'de: Statik HTML gösteriliyor</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-item static">
+                    <h5>❌ FILE Widget (Sorunlu)</h5>
+                    <ul>
+                        <li>Studio'da: Boş settings ile yükleniyor</li>
+                        <li>Widget içeriği boş görünüyor</li>
+                        <li>Kaydet: BOŞ HTML kaydediliyor</li>
+                        <li>Site'de: BOŞ HTML gösteriliyor</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="problem-box">
+                <h4>Ana Sorun</h4>
+                <p>FILE widget Studio'da yüklenirken <code>['settings' => []]</code> boş array ile render ediliyor.</p>
+                <p style="margin-top: 10px;">Settings.json dosyası okunmuyor, default değerler yüklenmiyor.</p>
+                <p style="margin-top: 10px;">Sonuç: Widget boş görünüyor → Kaydet deyince boş HTML kaydediliyor → Site'de de boş gösteriliyor!</p>
+            </div>
+        </section>
+
+        <!-- HERO ÖRNEĞİ -->
+        <section>
+            <h2>💡 Hero Widget Örneği - Adım Adım</h2>
+
+            <h3>1️⃣ Studio'da Hero Widget Ekleme</h3>
+            <div class="code-block">
+<code>&lt;!-- Kullanıcı Studio'dan Hero widget'ı drag-drop ediyor --&gt;
+
+// BlockService.php
+case 'file':
+    $viewPath = 'widgetmanagement::blocks.' . $widget->file_path;
+    // ❌ SORUN: Boş settings!
+    $content = View::make($viewPath, ['settings' => []])->render();
+
+// Hero view.blade.php
+&lt;h1&gt;
+    @if(!empty($settings['title_line1']))  &lt;!-- Boş! --&gt;
+        &lt;span&gt;{{ $settings['title_line1'] }}&lt;/span&gt;  &lt;!-- Gösterilmiyor --&gt;
+    @endif
+&lt;/h1&gt;
+
+// Sonuç: Boş bir hero bloku gösteriliyor!</code>
+            </div>
+
+            <h3>2️⃣ Kullanıcı Kaydet Deyince</h3>
+            <div class="code-block">
+<code>// Studio, sayfanın HALİNİ alıyor:
+&lt;section class="hero"&gt;
+    &lt;!-- Boş! Çünkü settings boştu --&gt;
+&lt;/section&gt;
+
+// Bu BOŞ HTML database'e kaydediliyor</code>
+            </div>
+
+            <h3>3️⃣ Site'de Gösterim</h3>
+            <div class="code-block">
+<code>// Database'den çekilen:
+&lt;section class="hero"&gt;
+    &lt;!-- Boş! --&gt;
+&lt;/section&gt;
+
+// Kullanıcı boş hero görüyor!</code>
+            </div>
+        </section>
+
+        <!-- ÇÖZÜM -->
+        <section>
+            <h2>✅ Çözüm: FILE Widget'ı Nasıl Düzeltmeliyiz?</h2>
+
+            <div class="solution-box">
+                <h4>Çözüm 1: BlockService'de Settings Yükle</h4>
+                <p>FILE widget render edilirken settings.json'u oku ve default değerleri yükle</p>
+                <div class="code-block">
+<code>case 'file':
+    if (!empty($widget->file_path)) {
+        $viewPath = 'widgetmanagement::blocks.' . $widget->file_path;
+
+        // ✅ Settings.json dosyasını oku
+        $settingsPath = base_path('Modules/WidgetManagement/resources/views/blocks/'
+            . dirname($widget->file_path) . '/settings.json');
+
+        $settings = [];
+        if (file_exists($settingsPath)) {
+            $settingsSchema = json_decode(file_get_contents($settingsPath), true);
+
+            // Default değerleri al
+            foreach ($settingsSchema as $key => $field) {
+                $settings[$key] = $field['default'] ?? '';
+            }
+        }
+
+        // ✅ Gerçek settings ile render et
+        if (View::exists($viewPath)) {
+            $content = View::make($viewPath, ['settings' => $settings])->render();
+        }
+    }
+    break;</code>
+                </div>
+                <p style="margin-top: 15px;"><strong>Sonuç:</strong> Studio'da hero widget default değerlerle gösterilir!</p>
+            </div>
+
+            <div class="solution-box">
+                <h4>Çözüm 2: Studio'da Settings Düzenleme</h4>
+                <p>Kullanıcı Studio'da widget'ı seçince → Settings editor göster</p>
+                <ul>
+                    <li>GrapesJS trait panel kullan</li>
+                    <li>Settings.json field'larını dinamik form olarak göster</li>
+                    <li>Kullanıcı değiştirince widget'ı yeniden render et</li>
+                    <li>Kaydet deyince güncel değerlerle HTML oluştur</li>
+                </ul>
+                <div class="code-block">
+<code>// GrapesJS Component tanımında
+editor.DomComponents.addType('file-widget', {
+    model: {
+        defaults: {
+            traits: [
+                {
+                    type: 'text',
+                    label: 'Ana Başlık (1. Satır)',
+                    name: 'title_line1',
+                    changeProp: 1
+                },
+                {
+                    type: 'text',
+                    label: 'Ana Başlık (2. Satır)',
+                    name: 'title_line2',
+                    changeProp: 1
+                },
+                // ... diğer settings.json field'ları
+            ]
+        }
+    }
+});</code>
+                </div>
+                <p style="margin-top: 15px;"><strong>Sonuç:</strong> Kullanıcı Studio'da settings'leri düzenleyebilir!</p>
+            </div>
+
+            <div class="solution-box">
+                <h4>Çözüm 3: Kaydet Sırasında Güncel Değerlerle Render</h4>
+                <p>Save butonu tıklanınca:</p>
+                <ul>
+                    <li>Widget'ın trait değerlerini al</li>
+                    <li>Bu değerlerle widget'ı yeniden render et</li>
+                    <li>Render edilmiş HTML'i database'e kaydet</li>
+                </ul>
+                <div class="code-block">
+<code>// Studio save sırasında
+const widgets = editor.getComponents().find('.file-widget');
+widgets.forEach(widget => {
+    const traits = widget.getAttributes();
+
+    // Widget'ı traits ile yeniden render et
+    fetch('/admin/studio/api/render-widget', {
+        method: 'POST',
+        body: JSON.stringify({
+            widget_id: widget.get('widget-id'),
+            settings: traits
+        })
+    })
+    .then(html => {
+        // Render edilmiş HTML'i widget'a yerleştir
+        widget.components(html);
+    });
+});</code>
+                </div>
+                <p style="margin-top: 15px;"><strong>Sonuç:</strong> Güncel değerlerle render edilmiş HTML kaydedilir!</p>
+            </div>
+        </section>
+
+        <!-- AKIŞ ŞEMASI -->
+        <section>
+            <h2>🔄 Doğru Akış Nasıl Olmalı?</h2>
+
+            <div class="flow-diagram">
+                <div class="flow-step">
+                    <h4>1️⃣ Studio'da Widget Yükleme</h4>
+                    <ul>
+                        <li>FILE widget drag-drop edilince</li>
+                        <li>Settings.json dosyası okunur</li>
+                        <li>Default değerler yüklenir</li>
+                        <li>Widget düzgün görünür</li>
+                    </ul>
+                </div>
+
+                <div class="flow-arrow">⬇️</div>
+
+                <div class="flow-step">
+                    <h4>2️⃣ Kullanıcı Settings Düzenler</h4>
+                    <ul>
+                        <li>Widget seçilince trait panel açılır</li>
+                        <li>Settings field'ları form olarak gösterilir</li>
+                        <li>Kullanıcı değerleri değiştirir</li>
+                        <li>Widget anında güncellenir</li>
+                    </ul>
+                </div>
+
+                <div class="flow-arrow">⬇️</div>
+
+                <div class="flow-step">
+                    <h4>3️⃣ Kaydet</h4>
+                    <ul>
+                        <li>Widget'ların güncel trait değerleri alınır</li>
+                        <li>Her widget bu değerlerle render edilir</li>
+                        <li>Render edilmiş HTML database'e kaydedilir</li>
+                    </ul>
+                </div>
+
+                <div class="flow-arrow">⬇️</div>
+
+                <div class="flow-step">
+                    <h4>4️⃣ Site'de Gösterim</h4>
+                    <ul>
+                        <li>Database'den statik HTML çekilir</li>
+                        <li>Güncel değerlerle render edilmiş içerik gösterilir</li>
+                        <li>Kullanıcı doğru içeriği görür</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SONUÇ -->
+        <section>
+            <h2>🎯 Özet</h2>
+
+            <div class="warning-box">
+                <strong>Kritik Bilgi:</strong> Studio, widget'ları AJAX/Livewire ile dinamik yükler ama kaydet deyince statik HTML'e çevirir. FILE widget'lar için settings.json mutlaka okunmalı ve default değerlerle render edilmeli!
+            </div>
+
+            <h3>Yapılacaklar:</h3>
+            <div class="solution-box">
+                <ul>
+                    <li><strong>1. BlockService → Settings Yükleme:</strong> FILE widget render edilirken settings.json oku</li>
+                    <li><strong>2. Studio → Settings Editor:</strong> GrapesJS trait panel ile settings düzenleme ekle</li>
+                    <li><strong>3. Save → Güncel Render:</strong> Kaydet sırasında widget'ı güncel değerlerle render et</li>
+                    <li><strong>4. Boş Widget'ları Tamamla:</strong> Hero-1, simple, contact-form için settings.json oluştur</li>
+                </ul>
+            </div>
+
+            <p style="margin-top: 20px; color: #cbd5e1;">
+                Bu şekilde hem Studio'da düzgün görünür, hem kullanıcı düzenleyebilir, hem de site'de doğru içerik gösterilir.
+            </p>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | 2025-12-04 | v2 - Dinamik vs Statik
+        </footer>
+    </div>
+</body>
+</html>

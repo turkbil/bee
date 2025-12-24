@@ -1,1 +1,441 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopProduct Model - Before/After Comparison</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .comparison-card.before {
+            border: 3px solid #ef4444;
+        }
+
+        .comparison-card.after {
+            border: 3px solid #10b981;
+        }
+
+        .comparison-card h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .comparison-card.before h2 {
+            color: #ef4444;
+        }
+
+        .comparison-card.after h2 {
+            color: #10b981;
+        }
+
+        .code-block {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+
+        .line-added {
+            background: rgba(16, 185, 129, 0.2);
+            border-left: 3px solid #10b981;
+            padding-left: 10px;
+            margin: 2px 0;
+        }
+
+        .line-removed {
+            background: rgba(239, 68, 68, 0.2);
+            border-left: 3px solid #ef4444;
+            padding-left: 10px;
+            margin: 2px 0;
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .line-unchanged {
+            color: #94a3b8;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: #60a5fa;
+            margin: 40px 0 20px;
+        }
+
+        .highlight-box {
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid #10b981;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 12px;
+        }
+
+        .highlight-box h3 {
+            color: #10b981;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .alert-box {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 12px;
+        }
+
+        .alert-box h3 {
+            color: #ef4444;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        ul {
+            margin-left: 25px;
+            margin-top: 10px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        .badge-add {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge-remove {
+            background: #ef4444;
+            color: white;
+        }
+
+        .badge-keep {
+            background: #6b7280;
+            color: white;
+        }
+
+        @media (max-width: 1024px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 ShopProduct Model - Değişiklikler</h1>
+            <p style="color: #94a3b8; font-size: 0.95rem;">Before/After Comparison - Modules/Shop/app/Models/ShopProduct.php</p>
+        </header>
+
+        <!-- ÖZET -->
+        <div class="highlight-box">
+            <h3>✅ Yapılacak Değişiklikler Özeti</h3>
+            <ul>
+                <li><span class="badge badge-add">EKLE</span> <code>price_without_tax</code> → fillable array'e</li>
+                <li><span class="badge badge-add">EKLE</span> <code>price_without_tax</code> → casts array'e (decimal:2)</li>
+                <li><span class="badge badge-add">EKLE</span> <code>getPriceWithTaxAttribute()</code> → Yeni accessor metod</li>
+                <li><span class="badge badge-add">EKLE</span> <code>getTaxAmountAttribute()</code> → Yeni accessor metod</li>
+                <li><span class="badge badge-keep">TUT</span> Tüm mevcut alanlar ve metodlar korunacak</li>
+            </ul>
+        </div>
+
+        <div class="alert-box">
+            <h3>❌ HİÇBİR ŞEY SİLİNMEYECEK!</h3>
+            <p>Mevcut <code>base_price</code>, <code>tax_rate</code>, accessor'lar aynen kalacak.</p>
+            <p>Sadece YENİ alanlar ve metodlar EKLENİYOR.</p>
+        </div>
+
+        <!-- 1. FILLABLE ARRAY -->
+        <h2 class="section-title">1️⃣ Fillable Array - Tek Satır Ekleme</h2>
+
+        <div class="comparison-grid">
+            <div class="comparison-card before">
+                <h2>❌ ŞİMDİ (Line 47-52)</h2>
+                <div class="code-block">
+<span class="line-unchanged">    'price_display_mode',</span>
+<span class="line-unchanged">    'base_price',</span>
+<span class="line-unchanged">    'tax_rate',</span>
+<span class="line-unchanged">    'compare_at_price',</span>
+<span class="line-unchanged">    'cost_price',</span>
+                </div>
+            </div>
+
+            <div class="comparison-card after">
+                <h2>✅ SONRA (Line 47-53)</h2>
+                <div class="code-block">
+<span class="line-unchanged">    'price_display_mode',</span>
+<span class="line-unchanged">    'base_price',</span>
+<span class="line-added">    'price_without_tax',  // ← YENİ!</span>
+<span class="line-unchanged">    'tax_rate',</span>
+<span class="line-unchanged">    'compare_at_price',</span>
+<span class="line-unchanged">    'cost_price',</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <h3>📍 Neden Eklenecek?</h3>
+            <p>Database'de <code>price_without_tax</code> alanı olacak. Model üzerinden set edilebilmesi için fillable'da olmalı.</p>
+        </div>
+
+        <!-- 2. CASTS ARRAY -->
+        <h2 class="section-title">2️⃣ Casts Array - Tek Satır Ekleme</h2>
+
+        <div class="comparison-grid">
+            <div class="comparison-card before">
+                <h2>❌ ŞİMDİ (Line 105-108)</h2>
+                <div class="code-block">
+<span class="line-unchanged">    'base_price' => 'decimal:2',</span>
+<span class="line-unchanged">    'tax_rate' => 'decimal:2',</span>
+<span class="line-unchanged">    'compare_at_price' => 'decimal:2',</span>
+<span class="line-unchanged">    'cost_price' => 'decimal:2',</span>
+                </div>
+            </div>
+
+            <div class="comparison-card after">
+                <h2>✅ SONRA (Line 105-109)</h2>
+                <div class="code-block">
+<span class="line-unchanged">    'base_price' => 'decimal:2',</span>
+<span class="line-added">    'price_without_tax' => 'decimal:2',  // ← YENİ!</span>
+<span class="line-unchanged">    'tax_rate' => 'decimal:2',</span>
+<span class="line-unchanged">    'compare_at_price' => 'decimal:2',</span>
+<span class="line-unchanged">    'cost_price' => 'decimal:2',</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <h3>📍 Neden Eklenecek?</h3>
+            <p>Database'den gelen değer string, Laravel otomatik float'a çevirecek (2 decimal basamak).</p>
+        </div>
+
+        <!-- 3. ACCESSOR METODLAR -->
+        <h2 class="section-title">3️⃣ Accessor Metodları - İki Yeni Metod Ekle</h2>
+
+        <div class="comparison-grid">
+            <div class="comparison-card before">
+                <h2>❌ ŞİMDİ (Line 1321-1324)</h2>
+                <div class="code-block">
+<span class="line-unchanged">public function getFinalPriceAttribute(): float</span>
+<span class="line-unchanged">{</span>
+<span class="line-unchanged">    return (float) ($this->base_price ?? 0.0);</span>
+<span class="line-unchanged">}</span>
+<span class="line-unchanged"></span>
+<span class="line-unchanged">protected static function newFactory()</span>
+                </div>
+                <p style="margin-top: 15px; color: #94a3b8;">Mevcut accessor'lar aynen kalacak!</p>
+            </div>
+
+            <div class="comparison-card after">
+                <h2>✅ SONRA (Line 1321-1350)</h2>
+                <div class="code-block">
+<span class="line-unchanged">public function getFinalPriceAttribute(): float</span>
+<span class="line-unchanged">{</span>
+<span class="line-unchanged">    return (float) ($this->base_price ?? 0.0);</span>
+<span class="line-unchanged">}</span>
+<span class="line-unchanged"></span>
+<span class="line-added">/**</span>
+<span class="line-added"> * KDV dahil fiyat (Runtime calculation)</span>
+<span class="line-added"> */</span>
+<span class="line-added">public function getPriceWithTaxAttribute(): float</span>
+<span class="line-added">{</span>
+<span class="line-added">    if (!$this->price_without_tax) {</span>
+<span class="line-added">        return 0.0;</span>
+<span class="line-added">    }</span>
+<span class="line-added">    $taxRate = $this->tax_rate ?? 20.0;</span>
+<span class="line-added">    return (float) ($this->price_without_tax * (1 + $taxRate / 100));</span>
+<span class="line-added">}</span>
+<span class="line-added"></span>
+<span class="line-added">/**</span>
+<span class="line-added"> * KDV tutarı hesaplama</span>
+<span class="line-added"> */</span>
+<span class="line-added">public function getTaxAmountAttribute(): float</span>
+<span class="line-added">{</span>
+<span class="line-added">    return $this->price_with_tax - ($this->price_without_tax ?? 0.0);</span>
+<span class="line-added">}</span>
+<span class="line-added"></span>
+<span class="line-unchanged">protected static function newFactory()</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <h3>📍 Accessor'lar Ne İşe Yarar?</h3>
+            <p><strong>getPriceWithTaxAttribute():</strong></p>
+            <ul>
+                <li>Database'de olmayan bir alan gibi çalışır</li>
+                <li><code>$product->price_with_tax</code> dediğinde runtime'da hesaplanır</li>
+                <li>Formül: <code>price_without_tax × (1 + tax_rate / 100)</code></li>
+            </ul>
+            <p style="margin-top: 15px;"><strong>getTaxAmountAttribute():</strong></p>
+            <ul>
+                <li><code>$product->tax_amount</code> dediğinde KDV tutarını döner</li>
+                <li>Formül: <code>price_with_tax - price_without_tax</code></li>
+            </ul>
+        </div>
+
+        <!-- KULLANIM ÖRNEĞİ -->
+        <h2 class="section-title">4️⃣ Kullanım Örneği</h2>
+
+        <div class="comparison-grid">
+            <div class="comparison-card before">
+                <h2>❌ ŞİMDİ</h2>
+                <div class="code-block">
+<span class="line-unchanged">$product = ShopProduct::find(1);</span>
+<span class="line-unchanged"></span>
+<span class="line-unchanged">// Sadece base_price var</span>
+<span class="line-unchanged">echo $product->base_price;  // 1000.00</span>
+<span class="line-unchanged">echo $product->tax_rate;    // 20.00</span>
+<span class="line-unchanged"></span>
+<span class="line-unchanged">// KDV dahil fiyat YOK!</span>
+<span class="line-unchanged">// Manuel hesaplaman gerekir:</span>
+<span class="line-unchanged">$withTax = $product->base_price * 1.20;</span>
+                </div>
+            </div>
+
+            <div class="comparison-card after">
+                <h2>✅ SONRA</h2>
+                <div class="code-block">
+<span class="line-unchanged">$product = ShopProduct::find(1);</span>
+<span class="line-unchanged"></span>
+<span class="line-unchanged">// Database'den gelir:</span>
+<span class="line-unchanged">echo $product->price_without_tax;  // 1000.00</span>
+<span class="line-unchanged">echo $product->tax_rate;           // 20.00</span>
+<span class="line-unchanged"></span>
+<span class="line-added">// Accessor'dan gelir (hesaplanır):</span>
+<span class="line-added">echo $product->price_with_tax;     // 1200.00</span>
+<span class="line-added">echo $product->tax_amount;         // 200.00</span>
+<span class="line-added"></span>
+<span class="line-added">// Blade'de:</span>
+<span class="line-added">{{ number_format($product->price_with_tax, 2) }} ₺</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- NE KORUNACAK? -->
+        <h2 class="section-title">5️⃣ Korunacak Alanlar ve Metodlar</h2>
+
+        <div class="alert-box">
+            <h3>🛡️ BUNLAR HİÇ DEĞİŞMEYECEK!</h3>
+            <ul>
+                <li><code>base_price</code> → Fillable ve casts'ta kalacak</li>
+                <li><code>tax_rate</code> → Fillable ve casts'ta kalacak</li>
+                <li><code>compare_at_price</code> → Aynen kalacak</li>
+                <li><code>cost_price</code> → Aynen kalacak</li>
+                <li><code>getDiscountPercentageAttribute()</code> → Aynen kalacak</li>
+                <li><code>getHasDiscountAttribute()</code> → Aynen kalacak</li>
+                <li><code>getFinalPriceAttribute()</code> → Aynen kalacak</li>
+                <li>TÜM DİĞER ALANLAR VE METODLAR → Aynen kalacak</li>
+            </ul>
+        </div>
+
+        <!-- ÖZET TABLO -->
+        <h2 class="section-title">6️⃣ Değişiklik Özeti</h2>
+
+        <table style="width: 100%; background: rgba(30, 41, 59, 0.5); border-radius: 12px; overflow: hidden; margin: 25px 0;">
+            <thead>
+                <tr style="background: rgba(59, 130, 246, 0.2);">
+                    <th style="padding: 15px; text-align: left; color: #60a5fa;">Değişiklik</th>
+                    <th style="padding: 15px; text-align: left; color: #60a5fa;">Nerede</th>
+                    <th style="padding: 15px; text-align: left; color: #60a5fa;">Ne Yapılacak</th>
+                    <th style="padding: 15px; text-align: center; color: #60a5fa;">Tip</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid #334155;">
+                    <td style="padding: 15px;"><code>price_without_tax</code></td>
+                    <td style="padding: 15px;">fillable (line 48)</td>
+                    <td style="padding: 15px;">Tek satır eklenecek</td>
+                    <td style="padding: 15px; text-align: center;"><span class="badge badge-add">EKLE</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #334155;">
+                    <td style="padding: 15px;"><code>price_without_tax</code></td>
+                    <td style="padding: 15px;">casts (line 107)</td>
+                    <td style="padding: 15px;">Tek satır eklenecek</td>
+                    <td style="padding: 15px; text-align: center;"><span class="badge badge-add">EKLE</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #334155;">
+                    <td style="padding: 15px;"><code>getPriceWithTaxAttribute()</code></td>
+                    <td style="padding: 15px;">accessor (line ~1327)</td>
+                    <td style="padding: 15px;">11 satır eklenecek</td>
+                    <td style="padding: 15px; text-align: center;"><span class="badge badge-add">EKLE</span></td>
+                </tr>
+                <tr>
+                    <td style="padding: 15px;"><code>getTaxAmountAttribute()</code></td>
+                    <td style="padding: 15px;">accessor (line ~1340)</td>
+                    <td style="padding: 15px;">7 satır eklenecek</td>
+                    <td style="padding: 15px; text-align: center;"><span class="badge badge-add">EKLE</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="highlight-box">
+            <h3>📊 Toplam Değişiklik</h3>
+            <ul>
+                <li><strong>Eklenen satır:</strong> ~21 satır</li>
+                <li><strong>Silinen satır:</strong> 0 satır</li>
+                <li><strong>Değiştirilen satır:</strong> 0 satır</li>
+                <li><strong>Risk seviyesi:</strong> Çok Düşük (sadece ekleme yapılıyor)</li>
+            </ul>
+        </div>
+
+        <footer style="margin-top: 60px; padding-top: 30px; border-top: 1px solid #334155; color: #64748b; text-align: center;">
+            🤖 Claude AI - 2025-12-03
+        </footer>
+    </div>
+</body>
+</html>

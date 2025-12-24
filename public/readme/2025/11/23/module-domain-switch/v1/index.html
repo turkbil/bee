@@ -1,1 +1,358 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module Domain Switch - Taslak</title>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #1e293b;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #60a5fa;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .description {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            color: #94a3b8;
+            border-left: 4px solid #3b82f6;
+        }
+        .module-card {
+            margin-bottom: 20px;
+        }
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+        }
+        .card-header {
+            background: rgba(30, 41, 59, 0.5);
+            border-bottom: 1px solid #334155;
+        }
+        .card-title {
+            color: #e2e8f0;
+        }
+        .list-group-item {
+            background: transparent;
+            border-color: #334155;
+            color: #cbd5e1;
+        }
+        .bg-muted-lt {
+            background: rgba(100, 116, 139, 0.1) !important;
+        }
+        .bg-success-lt {
+            background: rgba(16, 185, 129, 0.2) !important;
+        }
+        .bg-secondary-lt {
+            background: rgba(100, 116, 139, 0.2) !important;
+        }
+        .avatar {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+        }
+        .avatar i {
+            font-size: 10px;
+        }
+        .form-check-input:checked {
+            background-color: #10b981;
+            border-color: #10b981;
+        }
+        .card-footer {
+            background: rgba(30, 41, 59, 0.3);
+            border-top: 1px solid #334155;
+        }
+        .text-muted {
+            color: #64748b !important;
+        }
+        .annotation {
+            position: absolute;
+            background: #f59e0b;
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 10;
+        }
+        .annotation-arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+        }
+        .highlight-box {
+            border: 2px dashed #f59e0b !important;
+            position: relative;
+        }
+        .section-title {
+            color: #60a5fa;
+            font-size: 1.2rem;
+            margin: 30px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #334155;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-globe me-2"></i> Module Domain Switch - Taslak</h1>
+
+        <div class="description">
+            <strong>Durum:</strong> "Domainleri Göster" butonuna tıklandığında her modül kartında domain listesi açılıyor.
+            Her domain satırında switch ile o modülün ilgili domain'de aktif/pasif durumu kontrol ediliyor.
+        </div>
+
+        <h3 class="section-title">Mevcut Görünüm (Switch'ler Görünür)</h3>
+
+        <div class="row">
+            <!-- Modül Kartı 1 -->
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="card module-card">
+                    <div class="card-header d-flex align-items-center">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Blog</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action">
+                                <i class="fas fa-ellipsis-v text-muted"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Domain Listesi -->
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item py-2 bg-muted-lt">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-globe text-muted me-2"></i>
+                                <strong>Atanan Domainler</strong>
+                            </div>
+                        </div>
+
+                        <!-- Domain 1 - Aktif -->
+                        <div class="list-group-item py-2 highlight-box">
+                            <span class="annotation" style="top: -25px; right: 10px;">Switch Burada!</span>
+                            <div class="d-flex align-items-center">
+                                <span class="avatar avatar-xs me-2 bg-success-lt">
+                                    <i class="fas fa-globe fa-sm text-success"></i>
+                                </span>
+                                <div class="flex-fill">tuufi.com</div>
+                                <label class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Domain 2 - Aktif -->
+                        <div class="list-group-item py-2">
+                            <div class="d-flex align-items-center">
+                                <span class="avatar avatar-xs me-2 bg-success-lt">
+                                    <i class="fas fa-globe fa-sm text-success"></i>
+                                </span>
+                                <div class="flex-fill">ixtif.com</div>
+                                <label class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Domain 3 - Pasif -->
+                        <div class="list-group-item py-2">
+                            <div class="d-flex align-items-center">
+                                <span class="avatar avatar-xs me-2 bg-secondary-lt">
+                                    <i class="fas fa-globe fa-sm text-secondary"></i>
+                                </span>
+                                <div class="flex-fill">muzibu.com</div>
+                                <label class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span class="text-muted small">Content</span>
+                            <label class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" checked>
+                                <span class="form-check-label text-success small">Aktif</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modül Kartı 2 -->
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="card module-card">
+                    <div class="card-header d-flex align-items-center">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Muzibu</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action">
+                                <i class="fas fa-ellipsis-v text-muted"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item py-2 bg-muted-lt">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-globe text-muted me-2"></i>
+                                <strong>Atanan Domainler</strong>
+                            </div>
+                        </div>
+
+                        <!-- Domain 1 - Pasif -->
+                        <div class="list-group-item py-2">
+                            <div class="d-flex align-items-center">
+                                <span class="avatar avatar-xs me-2 bg-secondary-lt">
+                                    <i class="fas fa-globe fa-sm text-secondary"></i>
+                                </span>
+                                <div class="flex-fill">tuufi.com</div>
+                                <label class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox">
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Domain 2 - Pasif -->
+                        <div class="list-group-item py-2">
+                            <div class="d-flex align-items-center">
+                                <span class="avatar avatar-xs me-2 bg-secondary-lt">
+                                    <i class="fas fa-globe fa-sm text-secondary"></i>
+                                </span>
+                                <div class="flex-fill">ixtif.com</div>
+                                <label class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox">
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Domain 3 - Aktif -->
+                        <div class="list-group-item py-2">
+                            <div class="d-flex align-items-center">
+                                <span class="avatar avatar-xs me-2 bg-success-lt">
+                                    <i class="fas fa-globe fa-sm text-success"></i>
+                                </span>
+                                <div class="flex-fill">muzibu.com</div>
+                                <label class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span class="text-muted small">Content</span>
+                            <label class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" checked>
+                                <span class="form-check-label text-success small">Aktif</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modül Kartı 3 -->
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="card module-card">
+                    <div class="card-header d-flex align-items-center">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Shop</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action">
+                                <i class="fas fa-ellipsis-v text-muted"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item py-2 bg-muted-lt">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-globe text-muted me-2"></i>
+                                <strong>Atanan Domainler</strong>
+                            </div>
+                        </div>
+
+                        <!-- Domain 1 - Aktif -->
+                        <div class="list-group-item py-2">
+                            <div class="d-flex align-items-center">
+                                <span class="avatar avatar-xs me-2 bg-success-lt">
+                                    <i class="fas fa-globe fa-sm text-success"></i>
+                                </span>
+                                <div class="flex-fill">tuufi.com</div>
+                                <label class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Domain 2 - Aktif -->
+                        <div class="list-group-item py-2">
+                            <div class="d-flex align-items-center">
+                                <span class="avatar avatar-xs me-2 bg-success-lt">
+                                    <i class="fas fa-globe fa-sm text-success"></i>
+                                </span>
+                                <div class="flex-fill">ixtif.com</div>
+                                <label class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Domain 3 - Aktif -->
+                        <div class="list-group-item py-2">
+                            <div class="d-flex align-items-center">
+                                <span class="avatar avatar-xs me-2 bg-success-lt">
+                                    <i class="fas fa-globe fa-sm text-success"></i>
+                                </span>
+                                <div class="flex-fill">muzibu.com</div>
+                                <label class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span class="text-muted small">Content</span>
+                            <label class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" checked>
+                                <span class="form-check-label text-success small">Aktif</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="description mt-4">
+            <strong>Yapilan Degisiklik:</strong><br>
+            - Pretty-checkbox (<code>p-switch p-slim</code>) yerine <strong>Tabler/Bootstrap native switch</strong> (<code>form-check form-switch</code>) kullanildi<br>
+            - Aktif domain'ler icin avatar rengi <code>bg-success-lt</code> yapildi (yesil ton)<br>
+            - Pasif domain'ler icin avatar rengi <code>bg-secondary-lt</code> (gri ton)
+        </div>
+
+        <footer style="margin-top: 40px; text-align: center; color: #64748b; font-size: 0.9rem;">
+            Claude AI tarafindan olusturuldu - 2025-11-23
+        </footer>
+    </div>
+</body>
+</html>

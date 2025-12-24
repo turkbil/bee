@@ -1,1 +1,482 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu SMTP Ayarları - Kontrol Raporu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1a202e',
+                            950: '#0f1419'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+    <div class="max-w-5xl mx-auto p-6 md:p-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center">
+                    <span class="text-2xl">📧</span>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold text-white">Muzibu SMTP Ayarları</h1>
+                    <p class="text-slate-400 text-sm">Mail Gönderim Sistemi - Kontrol Raporu</p>
+                </div>
+            </div>
+            <div class="flex gap-2 text-sm text-slate-400">
+                <span class="bg-slate-800 px-3 py-1 rounded-full">19 Aralık 2025</span>
+                <span class="bg-slate-800 px-3 py-1 rounded-full">Muzibu.com.tr</span>
+                <span class="bg-green-900/30 text-green-400 px-3 py-1 rounded-full border border-green-800">Hazır</span>
+            </div>
+        </div>
+
+        <!-- Ana Özet -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-bold text-green-400 mb-3">✅ Sonuç: Sistem Hazır</h2>
+            <p class="text-slate-300 mb-4">
+                Muzibu.com.tr sistemi <strong>Gmail SMTP</strong> üzerinden mail gönderimine hazır.
+                Bugün (19 Aralık 2025, 20:16) SMTP ayarları güncellenmiş ve sistemde aktif.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-slate-400 text-sm mb-1">Mail Servisi</div>
+                    <div class="text-white font-semibold">Gmail SMTP</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-slate-400 text-sm mb-1">Gönderen Adres</div>
+                    <div class="text-white font-semibold">noreply@muzibu.com.tr</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-slate-400 text-sm mb-1">Durum</div>
+                    <div class="text-green-400 font-semibold">Aktif</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- İki Seviyeli İçerik: Basit Anlatım -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-6">
+            <h3 class="text-lg font-bold text-blue-400 mb-3">📝 Basit Anlatım (Herkes İçin)</h3>
+
+            <div class="space-y-4 text-slate-300">
+                <div>
+                    <h4 class="font-semibold text-white mb-2">Ne Yapıldı?</h4>
+                    <p>
+                        Muzibu sisteminin mail gönderme ayarları kontrol edildi. Sistem artık <strong>Gmail SMTP</strong>
+                        üzerinden mail gönderiyor (önceden AWS SES kullanılıyordu).
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-white mb-2">Neden Önemli?</h4>
+                    <p>
+                        Müzisyenler sisteme kayıt olduğunda, şifrelerini unuttuklerında veya önemli bildirimler olduğunda
+                        e-posta alırlar. Bu ayarlar doğru çalışmazsa kullanıcılar mail alamaz ve sistem kullanılamaz hale gelir.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-white mb-2">Nasıl Çalışıyor?</h4>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li>Kullanıcı kayıt olur → Sistem otomatik hoş geldin maili gönderir</li>
+                        <li>Kullanıcı şifre sıfırlama ister → Şifre sıfırlama linki mailden gider</li>
+                        <li>Ödeme alınır → Başarılı ödeme bildirimi gönderilir</li>
+                        <li>Premium üyelik biter → Hatırlatma maili atılır</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-green-500">
+                    <p class="text-sm">
+                        <strong class="text-green-400">Güncelleme:</strong>
+                        Bugün (19 Aralık 2025, saat 20:16) SMTP ayarları güncellenmiş. Artık Gmail hesabından mail gönderiliyor.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- İki Seviyeli İçerik: Teknik Detaylar -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6 mb-6">
+            <h3 class="text-lg font-bold text-slate-300 mb-3">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+
+            <div class="space-y-4 text-slate-300">
+                <div>
+                    <h4 class="font-semibold text-white mb-2">Mail Konfigürasyon Sistemi</h4>
+                    <p class="mb-3">
+                        Laravel multi-tenant sisteminde mail ayarları <strong>Settings modülünden</strong> yükleniyor.
+                        Her tenant kendi mail ayarlarını kullanır.
+                    </p>
+                    <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm">
+                        <div class="text-slate-400 mb-2">// Mail ayarları otomatik yüklenir</div>
+                        <div><span class="text-blue-400">MailConfigServiceProvider</span>::boot()</div>
+                        <div class="ml-4">→ <span class="text-green-400">setting</span>('mail_driver')</div>
+                        <div class="ml-4">→ <span class="text-green-400">Config::set</span>('mail.default', $mailDriver)</div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-white mb-2">Güncel SMTP Ayarları (Muzibu Tenant)</h4>
+                    <div class="bg-slate-900 rounded-lg p-4 overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-slate-400 border-b border-slate-700">
+                                    <th class="text-left py-2">Ayar</th>
+                                    <th class="text-left py-2">Değer</th>
+                                    <th class="text-left py-2">Güncelleme</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800">
+                                <tr>
+                                    <td class="py-2 text-blue-400">mail_driver</td>
+                                    <td class="py-2 font-mono">smtp</td>
+                                    <td class="py-2 text-slate-500">18 Ara 2025</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 text-blue-400">mail_from_address</td>
+                                    <td class="py-2 font-mono">noreply@muzibu.com.tr</td>
+                                    <td class="py-2 text-slate-500">18 Ara 2025</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 text-blue-400">mail_from_name</td>
+                                    <td class="py-2 font-mono">Muzibu</td>
+                                    <td class="py-2 text-slate-500">18 Ara 2025</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 text-blue-400">smtp_host</td>
+                                    <td class="py-2 font-mono text-green-400">smtp.gmail.com</td>
+                                    <td class="py-2 text-green-400">19 Ara 20:16 ✨</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 text-blue-400">smtp_port</td>
+                                    <td class="py-2 font-mono text-green-400">465</td>
+                                    <td class="py-2 text-green-400">19 Ara 20:16 ✨</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 text-blue-400">smtp_encryption</td>
+                                    <td class="py-2 font-mono text-green-400">ssl</td>
+                                    <td class="py-2 text-green-400">19 Ara 20:16 ✨</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 text-blue-400">smtp_username</td>
+                                    <td class="py-2 font-mono text-green-400">noreply@muzibu.com</td>
+                                    <td class="py-2 text-green-400">19 Ara 20:16 ✨</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 text-blue-400">smtp_password</td>
+                                    <td class="py-2 font-mono text-yellow-400">●●●● ●●●● ●●●● ●●●●</td>
+                                    <td class="py-2 text-green-400">19 Ara 20:16 ✨</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2">
+                        ✨ = Bugün güncellenmiş ayarlar
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-white mb-2">İlgili Dosyalar</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li class="font-mono">
+                            <span class="text-slate-500">Provider:</span>
+                            <span class="text-blue-400 ml-2">app/Providers/MailConfigServiceProvider.php</span>
+                        </li>
+                        <li class="font-mono">
+                            <span class="text-slate-500">Listener:</span>
+                            <span class="text-blue-400 ml-2">app/Listeners/SendEmailVerificationNotificationWithSettingCheck.php</span>
+                        </li>
+                        <li class="font-mono">
+                            <span class="text-slate-500">Config:</span>
+                            <span class="text-blue-400 ml-2">config/mail.php</span>
+                        </li>
+                        <li class="font-mono">
+                            <span class="text-slate-500">Settings DB:</span>
+                            <span class="text-blue-400 ml-2">tuufi_4ekim.settings</span>
+                        </li>
+                        <li class="font-mono">
+                            <span class="text-slate-500">Values DB:</span>
+                            <span class="text-blue-400 ml-2">tenant_muzibu_1528d0.settings_values</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mail Gönderim Noktaları -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6 mb-6">
+            <h3 class="text-lg font-bold text-white mb-4">📨 Muzibu'da Mail Gönderilen Yerler</h3>
+
+            <div class="space-y-4">
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="text-sm">1</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white mb-2">Email Doğrulama (Registration)</h4>
+                            <p class="text-slate-300 text-sm mb-2">
+                                Kullanıcı kayıt olduğunda email doğrulama maili gönderilir.
+                            </p>
+                            <div class="bg-slate-800 rounded p-2 font-mono text-xs">
+                                <div><span class="text-blue-400">Event:</span> Registered</div>
+                                <div><span class="text-blue-400">Listener:</span> SendEmailVerificationNotificationWithSettingCheck</div>
+                                <div><span class="text-blue-400">Mail:</span> Laravel default EmailVerification</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="text-sm">2</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white mb-2">Şifre Sıfırlama</h4>
+                            <p class="text-slate-300 text-sm mb-2">
+                                Kullanıcı şifre sıfırlama talebinde bulunduğunda.
+                            </p>
+                            <div class="bg-slate-800 rounded p-2 font-mono text-xs">
+                                <div><span class="text-blue-400">Route:</span> /forgot-password</div>
+                                <div><span class="text-blue-400">Mail:</span> Laravel default ResetPassword</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="text-sm">3</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white mb-2">Hoş Geldin Maili</h4>
+                            <p class="text-slate-300 text-sm mb-2">
+                                Kayıt sonrası kullanıcıya hoş geldin maili.
+                            </p>
+                            <div class="bg-slate-800 rounded p-2 font-mono text-xs">
+                                <div><span class="text-blue-400">Mailable:</span> Modules/Mail/app/Mail/WelcomeMail.php</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="text-sm">4</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white mb-2">Ödeme Bildirimleri</h4>
+                            <p class="text-slate-300 text-sm mb-2">
+                                Başarılı veya başarısız ödeme sonrası mail.
+                            </p>
+                            <div class="bg-slate-800 rounded p-2 font-mono text-xs">
+                                <div><span class="text-blue-400">Success:</span> Modules/Mail/app/Mail/PaymentSuccessMail.php</div>
+                                <div><span class="text-blue-400">Failed:</span> Modules/Mail/app/Mail/PaymentFailedMail.php</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="text-sm">5</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white mb-2">Abonelik Bildirimleri</h4>
+                            <p class="text-slate-300 text-sm mb-2">
+                                Premium abonelik yenileme, deneme süresi bitişi.
+                            </p>
+                            <div class="bg-slate-800 rounded p-2 font-mono text-xs">
+                                <div><span class="text-blue-400">Renewal:</span> Modules/Mail/app/Mail/SubscriptionRenewalMail.php</div>
+                                <div><span class="text-blue-400">Trial Ending:</span> Modules/Mail/app/Mail/TrialEndingMail.php</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="text-sm">6</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white mb-2">Güvenlik Bildirimleri</h4>
+                            <p class="text-slate-300 text-sm mb-2">
+                                2FA kodu, yeni cihaz girişi bildirimi.
+                            </p>
+                            <div class="bg-slate-800 rounded p-2 font-mono text-xs">
+                                <div><span class="text-blue-400">2FA:</span> Modules/Mail/app/Mail/TwoFactorCodeMail.php</div>
+                                <div><span class="text-blue-400">New Device:</span> Modules/Mail/app/Mail/NewDeviceLoginMail.php</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Güncellenmesi Gereken Yerler -->
+        <div class="bg-yellow-900/20 border border-yellow-800 rounded-lg p-6 mb-6">
+            <h3 class="text-lg font-bold text-yellow-400 mb-4">⚠️ Güncelleme Noktaları (Varsa)</h3>
+
+            <div class="space-y-4 text-slate-300">
+                <div class="bg-green-900/20 border border-green-800 rounded-lg p-4">
+                    <h4 class="font-semibold text-green-400 mb-2">✅ Sistem Otomatik Çalışıyor</h4>
+                    <p class="text-sm">
+                        <strong>Muzibu için hiçbir kod değişikliği gerekmez!</strong>
+                        Sistem zaten Settings modülünden mail ayarlarını otomatik yüklüyor.
+                    </p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-semibold text-white mb-2">Nasıl Çalışıyor?</h4>
+                    <ol class="list-decimal list-inside space-y-2 text-sm">
+                        <li>
+                            <strong>MailConfigServiceProvider</strong> uygulama başladığında <code class="text-blue-400">setting()</code>
+                            helper'ı ile SMTP ayarlarını çeker
+                        </li>
+                        <li>
+                            Ayarlar <strong>runtime'da</strong> Laravel Config'e yazılır (<code class="text-blue-400">Config::set()</code>)
+                        </li>
+                        <li>
+                            Mail gönderilirken Laravel bu güncel config'i kullanır
+                        </li>
+                        <li>
+                            Her tenant kendi Settings değerlerini kullanır (tenant-aware)
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-4">
+                    <h4 class="font-semibold text-blue-400 mb-2">📋 Admin Panelden Ayar Değiştirme</h4>
+                    <p class="text-sm mb-2">
+                        SMTP ayarlarını değiştirmek için:
+                    </p>
+                    <div class="font-mono text-xs bg-slate-900 rounded p-3">
+                        <div>1. Admin Panel → Ayarlar → Mail Ayarları</div>
+                        <div>2. SMTP bilgilerini güncelle</div>
+                        <div>3. Kaydet butonuna tıkla</div>
+                        <div>4. <span class="text-yellow-400">Cache temizle:</span> php artisan config:clear</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Önerileri -->
+        <div class="bg-purple-900/20 border border-purple-800 rounded-lg p-6 mb-6">
+            <h3 class="text-lg font-bold text-purple-400 mb-4">🧪 Test Adımları</h3>
+
+            <div class="space-y-3 text-sm">
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="bg-purple-600 text-white px-2 py-1 rounded text-xs font-bold">1</span>
+                        <span class="font-semibold text-white">Email Doğrulama Testi</span>
+                    </div>
+                    <p class="text-slate-300 mb-2">Muzibu'ya yeni hesap oluştur, email doğrulama maili geldiğini kontrol et.</p>
+                    <div class="font-mono text-xs bg-slate-800 rounded p-2">
+                        https://muzibu.com.tr/register
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="bg-purple-600 text-white px-2 py-1 rounded text-xs font-bold">2</span>
+                        <span class="font-semibold text-white">Şifre Sıfırlama Testi</span>
+                    </div>
+                    <p class="text-slate-300 mb-2">"Şifremi unuttum" sayfasından şifre sıfırlama linki iste.</p>
+                    <div class="font-mono text-xs bg-slate-800 rounded p-2">
+                        https://muzibu.com.tr/forgot-password
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="bg-purple-600 text-white px-2 py-1 rounded text-xs font-bold">3</span>
+                        <span class="font-semibold text-white">Mail Log Kontrolü</span>
+                    </div>
+                    <p class="text-slate-300 mb-2">Laravel log dosyasında mail gönderim kayıtlarını kontrol et.</p>
+                    <div class="font-mono text-xs bg-slate-800 rounded p-2">
+                        tail -f storage/logs/laravel.log | grep "Mail"
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="bg-purple-600 text-white px-2 py-1 rounded text-xs font-bold">4</span>
+                        <span class="font-semibold text-white">Gmail SMTP Debug</span>
+                    </div>
+                    <p class="text-slate-300 mb-2">Gmail App Password doğru mu kontrol et.</p>
+                    <div class="font-mono text-xs bg-slate-800 rounded p-2">
+                        https://myaccount.google.com/apppasswords
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Potansiyel Sorunlar -->
+        <div class="bg-red-900/20 border border-red-800 rounded-lg p-6 mb-6">
+            <h3 class="text-lg font-bold text-red-400 mb-4">🚨 Potansiyel Sorunlar & Çözümler</h3>
+
+            <div class="space-y-4">
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <h4 class="font-semibold text-white mb-2">Problem: Mail gitmiyor</h4>
+                    <div class="text-slate-300 text-sm space-y-2">
+                        <p><strong class="text-yellow-400">Sebep 1:</strong> Gmail App Password yanlış veya süresi dolmuş</p>
+                        <p class="ml-4 text-xs">→ Çözüm: Google Account'tan yeni App Password oluştur</p>
+
+                        <p><strong class="text-yellow-400">Sebep 2:</strong> Config cache'i eski ayarları gösteriyor</p>
+                        <p class="ml-4 text-xs">→ Çözüm: <code class="bg-slate-800 px-2 py-1 rounded">php artisan config:clear</code></p>
+
+                        <p><strong class="text-yellow-400">Sebep 3:</strong> Port 465 firewall'da kapalı</p>
+                        <p class="ml-4 text-xs">→ Çözüm: Port 587 + TLS kullan (alternatif)</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <h4 class="font-semibold text-white mb-2">Problem: "Failed to authenticate on SMTP server"</h4>
+                    <div class="text-slate-300 text-sm">
+                        <p><strong class="text-yellow-400">Sebep:</strong> Gmail 2-Step Verification açık ama App Password kullanılmamış</p>
+                        <p class="ml-4 text-xs mt-1">
+                            → Çözüm: Normal Gmail şifresi değil, App Password kullan
+                            (16 haneli, boşluksuz: bxfc truw fsqy ijxn)
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <h4 class="font-semibold text-white mb-2">Problem: Mail spam'e düşüyor</h4>
+                    <div class="text-slate-300 text-sm">
+                        <p><strong class="text-yellow-400">Sebep:</strong> SPF/DKIM kayıtları yok</p>
+                        <p class="ml-4 text-xs mt-1">
+                            → Çözüm: Domain DNS ayarlarına Gmail SPF kaydı ekle
+                        </p>
+                        <div class="font-mono text-xs bg-slate-800 rounded p-2 mt-2">
+                            v=spf1 include:_spf.google.com ~all
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-8 pt-6 border-t border-slate-800 text-center">
+            <p class="text-slate-500 text-sm">
+                Rapor Tarihi: 19 Aralık 2025 |
+                Oluşturan: Claude AI |
+                Sistem: Muzibu Multi-Tenant SaaS
+            </p>
+        </div>
+    </div>
+</body>
+</html>

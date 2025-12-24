@@ -1,1 +1,466 @@
-v4/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI İçerik Üretim Kuralları - v4 (MEVCUT İÇERİK KORUMA)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .critical-warning {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.2));
+            border: 3px solid #ef4444;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 10px 40px rgba(239, 68, 68, 0.4);
+        }
+
+        .critical-warning h2 {
+            color: #ef4444;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rule-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+
+        .rule-card h3 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rule-card p {
+            color: #cbd5e1;
+            line-height: 1.9;
+            font-size: 1.05rem;
+        }
+
+        .rule-card ul {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .rule-card ul li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #cbd5e1;
+        }
+
+        .rule-card ul li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #60a5fa;
+            font-weight: bold;
+        }
+
+        .yes {
+            border-left-color: #10b981;
+        }
+
+        .yes h3 {
+            color: #10b981;
+        }
+
+        .no {
+            border-left-color: #ef4444;
+        }
+
+        .no h3 {
+            color: #ef4444;
+        }
+
+        .warning {
+            border-left-color: #f59e0b;
+        }
+
+        .warning h3 {
+            color: #f59e0b;
+        }
+
+        .highlight {
+            background: rgba(96, 165, 250, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 3px solid #60a5fa;
+        }
+
+        .highlight strong {
+            color: #fbbf24;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-box {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .brand-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+            border: 3px solid #10b981;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.3);
+        }
+
+        .special-category {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(245, 158, 11, 0.2));
+            border: 3px solid #f59e0b;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 10px 40px rgba(245, 158, 11, 0.4);
+        }
+
+        .special-category h2 {
+            color: #f59e0b;
+            font-size: 2rem;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 AI İçerik Üretim Kuralları v4</h1>
+            <div class="meta">
+                📅 Tarih: 2025-12-03 (MEVCUT İÇERİK KORUMA) |
+                🎯 Hedef: 690 Yedek Parça Ürünü |
+                🤖 Sistem: OpenAI GPT-4o-mini + Leonardo AI
+            </div>
+        </header>
+
+        <!-- KRİTİK UYARI: MEVCUT İÇERİĞİ KORU -->
+        <div class="critical-warning">
+            <h2>🚨 KRİTİK KURAL: MEVCUT İÇERİĞİ KORU!</h2>
+            
+            <div style="background: rgba(0, 0, 0, 0.3); padding: 25px; border-radius: 10px; margin: 20px 0;">
+                <p style="color: #fbbf24; font-weight: 700; font-size: 1.3rem; margin-bottom: 15px;">
+                    ⚠️ MEVCUT YAZI VE TEKNİK BİLGİ VARSA:
+                </p>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li style="padding: 10px 0; color: #e2e8f0; font-size: 1.1rem;">
+                        <strong style="color: #ef4444;">✓</strong> MUTLAKA KULLAN
+                    </li>
+                    <li style="padding: 10px 0; color: #e2e8f0; font-size: 1.1rem;">
+                        <strong style="color: #ef4444;">✓</strong> GENİŞLET (Azaltma!)
+                    </li>
+                    <li style="padding: 10px 0; color: #e2e8f0; font-size: 1.1rem;">
+                        <strong style="color: #ef4444;">✓</strong> DETAYLANDIR
+                    </li>
+                    <li style="padding: 10px 0; color: #e2e8f0; font-size: 1.1rem;">
+                        <strong style="color: #ef4444;">✓</strong> DAHA DA BÜYÜT
+                    </li>
+                </ul>
+            </div>
+
+            <div style="background: rgba(239, 68, 68, 0.2); padding: 20px; border-radius: 10px; margin-top: 20px; border: 2px solid #ef4444;">
+                <p style="color: #ef4444; font-weight: 700; font-size: 1.2rem; margin-bottom: 10px;">
+                    ❌ ASLA AZALTMA! ASLA SİLME!
+                </p>
+                <p style="color: #cbd5e1; line-height: 1.8; font-size: 1.05rem;">
+                    Mevcut içerik değerlidir. <strong style="color: #fbbf24;">Koru, genişlet, detaylandır!</strong><br>
+                    Kısa içeriği → Uzun yap<br>
+                    Uzun içeriği → Daha da uzun yap<br>
+                    Teknik bilgi varsa → Ekstra vurgula ve genişlet
+                </p>
+            </div>
+        </div>
+
+        <!-- ÖZEL KATEGORİ: FORKLIFT ÇATAL KILIFI -->
+        <div class="special-category">
+            <h2>🔶 ÖZEL DİKKAT: Forklift Çatal Kılıfı</h2>
+            
+            <div style="background: rgba(0, 0, 0, 0.3); padding: 25px; border-radius: 10px; margin: 20px 0;">
+                <p style="color: #fbbf24; font-weight: 700; font-size: 1.3rem; margin-bottom: 15px;">
+                    ⚠️ BU KATEGORİDE ÇOK DİKKATLİ OL!
+                </p>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li style="padding: 12px 0; color: #e2e8f0; font-size: 1.1rem;">
+                        <strong style="color: #f59e0b;">1.</strong> Mevcut yazıları <strong style="color: #10b981;">AZALTMA!</strong>
+                    </li>
+                    <li style="padding: 12px 0; color: #e2e8f0; font-size: 1.1rem;">
+                        <strong style="color: #f59e0b;">2.</strong> Mevcut yazıları <strong style="color: #10b981;">GENİŞLET!</strong>
+                    </li>
+                    <li style="padding: 12px 0; color: #e2e8f0; font-size: 1.1rem;">
+                        <strong style="color: #f59e0b;">3.</strong> Daha da <strong style="color: #10b981;">BÜYÜT!</strong>
+                    </li>
+                    <li style="padding: 12px 0; color: #e2e8f0; font-size: 1.1rem;">
+                        <strong style="color: #f59e0b;">4.</strong> Teknik detayları <strong style="color: #10b981;">KORU ve DETAYLANDIR!</strong>
+                    </li>
+                </ul>
+            </div>
+
+            <div style="background: rgba(16, 185, 129, 0.1); padding: 20px; border-radius: 10px; margin-top: 20px; border-left: 4px solid #10b981;">
+                <p style="color: #10b981; font-weight: 700; margin-bottom: 10px;">
+                    ✅ HEDEF:
+                </p>
+                <p style="color: #cbd5e1; line-height: 1.8;">
+                    Forklift Çatal Kılıfı kategorisindeki ürünler için:<br>
+                    • Mevcut içerik 200 kelime → <strong style="color: #fbbf24;">En az 400 kelime yap</strong><br>
+                    • Mevcut içerik 400 kelime → <strong style="color: #fbbf24;">600-700 kelime yap</strong><br>
+                    • Teknik özellikler varsa → <strong style="color: #fbbf24;">Ekstra paragraf ekle</strong>
+                </p>
+            </div>
+        </div>
+
+        <!-- İSTATİSTİKLER -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-number">690</div>
+                <div class="stat-label">Toplam Ürün</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">%34</div>
+                <div class="stat-label">Token Tasarrufu</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">1</div>
+                <div class="stat-label">API Çağrısı/Ürün</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Alan Üretiliyor</div>
+            </div>
+        </div>
+
+        <!-- iXTIF MARKA VURGUSU -->
+        <div class="brand-box">
+            <h2 style="color: #10b981; font-size: 2rem; margin-bottom: 20px;">🏢 iXTIF KULLANIMI (ZORUNLU!)</h2>
+            
+            <p style="color: #e2e8f0; line-height: 1.9; font-size: 1.1rem; margin-bottom: 20px;">
+                <strong>iXtif</strong> (X büyük!) = Satışı yapan firma (BİZİZ!)
+            </p>
+
+            <div style="background: rgba(16, 185, 129, 0.2); padding: 20px; border-radius: 10px;">
+                <p style="color: #10b981; font-weight: 700; font-size: 1.2rem; margin-bottom: 10px;">
+                    ✅ MUTLAKA KULLAN:
+                </p>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li style="padding: 8px 0; color: #cbd5e1;">✓ "iXtif olarak kaliteli ürünler sunuyoruz"</li>
+                    <li style="padding: 8px 0; color: #cbd5e1;">✓ "Biz iXtif, müşteri memnuniyetini ön planda tutuyoruz"</li>
+                    <li style="padding: 8px 0; color: #cbd5e1;">✓ "iXtif güvencesiyle..."</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- KURAL 1: BODY STRATEJİSİ (GÜNCELLENDİ) -->
+        <div class="section">
+            <h2>📋 Kural 1: BODY Stratejisi (MEVCUT İÇERİK KORUMA)</h2>
+
+            <div class="rule-card yes">
+                <h3>✅ EĞER BODY DOLU İSE</h3>
+                <ul>
+                    <li><strong>1. İçeriği OKU:</strong> Mevcut yazıyı tamamen oku</li>
+                    <li><strong>2. KORU:</strong> Mevcut bilgileri sil/azaltma!</li>
+                    <li><strong>3. GENİŞLET:</strong> Eksik yerleri tamamla</li>
+                    <li><strong>4. DETAYLANDIR:</strong> Her cümleyi açıkla</li>
+                    <li><strong>5. BÜYÜT:</strong> Paragrafları genişlet</li>
+                    <li><strong>6. iXtif ekle:</strong> Firma vurgusu yap</li>
+                </ul>
+            </div>
+
+            <div class="rule-card warning">
+                <h3>⚠️ EĞER BODY ÇOK KISA İSE</h3>
+                <ul>
+                    <li><strong>1. Al BÜTÜNÜ:</strong> Kısa içeriği temel al</li>
+                    <li><strong>2. AZALTMA:</strong> Hiçbir şeyi silme!</li>
+                    <li><strong>3. GENİŞLET:</strong> Her cümleyi 2-3 cümle yap</li>
+                    <li><strong>4. Başlık + kategori ekle:</strong> İlave detay</li>
+                    <li><strong>5. 600-700 kelime:</strong> Hedef uzunluğa getir</li>
+                </ul>
+            </div>
+
+            <div class="rule-card no">
+                <h3>❌ EĞER BODY YOK İSE</h3>
+                <ul>
+                    <li><strong>Başlık + kategori al:</strong> Sadece bunlardan yola çık</li>
+                    <li><strong>Sıfırdan genişlet:</strong> Genel konuş, detaylı anlat</li>
+                    <li><strong>TEHLİKEYE ATMA:</strong> Bilmediğin teknik detay yazma</li>
+                    <li><strong>Güvenli kal:</strong> Pazarlama odaklı</li>
+                </ul>
+            </div>
+
+            <div class="highlight">
+                <strong>ÖRNEK (MEVCUT İÇERİK GENİŞLETME):</strong><br><br>
+                <strong style="color: #ef4444;">❌ YANLIŞ:</strong><br>
+                Mevcut: "Bu çatal kılıfı dayanıklıdır. Forkliftlerde kullanılır." (8 kelime)<br>
+                AI: "Çatal kılıfı dayanıklıdır." (3 kelime) → İÇERİK AZALDI!<br><br>
+                
+                <strong style="color: #10b981;">✅ DOĞRU:</strong><br>
+                Mevcut: "Bu çatal kılıfı dayanıklıdır. Forkliftlerde kullanılır." (8 kelime)<br>
+                AI: "Bu çatal kılıfı, yüksek kaliteli ve son derece dayanıklı malzemeden üretilmiştir. Forklift çatallarının korunması ve uzun ömürlü kullanımı için özel olarak tasarlanmıştır. Endüstriyel ortamlarda yoğun kullanıma dayanıklı yapısıyla dikkat çeker. iXtif olarak, forklift operasyonlarınızda maksimum güvenlik sağlayan çatal kılıfları sunuyoruz..." (60+ kelime) → İÇERİK GENİŞLEDİ!
+            </div>
+        </div>
+
+        <!-- KURAL 2: BODY YAPISI -->
+        <div class="section">
+            <h2>📐 Kural 2: BODY Yapısı</h2>
+
+            <div class="rule-card">
+                <h3>📐 Yapı Şeması</h3>
+                <ul>
+                    <li><strong>GİRİŞ:</strong> 150-200 kelime - Mevcut + Google SEO + iXtif</li>
+                    <li><strong>TEKNİK ÖZELLIKLER:</strong> 150-200 kelime - Mevcut koru + genişlet</li>
+                    <li><strong>KULLANIM ALANLARI:</strong> 100-150 kelime - Detaylandır</li>
+                    <li><strong>AVANTAJLAR:</strong> 100-150 kelime - iXtif vurgusu</li>
+                    <li><strong>SONUÇ:</strong> 50-75 kelime - Çağrı</li>
+                </ul>
+            </div>
+
+            <div class="highlight">
+                <strong>TOPLAM:</strong> 550-775 kelime (mevcut içerik varsa daha fazla!)<br>
+                <strong>FORMAT:</strong> Tailwind CSS
+            </div>
+        </div>
+
+        <!-- DİĞER KURALLAR (Özet) -->
+        <div class="section">
+            <h2>⚡ Diğer Kurallar (Özet)</h2>
+
+            <div class="rule-card">
+                <h3>📋 Kısa Özet</h3>
+                <ul>
+                    <li><strong>Kural 3:</strong> Tek çağrıda hepsini üret (%34 tasarruf)</li>
+                    <li><strong>Kural 4:</strong> Teknik bilgi bilmiyorsan yazma</li>
+                    <li><strong>Kural 5:</strong> FEATURES (4-5 madde)</li>
+                    <li><strong>Kural 6:</strong> USE_CASES (2-3 madde)</li>
+                    <li><strong>Kural 7:</strong> FAQ (5 soru-cevap)</li>
+                    <li><strong>Kural 8:</strong> SEO (title + description)</li>
+                    <li><strong>Kural 9:</strong> Leonardo görsel (çoğul + benzer)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ÖZET KONTROL LİSTESİ -->
+        <div class="section">
+            <h2>✅ Kontrol Listesi (Her Ürün İçin)</h2>
+
+            <div class="rule-card yes">
+                <h3>✅ İŞLEM ÖNCESİ KONTROL</h3>
+                <ul>
+                    <li>☐ Mevcut BODY var mı kontrol et</li>
+                    <li>☐ Mevcut teknik bilgi var mı kontrol et</li>
+                    <li>☐ Kategori "Forklift Çatal Kılıfı" mı kontrol et</li>
+                    <li>☐ Mevcut içerik uzunluğunu ölç</li>
+                </ul>
+            </div>
+
+            <div class="rule-card warning">
+                <h3>⚠️ İŞLEM SIRASI</h3>
+                <ul>
+                    <li>1. Mevcut içeriği OKU</li>
+                    <li>2. Mevcut içeriği KORU (azaltma!)</li>
+                    <li>3. Mevcut içeriği GENİŞLET</li>
+                    <li>4. iXtif vurgusu EKLE</li>
+                    <li>5. Google SEO kelimeleri EKLE</li>
+                    <li>6. Hedef uzunluğa ULAŞ (550-775 kelime)</li>
+                </ul>
+            </div>
+
+            <div class="rule-card no">
+                <h3>❌ ASLA YAPMA</h3>
+                <ul>
+                    <li>✗ Mevcut içeriği azaltma/kısaltma</li>
+                    <li>✗ Mevcut teknik bilgiyi silme</li>
+                    <li>✗ Forklift Çatal Kılıfı'nda kısa yaz</li>
+                    <li>✗ Bilmediğin teknik detay ekleme</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | v4 (MEVCUT İÇERİK KORUMA) | 2025-12-03
+        </footer>
+    </div>
+</body>
+</html>

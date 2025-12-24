@@ -1,1 +1,947 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Offline Playback - Mimari Analiz & Çözüm Önerileri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        .card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .pro { background: #10b981; color: white; }
+        .con { background: #ef4444; color: white; }
+        .recommended {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+    </style>
+</head>
+<body class="text-slate-100 p-6 min-h-screen">
+
+    <!-- Header -->
+    <div class="max-w-6xl mx-auto mb-8">
+        <div class="card rounded-2xl p-8 shadow-2xl">
+            <div class="flex items-start justify-between mb-4">
+                <div>
+                    <h1 class="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent mb-2">
+                        🎵 Muzibu Offline Playback Sistemi
+                    </h1>
+                    <p class="text-slate-400 text-lg">İnternet Kesintisinde Kesintisiz Müzik Deneyimi</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-slate-400">Analiz Tarihi</div>
+                    <div class="text-xl font-semibold text-emerald-400">17 Aralık 2025</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-slate-400 text-sm mb-1">Platform</div>
+                    <div class="text-xl font-semibold text-emerald-400">Muzibu.com.tr</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-slate-400 text-sm mb-1">Mevcut Sistem</div>
+                    <div class="text-xl font-semibold text-cyan-400">Şifreli HLS Streaming</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-slate-400 text-sm mb-1">Hedef</div>
+                    <div class="text-xl font-semibold text-purple-400">24 Saat Offline Cache</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto space-y-8">
+
+        <!-- Basit Anlatım -->
+        <div class="card rounded-xl p-6 shadow-xl border-l-4 border-green-500">
+            <h2 class="text-2xl font-bold text-green-400 mb-4">📝 Basit Anlatım (Herkes İçin)</h2>
+
+            <div class="space-y-4 text-slate-300">
+                <p class="text-lg leading-relaxed">
+                    <strong class="text-white">Ne İstiyoruz?</strong><br>
+                    Kullanıcılar Muzibu'da müzik dinlerken internet bağlantısı kesilirse,
+                    <span class="text-green-400 font-semibold">bir gün boyunca kesintisiz dinlemeye devam edebilsin</span>.
+                </p>
+
+                <p class="text-lg leading-relaxed">
+                    <strong class="text-white">Nasıl Çalışacak?</strong><br>
+                    Kullanıcı müzik dinlerken, şarkılar <span class="text-cyan-400 font-semibold">arka planda bilgisayarına indirilecek</span>
+                    (şifreli olarak). İnternet kesildiğinde, sistem otomatik olarak bilgisayardaki kopyadan çalmaya devam edecek.
+                </p>
+
+                <p class="text-lg leading-relaxed">
+                    <strong class="text-white">Kullanıcı Fark Eder Mi?</strong><br>
+                    Hayır! Kullanıcı hiçbir şey yapmayacak. Sistem tamamen arka planda çalışacak.
+                    İnternet varken online, yokken offline çalacak - <span class="text-purple-400 font-semibold">otomatik geçiş</span>.
+                </p>
+
+                <div class="bg-green-900/20 border border-green-800 rounded-lg p-4 mt-4">
+                    <h3 class="font-semibold text-green-300 mb-2">💡 Örnek Senaryo:</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">1️⃣</span>
+                            <span>Kullanıcı evde WiFi ile albüm dinliyor → Şarkılar arka planda bilgisayara kaydediliyor (şifreli)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-yellow-400 mr-2">2️⃣</span>
+                            <span>Elektrik kesildi, WiFi gitti → Sistem otomatik olarak bilgisayardaki kopyadan çalmaya başladı</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-400 mr-2">3️⃣</span>
+                            <span>Kullanıcı hiçbir şey fark etmeden dinlemeye devam ediyor - 24 saat boyunca kesintisiz!</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-emerald-400 mr-2">4️⃣</span>
+                            <span>İnternet gelince sistem otomatik online moda döndü, yeni şarkılar indirmeye başladı</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-4 mt-4">
+                    <h3 class="font-semibold text-blue-300 mb-2">🔐 Güvenlik:</h3>
+                    <p class="text-sm">
+                        Müzikler bilgisayara <span class="text-blue-400 font-semibold">şifreli</span> olarak kaydedilir.
+                        Kullanıcı dosyaları bulamaz, kopyalayamaz. Premium üyelik bitince otomatik silinir.
+                        Sistem tamamen güvenli ve telif haklarını korur.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teknik Durum Analizi -->
+        <div class="card rounded-xl p-6 shadow-xl">
+            <h2 class="text-2xl font-bold text-cyan-400 mb-4">🔍 Mevcut Sistem Analizi</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-3 flex items-center">
+                        <span class="text-2xl mr-2">✅</span>
+                        Zaten Var
+                    </h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">•</span>
+                            <span><strong>HLS Streaming:</strong> Müzikler segment segment akıyor (playlist.m3u8)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">•</span>
+                            <span><strong>AES-128 Şifreleme:</strong> Her şarkının encryption_key ve encryption_iv var</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">•</span>
+                            <span><strong>Key Serving:</strong> <code class="bg-slate-900 px-1 rounded">/api/muzibu/songs/{id}/key</code> endpoint çalışıyor</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">•</span>
+                            <span><strong>Signed URLs:</strong> 60 dakika geçerli imzalı URL sistemi</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-2">•</span>
+                            <span><strong>Premium Check:</strong> isPremiumOrTrial() kontrolü var</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-3 flex items-center">
+                        <span class="text-2xl mr-2">❌</span>
+                        Eksik Olan
+                    </h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start">
+                            <span class="text-red-400 mr-2">•</span>
+                            <span><strong>Offline Cache:</strong> HLS segmentleri bilgisayara kaydedilmiyor</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-400 mr-2">•</span>
+                            <span><strong>Service Worker:</strong> Offline fallback mekanizması yok</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-400 mr-2">•</span>
+                            <span><strong>Encrypted Storage:</strong> Şifreli lokal depolama sistemi yok</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-400 mr-2">•</span>
+                            <span><strong>Cache Management:</strong> 24 saatlik TTL, otomatik temizleme yok</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-400 mr-2">•</span>
+                            <span><strong>Offline UI:</strong> Kullanıcıya offline mod göstergesi yok</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4 Yaklaşım Karşılaştırması -->
+        <div class="card rounded-xl p-6 shadow-xl">
+            <h2 class="text-2xl font-bold text-purple-400 mb-6">🎯 4 Farklı Implementation Yaklaşımı</h2>
+
+            <div class="space-y-6">
+
+                <!-- Yaklaşım 1: PWA + Service Worker (ÖNERİLEN) -->
+                <div class="border-2 border-green-500 rounded-xl p-6 bg-green-900/10">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white">1️⃣ Progressive Web App (PWA) + Service Worker</h3>
+                        <span class="badge recommended">✨ ÖNERİLEN</span>
+                    </div>
+
+                    <p class="text-slate-300 mb-4">
+                        Mevcut web uygulamasına Service Worker ekleyerek offline cache sistemi kuruyoruz.
+                        En hızlı, en kolay ve en uyumlu çözüm.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-semibold text-green-300 mb-2">✅ Artıları:</h4>
+                            <ul class="space-y-1 text-sm text-slate-300">
+                                <li><span class="badge pro">PRO</span> Mevcut sisteme entegre (1-2 gün)</li>
+                                <li><span class="badge pro">PRO</span> Tüm browser'larda çalışır (Chrome, Firefox, Safari)</li>
+                                <li><span class="badge pro">PRO</span> Mobil + Desktop + Tablet uyumlu</li>
+                                <li><span class="badge pro">PRO</span> Cache API + IndexedDB güçlü depolama (GB'larca)</li>
+                                <li><span class="badge pro">PRO</span> Native install özelliği (masaüstü ikonu)</li>
+                                <li><span class="badge pro">PRO</span> Otomatik güncelleme (yeni versiyon yayınlayınca)</li>
+                                <li><span class="badge pro">PRO</span> Background sync (internet gelince senkronize)</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-red-300 mb-2">❌ Eksileri:</h4>
+                            <ul class="space-y-1 text-sm text-slate-300">
+                                <li><span class="badge con">CON</span> Browser quota limitleri var (genelde 10-50GB)</li>
+                                <li><span class="badge con">CON</span> Safari'de bazı kısıtlamalar olabilir (iOS 11.3+)</li>
+                                <li><span class="badge con">CON</span> HTTPS zorunlu (zaten var)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-cyan-300 mb-2">🔧 Teknik Detaylar:</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-slate-300">
+                            <div>
+                                <strong class="text-white">Service Worker:</strong>
+                                <code class="bg-slate-900 px-2 py-1 rounded block mt-1">public/sw.js</code>
+                            </div>
+                            <div>
+                                <strong class="text-white">Manifest:</strong>
+                                <code class="bg-slate-900 px-2 py-1 rounded block mt-1">public/manifest.json</code>
+                            </div>
+                            <div>
+                                <strong class="text-white">Cache Storage:</strong>
+                                <span class="text-cyan-400">Cache API (HLS segments)</span>
+                            </div>
+                            <div>
+                                <strong class="text-white">Metadata:</strong>
+                                <span class="text-cyan-400">IndexedDB (song info, keys)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 bg-blue-900/20 border border-blue-800 rounded-lg p-4">
+                        <h4 class="font-semibold text-blue-300 mb-2">💻 Nasıl Kullanılır?</h4>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li class="flex items-start">
+                                <span class="text-blue-400 mr-2">1️⃣</span>
+                                <span>Kullanıcı normal şekilde muzibu.com.tr'yi ziyaret eder (browser)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-400 mr-2">2️⃣</span>
+                                <span>İlk girişte tarayıcı sorar: "Uygulamayı yüklemek ister misiniz?" (PWA install)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-400 mr-2">3️⃣</span>
+                                <span>Kullanıcı "Evet" derse → Masaüstünde uygulama ikonu oluşur</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-400 mr-2">4️⃣</span>
+                                <span>Artık hem browser'dan hem ikona tıklayarak açabilir</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Yaklaşım 2: Electron Desktop App -->
+                <div class="border border-slate-700 rounded-xl p-6 bg-slate-800/30">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white">2️⃣ Electron Desktop Application</h3>
+                        <span class="badge" style="background: #3b82f6; color: white;">DESKTOP</span>
+                    </div>
+
+                    <p class="text-slate-300 mb-4">
+                        Ayrı bir masaüstü uygulaması geliştiriyoruz (Windows/Mac/Linux).
+                        Native kontrol ve güvenlik için en iyi çözüm.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-semibold text-green-300 mb-2">✅ Artıları:</h4>
+                            <ul class="space-y-1 text-sm text-slate-300">
+                                <li><span class="badge pro">PRO</span> Native dosya sistemi erişimi (tam kontrol)</li>
+                                <li><span class="badge pro">PRO</span> Sınırsız depolama (disk boyutu kadar)</li>
+                                <li><span class="badge pro">PRO</span> Node.js entegrasyonu (crypto, ffmpeg vb.)</li>
+                                <li><span class="badge pro">PRO</span> Background process (sistem tepsisi)</li>
+                                <li><span class="badge pro">PRO</span> Otomatik başlatma (PC açılınca)</li>
+                                <li><span class="badge pro">PRO</span> DRM desteği (Widevine)</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-red-300 mb-2">❌ Eksileri:</h4>
+                            <ul class="space-y-1 text-sm text-slate-300">
+                                <li><span class="badge con">CON</span> Ayrı uygulama geliştirilmeli (4-6 hafta)</li>
+                                <li><span class="badge con">CON</span> İndirme + kurulum gerekli (kullanıcı eylemi)</li>
+                                <li><span class="badge con">CON</span> Windows/Mac/Linux için ayrı build</li>
+                                <li><span class="badge con">CON</span> Uygulama boyutu büyük (~100MB)</li>
+                                <li><span class="badge con">CON</span> Güncelleme mekanizması gerekli</li>
+                                <li><span class="badge con">CON</span> Mobil için çalışmaz</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-cyan-300 mb-2">🔧 Teknik Detaylar:</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-slate-300">
+                            <div>
+                                <strong class="text-white">Framework:</strong>
+                                <span class="text-cyan-400">Electron.js (Chromium + Node.js)</span>
+                            </div>
+                            <div>
+                                <strong class="text-white">Frontend:</strong>
+                                <span class="text-cyan-400">Mevcut Muzibu arayüzü (embed)</span>
+                            </div>
+                            <div>
+                                <strong class="text-white">Storage:</strong>
+                                <span class="text-cyan-400">SQLite + encrypted file system</span>
+                            </div>
+                            <div>
+                                <strong class="text-white">Distribution:</strong>
+                                <span class="text-cyan-400">Auto-updater (electron-updater)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yaklaşım 3: Browser Extension -->
+                <div class="border border-slate-700 rounded-xl p-6 bg-slate-800/30">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white">3️⃣ Browser Extension (Chrome/Firefox)</h3>
+                        <span class="badge" style="background: #8b5cf6; color: white;">EXTENSION</span>
+                    </div>
+
+                    <p class="text-slate-300 mb-4">
+                        Chrome Web Store veya Firefox Add-ons'a extension yayınlıyoruz.
+                        Kullanıcı tarayıcıya kuruyor, arka planda çalışıyor.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-semibold text-green-300 mb-2">✅ Artıları:</h4>
+                            <ul class="space-y-1 text-sm text-slate-300">
+                                <li><span class="badge pro">PRO</span> Browser içinden yükleme (kolay)</li>
+                                <li><span class="badge pro">PRO</span> Background script çalışır (devamlı)</li>
+                                <li><span class="badge pro">PRO</span> Chrome + Firefox desteği</li>
+                                <li><span class="badge pro">PRO</span> Otomatik güncelleme (store)</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-red-300 mb-2">❌ Eksileri:</h4>
+                            <ul class="space-y-1 text-sm text-slate-300">
+                                <li><span class="badge con">CON</span> Extension yükleme gerekli (kullanıcı eylemi)</li>
+                                <li><span class="badge con">CON</span> Chrome/Firefox izin politikaları (kısıtlı)</li>
+                                <li><span class="badge con">CON</span> Store onay süreci (1-2 hafta)</li>
+                                <li><span class="badge con">CON</span> Depolama limiti (~10GB)</li>
+                                <li><span class="badge con">CON</span> Safari/Edge için ayrı geliştirme</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yaklaşım 4: Hybrid (Capacitor) -->
+                <div class="border border-slate-700 rounded-xl p-6 bg-slate-800/30">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white">4️⃣ Hybrid (PWA + Capacitor)</h3>
+                        <span class="badge" style="background: #f59e0b; color: white;">CROSS-PLATFORM</span>
+                    </div>
+
+                    <p class="text-slate-300 mb-4">
+                        PWA olarak başlayıp, Capacitor ile native iOS/Android/Desktop uygulamasına dönüştürüyoruz.
+                        Her platforma dağıtım için en iyi çözüm.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-semibold text-green-300 mb-2">✅ Artıları:</h4>
+                            <ul class="space-y-1 text-sm text-slate-300">
+                                <li><span class="badge pro">PRO</span> Tek kod tabanı → Web + iOS + Android + Desktop</li>
+                                <li><span class="badge pro">PRO</span> PWA olarak başla → Sonra native ekle</li>
+                                <li><span class="badge pro">PRO</span> Native plugin desteği (file system, background)</li>
+                                <li><span class="badge pro">PRO</span> App Store + Google Play dağıtımı</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-red-300 mb-2">❌ Eksileri:</h4>
+                            <ul class="space-y-1 text-sm text-slate-300">
+                                <li><span class="badge con">CON</span> Daha kompleks setup (Capacitor + native tools)</li>
+                                <li><span class="badge con">CON</span> Store onay süreci (iOS: 1-2 hafta, Android: 1-2 gün)</li>
+                                <li><span class="badge con">CON</span> iOS için Mac + Xcode gerekli</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Karar Matrisi -->
+        <div class="card rounded-xl p-6 shadow-xl">
+            <h2 class="text-2xl font-bold text-yellow-400 mb-6">📊 Karar Matrisi - Hangi Yaklaşımı Seçmeli?</h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 px-4 text-slate-400">Kriter</th>
+                            <th class="text-center py-3 px-4 text-green-400">PWA + SW<br>(ÖNERİLEN)</th>
+                            <th class="text-center py-3 px-4 text-blue-400">Electron<br>Desktop</th>
+                            <th class="text-center py-3 px-4 text-purple-400">Browser<br>Extension</th>
+                            <th class="text-center py-3 px-4 text-orange-400">Hybrid<br>Capacitor</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4">Geliştirme Süresi</td>
+                            <td class="text-center text-green-400 font-semibold">1-2 gün</td>
+                            <td class="text-center text-yellow-400">4-6 hafta</td>
+                            <td class="text-center text-yellow-400">2-3 hafta</td>
+                            <td class="text-center text-yellow-400">3-4 hafta</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4">Kullanıcı Deneyimi</td>
+                            <td class="text-center text-green-400 font-semibold">Mükemmel</td>
+                            <td class="text-center text-green-400">Mükemmel</td>
+                            <td class="text-center text-yellow-400">İyi</td>
+                            <td class="text-center text-green-400">Mükemmel</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4">Platform Desteği</td>
+                            <td class="text-center text-green-400 font-semibold">Web/Mobile/Desktop</td>
+                            <td class="text-center text-yellow-400">Sadece Desktop</td>
+                            <td class="text-center text-yellow-400">Sadece Browser</td>
+                            <td class="text-center text-green-400">Tümü</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4">Kurulum Gerekli Mi?</td>
+                            <td class="text-center text-green-400 font-semibold">İsteğe bağlı</td>
+                            <td class="text-center text-red-400">Evet (zorunlu)</td>
+                            <td class="text-center text-red-400">Evet (zorunlu)</td>
+                            <td class="text-center text-yellow-400">Store'dan</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4">Depolama Limiti</td>
+                            <td class="text-center text-yellow-400">10-50GB</td>
+                            <td class="text-center text-green-400 font-semibold">Sınırsız</td>
+                            <td class="text-center text-red-400">~10GB</td>
+                            <td class="text-center text-green-400">Yüksek</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4">Güvenlik</td>
+                            <td class="text-center text-green-400">Yüksek</td>
+                            <td class="text-center text-green-400 font-semibold">Çok Yüksek</td>
+                            <td class="text-center text-yellow-400">Orta</td>
+                            <td class="text-center text-green-400">Yüksek</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4">Maliyet</td>
+                            <td class="text-center text-green-400 font-semibold">Düşük</td>
+                            <td class="text-center text-red-400">Yüksek</td>
+                            <td class="text-center text-yellow-400">Orta</td>
+                            <td class="text-center text-yellow-400">Orta-Yüksek</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-semibold">TOPLAM PUAN</td>
+                            <td class="text-center text-green-400 font-bold text-lg">⭐⭐⭐⭐⭐</td>
+                            <td class="text-center text-blue-400 font-bold text-lg">⭐⭐⭐⭐</td>
+                            <td class="text-center text-purple-400 font-bold text-lg">⭐⭐⭐</td>
+                            <td class="text-center text-orange-400 font-bold text-lg">⭐⭐⭐⭐</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 bg-green-900/20 border-2 border-green-500 rounded-lg p-4">
+                <h3 class="font-semibold text-green-300 mb-2">🎯 Öneri:</h3>
+                <p class="text-slate-300">
+                    <strong class="text-white">PWA + Service Worker</strong> ile başlayın.
+                    Hızlı implement edilir, tüm platformlarda çalışır, kullanıcı deneyimi mükemmel.
+                    İlerde ihtiyaç olursa Electron veya Capacitor'a geçiş yapabilirsiniz
+                    (aynı kod tabanını kullanarak).
+                </p>
+            </div>
+        </div>
+
+        <!-- Güvenlik & Şifreleme -->
+        <div class="card rounded-xl p-6 shadow-xl border-l-4 border-red-500">
+            <h2 class="text-2xl font-bold text-red-400 mb-4">🔐 Güvenlik & Şifreleme Stratejisi</h2>
+
+            <div class="space-y-6">
+                <div class="bg-red-900/20 border border-red-800 rounded-lg p-4">
+                    <h3 class="font-semibold text-red-300 mb-3">⚠️ Kritik Güvenlik Gereksinimleri:</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start">
+                            <span class="text-red-400 mr-2">🔒</span>
+                            <span><strong class="text-white">DRM Koruması:</strong> Kullanıcı cache'lenmiş dosyaları kopyalayıp paylaşamaz</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-400 mr-2">🔒</span>
+                            <span><strong class="text-white">Premium Kontrolü:</strong> Üyelik bitince cache otomatik silinir</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-400 mr-2">🔒</span>
+                            <span><strong class="text-white">Cihaz Limiti:</strong> Aynı anda max X cihazda offline oynatma</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-400 mr-2">🔒</span>
+                            <span><strong class="text-white">TTL Kontrolü:</strong> 24 saat sonra cache refresh zorunlu</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h3 class="font-semibold text-cyan-300 mb-3">🔑 Mevcut Şifreleme (HLS):</h3>
+                        <div class="space-y-2 text-sm text-slate-300">
+                            <div>
+                                <strong class="text-white">Method:</strong>
+                                <code class="bg-slate-900 px-2 py-1 rounded ml-2">AES-128-CBC</code>
+                            </div>
+                            <div>
+                                <strong class="text-white">Key Storage:</strong>
+                                <code class="bg-slate-900 px-2 py-1 rounded ml-2">songs.encryption_key</code>
+                            </div>
+                            <div>
+                                <strong class="text-white">IV Storage:</strong>
+                                <code class="bg-slate-900 px-2 py-1 rounded ml-2">songs.encryption_iv</code>
+                            </div>
+                            <div>
+                                <strong class="text-white">Key Serving:</strong>
+                                <code class="bg-slate-900 px-2 py-1 rounded ml-2">/api/muzibu/songs/{id}/key</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h3 class="font-semibold text-purple-300 mb-3">🆕 Offline Cache Şifreleme:</h3>
+                        <div class="space-y-2 text-sm text-slate-300">
+                            <div>
+                                <strong class="text-white">Method:</strong>
+                                <code class="bg-slate-900 px-2 py-1 rounded ml-2">Web Crypto API</code>
+                            </div>
+                            <div>
+                                <strong class="text-white">Key Derivation:</strong>
+                                <code class="bg-slate-900 px-2 py-1 rounded ml-2">PBKDF2 (user_id + device_id)</code>
+                            </div>
+                            <div>
+                                <strong class="text-white">Storage:</strong>
+                                <code class="bg-slate-900 px-2 py-1 rounded ml-2">IndexedDB (encrypted blobs)</code>
+                            </div>
+                            <div>
+                                <strong class="text-white">Access Control:</strong>
+                                <code class="bg-slate-900 px-2 py-1 rounded ml-2">isPremiumOrTrial() check</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-4">
+                    <h3 class="font-semibold text-blue-300 mb-3">🛡️ Offline Cache Güvenlik Akışı:</h3>
+                    <ol class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">1️⃣</span>
+                            <span>Kullanıcı şarkı oynatır → Service Worker HLS segmentlerini yakalar</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">2️⃣</span>
+                            <span>Her segment <code class="bg-slate-900 px-1 rounded">Web Crypto API</code> ile tekrar şifrelenir (double encryption)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">3️⃣</span>
+                            <span>Şifreli segment <code class="bg-slate-900 px-1 rounded">IndexedDB</code>'ye kaydedilir (binary blob)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">4️⃣</span>
+                            <span>Metadata (song_id, cached_at, expires_at) ayrı tabloda saklanır</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">5️⃣</span>
+                            <span>Offline oynatmada: Cache'ten çekilen segment önce decrypt edilir → HLS.js'e verilir</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">6️⃣</span>
+                            <span>HLS.js kendi encryption key'i ile tekrar decrypt eder (original AES-128)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-400 mr-2">🚫</span>
+                            <span>Premium biterse: Service Worker tüm cache'i otomatik siler (cleanup job)</span>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Plan (PWA) -->
+        <div class="card rounded-xl p-6 shadow-xl border-l-4 border-emerald-500">
+            <h2 class="text-2xl font-bold text-emerald-400 mb-4">🚀 Implementation Plan (PWA + Service Worker)</h2>
+
+            <div class="space-y-6">
+
+                <!-- Adım 1 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center mb-3">
+                        <span class="bg-emerald-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">1</span>
+                        <h3 class="text-lg font-semibold text-white">Service Worker Setup</h3>
+                        <span class="badge ml-auto" style="background: #10b981; color: white;">~2 saat</span>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-300 ml-11">
+                        <li>• <code class="bg-slate-900 px-2 py-1 rounded">public/sw.js</code> dosyası oluştur</li>
+                        <li>• Install, activate, fetch event listeners ekle</li>
+                        <li>• Layout'a service worker registration script ekle</li>
+                        <li>• <code class="bg-slate-900 px-2 py-1 rounded">public/manifest.json</code> oluştur (PWA metadata)</li>
+                    </ul>
+                </div>
+
+                <!-- Adım 2 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center mb-3">
+                        <span class="bg-emerald-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">2</span>
+                        <h3 class="text-lg font-semibold text-white">Cache Strategy Implementation</h3>
+                        <span class="badge ml-auto" style="background: #10b981; color: white;">~4 saat</span>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-300 ml-11">
+                        <li>• HLS segment'leri için Cache-First stratejisi</li>
+                        <li>• Playlist (.m3u8) için Network-First stratejisi</li>
+                        <li>• Encryption key'leri için Cache-First stratejisi</li>
+                        <li>• API response'ları için Network-First + Cache Fallback</li>
+                    </ul>
+                </div>
+
+                <!-- Adım 3 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center mb-3">
+                        <span class="bg-emerald-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">3</span>
+                        <h3 class="text-lg font-semibold text-white">IndexedDB Schema</h3>
+                        <span class="badge ml-auto" style="background: #10b981; color: white;">~3 saat</span>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-300 ml-11">
+                        <li>• <code class="bg-slate-900 px-2 py-1 rounded">muzibu_cache</code> database oluştur</li>
+                        <li>• <code class="bg-slate-900 px-2 py-1 rounded">songs</code> object store (metadata)</li>
+                        <li>• <code class="bg-slate-900 px-2 py-1 rounded">segments</code> object store (binary blobs)</li>
+                        <li>• <code class="bg-slate-900 px-2 py-1 rounded">keys</code> object store (encryption keys)</li>
+                        <li>• TTL (expires_at) index ekle</li>
+                    </ul>
+                </div>
+
+                <!-- Adım 4 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center mb-3">
+                        <span class="bg-emerald-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">4</span>
+                        <h3 class="text-lg font-semibold text-white">Encryption Layer (Web Crypto API)</h3>
+                        <span class="badge ml-auto" style="background: #10b981; color: white;">~4 saat</span>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-300 ml-11">
+                        <li>• User-specific encryption key generate et (PBKDF2)</li>
+                        <li>• Segment cache'leme sırasında encrypt fonksiyonu</li>
+                        <li>• Segment okuma sırasında decrypt fonksiyonu</li>
+                        <li>• Key rotation mekanizması (24 saatte bir)</li>
+                    </ul>
+                </div>
+
+                <!-- Adım 5 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center mb-3">
+                        <span class="bg-emerald-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">5</span>
+                        <h3 class="text-lg font-semibold text-white">Premium & TTL Management</h3>
+                        <span class="badge ml-auto" style="background: #10b981; color: white;">~3 saat</span>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-300 ml-11">
+                        <li>• Cache'leme sırasında <code class="bg-slate-900 px-2 py-1 rounded">isPremiumOrTrial()</code> kontrolü</li>
+                        <li>• Her cache item'a <code class="bg-slate-900 px-2 py-1 rounded">expires_at = now() + 24h</code> ekle</li>
+                        <li>• Background sync: Her saat expired items'ları temizle</li>
+                        <li>• Premium bitişte: <code class="bg-slate-900 px-2 py-1 rounded">clearAllCache()</code> event listener</li>
+                    </ul>
+                </div>
+
+                <!-- Adım 6 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center mb-3">
+                        <span class="bg-emerald-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">6</span>
+                        <h3 class="text-lg font-semibold text-white">Offline UI Indicators</h3>
+                        <span class="badge ml-auto" style="background: #10b981; color: white;">~2 saat</span>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-300 ml-11">
+                        <li>• Online/offline status badge (header'da)</li>
+                        <li>• Cached songs badge (şarkı listesinde yeşil işaret)</li>
+                        <li>• Cache progress indicator (indirme sırasında)</li>
+                        <li>• Toast notification: "Offline moda geçildi"</li>
+                    </ul>
+                </div>
+
+                <!-- Adım 7 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center mb-3">
+                        <span class="bg-emerald-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">7</span>
+                        <h3 class="text-lg font-semibold text-white">Testing & Debugging</h3>
+                        <span class="badge ml-auto" style="background: #10b981; color: white;">~4 saat</span>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-300 ml-11">
+                        <li>• Chrome DevTools → Application → Service Workers test</li>
+                        <li>• Offline checkbox ile gerçek offline test</li>
+                        <li>• IndexedDB storage test (boyut, TTL)</li>
+                        <li>• Premium/trial senaryoları test et</li>
+                    </ul>
+                </div>
+
+                <div class="bg-emerald-900/20 border border-emerald-800 rounded-lg p-4">
+                    <h3 class="font-semibold text-emerald-300 mb-2">⏱️ Toplam Tahmini Süre:</h3>
+                    <p class="text-slate-300">
+                        <span class="text-3xl font-bold text-emerald-400">~22 saat</span>
+                        <span class="text-slate-400 ml-2">(yaklaşık 3 iş günü - tek developer)</span>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="card rounded-xl p-6 shadow-xl">
+            <h2 class="text-2xl font-bold text-cyan-400 mb-4">🔧 Teknik Detaylar (Geliştiriciler İçin)</h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">📁 Dosya Yapısı:</h3>
+                    <pre class="bg-slate-900 text-slate-300 p-3 rounded text-sm overflow-x-auto"><code>public/
+├── sw.js                          # Service Worker (cache logic)
+├── manifest.json                  # PWA manifest
+└── js/
+    └── sw-register.js             # SW registration script
+
+resources/views/themes/muzibu/layouts/
+└── app.blade.php                  # SW registration eklenecek
+
+Modules/Muzibu/app/Services/
+└── CacheService.php               # Backend cache management (yeni)
+
+database/migrations/
+└── muzibu_cache_analytics.php    # Cache analytics table (isteğe bağlı)</code></pre>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">🗄️ IndexedDB Schema:</h3>
+                    <pre class="bg-slate-900 text-slate-300 p-3 rounded text-sm overflow-x-auto"><code>// Database: muzibu_cache
+// Version: 1
+
+// Object Store: songs
+{
+  song_id: number (keyPath),
+  title: string,
+  artist: string,
+  album_id: number,
+  cached_at: timestamp,
+  expires_at: timestamp,
+  size_bytes: number,
+  segment_count: number
+}
+
+// Object Store: segments
+{
+  id: string (keyPath, format: "songId_segmentIndex"),
+  song_id: number (index),
+  segment_index: number,
+  encrypted_blob: ArrayBuffer,
+  cached_at: timestamp
+}
+
+// Object Store: keys
+{
+  song_id: number (keyPath),
+  encryption_key: string (base64),
+  iv: string (base64),
+  cached_at: timestamp
+}</code></pre>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">⚙️ Service Worker Cache Stratejileri:</h3>
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <strong class="text-cyan-300">HLS Segments (.ts dosyaları):</strong>
+                            <code class="bg-slate-900 px-2 py-1 rounded ml-2 text-slate-300">Cache-First</code>
+                            <p class="text-slate-400 mt-1 ml-4">→ Önce cache'e bak, yoksa network'ten çek ve cache'le</p>
+                        </div>
+                        <div>
+                            <strong class="text-cyan-300">Playlist (.m3u8 dosyaları):</strong>
+                            <code class="bg-slate-900 px-2 py-1 rounded ml-2 text-slate-300">Network-First</code>
+                            <p class="text-slate-400 mt-1 ml-4">→ Network'ten çek, offline ise cache'ten döndür</p>
+                        </div>
+                        <div>
+                            <strong class="text-cyan-300">Encryption Keys (/api/.../key):</strong>
+                            <code class="bg-slate-900 px-2 py-1 rounded ml-2 text-slate-300">Cache-First</code>
+                            <p class="text-slate-400 mt-1 ml-4">→ Key'ler değişmez, aggressive cache</p>
+                        </div>
+                        <div>
+                            <strong class="text-cyan-300">API Calls (/api/muzibu/*):</strong>
+                            <code class="bg-slate-900 px-2 py-1 rounded ml-2 text-slate-300">Network-First + Stale-While-Revalidate</code>
+                            <p class="text-slate-400 mt-1 ml-4">→ Cache'ten döndür ama arka planda güncelle</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">🔐 Web Crypto API Kullanımı:</h3>
+                    <pre class="bg-slate-900 text-slate-300 p-3 rounded text-xs overflow-x-auto"><code>// Encryption key generation (user + device specific)
+const keyMaterial = await crypto.subtle.importKey(
+  'raw',
+  new TextEncoder().encode(userId + deviceId + salt),
+  { name: 'PBKDF2' },
+  false,
+  ['deriveBits', 'deriveKey']
+);
+
+const encryptionKey = await crypto.subtle.deriveKey(
+  { name: 'PBKDF2', salt: saltBuffer, iterations: 100000, hash: 'SHA-256' },
+  keyMaterial,
+  { name: 'AES-GCM', length: 256 },
+  false,
+  ['encrypt', 'decrypt']
+);
+
+// Segment encryption
+const encryptedSegment = await crypto.subtle.encrypt(
+  { name: 'AES-GCM', iv: ivBuffer },
+  encryptionKey,
+  segmentArrayBuffer
+);
+
+// Segment decryption (offline playback)
+const decryptedSegment = await crypto.subtle.decrypt(
+  { name: 'AES-GCM', iv: ivBuffer },
+  encryptionKey,
+  encryptedSegmentArrayBuffer
+);</code></pre>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">📊 İlgili Mevcut Dosyalar:</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>
+                            <code class="bg-slate-900 px-2 py-1 rounded">Modules/Muzibu/app/Http/Controllers/Api/SongStreamController.php</code>
+                            <p class="text-slate-400 ml-4">→ stream(), serveKey() fonksiyonları</p>
+                        </li>
+                        <li>
+                            <code class="bg-slate-900 px-2 py-1 rounded">Modules/Muzibu/app/Models/Song.php</code>
+                            <p class="text-slate-400 ml-4">→ encryption_key, encryption_iv fields</p>
+                        </li>
+                        <li>
+                            <code class="bg-slate-900 px-2 py-1 rounded">public/themes/muzibu/js/player/core/player-core.js</code>
+                            <p class="text-slate-400 ml-4">→ HLS.js implementation (44KB, büyük dosya)</p>
+                        </li>
+                        <li>
+                            <code class="bg-slate-900 px-2 py-1 rounded">App/Services/SignedUrlService.php</code>
+                            <p class="text-slate-400 ml-4">→ generateHlsUrl(), generateStreamUrl() (60 dk TTL)</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="card rounded-xl p-6 shadow-xl bg-gradient-to-br from-purple-900/30 to-pink-900/30 border-2 border-purple-500">
+            <h2 class="text-2xl font-bold text-purple-300 mb-4">🎯 Sonraki Adımlar - Karar Zamanı!</h2>
+
+            <div class="space-y-4 text-slate-300">
+                <p class="text-lg">
+                    Bu raporda <strong class="text-white">4 farklı yaklaşım</strong> analiz ettik.
+                    Şimdi hangi yaklaşımla ilerleyeceğimize karar verme zamanı:
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-green-900/20 border-2 border-green-500 rounded-lg p-4">
+                        <h3 class="font-semibold text-green-300 mb-2">✅ Hızlı Başlangıç İstiyorsanız:</h3>
+                        <p class="text-sm">
+                            <strong class="text-white">PWA + Service Worker</strong> ile başlayın.
+                            1-2 gün içinde çalışır hale gelir, tüm platformlarda kullanılabilir.
+                        </p>
+                    </div>
+
+                    <div class="bg-blue-900/20 border-2 border-blue-500 rounded-lg p-4">
+                        <h3 class="font-semibold text-blue-300 mb-2">🎯 Maksimum Kontrol İstiyorsanız:</h3>
+                        <p class="text-sm">
+                            <strong class="text-white">Electron Desktop App</strong> geliştirin.
+                            Native kontrol, sınırsız depolama, gelişmiş güvenlik.
+                        </p>
+                    </div>
+
+                    <div class="bg-purple-900/20 border-2 border-purple-500 rounded-lg p-4">
+                        <h3 class="font-semibold text-purple-300 mb-2">📱 Cross-Platform İstiyorsanız:</h3>
+                        <p class="text-sm">
+                            <strong class="text-white">Hybrid (Capacitor)</strong> ile başlayın.
+                            Web + iOS + Android + Desktop tek kod tabanı.
+                        </p>
+                    </div>
+
+                    <div class="bg-orange-900/20 border-2 border-orange-500 rounded-lg p-4">
+                        <h3 class="font-semibold text-orange-300 mb-2">🔧 Basit Extension İstiyorsanız:</h3>
+                        <p class="text-sm">
+                            <strong class="text-white">Browser Extension</strong> geliştirin.
+                            Chrome/Firefox için hızlı çözüm.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-purple-900/30 border border-purple-700 rounded-lg p-4 mt-6">
+                    <h3 class="font-semibold text-purple-300 mb-2">💬 Bana Söyleyin:</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li>• Hangi yaklaşımı tercih ediyorsunuz?</li>
+                        <li>• Offline modu hangi cihazlarda kullanmak istiyorsunuz? (Desktop / Mobile / Her ikisi)</li>
+                        <li>• Cache limiti ne olsun? (10GB / 50GB / Sınırsız)</li>
+                        <li>• Offline cache süresi 24 saat uygun mu?</li>
+                    </ul>
+                </div>
+
+                <div class="bg-green-900/20 border border-green-800 rounded-lg p-4">
+                    <p class="text-center text-lg">
+                        <strong class="text-green-300">Karar verdiğinizde</strong>,
+                        hemen <span class="text-white font-semibold">Implementation Plan</span> hazırlayıp
+                        geliştirmeye başlayabiliriz! 🚀
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="max-w-6xl mx-auto mt-12 text-center text-slate-400 text-sm pb-8">
+        <p>🤖 Generated with Claude AI - Muzibu Offline Playback Analysis</p>
+        <p class="mt-2">Rapor Versiyonu: v1 | Tarih: 17 Aralık 2025</p>
+    </div>
+
+</body>
+</html>

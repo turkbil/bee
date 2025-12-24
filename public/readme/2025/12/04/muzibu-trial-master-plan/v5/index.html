@@ -1,1 +1,214 @@
-v5/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Master Plan v5 - Güncel Durum (2025-12-05)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <div class="flex items-center gap-4 mb-4">
+                <h1 class="text-4xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                    Subscription Master Plan v5
+                </h1>
+                <span class="px-3 py-1 bg-green-600 text-white text-sm font-bold rounded-full">GÜNCEL</span>
+            </div>
+            <p class="text-slate-400 text-lg">Son Durum: Migration Unifikasyonu Tamamlandı</p>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 2025-12-05 03:00</span>
+                <span>🎯 3 Tenant Unified</span>
+                <span>✅ DB ↔ Migration Eşleşti</span>
+            </div>
+        </header>
+
+        <!-- İLERLEME DURUMU -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">✅ TAMAMLANAN İŞLEMLER</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Migration Cleanup -->
+                <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-4 text-green-400">1. Migration Birleştirme</h3>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li>✅ subscription_plans: 1 create migration</li>
+                        <li>✅ subscriptions: 1 create migration</li>
+                        <li>✅ users: 1 create migration (24 field)</li>
+                        <li>✅ 9 gereksiz migration silindi</li>
+                    </ul>
+                </div>
+
+                <!-- Users Table -->
+                <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-4 text-green-400">2. Users Tablosu Temizlendi</h3>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li>✅ corporate_account_id kaldırıldı</li>
+                        <li>✅ has_used_trial eklendi</li>
+                        <li>✅ bio, dashboard_preferences eklendi</li>
+                        <li>✅ 24 field unified</li>
+                    </ul>
+                </div>
+
+                <!-- DB Status -->
+                <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-4 text-green-400">3. Database Durumu</h3>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li>✅ Central: 18 field (eşleşiyor)</li>
+                        <li>✅ İxtif: 18 field (eşleşiyor)</li>
+                        <li>✅ Muzibu: 18 field (eşleşiyor)</li>
+                        <li>✅ Trial field hazır</li>
+                    </ul>
+                </div>
+
+                <!-- Git -->
+                <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-4 text-green-400">4. Git İşlemleri</h3>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li>✅ Migration Consolidation</li>
+                        <li>✅ Users Table Cleanup</li>
+                        <li>✅ Pushed to main</li>
+                        <li>✅ Backup alındı</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- GÜNCEL DURUM -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">📊 Güncel Durum (2025-12-05)</h2>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Central -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-purple-700/50">
+                    <h3 class="text-xl font-bold mb-4 text-purple-400">Central</h3>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-slate-300">👥 Users: <span class="text-white font-semibold">8</span></p>
+                        <p class="text-slate-300">📋 Plans: <span class="text-white font-semibold">2</span></p>
+                        <p class="text-slate-300">📊 Fields: <span class="text-green-400 font-semibold">18 ✅</span></p>
+                        <div class="mt-4 pt-4 border-t border-slate-700">
+                            <p class="text-xs text-green-400">✅ is_trial, trial_days</p>
+                            <p class="text-xs text-green-400">✅ has_used_trial</p>
+                            <p class="text-xs text-green-400">✅ Temiz (currency_id yok)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- İxtif -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-blue-700/50">
+                    <h3 class="text-xl font-bold mb-4 text-blue-400">Tenant İxtif</h3>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-slate-300">👥 Users: <span class="text-white font-semibold">5</span></p>
+                        <p class="text-slate-300">📋 Plans: <span class="text-white font-semibold">2</span></p>
+                        <p class="text-slate-300">📊 Fields: <span class="text-green-400 font-semibold">18 ✅</span></p>
+                        <div class="mt-4 pt-4 border-t border-slate-700">
+                            <p class="text-xs text-green-400">✅ is_trial, trial_days</p>
+                            <p class="text-xs text-green-400">✅ has_used_trial</p>
+                            <p class="text-xs text-green-400">✅ Temiz (currency_id yok)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Muzibu -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-green-700/50">
+                    <h3 class="text-xl font-bold mb-4 text-green-400">Tenant Muzibu 🎯</h3>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-slate-300">👥 Users: <span class="text-white font-semibold">7</span></p>
+                        <p class="text-slate-300">📋 Plans: <span class="text-white font-semibold">1</span></p>
+                        <p class="text-slate-300">📊 Fields: <span class="text-green-400 font-semibold">18 ✅</span></p>
+                        <div class="mt-4 pt-4 border-t border-slate-700">
+                            <p class="text-xs text-green-400">✅ is_trial, trial_days</p>
+                            <p class="text-xs text-green-400">✅ has_used_trial</p>
+                            <p class="text-xs text-green-400">✅ Temiz (currency_id yok)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KALAN İŞLER -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-yellow-400">⚠️ KALAN İŞLER</h2>
+            
+            <div class="space-y-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center font-bold">1/span>
+                        <h3 class="text-xl font-bold text-blue-400">Subscription Sistemini Aktifleştir</h3>
+                    </div>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li>📝 Trial plan oluştur (is_trial=true, trial_days=7)</li>
+                        <li>📝 Premium planları yapılandır</li>
+                        <li>📝 Subscription flow test</li>
+                        <li>📝 has_used_trial kontrolü aktif</li>
+                    </ul>
+                </div>
+
+                <!-- 3 -->
+                <div class="bg-purple-900/20 border border-purple-800/50 rounded-lg p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold">2/span>
+                        <h3 class="text-xl font-bold text-purple-400">Event System</h3>
+                    </div>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li>🔔 SubscriptionCreated</li>
+                        <li>🔔 SubscriptionExpired</li>
+                        <li>🔔 TrialEnded</li>
+                        <li>🔔 StatusChanged</li>
+                    </ul>
+                </div>
+
+                <!-- 4 -->
+                <div class="bg-red-900/20 border border-red-800/50 rounded-lg p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <w-8 h-8 bg-yellow-600 text-white rounded-full flex items-center justify-center font-bold">3/span>
+                        <h3 class="text-xl font-bold text-red-400">Cache-Free isPremium()</h3>
+                    </div>
+                    <p class="text-slate-300 mb-3">HER müzik stream isteğinde fresh check (cache YOK!)</p>
+                    <div class="bg-slate-900/50 rounded p-4 text-sm font-mono text-slate-400">
+$sub = Subscription::where('user_id', $userId)<br>
+    ->where('status', 'active')<br>
+    ->where('current_period_end', '>', now())<br>
+    ->first(); // CACHE YOK!
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÖZET -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">📊 Özet</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold mb-4 text-green-400">✅ Tamamlanan</h3>
+                    <ul class="space-y-1 text-sm text-slate-300">
+                        <li>✅ Migration birleştirme (9 dosya silindi)</li>
+                        <li>✅ Users tablosu temizleme</li>
+                        <li>✅ has_used_trial field eklendi</li>
+                        <li>✅ is_trial, trial_days hazır</li>
+                        <li>✅ corporate_account_id kaldırıldı</li>
+                        <li>✅ Git push tamamlandı</li>
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-900/20 border border-yellow-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold mb-4 text-yellow-400">⚠️ Bekleyen</h3>
+                    <ul class="space-y-1 text-sm text-slate-300">
+                        <li>⚠️ Trial plan oluştur</li>
+                        <li>⚠️ Subscription flow test</li>
+                        <li>⚠️ Cache-free check ekle</li>
+                        <li>⚠️ Event system kur</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI - Tailwind CSS</p>
+            <p class="mt-2">Versiyon: v5 | Tarih: 2025-12-05 03:00</p>
+        </footer>
+    </div>
+</body>
+</html>

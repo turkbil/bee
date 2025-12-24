@@ -1,1 +1,650 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog AI Cron & Image Generation - Detaylı Analiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #818cf8;
+        }
+
+        .flow-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .flow-item:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .flow-item h4 {
+            color: #60a5fa;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .flow-item p {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .flow-item ul {
+            margin-left: 20px;
+            color: #cbd5e1;
+        }
+
+        .flow-item ul li {
+            margin-bottom: 8px;
+        }
+
+        .issue-item {
+            background: rgba(220, 38, 38, 0.1);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #dc2626;
+        }
+
+        .issue-item h4 {
+            color: #fca5a5;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .issue-item p {
+            color: #fecaca;
+            line-height: 1.8;
+        }
+
+        .warning-item {
+            background: rgba(251, 191, 36, 0.1);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #fbbf24;
+        }
+
+        .warning-item h4 {
+            color: #fde047;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .warning-item p {
+            color: #fef08a;
+            line-height: 1.8;
+        }
+
+        .success-item {
+            background: rgba(34, 197, 94, 0.1);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #22c55e;
+        }
+
+        .success-item h4 {
+            color: #86efac;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .success-item p {
+            color: #bbf7d0;
+            line-height: 1.8;
+        }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+
+        .code-inline {
+            background: rgba(51, 65, 85, 0.8);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #a5f3fc;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .priority-high { background: #dc2626; color: white; }
+        .priority-medium { background: #f59e0b; color: white; }
+        .priority-low { background: #10b981; color: white; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .arrow {
+            color: #60a5fa;
+            font-weight: bold;
+            margin: 0 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: rgba(51, 65, 85, 0.8);
+            color: #60a5fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px;
+            border-top: 1px solid #334155;
+            color: #cbd5e1;
+        }
+
+        tr:hover {
+            background: rgba(51, 65, 85, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Blog AI Cron & Image Generation Analizi</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-19 | 
+                🎯 Sistem: Multi-Tenant Blog AI | 
+                👤 Analiz Kapsamı: Cron Jobs, Draft Generation, Blog Creation, Image Integration
+            </div>
+        </header>
+
+        <!-- SİSTEM AKIŞI -->
+        <section>
+            <h2>🔄 Sistem Akışı - Nasıl Çalışıyor?</h2>
+
+            <h3>1️⃣ Cron Job Tetiklemesi</h3>
+            <div class="flow-item">
+                <h4>Zamanlanmış Görev (Crontab)</h4>
+                <p><strong>Çalışma Sıklığı:</strong> Her 5 dakikada bir (<span class="code-inline">*/5 * * * *</span>)</p>
+                <p><strong>Script:</strong> <span class="code-inline">blog-cron.sh</span></p>
+                <p><strong>Komut:</strong> <span class="code-inline">php artisan generate:tenant-blogs</span></p>
+                <p><strong>Log:</strong> <span class="code-inline">storage/logs/blog-cron.log</span></p>
+            </div>
+
+            <h3>2️⃣ Tenant Tarama (GenerateTenantBlogs Command)</h3>
+            <div class="flow-item">
+                <h4>Adım 1: Tüm Tenant'ları Getir</h4>
+                <p>Sistemdeki tüm tenant'lar taranır. Her tenant için:</p>
+                <ul>
+                    <li>Tenant context başlatılır (<span class="code-inline">tenancy()->initialize($tenant)</span>)</li>
+                    <li>Blog AI aktif mi kontrol edilir (<span class="code-inline">blog_ai_enabled</span> setting)</li>
+                    <li>Günlük blog sayısı alınır (<span class="code-inline">blog_ai_daily_count</span>)</li>
+                </ul>
+            </div>
+
+            <div class="flow-item">
+                <h4>Adım 2: Saat Kontrolü (ŞU AN DİSABLED - TEST MODE)</h4>
+                <p><strong>⚠️ ÖNEMLİ:</strong> Bu kontrol şu an test modda bypass edilmiş!</p>
+                <p><strong>Normal Mantık:</strong> Günlük blog sayısına göre aktif saatler hesaplanır.</p>
+                <p>Örnek: 4 blog/gün ise → 06:00, 12:00, 18:00, 00:00 saatlerinde çalışır</p>
+                <p><strong>Şu Anki Durum:</strong> Her çalışmada blog üretmeye çalışır!</p>
+            </div>
+
+            <div class="flow-item">
+                <h4>Adım 3: Draft Pool Kontrolü</h4>
+                <p>Kullanılabilir draft sayısı kontrol edilir:</p>
+                <ul>
+                    <li><strong>Draft Yok (0):</strong> Önce draft üretimi başlatılır (100 draft)</li>
+                    <li><strong>Draft Var:</strong> Random 1 draft seçilir ve blog oluşturulur</li>
+                    <li><strong>Draft Azaldı (≤10):</strong> Blog oluşturulduktan sonra 100 yeni draft üretilir</li>
+                </ul>
+            </div>
+
+            <h3>3️⃣ Draft Üretimi (GenerateDraftsJob)</h3>
+            <div class="flow-item">
+                <h4>Queue İşlemi</h4>
+                <p><strong>Queue:</strong> <span class="code-inline">blog-ai</span></p>
+                <p><strong>Timeout:</strong> 15 dakika</p>
+                <p><strong>Retry:</strong> 3 deneme</p>
+                <p><strong>Üretim Sayısı:</strong> 25 draft (CategoryBasedDraftGenerator - sabit)</p>
+            </div>
+
+            <div class="flow-item">
+                <h4>CategoryBasedDraftGenerator Mantığı</h4>
+                <ul>
+                    <li>Blog kategorilerini çeker</li>
+                    <li>Her kategori için 5 farklı draft konusu üretir</li>
+                    <li>AI ile outline, meta description, SEO keywords oluşturur</li>
+                    <li>Toplamda 25 draft database'e kaydedilir</li>
+                </ul>
+            </div>
+
+            <h3>4️⃣ Blog Oluşturma (GenerateBlogFromDraftJob)</h3>
+            <div class="flow-item">
+                <h4>Duplicate Check (Önemli!)</h4>
+                <p>Blog oluşturulmadan önce 2 kontrol yapılır:</p>
+                <ul>
+                    <li><strong>Draft Kontrolü:</strong> is_generated flag kontrol edilir</li>
+                    <li><strong>Benzerlik Kontrolü:</strong> Mevcut blog başlıklarıyla %85+ benzerlik varsa skip edilir</li>
+                </ul>
+                <p>Bu sayede duplicate blog oluşması engellenir.</p>
+            </div>
+
+            <div class="flow-item">
+                <h4>AI Content Generation (BlogAIContentWriter)</h4>
+                <p><strong>Iterative Generation Yaklaşımı:</strong></p>
+                <ul>
+                    <li><strong>Outline Oluştur:</strong> 4-5 H2 başlık belirlenir</li>
+                    <li><strong>Her Bölümü Genişlet:</strong> Her H2 için 500-600 kelimelik detaylı içerik üretilir</li>
+                    <li><strong>H3 Alt Başlıklar:</strong> Her H2'ye 3-4 alt başlık eklenir</li>
+                    <li><strong>FAQ Üret:</strong> 10 soru-cevap oluşturulur</li>
+                    <li><strong>HowTo Üret:</strong> 7 adımlı rehber hazırlanır</li>
+                </ul>
+                <p><strong>Toplam Kelime:</strong> Minimum 2000+ kelime (her bölüm 500-600 kelime)</p>
+            </div>
+
+            <div class="flow-item">
+                <h4>Validation & Retry Mekanizması</h4>
+                <p>AI response'u şu kriterlere göre kontrol edilir:</p>
+                <ul>
+                    <li><strong>Kelime Sayısı:</strong> Minimum 1500 kelime (yoksa retry)</li>
+                    <li><strong>Firma Adı:</strong> En az 1 kez kullanılmalı (yoksa retry)</li>
+                    <li><strong>Boş Alan:</strong> Title ve content dolu olmalı (yoksa retry)</li>
+                </ul>
+                <p><strong>Max Retry:</strong> 3 deneme</p>
+            </div>
+
+            <h3>5️⃣ Image Generation (MediaManager)</h3>
+            <div class="flow-item">
+                <h4>Tenant-Aware Configuration</h4>
+                <p>Setting: <span class="code-inline">blog_ai_blog_fotograflar_nereden_uretilsin</span></p>
+                <ul>
+                    <li><strong>0 (Stock Photo):</strong> Ücretsiz stock photo kullanılır (Pexels, Unsplash, Pixabay)</li>
+                    <li><strong>1 (AI Generated):</strong> DALL-E ile yapay zeka görsel üretilir</li>
+                </ul>
+            </div>
+
+            <div class="flow-item">
+                <h4>Stock Photo Stratejisi</h4>
+                <p><strong>Provider Sırası:</strong> Pexels → Unsplash → Pixabay</p>
+                <p><strong>Arama Terimi:</strong> Blog başlığından basit prompt oluşturulur</p>
+                <p>Örnek: Blog başlığı = "Forklift Bakımı" → Query = "Professional blog featured image about: Forklift Bakımı"</p>
+                <p><strong>Orientation:</strong> Landscape (yatay görsel)</p>
+                <p><strong>Fallback:</strong> İlk provider başarısız olursa diğerine geçer</p>
+            </div>
+
+            <div class="flow-item">
+                <h4>Media Attach & Metadata</h4>
+                <p>Görsel indirilir ve blog'a eklenir:</p>
+                <ul>
+                    <li><strong>Collection:</strong> featured_image</li>
+                    <li><strong>Alt Text:</strong> Blog başlığı</li>
+                    <li><strong>Title:</strong> Blog başlığı + " - Ana Görsel"</li>
+                    <li><strong>Custom Properties:</strong> Provider, photographer, cost, dimensions</li>
+                </ul>
+                <p><strong>⚠️ Not:</strong> Inline images (içerik içi görseller) disabled. Sadece 1 featured image kullanılıyor.</p>
+            </div>
+        </section>
+
+        <!-- EKSİKLİKLER VE SORUNLAR -->
+        <section>
+            <h2>🚨 Tespit Edilen Sorunlar & Eksiklikler</h2>
+
+            <div class="issue-item">
+                <h4>1. Cron Zamanlaması Çelişkisi <span class="priority priority-high">Yüksek Öncelik</span></h4>
+                <p><strong>Sorun:</strong> Crontab her 5 dakikada çalıştırıyor ama GenerateTenantBlogs komutunda saat bazlı kontrol var.</p>
+                <p><strong>Sonuç:</strong> Test mode nedeniyle şu an saat kontrolü bypass edilmiş. Her 5 dakikada blog üretmeye çalışıyor!</p>
+                <p><strong>Risk:</strong> Gereksiz API çağrıları, kredi tüketimi, duplicate blog riski</p>
+                <p><strong>Çözüm:</strong></p>
+                <ul>
+                    <li>Crontab'ı saatlik yap: <span class="code-inline">0 * * * *</span> (her saat başı)</li>
+                    <li>Test mode'u kapat, saat kontrolünü aktif et</li>
+                    <li>Ya da saat kontrolünü tamamen kaldır ve cron zamanlamasına güven</li>
+                </ul>
+            </div>
+
+            <div class="warning-item">
+                <h4>2. Draft Count Parametresi Kullanılmıyor <span class="priority priority-medium">Orta Öncelik</span></h4>
+                <p><strong>Sorun:</strong> GenerateDraftsJob'a count parametresi geçiliyor (100) ama CategoryBasedDraftGenerator sabit 25 draft üretiyor.</p>
+                <p><strong>Beklenen:</strong> 100 draft</p>
+                <p><strong>Gerçek:</strong> 25 draft</p>
+                <p><strong>Sonuç:</strong> Draft pool hızla tükenebilir, sürekli yeni draft üretimi gerekir</p>
+                <p><strong>Çözüm:</strong></p>
+                <ul>
+                    <li>CategoryBasedDraftGenerator'ı count parametresini kabul edecek şekilde güncelle</li>
+                    <li>Ya da sabit 25 draft yeterli ise GenerateDraftsJob parametresini kaldır</li>
+                </ul>
+            </div>
+
+            <div class="warning-item">
+                <h4>3. Queue Worker Kontrolü <span class="priority priority-high">Yüksek Öncelik</span></h4>
+                <p><strong>Sorun:</strong> blog-ai queue'u kullanılıyor ama worker çalışıyor mu bilinmiyor.</p>
+                <p><strong>Risk:</strong> Job'lar queue'da bekler ama işlenmez!</p>
+                <p><strong>Kontrol:</strong></p>
+                <ul>
+                    <li><span class="code-inline">php artisan queue:work --queue=blog-ai</span> komutu çalışıyor mu?</li>
+                    <li>Supervisor veya systemd ile queue worker tanımlandı mı?</li>
+                    <li>Queue job'ları işleniyor mu log'lardan kontrol et</li>
+                </ul>
+            </div>
+
+            <div class="warning-item">
+                <h4>4. Stock Photo API Key Kontrolü Yok <span class="priority priority-medium">Orta Öncelik</span></h4>
+                <p><strong>Sorun:</strong> MediaManager stock photo provider'larını kullanırken API key kontrolü yapmıyor.</p>
+                <p><strong>Risk:</strong> API key yoksa veya hatalıysa görsel alınamaz, blog görselsiz kalır</p>
+                <p><strong>Beklenen:</strong></p>
+                <ul>
+                    <li>Provider kullanılmadan önce API key varlığı kontrol edilmeli</li>
+                    <li>Key yoksa next provider'a geçmeli</li>
+                    <li>Hiç key yoksa kullanıcıya uyarı gösterilmeli</li>
+                </ul>
+            </div>
+
+            <div class="warning-item">
+                <h4>5. Credit Tüketimi Takibi <span class="priority priority-low">Düşük Öncelik</span></h4>
+                <p><strong>Sorun:</strong> Draft generation credit tüketimi loglanıyor mu?</p>
+                <p><strong>Kontrol:</strong></p>
+                <ul>
+                    <li>GenerateDraftsJob credit düşüyor mu?</li>
+                    <li>1 draft = kaç kredi?</li>
+                    <li>25 draft üretimi = kaç kredi tüketimi?</li>
+                </ul>
+                <p><strong>Beklenen:</strong> Draft generation da credit tüketmeli (şu an sadece blog generation credit düşüyor)</p>
+            </div>
+
+            <div class="issue-item">
+                <h4>6. Inline Images Disabled <span class="priority priority-low">Düşük Öncelik</span></h4>
+                <p><strong>Durum:</strong> İçerik içi görseller (H2 sonrası) disabled.</p>
+                <p><strong>Sebep:</strong> Kullanıcı sadece 1 featured image istemiş.</p>
+                <p><strong>Not:</strong> Gelecekte aktif edilmek istenirse BlogAIContentWriter'da generateInlineImages() metodu mevcut.</p>
+            </div>
+        </section>
+
+        <!-- İYİLEŞTİRME ÖNERİLERİ -->
+        <section>
+            <h2>✨ İyileştirme Önerileri</h2>
+
+            <div class="success-item">
+                <h4>1. Cron Zamanlamasını Düzelt <span class="priority priority-high">Yüksek Öncelik</span></h4>
+                <p><strong>Önerilen Crontab:</strong></p>
+                <p><span class="code-inline">0 */6 * * *</span> → Her 6 saatte bir (günde 4 blog)</p>
+                <p>veya</p>
+                <p><span class="code-inline">0 0,6,12,18 * * *</span> → Sadece 00:00, 06:00, 12:00, 18:00 saatlerinde</p>
+                <p><strong>Test Mode'u Kapat:</strong> GenerateTenantBlogs'da saat kontrolünü aktif et</p>
+            </div>
+
+            <div class="success-item">
+                <h4>2. Draft Pool Yönetimini Optimize Et <span class="priority priority-medium">Orta Öncelik</span></h4>
+                <p><strong>Strateji:</strong></p>
+                <ul>
+                    <li>Minimum threshold: 20 draft (şu an 10)</li>
+                    <li>Regeneration count: 50 draft (şu an 100, ama sadece 25 üretiliyor)</li>
+                    <li>CategoryBasedDraftGenerator'ı dinamik count ile güncelle</li>
+                </ul>
+            </div>
+
+            <div class="success-item">
+                <h4>3. Queue Monitoring Ekle <span class="priority priority-high">Yüksek Öncelik</span></h4>
+                <p><strong>Araçlar:</strong></p>
+                <ul>
+                    <li>Laravel Horizon (Redis queue için)</li>
+                    <li>Queue failed jobs monitoring</li>
+                    <li>Slack/Email notification (job fail olduğunda)</li>
+                </ul>
+            </div>
+
+            <div class="success-item">
+                <h4>4. Stock Photo Fallback Mekanizması <span class="priority priority-medium">Orta Öncelik</span></h4>
+                <p><strong>Akış:</strong></p>
+                <ul>
+                    <li>Pexels API dene → Başarısız ise Unsplash'a geç</li>
+                    <li>Unsplash başarısız ise Pixabay'a geç</li>
+                    <li>Hiçbiri çalışmazsa placeholder image kullan</li>
+                    <li>Her başarısız deneme log'lansın</li>
+                </ul>
+            </div>
+
+            <div class="success-item">
+                <h4>5. Analytics & Metrics <span class="priority priority-low">Düşük Öncelik</span></h4>
+                <p><strong>Takip Edilmesi Gerekenler:</strong></p>
+                <ul>
+                    <li>Günlük kaç blog üretildi?</li>
+                    <li>Ortalama blog kelime sayısı?</li>
+                    <li>Hangi provider'dan kaç görsel alındı?</li>
+                    <li>Toplam credit tüketimi (draft + blog)</li>
+                    <li>Failed job oranı</li>
+                    <li>Duplicate skip oranı</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ÇALIŞAN SİSTEMLER -->
+        <section>
+            <h2>✅ Çalışan Sistemler (İyi Noktalar)</h2>
+
+            <div class="success-item">
+                <h4>Duplicate Prevention ✓</h4>
+                <p>Blog oluşturulmadan önce benzerlik kontrolü yapılıyor. %85+ benzer başlık varsa skip ediliyor.</p>
+            </div>
+
+            <div class="success-item">
+                <h4>Tenant-Aware Architecture ✓</h4>
+                <p>Her tenant kendi database'inde çalışıyor. Context switching doğru yapılmış.</p>
+            </div>
+
+            <div class="success-item">
+                <h4>Iterative Content Generation ✓</h4>
+                <p>Blog içeriği adım adım oluşturuluyor (outline → sections → FAQ → HowTo). Kaliteli ve uzun içerik üretiliyor.</p>
+            </div>
+
+            <div class="success-item">
+                <h4>Multi-Provider Stock Photo ✓</h4>
+                <p>3 farklı ücretsiz provider (Pexels, Unsplash, Pixabay) destekleniyor. AI image (DALL-E) opsiyonel.</p>
+            </div>
+
+            <div class="success-item">
+                <h4>Queue-Based Processing ✓</h4>
+                <p>Ağır işlemler (draft generation, blog creation) queue'da işleniyor. Ana thread bloklanmıyor.</p>
+            </div>
+
+            <div class="success-item">
+                <h4>SEO Optimization ✓</h4>
+                <p>Meta description, alt text, title, SEO keywords otomatik oluşturuluyor.</p>
+            </div>
+
+            <div class="success-item">
+                <h4>Credit System ✓</h4>
+                <p>Blog oluşturma öncesi credit kontrolü yapılıyor. Yetersiz credit varsa işlem durduruluy or.</p>
+            </div>
+        </section>
+
+        <!-- İSTATİSTİKLER -->
+        <section>
+            <h2>📊 Sistem İstatistikleri</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">5 dk</div>
+                    <div class="stat-label">Cron Çalışma Sıklığı</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value">25</div>
+                    <div class="stat-label">Draft Üretim Sayısı (Sabit)</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value">2000+</div>
+                    <div class="stat-label">Min. Blog Kelime Sayısı</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value">20 dk</div>
+                    <div class="stat-label">Blog Generation Timeout</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Queue Retry Sayısı</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value">1.0</div>
+                    <div class="stat-label">1 Blog = Kredi</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value">10</div>
+                    <div class="stat-label">FAQ Soru Sayısı</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value">7</div>
+                    <div class="stat-label">HowTo Adım Sayısı</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- YAPILACAKLAR -->
+        <section>
+            <h2>🎯 Öncelikli Yapılacaklar</h2>
+
+            <div class="flow-item">
+                <h4>1. Test Mode'u Kapat ve Cron'u Düzelt <span class="priority priority-high">Acil</span></h4>
+                <p>GenerateTenantBlogs komutunda saat kontrolünü aktif et. Crontab'ı saatlik yap.</p>
+                <p><strong>Beklenen Sonuç:</strong> Günde sadece belirlenen saatlerde blog üretilir (kredi tasarrufu)</p>
+            </div>
+
+            <div class="flow-item">
+                <h4>2. Queue Worker Kontrolü Yap <span class="priority priority-high">Acil</span></h4>
+                <p>blog-ai queue worker'ının çalıştığından emin ol. Supervisor/systemd config kontrol et.</p>
+                <p><strong>Beklenen Sonuç:</strong> Job'lar queue'da beklemez, hemen işlenir</p>
+            </div>
+
+            <div class="flow-item">
+                <h4>3. Draft Count Parametresini Düzelt <span class="priority priority-medium">Orta</span></h4>
+                <p>CategoryBasedDraftGenerator'ı dinamik count parametresi alsın.</p>
+                <p><strong>Beklenen Sonuç:</strong> İhtiyaca göre 25-100 arası draft üretilebilir</p>
+            </div>
+
+            <div class="flow-item">
+                <h4>4. Stock Photo API Key Validation Ekle <span class="priority priority-medium">Orta</span></h4>
+                <p>MediaManager'da provider kullanılmadan önce API key kontrolü yap.</p>
+                <p><strong>Beklenen Sonuç:</strong> Görsel alamama durumu minimize edilir</p>
+            </div>
+
+            <div class="flow-item">
+                <h4>5. Failed Job Monitoring Ekle <span class="priority priority-low">Düşük</span></h4>
+                <p>Queue failed table'ı izle, başarısız job'larda bildirim gönder.</p>
+                <p><strong>Beklenen Sonuç:</strong> Sorunlar hızlıca fark edilir</p>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | Blog AI Cron & Image Generation Detaylı Analiz Raporu
+        </footer>
+    </div>
+</body>
+</html>

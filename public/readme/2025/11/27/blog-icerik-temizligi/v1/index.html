@@ -1,1 +1,626 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog İçerik Temizliği - Analiz & Düzeltme Planı</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px 0;
+            color: #fbbf24;
+        }
+
+        .issue-box {
+            background: rgba(220, 38, 38, 0.1);
+            border-left: 4px solid #dc2626;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .solution-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .warning-box {
+            background: rgba(251, 191, 36, 0.1);
+            border-left: 4px solid #fbbf24;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .stat {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin: 5px 5px 5px 0;
+            font-size: 1.1rem;
+        }
+
+        .stat-bad {
+            background: rgba(220, 38, 38, 0.2);
+            color: #f87171;
+        }
+
+        .stat-good {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        ul, ol {
+            margin: 15px 0 15px 25px;
+        }
+
+        li {
+            margin: 8px 0;
+            color: #cbd5e1;
+        }
+
+        code {
+            background: rgba(51, 65, 85, 0.6);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #fbbf24;
+            font-size: 0.9em;
+        }
+
+        .code-block {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            color: #e2e8f0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        tbody tr:hover {
+            background: rgba(51, 65, 85, 0.5);
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .priority-critical { background: #dc2626; color: white; }
+        .priority-high { background: #f59e0b; color: white; }
+        .priority-medium { background: #3b82f6; color: white; }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .action-item {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 15px 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .action-item strong {
+            color: #60a5fa;
+            display: block;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Blog İçerik Temizliği - Analiz Raporu</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-27 |
+                🎯 Tenant: ixtif.com (Tenant 2) |
+                📝 Toplam Blog: 292 adet
+            </div>
+        </header>
+
+        <!-- ÖZET -->
+        <section>
+            <h2>📋 Özet</h2>
+            <div class="info-box">
+                <p><strong>Durum:</strong> ixtif.com blog veritabanında eski tarih referansları, fiyat bilgileri ve encoding hataları tespit edildi.</p>
+                <p><strong>Etki:</strong> Bloglar güncelliğini yitirmiş, enflasyon nedeniyle fiyatlar yanlış, Unicode hataları SEO'ya zarar veriyor.</p>
+                <p><strong>Çözüm:</strong> Database temizliği + Blog AI Prompt güncelleme gerekiyor.</p>
+            </div>
+
+            <div>
+                <span class="stat stat-bad">8 blog - 2023 yılı içeriyor</span>
+                <span class="stat stat-bad">41 blog - Fiyat rakamı içeriyor</span>
+                <span class="stat stat-bad">12 blog - Encoding hatası (Güncel)</span>
+            </div>
+        </section>
+
+        <!-- SORUN 1: YIL REF -->
+        <section>
+            <h2>🗓️ Sorun 1: Eski Yıl Referansları (2023)</h2>
+
+            <div class="issue-box">
+                <h3>❌ Tespit Edilen Sorun</h3>
+                <p><strong>8 blog</strong> içeriğinde <code>2023</code> yılı geçiyor.</p>
+                <p><strong>Neden sorun?</strong> 2026'ya yaklaşırken "2023" yazmak blogları eski gösteriyor, güncellik algısını azaltıyor.</p>
+            </div>
+
+            <div class="warning-box">
+                <h3>📌 Etkilenen Bloglar</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Blog ID</th>
+                            <th>Başlık</th>
+                            <th>Sorun</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>78</td>
+                            <td>Otonom Sistemler Fiyatları</td>
+                            <td>Body'de "2023" geçiyor</td>
+                        </tr>
+                        <tr>
+                            <td>83</td>
+                            <td>LPG Forklift Avantajları</td>
+                            <td>Body'de "2023" geçiyor</td>
+                        </tr>
+                        <tr>
+                            <td>157</td>
+                            <td>Kiralık Forklift Fiyatları Güncel</td>
+                            <td>"2025 Yılında..." ifadesi var</td>
+                        </tr>
+                        <tr>
+                            <td>162</td>
+                            <td>Transpalet Fiyatları</td>
+                            <td>Body'de "2023" geçiyor</td>
+                        </tr>
+                        <tr>
+                            <td>281</td>
+                            <td>Forklift Operatörü Olmak</td>
+                            <td>Body'de "2023" geçiyor</td>
+                        </tr>
+                        <tr>
+                            <td>282</td>
+                            <td>Kiralık Forklift Fiyatları Güncel</td>
+                            <td>Body'de "2023" geçiyor</td>
+                        </tr>
+                        <tr>
+                            <td>291</td>
+                            <td>En İyi İstif Makinesi Modelleri Güncel</td>
+                            <td>"2023 Yılı İçin" yazıyor</td>
+                        </tr>
+                        <tr>
+                            <td>292</td>
+                            <td>Forklift Fiyatlarını Etkileyen Faktörler</td>
+                            <td>Body'de "2023" geçiyor</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="solution-box">
+                <h3>✅ Önerilen Çözüm</h3>
+                <div class="action-item">
+                    <strong>Yöntem 1: Yıl Referansını Kaldır (Önerilen)</strong>
+                    <p>Yıl bahsetmeden genel ifadeler kullan. Örnek:</p>
+                    <div class="code-block">
+                        <pre>❌ "2023 yılı için en iyi modeller..."
+✅ "Güncel forklift modelleri arasında..."
+
+❌ "2025 yılında kiralık forklift fiyatları..."
+✅ "Kiralık forklift fiyatları, piyasa koşullarına göre değişkenlik gösterir..."</pre>
+                    </div>
+                </div>
+
+                <div class="action-item">
+                    <strong>Yöntem 2: Eğer Mutlaka Yıl Gerekiyorsa → 2026</strong>
+                    <p>Sadece çok gerekli durumlarda 2026 yazılabilir.</p>
+                    <div class="code-block">
+                        <pre>✅ "2026 yılında forklift teknolojileri..."</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SORUN 2: FİYAT -->
+        <section>
+            <h2>💰 Sorun 2: Fiyat Rakamları (TL/USD)</h2>
+
+            <div class="issue-box">
+                <h3>❌ Tespit Edilen Sorun</h3>
+                <p><strong>41 blog</strong> içeriğinde <code>rakam + TL</code> veya <code>rakam + ₺</code> formatında fiyat bilgisi var.</p>
+                <p><strong>Neden sorun?</strong> Türkiye'de yüksek enflasyon var. 2023'te yazılan fiyatlar artık geçersiz, yanıltıcı bilgi veriyor.</p>
+            </div>
+
+            <div class="warning-box">
+                <h3>📌 Örnek Etkilenen Bloglar (İlk 10)</h3>
+                <ul>
+                    <li><strong>Blog 11:</strong> Kiralık Forklift Modelleri</li>
+                    <li><strong>Blog 12:</strong> Kiralık İstif Makinesi Seçimi</li>
+                    <li><strong>Blog 14:</strong> Manuel İstif Makineleri: Fiyat ve Performans</li>
+                    <li><strong>Blog 57:</strong> Yeni vs İkinci El Forklift</li>
+                    <li><strong>Blog 66:</strong> Manuel Transpalet Karşılaştırması</li>
+                    <li><strong>Blog 72-74:</strong> Terazili Transpalet Avantajları</li>
+                    <li><strong>Blog 78:</strong> Otonom Sistemler Fiyatları</li>
+                    <li><strong>Blog 105:</strong> Order Picker Fiyatları</li>
+                    <li><strong>Blog 107:</strong> Kiralık Transpalet Fiyatları</li>
+                    <li>...ve 31 blog daha</li>
+                </ul>
+                <p><strong>Toplam:</strong> <span class="stat stat-bad">41 blog fiyat içeriyor</span></p>
+            </div>
+
+            <div class="solution-box">
+                <h3>✅ Önerilen Çözüm</h3>
+                <div class="action-item">
+                    <strong>Fiyat Rakamlarını Kaldır - Genel Açıklamaya Çevir</strong>
+                    <p>Spesifik rakam yerine fiyatı etkileyen faktörlerden bahset:</p>
+                    <div class="code-block">
+                        <pre>❌ "Elektrikli transpalet fiyatları 25.000 TL - 45.000 TL arasındadır."
+✅ "Elektrikli transpalet fiyatları, kapasite, marka ve özelliklerine göre değişiklik gösterir."
+
+❌ "Ortalama kiralama maliyeti günlük 500 TL'dir."
+✅ "Kiralama maliyeti, süre, model ve kullanım yoğunluğuna bağlı olarak farklılık gösterir."
+
+❌ "Yeni forklift fiyatı yaklaşık $15,000 USD'dir."
+✅ "Yeni forklift yatırımı, işletmenizin ihtiyaçları ve seçilen modelin özelliklerine göre planlanmalıdır. Detaylı fiyat bilgisi için İxtif ile iletişime geçebilirsiniz."</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SORUN 3: ENCODING -->
+        <section>
+            <h2>🔤 Sorun 3: Unicode Encoding Hataları</h2>
+
+            <div class="issue-box">
+                <h3>❌ Tespit Edilen Sorun</h3>
+                <p><strong>12 blog title'ında</strong> Unicode escape karakterleri tespit edildi:</p>
+                <ul>
+                    <li><code>G\\u00fcncel</code> → "Güncel" olmalı</li>
+                    <li><code>\\u0131</code> → "ı" harfi olmalı</li>
+                </ul>
+                <p><strong>Neden sorun?</strong> Başlıklar URL ve arama sonuçlarında bozuk görünüyor. SEO'ya zarar veriyor.</p>
+            </div>
+
+            <div class="warning-box">
+                <h3>📌 Etkilenen Bloglar</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Blog ID</th>
+                            <th>Mevcut Başlık (Hatalı)</th>
+                            <th>Düzeltilmiş Hali</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>9</td>
+                            <td>En İyi Transpalet Modelleri G\\u00fcncel</td>
+                            <td>En İyi Transpalet Modelleri Güncel</td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>Kiralık Forklift Modelleri: G\\u00fcncel Yılı İçin</td>
+                            <td>Kiralık Forklift Modelleri: Güncel Yılı İçin</td>
+                        </tr>
+                        <tr>
+                            <td>101</td>
+                            <td>En İyi Kiralık Forklift Markaları: G\\u00fcncel İçin</td>
+                            <td>En İyi Kiralık Forklift Markaları: Güncel İçin</td>
+                        </tr>
+                        <tr>
+                            <td>106</td>
+                            <td>G\\u00fcncel Kiralık Transpalet Fiyatları</td>
+                            <td>Güncel Kiralık Transpalet Fiyatları</td>
+                        </tr>
+                        <tr>
+                            <td>113</td>
+                            <td>En İyi Dizel Forklift Modelleri G\\u00fcncel</td>
+                            <td>En İyi Dizel Forklift Modelleri Güncel</td>
+                        </tr>
+                        <tr>
+                            <td>157</td>
+                            <td>Kiralık Forklift Fiyatları G\\u00fcncel</td>
+                            <td>Kiralık Forklift Fiyatları Güncel</td>
+                        </tr>
+                        <tr>
+                            <td>158</td>
+                            <td>Kiralık Transpalet Modelleri ve Fiyatları G\\u00fcncel</td>
+                            <td>Kiralık Transpalet Modelleri ve Fiyatları Güncel</td>
+                        </tr>
+                        <tr>
+                            <td>202</td>
+                            <td>En İyi Manuel Transpalet Modelleri G\\u00fcncel</td>
+                            <td>En İyi Manuel Transpalet Modelleri Güncel</td>
+                        </tr>
+                        <tr>
+                            <td>216</td>
+                            <td>Kiralık Forklift Modelleri: G\\u00fcncel Yılı İçin</td>
+                            <td>Kiralık Forklift Modelleri: Güncel Yılı İçin</td>
+                        </tr>
+                        <tr>
+                            <td>217</td>
+                            <td>En İyi Forklift Modelleri G\\u00fcncel</td>
+                            <td>En İyi Forklift Modelleri Güncel</td>
+                        </tr>
+                        <tr>
+                            <td>282</td>
+                            <td>Kiralık Forklift Fiyatları G\\u00fcncel</td>
+                            <td>Kiralık Forklift Fiyatları Güncel</td>
+                        </tr>
+                        <tr>
+                            <td>291</td>
+                            <td>En İyi İstif Makinesi Modelleri G\\u00fcncel</td>
+                            <td>En İyi İstif Makinesi Modelleri Güncel</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="solution-box">
+                <h3>✅ Önerilen Çözüm</h3>
+                <div class="action-item">
+                    <strong>Database Update: JSON Decode + Re-encode</strong>
+                    <p>Title JSON kolonundaki escape karakterlerini düzelt:</p>
+                    <div class="code-block">
+                        <pre>UPDATE blogs
+SET title = JSON_SET(
+    title,
+    '$.tr',
+    REPLACE(REPLACE(JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr')), '\\\\u00fc', 'ü'), '\\\\u0131', 'ı')
+)
+WHERE title LIKE '%\\\\u%';</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SORUN 4: BLOG AI PROMPT -->
+        <section>
+            <h2>🤖 Sorun 4: Blog AI Prompt Kuralları</h2>
+
+            <div class="issue-box">
+                <h3>❌ Tespit Edilen Sorun</h3>
+                <p><strong>Prompt dosyasında:</strong> <code>Tenant2Prompts.php</code></p>
+                <ul>
+                    <li>Satır 248: "Fiyat aralığı varsa bahset (TRY/USD olarak)" → ❌ Fiyat kullanımını teşvik ediyor!</li>
+                    <li>Satır 264-266: Fiyat örneği var → ❌ AI'a fiyat vermesi için örnek veriyor!</li>
+                    <li>Yıl bahsetme yasağı yok → ⚠️ AI 2023, 2024 gibi yıllar yazıyor!</li>
+                </ul>
+                <p><strong>Sonuç:</strong> AI yeni bloglarda da aynı hataları yapacak!</p>
+            </div>
+
+            <div class="solution-box">
+                <h3>✅ Önerilen Çözüm</h3>
+
+                <div class="action-item">
+                    <strong>1. Fiyat Bahsetme Kuralını Kaldır</strong>
+                    <p><strong>Dosya:</strong> <code>Modules/Blog/app/Services/TenantPrompts/Tenants/Tenant2Prompts.php</code></p>
+                    <div class="code-block">
+                        <pre>❌ KALDIR:
+"- Fiyat aralığı varsa bahset (TRY/USD olarak)"
+
+❌ KALDIR:
+```
+"{ÜRÜN ADI} fiyatı yaklaşık {FİYAT} TRY ({USD EQUIVALENT} USD) civarındadır.
+Premium özellikleri ve garanti süresi göz önünde bulundurulduğunda uygun fiyatlıdır."
+```
+
+✅ EKLE (Yeni Kural):
+"⚠️ FİYAT YASAĞI: Spesifik fiyat rakamları ASLA belirtme! (TL, USD, EUR vb.)
+Bunun yerine: 'Detaylı fiyat bilgisi için İxtif ile iletişime geçin.' yaz."</pre>
+                    </div>
+                </div>
+
+                <div class="action-item">
+                    <strong>2. Yıl Bahsetme Yasağı Ekle</strong>
+                    <p><strong>Yeni kural ekle:</strong></p>
+                    <div class="code-block">
+                        <pre>## 📅 YIL BAHİS YASAĞI - ZORUNLU!
+
+### ⚠️ KRİTİK: Spesifik yıl belirtme!
+
+**YASAKLAR:**
+❌ "2023 yılında..."
+❌ "2024 için en iyi..."
+❌ "2025 yılı modelleri..."
+
+**İSTİSNA:** Sadece teknik evrim/tarihsel bilgi verirken:
+✅ "Forklift teknolojisi 1920'lerde gelişmeye başladı."
+✅ "ISO 9001 standardı 1987'de yayınlandı."
+
+**GÜNCEL İFADELER KULLAN:**
+✅ "Güncel forklift modelleri..."
+✅ "Son dönemde popüler olan..."
+✅ "Modern teknolojiler..."
+✅ "Yeni nesil sistemler..."
+
+**NEDEN?** Yıl belirtmek blogu hızla eskitiyor. Genel ifadeler her zaman güncel kalır.</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- YAPILACAKLAR -->
+        <section>
+            <h2>✅ Yapılacaklar Listesi</h2>
+
+            <div class="action-item">
+                <strong><span class="priority priority-critical">Kritik Öncelik</span> 1. Blog AI Prompt Güncelle</strong>
+                <p><strong>Dosya:</strong> <code>Modules/Blog/app/Services/TenantPrompts/Tenants/Tenant2Prompts.php</code></p>
+                <ul>
+                    <li>Fiyat bahsetme kuralını kaldır</li>
+                    <li>Fiyat örneğini kaldır</li>
+                    <li>Yıl bahsetme yasağı ekle</li>
+                    <li>Genel ifadeler kuralı ekle</li>
+                </ul>
+                <p><strong>Beklenen Sonuç:</strong> Yeni bloglarda fiyat ve yıl bilgisi olmayacak</p>
+            </div>
+
+            <div class="action-item">
+                <strong><span class="priority priority-high">Yüksek Öncelik</span> 2. Database Temizliği - Yıl Referansları</strong>
+                <p><strong>Hedef:</strong> 8 blogdan 2023 referanslarını kaldır veya 2026'ya güncelle</p>
+                <ul>
+                    <li>Blog 78, 83, 157, 162, 281, 282, 291, 292</li>
+                    <li>Body içindeki "2023", "2025" ifadelerini bul</li>
+                    <li>Genel ifadelere çevir veya kaldır</li>
+                </ul>
+                <p><strong>Beklenen Sonuç:</strong> Bloglar zamansız ve güncel görünecek</p>
+            </div>
+
+            <div class="action-item">
+                <strong><span class="priority priority-high">Yüksek Öncelik</span> 3. Database Temizliği - Fiyat Bilgileri</strong>
+                <p><strong>Hedef:</strong> 41 blogdan fiyat rakamlarını kaldır</p>
+                <ul>
+                    <li>Regex ile "rakam + TL/USD/₺" bul</li>
+                    <li>Fiyat cümlelerini genel açıklamaya çevir</li>
+                    <li>"Detaylı bilgi için İxtif ile iletişime geçin" ekle</li>
+                </ul>
+                <p><strong>Beklenen Sonuç:</strong> Bloglar yanıltıcı fiyat vermiyor, iletişime yönlendiriyor</p>
+            </div>
+
+            <div class="action-item">
+                <strong><span class="priority priority-medium">Orta Öncelik</span> 4. Database Temizliği - Encoding Hataları</strong>
+                <p><strong>Hedef:</strong> 12 blog title'ındaki Unicode escape karakterlerini düzelt</p>
+                <ul>
+                    <li><code>\\u00fc</code> → ü</li>
+                    <li><code>\\u0131</code> → ı</li>
+                    <li>JSON REPLACE query ile düzelt</li>
+                </ul>
+                <p><strong>Beklenen Sonuç:</strong> Blog başlıkları SEO-friendly ve okunabilir</p>
+            </div>
+        </section>
+
+        <!-- BEKLENEN SONUÇLAR -->
+        <section>
+            <h2>🎯 Beklenen Sonuçlar</h2>
+
+            <div class="solution-box">
+                <h3>✅ Kısa Vadede (Hemen)</h3>
+                <ul>
+                    <li>❌ Eski tarih referansları kaldırıldı → Bloglar güncel görünüyor</li>
+                    <li>❌ Yanıltıcı fiyat bilgileri kaldırıldı → Kullanıcılar doğru bilgi alıyor</li>
+                    <li>❌ Encoding hataları düzeltildi → SEO iyileşiyor, başlıklar düzgün</li>
+                </ul>
+            </div>
+
+            <div class="solution-box">
+                <h3>✅ Uzun Vadede (Gelecek)</h3>
+                <ul>
+                    <li>🤖 AI Prompt güncellendi → Yeni bloglar fiyat ve yıl içermiyor</li>
+                    <li>📈 Blog kalitesi arttı → Zamansız ve güncel içerik</li>
+                    <li>🔄 Sürdürülebilir → Manuel düzeltme gerekmeyecek</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | ixtif.com Blog Analizi | 2025-11-27
+        </footer>
+    </div>
+</body>
+</html>

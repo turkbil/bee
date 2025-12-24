@@ -1,1 +1,444 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permission Kuralları: Root YASAK, tuufi.com_ ZORUNLU</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px 0;
+            color: #93c5fd;
+        }
+
+        .danger-box {
+            background: rgba(220, 38, 38, 0.15);
+            border: 2px solid #dc2626;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+        }
+
+        .danger-box h3 {
+            color: #fca5a5;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .success-box h3 {
+            color: #6ee7b7;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .code-block {
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 15px 0;
+            border: 1px solid #334155;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .comparison-item.wrong {
+            border-left: 4px solid #dc2626;
+        }
+
+        .comparison-item.correct {
+            border-left: 4px solid #10b981;
+        }
+
+        .step-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .step-box h4 {
+            color: #93c5fd;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 Permission Kuralları: Root YASAK!</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-18 |
+                🎯 Amaç: Permission hatalarını önlemek |
+                ⚠️ KRİTİK: Root kullanımı site çöktürür!
+            </div>
+        </header>
+
+        <section>
+            <h2>🔴 KRİTİK KURAL: Root ASLA Kullanma!</h2>
+
+            <div class="danger-box">
+                <h3>❌ ROOT KULLANIMI YASAK!</h3>
+                <p style="color: #fca5a5; margin-bottom: 15px; font-size: 1.1rem; font-weight: bold;">
+                    Dosya oluştururken ASLA root kullanıcısı olarak işlem yapma!
+                </p>
+
+                <div class="code-block">
+<span style="color: #fca5a5; font-weight: bold;">❌ YANLIŞ (Site çöker!):</span>
+# Root kullanıcısı olarak dosya oluşturma
+touch /path/to/file.php
+echo "content" > /path/to/file.php
+
+<span style="color: #fca5a5;">Sonuç:</span>
+- Owner: root:root → Nginx okuyamaz!
+- Permission: 644 bile olsa → Nginx/PHP-FPM erişemez!
+- Site: 500 Internal Server Error!
+                </div>
+            </div>
+
+            <div class="success-box">
+                <h3>✅ DOĞRU: tuufi.com_ Kullanıcısı İle İşlem Yap!</h3>
+                <p style="color: #6ee7b7; margin-bottom: 15px; font-size: 1.1rem; font-weight: bold;">
+                    TÜM dosya işlemleri tuufi.com_ kullanıcısı ile yapılmalı!
+                </p>
+
+                <div class="code-block">
+<span style="color: #6ee7b7; font-weight: bold;">✅ DOĞRU:</span>
+# tuufi.com_ kullanıcısı olarak işlem yap
+sudo -u tuufi.com_ touch /path/to/file.php
+sudo -u tuufi.com_ bash -c 'echo "content" > /path/to/file.php'
+
+<span style="color: #6ee7b7;">Sonuç:</span>
+- Owner: tuufi.com_:psaserv → Nginx okuyabilir!
+- Permission: Otomatik doğru → PHP-FPM çalışır!
+- Site: Çalışır! ✅
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>⚠️ Neden Root Kullanımı Tehlikeli?</h2>
+
+            <div class="warning-box">
+                <h4 style="color: #fbbf24; margin-bottom: 15px;">Problem 1: Ownership Hatası</h4>
+                <p style="color: #cbd5e1;">Root ile oluşturulan dosyalar <code>root:root</code> owner'ına sahip olur. Nginx ve PHP-FPM bu dosyaları okuyamaz!</p>
+
+                <div class="code-block">
+# Root ile dosya oluştur
+touch /var/www/vhosts/tuufi.com/httpdocs/test.php
+
+# Owner kontrolü
+ls -la /var/www/vhosts/tuufi.com/httpdocs/test.php
+<span style="color: #fca5a5;">-rw-r--r-- 1 root root 0 Nov 18 14:30 test.php</span>
+
+# Nginx çalışır mı?
+<span style="color: #fca5a5;">❌ HAYIR! 403 Forbidden veya 500 Error!</span>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h4 style="color: #fbbf24; margin-bottom: 15px;">Problem 2: Permission Cascade</h4>
+                <p style="color: #cbd5e1;">Root ile klasör oluşturursan, içindeki TÜM dosyalar root:root olur!</p>
+
+                <div class="code-block">
+# Root ile klasör oluştur
+mkdir -p /var/www/vhosts/tuufi.com/httpdocs/public/readme/2025/11/18/test/
+
+# İçine dosya oluştur
+touch /var/www/vhosts/tuufi.com/httpdocs/public/readme/2025/11/18/test/index.html
+
+# SONUÇ: TÜM DOSYALAR ROOT:ROOT!
+ls -la /var/www/vhosts/tuufi.com/httpdocs/public/readme/2025/11/18/test/
+<span style="color: #fca5a5;">drwxr-xr-x 2 root root ... test/
+-rw-r--r-- 1 root root ... index.html</span>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h4 style="color: #fbbf24; margin-bottom: 15px;">Problem 3: Güvenlik Riski</h4>
+                <p style="color: #cbd5e1;">Root ile yazılan dosyalar, sadece root tarafından değiştirilebilir. Bu da deployment ve güncelleme sorunlarına yol açar!</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>✅ Doğru Permission Workflow</h2>
+
+            <div class="step-box">
+                <h4>Adım 1: ASLA Root Kullanma!</h4>
+                <div class="code-block">
+<span style="color: #fca5a5;">❌ YAPMA:</span>
+mkdir /path/to/directory
+touch /path/to/file.php
+
+<span style="color: #6ee7b7;">✅ YAP:</span>
+sudo -u tuufi.com_ mkdir /path/to/directory
+sudo -u tuufi.com_ touch /path/to/file.php
+                </div>
+            </div>
+
+            <div class="step-box">
+                <h4>Adım 2: Claude Write/Edit Tool Kullandıysan → chown/chmod Gerekli!</h4>
+                <p style="color: #cbd5e1; margin-bottom: 15px;">
+                    Claude'un Write/Edit tool'u root olarak çalıştığı için, oluşturduğu dosyalar root:root olur. MUTLAKA düzelt!
+                </p>
+                <div class="code-block">
+# 1. Owner değiştir (ZORUNLU!)
+sudo chown tuufi.com_:psaserv /path/to/file.php
+
+# 2. Permission düzelt (ZORUNLU!)
+sudo chmod 644 /path/to/file.php  # Dosyalar için
+
+# 3. Klasör ise
+sudo chmod 755 /path/to/directory/
+
+# 4. Test et
+curl -I https://ixtif.com/path/to/file.php
+<span style="color: #6ee7b7;"># Beklenen: HTTP/2 200</span>
+                </div>
+            </div>
+
+            <div class="step-box">
+                <h4>Adım 3: Toplu Düzeltme (Klasör İçindeki Tüm Dosyalar)</h4>
+                <div class="code-block">
+# Tüm klasörü düzelt
+sudo chown -R tuufi.com_:psaserv /path/to/directory/
+
+# Dosyaları 644 yap
+sudo find /path/to/directory/ -type f -exec chmod 644 {} \;
+
+# Klasörleri 755 yap
+sudo find /path/to/directory/ -type d -exec chmod 755 {} \;
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>📋 Karşılaştırma Tablosu</h2>
+
+            <div class="comparison">
+                <div class="comparison-item wrong">
+                    <h4 style="color: #fca5a5; margin-bottom: 15px;">❌ Root Kullanımı (YANLIŞ)</h4>
+                    <div class="code-block">
+# Dosya oluştur
+mkdir -p public/readme/2025/11/18/test/
+touch public/readme/2025/11/18/test/index.html
+
+# Owner
+ls -la public/readme/2025/11/18/test/
+<span style="color: #fca5a5;">root:root</span>
+
+# Sonuç
+<span style="color: #fca5a5;">❌ 500 Error
+❌ Nginx okuyamaz
+❌ Site çöker</span>
+                    </div>
+                </div>
+
+                <div class="comparison-item correct">
+                    <h4 style="color: #6ee7b7; margin-bottom: 15px;">✅ tuufi.com_ Kullanımı (DOĞRU)</h4>
+                    <div class="code-block">
+# Dosya oluştur
+sudo -u tuufi.com_ mkdir -p public/readme/2025/11/18/test/
+sudo -u tuufi.com_ touch public/readme/2025/11/18/test/index.html
+
+# Owner
+ls -la public/readme/2025/11/18/test/
+<span style="color: #6ee7b7;">tuufi.com_:psaserv</span>
+
+# Sonuç
+<span style="color: #6ee7b7;">✅ 200 OK
+✅ Nginx okur
+✅ Site çalışır</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🛠️ Pratik Örnekler</h2>
+
+            <div class="step-box">
+                <h4>Örnek 1: HTML Rapor Oluşturma</h4>
+                <div class="code-block">
+<span style="color: #fca5a5;">❌ YANLIŞ (Root):</span>
+mkdir -p public/readme/2025/11/18/blog-analiz/v1/
+echo "content" > public/readme/2025/11/18/blog-analiz/v1/index.html
+
+<span style="color: #6ee7b7;">✅ DOĞRU (tuufi.com_):</span>
+sudo -u tuufi.com_ mkdir -p public/readme/2025/11/18/blog-analiz/v1/
+sudo -u tuufi.com_ bash -c 'echo "content" > public/readme/2025/11/18/blog-analiz/v1/index.html'
+
+<span style="color: #93c5fd;">VEYA (Claude Write tool kullandıysan):</span>
+# Write tool ile oluştur (root:root olur)
+# Sonra düzelt:
+sudo chown tuufi.com_:psaserv public/readme/2025/11/18/blog-analiz/v1/index.html
+sudo chmod 644 public/readme/2025/11/18/blog-analiz/v1/index.html
+                </div>
+            </div>
+
+            <div class="step-box">
+                <h4>Örnek 2: MD TODO Dosyası Oluşturma</h4>
+                <div class="code-block">
+<span style="color: #fca5a5;">❌ YANLIŞ (Root):</span>
+mkdir -p readme/claude-docs/todo/2025/11/18/
+touch readme/claude-docs/todo/2025/11/18/todo-14-30-payment.md
+
+<span style="color: #6ee7b7;">✅ DOĞRU (tuufi.com_):</span>
+sudo -u tuufi.com_ mkdir -p readme/claude-docs/todo/2025/11/18/
+sudo -u tuufi.com_ touch readme/claude-docs/todo/2025/11/18/todo-14-30-payment.md
+
+<span style="color: #93c5fd;">VEYA (Claude Write tool kullandıysan):</span>
+sudo chown tuufi.com_:psaserv readme/claude-docs/todo/2025/11/18/todo-14-30-payment.md
+sudo chmod 644 readme/claude-docs/todo/2025/11/18/todo-14-30-payment.md
+                </div>
+            </div>
+
+            <div class="step-box">
+                <h4>Örnek 3: Blade Dosyası Oluşturma</h4>
+                <div class="code-block">
+<span style="color: #6ee7b7;">✅ DOĞRU Workflow:</span>
+# 1. Claude Write tool ile dosya oluştur
+# (resources/views/components/blog/author.blade.php)
+
+# 2. Permission düzelt (ZORUNLU!)
+sudo chown tuufi.com_:psaserv resources/views/components/blog/author.blade.php
+sudo chmod 644 resources/views/components/blog/author.blade.php
+
+# 3. OPcache reset (PHP dosyaları için)
+curl -s -k https://ixtif.com/opcache-reset.php > /dev/null
+
+# 4. Test et
+curl -I https://ixtif.com/blog/test-post
+<span style="color: #6ee7b7;"># Beklenen: HTTP/2 200</span>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 Özet Kurallar</h2>
+
+            <div class="success-box">
+                <h3>✅ ZORUNLU KURALLAR</h3>
+                <ul style="margin-left: 25px; color: #cbd5e1; line-height: 2;">
+                    <li><strong>ASLA root kullanma!</strong> → Tüm işlemler tuufi.com_ ile</li>
+                    <li><strong>Claude Write/Edit tool kullandıysan</strong> → chown + chmod yap!</li>
+                    <li><strong>Her dosya oluşturduktan sonra</strong> → Permission kontrol et!</li>
+                    <li><strong>Owner:</strong> tuufi.com_:psaserv (ZORUNLU!)</li>
+                    <li><strong>Permission:</strong> 644 (dosya), 755 (klasör)</li>
+                    <li><strong>Test et:</strong> curl -I ile 200 OK kontrolü</li>
+                </ul>
+            </div>
+
+            <div class="danger-box">
+                <h3>❌ YASAK İŞLEMLER</h3>
+                <ul style="margin-left: 25px; color: #fca5a5; line-height: 2;">
+                    <li>Root olarak dosya oluşturma</li>
+                    <li>Root olarak klasör oluşturma</li>
+                    <li>root:root ownership bırakma</li>
+                    <li>Permission düzeltmeyi unutma</li>
+                    <li>Test etmeden devam etme</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu - 2025-11-18
+            <br>
+            ⚠️ KRİTİK: Root ASLA kullanma! Her zaman tuufi.com_ kullanıcısı ile çalış!
+        </footer>
+    </div>
+</body>
+</html>

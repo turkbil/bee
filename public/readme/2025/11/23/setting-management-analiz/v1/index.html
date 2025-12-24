@@ -1,1 +1,1327 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SettingManagement Modülü - Detaylı Analiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 45px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #a5f3fc;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .code-block {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            color: #a1d8ff;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #334155;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #334155;
+        }
+
+        tr:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .term-explain {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-left: 5px;
+        }
+
+        .tip {
+            background: rgba(34, 197, 94, 0.1);
+            border-left: 4px solid #22c55e;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .warning {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .list-item {
+            margin-left: 25px;
+            margin-bottom: 10px;
+        }
+
+        .flow-diagram {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #334155;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .flow-arrow {
+            color: #60a5fa;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+
+        .highlight {
+            background: rgba(251, 191, 36, 0.15);
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #fcd34d;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 5px 5px 5px 0;
+        }
+
+        .badge-central { background: #3b82f6; color: white; }
+        .badge-tenant { background: #10b981; color: white; }
+        .badge-relationship { background: #8b5cf6; color: white; }
+        .badge-migration { background: #ec4899; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SettingManagement Modülü - Detaylı Analiz</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-23 | 🎯 Analiz Kapsamı: Veritabanı, Modeller, Seeders | 👤 Hedef: Yeni Setting Grubu Oluşturma
+            </div>
+        </header>
+
+        <!-- ================================================ GENEL ÖZETİ ================================================ -->
+        <section>
+            <h2>📊 Genel Özeti</h2>
+            
+            <div class="card">
+                <h3>SettingManagement Nedir?</h3>
+                <p>SettingManagement, sistemdeki tüm yapılandırma (ayar/setting) değerlerini merkezi şekilde yönetmeyi sağlayan bir Laravel modülüdür.</p>
+                <ul class="list-item">
+                    <li><span class="tech-term">Settings Groups</span> <span class="term-explain">(Ayar Grupları)</span> - Ayarları kategorilere böler (örn: AI Ayarları, Site Ayarları)</li>
+                    <li><span class="tech-term">Settings</span> <span class="term-explain">(Ayarlar)</span> - Her gruptaki bireysel ayarlar (örn: Site Adı, AI Asistan İsmi)</li>
+                    <li><span class="tech-term">Settings Values</span> <span class="term-explain">(Ayar Değerleri)</span> - Tenant'a özgü gerçek değerler</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Mimari Yapı - Multi-Tenant Deseni</h3>
+                <div class="flow-diagram">
+                    <div class="flow-step">
+                        <span>Settings Groups & Settings</span>
+                        <span class="flow-arrow">📍</span>
+                        <span class="badge badge-central">CENTRAL DATABASE</span>
+                        <span class="term-explain">(Tüm tenant'lar tarafından paylaşılan)</span>
+                    </div>
+                    <div class="flow-step">
+                        <span>Settings Values</span>
+                        <span class="flow-arrow">📍</span>
+                        <span class="badge badge-tenant">TENANT DATABASE</span>
+                        <span class="term-explain">(Her tenant'ın kendi değerleri)</span>
+                    </div>
+                </div>
+                <p>Bu tasarım sayesinde tüm tenant'larda aynı ayar tanımı kullanılırken her tenant kendi değerini saklar.</p>
+            </div>
+        </section>
+
+        <!-- ================================================ VERİTABANI ŞEMASI ================================================ -->
+        <section>
+            <h2>🗄️ Veritabanı Şeması</h2>
+
+            <div class="card">
+                <h3>1. settings_groups (CENTRAL DATABASE)</h3>
+                <p>Ayar gruplarını tanımlar. Hiyerarşik yapı destekler (parent_id ile alt gruplar).</p>
+                
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sütun</th>
+                                <th>Tür</th>
+                                <th>Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="tech-term">id</span></td>
+                                <td>BigInt</td>
+                                <td>Grup ID (Primary Key)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">parent_id</span></td>
+                                <td>BigInt (Nullable)</td>
+                                <td>Ana grup (NULL = Ana kategorisi)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">prefix</span></td>
+                                <td>String (Nullable)</td>
+                                <td>Ayar key prefix'i (örn: "site" → site_title, site_logo)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">name</span></td>
+                                <td>String</td>
+                                <td>Grup adı (Türkçe, örn: "Site Ayarları")</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">slug</span></td>
+                                <td>String (Unique)</td>
+                                <td>URL friendly slug (örn: "site-ayarlari")</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">description</span></td>
+                                <td>Text (Nullable)</td>
+                                <td>Grup açıklaması</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">icon</span></td>
+                                <td>String (Nullable)</td>
+                                <td>FontAwesome icon (örn: "fas fa-cogs")</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">layout</span></td>
+                                <td>JSON (Nullable)</td>
+                                <td>Form layout tanımı (admin panel görünümü)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">is_active</span></td>
+                                <td>Boolean</td>
+                                <td>Grup aktif mi? (default: true)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">created_at, updated_at, deleted_at</span></td>
+                                <td>Timestamp</td>
+                                <td>Soft delete ile</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Prefix Nedir?</strong> Ayar key'lerinin otomatik ön ekidir. Örn: Prefix "site" ise ayar key "site_title", "site_logo" vb. olur. Bu sayede ilişkili ayarları gruplaştırabilirsiniz.
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>2. settings (CENTRAL DATABASE)</h3>
+                <p>Ayar tanımlarını içerir. Tüm tenant'lar için geçerlidir (Values tenant'a özel).</p>
+                
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sütun</th>
+                                <th>Tür</th>
+                                <th>Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="tech-term">id</span></td>
+                                <td>BigInt</td>
+                                <td>Setting ID (Primary Key)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">group_id</span></td>
+                                <td>BigInt (FK)</td>
+                                <td>Ait olduğu grup ID'si</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">label</span></td>
+                                <td>String</td>
+                                <td>Arayüzde gösterilen ad (Türkçe, örn: "Site Adı")</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">key</span></td>
+                                <td>String (Unique)</td>
+                                <td>Ayar anahtarı (örn: "site_title") - Kodda kullanılır</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">type</span></td>
+                                <td>String</td>
+                                <td>Input türü: text, textarea, select, image, file, favicon, json vb.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">options</span></td>
+                                <td>JSON (Nullable)</td>
+                                <td>Select seçenekleri (örn: {"option1": "Seçenek 1"})</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">default_value</span></td>
+                                <td>Text (Nullable)</td>
+                                <td>Varsayılan değer (Settings Value boşsa kullanılır)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">is_required</span></td>
+                                <td>Boolean</td>
+                                <td>Zorunlu mu?</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">is_system</span></td>
+                                <td>Boolean</td>
+                                <td>Sistem tarafından mı kontrol ediliyor?</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">is_active</span></td>
+                                <td>Boolean</td>
+                                <td>Aktif mi?</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">help_text</span></td>
+                                <td>Text (Nullable)</td>
+                                <td>Admin panel'de yardım metni</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>3. settings_values (TENANT DATABASE)</h3>
+                <p>Her tenant'ın ayar değerlerini saklar. Tenant veritabanında yer alır.</p>
+                
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sütun</th>
+                                <th>Tür</th>
+                                <th>Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="tech-term">id</span></td>
+                                <td>BigInt</td>
+                                <td>Primary Key</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">setting_id</span></td>
+                                <td>BigInt (Unique)</td>
+                                <td>Central DB'deki setting ID'si (Foreign Key yok, manual)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">value</span></td>
+                                <td>Text (Nullable)</td>
+                                <td>Gerçek ayar değeri</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">created_at, updated_at</span></td>
+                                <td>Timestamp</td>
+                                <td>Oluşturulma ve güncellenme tarihleri</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="warning">
+                    <strong>⚠️ Önemli:</strong> Tenant database'de settings_values tablosu settings tablosuna Foreign Key'i olmuyor. Çünkü settings central DB'de ama settings_values tenant DB'de. Manual ilişki kurulur.
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================ VERİTABANI İLİŞKİLERİ ================================================ -->
+        <section>
+            <h2>🔗 Veritabanı İlişkileri</h2>
+
+            <div class="card">
+                <h3>Model Relationships</h3>
+                
+                <div class="code-block">
+SettingGroup (Central DB)
+├── parent_id → SettingGroup (hiyerarşi)
+├── settings → Setting[] (hasMany)
+└── children → SettingGroup[] (hasMany)
+
+Setting (Central DB)
+├── group_id → SettingGroup (belongsTo)
+└── values → SettingValue[] (hasMany)
+
+SettingValue (Tenant DB)
+└── setting_id → Setting (belongsTo - manuel ilişki)
+                </div>
+
+                <p><strong>Önemli:</strong> SettingValue'dan Setting'e Foreign Key olmuyor çünkü farklı veritabanlarında. Bunun yerine setting_id ile elle ilişkilendirilir.</p>
+            </div>
+
+            <div class="card">
+                <h3>Veri Akışı: Yazma İşlemi</h3>
+                
+                <div class="flow-diagram">
+                    <div class="flow-step">
+                        <span>1. Admin Panel → ValuesComponent</span>
+                        <span class="flow-arrow">→</span>
+                        <span>Kullanıcı form'u doldurur</span>
+                    </div>
+                    <div class="flow-step">
+                        <span>2. ValuesComponent</span>
+                        <span class="flow-arrow">→</span>
+                        <span>SettingValue (Tenant DB) güncelle</span>
+                    </div>
+                    <div class="flow-step">
+                        <span>3. SettingValue.saved() Event</span>
+                        <span class="flow-arrow">→</span>
+                        <span>Cache temizle</span>
+                    </div>
+                    <div class="flow-step">
+                        <span>4. Cache boş</span>
+                        <span class="flow-arrow">→</span>
+                        <span>Sonraki okuma fresh data alır</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Veri Akışı: Okuma İşlemi</h3>
+                
+                <div class="flow-diagram">
+                    <div class="flow-step">
+                        <span>1. Kod: setting('site_title')</span>
+                        <span class="flow-arrow">→</span>
+                        <span>SettingsService.get()</span>
+                    </div>
+                    <div class="flow-step">
+                        <span>2. Setting.where('key', 'site_title')</span>
+                        <span class="flow-arrow">→</span>
+                        <span>Central DB'de kayıt bul</span>
+                    </div>
+                    <div class="flow-step">
+                        <span>3. SettingValue.where('setting_id', ...)</span>
+                        <span class="flow-arrow">→</span>
+                        <span>Tenant DB'de değer ara</span>
+                    </div>
+                    <div class="flow-step">
+                        <span>4. Değer varsa</span>
+                        <span class="flow-arrow">→</span>
+                        <span>Değeri döndür, yoksa default döndür</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================ MEVCUT AYAR GRUPLARI ================================================ -->
+        <section>
+            <h2>📋 Mevcut Ayar Grupları</h2>
+
+            <div class="card">
+                <p>Sistemde halihazırda tanımlı olan ayar grupları:</p>
+                
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Grup Adı</th>
+                                <th>Slug</th>
+                                <th>Prefix</th>
+                                <th>Ana Grup</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Genel Sistem</td>
+                                <td>genel-sistem</td>
+                                <td>-</td>
+                                <td>Ana kategori</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Site</td>
+                                <td>site</td>
+                                <td>-</td>
+                                <td>Ana kategori</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>Site Ayarları</td>
+                                <td>site-ayarlari</td>
+                                <td>site</td>
+                                <td>Genel Sistem (1)</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>Tema</td>
+                                <td>tema</td>
+                                <td>theme</td>
+                                <td>Site (5)</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>SEO Ayarları</td>
+                                <td>seo-ayarlari</td>
+                                <td>seo</td>
+                                <td>Genel Sistem (1)</td>
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td>Yapay Zeka</td>
+                                <td>yapay-zeka</td>
+                                <td>ai</td>
+                                <td>Genel Sistem (1)</td>
+                            </tr>
+                            <tr>
+                                <td>10</td>
+                                <td>İletişim Bilgileri</td>
+                                <td>iletisim-bilgileri</td>
+                                <td>-</td>
+                                <td>Ana kategori</td>
+                            </tr>
+                            <tr>
+                                <td>11</td>
+                                <td>Bildirim Ayarları</td>
+                                <td>bildirim-ayarlari</td>
+                                <td>-</td>
+                                <td>Ana kategori</td>
+                            </tr>
+                            <tr>
+                                <td>12</td>
+                                <td>Payment Gateway Ayarları</td>
+                                <td>payment-gateway-ayarlari</td>
+                                <td>-</td>
+                                <td>Ana kategori</td>
+                            </tr>
+                            <tr>
+                                <td>18</td>
+                                <td>Blog - Yapay Zeka</td>
+                                <td>blog-yapay-zeka</td>
+                                <td>blog_ai</td>
+                                <td>Genel Sistem (1)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================ YENİ AYAR GRUBU OLUŞTURMA ================================================ -->
+        <section>
+            <h2>🆕 Yeni Ayar Grubu Oluşturma Adımları</h2>
+
+            <div class="card">
+                <h3>Aşama 1: Seeder Oluşturma</h3>
+                
+                <p>Yeni bir seeder dosyası oluşturun:</p>
+                <div class="code-block">
+Modules/SettingManagement/database/seeders/AuthRegistrationSeeder.php
+                </div>
+
+                <p>Seeder içeriğinde yapılacaklar:</p>
+                <ul class="list-item">
+                    <li><strong>Adım 1:</strong> SettingGroup oluştur (updateOrInsert ile)</li>
+                    <li><strong>Adım 2:</strong> Ayarları array'de tanımla</li>
+                    <li><strong>Adım 3:</strong> Form layout JSON'ı oluştur (opsiyonel ama önerilen)</li>
+                    <li><strong>Adım 4:</strong> Her setting için database'e insert et</li>
+                </ul>
+
+                <p><strong>Örnek Seeder Yapısı:</strong></p>
+                <div class="code-block">
+namespace Modules\SettingManagement\Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class AuthRegistrationSeeder extends Seeder
+{
+    public function run(): void
+    {
+        // 1. GRUP OLUŞTUR
+        $groupId = 15; // Yeni ID
+        $existing = DB::table('settings_groups')
+            ->where('id', $groupId)->first();
+
+        DB::table('settings_groups')->updateOrInsert(
+            ['id' => $groupId],
+            [
+                'name' => 'Kayıt Ayarları',
+                'slug' => 'kayit-ayarlari',
+                'parent_id' => 1, // Genel Sistem altında
+                'icon' => 'fas fa-user-plus',
+                'prefix' => 'auth_registration',
+                'is_active' => true,
+                'layout' => $this->getLayout(),
+                'created_at' => $existing->created_at ?? now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        // 2. AYARLARI OLUŞTUR
+        $settings = [
+            [
+                'group_id' => $groupId,
+                'label' => 'Kayıt Formu Aktif',
+                'key' => 'auth_registration_enabled',
+                'type' => 'select',
+                'options' => json_encode(['0' => 'Devre Dışı', '1' => 'Aktif']),
+                'default_value' => '1',
+                'is_required' => true,
+            ],
+            // ... diğer ayarlar
+        ];
+
+        foreach ($settings as $setting) {
+            $existing = DB::table('settings')
+                ->where('key', $setting['key'])->first();
+            
+            DB::table('settings')->updateOrInsert(
+                ['key' => $setting['key']],
+                [
+                    'group_id' => $setting['group_id'],
+                    'label' => $setting['label'],
+                    'type' => $setting['type'],
+                    'options' => $setting['options'] ?? null,
+                    'default_value' => $setting['default_value'],
+                    'is_required' => $setting['is_required'] ?? false,
+                    'is_active' => true,
+                    'help_text' => $setting['help_text'] ?? null,
+                    'created_at' => $existing->created_at ?? now(),
+                    'updated_at' => now(),
+                ]
+            );
+        }
+    }
+
+    private function getLayout(): string
+    {
+        // Form layout JSON'ı döndür
+        $layout = [...];
+        return json_encode($layout);
+    }
+}
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Aşama 2: Seeder Çalıştırma</h3>
+                
+                <p>Seeder'ı database'e eklemek için:</p>
+                <div class="code-block">
+// SettingManagementDatabaseSeeder.php içinde çağır:
+$this->call(AuthRegistrationSeeder::class);
+
+// Sonra:
+php artisan db:seed --class="Modules\\SettingManagement\\Database\\Seeders\\SettingManagementDatabaseSeeder"
+                </div>
+
+                <p>Veya doğrudan:</p>
+                <div class="code-block">
+php artisan db:seed --class="Modules\\SettingManagement\\Database\\Seeders\\AuthRegistrationSeeder"
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Aşama 3: Kodda Kullanma</h3>
+                
+                <p>Oluşturduğunuz ayarları kodda kullanın:</p>
+                <div class="code-block">
+// Helper ile
+$isEnabled = setting('auth_registration_enabled', '1');
+
+// Service ile
+$isEnabled = app('settings')->get('auth_registration_enabled', '1');
+
+// Model ile
+$setting = Setting::where('key', 'auth_registration_enabled')->first();
+$value = $setting->getValue();
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================ PREFIX SİSTEMİ ================================================ -->
+        <section>
+            <h2>🏷️ Prefix Sistemi Detaylı Açıklaması</h2>
+
+            <div class="card">
+                <h3>Prefix Nedir?</h3>
+                <p>Prefix, SettingGroup'a verilen bir ön ek kodu olup, o grup altındaki tüm ayarların key'lerinin otomatik olarak ön ekine konur.</p>
+            </div>
+
+            <div class="card">
+                <h3>Örnek 1: Site Ayarları Grubu</h3>
+                <div class="code-block">
+Grup: "Site Ayarları"
+Prefix: "site"
+
+Ayarlar:
+- key: site_title       (prefix + _ + ad)
+- key: site_logo        (prefix + _ + ad)
+- key: site_favicon     (prefix + _ + ad)
+- key: site_slogan      (prefix + _ + ad)
+
+Kullanım:
+setting('site_title')
+setting('site_logo')
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Örnek 2: AI Ayarları Grubu</h3>
+                <div class="code-block">
+Grup: "Yapay Zeka"
+Prefix: "ai"
+
+Ayarlar:
+- key: ai_assistant_name
+- key: ai_company_sector
+- key: ai_response_tone
+- key: ai_price_policy
+
+Kullanım:
+setting('ai_assistant_name')
+setting('ai_company_sector')
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Prefix Olmayan Gruplar</h3>
+                <p>Ana kategorilerin (parent_id = NULL) prefix'i olmayabilir. Bu durumda alt gruplar prefix alır:</p>
+                <div class="code-block">
+Ana Grup: "Genel Sistem" (prefix: NULL)
+  └─ Alt Grup: "Site Ayarları" (prefix: "site")
+     └─ Ayarlar: site_title, site_logo, ...
+
+  └─ Alt Grup: "Yapay Zeka" (prefix: "ai")
+     └─ Ayarlar: ai_assistant_name, ai_company_sector, ...
+                </div>
+            </div>
+
+            <div class="warning">
+                <strong>⚠️ Önemli:</strong> Prefix'ler sistemin naming convention'ıdır. Key'leri elle girirken prefix'i düşünmeniz gerekir. Panel otomatik vermez.
+            </div>
+        </section>
+
+        <!-- ================================================ SETTING TIPLERI ================================================ -->
+        <section>
+            <h2>📝 Setting Tipleri (Type)</h2>
+
+            <div class="card">
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tip</th>
+                                <th>Örnek</th>
+                                <th>Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="tech-term">text</span></td>
+                                <td>site_title</td>
+                                <td>Tek satır metin input</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">textarea</span></td>
+                                <td>ai_custom_instructions</td>
+                                <td>Çok satırlı metin alanı</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">select</span></td>
+                                <td>ai_response_tone</td>
+                                <td>Dropdown seçim (options gerekli)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">image</span></td>
+                                <td>site_logo_2</td>
+                                <td>Görsel yükleme (Spatie Media Library)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">file</span></td>
+                                <td>site_logo</td>
+                                <td>Dosya yükleme</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">favicon</span></td>
+                                <td>site_favicon</td>
+                                <td>Favicon yükleme</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">json</span></td>
+                                <td>ai_knowledge_base</td>
+                                <td>JSON verisi</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tech-term">image_multiple</span></td>
+                                <td>gallery_images</td>
+                                <td>Çoklu görsel</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================ LAYOUT SİSTEMİ ================================================ -->
+        <section>
+            <h2>🎨 Layout Sistemi (Admin Panel Tasarımı)</h2>
+
+            <div class="card">
+                <h3>Layout Nedir?</h3>
+                <p>Layout, admin panel'de form'un nasıl görüneceğini tanımlayan JSON yapısıdır. Her ayarın yerini, sırasını, başlıklarını vb. belirler.</p>
+            </div>
+
+            <div class="card">
+                <h3>Layout Yapısı</h3>
+                <div class="code-block">
+{
+  "title": "Form Başlığı",
+  "elements": [
+    // Heading
+    {
+      "type": "heading",
+      "properties": {
+        "content": "Bölüm Başlığı",
+        "size": "h3",
+        "width": 12
+      }
+    },
+    
+    // Row (Satır - responsive columns)
+    {
+      "type": "row",
+      "properties": {
+        "columns": [
+          {"index": 1, "width": 6},
+          {"index": 2, "width": 6}
+        ]
+      },
+      "columns": [
+        {
+          "width": 6,
+          "elements": [
+            {
+              "type": "text",
+              "properties": {
+                "label": "Alan Adı",
+                "name": "site_title",
+                "setting_id": 1,
+                "placeholder": "Örn: İXTİF",
+                "help_text": "Sitenizin adı"
+              }
+            }
+          ]
+        },
+        {
+          "width": 6,
+          "elements": [...]
+        }
+      ]
+    },
+    
+    // Divider
+    {
+      "type": "divider",
+      "properties": {"width": 12}
+    },
+    
+    // Section
+    {
+      "type": "section",
+      "properties": {
+        "content": "Önemli Bölüm",
+        "width": 12
+      }
+    }
+  ]
+}
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Layout Kuralları</h3>
+                <ul class="list-item">
+                    <li><strong>Width:</strong> 1-12 arası Bootstrap grid (6 = yarısı, 12 = tam)</li>
+                    <li><strong>Elements:</strong> Satır içindeki alanlar (columns içinde tanımlanır)</li>
+                    <li><strong>setting_id:</strong> Settings tablosundaki alan ID'si (form builder'ın hangi setting'i göstereceğini bilmesi için)</li>
+                    <li><strong>Responsive:</strong> Columns property sayesinde responsive tasarım</li>
+                </ul>
+            </div>
+
+            <div class="tip">
+                <strong>💡 İpucu:</strong> AISettingsSeeder.php dosyasında harika bir layout örneği var. Karmaşık layout'lar için bu dosyayı inceleyebilirsiniz.
+            </div>
+        </section>
+
+        <!-- ================================================ MIGRATION GEREKLİ Mİ ================================================ -->
+        <section>
+            <h2>🔄 Migration Gerekli mi?</h2>
+
+            <div class="card">
+                <h3>Evet, Migration Gerekli!</h3>
+                <p>Yeni ayar grubu oluşturmak için migration dosyası gerekmez, ama benzer sistemler için gerekir:</p>
+                
+                <ul class="list-item">
+                    <li><strong>✓ Gerekli değil:</strong> Sadece seeder ile ayar grubu + ayarlar eklemek</li>
+                    <li><strong>✓ Gerekli:</strong> Yeni tablo oluşturmak (örn: contact_forms tablosu)</li>
+                    <li><strong>✓ Gerekli:</strong> Sistem ayarlarını veritabanı şemasına etki eden değişiklikler</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Seeder + Database Sync Süreci</h3>
+                <div class="flow-diagram">
+                    <div class="flow-step">
+                        <span>1. AuthRegistrationSeeder.php oluştur</span>
+                    </div>
+                    <div class="flow-step">
+                        <span>2. SettingManagementDatabaseSeeder.php'de çağır</span>
+                    </div>
+                    <div class="flow-step">
+                        <span>3. php artisan db:seed (veya tenants:seed)</span>
+                    </div>
+                    <div class="flow-step">
+                        <span>4. Settings panel'de grup + ayarları gör</span>
+                    </div>
+                    <div class="flow-step">
+                        <span>5. Kodda setting('auth_registration_...') ile kullan</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================ TENANT-AWARE AYARLAR ================================================ -->
+        <section>
+            <h2>🏢 Tenant-Aware Ayarlar</h2>
+
+            <div class="card">
+                <h3>Multi-Tenant Yapısında Ayarlar Nasıl Çalışır?</h3>
+                
+                <div class="flow-diagram">
+                    <div class="flow-step">
+                        <span>Tenant 2 (ixtif.com)</span>
+                        <span class="flow-arrow">→</span>
+                        <span>site_title = "İXTİF.com"</span>
+                    </div>
+                    <div class="flow-step">
+                        <span>Tenant 1001 (muzibu.com)</span>
+                        <span class="flow-arrow">→</span>
+                        <span>site_title = "Muzibu Müzik"</span>
+                    </div>
+                </div>
+
+                <p>Aynı setting key'i farklı tenant'larda farklı değerlere sahip olabilir.</p>
+            </div>
+
+            <div class="card">
+                <h3>Tenant'a Özel Setting Tanımlaması</h3>
+                <p>Eğer bir setting <span class="highlight">sadece belirli bir tenant'a</span> ait olmalıysa:</p>
+                
+                <ul class="list-item">
+                    <li><strong>Seeder'da:</strong> Condition ile create etmeyin (tüm tenant'lar tarafından accessible olsun)</li>
+                    <li><strong>Kodda:</strong> tenant() helper ile kontrol edin</li>
+                    <li><strong>Admin Panel'de:</strong> ValuesComponent'te tenant filtrelemesi yapın</li>
+                </ul>
+
+                <p>Örnek:</p>
+                <div class="code-block">
+// Kodda tenant-aware kontrol
+if (tenant() && tenant('id') == 2) {
+    $registrationEnabled = setting('auth_registration_enabled');
+}
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================ BEST PRACTICES ================================================ -->
+        <section>
+            <h2>✅ Best Practices</h2>
+
+            <div class="card">
+                <h3>1. Naming Convention</h3>
+                <div class="code-block">
+✓ DOĞRU:
+- Prefix: auth_registration, payment_gateway, blog_ai
+- Key: auth_registration_enabled, payment_gateway_type
+- Slug: auth-registration, payment-gateway
+
+✗ YANLIŞ:
+- Key: authReg (camelCase)
+- Key: auth-registration (Key'de dash)
+- Prefix: auth_registration_ (trailing underscore)
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>2. Seeder Organizasyonu</h3>
+                <ul class="list-item">
+                    <li>Her önemli feature için ayrı seeder oluştur (SettingManagement'de)</li>
+                    <li>Seeder adını açıklayıcı yap: AuthRegistrationSeeder, PaymentSeeder</li>
+                    <li>SettingManagementDatabaseSeeder'da merkezi çağırma yap</li>
+                    <li>updateOrInsert ile idempotent yap (re-run edilebildiği gibi olsun)</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>3. Help Text ve Labels</h3>
+                <ul class="list-item">
+                    <li>Help text'i Türkçe ve açıklayıcı yaz</li>
+                    <li>Örnek değer göster: "(Örn: İXTİF.com)"</li>
+                    <li>is_required = true ise kullanıcıya uyarı ver</li>
+                    <li>Select options'u açık yaz: "Aktif ⭐ (Önerilen)"</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>4. Settings Panel'de Görünüm</h3>
+                <ul class="list-item">
+                    <li>Layout'u logik gruplar halinde yapılandır (Heading, Row, Section)</li>
+                    <li>İlişkili alanları aynı satıra (Row) koy</li>
+                    <li>Responsive layout kullan (width: 6 = 2 column, width: 4 = 3 column)</li>
+                    <li>Divider ile bölümler arasına ayırma koy</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>5. Kodda Kullanım</h3>
+                <div class="code-block">
+// DOĞRU
+$isEnabled = setting('auth_registration_enabled', '1');
+if ($isEnabled === '1') { ... }
+
+// Daha iyi
+$isEnabled = setting('auth_registration_enabled') === '1';
+if ($isEnabled) { ... }
+
+// Type casting ile
+$isEnabled = (bool) setting('auth_registration_enabled');
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================ HATA ÇÖZÜMÜ ================================================ -->
+        <section>
+            <h2>🐛 Sık Hatalar ve Çözümü</h2>
+
+            <div class="card">
+                <h3>Hata 1: "Setting bulunamadı" (NULL döner)</h3>
+                <div class="warning">
+                    <strong>Sebep:</strong> Seeder çalıştırılmamış veya key yanlış
+                </div>
+                <ul class="list-item">
+                    <li>Seeder'ı çalıştır: php artisan db:seed</li>
+                    <li>Key'i kontrol et: SELECT * FROM settings WHERE key = 'xxx'</li>
+                    <li>Default value koy: setting('key', 'default')</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Hata 2: "settings_groups ID conflict"</h3>
+                <div class="warning">
+                    <strong>Sebep:</strong> updateOrInsert kullanmadığında duplicate ID
+                </div>
+                <ul class="list-item">
+                    <li>Seeder'da updateOrInsert kullan, insert değil</li>
+                    <li>ID'yi unique ve sequential seç</li>
+                    <li>Mevcut gruplara bak: SELECT MAX(id) FROM settings_groups</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Hata 3: "Layout JSON geçersiz"</h3>
+                <div class="warning">
+                    <strong>Sebep:</strong> JSON formatında hata
+                </div>
+                <ul class="list-item">
+                    <li>json_encode() kullan</li>
+                    <li>JSON validator ile test et (jsonlint.com)</li>
+                    <li>Tırnak işaretlerine dikkat et</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ================================================ BAŞLANGIÇ TEMPLATE ================================================ -->
+        <section>
+            <h2>📌 Yeni Seeder Template</h2>
+
+            <div class="card">
+                <p>Yeni setting grubu oluşturken şu template'i kullanın:</p>
+                <div class="code-block">
+&lt;?php
+
+namespace Modules\SettingManagement\Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class YourFeatureSeeder extends Seeder
+{
+    public function run(): void
+    {
+        // 1. GRUP OLUŞTUR
+        $groupId = 20; // Yeni ID (önceki max'tan +1)
+        
+        $existing = DB::table('settings_groups')
+            ->where('id', $groupId)->first();
+
+        DB::table('settings_groups')->updateOrInsert(
+            ['id' => $groupId],
+            [
+                'name' => 'Türkçe Grup Adı',
+                'slug' => 'slug-adı',
+                'parent_id' => 1, // Hangi ana kategori altında?
+                'icon' => 'fas fa-icon-name',
+                'prefix' => 'prefix_name',
+                'is_active' => true,
+                'layout' => $this->getLayout(),
+                'created_at' => $existing->created_at ?? now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        // 2. AYARLARI OLUŞTUR
+        $settings = [
+            [
+                'group_id' => $groupId,
+                'label' => 'Ayar Adı',
+                'key' => 'prefix_name_key',
+                'type' => 'text', // text, select, textarea, image vb.
+                'options' => null,
+                'default_value' => 'default',
+                'sort_order' => 1,
+                'is_active' => true,
+                'is_system' => false,
+                'is_required' => true,
+                'help_text' => 'Kullanıcıya gösterilecek yardım metni'
+            ],
+        ];
+
+        foreach ($settings as $setting) {
+            $existing = DB::table('settings')
+                ->where('key', $setting['key'])->first();
+            
+            DB::table('settings')->updateOrInsert(
+                ['key' => $setting['key']],
+                [
+                    'group_id' => $setting['group_id'],
+                    'label' => $setting['label'],
+                    'type' => $setting['type'],
+                    'options' => $setting['options'] ?? null,
+                    'default_value' => $setting['default_value'],
+                    'sort_order' => $setting['sort_order'] ?? 0,
+                    'is_active' => $setting['is_active'] ?? true,
+                    'is_system' => $setting['is_system'] ?? false,
+                    'is_required' => $setting['is_required'] ?? false,
+                    'help_text' => $setting['help_text'] ?? null,
+                    'created_at' => $existing->created_at ?? now(),
+                    'updated_at' => now(),
+                ]
+            );
+        }
+    }
+
+    private function getLayout(): string
+    {
+        $layout = [
+            'title' => 'Form Başlığı',
+            'elements' => [
+                [
+                    'type' => 'heading',
+                    'properties' => [
+                        'content' => 'Bölüm Başlığı',
+                        'size' => 'h3',
+                        'width' => 12,
+                    ],
+                ],
+                [
+                    'type' => 'row',
+                    'columns' => [
+                        [
+                            'width' => 6,
+                            'elements' => [
+                                [
+                                    'type' => 'text',
+                                    'properties' => [
+                                        'label' => 'Alan Adı',
+                                        'name' => 'prefix_name_key',
+                                        'setting_id' => 1, // Settings tablosundaki ID
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        return json_encode($layout);
+    }
+}
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================ KAYNAKLAR ================================================ -->
+        <section>
+            <h2>📚 İlgili Dosyalar ve Kaynaklar</h2>
+
+            <div class="card">
+                <h3>Modül Dosya Konumları</h3>
+                <div class="code-block">
+Modules/SettingManagement/
+├── app/Models/
+│   ├── SettingGroup.php          ← Ana grup model
+│   ├── Setting.php               ← Ayar model
+│   └── SettingValue.php          ← Ayar değeri model
+├── database/
+│   ├── migrations/
+│   │   ├── 2024_12_01_000001_create_settings_groups_table.php
+│   │   ├── 2024_12_01_000002_create_settings_table.php
+│   │   ├── 2024_12_01_000003_create_settings_values_table.php
+│   │   └── tenant/
+│   │       └── 2024_12_01_000003_create_settings_values_table.php
+│   └── seeders/
+│       ├── SettingManagementDatabaseSeeder.php (ana seeder)
+│       ├── AISettingsSeeder.php (örnek)
+│       └── AuthRegistrationSeeder.php (oluşturacağınız)
+├── app/Http/Livewire/
+│   ├── ValuesComponent.php       ← Ayar değerleri edit paneli
+│   ├── GroupManageComponent.php  ← Grup yönetimi
+│   └── GroupListComponent.php    ← Grup listesi
+└── routes/
+    └── admin.php                 ← Admin panel yolları
+
+Global Dosyalar:
+app/Services/SettingsService.php     ← Ayarları okuyan service
+app/Helpers/Functions.php            ← setting() helper
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Admin Panel Erişim</h3>
+                <div class="code-block">
+URL: https://ixtif.com/admin/settingmanagement/groups
+
+Buradan:
+1. Grupları görüntüle
+2. "New Group" ile yeni grup oluştur (test için)
+3. Grupo içinde Settings panel'de ayarları edit et
+4. Admin panelin layout'unu incele
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            🤖 SettingManagement Modülü Detaylı Analiz | Claude AI tarafından oluşturuldu
+        </footer>
+    </div>
+</body>
+</html>

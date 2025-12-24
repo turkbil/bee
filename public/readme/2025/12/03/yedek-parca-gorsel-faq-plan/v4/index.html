@@ -1,1 +1,1077 @@
-v4/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yedek Parça İçerik & Görsel Projesi v4 - Leonardo AI + Stock Photo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: #8b5cf6;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 15px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 20px 0;
+            color: #fbbf24;
+        }
+
+        .task-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+
+        .task-card h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .task-card p {
+            color: #cbd5e1;
+            margin-bottom: 12px;
+        }
+
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            color: #e2e8f0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .prompt-example {
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 3px solid #8b5cf6;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .success-box {
+            background: rgba(34, 197, 94, 0.1);
+            border-left: 4px solid #22c55e;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .info-box {
+            background: rgba(251, 191, 36, 0.1);
+            border-left: 4px solid #fbbf24;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .purple-box {
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 4px solid #8b5cf6;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        ul {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+            color: #cbd5e1;
+        }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+
+        .rule-list {
+            counter-reset: rule-counter;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .rule-list li {
+            counter-increment: rule-counter;
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 15px;
+        }
+
+        .rule-list li::before {
+            content: counter(rule-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #3b82f6;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .skip-badge {
+            display: inline-block;
+            background: #ef4444;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .new-badge {
+            display: inline-block;
+            background: #8b5cf6;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        .comparison-table th {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .highlight {
+            background: rgba(139, 92, 246, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📦 Yedek Parça İçerik & Görsel Projesi<span class="version-badge">v4 - Leonardo AI</span></h1>
+            <div class="meta">
+                📅 Tarih: 2025-12-03 |
+                🎯 Tenant: ixtif.com (Tenant 2) |
+                📊 Ürün: 690 adet (Kategori 7-106) |
+                🎨 Görsel: Leonardo AI Stock Photo
+            </div>
+        </header>
+
+        <div class="purple-box">
+            <h3 style="margin-top: 0; color: #8b5cf6;">🆕 v4 Güncellemesi: Leonardo AI + Stock Photo Model</h3>
+            <p><strong>Kritik Değişiklik:</strong> DALL-E 2 → <span class="highlight">Leonardo AI</span> (Stock Photo model)</p>
+            <p><strong>Görsel Yaklaşımı:</strong></p>
+            <ul>
+                <li>✅ <strong>UZAKTAN ÇEKİM</strong> - Close-up değil, geniş açı depo/raf görüntüsü</li>
+                <li>✅ <strong>ÇOKLU ÜRÜN</strong> - Tek ürün showcase değil, birden fazla ürün görünmeli</li>
+                <li>✅ <strong>ARADA KARIŞIK</strong> - Ürünler doğal şekilde dizilmiş, organize ama gerçekçi</li>
+                <li>✅ <strong>STOK FOTOĞRAF KALİTESİ</strong> - Profesyonel katalog görünümü</li>
+            </ul>
+        </div>
+
+        <section>
+            <h2>📊 Proje Özeti</h2>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number">690</div>
+                    <div class="stat-label">Yedek Parça Ürünü</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">99.7%</div>
+                    <div class="stat-label">FAQ Eksik (688 ürün)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Features/Use Cases Eksik</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">Leonardo</div>
+                    <div class="stat-label">Stock Photo Model</div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎨 Leonardo AI - Neden Stock Photo Model?</h2>
+
+            <h3>🎯 Model Karşılaştırması</h3>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Kullanım Alanı</th>
+                        <th>Yedek Parça İçin Uygunluk</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="highlight">Stock Photo</span></td>
+                        <td>Profesyonel katalog, e-ticaret, ürün görselleri</td>
+                        <td>✅ <strong>EN UYGUN</strong> - Depo/raf gerçekçiliği mükemmel</td>
+                    </tr>
+                    <tr>
+                        <td>PhotoReal</td>
+                        <td>Ultra gerçekçi fotoğraflar, portre, manzara</td>
+                        <td>⚠️ Aşırı detaylı, tek ürün odaklı olabilir</td>
+                    </tr>
+                    <tr>
+                        <td>Cinematic</td>
+                        <td>Film sahnesi, dramatik görüntüler</td>
+                        <td>❌ Çok artistik, satış için uygun değil</td>
+                    </tr>
+                    <tr>
+                        <td>Alchemy</td>
+                        <td>Yüksek kalite rendering, sanatsal</td>
+                        <td>❌ Gerçekçilik yerine sanatsal görünüm</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="success-box">
+                <h3 style="margin-top: 0; color: #22c55e;">✅ Stock Photo Seçiminin Avantajları</h3>
+                <ul>
+                    <li><strong>Profesyonel Katalog Görünümü:</strong> E-ticaret siteleri için optimize</li>
+                    <li><strong>Çoklu Ürün Desteği:</strong> Tek ürün yerine grup gösteriminde başarılı</li>
+                    <li><strong>Depo/Raf Gerçekçiliği:</strong> Endüstriyel ortam simülasyonu mükemmel</li>
+                    <li><strong>Uzaktan Çekim:</strong> Geniş açı depo görüntülerine uygun</li>
+                    <li><strong>Temiz & Profesyonel:</strong> Kusursuz, satış odaklı görünüm</li>
+                </ul>
+            </div>
+
+            <h3>📸 Görsel Özellikleri (Kritik Gereksinimler)</h3>
+
+            <div class="warning-box">
+                <h3 style="margin-top: 0; color: #ef4444;">⚠️ ASLA UNUTMA - Görsel Kuralları</h3>
+                <ul>
+                    <li>❌ <strong>TEK ÜRÜN SHOWCASE YASAK!</strong> - Ürün close-up çekimi değil, depo görüntüsü</li>
+                    <li>❌ <strong>ZOOM-IN YASAK!</strong> - Uzaktan çekim, geniş açı</li>
+                    <li>✅ <strong>ÇOKLU ÜRÜN ZORUNLU!</strong> - En az 5-10 ürün görünmeli (aynı tip veya karışık)</li>
+                    <li>✅ <strong>DEPO/RAF ORTAMI!</strong> - Sanki gerçek bir depoda çekilmiş gibi</li>
+                    <li>✅ <strong>ORGANIZE AMA DOĞAL!</strong> - Sterile değil, gerçekçi düzen</li>
+                    <li>✅ <strong>NET & STÜDYO KALİTESİ!</strong> - Keskin, net, profesyonel stüdyo çekimi gibi</li>
+                    <li>✅ <strong>CRYSTAL CLEAR!</strong> - Bulanık değil, tüm detaylar net görünmeli</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <p><strong>💡 Örnek Senaryo:</strong></p>
+                <p><strong>Lastik Ürünü İçin:</strong></p>
+                <ul>
+                    <li>❌ <strong>Yanlış:</strong> Tek lastik, beyaz arka plan, close-up → <em>Ürün katalog fotoğrafı gibi</em></li>
+                    <li>✅ <strong>Doğru:</strong> Depo raflarında onlarca lastik, farklı boyutlar, organize dizilim, doğal ışık → <em>Gerçek depo ortamı</em></li>
+                </ul>
+                <p><strong>Ampul Ürünü İçin:</strong></p>
+                <ul>
+                    <li>❌ <strong>Yanlış:</strong> Tek ampul, ışıklı arka plan, detay gösterimi</li>
+                    <li>✅ <strong>Doğru:</strong> Ampullerin organize kompartımanlarda dizildiği raf sistemi, farklı ampul tipleri, depo ortamı</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎨 11 Kural Formülü - Stock Photo Adaptasyonu</h2>
+
+            <div class="info-box">
+                <p><strong>Kaynak:</strong> <a href="https://ixtif.com/readme/2025/11/26/11-kural-formulu/" style="color: #60a5fa;">https://ixtif.com/readme/2025/11/26/11-kural-formulu/</a></p>
+                <p><strong>Uyarlama:</strong> Orijinal formül + Stock Photo model + Çoklu ürün/uzaktan çekim vurgusu</p>
+            </div>
+
+            <h3>📋 Kullanılacak 10 Kural (Rule 9 Skip + Uzaktan Çekim Vurgusu)</h3>
+
+            <ul class="rule-list">
+                <li><strong>Photo Type:</strong> Stock photograph of / Industrial catalog shot of</li>
+                <li><strong>Subject + Action:</strong> <span class="highlight">MULTIPLE products</span> arranged in warehouse setting (TEK ÜRÜN DEĞİL!)</li>
+                <li><strong>Environment + Time:</strong> Well-organized industrial warehouse, bright storage area, daylight</li>
+                <li><strong>Camera Angle:</strong> <span class="highlight">Wide angle / Medium distance shot</span> (close-up değil!)</li>
+                <li><strong>Composition:</strong> Rule of thirds, <span class="highlight">multiple products visible in frame, depth showing rows</span></li>
+                <li><strong>Lighting:</strong> Bright commercial lighting (overhead + natural), clean and professional</li>
+                <li><strong>Camera + Lens:</strong> Canon EOS R5, 35mm f/2.8 (geniş açı için), natural depth</li>
+                <li><strong>Film Stock:</strong> Kodak Portra 400 (warm, professional catalog tones)</li>
+                <li><strong style="text-decoration: line-through; opacity: 0.5;">Imperfections:</strong> <span class="skip-badge">SKIP</span> <span style="color: #94a3b8;">Satış fotoğrafı için kusur yok</span></li>
+                <li><strong>Mood + Emotion:</strong> Professional, organized, industrial reliability</li>
+                <li><strong>Post-Processing:</strong> Clean commercial grade, professional catalog look, warm tones</li>
+            </ul>
+
+            <div class="purple-box">
+                <h3 style="margin-top: 0; color: #8b5cf6;">🎯 Leonardo AI Stock Photo Ek Direktifleri</h3>
+                <p>Her prompt'a eklenecek kritik talimatlar:</p>
+                <div class="code-block">
+                    <pre>ZORUNLU EK TALİMATLAR:
+- "wide angle shot showing multiple items"
+- "warehouse storage perspective, not single product showcase"
+- "multiple {product_type} visible in organized rows"
+- "medium distance view, not close-up"
+- "sharp focus with crystal clear details"
+- "professional studio quality stock photography"
+- "crisp and sharp professional photography"
+- "e-commerce catalog quality"</pre>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>📸 Kategoriye Özel Prompt Örnekleri (Leonardo Stock Photo)</h2>
+
+            <h3>Örnek 1: Lastikler (Category 77)</h3>
+            <div class="prompt-example">
+                <p><strong>Model:</strong> Stock Photo | <strong>Çekim:</strong> Wide Angle, Uzaktan, Net Stüdyo Kalitesi</p>
+                <div class="code-block">
+                    <pre>Stock photograph of industrial warehouse with multiple forklift tires stacked in organized rows on metal shelving system, well-lit commercial storage area with bright overhead LED lights and natural daylight from large windows, wide angle shot showing at least 10-15 tires of various sizes arranged in neat rows, medium distance perspective capturing the depth and organization of warehouse storage, Canon EOS R5, 35mm f/2.8, Kodak Portra 400, sharp focus with crystal clear details, rule of thirds composition emphasizing rows and depth, bright professional commercial lighting creating clean catalog look, mood of organized industrial efficiency and reliability, professional studio quality stock photography with clean post-processing and warm commercial tones, e-commerce catalog quality, warehouse storage perspective not single product showcase, crisp and sharp professional photography, photorealistic</pre>
+                </div>
+            </div>
+
+            <h3>Örnek 2: Ampuller (Category 31)</h3>
+            <div class="prompt-example">
+                <p><strong>Model:</strong> Stock Photo | <strong>Çekim:</strong> Wide Angle, Uzaktan, Net Stüdyo Kalitesi</p>
+                <div class="code-block">
+                    <pre>Stock photograph of industrial parts storage with multiple automotive and machinery bulbs organized in compartmentalized shelving bins, bright clean warehouse environment with professional overhead lighting, wide angle view showing variety of bulb types (12V, 24V, different sizes) arranged in organized grid storage system, medium distance shot capturing multiple rows and compartments with dozens of bulbs visible, Canon EOS R5, 35mm f/2.8, Kodak Portra 400, sharp focus with crystal clear details, composition showing depth and organization of parts department, bright commercial lighting creating professional catalog atmosphere, mood conveying organized industrial supply and accessibility, professional studio quality stock photography with clean post-processing and warm professional tones, e-commerce ready quality, warehouse parts storage perspective showing multiple items not single product, crisp and sharp professional photography, photorealistic</pre>
+                </div>
+            </div>
+
+            <h3>Örnek 3: Rulmanlar/Bearings (Category 50+)</h3>
+            <div class="prompt-example">
+                <p><strong>Model:</strong> Stock Photo | <strong>Çekim:</strong> Wide Angle, Uzaktan, Net Stüdyo Kalitesi</p>
+                <div class="code-block">
+                    <pre>Stock photograph of industrial bearings department with multiple bearings displayed in organized grid storage bins and drawer system, well-maintained warehouse parts area with bright clean lighting, wide angle shot showing various bearing sizes and types arranged systematically in labeled compartments, medium distance perspective capturing rows of organized storage with dozens of bearings visible, Canon EOS R5, 35mm f/2.8, Kodak Portra 400, sharp focus with crystal clear details, composition emphasizing systematic organization and variety of inventory, mixed professional and natural lighting creating clean warehouse environment, mood conveying precision engineering and reliability, professional studio quality stock photography with clean commercial grade post-processing, warm catalog tones, warehouse parts perspective showing multiple items in organized storage not single product showcase, crisp and sharp professional photography, photorealistic</pre>
+                </div>
+            </div>
+
+            <div class="success-box">
+                <h3 style="margin-top: 0; color: #22c55e;">✅ Prompt Yapısı - Kritik Öğeler</h3>
+                <ul>
+                    <li><strong>"Stock photograph of"</strong> → Leonardo Stock Photo modelini tetikler</li>
+                    <li><strong>"multiple {products}"</strong> → Çoklu ürün görünümü zorunlu</li>
+                    <li><strong>"wide angle shot"</strong> → Geniş açı, uzaktan çekim</li>
+                    <li><strong>"medium distance perspective"</strong> → Close-up değil!</li>
+                    <li><strong>"warehouse storage perspective"</strong> → Depo ortamı vurgusu</li>
+                    <li><strong>"not single product showcase"</strong> → Tek ürün gösterimi engelle</li>
+                    <li><strong>"35mm lens"</strong> → Geniş açı için (50mm değil!)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>📋 Veri Yapıları (SEO Dahil)</h2>
+
+            <h3>SEO Settings Yapısı <span class="new-badge">YENİ</span></h3>
+            <p>Polymorphic relationship ile <span class="tech-term">seo_settings</span> tablosunda (Tenant 2 DB):</p>
+            <div class="code-block">
+                <pre>// SEO Title (çoklu dil)
+{
+  "tr": "Ampul 12V Duysuz - Endüstriyel Ekipman Yedek Parçaları | İxtif",
+  "en": "12V Bulb Base-less - Industrial Equipment Spare Parts | Ixtif"
+}
+
+// SEO Description (çoklu dil)
+{
+  "tr": "Endüstriyel makinalar ve forkliftler için 12V duysuz ampul. Yüksek dayanıklılık, uzun ömür. Hızlı kargo, güvenli alışveriş.",
+  "en": "12V base-less bulb for industrial machinery and forklifts..."
+}</pre>
+            </div>
+
+            <h3>Features (Özellikler) Yapısı</h3>
+            <div class="code-block">
+                <pre>[
+  {
+    "icon": "fas fa-shield-alt",
+    "text": "Yüksek dayanıklılık ve uzun ömür"
+  },
+  {
+    "icon": "fas fa-temperature-low",
+    "text": "Geniş sıcaklık aralığında çalışma"
+  },
+  {
+    "icon": "fas fa-tools",
+    "text": "Kolay montaj ve bakım"
+  }
+]</pre>
+            </div>
+
+            <h3>Use Cases (Kullanım Senaryoları) Yapısı</h3>
+            <div class="code-block">
+                <pre>[
+  {
+    "icon": "fas fa-warehouse",
+    "text": "Depo ve lojistik operasyonlarında"
+  },
+  {
+    "icon": "fas fa-industry",
+    "text": "Üretim tesislerinde malzeme taşımada"
+  }
+]</pre>
+            </div>
+
+            <h3>FAQ Yapısı</h3>
+            <div class="code-block">
+                <pre>[
+  {
+    "question": "Bu ampul hangi ekipman modellerine uyumludur?",
+    "answer": "12V sistemli forklift, transpalet ve endüstriyel makinaların çoğuna uyumludur..."
+  }
+]</pre>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 Yapılacaklar - 7 Ana Görev</h2>
+
+            <div class="task-card">
+                <h3>1. Layout Değişikliği - Sticky Sidebar Kaldır</h3>
+                <p><strong>Neden:</strong> Ürün görselleri silindiği için sticky sidebar boş, layout bozuk.</p>
+                <p><strong>Çözüm:</strong> Kategori 7 (Yedek Parça) ve alt kategoriler için full-width layout.</p>
+                <p><strong>Değişiklik:</strong> <code>show.blade.php</code> → <code>lg:col-span-2</code> → <code>lg:col-span-3</code></p>
+            </div>
+
+            <div class="task-card">
+                <h3>2. Leonardo AI Görsel Üretimi - Stock Photo Model</h3>
+                <p><strong>Model:</strong> Leonardo AI - <span class="highlight">Stock Photo</span></p>
+                <p><strong>Resolution:</strong> 1024x1024 (e-ticaret standart)</p>
+                <p><strong>Özellikler:</strong></p>
+                <ul>
+                    <li>✅ Stock Photo model (katalog kalitesi)</li>
+                    <li>✅ Wide angle, uzaktan çekim (35mm lens)</li>
+                    <li>✅ Çoklu ürün (minimum 5-10 ürün görünür)</li>
+                    <li>✅ Depo/raf ortamı, organize dizilim</li>
+                    <li>✅ Kusursuz, temiz, profesyonel</li>
+                    <li>✅ 10 kural formülü (Rule 9 skip)</li>
+                </ul>
+                <p><strong>Collection:</strong> <span class="tech-term">spare_parts_hero</span></p>
+                <p><strong>Rate Limit:</strong> Leonardo API limitine göre ayarlanacak</p>
+            </div>
+
+            <div class="task-card">
+                <h3>3. FAQ İçeriği Üretimi (GPT-4)</h3>
+                <p><strong>Durum:</strong> 688/690 üründe eksik (%99.7)</p>
+                <p><strong>Hedef:</strong> 5 soru-cevap/ürün</p>
+                <p><strong>Yazılacağı Yer:</strong> <code>shop_products.faq_data</code> (Tenant 2 DB)</p>
+            </div>
+
+            <div class="task-card">
+                <h3>4. Excerpt + SEO Description Üretimi (GPT-4)</h3>
+                <p><strong>Durum:</strong> 688/690 üründe eksik</p>
+                <p><strong>Hedef:</strong> 150-200 karakter kısa açıklama</p>
+                <p><strong>Yazılacağı Yerler:</strong></p>
+                <ul>
+                    <li><code>shop_products.short_description</code> (JSON multi-lang)</li>
+                    <li><code>seo_settings.descriptions</code> (JSON multi-lang) <span class="new-badge">YENİ</span></li>
+                </ul>
+            </div>
+
+            <div class="task-card">
+                <h3>5. Features (Özellikler) Üretimi (GPT-4)</h3>
+                <p><strong>Durum:</strong> 690/690 üründe eksik (%100)</p>
+                <p><strong>Hedef:</strong> 3-5 özellik/ürün (icon + text)</p>
+                <p><strong>Yazılacağı Yer:</strong> <code>shop_products.features</code> (JSON array)</p>
+            </div>
+
+            <div class="task-card">
+                <h3>6. Use Cases (Kullanım Senaryoları) Üretimi (GPT-4)</h3>
+                <p><strong>Durum:</strong> 690/690 üründe eksik (%100)</p>
+                <p><strong>Hedef:</strong> 2-3 senaryo/ürün (icon + text)</p>
+                <p><strong>Yazılacağı Yer:</strong> <code>shop_products.use_cases</code> (JSON array)</p>
+            </div>
+
+            <div class="task-card">
+                <h3>7. Body + SEO Title Zenginleştirme (GPT-4)</h3>
+                <p><strong>Body:</strong> 300-500 kelime detaylı açıklama</p>
+                <p><strong>Yazılacağı Yer:</strong> <code>shop_products.body</code> (JSON multi-lang)</p>
+                <p><strong>SEO Title:</strong> 50-60 karakter optimize başlık <span class="new-badge">YENİ</span></p>
+                <p><strong>Yazılacağı Yer:</strong> <code>seo_settings.titles</code> (JSON multi-lang)</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>💰 Maliyet Analizi (Leonardo AI)</h2>
+
+            <div class="info-box">
+                <h3 style="margin-top: 0; color: #fbbf24;">💡 Leonardo AI Pricing</h3>
+                <p>Leonardo AI credit-based sistem kullanır. Stock Photo model için yaklaşık maliyet:</p>
+                <ul>
+                    <li>1024x1024 resolution: ~8-10 credits/görsel</li>
+                    <li>Subscription: $10/month → 8,500 credits</li>
+                    <li>Pay-as-you-go: Credits satın alınabilir</li>
+                </ul>
+                <p><strong>Tahmini:</strong> 690 görsel × 10 credits = 6,900 credits ≈ <span class="highlight">$8-10</span></p>
+            </div>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number">$8-10</div>
+                    <div class="stat-label">Leonardo AI (690 görsel)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">$7-8</div>
+                    <div class="stat-label">GPT-4 İçerik (SEO dahil)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">~$16</div>
+                    <div class="stat-label">Toplam Tahmini Maliyet</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">$0.02</div>
+                    <div class="stat-label">Ürün Başına Maliyet</div>
+                </div>
+            </div>
+
+            <h3>Detaylı Breakdown</h3>
+            <div class="code-block">
+                <pre>Leonardo AI (Stock Photo):
+  690 ürün × 10 credits = 6,900 credits
+  Tahmini: $8-10 (subscription veya pay-as-you-go)
+
+GPT-4 İçerik Üretimi (SEO Dahil):
+  - Input: ~600 token/ürün (kategori, ürün, talimat, SEO)
+  - Output: ~1200 token/ürün (FAQ + excerpt + features + use_cases + body + SEO)
+  - Toplam: 1,800 token/ürün × 690 = 1,242,000 token
+  - Maliyet: ~$7-8
+
+Toplam: ~$16 (DALL-E 2'den $5 daha ucuz!)</pre>
+            </div>
+        </section>
+
+        <section>
+            <h2>📝 GPT-4 İçerik Üretimi - SHOP ÜRÜN PAZARLAMA</h2>
+
+            <div class="info-box">
+                <h3 style="margin-top: 0; color: #fbbf24;">💡 Blog AI Guide Adaptasyonu</h3>
+                <p><strong>Kaynak:</strong> <code>https://ixtif.com/admin/blog/ai-guide</code></p>
+                <p><strong>Fark:</strong> Blog bilgi odaklı → SHOP <strong>ÜRÜN PAZARLAMA</strong> odaklı</p>
+            </div>
+
+            <h3>🎯 SHOP vs BLOG - Kritik Farklar</h3>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Özellik</th>
+                        <th>BLOG (Bilgi Odaklı)</th>
+                        <th>SHOP (Ürün Pazarlama)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Amaç</strong></td>
+                        <td>Eğitim, rehber, bilgilendirme</td>
+                        <td><span class="highlight">SATIŞ, pazarlama, ürün tanıtımı</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Firma Bahsi</strong></td>
+                        <td>✅ "iXtif" minimum 3 kez</td>
+                        <td>❌ Firma adı YOK (ürün odaklı)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ürün Bahsi</strong></td>
+                        <td>✅ İxtif + diğer markalar (Toyota, Linde...)</td>
+                        <td>❌ Rakip/marka karşılaştırma YOK</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fiyat</strong></td>
+                        <td>❌ Yasak (TL, USD...)</td>
+                        <td>❌ <strong>YASAK</strong> (ürün değerine odaklan)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Yıl</strong></td>
+                        <td>❌ Yasak (2023, 2024...)</td>
+                        <td>❌ <strong>YASAK</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>İçerik Tonu</strong></td>
+                        <td>Eğitici, açıklayıcı</td>
+                        <td><span class="highlight">PAZARLAMA, satış odaklı</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Odak</strong></td>
+                        <td>"Nasıl kullanılır?", "Nedir?"</td>
+                        <td><span class="highlight">"Neden almalı?", "Ne kazandırır?"</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="warning-box">
+                <h3 style="margin-top: 0; color: #ef4444;">⚠️ SHOP İçin Mutlak Yasaklar</h3>
+                <ul>
+                    <li>❌ <strong>FİYAT RAKAM YASAK!</strong> - TL, USD, EUR, "yaklaşık 500 TL" → ASLA!</li>
+                    <li>❌ <strong>RAKİP KARŞILAŞTIRMA YASAK!</strong> - "Toyota'dan daha ucuz", "Linde kadar kaliteli" → ASLA!</li>
+                    <li>❌ <strong>MARKA BAHSETME YASAK!</strong> - Başka markaları anma, SADECE ürüne odaklan</li>
+                    <li>❌ <strong>YIL YASAK!</strong> - 2023, 2024, 2025 → "Güncel", "Modern", "Yeni nesil" kullan</li>
+                    <li>❌ <strong>FİRMA ADI YOK!</strong> - "İxtif olarak..." kullanma, ürün odaklı kal</li>
+                </ul>
+            </div>
+
+            <div class="success-box">
+                <h3 style="margin-top: 0; color: #22c55e;">✅ SHOP İçin Odak Noktaları</h3>
+                <ul>
+                    <li>✅ <strong>ÜRÜNÜN KENDİSİ!</strong> - Özellikleri, malzemesi, performansı</li>
+                    <li>✅ <strong>PAZARLAMA VURGUSU!</strong> - Güvenilir, dayanıklı, verimli, kaliteli</li>
+                    <li>✅ <strong>KULLANIM ALANLARI!</strong> - Nerede kullanılır? (depo, lojistik, üretim...)</li>
+                    <li>✅ <strong>FAYDALAR!</strong> - Ne kazandırır? (zaman tasarrufu, güvenlik, verimlilik...)</li>
+                    <li>✅ <strong>TEKNİK DETAY!</strong> - Ama pazarlama dengeli (satış odaklı açıkla)</li>
+                </ul>
+            </div>
+
+            <h3>📋 GPT-4 Prompt Şablonu (SHOP Ürün)</h3>
+
+            <div class="code-block">
+                <pre>Ürün: {product_title}
+Kategori: {category_name}
+
+Aşağıdaki içerikleri TÜRKÇE oluştur (ÜRÜN PAZARLAMA odaklı):
+
+⚠️ MUTLAK YASAKLAR:
+- ❌ Fiyat rakamları (TL, USD, EUR, "yaklaşık X lira") - ASLA!
+- ❌ Rakip/marka karşılaştırma - Başka markalardan ASLA bahsetme!
+- ❌ Firma adı ("İxtif olarak...") - Ürün odaklı kal!
+- ❌ Yıl (2023, 2024, 2025) - "Güncel", "Modern" kullan
+
+✅ ODAK NOKTALARI:
+- SADECE ürünün kendisine odaklan
+- Pazarlama vurgusu (güvenilir, dayanıklı, verimli, kaliteli)
+- Kullanım alanlarını detaylı anlat
+- Teknik detay + pazarlama dengeli
+- Faydalarını ön plana çıkar (neden tercih edilmeli?)
+- Satış odaklı dil kullan
+
+1. BODY (300-500 kelime) - HTML formatında:
+
+   <strong>GİRİŞ (50-75 kelime):</strong>
+   - Ürün nedir, ne işe yarar?
+   - Kısa pazarlama vurgusu
+
+   <strong>TEKNİK DETAYLAR (100-150 kelime):</strong>
+   - Malzeme, boyut, performans özellikleri
+   - Teknik spesifikasyonlar (ama satış odaklı anlat)
+   - Kalite standartları
+
+   <strong>KULLANIM ALANLARI (75-100 kelime):</strong>
+   - Hangi sektörlerde kullanılır?
+   - Hangi ekipman/makinelerde kullanılır?
+   - Hangi durumlarda tercih edilir?
+
+   <strong>AVANTAJLAR (75-100 kelime):</strong>
+   - Neden bu ürün tercih edilmeli?
+   - Hangi faydaları sağlar?
+   - Güvenlik, verimlilik, dayanıklılık vurgusu
+
+   <strong>SONUÇ (25-50 kelime):</strong>
+   - Ürün değerinin özeti
+   - Satın alma teşviki (fiyat belirtmeden)
+
+   HTML etiketleri kullan: &lt;p&gt;, &lt;strong&gt;, &lt;ul&gt;, &lt;li&gt;
+
+2. FEATURES (3-5 adet) - JSON Array:
+
+   [
+     {
+       "icon": "fas fa-shield-alt",
+       "text": "Yüksek dayanıklılık ve uzun ömür"
+     },
+     ...
+   ]
+
+   - Pazarlama odaklı (avantaj vurgula, satış dili)
+   - FontAwesome ikonlar: shield-alt, tools, bolt, cog, temperature-low, wrench...
+   - Her özellik kısa ama etkili (1 cümle)
+
+3. USE_CASES (2-3 adet) - JSON Array:
+
+   [
+     {
+       "icon": "fas fa-warehouse",
+       "text": "Depo ve lojistik operasyonlarında yoğun kullanım"
+     },
+     ...
+   ]
+
+   - Somut kullanım senaryoları
+   - FontAwesome ikonlar: warehouse, industry, truck, forklift, box...
+   - Sektör/uygulama odaklı
+
+4. FAQ (5 soru-cevap) - JSON Array:
+
+   [
+     {
+       "question": {"tr": "Bu ürün hangi ekipmanlara uyumludur?"},
+       "answer": {"tr": "Cevap... (50-80 kelime)"},
+       "icon": "fas fa-question-circle"
+     },
+     ...
+   ]
+
+   - Uyumluluk, kullanım, bakım, ömür soruları
+   - Cevaplar 50-80 kelime (detaylı ama öz)
+   - Her soruya FARKLI ikon (question-circle, info-circle, lightbulb, wrench, shield-alt...)
+
+5. EXCERPT (150-200 karakter):
+
+   - Kısa ürün tanıtımı
+   - Pazarlama odaklı (satış dili)
+   - SEO friendly
+   - Örnek: "Endüstriyel ekipmanlar için 12V duysuz ampul. Yüksek dayanıklılık, uzun ömür, geniş uyumluluk."
+
+6. SEO_TITLE (50-60 karakter):
+
+   - Ürün adı + kategori + "İxtif"
+   - Örnek: "Ampul 12V Duysuz - Endüstriyel Aydınlatma | İxtif"
+   - Örnek: "Forklift Lastiği - Sanayi Tipi Yedek Parça | İxtif"
+
+7. SEO_DESCRIPTION (150-160 karakter):
+
+   - Ürün + fayda + kullanım alanı
+   - Satış odaklı dil
+   - Örnek: "12V duysuz ampul endüstriyel ekipmanlar için. Yüksek dayanıklılık ve uzun ömür. Forklift, transpalet, istif makinelerinde kullanım."
+
+JSON formatında döndür:
+{
+  "body": "&lt;p&gt;HTML içerik...&lt;/p&gt;",
+  "features": [{...}, {...}, ...],
+  "use_cases": [{...}, {...}],
+  "faq": [{...}, {...}, {...}, {...}, {...}],
+  "excerpt": "Kısa açıklama...",
+  "seo_title": "Başlık...",
+  "seo_description": "Açıklama..."
+}</pre>
+            </div>
+
+            <h3>📊 Örnek Çıktı (Ampul 12V DUYSUZ)</h3>
+
+            <div class="prompt-example">
+                <h4>Body Örneği (İlk Paragraf):</h4>
+                <div class="code-block">
+                    <pre>&lt;p&gt;Endüstriyel ekipmanlar ve ağır hizmet araçları için tasarlanmış 12V duysuz ampul, güvenilir aydınlatma performansı sunar. Forklift, transpalet, istif makinesi ve diğer malzeme taşıma ekipmanlarında kullanılan bu ampul, uzun ömrü ve yüksek dayanıklılığı ile öne çıkar.&lt;/p&gt;</pre>
+                </div>
+
+                <h4>Features Örneği:</h4>
+                <div class="code-block">
+                    <pre>[
+  {
+    "icon": "fas fa-shield-alt",
+    "text": "Yüksek dayanıklılık ve uzun ömür"
+  },
+  {
+    "icon": "fas fa-temperature-low",
+    "text": "Geniş sıcaklık aralığında stabil performans"
+  },
+  {
+    "icon": "fas fa-bolt",
+    "text": "12V sistemlerle tam uyumluluk"
+  },
+  {
+    "icon": "fas fa-tools",
+    "text": "Kolay montaj ve bakım"
+  }
+]</pre>
+                </div>
+
+                <h4>Use Cases Örneği:</h4>
+                <div class="code-block">
+                    <pre>[
+  {
+    "icon": "fas fa-warehouse",
+    "text": "Depo ve lojistik operasyonlarında forklift aydınlatması"
+  },
+  {
+    "icon": "fas fa-industry",
+    "text": "Üretim tesislerinde malzeme taşıma ekipmanları"
+  }
+]</pre>
+                </div>
+
+                <h4>FAQ Örneği:</h4>
+                <div class="code-block">
+                    <pre>[
+  {
+    "question": {"tr": "Bu ampul hangi ekipman modellerine uyumludur?"},
+    "answer": {"tr": "12V elektrik sistemine sahip forklift, transpalet, istif makinesi ve reach truck modellerinin çoğuna uyumludur. Duysuz tasarımı sayesinde farklı soket tiplerine monte edilebilir."},
+    "icon": "fas fa-question-circle"
+  },
+  {
+    "question": {"tr": "Ampulün ömrü ne kadar?"},
+    "answer": {"tr": "Normal kullanım koşullarında 2000-3000 saat aydınlatma süresi sağlar. Titreşime dayanıklı yapısı sayesinde ağır hizmet koşullarında bile uzun ömürlüdür."},
+    "icon": "fas fa-clock"
+  }
+]</pre>
+                </div>
+            </div>
+
+        </section>
+
+        <section>
+            <h2>⚙️ Teknik Yaklaşım</h2>
+
+            <h3>1. Leonardo AI Service Yapısı</h3>
+            <div class="code-block">
+                <pre>LeonardoAIService::generateSparePartImage($product)
+├── Kategori tespit et (lastik, ampul, rulman vb.)
+├── Stock Photo model seçimi
+├── Prompt oluştur (11 Kural + çoklu ürün + wide angle)
+│   ├── "Stock photograph of..."
+│   ├── "multiple {products} in warehouse..."
+│   ├── "wide angle shot, medium distance..."
+│   └── "not single product showcase"
+├── Leonardo API çağrısı (Stock Photo model, 1024x1024)
+├── Görseli indir
+└── Spatie Media Library'ye kaydet (spare_parts_hero)</pre>
+            </div>
+
+            <h3>2. Queue Job Yapısı (Tenant 2 DB)</h3>
+            <div class="code-block">
+                <pre>ProcessSparePartContent (Queue Job) - TENANT 2 DATABASE
+├── Tenant 2 context'e geç
+├── Ürün bilgisi çek (title, category)
+├── GPT-4 tek çağrı (tüm içerikler + SEO)
+│   ├── FAQ (5 soru-cevap)
+│   ├── Excerpt (short_description + seo_settings.descriptions)
+│   ├── Features (3-5 icon+text)
+│   ├── Use Cases (2-3 icon+text)
+│   ├── Body (300-500 kelime)
+│   ├── SEO Title (seo_settings.titles) ← YENİ
+│   └── SEO Description (seo_settings.descriptions) ← YENİ
+├── Leonardo AI görsel üret (Stock Photo, çoklu ürün, wide angle)
+├── Görseli Media Library'ye kaydet (Tenant 2 storage)
+├── shop_products güncelle (Tenant 2 DB)
+└── seo_settings oluştur/güncelle (Tenant 2 DB, polymorphic)</pre>
+            </div>
+
+            <h3>3. Tenant 2 Database İşlemleri</h3>
+            <div class="code-block">
+                <pre>// TENANT 2 CONTEXT - ZORUNLU!
+$tenant = Tenant::find(2); // ixtif.com
+$tenant->run(function() {
+    // shop_products tablosu (Tenant 2 DB)
+    $product->update([
+        'faq_data' => $faq,
+        'short_description' => ['tr' => $excerpt],
+        'features' => $features,
+        'use_cases' => $useCases,
+        'body' => ['tr' => $body]
+    ]);
+
+    // seo_settings tablosu (Tenant 2 DB, polymorphic)
+    $product->getOrCreateSeoSetting()->update([
+        'titles' => ['tr' => $seoTitle],
+        'descriptions' => ['tr' => $seoDescription]
+    ]);
+
+    // Media Library (Tenant 2 storage)
+    $product->addMediaFromUrl($imageUrl)
+        ->toMediaCollection('spare_parts_hero');
+});</pre>
+            </div>
+        </section>
+
+        <section>
+            <h2>📦 Beklenen Sonuç</h2>
+
+            <div class="success-box">
+                <h3 style="margin-top: 0; color: #22c55e;">✅ Proje Tamamlandıktan Sonra</h3>
+                <ul>
+                    <li>✅ 690 üründe <strong>Leonardo AI Stock Photo</strong> görseli (uzaktan, çoklu ürün, depo ortamı)</li>
+                    <li>✅ Her üründe 5 FAQ (kullanıcı sorularını yanıtlar)</li>
+                    <li>✅ Tüm ürünlerde kısa açıklama + SEO description</li>
+                    <li>✅ Her üründe 3-5 özellik (features) - ikonlu</li>
+                    <li>✅ Her üründe 2-3 kullanım senaryosu - ikonlu</li>
+                    <li>✅ 300-500 kelime zengin body + SEO title</li>
+                    <li>✅ Full-width temiz layout (sidebar kaldırıldı)</li>
+                    <li>✅ <strong>Tenant 2 database</strong> - doğru veri yapısı</li>
+                    <li>✅ Toplam maliyet: ~$16 (DALL-E 2'den ucuz!)</li>
+                </ul>
+            </div>
+
+            <h3>SEO & Görsel Kalite Etkisi</h3>
+            <ul>
+                <li><strong>Görsel Gerçekçilik:</strong> Stock Photo model → Katalog kalitesi</li>
+                <li><strong>Çoklu Ürün Görünümü:</strong> Depo zenginliği hissi → Güven artışı</li>
+                <li><strong>SEO Optimizasyonu:</strong> Title + Description → Google sıralaması</li>
+                <li><strong>Zengin İçerik:</strong> FAQ + Features → Kullanıcı memnuniyeti</li>
+                <li><strong>Dönüşüm Oranı:</strong> Profesyonel görsel + bilgilendirme → Satış artışı</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>🚀 Sonraki Adımlar</h2>
+
+            <div class="task-card">
+                <h3>Aşama 1: Layout Düzeltme (15 dakika)</h3>
+                <p>Sticky sidebar kaldır, yedek parça kategorileri için full-width.</p>
+            </div>
+
+            <div class="task-card">
+                <h3>Aşama 2: Service & Job Oluşturma (1.5 saat)</h3>
+                <ul>
+                    <li>LeonardoAIService (Stock Photo model, çoklu ürün promptları)</li>
+                    <li>GptSparePartContentService (SEO dahil içerik üretimi)</li>
+                    <li>ProcessSparePartContent (Queue Job, Tenant 2 context)</li>
+                </ul>
+            </div>
+
+            <div class="task-card">
+                <h3>Aşama 3: Test (45 dakika)</h3>
+                <p>5 örnek ürün (lastik, ampul, rulman, kayış, filtre) → Görsel kalitesi + içerik kontrolü</p>
+            </div>
+
+            <div class="task-card">
+                <h3>Aşama 4: Bulk İşlem</h3>
+                <p>690 ürün için queue job (Leonardo rate limit'e göre süre belirlenecek)</p>
+            </div>
+
+            <div class="task-card">
+                <h3>Aşama 5: Kalite Kontrolü (1 saat)</h3>
+                <p>Rastgele 20 ürün: Görsel gerçekçiliği (çoklu ürün kontrolü), içerik, SEO, layout</p>
+            </div>
+        </section>
+
+        <div class="warning-box">
+            <h3 style="margin-top: 0; color: #ef4444;">⚠️ Önemli Hatırlatmalar</h3>
+            <ul>
+                <li><strong>TEK ÜRÜN SHOWCASE YASAK!</strong> Her görselde minimum 5-10 ürün görünmeli</li>
+                <li><strong>UZAKTAN ÇEKİM ZORUNLU!</strong> Close-up değil, wide angle depo görüntüsü</li>
+                <li><strong>TENANT 2 DATABASE!</strong> Tüm işlemler Tenant 2 context'inde yapılacak</li>
+                <li>Leonardo API rate limit kontrol edilmeli</li>
+                <li>İlk 10 üründe görsel kalite manuel kontrol (çoklu ürün var mı?)</li>
+                <li>SEO settings polymorphic relation - doğru model bağlantısı</li>
+            </ul>
+        </div>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu - v4 (Leonardo AI Stock Photo + Çoklu Ürün Vurgusu)<br>
+            📊 Önceki versiyonlar: <a href="../v1/" style="color: #60a5fa;">v1</a> | <a href="../v2/" style="color: #60a5fa;">v2</a> | <a href="../v3/" style="color: #60a5fa;">v3</a>
+        </footer>
+    </div>
+</body>
+</html>

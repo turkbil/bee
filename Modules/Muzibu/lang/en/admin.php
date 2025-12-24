@@ -185,6 +185,9 @@ return [
     'hls_completed' => 'Completed',
     'hls_pending' => 'Pending',
     'hls_ready' => 'HLS Ready',
+    'song_cover' => 'Song Cover',
+    'own_cover' => 'Own cover',
+    'album_cover' => 'Using album cover',
 ],
 
 // Genres

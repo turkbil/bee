@@ -1,1 +1,837 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu.com.tr - Concurrent Session (Aynı Anda Tek Oturum) Sistemi Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        secondary: '#8b5cf6',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .gradient-text { background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 dark min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-b border-slate-700/50 sticky top-0 z-50 backdrop-blur-sm bg-opacity-90">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl sm:text-4xl font-black gradient-text mb-2">
+                        Concurrent Session Sistemi Analizi
+                    </h1>
+                    <p class="text-slate-400 text-sm sm:text-base">
+                        Muzibu.com.tr - Aynı Anda Tek Oturum (LIFO) Mekanizması
+                    </p>
+                </div>
+                <div class="hidden sm:flex items-center gap-3">
+                    <span class="px-4 py-2 bg-purple-500/20 border border-purple-500/50 rounded-lg text-purple-300 text-sm font-semibold">
+                        Tenant 1001
+                    </span>
+                </div>
+            </div>
+
+            <!-- Meta Info -->
+            <div class="mt-4 flex flex-wrap gap-3 text-xs sm:text-sm">
+                <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-800/50 border border-slate-700 rounded-lg">
+                    <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <span class="text-slate-300">19 Aralık 2025</span>
+                </div>
+                <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-800/50 border border-slate-700 rounded-lg">
+                    <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="text-slate-300">Sistem Analizi</span>
+                </div>
+                <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-800/50 border border-slate-700 rounded-lg">
+                    <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    <span class="text-slate-300">LIFO Session Control</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+
+        <!-- Basit Anlatım -->
+        <section class="mb-12">
+            <div class="bg-green-900/20 border-2 border-green-800 rounded-2xl p-6 sm:p-8 shadow-xl">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-green-300 mb-2">Basit Anlatım (Herkes İçin)</h2>
+                        <p class="text-green-100/80 text-sm">Ne yapıldı, neden yapıldı, nasıl çalışıyor?</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6 text-slate-200">
+                    <div>
+                        <h3 class="text-lg font-semibold text-green-200 mb-3 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"/>
+                            </svg>
+                            Sistem Ne Yapıyor?
+                        </h3>
+                        <p class="leading-relaxed mb-4">
+                            Muzibu.com.tr'de bir kullanıcı hesabına <strong class="text-green-300">aynı anda sadece 1 cihazdan</strong> giriş yapılabilir. Kullanıcı telefondan giriş yaptıktan sonra bilgisayardan tekrar giriş yaparsa, <strong class="text-green-300">telefonundaki oturum otomatik kapanır</strong>.
+                        </p>
+                        <div class="bg-slate-900/50 border border-green-800/30 rounded-xl p-4">
+                            <p class="text-sm text-green-200">
+                                <strong>Günlük Hayattan Örnek:</strong> Sanki banka hesabınız gibi - aynı anda hem ATM'den hem de bankacılık uygulamasından para çekemezsiniz. Son giriş yapan kazanır, önceki oturum kapanır.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold text-green-200 mb-3 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"/>
+                            </svg>
+                            Kullanıcı Deneyimi
+                        </h3>
+                        <ul class="space-y-3">
+                            <li class="flex gap-3">
+                                <span class="text-green-400 font-bold">1.</span>
+                                <span>Kullanıcı <strong class="text-green-300">telefondan giriş yapar</strong> → Müzik dinlemeye başlar</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="text-green-400 font-bold">2.</span>
+                                <span>Aynı kullanıcı <strong class="text-green-300">bilgisayardan giriş yapar</strong> → Yeni oturum açılır</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="text-orange-400 font-bold">3.</span>
+                                <span><strong class="text-orange-300">Telefonundaki müzik aniden durur</strong> → "Başka bir cihazdan giriş yapıldı" uyarısı çıkar</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="text-red-400 font-bold">4.</span>
+                                <span><strong class="text-red-300">Telefon otomatik çıkış yapar</strong> → Tekrar giriş yapması gerekir</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold text-green-200 mb-3 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+                            </svg>
+                            Neden Önemli?
+                        </h3>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div class="bg-slate-900/50 border border-green-800/30 rounded-xl p-4">
+                                <h4 class="font-semibold text-green-300 mb-2 flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"/>
+                                    </svg>
+                                    Güvenlik
+                                </h4>
+                                <p class="text-sm text-slate-300">Şifre paylaşımı engellenir. Hesabı çalan birisi giriş yaparsa, gerçek kullanıcı anında fark eder.</p>
+                            </div>
+                            <div class="bg-slate-900/50 border border-green-800/30 rounded-xl p-4">
+                                <h4 class="font-semibold text-green-300 mb-2 flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z"/>
+                                    </svg>
+                                    Gelir Artışı
+                                </h4>
+                                <p class="text-sm text-slate-300">Premium üyelik satan platformlar için kritik. Kullanıcı sadece kendi hesabını kullanabilir, arkadaşlarıyla paylaşamaz.</p>
+                            </div>
+                            <div class="bg-slate-900/50 border border-green-800/30 rounded-xl p-4">
+                                <h4 class="font-semibold text-green-300 mb-2 flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"/>
+                                    </svg>
+                                    Sistem Performansı
+                                </h4>
+                                <p class="text-sm text-slate-300">Sunucu yükü azalır. Aynı anda 10.000 kullanıcı varsa, max 10.000 aktif oturum vardır, daha fazla değil.</p>
+                            </div>
+                            <div class="bg-slate-900/50 border border-green-800/30 rounded-xl p-4">
+                                <h4 class="font-semibold text-green-300 mb-2 flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/>
+                                        <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"/>
+                                    </svg>
+                                    Kullanıcı Kontrol
+                                </h4>
+                                <p class="text-sm text-slate-300">Kullanıcı hangi cihazlardan bağlı olduğunu görür, istediğini kapatabilir (gelecek özellik).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="mb-12">
+            <div class="bg-blue-900/20 border-2 border-blue-800 rounded-2xl p-6 sm:p-8 shadow-xl">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-blue-300 mb-2">Teknik Detaylar (Geliştiriciler İçin)</h2>
+                        <p class="text-blue-100/80 text-sm">Dosya yapısı, mimari, algoritma, teknolojiler</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Sistem Mimarisi -->
+                    <div class="bg-slate-900/50 border border-blue-800/30 rounded-xl p-5">
+                        <h3 class="text-lg font-semibold text-blue-200 mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M3 12v3c0 1.657 3.134 3 7 3s7-1.343 7-3v-3c0 1.657-3.134 3-7 3s-7-1.343-7-3z"/>
+                                <path d="M3 7v3c0 1.657 3.134 3 7 3s7-1.343 7-3V7c0 1.657-3.134 3-7 3S3 8.657 3 7z"/>
+                                <path d="M17 5c0 1.657-3.134 3-7 3S3 6.657 3 5s3.134-3 7-3 7 1.343 7 3z"/>
+                            </svg>
+                            Sistem Mimarisi
+                        </h3>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold text-blue-300 mb-2 text-sm">Database Layer</h4>
+                                <ul class="text-sm text-slate-300 space-y-1">
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-1">•</span>
+                                        <span><code class="text-purple-400">user_active_sessions</code> tablosu (tenant DB)</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-1">•</span>
+                                        <span>Session ID, IP, User Agent, Device Type</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-1">•</span>
+                                        <span>Login Token (cookie ile sync - Livewire regenerate için)</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-1">•</span>
+                                        <span>Last Activity timestamp (stale session cleanup)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-blue-300 mb-2 text-sm">Backend Layer</h4>
+                                <ul class="text-sm text-slate-300 space-y-1">
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-1">•</span>
+                                        <span>Laravel Session Driver (Redis/Database/File)</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-1">•</span>
+                                        <span><code class="text-purple-400">DeviceService</code> (session tracking)</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-1">•</span>
+                                        <span><code class="text-purple-400">AuthController</code> (login/logout API)</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-1">•</span>
+                                        <span>Sanctum stateful authentication (web guard)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-blue-300 mb-2 text-sm">Frontend Layer</h4>
+                                <ul class="text-sm text-slate-300 space-y-1">
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-1">•</span>
+                                        <span><code class="text-purple-400">MuzibuSession</code> JavaScript module</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-1">•</span>
+                                        <span>Polling interval: <code class="text-orange-400">5 saniye</code> (test) / <code class="text-green-400">5 dakika</code> (canlı)</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-1">•</span>
+                                        <span>Fetch API (<code class="text-purple-400">/api/auth/check-session</code>)</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-1">•</span>
+                                        <span>Session termination modal (automatic logout)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-blue-300 mb-2 text-sm">Settings Integration</h4>
+                                <ul class="text-sm text-slate-300 space-y-1">
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-1">•</span>
+                                        <span><code class="text-purple-400">auth_subscription</code> = true (subscription sistemi)</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-1">•</span>
+                                        <span><code class="text-purple-400">auth_device</code> = true (device limit aktif)</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-1">•</span>
+                                        <span><code class="text-purple-400">auth_device_limit</code> = 1 (tenant fallback)</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-1">•</span>
+                                        <span>User/Plan override supported (3-tier hierarchy)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LIFO Algoritması -->
+                    <div class="bg-slate-900/50 border border-blue-800/30 rounded-xl p-5">
+                        <h3 class="text-lg font-semibold text-blue-200 mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z"/>
+                            </svg>
+                            LIFO (Last In, First Out) Algoritması
+                        </h3>
+                        <p class="text-sm text-slate-300 mb-4">
+                            Yeni giriş yapıldığında en eski oturum otomatik silinir. Kullanıcı limit aşarsa sistem en eski session'ı temizler.
+                        </p>
+                        <div class="bg-slate-950/50 border border-slate-700 rounded-lg p-4 overflow-x-auto">
+                            <pre class="text-xs sm:text-sm text-slate-300"><code class="language-php">// DeviceService.php:468 - enforceDeviceLimit()
+
+protected function enforceDeviceLimit(User $user, string $currentSessionId): void
+{
+    $limit = $this->getDeviceLimit($user); // 1 (default)
+
+    $sessions = DB::table($this->table)
+        ->where('user_id', $user->id)
+        ->orderBy('last_activity', 'asc') // En eski önce (LIFO)
+        ->get();
+
+    $count = $sessions->count();
+
+    if ($count > $limit) {
+        $toRemove = $count - $limit; // Kaç session silinecek
+
+        // En eski session'ları sil (mevcut hariç)
+        $oldSessions = $sessions
+            ->filter(fn($s) => $s->session_id !== $currentSessionId)
+            ->take($toRemove);
+
+        foreach ($oldSessions as $old) {
+            DB::table($this->table)->where('id', $old->id)->delete();
+            // Bu session'a ait kullanıcı polling ile fark eder
+        }
+    }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Session Tracking -->
+                    <div class="bg-slate-900/50 border border-blue-800/30 rounded-xl p-5">
+                        <h3 class="text-lg font-semibold text-blue-200 mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"/>
+                            </svg>
+                            Session Tracking (Login Token Approach)
+                        </h3>
+                        <p class="text-sm text-slate-300 mb-4">
+                            Livewire session ID'yi regenerate edebilir, bu yüzden <strong class="text-blue-300">login_token</strong> kullanılır (cookie + DB).
+                        </p>
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="font-semibold text-blue-300 mb-2 text-sm">1. Login İşlemi (registerSession)</h4>
+                                <div class="bg-slate-950/50 border border-slate-700 rounded-lg p-4 overflow-x-auto">
+                                    <pre class="text-xs sm:text-sm text-slate-300"><code>// DeviceService.php:43 - registerSession()
+
+$loginToken = bin2hex(random_bytes(32)); // 64 char benzersiz token
+
+DB::table('user_active_sessions')->insert([
+    'user_id' => $user->id,
+    'session_id' => session()->getId(),
+    'login_token' => $loginToken,  // 🔥 SABİT TOKEN
+    'ip_address' => request()->ip(),
+    'user_agent' => request()->userAgent(),
+    'device_type' => 'desktop|mobile|tablet',
+    'last_activity' => now(),
+]);
+
+// Cookie'ye 7 gün süreyle kaydet (HttpOnly, Secure)
+cookie()->queue(cookie('mzb_login_token', $loginToken, 60*24*7));
+
+// LIFO kontrolü: Limit aşılırsa en eski session'ı sil
+$this->enforceDeviceLimit($user, session()->getId());</code></pre>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-blue-300 mb-2 text-sm">2. Session Kontrolü (sessionExists)</h4>
+                                <div class="bg-slate-950/50 border border-slate-700 rounded-lg p-4 overflow-x-auto">
+                                    <pre class="text-xs sm:text-sm text-slate-300"><code>// DeviceService.php:186 - sessionExists()
+
+// 1. Cookie'den login_token al
+$cookieToken = request()->cookie('mzb_login_token');
+
+// 2. DB'de bu token var mı kontrol et
+$session = DB::table('user_active_sessions')
+    ->where('user_id', $user->id)
+    ->where('login_token', $cookieToken)
+    ->first();
+
+if ($session) {
+    // Session ID değişmişse güncelle (Livewire regenerate)
+    if (session()->getId() !== $session->session_id) {
+        DB::table('user_active_sessions')
+            ->where('id', $session->id)
+            ->update(['session_id' => session()->getId()]);
+    }
+    return true; // ✅ Session geçerli
+}
+
+return false; // ❌ Token DB'de yok = LIFO tarafından silindi</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Frontend Polling -->
+                    <div class="bg-slate-900/50 border border-blue-800/30 rounded-xl p-5">
+                        <h3 class="text-lg font-semibold text-blue-200 mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"/>
+                            </svg>
+                            Frontend Polling System
+                        </h3>
+                        <p class="text-sm text-slate-300 mb-4">
+                            Her 5 saniyede (test) / 5 dakikada (canlı) bir backend'e session durumu sorulur.
+                        </p>
+                        <div class="bg-slate-950/50 border border-slate-700 rounded-lg p-4 overflow-x-auto">
+                            <pre class="text-xs sm:text-sm text-slate-300"><code>// session.js:18 - startSessionPolling()
+
+const SESSION_POLL_INTERVAL = 5000; // 5 saniye (test) | 300000 (5 dk - canlı)
+
+// Login sonrası 2 saniye bekle (race condition önleme)
+setTimeout(() => this.checkSessionValidity(), 2000);
+
+// Periyodik kontrol başlat
+this.sessionPollInterval = setInterval(() => {
+    this.checkSessionValidity();
+}, SESSION_POLL_INTERVAL);
+
+
+// session.js:58 - checkSessionValidity()
+
+async checkSessionValidity() {
+    const response = await fetch('/api/auth/check-session', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Referer': window.location.origin + '/',  // Sanctum için zorunlu
+        },
+        credentials: 'same-origin'
+    });
+
+    const data = await response.json();
+
+    if (!data.valid) {
+        if (data.reason === 'session_terminated') {
+            // ⚠️ Başka cihazdan giriş yapıldı
+            this.handleSessionTerminated(data.message);
+        }
+    }
+}
+
+// session.js:149 - handleSessionTerminated()
+
+handleSessionTerminated(message) {
+    // Polling durdur
+    this.stopSessionPolling();
+
+    // Müzik/oynatıcı durdur
+    this.stopCurrentPlayback();
+
+    // API logout çağır
+    fetch('/api/auth/logout', {method: 'POST'});
+
+    // Hard redirect (Livewire intercept edemez)
+    window.location.href = '/login?session_terminated=1';
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- İşleyiş Akışı -->
+                    <div class="bg-slate-900/50 border border-blue-800/30 rounded-xl p-5">
+                        <h3 class="text-lg font-semibold text-blue-200 mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"/>
+                            </svg>
+                            Complete Flow (Step by Step)
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex gap-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-10 h-10 rounded-full bg-green-500/20 border-2 border-green-500 flex items-center justify-center flex-shrink-0">
+                                        <span class="text-green-400 font-bold text-sm">1</span>
+                                    </div>
+                                    <div class="w-0.5 h-full bg-slate-700 mt-2"></div>
+                                </div>
+                                <div class="pb-8">
+                                    <h4 class="font-semibold text-green-300 mb-1">Login (Device A - Phone)</h4>
+                                    <p class="text-sm text-slate-300">
+                                        <code class="text-purple-400">AuthController::login()</code> →
+                                        <code class="text-purple-400">DeviceService::registerSession()</code> →
+                                        DB'ye session kaydı (login_token oluştur) →
+                                        Cookie'ye token kaydet →
+                                        Frontend polling başlar
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-10 h-10 rounded-full bg-blue-500/20 border-2 border-blue-500 flex items-center justify-center flex-shrink-0">
+                                        <span class="text-blue-400 font-bold text-sm">2</span>
+                                    </div>
+                                    <div class="w-0.5 h-full bg-slate-700 mt-2"></div>
+                                </div>
+                                <div class="pb-8">
+                                    <h4 class="font-semibold text-blue-300 mb-1">Login (Device B - Desktop)</h4>
+                                    <p class="text-sm text-slate-300">
+                                        Aynı kullanıcı tekrar giriş yapar →
+                                        Yeni session kaydı oluşur →
+                                        <code class="text-orange-400">enforceDeviceLimit()</code> çağrılır →
+                                        Limit 1, mevcut 2 →
+                                        <strong class="text-orange-300">En eski session (Device A) DB'den SİLİNİR</strong>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-10 h-10 rounded-full bg-yellow-500/20 border-2 border-yellow-500 flex items-center justify-center flex-shrink-0">
+                                        <span class="text-yellow-400 font-bold text-sm">3</span>
+                                    </div>
+                                    <div class="w-0.5 h-full bg-slate-700 mt-2"></div>
+                                </div>
+                                <div class="pb-8">
+                                    <h4 class="font-semibold text-yellow-300 mb-1">Polling (Device A)</h4>
+                                    <p class="text-sm text-slate-300">
+                                        5 saniye sonra <code class="text-purple-400">checkSessionValidity()</code> çağrılır →
+                                        Backend <code class="text-purple-400">sessionExists()</code> kontrol eder →
+                                        Cookie'de login_token var ama <strong class="text-red-300">DB'de YOK</strong> →
+                                        <code class="text-red-400">return false</code>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-10 h-10 rounded-full bg-red-500/20 border-2 border-red-500 flex items-center justify-center flex-shrink-0">
+                                        <span class="text-red-400 font-bold text-sm">4</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-red-300 mb-1">Automatic Logout (Device A)</h4>
+                                    <p class="text-sm text-slate-300">
+                                        Frontend <code class="text-red-400">"session_terminated"</code> alır →
+                                        <code class="text-purple-400">handleSessionTerminated()</code> çağrılır →
+                                        Müzik durdurulur →
+                                        Polling durdurulur →
+                                        Logout API →
+                                        <code class="text-red-400">window.location.href = '/login?session_terminated=1'</code>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dosya Yapısı -->
+                    <div class="bg-slate-900/50 border border-blue-800/30 rounded-xl p-5">
+                        <h3 class="text-lg font-semibold text-blue-200 mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1H8a3 3 0 00-3 3v1.5a1.5 1.5 0 01-3 0V6z"/>
+                                <path d="M6 12a2 2 0 012-2h8a2 2 0 012 2v2a2 2 0 01-2 2H2h2a2 2 0 002-2v-2z"/>
+                            </svg>
+                            Dosya Yapısı
+                        </h3>
+                        <div class="space-y-4 text-sm">
+                            <div>
+                                <h4 class="font-semibold text-blue-300 mb-2">Backend (PHP/Laravel)</h4>
+                                <ul class="space-y-1 text-slate-300">
+                                    <li><code class="text-purple-400">Modules/Muzibu/app/Services/DeviceService.php</code> - Session tracking (LIFO, registration, termination)</li>
+                                    <li><code class="text-purple-400">app/Http/Controllers/Api/Auth/AuthController.php</code> - Login/logout/checkSession endpoints</li>
+                                    <li><code class="text-purple-400">app/Http/Controllers/Auth/AuthenticatedSessionController.php</code> - Web login (Blade + Livewire)</li>
+                                    <li><code class="text-purple-400">Modules/Muzibu/app/Http/Controllers/Api/DeviceController.php</code> - Device management API</li>
+                                    <li><code class="text-purple-400">app/Http/Middleware/CheckDeviceLimit.php</code> - Device limit middleware (route protection)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-blue-300 mb-2">Frontend (JavaScript)</h4>
+                                <ul class="space-y-1 text-slate-300">
+                                    <li><code class="text-purple-400">public/themes/muzibu/js/player/features/session.js</code> - MuzibuSession module (polling, logout)</li>
+                                    <li><code class="text-purple-400">public/themes/muzibu/js/player/core/player-core.js</code> - Main player (session integration)</li>
+                                    <li><code class="text-purple-400">public/themes/muzibu/js/player/features/api.js</code> - API client (auth requests)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-blue-300 mb-2">Database</h4>
+                                <ul class="space-y-1 text-slate-300">
+                                    <li><code class="text-purple-400">database/migrations/tenant/2025_12_07_182016_create_user_active_sessions_table.php</code> - Migration</li>
+                                    <li><code class="text-purple-400">tenant_muzibu_1528d0.user_active_sessions</code> - Session tracking table (tenant DB)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-blue-300 mb-2">Views (Blade Components)</h4>
+                                <ul class="space-y-1 text-slate-300">
+                                    <li><code class="text-purple-400">resources/views/themes/muzibu/components/device-limit-modal.blade.php</code> - Device selection modal</li>
+                                    <li><code class="text-purple-400">resources/views/themes/muzibu/components/device-limit-warning-modal.blade.php</code> - Warning modal</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Integration -->
+                    <div class="bg-slate-900/50 border border-blue-800/30 rounded-xl p-5">
+                        <h3 class="text-lg font-semibold text-blue-200 mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"/>
+                            </svg>
+                            Device Limit Settings (3-Tier Hierarchy)
+                        </h3>
+                        <p class="text-sm text-slate-300 mb-4">
+                            Device limit 3 yerden alınır (öncelik sırasıyla):
+                        </p>
+                        <div class="space-y-3">
+                            <div class="bg-slate-950/50 border border-slate-700 rounded-lg p-4">
+                                <div class="flex items-start gap-3">
+                                    <span class="px-2 py-1 bg-yellow-500/20 border border-yellow-500 rounded text-yellow-300 text-xs font-bold">1. ÖNCE</span>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-blue-300 text-sm mb-1">User Override</h4>
+                                        <p class="text-xs text-slate-400"><code class="text-purple-400">users.device_limit</code> - Kullanıcıya özel limit (admin panelden ayarlanır)</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-slate-950/50 border border-slate-700 rounded-lg p-4">
+                                <div class="flex items-start gap-3">
+                                    <span class="px-2 py-1 bg-blue-500/20 border border-blue-500 rounded text-blue-300 text-xs font-bold">2. SONRA</span>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-blue-300 text-sm mb-1">Subscription Plan</h4>
+                                        <p class="text-xs text-slate-400"><code class="text-purple-400">subscription_plans.device_limit</code> - Plan'a göre limit (Basic: 1, Premium: 3, Enterprise: 10)</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-slate-950/50 border border-slate-700 rounded-lg p-4">
+                                <div class="flex items-start gap-3">
+                                    <span class="px-2 py-1 bg-slate-500/20 border border-slate-500 rounded text-slate-300 text-xs font-bold">3. FALLBACK</span>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-blue-300 text-sm mb-1">Tenant Setting</h4>
+                                        <p class="text-xs text-slate-400"><code class="text-purple-400">setting('auth_device_limit')</code> - Tenant genelinde default limit (varsayılan: 1)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 bg-slate-950/50 border border-slate-700 rounded-lg p-4 overflow-x-auto">
+                            <pre class="text-xs sm:text-sm text-slate-300"><code>// DeviceService.php:432 - getDeviceLimit()
+
+public function getDeviceLimit(User $user): int
+{
+    // 1. User override
+    if ($user->device_limit !== null && $user->device_limit > 0) {
+        return $user->device_limit;
+    }
+
+    // 2. Subscription Plan
+    $subscription = $user->subscriptions()
+        ->whereIn('status', ['active', 'trial'])
+        ->with('plan')
+        ->first();
+
+    if ($subscription && $subscription->plan->device_limit) {
+        return (int) $subscription->plan->device_limit;
+    }
+
+    // 3. Tenant setting fallback
+    return (int) setting('auth_device_limit', 1);
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Performans Notları -->
+                    <div class="bg-yellow-900/20 border border-yellow-800/50 rounded-xl p-5">
+                        <h3 class="text-lg font-semibold text-yellow-200 mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"/>
+                            </svg>
+                            Performans & Scalability
+                        </h3>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div class="bg-slate-950/50 border border-yellow-800/30 rounded-lg p-4">
+                                <h4 class="font-semibold text-yellow-300 mb-2 text-sm">Polling Interval</h4>
+                                <ul class="text-xs text-slate-300 space-y-2">
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-orange-400 mt-0.5">⚠️</span>
+                                        <span><strong class="text-orange-300">Test:</strong> 5 saniye - 10.000 kullanıcı → <code class="text-red-400">2.000 req/s</code> (sunucu patlar!)</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-green-400 mt-0.5">✅</span>
+                                        <span><strong class="text-green-300">Canlı:</strong> 5 dakika (300s) - 10.000 kullanıcı → <code class="text-green-400">33 req/s</code> (kabul edilebilir)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-950/50 border border-yellow-800/30 rounded-lg p-4">
+                                <h4 class="font-semibold text-yellow-300 mb-2 text-sm">Database Optimization</h4>
+                                <ul class="text-xs text-slate-300 space-y-2">
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-0.5">•</span>
+                                        <span>Index: <code class="text-purple-400">['user_id', 'last_activity']</code> - Fast lookup</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-0.5">•</span>
+                                        <span>Stale cleanup: 60 dakikadan eski session'lar otomatik silinir</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-0.5">•</span>
+                                        <span>LIFO: Max session sayısı = aktif kullanıcı sayısı (çok verimli)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-950/50 border border-yellow-800/30 rounded-lg p-4">
+                                <h4 class="font-semibold text-yellow-300 mb-2 text-sm">Cache Strategy</h4>
+                                <ul class="text-xs text-slate-300 space-y-2">
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-0.5">•</span>
+                                        <span>Session data Redis'te tutulabilir (Laravel session driver)</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-0.5">•</span>
+                                        <span>Login token cookie'de 7 gün saklanır (HttpOnly + Secure)</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-400 mt-0.5">•</span>
+                                        <span>DB query: WHERE user_id + login_token (indexed, fast)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-950/50 border border-yellow-800/30 rounded-lg p-4">
+                                <h4 class="font-semibold text-yellow-300 mb-2 text-sm">Edge Cases</h4>
+                                <ul class="text-xs text-slate-300 space-y-2">
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-green-400 mt-0.5">✅</span>
+                                        <span>Livewire session regenerate → login_token ile handle edilir</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-green-400 mt-0.5">✅</span>
+                                        <span>Network error → Polling devam eder, logout YAPILMAZ</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-green-400 mt-0.5">✅</span>
+                                        <span>Race condition → 2 saniye delay (registerSession tamamlansın)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Önemli Notlar -->
+        <section class="mb-12">
+            <div class="bg-purple-900/20 border-2 border-purple-800 rounded-2xl p-6 sm:p-8 shadow-xl">
+                <h2 class="text-2xl font-bold text-purple-300 mb-6 flex items-center gap-3">
+                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"/>
+                    </svg>
+                    Önemli Notlar & Kısıtlamalar
+                </h2>
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div class="bg-slate-900/50 border border-purple-800/30 rounded-xl p-4">
+                        <h3 class="font-semibold text-purple-300 mb-2 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"/>
+                            </svg>
+                            Sistem Kapatılabilir
+                        </h3>
+                        <p class="text-sm text-slate-300">
+                            <code class="text-purple-400">setting('auth_device')</code> = false olursa sistem çalışmaz.
+                            shouldRun() kontrolü her metotta var.
+                        </p>
+                    </div>
+                    <div class="bg-slate-900/50 border border-purple-800/30 rounded-xl p-4">
+                        <h3 class="font-semibold text-purple-300 mb-2 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z"/>
+                            </svg>
+                            Tenant-Specific
+                        </h3>
+                        <p class="text-sm text-slate-300">
+                            Sadece <strong class="text-purple-300">Tenant 1001 (Muzibu)</strong> için aktif.
+                            Diğer tenant'larda <code class="text-purple-400">tenant()</code> kontrolü ile devre dışı.
+                        </p>
+                    </div>
+                    <div class="bg-slate-900/50 border border-purple-800/30 rounded-xl p-4">
+                        <h3 class="font-semibold text-purple-300 mb-2 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"/>
+                            </svg>
+                            Polling Delay
+                        </h3>
+                        <p class="text-sm text-slate-300">
+                            Kullanıcı başka cihazdan giriş yapsa bile, eski cihaz <strong class="text-orange-300">max 5 saniye</strong> (test) /
+                            <strong class="text-orange-300">5 dakika</strong> (canlı) içinde fark eder.
+                        </p>
+                    </div>
+                    <div class="bg-slate-900/50 border border-purple-800/30 rounded-xl p-4">
+                        <h3 class="font-semibold text-purple-300 mb-2 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z"/>
+                            </svg>
+                            Login Token Cookie
+                        </h3>
+                        <p class="text-sm text-slate-300">
+                            <code class="text-purple-400">mzb_login_token</code> cookie'si HttpOnly + Secure.
+                            JavaScript erişemez, sadece backend okur.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-t border-slate-700/50 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-sky-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-slate-300">Claude AI Analiz Raporu</p>
+                        <p class="text-xs text-slate-500">Concurrent Session System - Muzibu.com.tr</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-slate-400">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"/>
+                    </svg>
+                    <span>19 Aralık 2025</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

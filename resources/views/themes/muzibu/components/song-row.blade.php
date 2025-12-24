@@ -7,8 +7,8 @@
 ])
 
 @php
-    $cover = $song->coverMedia ?? $song->album->coverMedia ?? null;
-    $coverUrl = $cover ? thumb($cover, 80, 80) : '/images/default-cover.png';
+    // Şarkının kendi görseli öncelikli, yoksa albüm görseli (quality=90)
+    $coverUrl = $song->getCoverUrl(80, 80) ?? '/images/default-cover.png';
     $artistName = $song->album->artist->title ?? __('muzibu::front.dashboard.unknown_artist');
     $albumTitle = $song->album->title ?? '';
     $duration = $song->duration ? gmdate('i:s', $song->duration) : '';

@@ -1,1 +1,296 @@
-v2/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İş Mantığı Güncelleme - AI Soru Optimizasyonu (v2)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            950: '#020617'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="dark bg-slate-950 text-white min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Header -->
+        <div class="mb-12">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
+                        İş Mantığı Güncelleme - AI Soru Optimizasyonu
+                    </h1>
+                    <p class="text-slate-400 text-sm mt-1">Universal AI Fix - Version 2 | 20 Aralık 2025</p>
+                </div>
+            </div>
+            <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-4">
+                <p class="text-slate-300">
+                    <strong class="text-green-400">v1'den Fark:</strong> İş mantığı düzeltmesi - AI'ın transpalet/istif/reach için yanlış soru sorması engellendi.
+                    Artık sadece tonaj ve kullanım yeri sorulacak, "elektrikli mi manuel mi?" sorusu kaldırıldı.
+                </p>
+            </div>
+        </div>
+
+        <!-- Simple Explanation (For Everyone) -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-green-400 mb-4 flex items-center gap-2">
+                📝 Basit Anlatım (Herkes İçin)
+            </h2>
+            <div class="space-y-4 text-slate-300">
+                <p>
+                    <strong>Ne Değişti?</strong><br>
+                    Chatbot artık daha akıllı sorular soruyor. Transpalet, istif makinesi ve reach truck için
+                    "elektrikli mi manuel mi?" sorusunu sormayacak - çünkü bu ürünler zaten sadece elektrikli olarak satılıyor!
+                </p>
+                <p>
+                    <strong>Neden Önemliydi?</strong><br>
+                    Önceden AI gereksiz sorular soruyordu. Müşteri "transpalet istiyorum" dediğinde "elektrikli mi manuel mi?"
+                    diye soruyordu, ama aslında manuel transpalet satmıyoruz. Bu müşteri için kafa karıştırıcıydı.
+                </p>
+                <p>
+                    <strong>Şimdi Ne Soracak?</strong><br>
+                    ✅ "Kaç ton kapasiteli transpalet istiyorsunuz?" (1.5 ton, 2 ton, 3 ton?)<br>
+                    ✅ "Nerede kullanacaksınız?" (Kapalı alan, açık alan, soğuk hava deposu?)<br>
+                    ❌ "Elektrikli mi manuel mi?" → Bu soru artık sorulmayacak!
+                </p>
+                <p>
+                    <strong>Forklift için özel durum:</strong><br>
+                    Forklift'te hem elektrikli hem dizel modeller olduğu için, forklift sorgulamalarında
+                    "Elektrikli mi dizel mi tercih edersiniz?" sorusu sorulacak.
+                </p>
+            </div>
+        </div>
+
+        <!-- Technical Details (For Developers) -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-blue-400 mb-4 flex items-center gap-2">
+                🔧 Teknik Detaylar (Geliştiriciler İçin)
+            </h2>
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-3">📁 Değiştirilen Dosya</h3>
+                    <div class="bg-slate-900/50 rounded-lg p-4 font-mono text-sm">
+                        <div class="text-slate-400">Dosya:</div>
+                        <div class="text-blue-300">Modules/AI/app/Services/Tenant/Tenant2PromptService.php</div>
+                        <div class="text-slate-400 mt-2">Satırlar:</div>
+                        <div class="text-blue-300">153-200 (İş mantığı kuralları bölümü)</div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-3">⚙️ Yapılan Değişiklikler</h3>
+                    <div class="space-y-3">
+                        <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-4">
+                            <div class="text-green-400 font-semibold mb-2">✅ Eklenen Dokümantasyon (Satır 156-161)</div>
+                            <pre class="text-sm text-slate-300 overflow-x-auto">🔋 ÖNEMLİ: İXTİF ÜRÜN YAPISI (2025-12-20):
+- ✅ Transpalet: SADECE ELEKTRİKLİ (manuel yok!)
+- ✅ İstif Makinesi: SADECE ELEKTRİKLİ (manuel yok!)
+- ✅ Reach Truck: SADECE ELEKTRİKLİ (manuel yok!)
+- ⚡ Forklift: Hem elektrikli hem dizel var
+- 🔋 Akü Tipleri: Kurşun Akü, Jel Akü, Li-ion (varyant olarak)</pre>
+                        </div>
+
+                        <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-4">
+                            <div class="text-blue-400 font-semibold mb-2">🔄 Değiştirilen Sorular (Satır 166-177)</div>
+                            <pre class="text-sm text-slate-300 overflow-x-auto">✅ SADECE ŞU 2 SORUYU SOR:
+
+1️⃣ Kaç ton taşıma kapasitesi istiyorsunuz?
+   Örnekler: 1.5 ton, 2 ton, 2.5 ton, 3 ton
+
+2️⃣ Nerede kullanacaksınız?
+   Örnekler: Kapalı alan (depo/fabrika), Açık alan, Soğuk hava deposu
+   → Kullanım alanı akü tipi seçiminde önemli!
+
+📌 FORKLIFT İÇİN EK SORU (sadece forklift için):
+2️⃣ Elektrikli mi dizel mi tercih edersiniz?
+   (Forklift'te her iki tip de var)</pre>
+                        </div>
+
+                        <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-4">
+                            <div class="text-red-400 font-semibold mb-2">❌ Yasaklanan Sorular (Satır 179-184)</div>
+                            <pre class="text-sm text-slate-300 overflow-x-auto">❌ YASAK SORULAR (ASLA SORMA!):
+- ❌ 'Elektrikli mi manuel mi?' → Transpalet/İstif/Reach için YASAK!
+- ❌ Bütçe/fiyat aralığı? → SORMA!
+- ❌ Marka tercihi? → SORMA!
+- ❌ Akü tipi? → SORMA! (varyant olarak zaten var)
+- ❌ 3. bir soru → ASLA!</pre>
+                        </div>
+
+                        <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-4">
+                            <div class="text-yellow-400 font-semibold mb-2">📝 Güncellenen Örnekler (Satır 186-200)</div>
+                            <pre class="text-sm text-slate-300 overflow-x-auto">**ÖRNEK DOĞRU FORMAT (TRANSPALET/İSTİF/REACH İÇİN):**
+Size yardımcı olabilirim! 😊
+- Kaç ton taşıma kapasitesi istiyorsunuz? (1.5 ton, 2 ton, 3 ton?)
+- Nerede kullanacaksınız? (Kapalı alan mı, açık alan mı?)
+
+**ÖRNEK DOĞRU FORMAT (FORKLIFT İÇİN):**
+Size yardımcı olabilirim! 😊
+- Kaç ton taşıma kapasitesi istiyorsunuz? (1.5 ton, 2 ton, 3 ton?)
+- Elektrikli mi dizel mi tercih edersiniz?</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-3">✅ Test Sonuçları</h3>
+                    <div class="bg-slate-900/50 border border-green-800/50 rounded-lg p-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-green-400">100%</div>
+                                <div class="text-sm text-slate-400">Başarı Oranı</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-blue-400">13/13</div>
+                                <div class="text-sm text-slate-400">Test Geçti</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-red-400">0</div>
+                                <div class="text-sm text-slate-400">Başarısız</div>
+                            </div>
+                        </div>
+                        <div class="text-sm text-slate-300 space-y-1">
+                            <div>✅ Transpalet için tonaj sorusu VAR</div>
+                            <div>✅ Transpalet için kullanım yeri sorusu VAR</div>
+                            <div>✅ "Elektrikli mi manuel mi?" YASAK listede</div>
+                            <div>✅ Forklift için "Elektrikli mi dizel mi?" sorusu VAR</div>
+                            <div>✅ Ürün yapısı dokümantasyonu VAR</div>
+                            <div>✅ Maksimum 2 soru kuralı korunmuş</div>
+                            <div>✅ Tüm ürün tipleri doğru belgelenmiş</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Why Important -->
+        <div class="bg-purple-900/20 border border-purple-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-purple-400 mb-4 flex items-center gap-2">
+                💡 Neden Önemli?
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-3">👤 Kullanıcı Deneyimi</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400 mt-1">✓</span>
+                            <span>Gereksiz sorular sorulmayacak → Daha hızlı ürün bulma</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400 mt-1">✓</span>
+                            <span>Kafa karışıklığı önlendi → "Manuel mi elektrikli mi?" sorusu kaldırıldı</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400 mt-1">✓</span>
+                            <span>Daha hedefli sorular → Müşteriye en uygun ürünü bulmak kolaylaştı</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-3">🔧 Teknik Kazanç</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-400 mt-1">✓</span>
+                            <span>Doğru iş mantığı → AI gerçek ürün yapısını biliyor</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-400 mt-1">✓</span>
+                            <span>Kategori bazlı soru mantığı → Forklift için farklı, transpalet için farklı</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-400 mt-1">✓</span>
+                            <span>Sürdürülebilir kod → Gelecekte ürün eklendiğinde kolay güncelleme</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison: Before vs After -->
+        <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+                🔄 Önce vs Sonra
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Before -->
+                <div class="bg-red-900/20 border border-red-800 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-red-400 mb-3">❌ Önceki Durum</h3>
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <div class="text-slate-400 mb-1">Kullanıcı: "transpalet istiyorum"</div>
+                            <div class="bg-slate-950/50 rounded p-3 text-slate-300">
+                                AI: Size yardımcı olabilirim! 😊<br>
+                                - Kaç ton kapasiteli?<br>
+                                - <span class="text-red-400 font-semibold">Elektrikli mi manuel mi?</span>
+                            </div>
+                            <div class="text-red-400 text-xs mt-2">⚠️ Problem: Manuel transpalet yok!</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- After -->
+                <div class="bg-green-900/20 border border-green-800 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-green-400 mb-3">✅ Yeni Durum</h3>
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <div class="text-slate-400 mb-1">Kullanıcı: "transpalet istiyorum"</div>
+                            <div class="bg-slate-950/50 rounded p-3 text-slate-300">
+                                AI: Size yardımcı olabilirim! 😊<br>
+                                - Kaç ton kapasiteli?<br>
+                                - <span class="text-green-400 font-semibold">Nerede kullanacaksınız?</span>
+                            </div>
+                            <div class="text-green-400 text-xs mt-2">✓ Doğru: Gerçekten satılan ürünlere uygun sorular!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-800 rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-green-400 mb-4 flex items-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Sonuç ve Kazanımlar
+            </h2>
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <div class="text-3xl font-bold text-green-400 mb-2">✅</div>
+                    <div class="text-white font-semibold mb-1">İş Mantığı Doğru</div>
+                    <div class="text-sm text-slate-400">AI artık gerçek ürün yapısını biliyor</div>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <div class="text-3xl font-bold text-blue-400 mb-2">2</div>
+                    <div class="text-white font-semibold mb-1">Maksimum Soru</div>
+                    <div class="text-sm text-slate-400">Gereksiz sorular kaldırıldı</div>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <div class="text-3xl font-bold text-purple-400 mb-2">100%</div>
+                    <div class="text-white font-semibold mb-1">Test Başarısı</div>
+                    <div class="text-sm text-slate-400">13/13 test geçti</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-12 pt-8 border-t border-slate-800 text-center text-slate-500 text-sm">
+            <p>Generated with Claude AI - Anthropic</p>
+            <p class="mt-2">20 Aralık 2025 | Universal AI Fix - Version 2</p>
+        </div>
+    </div>
+</body>
+</html>

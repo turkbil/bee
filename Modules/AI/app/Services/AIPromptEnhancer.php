@@ -202,10 +202,17 @@ SYSTEM;
         // Tenant context'ten sektör bilgisi al
         $contextLine = $this->buildContextLine($tenantContext);
 
+        // Türkçe locale kontrolü
+        $locale = $tenantContext['locale'] ?? 'en';
+        $translationNote = '';
+        if ($locale === 'tr') {
+            $translationNote = "\n\n🌍 **CRITICAL - TURKISH TO ENGLISH:**\n- The prompt above is in TURKISH\n- FIRST: Translate it accurately to English (preserve exact meaning, don't interpret)\n- Example: \"Yalnız Kurt\" = \"Lone Wolf\" (NOT \"lonely person\"!)\n- Example: \"Saksıdaki Çiçekler\" = \"Flowers in Pot\"\n- THEN: Apply 11 rules to the English translation\n- All output must be in ENGLISH for Leonardo AI\n";
+        }
+
         return <<<USER
 11 KURAL FORMÜLÜ ile bu promptu GERÇEK FOTOĞRAF gibi görünen talimata çevir:
 
-"{$simplePrompt}"
+"{$simplePrompt}"{$translationNote}
 
 Style: {$style}
 Size: {$size}

@@ -1,1 +1,349 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Refactoring - Shop Bağımsızlığı</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .meta { color: #94a3b8; font-size: 0.95rem; }
+        section { margin-bottom: 40px; }
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h3 {
+            font-size: 1.3rem;
+            color: #f59e0b;
+            margin-bottom: 15px;
+        }
+        .plan-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .plan-item:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+        .plan-item h3 { color: #60a5fa; margin-bottom: 12px; font-size: 1.3rem; }
+        .plan-item p { color: #cbd5e1; line-height: 1.8; margin-bottom: 10px; }
+        .tech-term { color: #fbbf24; font-weight: 500; }
+        .problem { border-left-color: #ef4444; }
+        .solution { border-left-color: #10b981; }
+        .priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .priority-high { background: #dc2626; color: white; }
+        .priority-medium { background: #f59e0b; color: white; }
+        .priority-low { background: #10b981; color: white; }
+        ul { margin-left: 20px; margin-bottom: 15px; }
+        li { margin-bottom: 8px; color: #cbd5e1; }
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        .table-wrapper { overflow-x: auto; margin: 15px 0; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 8px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+        th { background: rgba(59, 130, 246, 0.2); color: #60a5fa; font-weight: 600; }
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Checkout Refactoring</h1>
+            <div class="meta">
+                Tarih: 2025-11-24 |
+                Tenant: ixtif.com |
+                Amaç: Checkout'u Shop'tan ayırma, dinamik sistem
+            </div>
+        </header>
+
+        <section>
+            <h2>Mevcut Durum Analizi</h2>
+
+            <div class="plan-item problem">
+                <h3>Sorun: CheckoutPage Shop'a Bağımlı</h3>
+                <p>Cart modülündeki <code>CheckoutPage.php</code> tamamen Shop modülüne bağımlı:</p>
+                <ul>
+                    <li><code>ShopCustomer</code> - Müşteri bilgileri</li>
+                    <li><code>ShopCustomerAddress</code> - Adres bilgileri</li>
+                    <li><code>ShopOrder</code> - Sipariş oluşturma</li>
+                    <li><code>ShopOrderItem</code> - Sipariş kalemleri</li>
+                </ul>
+                <p>Bu yapı sadece fiziksel ürün satışı için çalışır. Dijital ürün, abonelik gibi farklı satış tipleri desteklenmez.</p>
+            </div>
+
+            <div class="plan-item problem">
+                <h3>Sorun: Address Tablosu Shop'ta</h3>
+                <p><code>shop_customer_addresses</code> tablosu Shop modülünde. Bu tablo <code>shop_customers</code> tablosuna bağlı.</p>
+                <p>Cart bağımsız çalışamıyor çünkü adres bilgisi Shop'tan geliyor.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Hedef Mimari</h2>
+
+            <div class="plan-item solution">
+                <h3>Dinamik Checkout Sistemi</h3>
+                <p>Checkout sayfası satılan içeriğe göre dinamik olmalı:</p>
+                <div class="table-wrapper">
+                    <table>
+                        <tr>
+                            <th>Satış Tipi</th>
+                            <th>Kargo Adresi</th>
+                            <th>Fatura Adresi</th>
+                            <th>Örnek</th>
+                        </tr>
+                        <tr>
+                            <td>Fiziksel Ürün</td>
+                            <td>Gerekli</td>
+                            <td>Gerekli</td>
+                            <td>Forklift, Transpalet</td>
+                        </tr>
+                        <tr>
+                            <td>Dijital Ürün</td>
+                            <td>Gerekli DEĞİL</td>
+                            <td>Gerekli</td>
+                            <td>E-kitap, Yazılım</td>
+                        </tr>
+                        <tr>
+                            <td>Abonelik</td>
+                            <td>Gerekli DEĞİL</td>
+                            <td>Gerekli</td>
+                            <td>Muzibu Premium</td>
+                        </tr>
+                        <tr>
+                            <td>Hizmet</td>
+                            <td>Duruma göre</td>
+                            <td>Gerekli</td>
+                            <td>Bakım, Kurulum</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Yapılacaklar</h2>
+
+            <div class="plan-item">
+                <h3>1. Customer Modülü Oluştur <span class="priority priority-high">Yüksek Öncelik</span></h3>
+                <p>Tüm müşteri ve adres bilgilerini yönetecek merkezi modül:</p>
+                <ul>
+                    <li><code>customers</code> tablosu - Genel müşteri bilgileri (users tablosuyla ilişkili)</li>
+                    <li><code>customer_addresses</code> tablosu - Adres bilgileri (Shop'tan bağımsız)</li>
+                </ul>
+                <p><strong>Neden?</strong> Shop, Subscription, Booking gibi tüm modüller aynı müşteri/adres sistemini kullanabilir.</p>
+            </div>
+
+            <div class="plan-item">
+                <h3>2. Order Modülü Oluştur <span class="priority priority-high">Yüksek Öncelik</span></h3>
+                <p>Genel sipariş yönetimi için merkezi modül:</p>
+                <ul>
+                    <li><code>orders</code> tablosu - Polymorphic ilişki (ShopProduct, Subscription, Service)</li>
+                    <li><code>order_items</code> tablosu - Sipariş kalemleri (cartable_type/id ile)</li>
+                </ul>
+                <p><strong>Avantaj:</strong> Cart'taki polymorphic yapı Order'a aktarılır. Her türlü içerik sipariş edilebilir.</p>
+            </div>
+
+            <div class="plan-item">
+                <h3>3. CheckoutPage Refactoring <span class="priority priority-high">Yüksek Öncelik</span></h3>
+                <p>Cart modülündeki CheckoutPage'i Shop bağımlılıklarından arındır:</p>
+                <ul>
+                    <li><code>ShopCustomer</code> yerine <code>Customer</code></li>
+                    <li><code>ShopCustomerAddress</code> yerine <code>CustomerAddress</code></li>
+                    <li><code>ShopOrder</code> yerine <code>Order</code></li>
+                    <li>Dinamik form alanları (kargo adresi göster/gizle)</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h3>4. Route Düzenlemesi <span class="priority priority-medium">Orta Öncelik</span></h3>
+                <p>Cart modülüne checkout route'u ekle:</p>
+                <ul>
+                    <li><code>/checkout</code> - Ana checkout sayfası</li>
+                    <li><code>/checkout/success</code> - Başarılı ödeme</li>
+                    <li><code>/checkout/failed</code> - Başarısız ödeme</li>
+                </ul>
+                <p>Shop'tan <code>shop.checkout</code> route'unu kaldır.</p>
+            </div>
+
+            <div class="plan-item">
+                <h3>5. Cart Model Güncelleme <span class="priority priority-medium">Orta Öncelik</span></h3>
+                <p>Cart modeli checkout için gerekli bilgileri içermeli:</p>
+                <ul>
+                    <li><code>requires_shipping</code> - Kargo gerekli mi? (boolean)</li>
+                    <li><code>is_digital</code> - Dijital ürün mü? (boolean)</li>
+                    <li><code>is_subscription</code> - Abonelik mi? (boolean)</li>
+                </ul>
+                <p>Bu bilgiler CartItem'lardan hesaplanabilir (tüm item'lar dijitalse = dijital sepet).</p>
+            </div>
+
+            <div class="plan-item">
+                <h3>6. Shop Modülü Temizliği <span class="priority priority-low">Düşük Öncelik</span></h3>
+                <p>Shop modülünden checkout ile ilgili gereksiz kodları kaldır:</p>
+                <ul>
+                    <li><code>CheckoutRedirectController</code> kaldır</li>
+                    <li><code>shop.checkout</code> route'u kaldır (cart-page.blade.php'deki link)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Migration Planı</h2>
+
+            <div class="plan-item">
+                <h3>Yeni Tablolar</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <tr>
+                            <th>Tablo</th>
+                            <th>Modül</th>
+                            <th>Açıklama</th>
+                        </tr>
+                        <tr>
+                            <td><code>customers</code></td>
+                            <td>Customer</td>
+                            <td>Merkezi müşteri tablosu (users FK)</td>
+                        </tr>
+                        <tr>
+                            <td><code>customer_addresses</code></td>
+                            <td>Customer</td>
+                            <td>Müşteri adresleri (billing/shipping)</td>
+                        </tr>
+                        <tr>
+                            <td><code>orders</code></td>
+                            <td>Order</td>
+                            <td>Genel siparişler (polymorphic)</td>
+                        </tr>
+                        <tr>
+                            <td><code>order_items</code></td>
+                            <td>Order</td>
+                            <td>Sipariş kalemleri (polymorphic)</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h3>Mevcut Tablolar</h3>
+                <p>Mevcut Shop tabloları korunacak (geriye uyumluluk için):</p>
+                <ul>
+                    <li><code>shop_customers</code> - Mevcut veriler için</li>
+                    <li><code>shop_customer_addresses</code> - Mevcut veriler için</li>
+                    <li><code>shop_orders</code> - Mevcut siparişler için</li>
+                </ul>
+                <p>Yeni siparişler yeni tablolara yazılacak. Eski veriler migrate edilebilir.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Uygulama Sırası</h2>
+
+            <div class="plan-item">
+                <h3>Aşama 1: Temel Altyapı</h3>
+                <ol>
+                    <li>Customer modülü oluştur (migration + model)</li>
+                    <li>Order modülü oluştur (migration + model)</li>
+                    <li>Tenant migration'ları oluştur</li>
+                    <li>Migration çalıştır</li>
+                </ol>
+            </div>
+
+            <div class="plan-item">
+                <h3>Aşama 2: Checkout Refactoring</h3>
+                <ol>
+                    <li>CheckoutPage.php'yi yeni modellere geçir</li>
+                    <li>checkout-page.blade.php'yi güncelle (dinamik form)</li>
+                    <li>Cart route'larına checkout ekle</li>
+                    <li>Test et</li>
+                </ol>
+            </div>
+
+            <div class="plan-item">
+                <h3>Aşama 3: Temizlik</h3>
+                <ol>
+                    <li>Shop'tan gereksiz checkout kodlarını kaldır</li>
+                    <li>cart-page.blade.php'deki shop.checkout linkini güncelle</li>
+                    <li>Test et</li>
+                </ol>
+            </div>
+        </section>
+
+        <section>
+            <h2>Alternatif: Hızlı Çözüm</h2>
+
+            <div class="plan-item">
+                <h3>Eğer Acil İse</h3>
+                <p>Yeni modül oluşturmadan hızlı çözüm:</p>
+                <ol>
+                    <li>Cart modülüne <code>checkout_addresses</code> tablosu ekle (JSON olarak cart'ta zaten var)</li>
+                    <li>CheckoutPage'i sadece Cart verilerini kullanacak şekilde güncelle</li>
+                    <li>Order oluşturmayı Payment callback'ine taşı</li>
+                </ol>
+                <p><strong>Dezavantaj:</strong> Uzun vadede yine refactoring gerekecek.</p>
+            </div>
+        </section>
+
+        <footer>
+            Claude AI tarafından oluşturuldu | Checkout Refactoring Analizi
+        </footer>
+    </div>
+</body>
+</html>

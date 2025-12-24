@@ -1,1 +1,428 @@
-v2/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Veritabanı Analizi v2 - ixtif.com (Tenant 2)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .summary-card {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #334155;
+        }
+
+        .summary-card .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .summary-card .label {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        .success { color: #10b981; }
+        .warning { color: #f59e0b; }
+        .danger { color: #ef4444; }
+
+        .plan-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .plan-item h3 {
+            color: #60a5fa;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .plan-item p {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .badge-danger { background: #ef4444; color: white; }
+
+        .blog-list {
+            max-height: 350px;
+            overflow-y: auto;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .blog-item {
+            padding: 8px 15px;
+            border-bottom: 1px solid #334155;
+            font-size: 0.9rem;
+        }
+
+        .blog-item:last-child {
+            border-bottom: none;
+        }
+
+        .blog-item .id {
+            color: #60a5fa;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .completed-section {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .completed-section h3 {
+            color: #10b981;
+            margin-bottom: 15px;
+        }
+
+        .completed-item {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .completed-item:last-child {
+            border-bottom: none;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .category-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .category-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category-item .name {
+            color: #f1f5f9;
+        }
+
+        .category-item .count {
+            background: #3b82f6;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .highlight-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .highlight-box h4 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.4rem; }
+            .summary-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Blog Veritabanı Analizi v2</h1>
+            <div class="meta">
+                Tarih: 2025-11-20 |
+                Tenant: ixtif.com (Tenant 2) |
+                Güncelleme: Duplicate bloglar temizlendi
+            </div>
+        </header>
+
+        <section class="highlight-box">
+            <h4>Bu Güncellemede Yapılanlar</h4>
+            <p>22 duplicate blog grubu tespit edildi ve 23 adet fazla blog silindi. Her grup için en uzun ve kaliteli içerik korundu.</p>
+            <p style="margin-top: 10px;"><strong>Blog sayısı:</strong> 88 → 65 (23 silindi)</p>
+        </section>
+
+        <section>
+            <h2>Özet</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="number" style="color: #60a5fa;">65</div>
+                    <div class="label">Toplam Blog</div>
+                </div>
+                <div class="summary-card">
+                    <div class="number success">0</div>
+                    <div class="label">Duplicate</div>
+                </div>
+                <div class="summary-card">
+                    <div class="number success">0</div>
+                    <div class="label">FAQ Eksik</div>
+                </div>
+                <div class="summary-card">
+                    <div class="number success">0</div>
+                    <div class="label">HowTo Eksik</div>
+                </div>
+                <div class="summary-card">
+                    <div class="number success">0</div>
+                    <div class="label">Kategori Eksik</div>
+                </div>
+                <div class="summary-card">
+                    <div class="number danger">60</div>
+                    <div class="label">Fotoğraf Eksik</div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Kategori Dağılımı</h2>
+            <div class="category-stats">
+                <div class="category-item">
+                    <span class="name">Karşılaştırma ve Seçim</span>
+                    <span class="count">18</span>
+                </div>
+                <div class="category-item">
+                    <span class="name">Forklift İncelemeleri</span>
+                    <span class="count">12</span>
+                </div>
+                <div class="category-item">
+                    <span class="name">Transpalet İncelemeleri</span>
+                    <span class="count">11</span>
+                </div>
+                <div class="category-item">
+                    <span class="name">İstif Makinesi İncelemeleri</span>
+                    <span class="count">9</span>
+                </div>
+                <div class="category-item">
+                    <span class="name">Bakım ve Onarım</span>
+                    <span class="count">5</span>
+                </div>
+                <div class="category-item">
+                    <span class="name">Order Picker İncelemeleri</span>
+                    <span class="count">3</span>
+                </div>
+                <div class="category-item">
+                    <span class="name">Otonom Sistemler</span>
+                    <span class="count">3</span>
+                </div>
+                <div class="category-item">
+                    <span class="name">Kullanım Kılavuzları</span>
+                    <span class="count">2</span>
+                </div>
+                <div class="category-item">
+                    <span class="name">İpuçları ve Püf Noktaları</span>
+                    <span class="count">1</span>
+                </div>
+                <div class="category-item">
+                    <span class="name">Güvenlik ve Mevzuat</span>
+                    <span class="count">1</span>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Yapılacaklar</h2>
+
+            <div class="plan-item">
+                <h3>1. Fotoğraf Eksik Bloglar İçin Görsel Eklenmeli <span class="badge badge-danger">Kritik - 60 Blog</span></h3>
+                <p>
+                    65 blogdan 60'ında featured image bulunmuyor. SEO performansı için görsel eklenmesi kritik öneme sahip.
+                </p>
+                <p><strong>Öneri:</strong> Leonardo AI veya stok fotoğraf servisi ile toplu görsel ekleme yapılabilir.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Fotoğrafı Olmayan Bloglar (60 adet)</h2>
+            <div class="blog-list">
+                <div class="blog-item"><span class="id">ID: 20</span> Forklift Tavsiyesi: En İyi Seçenekler</div>
+                <div class="blog-item"><span class="id">ID: 21</span> En İyi Transpalet Modelleri 2025</div>
+                <div class="blog-item"><span class="id">ID: 22</span> Elektrikli Forkliftlerin Avantajları ve Dezavantajları</div>
+                <div class="blog-item"><span class="id">ID: 33</span> Kantarlı Transpalet Nasıl Kullanılır? Adım Adım Kılavuz</div>
+                <div class="blog-item"><span class="id">ID: 38</span> İstif Makineleri ile Depo Yönetimi</div>
+                <div class="blog-item"><span class="id">ID: 43</span> Forklift Bakımı Nasıl Yapılır?</div>
+                <div class="blog-item"><span class="id">ID: 44</span> Terazili Transpalet Kiralama mı Satın Alma mı?</div>
+                <div class="blog-item"><span class="id">ID: 45</span> Order Picker Fiyatları: Bütçenize Uygun Seçenekler</div>
+                <div class="blog-item"><span class="id">ID: 48</span> Neden Elektrikli Forklift Kullanmalısınız?</div>
+                <div class="blog-item"><span class="id">ID: 49</span> En İyi Elektrikli Transpalet Markaları</div>
+                <div class="blog-item"><span class="id">ID: 50</span> Kiralık Forklift Nasıl Seçilir? Adım Adım Rehber</div>
+                <div class="blog-item"><span class="id">ID: 51</span> Elektrikli Terazili Transpalet mi Manuel Terazili Transpalet mi?</div>
+                <div class="blog-item"><span class="id">ID: 52</span> Elektrikli Forklift Nasıl Seçilir? Kapsamlı Rehber</div>
+                <div class="blog-item"><span class="id">ID: 53</span> Forklift Seçerken Dikkat Edilmesi Gerekenler</div>
+                <div class="blog-item"><span class="id">ID: 54</span> En İyi LPG Forklift Markaları</div>
+                <div class="blog-item"><span class="id">ID: 55</span> En İyi İstif Makinesi Markaları</div>
+                <div class="blog-item"><span class="id">ID: 56</span> Elektrikli Forklift ve Dizel Forklift: Hangisi Daha Avantajlı?</div>
+                <div class="blog-item"><span class="id">ID: 57</span> Yeni Forklift mi İkinci El Forklift mi?</div>
+                <div class="blog-item"><span class="id">ID: 58</span> Elektrikli Dizel Forklift mi Manuel Dizel Forklift mi?</div>
+                <div class="blog-item"><span class="id">ID: 66</span> Yeni Manuel Transpalet mi, İkinci El Manuel Transpalet mi?</div>
+                <div class="blog-item"><span class="id">ID: 68</span> En İyi Elektrikli Transpalet Modelleri 2025: Seçim Kriterleri</div>
+                <div class="blog-item"><span class="id">ID: 69</span> Elektrikli Otonom Sistemler: Geleceğin Taşımacılığı</div>
+                <div class="blog-item"><span class="id">ID: 70</span> En İyi Transpalet Markaları</div>
+                <div class="blog-item"><span class="id">ID: 71</span> Manuel Forklift Kullanımında Güvenlik İpuçları</div>
+                <div class="blog-item"><span class="id">ID: 74</span> Terazili Transpalet Avantajları ve Dezavantajları</div>
+                <div class="blog-item"><span class="id">ID: 76</span> Forklift Kiralama Sürecinde Dikkat Edilmesi Gerekenler</div>
+                <div class="blog-item"><span class="id">ID: 78</span> Otonom Sistemler Fiyatları: Yatırım Değeri</div>
+                <div class="blog-item"><span class="id">ID: 79</span> Transpalet Kullanımında Verimlilik Artırma Yöntemleri</div>
+                <div class="blog-item"><span class="id">ID: 81</span> Neden Istif Makinesi Kullanmalısınız?</div>
+                <div class="blog-item"><span class="id">ID: 82</span> LPG Forklift Avantajları ve Dezavantajları</div>
+                <div class="blog-item"><span class="id">ID: 84</span> Manuel Transpalet Tavsiyesi: En İyi Seçenekler</div>
+                <div class="blog-item"><span class="id">ID: 87</span> Order Picker Kullanmanın Avantajları ve Dezavantajları</div>
+                <div class="blog-item"><span class="id">ID: 88</span> Manuel Transpalet Bakımı Nasıl Yapılır?</div>
+                <div class="blog-item"><span class="id">ID: 90</span> Elektrikli Forklift Kiralama mı Satın Alma mı?</div>
+                <div class="blog-item"><span class="id">ID: 92</span> İstif Makinesi Tavsiyesi: En İyi Seçenekler</div>
+                <div class="blog-item"><span class="id">ID: 93</span> Yeni Elektrikli Transpalet mi İkinci El Elektrikli Transpalet mi?</div>
+                <div class="blog-item"><span class="id">ID: 96</span> Transpalet Nedir? Temel Bilgiler ve Kullanım Alanları</div>
+                <div class="blog-item"><span class="id">ID: 98</span> Kiralık İstif Makineleri ile İş Verimliliğinizi Artırın</div>
+                <div class="blog-item"><span class="id">ID: 100</span> En İyi Elektrikli Forklift Markaları</div>
+                <div class="blog-item"><span class="id">ID: 102</span> En İyi Kiralık Forklift Markaları: 2025 İçin Favoriler</div>
+                <div class="blog-item"><span class="id">ID: 103</span> Manuel İstif Makineleri: Fiyat ve Performans</div>
+                <div class="blog-item"><span class="id">ID: 105</span> Order Picker Fiyatları: Bütçenizi Nasıl Planlamalısınız?</div>
+                <div class="blog-item"><span class="id">ID: 107</span> 2025 Kiralık Transpalet Fiyatları: Neye Dikkat Etmelisiniz?</div>
+                <div class="blog-item"><span class="id">ID: 108</span> Elektrikli Transpalet mi Manuel Transpalet mi?</div>
+                <div class="blog-item"><span class="id">ID: 109</span> Kiralık Transpalet Nasıl Seçilir?</div>
+                <div class="blog-item"><span class="id">ID: 111</span> Forklift Fiyatları ve Kiralama Seçenekleri</div>
+                <div class="blog-item"><span class="id">ID: 112</span> Elektrikli Forkliftlerin Avantajları ve Kullanım Alanları</div>
+                <div class="blog-item"><span class="id">ID: 114</span> En İyi Dizel Forklift Modelleri 2025</div>
+                <div class="blog-item"><span class="id">ID: 115</span> Manuel ve Otonom Sistemler: Hangisi Tercih Edilmeli?</div>
+                <div class="blog-item"><span class="id">ID: 122</span> En İyi İstif Makinesi Markaları: Hangi Markayı Seçmelisiniz?</div>
+                <div class="blog-item"><span class="id">ID: 123</span> Transpalet Nasıl Seçilir? Kapsamlı Rehber</div>
+                <div class="blog-item"><span class="id">ID: 125</span> Yeni Istif Makinesi mi İkinci El Istif Makinesi mi?</div>
+                <div class="blog-item"><span class="id">ID: 127</span> Istif Makinesi Kiralama mı Satın Alma mı?</div>
+                <div class="blog-item"><span class="id">ID: 129</span> Forklift Bakımının Önemi ve İpuçları</div>
+                <div class="blog-item"><span class="id">ID: 130</span> Elektrikli Transpaletler: Verimlilik ve Performans</div>
+                <div class="blog-item"><span class="id">ID: 131</span> İstif Makinesi Modelleri: Hangi Model Sizin İçin Uygun?</div>
+                <div class="blog-item"><span class="id">ID: 133</span> Kiralık Forklift Nasıl Seçilir? İpuçları ve Tavsiyeler</div>
+                <div class="blog-item"><span class="id">ID: 134</span> Manuel ve Elektrikli Transpaletler: Hangisini Seçmelisiniz?</div>
+                <div class="blog-item"><span class="id">ID: 135</span> Order Picker Bakımı: Uzun Ömürlü Kullanım İçin İpuçları</div>
+                <div class="blog-item"><span class="id">ID: 137</span> Elektrikli Kantarlı Transpalet mi Manuel Kantarlı Transpalet mi?</div>
+            </div>
+        </section>
+
+        <section class="completed-section">
+            <h3>Tamamlanan İşlemler</h3>
+
+            <div class="completed-item">
+                <strong>Duplicate Temizliği (23 Blog Silindi)</strong>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">
+                    22 duplicate grup tespit edildi. Her grupta en kaliteli içerik korunarak 23 fazla blog silindi.
+                    Silinen ID'ler: 72, 73, 75, 80, 83, 85, 86, 89, 91, 94, 95, 97, 99, 101, 104, 106, 110, 113, 116, 118, 128, 132, 136
+                </p>
+            </div>
+
+            <div class="completed-item">
+                <strong>Kategori Ataması (65 Blog)</strong>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">
+                    Tüm bloglar kategorilere atandı: Karşılaştırma (18), Forklift (12), Transpalet (11), İstif Makinesi (9), Bakım (5), Order Picker (3), Otonom (3), Kılavuz (2), İpuçları (1), Güvenlik (1)
+                </p>
+            </div>
+
+            <div class="completed-item">
+                <strong>FAQ Verileri (8 Blog)</strong>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">
+                    ID: 21, 45, 52, 53, 54, 55, 87, 127 - Her birine 3'er soru-cevap eklendi
+                </p>
+            </div>
+
+            <div class="completed-item">
+                <strong>HowTo Verileri (7 Blog)</strong>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">
+                    ID: 21, 38, 49, 52, 53, 54, 89 - Her birine 4'er adımlık rehber eklendi
+                </p>
+            </div>
+        </section>
+
+        <footer>
+            Claude AI tarafından oluşturuldu | 2025-11-20
+        </footer>
+    </div>
+</body>
+</html>

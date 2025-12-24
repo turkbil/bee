@@ -1,1 +1,462 @@
-v2/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Player Geliştirme Planı - v2 (Güncellendi)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: rgba(30, 41, 59, 0.5);
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-blue: #3b82f6;
+            --accent-blue-light: #60a5fa;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --accent-red: #dc2626;
+            --accent-purple: #8b5cf6;
+            --border-color: #334155;
+            --spotify-green: #1DB954;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--accent-blue-light), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .version-badge {
+            font-size: 1rem;
+            padding: 6px 16px;
+            background: var(--accent-green);
+            color: white;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .meta {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            color: var(--accent-blue-light);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--accent-blue-light);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-blue);
+            backdrop-filter: blur(10px);
+            margin-bottom: 25px;
+        }
+
+        .alert {
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--accent-green);
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: var(--accent-blue);
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--accent-yellow);
+        }
+
+        .alert-critical {
+            background: rgba(220, 38, 38, 0.1);
+            border-color: var(--accent-red);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: rgba(59, 130, 246, 0.1);
+            font-weight: 600;
+            color: var(--accent-blue-light);
+        }
+
+        ul, ol {
+            margin-left: 25px;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            background: var(--accent-green);
+            color: white;
+        }
+
+        .status-critical {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        .status-high {
+            background: var(--accent-yellow);
+            color: white;
+        }
+
+        .status-medium {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .status-low {
+            background: var(--accent-purple);
+            color: white;
+        }
+
+        .changelog {
+            background: rgba(16, 185, 129, 0.05);
+            border: 2px solid var(--accent-green);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .changelog h3 {
+            color: var(--accent-green);
+            margin-bottom: 15px;
+        }
+
+        .changelog-item {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .changelog-item:last-child {
+            border-bottom: none;
+        }
+
+        pre {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                🎵 Muzibu Player Geliştirme Planı
+                <span class="version-badge">v2 - Güncellendi</span>
+            </h1>
+            <div class="meta">
+                <div class="meta-item">📅 İlk Oluşturma: 26 Kasım 2025</div>
+                <div class="meta-item">🔄 Son Güncelleme: 27 Kasım 2025 15:54</div>
+                <div class="meta-item">🎯 Tenant: muzibu.com (1001)</div>
+                <div class="meta-item">👤 Geliştirme: Aktif</div>
+            </div>
+        </header>
+
+        <!-- CHANGELOG -->
+        <div class="changelog">
+            <h3>📝 v2 Değişiklik Günlüğü (27 Kasım 2025 - 15:54)</h3>
+            
+            <div class="changelog-item">
+                <strong style="color: var(--accent-green);">✅ Blur Background Özelliği Tamamlandı</strong>
+                <ul style="margin-top: 10px;">
+                    <li>Album model'ine <code>blur_background</code> attribute eklendi</li>
+                    <li>Thumbmaker ile 1200x200 crop + blur:80 uygulanıyor</li>
+                    <li>API endpoints (popular, recent) güncellendi</li>
+                    <li>Player'a Alpine.js binding eklendi (dinamik arka plan)</li>
+                    <li>CSS overlay ile okunabilirlik sağlandı (rgba(0,0,0,0.75) + blur(2px))</li>
+                </ul>
+            </div>
+
+            <div class="changelog-item">
+                <strong style="color: var(--accent-green);">✅ KRİTİK BUG FİX: Player Kaybolma Sorunu</strong>
+                <ul style="margin-top: 10px;">
+                    <li><strong>Problem:</strong> Player sayfa yüklendiğinde 1 saniye sonra kaybolup footer'ın altına düşüyordu</li>
+                    <li><strong>Çözüm:</strong> Alpine.js <code>x-teleport="body"</code> kullanıldı</li>
+                    <li>Player artık document flow dışında, direkt body'ye ekleniyor</li>
+                    <li>Auth modal ile aynı teknik, position:fixed + z-index sorunları tamamen ortadan kalktı</li>
+                    <li><strong>Test edildi:</strong> Player artık sabit kalıyor, footer'a düşmüyor ✅</li>
+                </ul>
+            </div>
+
+            <div class="changelog-item">
+                <strong style="color: var(--text-secondary);">📊 İstatistikler:</strong>
+                <ul style="margin-top: 10px;">
+                    <li>Player blade: 2,856 → 404 satır (%86 azalma) ✅</li>
+                    <li>CSS dosyaları: 2 ayrı dosya (auth-modal.css, player-queue.css) ✅</li>
+                    <li>JavaScript: muzibu-player-v2.js (1,760 satır) ✅</li>
+                    <li>Tenant-specific folder: public/themes/muzibu/ ✅</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- TAMAMLANAN GÖREVLER -->
+        <section>
+            <h2>✅ Tamamlanan Görevler</h2>
+
+            <div class="card" style="border-color: var(--accent-green);">
+                <h3>Faz 1: Kod Organizasyonu (27 Kasım 2025)</h3>
+                
+                <table>
+                    <tr>
+                        <th>Görev</th>
+                        <th>Durum</th>
+                        <th>Detay</th>
+                    </tr>
+                    <tr style="background: rgba(16, 185, 129, 0.05);">
+                        <td><strong>1.1 JavaScript Ayrıştırma</strong></td>
+                        <td><span class="status status-completed">✅ Tamamlandı</span></td>
+                        <td>muzibu-player-v2.js (1,760 satır)</td>
+                    </tr>
+                    <tr style="background: rgba(16, 185, 129, 0.05);">
+                        <td><strong>1.2 CSS Ayrıştırma</strong></td>
+                        <td><span class="status status-completed">✅ Tamamlandı</span></td>
+                        <td>auth-modal.css (191 satır) + player-queue.css (513 satır)</td>
+                    </tr>
+                    <tr style="background: rgba(16, 185, 129, 0.05);">
+                        <td><strong>Blur Background Özelliği</strong></td>
+                        <td><span class="status status-completed">✅ Tamamlandı</span></td>
+                        <td>Album cover blur + Thumbmaker integration</td>
+                    </tr>
+                    <tr style="background: rgba(16, 185, 129, 0.05);">
+                        <td><strong>KRİTİK BUG: Player Kaybolması</strong></td>
+                        <td><span class="status status-completed">✅ Çözüldü</span></td>
+                        <td>x-teleport kullanılarak player body'ye taşındı</td>
+                    </tr>
+                    <tr style="background: rgba(16, 185, 129, 0.05);">
+                        <td><strong>Git Checkpoint</strong></td>
+                        <td><span class="status status-completed">✅ Oluşturuldu</span></td>
+                        <td>3d963435b "Before player refactoring"</td>
+                    </tr>
+                </table>
+
+                <div class="alert alert-success" style="margin-top: 20px;">
+                    <strong>📊 Sonuç:</strong> Player modülü başarıyla yeniden düzenlendi!
+                    <ul style="margin-top: 15px;">
+                        <li>✅ Kod organizasyonu: %86 azalma</li>
+                        <li>✅ Tenant-aware yapı: Tüm dosyalar public/themes/muzibu/ altında</li>
+                        <li>✅ Blur background: Görsel zenginlik eklendi</li>
+                        <li>✅ x-teleport: Player kaybolma sorunu tamamen çözüldü</li>
+                        <li>✅ Test edildi: Player sabit kalıyor, footer'a düşmüyor</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SONRAK'İ ADIMLAR -->
+        <section>
+            <h2>🎯 Sonraki Adımlar</h2>
+
+            <div class="card">
+                <h3>📅 Önerilen Çalışma Sırası</h3>
+                
+                <div class="alert alert-info">
+                    <strong>🎨 İKİNCİ AŞAMA (Özellikler):</strong>
+                    <ol style="margin-top: 10px; margin-left: 20px; line-height: 2;">
+                        <li><strong>2.1. Asset Build Pipeline</strong> - Vite kurulumu + minification</li>
+                        <li><strong>3.1. Dinamik Player Teması</strong> - Kullanıcıya gösterişli özellik</li>
+                        <li><strong>3.2. WaveSurfer Entegrasyonu</strong> - Görsel zenginlik</li>
+                        <li><strong>2.2. Lazy Loading</strong> - Performans boost</li>
+                    </ol>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>🎁 ÜÇÜNCÜ AŞAMA (Bonus):</strong>
+                    <ol style="margin-top: 10px; margin-left: 20px; line-height: 2;">
+                        <li><strong>4.3. Keyboard Shortcuts</strong> - Kolay implementasyon</li>
+                        <li><strong>4.1. Türe Göre Crossfade</strong> - İyileştirme</li>
+                        <li><strong>3.3. Equalizer</strong> - Premium özellik (zaman alır)</li>
+                        <li><strong>3.4. Lyrics</strong> - İçerik gerektirir (uzun vadeli)</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>⚡ Hemen Yapılabilecek İyileştirmeler</h3>
+                <ul>
+                    <li><strong>Asset Build Pipeline (Faz 2.1):</strong> Vite ile minification + cache busting</li>
+                    <li><strong>Code Splitting:</strong> JS dosyalarını modüllere ayır (core, queue, auth vb.)</li>
+                    <li><strong>Lazy Loading:</strong> Queue panel içeriğini lazy load et</li>
+                    <li><strong>Performance Monitoring:</strong> Console.time ile player init süresini ölç</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- TEKNİK DETAYLAR -->
+        <section>
+            <h2>🛠️ Teknik Detaylar</h2>
+
+            <div class="card">
+                <h3>📦 Mevcut Dosya Yapısı</h3>
+                <pre>public/themes/muzibu/
+├── css/player/
+│   ├── auth-modal.css          # 191 satır - Auth modal stilleri
+│   └── player-queue.css        # 513 satır - Player bar + Queue panel stilleri
+├── js/player/
+│   └── muzibu-player-v2.js     # 1,760 satır - Tüm player logic
+└── ...
+
+resources/views/themes/muzibu/components/
+└── player.blade.php            # 404 satır - Ana wrapper (x-teleport ile)</pre>
+            </div>
+
+            <div class="card">
+                <h3>🔧 Blur Background Teknik Detaylar</h3>
+                <ul>
+                    <li><strong>Model:</strong> <code>Album::getBlurBackgroundAttribute()</code></li>
+                    <li><strong>Thumbmaker:</strong> thumb($media, 1200, 200, ['fit' => 'crop', 'blur' => 80])</li>
+                    <li><strong>API:</strong> popular() ve recent() endpoint'lerine eklendi</li>
+                    <li><strong>Alpine.js:</strong> :style binding ile dinamik arka plan</li>
+                    <li><strong>CSS Overlay:</strong> rgba(0,0,0,0.75) + backdrop-filter: blur(2px)</li>
+                    <li><strong>Görünüm:</strong> Albüm kapağı blur'lu arka plan, üstünde okunabilir UI</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>🐛 x-teleport Çözümü (Player Kaybolma Bug Fix)</h3>
+                <ul>
+                    <li><strong>Problem:</strong> Player fixed position'a rağmen footer'ın altına düşüyordu</li>
+                    <li><strong>Neden:</strong> Document flow içinde z-index/position sorunları</li>
+                    <li><strong>Çözüm:</strong> Alpine.js x-teleport ile player'ı body'ye taşındı</li>
+                    <li><strong>Kod:</strong> <code>&lt;template x-teleport="body"&gt;...&lt;/template&gt;</code></li>
+                    <li><strong>Sonuç:</strong> Player artık document flow dışında, footer etkilemiyor</li>
+                    <li><strong>Avantaj:</strong> Auth modal ile aynı teknik, proven solution</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- RİSKLER & UYARILAR -->
+        <section>
+            <h2>⚠️ Riskler & Dikkat Edilecekler</h2>
+
+            <div class="alert alert-critical">
+                <strong>🔴 KRİTİK HATIRLATMALAR:</strong>
+                <ul style="margin-top: 10px; margin-left: 20px;">
+                    <li>✅ <strong>Git checkpoint YAPILDI!</strong> Hash: 3d963435b</li>
+                    <li>✅ <strong>Dosya izinleri düzeltildi!</strong> tuufi.com_:psaserv + 644</li>
+                    <li>✅ <strong>Cache temizlendi!</strong> view:clear + opcache-reset</li>
+                    <li>✅ <strong>Test edildi!</strong> Player çalışıyor, blur background aktif</li>
+                    <li>✅ <strong>x-teleport çözümü uygulandı!</strong> Player artık kaybolmuyor</li>
+                </ul>
+            </div>
+
+            <div class="alert alert-warning">
+                <strong>⚠️ SONRAK'İ GELİŞTİRMELER İÇİN:</strong>
+                <ul style="margin-top: 10px; margin-left: 20px;">
+                    <li>Her yeni özellik öncesi test et (özellikle player stability)</li>
+                    <li>Migration gerekirse ÖNCE kullanıcıya sor</li>
+                    <li>Browser uyumluluğunu kontrol et (Safari, Firefox, Chrome)</li>
+                    <li>Mobil test yap (iOS Safari, Android Chrome)</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu - Muzibu Premium System | Player Development Plan v2
+            <br>
+            <span style="color: var(--accent-green);">✅ v2 Güncellemesi: Blur Background + Player Bug Fix (27 Kasım 2025)</span>
+        </footer>
+    </div>
+</body>
+</html>

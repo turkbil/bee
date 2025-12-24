@@ -1,1 +1,198 @@
-v4/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Corporate - Ana Şube & Alt Şubeler - FINAL</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #8b5cf6; --accent: #06b6d4; --success: #10b981;
+            --warning: #f59e0b; --bg-dark: #0f0f1a; --bg-card: rgba(30, 30, 50, 0.6);
+            --text: #e2e8f0; --text-muted: #94a3b8;
+        }
+        body {
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7; padding: 40px 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .hero {
+            text-align: center; margin-bottom: 60px; padding: 60px 20px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(6, 182, 212, 0.1));
+            border-radius: 24px; border: 2px solid rgba(139, 92, 246, 0.3);
+        }
+        .hero h1 {
+            font-size: 3rem; font-weight: 800;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+        .hero-subtitle { font-size: 1.3rem; color: var(--text-muted); margin-bottom: 25px; }
+        .badge-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        .badge { padding: 8px 20px; border-radius: 50px; font-weight: 600; font-size: 0.9rem; }
+        .badge-success { background: linear-gradient(135deg, #10b981, #059669); }
+        section { margin-bottom: 60px; }
+        .section-header {
+            display: flex; align-items: center; gap: 15px; margin-bottom: 30px;
+            padding-bottom: 15px; border-bottom: 2px solid rgba(139, 92, 246, 0.3);
+        }
+        .section-header .icon { font-size: 2.5rem; }
+        .section-header h2 { font-size: 2rem; color: var(--primary); }
+        .card {
+            background: var(--bg-card); border-radius: 20px; padding: 35px;
+            margin-bottom: 25px; border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .card h3 { color: var(--accent); font-size: 1.5rem; margin-bottom: 20px; }
+        .card h4 { color: var(--primary); font-size: 1.2rem; margin: 25px 0 15px 0; }
+        .card p { color: var(--text-muted); margin-bottom: 15px; line-height: 1.8; }
+        .card ul { list-style: none; margin: 15px 0; }
+        .card li { padding: 10px 0 10px 30px; position: relative; color: var(--text); }
+        .card li::before { content: "→"; position: absolute; left: 0; color: var(--primary); font-weight: bold; }
+        .alert {
+            padding: 25px; border-radius: 16px; margin: 25px 0; border-left: 5px solid;
+        }
+        .alert-success { background: rgba(16, 185, 129, 0.15); border-color: var(--success); }
+        .alert-info { background: rgba(59, 130, 246, 0.15); border-color: #3b82f6; }
+        .code-block {
+            background: rgba(0, 0, 0, 0.4); border-radius: 12px; padding: 25px;
+            margin: 20px 0; font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem; line-height: 1.8; overflow-x: auto;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        .code-block .comment { color: #6b7280; }
+        .code-block .keyword { color: #8b5cf6; font-weight: bold; }
+        .code-block .string { color: #10b981; }
+        .hierarchy {
+            background: rgba(0, 0, 0, 0.3); border-radius: 16px; padding: 30px;
+            margin: 25px 0; font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.95rem; line-height: 2;
+        }
+        .level-1 { color: #8b5cf6; font-weight: bold; }
+        .level-2 { color: #06b6d4; padding-left: 30px; }
+        .level-3 { color: #10b981; padding-left: 60px; }
+        footer {
+            text-align: center; padding: 50px 20px; margin-top: 80px;
+            border-top: 2px solid rgba(139, 92, 246, 0.2); color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>🏢 Muzibu Corporate - FINAL</h1>
+            <p class="hero-subtitle">Ana Şube & Alt Şubeler | 1 User = 1 Firma</p>
+            <div class="badge-row">
+                <span class="badge badge-success">v4 FINAL - DOĞRU MİMARİ</span>
+            </div>
+        </div>
+
+        <section>
+            <div class="section-header">
+                <span class="icon">🎯</span>
+                <h2>Doğru Mimari</h2>
+            </div>
+            <div class="alert alert-success">
+                <strong>✅ DOĞRU MANTIK:</strong><br><br>
+                • 1 User = 1 Premium Firma (para öder)<br>
+                • Ana Şube (parent_id: NULL) → Tüm istatistikleri görür<br>
+                • Alt Şubeler (parent_id: ana_sube_id) → Sadece kendi istatistiği<br>
+                • Adres bilgisi fatura adresinden alınır
+            </div>
+
+            <div class="card">
+                <h3>Yapı</h3>
+                <div class="hierarchy">
+<div class="level-1">users: id:100 | Starbucks (Premium)</div>
+<div class="level-2">corporate_accounts:</div>
+<div class="level-2">├── user_id:100 | parent_id:NULL | company_name:"Starbucks" (ANA)</div>
+<div class="level-2">├── user_id:100 | parent_id:1 | branch_name:"Kadıköy"</div>
+<div class="level-2">└── user_id:100 | parent_id:1 | branch_name:"Beşiktaş"</div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-header">
+                <span class="icon">📊</span>
+                <h2>Değişiklikler</h2>
+            </div>
+            <div class="card">
+                <h3>Migration - Sadece 1 Alan!</h3>
+                <p><strong>branch_name</strong> ekle (settings gereksiz, adres zaten fatura adresinde var)</p>
+                <div class="code-block">
+<span class="keyword">public function</span> up()
+{
+    Schema::table(<span class="string">'muzibu_corporate_accounts'</span>, <span class="keyword">function</span> ($table) {
+        $table->string(<span class="string">'branch_name'</span>)->nullable()->after(<span class="string">'company_name'</span>);
+    });
+}
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Model Güncellemesi</h3>
+                <div class="code-block">
+<span class="keyword">protected</span> $fillable = [..., <span class="string">'branch_name'</span>];
+
+<span class="keyword">public function</span> isMainBranch(): <span class="keyword">bool</span>
+{
+    <span class="keyword">return</span> $this->parent_id === <span class="keyword">null</span>;
+}
+
+<span class="keyword">public function</span> getSubBranches()
+{
+    <span class="keyword">return</span> $this->children()->get();
+}
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Kullanım</h3>
+                <div class="code-block">
+<span class="comment">// Ana şube</span>
+MuzibuCorporateAccount::create([
+    <span class="string">'user_id'</span> => $user->id,
+    <span class="string">'parent_id'</span> => <span class="keyword">null</span>,
+    <span class="string">'company_name'</span> => <span class="string">'Starbucks'</span>,
+    <span class="string">'branch_name'</span> => <span class="keyword">null</span>,
+]);
+
+<span class="comment">// Alt şube</span>
+MuzibuCorporateAccount::create([
+    <span class="string">'user_id'</span> => $user->id,
+    <span class="string">'parent_id'</span> => $anaShube->id,
+    <span class="string">'branch_name'</span> => <span class="string">'Kadıköy Şubesi'</span>,
+]);
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-header">
+                <span class="icon">✅</span>
+                <h2>Özet</h2>
+            </div>
+            <div class="card">
+                <h3>Yapılacaklar</h3>
+                <ul>
+                    <li>Migration: branch_name ekle (1 alan)</li>
+                    <li>Model: isMainBranch(), getSubBranches()</li>
+                    <li>UI: Tree-view (ana → alt şubeler)</li>
+                    <li>Yetki: Ana=hepsi, Alt=kendisi</li>
+                </ul>
+            </div>
+            <div class="alert alert-success">
+                <strong>⏱️ 2-3 SAAT</strong> | En minimal değişiklik!
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>🤖 Muzibu Corporate - v4 FINAL</p>
+        <p style="margin-top: 10px;">1 User = 1 Firma | Ana Şube → Alt Şubeler</p>
+        <p style="margin-top: 10px; font-size: 0.8rem;">26 Kasım 2025</p>
+    </footer>
+</body>
+</html>

@@ -1,1 +1,317 @@
-v2/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trial Sistemi - Mantık & Prensipler</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 50px 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+        .section {
+            background: rgba(30, 41, 59, 0.4);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            border-left: 5px solid #3b82f6;
+        }
+        h2 {
+            font-size: 1.4rem;
+            color: #60a5fa;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .flow-step {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 3px solid #10b981;
+        }
+        .flow-step strong {
+            color: #10b981;
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .flow-step p {
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+        .rule {
+            background: rgba(251, 191, 36, 0.1);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 3px solid #fbbf24;
+        }
+        .rule strong { color: #fbbf24; }
+        .problem {
+            background: rgba(239, 68, 68, 0.1);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 3px solid #ef4444;
+        }
+        .problem strong { color: #ef4444; }
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎁 Trial Sistemi - Mantık & Prensipler</h1>
+
+        <div class="section">
+            <h2>📊 Şu Anki Durum</h2>
+            <div class="problem">
+                <strong>❌ Trial çalışmıyor</strong>
+                <p>Kullanıcı kayıt olunca mesajda "7 günlük deneme başladı" yazıyor ama aslında başlamıyor. Trial subscription oluşturulmuyor.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>✅ Doğru Çalışma Mantığı</h2>
+
+            <div class="flow-step">
+                <strong>1. Kayıt Anında Otomatik Trial</strong>
+                <p>
+                    Kullanıcı kayıt olur olmaz <strong>7 günlük trial subscription</strong> otomatik oluşturulmalı.
+                    <br>Bu trial subscription sayesinde kullanıcı hemen premium özelliklerini kullanmaya başlar.
+                </p>
+            </div>
+
+            <div class="flow-step">
+                <strong>2. Premium Durumu</strong>
+                <p>
+                    Trial aktifken sistem kullanıcıyı <strong>premium olarak görür</strong>.
+                    <br>"Premium mi?" kontrolü yapıldığında → Trial varsa <strong>EVET</strong> döner.
+                    <br>Bu sayede kullanıcı sınırsız müzik dinler, tüm özelliklere erişir.
+                </p>
+            </div>
+
+            <div class="flow-step">
+                <strong>3. Tek Kullanımlık Sistem</strong>
+                <p>
+                    Her kullanıcı trial'ı <strong>sadece 1 kere</strong> kullanabilir.
+                    <br>Trial başladığında kullanıcının profilinde "trial kullanıldı" işareti konur.
+                    <br>Subscription'ı silse bile bir daha trial alamaz.
+                </p>
+            </div>
+
+            <div class="flow-step">
+                <strong>4. Trial Bitiminde</strong>
+                <p>
+                    7 gün dolunca trial otomatik sona erer.
+                    <br>Günlük sistem kontrolü: "Bugün trial biten var mı?" diye bakar.
+                    <br>Varsa trial'ı kapatır, kullanıcı artık premium değildir.
+                </p>
+            </div>
+
+            <div class="flow-step">
+                <strong>5. Hatırlatmalar</strong>
+                <p>
+                    Trial bitmeden önce kullanıcıya hatırlatma gönderilir:
+                    <br><strong>6. gün:</strong> "Yarın trial bitecek, premium'a geçmek ister misin?"
+                    <br><strong>7. gün (son gün):</strong> "Bugün son gün, kaçırma!"
+                </p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🎯 Temel Prensipler</h2>
+
+            <div class="rule">
+                <strong>💡 Prensip 1: Basitlik</strong>
+                <p>Kullanıcı kayıt oldu → Trial başladı → 7 gün sonra bitti. Bu kadar basit.</p>
+            </div>
+
+            <div class="rule">
+                <strong>💡 Prensip 2: Otomatiklik</strong>
+                <p>Hiçbir şey manuel olmamalı. Her şey otomatik: trial başlatma, bitirme, hatırlatmalar.</p>
+            </div>
+
+            <div class="rule">
+                <strong>💡 Prensip 3: Adillik</strong>
+                <p>Herkes 1 kere trial alır. Sistem oynanmaz, hilesi olmaz.</p>
+            </div>
+
+            <div class="rule">
+                <strong>💡 Prensip 4: Şeffaflık</strong>
+                <p>Kullanıcı her zaman trial durumunu görebilir: "5 gün kaldı" gibi.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⚙️ Sistem Bileşenleri</h2>
+
+            <div class="flow-step">
+                <strong>Database (Veritabanı)</strong>
+                <p>
+                    Subscription tablosu: Trial bilgilerini saklar (başlangıç, bitiş tarihi)
+                    <br>User tablosu: "Trial kullanıldı mı?" bilgisini saklar
+                </p>
+            </div>
+
+            <div class="flow-step">
+                <strong>Kayıt Sistemi</strong>
+                <p>
+                    Kullanıcı kayıt olunca trial subscription oluşturur
+                    <br>"Trial kullanıldı" işaretini koyar
+                </p>
+            </div>
+
+            <div class="flow-step">
+                <strong>Premium Kontrol</strong>
+                <p>
+                    Müzik çalarken sistem sorar: "Bu kullanıcı premium mi?"
+                    <br>Trial aktifse → EVET, sınırsız dinle
+                    <br>Trial yoksa → HAYIR, 30 saniye limit
+                </p>
+            </div>
+
+            <div class="flow-step">
+                <strong>Günlük Kontrol (Otomatik)</strong>
+                <p>
+                    Her gün sabah sistem kontrol eder:
+                    <br>"Bugün trial biten var mı?" → Varsa kapat
+                    <br>"Yarın trial bitecek var mı?" → Varsa hatırlatma gönder
+                </p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📅 Kullanıcı Yolculuğu</h2>
+
+            <div class="flow-step">
+                <strong>📍 Gün 0: Kayıt</strong>
+                <p>
+                    Kullanıcı email/şifre ile kayıt olur
+                    <br>→ Otomatik giriş yapılır
+                    <br>→ Trial başlar
+                    <br>→ "Hoş geldin! 7 gün boyunca tüm özellikleri ücretsiz kullan" mesajı
+                </p>
+            </div>
+
+            <div class="flow-step">
+                <strong>📍 Gün 1-5: Premium Deneyim</strong>
+                <p>
+                    Kullanıcı sınırsız müzik dinler
+                    <br>Tüm premium özelliklerini kullanır
+                    <br>Hiçbir kısıtlama yok
+                </p>
+            </div>
+
+            <div class="flow-step">
+                <strong>📍 Gün 6: İlk Hatırlatma</strong>
+                <p>
+                    Bildirim: "Trial'ın yarın sona eriyor, premium'a geç ve keyfini sürdür!"
+                    <br>Premium planları gösterilir
+                    <br>İndirim teklifi sunulabilir
+                </p>
+            </div>
+
+            <div class="flow-step">
+                <strong>📍 Gün 7: Son Gün</strong>
+                <p>
+                    Bildirim: "Bugün son gün! Premium'a geç, müziğini kaybetme"
+                    <br>Özel indirim teklifi (örn: %30 indirim)
+                </p>
+            </div>
+
+            <div class="flow-step">
+                <strong>📍 Gün 8: Trial Bitti</strong>
+                <p>
+                    Trial otomatik kapanır
+                    <br>Kullanıcı artık normal üye olur (30 saniye limit)
+                    <br>Premium özelliklere erişemez
+                    <br>Her müzik çalarken "Premium'a geç" mesajı görür
+                </p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🚫 Kötüye Kullanım Engelleme</h2>
+
+            <div class="rule">
+                <strong>⚠️ Durum: Kullanıcı yeni hesap açıp tekrar trial alabilir mi?</strong>
+                <p>
+                    <strong>Çözüm 1:</strong> Email başına 1 trial (aynı email ile yeni hesap açamaz)
+                    <br><strong>Çözüm 2:</strong> IP bazlı kontrol (aynı IP'den 1 trial)
+                    <br><strong>Çözüm 3:</strong> Telefon doğrulama (SMS ile)
+                </p>
+            </div>
+
+            <div class="rule">
+                <strong>⚠️ Durum: Kullanıcı subscription'ı silip tekrar trial alabilir mi?</strong>
+                <p>
+                    <strong>Çözüm:</strong> User tablosunda "trial kullanıldı" işareti var.
+                    <br>Subscription silinse bile bu işaret kalır.
+                    <br>Sistem her zaman bu işarete bakar, trial verilmez.
+                </p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🎯 Yapılması Gerekenler (Öncelik Sırası)</h2>
+
+            <div class="flow-step">
+                <strong>1. YÜKSEK: Kayıt Sonrası Otomatik Trial</strong>
+                <p>
+                    Kullanıcı kayıt olunca otomatik trial subscription oluşturulmalı.
+                    <br>Şu an sadece mesaj var, gerçek trial yok.
+                </p>
+            </div>
+
+            <div class="flow-step">
+                <strong>2. YÜKSEK: Tek Kullanımlık Kontrol</strong>
+                <p>
+                    User tablosuna "trial kullanıldı mı?" alanı ekle.
+                    <br>Trial başladığında işaretle, bir daha verme.
+                </p>
+            </div>
+
+            <div class="flow-step">
+                <strong>3. ORTA: Otomatik Sonlandırma</strong>
+                <p>
+                    Günlük sistem kontrolü ile trial bitenleri otomatik kapat.
+                    <br>Kullanıcı normal üye statüsüne dönsün.
+                </p>
+            </div>
+
+            <div class="flow-step">
+                <strong>4. DÜŞÜK: Hatırlatmalar</strong>
+                <p>
+                    Trial bitmeden önce bildirim gönder.
+                    <br>Premium'a geçiş için teşvik et.
+                </p>
+            </div>
+        </div>
+
+        <footer>
+            🤖 Claude AI | 📅 2025-12-04 | 🎁 Trial Mantık & Prensipler
+        </footer>
+    </div>
+</body>
+</html>

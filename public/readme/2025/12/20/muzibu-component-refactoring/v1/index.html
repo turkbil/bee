@@ -1,1 +1,1619 @@
-v1/index.html
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Component Refactoring Planı - Detaylı Analiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'muzibu-coral': '#ff7f50',
+                        'muzibu-gray': '#181818',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        .pattern-dots {
+            background-image: radial-gradient(circle, #334155 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-b border-slate-700 sticky top-0 z-50 backdrop-blur-sm bg-opacity-90">
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-16 h-16 bg-gradient-to-br from-muzibu-coral to-orange-600 rounded-xl flex items-center justify-center shadow-xl">
+                    <i class="fas fa-puzzle-piece text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+                        Muzibu Component Refactoring Planı
+                    </h1>
+                    <p class="text-slate-400 text-lg mt-1">12,191 Satır Kod Analizi • 60+ Blade Dosyası • 12 Component Önerisi</p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-3 mt-6">
+                <span class="px-4 py-2 bg-green-900/30 border border-green-700 rounded-lg text-green-300 text-sm font-medium">
+                    <i class="fas fa-check-circle mr-2"></i>Analiz Tamamlandı
+                </span>
+                <span class="px-4 py-2 bg-blue-900/30 border border-blue-700 rounded-lg text-blue-300 text-sm font-medium">
+                    <i class="fas fa-calendar mr-2"></i>20 Aralık 2025
+                </span>
+                <span class="px-4 py-2 bg-purple-900/30 border border-purple-700 rounded-lg text-purple-300 text-sm font-medium">
+                    <i class="fas fa-code mr-2"></i>Blade Components
+                </span>
+                <span class="px-4 py-2 bg-orange-900/30 border border-orange-700 rounded-lg text-orange-300 text-sm font-medium">
+                    <i class="fas fa-layer-group mr-2"></i>Multi-Tenant
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12 max-w-7xl">
+
+        <!-- Executive Summary -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-br from-green-900/20 to-emerald-900/20 border border-green-800 rounded-2xl p-8 shadow-2xl">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-lightbulb text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Basit Anlatım (Herkes İçin)</h2>
+                        <p class="text-green-200 text-lg">Projenin ne durumda olduğu ve neden yeniden yapılandırma gerektiği</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6 text-slate-200 text-lg leading-relaxed">
+                    <p>
+                        <strong class="text-green-300">Ne Tespit Edildi?</strong><br>
+                        Muzibu.com.tr temasında aynı tasarım öğeleri (kartlar, listeler, butonlar) <strong>60'tan fazla farklı dosyada</strong> tekrar tekrar yazılmış.
+                        Bu, bir yerde yapılan değişikliğin her yere manuel kopyalanması anlamına geliyor. Örneğin:
+                    </p>
+
+                    <ul class="space-y-3 ml-6">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-compact-disc text-green-400 mt-1"></i>
+                            <span><strong>Albüm kartı:</strong> Anasayfada, albüm listesinde, artist sayfasında, playlist sayfasında... <em>20+ farklı yerde aynı kod!</em></span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-music text-green-400 mt-1"></i>
+                            <span><strong>Şarkı satırı:</strong> Albüm detayında, playlist detayında, favoriler sayfasında... <em>15+ farklı yerde aynı kod!</em></span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-play-circle text-green-400 mt-1"></i>
+                            <span><strong>Play butonu:</strong> Her kartta, her listede farklı şekilde yazılmış ama aynı işi yapıyor!</span>
+                        </li>
+                    </ul>
+
+                    <div class="bg-slate-900/50 border-l-4 border-yellow-500 p-6 rounded-lg">
+                        <p class="text-yellow-200 font-semibold mb-2">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>Sorun Nedir?
+                        </p>
+                        <p class="text-slate-300">
+                            Örneğin albüm kartının rengini değiştirmek istiyorsunuz. Şu anda <strong>20 farklı dosyayı</strong> açıp,
+                            <strong>20 farklı yerde</strong> aynı değişikliği yapmanız gerekiyor. Bir tanesini unutursanız →
+                            site tutarsız görünüyor, bazı yerlerde eski tasarım duruyor.
+                        </p>
+                    </div>
+
+                    <p>
+                        <strong class="text-green-300">Çözüm Ne?</strong><br>
+                        Bu tekrar eden parçaları <strong>"component"</strong> (hazır parça) haline getireceğiz. Yemek tarifi gibi düşünün:
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-red-900/20 border border-red-700 rounded-xl p-6">
+                            <h3 class="text-red-300 font-bold text-lg mb-3">
+                                <i class="fas fa-times-circle mr-2"></i>Şu Anki Durum (Kötü)
+                            </h3>
+                            <ul class="space-y-2 text-sm text-slate-300">
+                                <li>• Her sayfada aynı tarifi baştan yazıyoruz</li>
+                                <li>• 20 sayfada "yumurta çırp" yazıyor</li>
+                                <li>• Tarif değişince → 20 yeri güncelle!</li>
+                                <li>• Unutursanız → tutarsızlık oluşur</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-900/20 border border-green-700 rounded-xl p-6">
+                            <h3 class="text-green-300 font-bold text-lg mb-3">
+                                <i class="fas fa-check-circle mr-2"></i>Hedef Durum (İyi)
+                            </h3>
+                            <ul class="space-y-2 text-sm text-slate-300">
+                                <li>• Tarif bir yerde yazılı (component)</li>
+                                <li>• Her sayfa "albüm kartı göster" diyor</li>
+                                <li>• Tarif değişince → otomatik her yere yansır!</li>
+                                <li>• Tutarlılık garantili</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <p>
+                        <strong class="text-green-300">Ne Kazanacağız?</strong>
+                    </p>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-slate-800 rounded-xl p-5 text-center">
+                            <div class="text-4xl font-bold text-blue-400 mb-2">%60-70</div>
+                            <p class="text-sm text-slate-400">Kod Azalması</p>
+                            <p class="text-xs text-slate-500 mt-2">12,000 → 4,000 satır</p>
+                        </div>
+                        <div class="bg-slate-800 rounded-xl p-5 text-center">
+                            <div class="text-4xl font-bold text-green-400 mb-2">1 Dakika</div>
+                            <p class="text-sm text-slate-400">Tasarım Değişikliği</p>
+                            <p class="text-xs text-slate-500 mt-2">Eskiden 20 dosya, şimdi 1</p>
+                        </div>
+                        <div class="bg-slate-800 rounded-xl p-5 text-center">
+                            <div class="text-4xl font-bold text-purple-400 mb-2">%100</div>
+                            <p class="text-sm text-slate-400">Tutarlılık</p>
+                            <p class="text-xs text-slate-500 mt-2">Her yerde aynı görünüm</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Details -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-br from-blue-900/20 to-cyan-900/20 border border-blue-800 rounded-2xl p-8 shadow-2xl">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-code text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Teknik Detaylar (Geliştiriciler İçin)</h2>
+                        <p class="text-blue-200 text-lg">Codebase analizi ve mimari kararlar</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-xl font-semibold text-blue-300 mb-4">
+                            <i class="fas fa-folder-tree mr-2"></i>İncelenen Dosyalar
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-slate-900/50 rounded-lg p-5 border border-slate-700">
+                                <div class="text-3xl font-bold text-blue-400 mb-2">12,191</div>
+                                <p class="text-slate-400">Toplam Satır Blade Kodu</p>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-5 border border-slate-700">
+                                <div class="text-3xl font-bold text-blue-400 mb-2">60+</div>
+                                <p class="text-slate-400">Blade Dosyası Analiz Edildi</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold text-blue-300 mb-4">
+                            <i class="fas fa-sitemap mr-2"></i>Dosya Kategorizasyonu
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-layer-group text-purple-400"></i>
+                                    <span class="font-mono text-sm">Modules/Muzibu/resources/views/themes/muzibu/</span>
+                                </div>
+                                <span class="text-slate-400 text-sm">Ana tema klasörü</span>
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-3 ml-8">
+                                <div class="bg-slate-800 rounded-lg p-3 text-sm">
+                                    <strong class="text-blue-300">layouts/</strong>
+                                    <span class="text-slate-400 ml-2">• app.blade.php (master layout)</span>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg p-3 text-sm">
+                                    <strong class="text-blue-300">components/</strong>
+                                    <span class="text-slate-400 ml-2">• header, sidebar, player, overlays</span>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg p-3 text-sm">
+                                    <strong class="text-blue-300">pages/</strong>
+                                    <span class="text-slate-400 ml-2">• home, albums, playlists, artists (25+)</span>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg p-3 text-sm">
+                                    <strong class="text-blue-300">partials/</strong>
+                                    <span class="text-slate-400 ml-2">• Grid views, detail views (15+)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold text-blue-300 mb-4">
+                            <i class="fas fa-palette mr-2"></i>Tasarım Sistemi
+                        </h3>
+                        <div class="bg-slate-900/50 rounded-lg p-5 border border-slate-700">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-semibold text-slate-300 mb-3">Renk Paleti</h4>
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded" style="background: #ff7f50;"></div>
+                                            <code class="text-muzibu-coral">#ff7f50</code>
+                                            <span class="text-slate-400">muzibu-coral (primary)</span>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded bg-black border border-slate-600"></div>
+                                            <code class="text-slate-300">#000000</code>
+                                            <span class="text-slate-400">Background</span>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded" style="background: #181818;"></div>
+                                            <code class="text-slate-300">#181818</code>
+                                            <span class="text-slate-400">muzibu-gray (cards)</span>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded" style="background: #b3b3b3;"></div>
+                                            <code class="text-slate-300">#b3b3b3</code>
+                                            <span class="text-slate-400">Text gray</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-slate-300 mb-3">Teknoloji Stack</h4>
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex items-center gap-2">
+                                            <i class="fab fa-laravel text-red-400"></i>
+                                            <span class="text-slate-300">Laravel Blade Components</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <i class="fas fa-wind text-cyan-400"></i>
+                                            <span class="text-slate-300">Tailwind CSS (CDN)</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <i class="fas fa-bolt text-yellow-400"></i>
+                                            <span class="text-slate-300">Alpine.js + Livewire</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <i class="fab fa-font-awesome text-blue-400"></i>
+                                            <span class="text-slate-300">FontAwesome 6.5.1</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold text-blue-300 mb-4">
+                            <i class="fas fa-chart-line mr-2"></i>Code Duplication Metrics
+                        </h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-slate-700">
+                                        <th class="text-left py-3 px-4 text-slate-400 font-semibold">Pattern</th>
+                                        <th class="text-center py-3 px-4 text-slate-400 font-semibold">Tekrar Sayısı</th>
+                                        <th class="text-center py-3 px-4 text-slate-400 font-semibold">Ortalama Satır</th>
+                                        <th class="text-center py-3 px-4 text-slate-400 font-semibold">Toplam Satır</th>
+                                        <th class="text-left py-3 px-4 text-slate-400 font-semibold">Öncelik</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800">
+                                    <tr class="hover:bg-slate-900/50">
+                                        <td class="py-3 px-4 text-slate-300">Media Card (Grid)</td>
+                                        <td class="text-center py-3 px-4 text-blue-400 font-bold">20+</td>
+                                        <td class="text-center py-3 px-4 text-slate-400">~80</td>
+                                        <td class="text-center py-3 px-4 text-yellow-400">1,600+</td>
+                                        <td class="py-3 px-4"><span class="px-3 py-1 bg-red-900/30 border border-red-700 rounded text-red-300 text-xs font-semibold">YÜKSEK</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-900/50">
+                                        <td class="py-3 px-4 text-slate-300">Song Row</td>
+                                        <td class="text-center py-3 px-4 text-blue-400 font-bold">15+</td>
+                                        <td class="text-center py-3 px-4 text-slate-400">~60</td>
+                                        <td class="text-center py-3 px-4 text-yellow-400">900+</td>
+                                        <td class="py-3 px-4"><span class="px-3 py-1 bg-red-900/30 border border-red-700 rounded text-red-300 text-xs font-semibold">YÜKSEK</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-900/50">
+                                        <td class="py-3 px-4 text-slate-300">Hero Header</td>
+                                        <td class="text-center py-3 px-4 text-blue-400 font-bold">10+</td>
+                                        <td class="text-center py-3 px-4 text-slate-400">~120</td>
+                                        <td class="text-center py-3 px-4 text-yellow-400">1,200+</td>
+                                        <td class="py-3 px-4"><span class="px-3 py-1 bg-red-900/30 border border-red-700 rounded text-red-300 text-xs font-semibold">YÜKSEK</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-900/50">
+                                        <td class="py-3 px-4 text-slate-300">Action Buttons</td>
+                                        <td class="text-center py-3 px-4 text-blue-400 font-bold">10+</td>
+                                        <td class="text-center py-3 px-4 text-slate-400">~50</td>
+                                        <td class="text-center py-3 px-4 text-yellow-400">500+</td>
+                                        <td class="py-3 px-4"><span class="px-3 py-1 bg-orange-900/30 border border-orange-700 rounded text-orange-300 text-xs font-semibold">ORTA</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-900/50">
+                                        <td class="py-3 px-4 text-slate-300">Horizontal Scroll</td>
+                                        <td class="text-center py-3 px-4 text-blue-400 font-bold">5+</td>
+                                        <td class="text-center py-3 px-4 text-slate-400">~100</td>
+                                        <td class="text-center py-3 px-4 text-yellow-400">500+</td>
+                                        <td class="py-3 px-4"><span class="px-3 py-1 bg-orange-900/30 border border-orange-700 rounded text-orange-300 text-xs font-semibold">ORTA</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-900/50">
+                                        <td class="py-3 px-4 text-slate-300">Empty State</td>
+                                        <td class="text-center py-3 px-4 text-blue-400 font-bold">10+</td>
+                                        <td class="text-center py-3 px-4 text-slate-400">~30</td>
+                                        <td class="text-center py-3 px-4 text-yellow-400">300+</td>
+                                        <td class="py-3 px-4"><span class="px-3 py-1 bg-yellow-900/30 border border-yellow-700 rounded text-yellow-300 text-xs font-semibold">DÜŞÜK</span></td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="border-t-2 border-slate-600 font-bold">
+                                        <td class="py-3 px-4 text-slate-200">TOPLAM (Tahmin)</td>
+                                        <td class="text-center py-3 px-4 text-blue-300">70+</td>
+                                        <td class="text-center py-3 px-4 text-slate-400">-</td>
+                                        <td class="text-center py-3 px-4 text-green-400">~5,000</td>
+                                        <td class="py-3 px-4 text-slate-400">satır azalacak</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Component Cards -->
+        <section class="mb-16">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-white mb-3">
+                    <i class="fas fa-cubes text-purple-400 mr-3"></i>Önerilen Component Yapısı
+                </h2>
+                <p class="text-slate-400 text-lg">12 adet yeniden kullanılabilir component önerisi - öncelik sırasıyla</p>
+            </div>
+
+            <!-- Priority: HIGH -->
+            <div class="mb-10">
+                <h3 class="text-2xl font-semibold text-red-300 mb-6 flex items-center gap-3">
+                    <span class="px-4 py-2 bg-red-900/30 border border-red-700 rounded-lg text-sm">
+                        <i class="fas fa-fire mr-2"></i>YÜKSEK ÖNCELİK
+                    </span>
+                    <span class="text-slate-500">İlk implementasyon - En çok etki</span>
+                </h3>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Component 1: Media Card -->
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 rounded-xl overflow-hidden hover:border-muzibu-coral transition-all duration-300 hover:shadow-2xl hover:shadow-muzibu-coral/20">
+                        <div class="bg-gradient-to-r from-muzibu-coral to-orange-600 p-4">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-xl font-bold text-white">
+                                    <i class="fas fa-id-card mr-2"></i>media-card
+                                </h4>
+                                <span class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-bold">
+                                    #1
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div>
+                                <p class="text-slate-300 mb-3">Album, Playlist, Genre, Sector kartları için universal component</p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-2 py-1 bg-purple-900/30 border border-purple-700 rounded text-purple-300 text-xs">Grid Card</span>
+                                    <span class="px-2 py-1 bg-purple-900/30 border border-purple-700 rounded text-purple-300 text-xs">Horizontal Card</span>
+                                    <span class="px-2 py-1 bg-purple-900/30 border border-purple-700 rounded text-purple-300 text-xs">Compact Mode</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                                <p class="text-xs text-slate-500 mb-2 font-semibold">PROPS:</p>
+                                <code class="text-xs text-green-400 block space-y-1">
+                                    <div>$media <span class="text-slate-500">// Model (Album|Playlist|Genre)</span></div>
+                                    <div>$type <span class="text-slate-500">// 'album'|'playlist'|'genre'</span></div>
+                                    <div>$size <span class="text-slate-500">// 'normal'|'compact'|'large'</span></div>
+                                    <div>$variant <span class="text-slate-500">// 'grid'|'horizontal'</span></div>
+                                    <div>$showPlayButton <span class="text-slate-500">// true|false</span></div>
+                                </code>
+                            </div>
+
+                            <div class="flex items-center justify-between text-sm pt-2">
+                                <div class="flex items-center gap-2 text-slate-400">
+                                    <i class="fas fa-copy"></i>
+                                    <span>20+ tekrar</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-green-400">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>~1,600 satır azalır</span>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-slate-700 pt-3">
+                                <p class="text-xs text-slate-500 mb-2">ETKİLENEN DOSYALAR:</p>
+                                <div class="text-xs text-slate-400 space-y-1 max-h-20 overflow-y-auto">
+                                    <div>• home.blade.php (quick access, featured)</div>
+                                    <div>• albums/index.blade.php, show.blade.php</div>
+                                    <div>• playlists/index.blade.php, show.blade.php</div>
+                                    <div>• genres/index.blade.php, show.blade.php</div>
+                                    <div>• artists/show.blade.php</div>
+                                    <div>• partials/albums-grid.blade.php</div>
+                                    <div>+ 14 dosya daha...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Component 2: Song Row -->
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 rounded-xl overflow-hidden hover:border-muzibu-coral transition-all duration-300 hover:shadow-2xl hover:shadow-muzibu-coral/20">
+                        <div class="bg-gradient-to-r from-blue-600 to-cyan-600 p-4">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-xl font-bold text-white">
+                                    <i class="fas fa-music mr-2"></i>song-row
+                                </h4>
+                                <span class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-bold">
+                                    #2
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div>
+                                <p class="text-slate-300 mb-3">Şarkı liste satırları için universal component (table row pattern)</p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-2 py-1 bg-blue-900/30 border border-blue-700 rounded text-blue-300 text-xs">Numbered List</span>
+                                    <span class="px-2 py-1 bg-blue-900/30 border border-blue-700 rounded text-blue-300 text-xs">With Cover</span>
+                                    <span class="px-2 py-1 bg-blue-900/30 border border-blue-700 rounded text-blue-300 text-xs">Context Menu</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                                <p class="text-xs text-slate-500 mb-2 font-semibold">PROPS:</p>
+                                <code class="text-xs text-green-400 block space-y-1">
+                                    <div>$song <span class="text-slate-500">// Song Model</span></div>
+                                    <div>$index <span class="text-slate-500">// Sıra numarası</span></div>
+                                    <div>$showCover <span class="text-slate-500">// true|false</span></div>
+                                    <div>$showArtist <span class="text-slate-500">// true|false</span></div>
+                                    <div>$showAlbum <span class="text-slate-500">// true|false</span></div>
+                                    <div>$context <span class="text-slate-500">// 'album'|'playlist'|'favorites'</span></div>
+                                </code>
+                            </div>
+
+                            <div class="flex items-center justify-between text-sm pt-2">
+                                <div class="flex items-center gap-2 text-slate-400">
+                                    <i class="fas fa-copy"></i>
+                                    <span>15+ tekrar</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-green-400">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>~900 satır azalır</span>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-slate-700 pt-3">
+                                <p class="text-xs text-slate-500 mb-2">ETKİLENEN DOSYALAR:</p>
+                                <div class="text-xs text-slate-400 space-y-1 max-h-20 overflow-y-auto">
+                                    <div>• albums/show.blade.php (track list)</div>
+                                    <div>• playlists/show.blade.php (track list)</div>
+                                    <div>• favorites/index.blade.php</div>
+                                    <div>• genres/show.blade.php (top songs)</div>
+                                    <div>• artists/show.blade.php (top songs)</div>
+                                    <div>• components/sidebar-right.blade.php</div>
+                                    <div>+ 9 dosya daha...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Component 3: Hero Header -->
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 rounded-xl overflow-hidden hover:border-muzibu-coral transition-all duration-300 hover:shadow-2xl hover:shadow-muzibu-coral/20">
+                        <div class="bg-gradient-to-r from-purple-600 to-pink-600 p-4">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-xl font-bold text-white">
+                                    <i class="fas fa-image mr-2"></i>hero-header
+                                </h4>
+                                <span class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-bold">
+                                    #3
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div>
+                                <p class="text-slate-300 mb-3">Detay sayfaları için büyük cover + metadata header</p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-2 py-1 bg-pink-900/30 border border-pink-700 rounded text-pink-300 text-xs">Large Cover</span>
+                                    <span class="px-2 py-1 bg-pink-900/30 border border-pink-700 rounded text-pink-300 text-xs">Gradient Overlay</span>
+                                    <span class="px-2 py-1 bg-pink-900/30 border border-pink-700 rounded text-pink-300 text-xs">Stats</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                                <p class="text-xs text-slate-500 mb-2 font-semibold">PROPS:</p>
+                                <code class="text-xs text-green-400 block space-y-1">
+                                    <div>$entity <span class="text-slate-500">// Album|Playlist|Genre|Artist</span></div>
+                                    <div>$type <span class="text-slate-500">// 'album'|'playlist'|'genre'</span></div>
+                                    <div>$stats <span class="text-slate-500">// ['songs' => 12, 'duration' => '45:32']</span></div>
+                                    <div>$gradientFrom <span class="text-slate-500">// Tailwind color class</span></div>
+                                </code>
+                            </div>
+
+                            <div class="flex items-center justify-between text-sm pt-2">
+                                <div class="flex items-center gap-2 text-slate-400">
+                                    <i class="fas fa-copy"></i>
+                                    <span>10+ tekrar</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-green-400">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>~1,200 satır azalır</span>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-slate-700 pt-3">
+                                <p class="text-xs text-slate-500 mb-2">ETKİLENEN DOSYALAR:</p>
+                                <div class="text-xs text-slate-400 space-y-1 max-h-20 overflow-y-auto">
+                                    <div>• albums/show.blade.php</div>
+                                    <div>• playlists/show.blade.php</div>
+                                    <div>• genres/show.blade.php</div>
+                                    <div>• sectors/show.blade.php</div>
+                                    <div>• artists/show.blade.php</div>
+                                    <div>• partials/album-detail.blade.php</div>
+                                    <div>+ 4 dosya daha...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Component 4: Action Buttons -->
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 rounded-xl overflow-hidden hover:border-muzibu-coral transition-all duration-300 hover:shadow-2xl hover:shadow-muzibu-coral/20">
+                        <div class="bg-gradient-to-r from-green-600 to-emerald-600 p-4">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-xl font-bold text-white">
+                                    <i class="fas fa-play-circle mr-2"></i>action-buttons
+                                </h4>
+                                <span class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-bold">
+                                    #4
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div>
+                                <p class="text-slate-300 mb-3">Detay sayfaları için aksiyon buton grubu (play, favorite, more)</p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-2 py-1 bg-green-900/30 border border-green-700 rounded text-green-300 text-xs">Large Play</span>
+                                    <span class="px-2 py-1 bg-green-900/30 border border-green-700 rounded text-green-300 text-xs">Favorite</span>
+                                    <span class="px-2 py-1 bg-green-900/30 border border-green-700 rounded text-green-300 text-xs">3-dot Menu</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                                <p class="text-xs text-slate-500 mb-2 font-semibold">PROPS:</p>
+                                <code class="text-xs text-green-400 block space-y-1">
+                                    <div>$entity <span class="text-slate-500">// Model instance</span></div>
+                                    <div>$actions <span class="text-slate-500">// ['play', 'favorite', 'share', 'more']</span></div>
+                                    <div>$playContext <span class="text-slate-500">// Alpine.store data</span></div>
+                                    <div>$size <span class="text-slate-500">// 'normal'|'large'</span></div>
+                                </code>
+                            </div>
+
+                            <div class="flex items-center justify-between text-sm pt-2">
+                                <div class="flex items-center gap-2 text-slate-400">
+                                    <i class="fas fa-copy"></i>
+                                    <span>10+ tekrar</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-green-400">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>~500 satır azalır</span>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-slate-700 pt-3">
+                                <p class="text-xs text-slate-500 mb-2">ETKİLENEN DOSYALAR:</p>
+                                <div class="text-xs text-slate-400 space-y-1 max-h-20 overflow-y-auto">
+                                    <div>• albums/show.blade.php</div>
+                                    <div>• playlists/show.blade.php</div>
+                                    <div>• genres/show.blade.php</div>
+                                    <div>• artists/show.blade.php</div>
+                                    <div>• home.blade.php (section headers)</div>
+                                    <div>+ 5 dosya daha...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Priority: MEDIUM -->
+            <div class="mb-10">
+                <h3 class="text-2xl font-semibold text-orange-300 mb-6 flex items-center gap-3">
+                    <span class="px-4 py-2 bg-orange-900/30 border border-orange-700 rounded-lg text-sm">
+                        <i class="fas fa-star mr-2"></i>ORTA ÖNCELİK
+                    </span>
+                    <span class="text-slate-500">İkinci dalga - UI tutarlılığı</span>
+                </h3>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Component 5: Horizontal Scroll -->
+                    <div class="bg-slate-900 border border-slate-700 rounded-xl p-5 hover:border-orange-500 transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-lg font-bold text-white flex items-center gap-2">
+                                <i class="fas fa-arrows-left-right text-orange-400"></i>
+                                horizontal-scroll
+                            </h4>
+                            <span class="text-xs text-slate-500">#5</span>
+                        </div>
+                        <p class="text-sm text-slate-400 mb-3">Homepage section'ları için yatay scroll container + ok butonları</p>
+                        <div class="text-xs text-slate-500 space-y-1">
+                            <div>• Props: $items, $title, $cardComponent</div>
+                            <div>• 5+ tekrar → ~500 satır</div>
+                        </div>
+                    </div>
+
+                    <!-- Component 6: Empty State -->
+                    <div class="bg-slate-900 border border-slate-700 rounded-xl p-5 hover:border-orange-500 transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-lg font-bold text-white flex items-center gap-2">
+                                <i class="fas fa-inbox text-orange-400"></i>
+                                empty-state
+                            </h4>
+                            <span class="text-xs text-slate-500">#6</span>
+                        </div>
+                        <p class="text-sm text-slate-400 mb-3">Boş liste durumları için message + icon + CTA pattern</p>
+                        <div class="text-xs text-slate-500 space-y-1">
+                            <div>• Props: $icon, $title, $message, $cta</div>
+                            <div>• 10+ tekrar → ~300 satır</div>
+                        </div>
+                    </div>
+
+                    <!-- Component 7: Loading Skeleton -->
+                    <div class="bg-slate-900 border border-slate-700 rounded-xl p-5 hover:border-orange-500 transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-lg font-bold text-white flex items-center gap-2">
+                                <i class="fas fa-spinner text-orange-400"></i>
+                                loading-skeleton
+                            </h4>
+                            <span class="text-xs text-slate-500">#7</span>
+                        </div>
+                        <p class="text-sm text-slate-400 mb-3">Lazy loading için skeleton screens (card/row/grid)</p>
+                        <div class="text-xs text-slate-500 space-y-1">
+                            <div>• Props: $type, $count, $columns</div>
+                            <div>• 8+ tekrar → ~250 satır</div>
+                        </div>
+                    </div>
+
+                    <!-- Component 8: Section Header -->
+                    <div class="bg-slate-900 border border-slate-700 rounded-xl p-5 hover:border-orange-500 transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-lg font-bold text-white flex items-center gap-2">
+                                <i class="fas fa-heading text-orange-400"></i>
+                                section-header
+                            </h4>
+                            <span class="text-xs text-slate-500">#8</span>
+                        </div>
+                        <p class="text-sm text-slate-400 mb-3">Sayfa section başlıkları + "See all" link pattern</p>
+                        <div class="text-xs text-slate-500 space-y-1">
+                            <div>• Props: $title, $link, $icon</div>
+                            <div>• 12+ tekrar → ~200 satır</div>
+                        </div>
+                    </div>
+
+                    <!-- Component 9: Grid Container -->
+                    <div class="bg-slate-900 border border-slate-700 rounded-xl p-5 hover:border-orange-500 transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-lg font-bold text-white flex items-center gap-2">
+                                <i class="fas fa-grid-2 text-orange-400"></i>
+                                grid-container
+                            </h4>
+                            <span class="text-xs text-slate-500">#9</span>
+                        </div>
+                        <p class="text-sm text-slate-400 mb-3">Responsive grid wrapper (2-5 column auto-responsive)</p>
+                        <div class="text-xs text-slate-500 space-y-1">
+                            <div>• Props: $items, $columns, $gap</div>
+                            <div>• 15+ tekrar → ~180 satır</div>
+                        </div>
+                    </div>
+
+                    <!-- Component 10: Lazy Image -->
+                    <div class="bg-slate-900 border border-slate-700 rounded-xl p-5 hover:border-orange-500 transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-lg font-bold text-white flex items-center gap-2">
+                                <i class="fas fa-image text-orange-400"></i>
+                                lazy-image
+                            </h4>
+                            <span class="text-xs text-slate-500">#10</span>
+                        </div>
+                        <p class="text-sm text-slate-400 mb-3">Lazy loading + placeholder + error fallback (Mevcut ama iyileştirilebilir)</p>
+                        <div class="text-xs text-slate-500 space-y-1">
+                            <div>• Props: $src, $alt, $aspectRatio</div>
+                            <div>• Tüm medya çağrılarında kullanılıyor</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Priority: LOW -->
+            <div class="mb-10">
+                <h3 class="text-2xl font-semibold text-yellow-300 mb-6 flex items-center gap-3">
+                    <span class="px-4 py-2 bg-yellow-900/30 border border-yellow-700 rounded-lg text-sm">
+                        <i class="fas fa-circle-info mr-2"></i>DÜŞÜK ÖNCELİK
+                    </span>
+                    <span class="text-slate-500">Özelleşmiş component'ler - İhtiyaç halinde</span>
+                </h3>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-yellow-500 transition-all">
+                        <h4 class="text-base font-bold text-white mb-2 flex items-center gap-2">
+                            <i class="fas fa-user-circle text-yellow-400 text-sm"></i>
+                            <span>user-profile-card</span>
+                            <span class="text-xs text-slate-500 ml-auto">#11</span>
+                        </h4>
+                        <p class="text-xs text-slate-400">Sidebar bottom'daki user card • Sadece 2 yerde kullanılıyor</p>
+                    </div>
+
+                    <div class="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-yellow-500 transition-all">
+                        <h4 class="text-base font-bold text-white mb-2 flex items-center gap-2">
+                            <i class="fas fa-crown text-yellow-400 text-sm"></i>
+                            <span>premium-badge</span>
+                            <span class="text-xs text-slate-500 ml-auto">#12</span>
+                        </h4>
+                        <p class="text-xs text-slate-400">Premium user badge/indicator • 5+ yerde kullanılıyor ama minimal kod</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- File Impact Map -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-br from-indigo-900/20 to-purple-900/20 border border-indigo-800 rounded-2xl p-8 shadow-2xl">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-sitemap text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Dosya Etki Haritası</h2>
+                        <p class="text-indigo-200 text-lg">Hangi component hangi dosyaları etkileyecek?</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- High Impact Files -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-red-300 mb-4 flex items-center gap-2">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Yüksek Etki (20+ değişiklik)
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-slate-900/50 border border-red-700/50 rounded-lg p-4">
+                                <div class="flex items-start justify-between mb-3">
+                                    <h4 class="font-mono text-sm text-slate-300">home.blade.php</h4>
+                                    <span class="px-2 py-1 bg-red-900/30 rounded text-red-300 text-xs">~30 değişiklik</span>
+                                </div>
+                                <div class="space-y-1 text-xs text-slate-400">
+                                    <div>• media-card (quick access, featured, new releases)</div>
+                                    <div>• horizontal-scroll (4 section)</div>
+                                    <div>• section-header (6 başlık)</div>
+                                    <div>• grid-container (popular songs)</div>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-900/50 border border-red-700/50 rounded-lg p-4">
+                                <div class="flex items-start justify-between mb-3">
+                                    <h4 class="font-mono text-sm text-slate-300">albums/show.blade.php</h4>
+                                    <span class="px-2 py-1 bg-red-900/30 rounded text-red-300 text-xs">~25 değişiklik</span>
+                                </div>
+                                <div class="space-y-1 text-xs text-slate-400">
+                                    <div>• hero-header (album cover + metadata)</div>
+                                    <div>• action-buttons (play, favorite, share)</div>
+                                    <div>• song-row (track list - 15+ satır)</div>
+                                    <div>• empty-state (no songs fallback)</div>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-900/50 border border-red-700/50 rounded-lg p-4">
+                                <div class="flex items-start justify-between mb-3">
+                                    <h4 class="font-mono text-sm text-slate-300">playlists/show.blade.php</h4>
+                                    <span class="px-2 py-1 bg-red-900/30 rounded text-red-300 text-xs">~25 değişiklik</span>
+                                </div>
+                                <div class="space-y-1 text-xs text-slate-400">
+                                    <div>• hero-header (playlist cover + metadata)</div>
+                                    <div>• action-buttons (play, favorite, edit)</div>
+                                    <div>• song-row (track list - 15+ satır)</div>
+                                    <div>• empty-state (empty playlist)</div>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-900/50 border border-red-700/50 rounded-lg p-4">
+                                <div class="flex items-start justify-between mb-3">
+                                    <h4 class="font-mono text-sm text-slate-300">artists/show.blade.php</h4>
+                                    <span class="px-2 py-1 bg-red-900/30 rounded text-red-300 text-xs">~28 değişiklik</span>
+                                </div>
+                                <div class="space-y-1 text-xs text-slate-400">
+                                    <div>• hero-header (artist banner)</div>
+                                    <div>• song-row (top songs)</div>
+                                    <div>• media-card (albums grid)</div>
+                                    <div>• grid-container (responsive albums)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Medium Impact Files -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-orange-300 mb-4 flex items-center gap-2">
+                            <i class="fas fa-info-circle"></i>
+                            Orta Etki (10-19 değişiklik)
+                        </h3>
+                        <div class="grid md:grid-cols-3 gap-3">
+                            <div class="bg-slate-900/50 border border-orange-700/50 rounded-lg p-3">
+                                <h4 class="font-mono text-xs text-slate-300 mb-2">genres/index.blade.php</h4>
+                                <span class="text-xs text-orange-300">~15 değişiklik</span>
+                            </div>
+                            <div class="bg-slate-900/50 border border-orange-700/50 rounded-lg p-3">
+                                <h4 class="font-mono text-xs text-slate-300 mb-2">genres/show.blade.php</h4>
+                                <span class="text-xs text-orange-300">~18 değişiklik</span>
+                            </div>
+                            <div class="bg-slate-900/50 border border-orange-700/50 rounded-lg p-3">
+                                <h4 class="font-mono text-xs text-slate-300 mb-2">favorites/index.blade.php</h4>
+                                <span class="text-xs text-orange-300">~12 değişiklik</span>
+                            </div>
+                            <div class="bg-slate-900/50 border border-orange-700/50 rounded-lg p-3">
+                                <h4 class="font-mono text-xs text-slate-300 mb-2">playlists/index.blade.php</h4>
+                                <span class="text-xs text-orange-300">~14 değişiklik</span>
+                            </div>
+                            <div class="bg-slate-900/50 border border-orange-700/50 rounded-lg p-3">
+                                <h4 class="font-mono text-xs text-slate-300 mb-2">albums/index.blade.php</h4>
+                                <span class="text-xs text-orange-300">~14 değişiklik</span>
+                            </div>
+                            <div class="bg-slate-900/50 border border-orange-700/50 rounded-lg p-3">
+                                <h4 class="font-mono text-xs text-slate-300 mb-2">sidebar-right.blade.php</h4>
+                                <span class="text-xs text-orange-300">~16 değişiklik</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Partials (High Priority) -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-purple-300 mb-4 flex items-center gap-2">
+                            <i class="fas fa-puzzle-piece"></i>
+                            Partials (Silinebilir/Birleştirilebilir)
+                        </h3>
+                        <div class="bg-purple-900/20 border border-purple-700 rounded-lg p-5">
+                            <p class="text-slate-300 mb-4">Component'leştikten sonra bu partial dosyaları gereksiz hale gelecek:</p>
+                            <div class="grid md:grid-cols-2 gap-3 text-sm">
+                                <div class="flex items-center gap-2 text-slate-400">
+                                    <i class="fas fa-trash text-purple-400 text-xs"></i>
+                                    <code class="text-xs">partials/albums-grid.blade.php</code>
+                                    <span class="text-xs text-slate-500">→ media-card component</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-slate-400">
+                                    <i class="fas fa-trash text-purple-400 text-xs"></i>
+                                    <code class="text-xs">partials/playlists-grid.blade.php</code>
+                                    <span class="text-xs text-slate-500">→ media-card component</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-slate-400">
+                                    <i class="fas fa-trash text-purple-400 text-xs"></i>
+                                    <code class="text-xs">partials/genres-grid.blade.php</code>
+                                    <span class="text-xs text-slate-500">→ media-card component</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-slate-400">
+                                    <i class="fas fa-trash text-purple-400 text-xs"></i>
+                                    <code class="text-xs">partials/album-detail.blade.php</code>
+                                    <span class="text-xs text-slate-500">→ hero-header component</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-slate-400">
+                                    <i class="fas fa-trash text-purple-400 text-xs"></i>
+                                    <code class="text-xs">partials/playlist-detail.blade.php</code>
+                                    <span class="text-xs text-slate-500">→ hero-header component</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-slate-400">
+                                    <i class="fas fa-trash text-purple-400 text-xs"></i>
+                                    <code class="text-xs">partials/loading-skeleton.blade.php</code>
+                                    <span class="text-xs text-slate-500">→ loading-skeleton component</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 text-xs text-purple-300 bg-purple-900/30 rounded p-3">
+                                <i class="fas fa-lightbulb mr-2"></i>
+                                <strong>Kazanç:</strong> 6 partial dosyası silinecek → ~800 satır kod azalacak
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Migration Roadmap -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-br from-cyan-900/20 to-blue-900/20 border border-cyan-800 rounded-2xl p-8 shadow-2xl">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="w-12 h-12 bg-cyan-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-map-marked-alt text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Migration Roadmap</h2>
+                        <p class="text-cyan-200 text-lg">Adım adım refactoring planı - 4 faz</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Phase 1 -->
+                    <div class="relative">
+                        <div class="absolute left-6 top-16 bottom-0 w-0.5 bg-gradient-to-b from-cyan-500 to-transparent"></div>
+
+                        <div class="bg-gradient-to-r from-cyan-900/30 to-transparent border border-cyan-700 rounded-xl p-6 relative">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-cyan-600 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-lg z-10">
+                                    1
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold text-white mb-2">Faz 1: Foundation Components (2-3 gün)</h3>
+                                    <p class="text-cyan-200 mb-4">En kritik ve en çok kullanılan component'leri oluştur</p>
+
+                                    <div class="grid md:grid-cols-2 gap-4 mb-4">
+                                        <div class="bg-slate-900 rounded-lg p-4 border border-slate-700">
+                                            <h4 class="font-semibold text-cyan-300 mb-3 flex items-center gap-2">
+                                                <i class="fas fa-tasks"></i>Yapılacaklar
+                                            </h4>
+                                            <ul class="space-y-2 text-sm text-slate-300">
+                                                <li class="flex items-start gap-2">
+                                                    <i class="fas fa-check text-green-400 mt-1 text-xs"></i>
+                                                    <span><code class="text-muzibu-coral">media-card</code> component oluştur</span>
+                                                </li>
+                                                <li class="flex items-start gap-2">
+                                                    <i class="fas fa-check text-green-400 mt-1 text-xs"></i>
+                                                    <span><code class="text-muzibu-coral">song-row</code> component oluştur</span>
+                                                </li>
+                                                <li class="flex items-start gap-2">
+                                                    <i class="fas fa-check text-green-400 mt-1 text-xs"></i>
+                                                    <span><code class="text-muzibu-coral">hero-header</code> component oluştur</span>
+                                                </li>
+                                                <li class="flex items-start gap-2">
+                                                    <i class="fas fa-check text-green-400 mt-1 text-xs"></i>
+                                                    <span><code class="text-muzibu-coral">action-buttons</code> component oluştur</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="bg-slate-900 rounded-lg p-4 border border-slate-700">
+                                            <h4 class="font-semibold text-cyan-300 mb-3 flex items-center gap-2">
+                                                <i class="fas fa-file-code"></i>Hedef Dosyalar
+                                            </h4>
+                                            <ul class="space-y-1 text-xs text-slate-400">
+                                                <li>📁 resources/views/components/muzibu/</li>
+                                                <li class="ml-4">├── media-card.blade.php</li>
+                                                <li class="ml-4">├── song-row.blade.php</li>
+                                                <li class="ml-4">├── hero-header.blade.php</li>
+                                                <li class="ml-4">└── action-buttons.blade.php</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span class="px-3 py-1 bg-green-900/30 border border-green-700 rounded text-green-300">
+                                            <i class="fas fa-chart-line mr-2"></i>Kazanç: ~4,200 satır
+                                        </span>
+                                        <span class="px-3 py-1 bg-blue-900/30 border border-blue-700 rounded text-blue-300">
+                                            <i class="fas fa-file mr-2"></i>4 component
+                                        </span>
+                                        <span class="px-3 py-1 bg-purple-900/30 border border-purple-700 rounded text-purple-300">
+                                            <i class="fas fa-clock mr-2"></i>2-3 gün
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 2 -->
+                    <div class="relative">
+                        <div class="absolute left-6 top-16 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 to-transparent"></div>
+
+                        <div class="bg-gradient-to-r from-blue-900/30 to-transparent border border-blue-700 rounded-xl p-6 relative">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-lg z-10">
+                                    2
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold text-white mb-2">Faz 2: Replace & Test (3-4 gün)</h3>
+                                    <p class="text-blue-200 mb-4">Foundation component'leri tüm dosyalara uygula ve test et</p>
+
+                                    <div class="bg-slate-900 rounded-lg p-4 border border-slate-700 mb-4">
+                                        <h4 class="font-semibold text-blue-300 mb-3">Replacement Stratejisi</h4>
+                                        <div class="space-y-3 text-sm">
+                                            <div class="flex items-start gap-3">
+                                                <span class="text-blue-400 font-bold">1.</span>
+                                                <div class="flex-1">
+                                                    <p class="text-slate-300 mb-1"><strong>home.blade.php</strong> → İlk test sahası</p>
+                                                    <p class="text-slate-500 text-xs">En kompleks sayfa, tüm component'leri kullanıyor. Burası çalışırsa her yer çalışır.</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start gap-3">
+                                                <span class="text-blue-400 font-bold">2.</span>
+                                                <div class="flex-1">
+                                                    <p class="text-slate-300 mb-1"><strong>Detail pages</strong> → albums/show, playlists/show, artists/show</p>
+                                                    <p class="text-slate-500 text-xs">Hero header + Action buttons + Song row pattern'i uygula</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start gap-3">
+                                                <span class="text-blue-400 font-bold">3.</span>
+                                                <div class="flex-1">
+                                                    <p class="text-slate-300 mb-1"><strong>Index pages</strong> → Tüm grid view sayfaları</p>
+                                                    <p class="text-slate-500 text-xs">Media-card component'i grid layout'lara uygula</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start gap-3">
+                                                <span class="text-blue-400 font-bold">4.</span>
+                                                <div class="flex-1">
+                                                    <p class="text-slate-300 mb-1"><strong>Partial cleanup</strong> → Gereksiz partial'ları sil</p>
+                                                    <p class="text-slate-500 text-xs">albums-grid, playlists-grid gibi partial'lar artık gereksiz</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-yellow-900/20 border border-yellow-700 rounded-lg p-4 mb-4">
+                                        <h4 class="font-semibold text-yellow-300 mb-2 flex items-center gap-2">
+                                            <i class="fas fa-vial"></i>Test Checklist
+                                        </h4>
+                                        <div class="grid md:grid-cols-2 gap-2 text-xs text-slate-300">
+                                            <div class="flex items-center gap-2">
+                                                <i class="far fa-square text-yellow-400"></i>
+                                                <span>Desktop responsive (1920px, 1440px, 1024px)</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <i class="far fa-square text-yellow-400"></i>
+                                                <span>Mobile responsive (375px, 768px)</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <i class="far fa-square text-yellow-400"></i>
+                                                <span>Hover states (play button, 3-dot menu)</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <i class="far fa-square text-yellow-400"></i>
+                                                <span>Context menu (right-click, long-press)</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <i class="far fa-square text-yellow-400"></i>
+                                                <span>Alpine.js store interactions</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <i class="far fa-square text-yellow-400"></i>
+                                                <span>Favorite toggle functionality</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span class="px-3 py-1 bg-blue-900/30 border border-blue-700 rounded text-blue-300">
+                                            <i class="fas fa-file mr-2"></i>40+ dosya güncellenecek
+                                        </span>
+                                        <span class="px-3 py-1 bg-purple-900/30 border border-purple-700 rounded text-purple-300">
+                                            <i class="fas fa-clock mr-2"></i>3-4 gün
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 3 -->
+                    <div class="relative">
+                        <div class="absolute left-6 top-16 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 to-transparent"></div>
+
+                        <div class="bg-gradient-to-r from-purple-900/30 to-transparent border border-purple-700 rounded-xl p-6 relative">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-lg z-10">
+                                    3
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold text-white mb-2">Faz 3: Secondary Components (2 gün)</h3>
+                                    <p class="text-purple-200 mb-4">Orta öncelikli component'leri ekle</p>
+
+                                    <div class="grid md:grid-cols-2 gap-4">
+                                        <div class="bg-slate-900 rounded-lg p-4 border border-slate-700">
+                                            <ul class="space-y-2 text-sm text-slate-300">
+                                                <li class="flex items-start gap-2">
+                                                    <i class="fas fa-check text-purple-400 mt-1 text-xs"></i>
+                                                    <span><code>horizontal-scroll</code></span>
+                                                </li>
+                                                <li class="flex items-start gap-2">
+                                                    <i class="fas fa-check text-purple-400 mt-1 text-xs"></i>
+                                                    <span><code>empty-state</code></span>
+                                                </li>
+                                                <li class="flex items-start gap-2">
+                                                    <i class="fas fa-check text-purple-400 mt-1 text-xs"></i>
+                                                    <span><code>loading-skeleton</code></span>
+                                                </li>
+                                                <li class="flex items-start gap-2">
+                                                    <i class="fas fa-check text-purple-400 mt-1 text-xs"></i>
+                                                    <span><code>section-header</code></span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="bg-slate-900 rounded-lg p-4 border border-slate-700">
+                                            <ul class="space-y-2 text-sm text-slate-300">
+                                                <li class="flex items-start gap-2">
+                                                    <i class="fas fa-check text-purple-400 mt-1 text-xs"></i>
+                                                    <span><code>grid-container</code></span>
+                                                </li>
+                                                <li class="flex items-start gap-2">
+                                                    <i class="fas fa-check text-purple-400 mt-1 text-xs"></i>
+                                                    <span><code>lazy-image</code> (iyileştir)</span>
+                                                </li>
+                                                <li class="flex items-start gap-2">
+                                                    <i class="fas fa-info-circle text-slate-500 mt-1 text-xs"></i>
+                                                    <span class="text-slate-500">Bonus: user-profile-card</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4 flex items-center gap-4 text-sm">
+                                        <span class="px-3 py-1 bg-green-900/30 border border-green-700 rounded text-green-300">
+                                            <i class="fas fa-chart-line mr-2"></i>~1,400 satır azalır
+                                        </span>
+                                        <span class="px-3 py-1 bg-purple-900/30 border border-purple-700 rounded text-purple-300">
+                                            <i class="fas fa-clock mr-2"></i>2 gün
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 4 -->
+                    <div class="relative">
+                        <div class="bg-gradient-to-r from-green-900/30 to-transparent border border-green-700 rounded-xl p-6 relative">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-lg z-10">
+                                    4
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold text-white mb-2">Faz 4: Cleanup & Documentation (1 gün)</h3>
+                                    <p class="text-green-200 mb-4">Son temizlik, optimizasyon ve dokümantasyon</p>
+
+                                    <div class="space-y-3 text-sm">
+                                        <div class="flex items-start gap-3">
+                                            <i class="fas fa-broom text-green-400 mt-1"></i>
+                                            <div>
+                                                <p class="text-slate-300 font-semibold">Cleanup</p>
+                                                <p class="text-slate-500 text-xs">Kullanılmayan partial'ları sil • Eski kod blokları kaldır • Yorumları temizle</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <i class="fas fa-tachometer-alt text-green-400 mt-1"></i>
+                                            <div>
+                                                <p class="text-slate-300 font-semibold">Optimization</p>
+                                                <p class="text-slate-500 text-xs">Tailwind purge check • Alpine.js performance test • Lazy loading verify</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <i class="fas fa-book text-green-400 mt-1"></i>
+                                            <div>
+                                                <p class="text-slate-300 font-semibold">Documentation</p>
+                                                <p class="text-slate-500 text-xs">Component usage guide • Props documentation • Migration notes</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <i class="fas fa-vial text-green-400 mt-1"></i>
+                                            <div>
+                                                <p class="text-slate-300 font-semibold">Final Testing</p>
+                                                <p class="text-slate-500 text-xs">Cross-browser test • Mobile test • Production deploy check</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4 flex items-center gap-4 text-sm">
+                                        <span class="px-3 py-1 bg-green-900/30 border border-green-700 rounded text-green-300">
+                                            <i class="fas fa-flag-checkered mr-2"></i>Proje tamamlandı
+                                        </span>
+                                        <span class="px-3 py-1 bg-purple-900/30 border border-purple-700 rounded text-purple-300">
+                                            <i class="fas fa-clock mr-2"></i>1 gün
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Timeline -->
+                <div class="mt-8 bg-gradient-to-r from-slate-900 to-slate-800 border-2 border-cyan-600 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-2xl font-bold text-white">Toplam Süre Tahmini</h3>
+                        <div class="text-4xl font-bold text-cyan-400">8-10 gün</div>
+                    </div>
+                    <div class="grid md:grid-cols-4 gap-4 text-center">
+                        <div class="bg-slate-950 rounded-lg p-4">
+                            <div class="text-3xl font-bold text-cyan-400 mb-1">12</div>
+                            <p class="text-slate-400 text-sm">Component</p>
+                        </div>
+                        <div class="bg-slate-950 rounded-lg p-4">
+                            <div class="text-3xl font-bold text-green-400 mb-1">60+</div>
+                            <p class="text-slate-400 text-sm">Dosya Güncelleme</p>
+                        </div>
+                        <div class="bg-slate-950 rounded-lg p-4">
+                            <div class="text-3xl font-bold text-yellow-400 mb-1">~5,600</div>
+                            <p class="text-slate-400 text-sm">Satır Azalacak</p>
+                        </div>
+                        <div class="bg-slate-950 rounded-lg p-4">
+                            <div class="text-3xl font-bold text-purple-400 mb-1">%46</div>
+                            <p class="text-slate-400 text-sm">Kod Azalması</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benefits Analysis -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-br from-emerald-900/20 to-green-900/20 border border-emerald-800 rounded-2xl p-8 shadow-2xl">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-trophy text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Beklenen Kazançlar</h2>
+                        <p class="text-emerald-200 text-lg">Component refactoring sonrası elde edilecek faydalar</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Development Benefits -->
+                    <div class="bg-slate-900/50 rounded-xl p-6 border border-emerald-700/50">
+                        <h3 class="text-xl font-semibold text-emerald-300 mb-4 flex items-center gap-2">
+                            <i class="fas fa-code"></i>Geliştirme Verimliliği
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-bolt text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-slate-200 font-semibold">Hızlı Değişiklikler</p>
+                                    <p class="text-slate-400 text-sm">Tasarım değişikliği 20 dosya yerine 1 dosyada. Değişiklik süresi: 2 saat → 10 dakika</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-shield-alt text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-slate-200 font-semibold">Hata Azalması</p>
+                                    <p class="text-slate-400 text-sm">Props validation sayesinde runtime hataları önlenir. Type hints ile IDE desteği.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-copy text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-slate-200 font-semibold">Code Reusability</p>
+                                    <p class="text-slate-400 text-sm">Yeni sayfa eklerken hazır component'leri kullan. Development time: %50 azalır.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Maintenance Benefits -->
+                    <div class="bg-slate-900/50 rounded-xl p-6 border border-emerald-700/50">
+                        <h3 class="text-xl font-semibold text-emerald-300 mb-4 flex items-center gap-2">
+                            <i class="fas fa-wrench"></i>Bakım Kolaylığı
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-check-double text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-slate-200 font-semibold">%100 Tutarlılık</p>
+                                    <p class="text-slate-400 text-sm">Tüm sayfalar aynı component'i kullanır → Garanti edilmiş tutarlılık.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-search text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-slate-200 font-semibold">Kolay Debug</p>
+                                    <p class="text-slate-400 text-sm">Bug bir yerde fix edilir, otomatik her yere yansır. Regression test kolaylaşır.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-book-open text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-slate-200 font-semibold">Anlaşılır Codebase</p>
+                                    <p class="text-slate-400 text-sm">Yeni developer onboarding kolaylaşır. Component isimleri self-documenting.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Performance Benefits -->
+                    <div class="bg-slate-900/50 rounded-xl p-6 border border-emerald-700/50">
+                        <h3 class="text-xl font-semibold text-emerald-300 mb-4 flex items-center gap-2">
+                            <i class="fas fa-rocket"></i>Performans
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-file-code text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-slate-200 font-semibold">Daha Az Kod</p>
+                                    <p class="text-slate-400 text-sm">12,191 → ~6,500 satır. Daha küçük dosyalar → daha hızlı parse.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-memory text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-slate-200 font-semibold">Blade Cache Optimize</p>
+                                    <p class="text-slate-400 text-sm">Component cache edilir, compile time azalır. Opcache hit rate artar.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-compress text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-slate-200 font-semibold">Tailwind Purge</p>
+                                    <p class="text-slate-400 text-sm">Component bazlı class kullanımı → daha iyi purge → küçük CSS.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Business Benefits -->
+                    <div class="bg-slate-900/50 rounded-xl p-6 border border-emerald-700/50">
+                        <h3 class="text-xl font-semibold text-emerald-300 mb-4 flex items-center gap-2">
+                            <i class="fas fa-chart-line"></i>İş Değeri
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 bg-yellow-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-clock text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-slate-200 font-semibold">Time to Market</p>
+                                    <p class="text-slate-400 text-sm">Yeni feature development %50 daha hızlı. Faster iterations.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 bg-yellow-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-users text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-slate-200 font-semibold">UX Consistency</p>
+                                    <p class="text-slate-400 text-sm">Kullanıcı deneyimi tutarlı → daha az confusion → daha yüksek retention.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 bg-yellow-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-dollar-sign text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-slate-200 font-semibold">Maliyet Tasarrufu</p>
+                                    <p class="text-slate-400 text-sm">Daha az bug fix time, daha az maintenance cost. ROI: 2-3 ay içinde.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Risk Analysis -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-br from-red-900/20 to-orange-900/20 border border-red-800 rounded-2xl p-8 shadow-2xl">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Risk Analizi & Önlemler</h2>
+                        <p class="text-red-200 text-lg">Potansiyel sorunlar ve çözüm stratejileri</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-red-700/50">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-bug text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold text-red-300 mb-2">Risk: Breaking Changes</h3>
+                                <p class="text-slate-400 text-sm mb-3">Component'e geçerken Alpine.js event listener'ları veya context menu tetikleyicileri bozulabilir.</p>
+                                <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                                    <p class="text-xs text-green-300 font-semibold mb-2">
+                                        <i class="fas fa-shield-alt mr-2"></i>ÖNLEM:
+                                    </p>
+                                    <ul class="space-y-1 text-xs text-slate-400">
+                                        <li>• Her component replacement sonrası <strong>manuel test</strong> (click, right-click, hover)</li>
+                                        <li>• Browser console'da <strong>JavaScript error</strong> kontrolü</li>
+                                        <li>• Git branch kullan: <code class="text-muzibu-coral">feature/component-refactoring</code></li>
+                                        <li>• Commit frequently: Her dosya güncellemesinden sonra commit</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-orange-700/50">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-mobile-alt text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold text-orange-300 mb-2">Risk: Responsive Layout Issues</h3>
+                                <p class="text-slate-400 text-sm mb-3">Component props farklı ekran boyutlarında beklenmedik şekilde davranabilir.</p>
+                                <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                                    <p class="text-xs text-green-300 font-semibold mb-2">
+                                        <i class="fas fa-shield-alt mr-2"></i>ÖNLEM:
+                                    </p>
+                                    <ul class="space-y-1 text-xs text-slate-400">
+                                        <li>• Chrome DevTools responsive mode test: 375px, 768px, 1024px, 1440px, 1920px</li>
+                                        <li>• Component'lerde <strong>responsive props</strong> kullan (örn: <code>$columnsXl="5"</code>)</li>
+                                        <li>• Grid breakpoint'leri sabitle: <code class="text-muzibu-coral">grid-cols-2 md:grid-cols-3 xl:grid-cols-5</code></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-yellow-700/50">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-yellow-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-clock text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold text-yellow-300 mb-2">Risk: Time Overrun</h3>
+                                <p class="text-slate-400 text-sm mb-3">Tahmin edilen 8-10 gün uzayabilir, özellikle test fazı beklenenden uzun sürebilir.</p>
+                                <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                                    <p class="text-xs text-green-300 font-semibold mb-2">
+                                        <i class="fas fa-shield-alt mr-2"></i>ÖNLEM:
+                                    </p>
+                                    <ul class="space-y-1 text-xs text-slate-400">
+                                        <li>• <strong>MVP yaklaşımı:</strong> Önce 4 kritik component (Faz 1-2), diğerleri isteğe bağlı</li>
+                                        <li>• Daily progress tracking: Her gün kaç dosya tamamlandı?</li>
+                                        <li>• Buffer time ekle: 10 gün yerine 12 gün planla</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-purple-700/50">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-database text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold text-purple-300 mb-2">Risk: Props Over-Engineering</h3>
+                                <p class="text-slate-400 text-sm mb-3">Component'lere çok fazla prop eklemek karmaşıklığa yol açabilir.</p>
+                                <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                                    <p class="text-xs text-green-300 font-semibold mb-2">
+                                        <i class="fas fa-shield-alt mr-2"></i>ÖNLEM:
+                                    </p>
+                                    <ul class="space-y-1 text-xs text-slate-400">
+                                        <li>• <strong>KISS prensibi:</strong> Sadece gerçekten gerekli props ekle</li>
+                                        <li>• Default values kullan: <code class="text-muzibu-coral">$showPlayButton = true</code></li>
+                                        <li>• Slot pattern kullan: Esnek içerik için <code>{{ $slot }}</code></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Next Steps -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-br from-slate-900 to-slate-800 border-2 border-muzibu-coral rounded-2xl p-8 shadow-2xl">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="w-12 h-12 bg-muzibu-coral rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-rocket text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Sonraki Adımlar</h2>
+                        <p class="text-slate-300 text-lg">Bu planı onayladıktan sonra yapılacaklar</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-950 rounded-xl p-6 border border-slate-700">
+                        <h3 class="text-lg font-semibold text-muzibu-coral mb-4 flex items-center gap-2">
+                            <i class="fas fa-hand-pointer"></i>Hemen Yapılabilir
+                        </h3>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex items-start gap-3">
+                                <span class="text-muzibu-coral font-bold">1.</span>
+                                <p class="text-slate-300">Git branch oluştur: <code class="bg-slate-900 px-2 py-1 rounded text-green-400">git checkout -b feature/component-refactoring</code></p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-muzibu-coral font-bold">2.</span>
+                                <p class="text-slate-300">Component klasörü oluştur: <code class="bg-slate-900 px-2 py-1 rounded text-green-400">resources/views/components/muzibu/</code></p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-muzibu-coral font-bold">3.</span>
+                                <p class="text-slate-300">İlk component oluştur: <strong>media-card.blade.php</strong> (En kritik)</p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-muzibu-coral font-bold">4.</span>
+                                <p class="text-slate-300">Test sayfası seç: <strong>home.blade.php</strong> quick access section'ında dene</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950 rounded-xl p-6 border border-slate-700">
+                        <h3 class="text-lg font-semibold text-blue-400 mb-4 flex items-center gap-2">
+                            <i class="fas fa-question-circle"></i>Karar Gerektirenler
+                        </h3>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex items-start gap-3">
+                                <i class="far fa-square text-blue-400 mt-1"></i>
+                                <p class="text-slate-300">Component naming convention: <code>x-muzibu.media-card</code> mi yoksa <code>x-media-card</code> mi?</p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="far fa-square text-blue-400 mt-1"></i>
+                                <p class="text-slate-300">Props validation level: Strict (exception throw) mi yoksa Lenient (fallback) mi?</p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="far fa-square text-blue-400 mt-1"></i>
+                                <p class="text-slate-300">Backward compatibility: Eski partial'ları silmeden önce deprecated notice mi gösterelim?</p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="far fa-square text-blue-400 mt-1"></i>
+                                <p class="text-slate-300">Test coverage: Manuel test yeterli mi yoksa automated Blade test yazalım mı?</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-green-900/20 border border-green-700 rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-green-300 mb-3 flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i>Onay Sonrası İlk Aksiyonlar
+                    </h3>
+                    <div class="grid md:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-slate-950 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-green-400 mb-2">30 dk</div>
+                            <p class="text-slate-400">media-card component template</p>
+                        </div>
+                        <div class="bg-slate-950 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-green-400 mb-2">1 saat</div>
+                            <p class="text-slate-400">home.blade.php ilk implementasyon</p>
+                        </div>
+                        <div class="bg-slate-950 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-green-400 mb-2">2 saat</div>
+                            <p class="text-slate-400">Test + iyileştirme iterasyonu</p>
+                        </div>
+                    </div>
+                    <p class="text-center text-slate-400 mt-4 text-sm">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        İlk gün sonunda çalışan bir proof-of-concept hazır olacak!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-t border-slate-700 mt-20">
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-robot text-white"></i>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm">Generated with</p>
+                        <p class="text-white font-semibold">Claude Sonnet 4.5 AI</p>
+                    </div>
+                </div>
+
+                <div class="text-center md:text-right">
+                    <p class="text-slate-500 text-sm">Muzibu Component Refactoring Analysis</p>
+                    <p class="text-slate-600 text-xs mt-1">20 Aralık 2025 • Multi-Tenant Muzibu Module</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

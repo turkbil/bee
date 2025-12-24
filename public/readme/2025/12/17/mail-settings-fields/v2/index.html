@@ -1,1 +1,481 @@
-v2/index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMTP Settings - FormBuilder Field Listesi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        code {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        code:hover {
+            background: rgb(51, 65, 85) !important;
+            transform: scale(1.02);
+        }
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgb(34, 197, 94);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 9999;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white min-h-screen p-8">
+
+    <!-- Header -->
+    <div class="max-w-6xl mx-auto mb-8">
+        <div class="flex items-center gap-4 mb-4">
+            <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-server text-3xl text-white"></i>
+            </div>
+            <div>
+                <h1 class="text-4xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">SMTP Settings</h1>
+                <p class="text-slate-400 text-lg">Settings Management → FormBuilder Field Listesi (Ek SMTP)</p>
+            </div>
+        </div>
+
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold mb-3 flex items-center gap-2">
+                <i class="fas fa-info-circle text-orange-400"></i>
+                Kullanım Talimatı
+            </h2>
+            <ul class="space-y-2 text-slate-300">
+                <li>✓ Bu field'ler <strong>mail_settings</strong> grubuna EKLENMELİ</li>
+                <li>✓ <strong>Total SMTP Fields:</strong> 5 Field</li>
+                <li>✓ mail_driver = smtp seçiliyse bu field'ler kullanılır</li>
+                <li>✓ smtp_password mutlaka encrypted olmalı</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Fields -->
+    <div class="max-w-6xl mx-auto space-y-6">
+
+        <!-- Field 8: smtp_host -->
+        <div class="bg-slate-800/80 border border-slate-700 rounded-2xl overflow-hidden shadow-xl">
+            <div class="bg-gradient-to-r from-orange-600 to-red-500 px-6 py-4">
+                <h3 class="text-2xl font-bold text-white flex items-center gap-3">
+                    <span class="bg-white/20 px-3 py-1 rounded-lg">#8</span>
+                    SMTP Host
+                </h3>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Type</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-blue-400 font-mono block">text</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Name (Key)</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-green-400 font-mono block">smtp_host</code>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Label (Başlık)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-white block">SMTP Sunucusu</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Info Text (Açıklama)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-300 block">SMTP sunucusunun adresi. Örnek: smtp.gmail.com, smtp.yandex.com</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Placeholder</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-400 block">smtp.example.com</code>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Validation</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">nullable|required_if:mail_driver,smtp</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Default Value</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-yellow-400 font-mono block">(empty)</code>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Encrypted</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-red-400 font-mono block">No</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Required</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">Conditional (if SMTP)</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Field 9: smtp_port -->
+        <div class="bg-slate-800/80 border border-slate-700 rounded-2xl overflow-hidden shadow-xl">
+            <div class="bg-gradient-to-r from-blue-600 to-cyan-500 px-6 py-4">
+                <h3 class="text-2xl font-bold text-white flex items-center gap-3">
+                    <span class="bg-white/20 px-3 py-1 rounded-lg">#9</span>
+                    SMTP Port
+                </h3>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Type</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-blue-400 font-mono block">number</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Name (Key)</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-green-400 font-mono block">smtp_port</code>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Label (Başlık)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-white block">SMTP Port</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Info Text (Açıklama)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-300 block">SMTP sunucusunun port numarası. TLS için 587, SSL için 465 kullanılır.</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Placeholder</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-400 block">587</code>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Validation</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">nullable|required_if:mail_driver,smtp|integer|min:1|max:65535</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Default Value</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-yellow-400 font-mono block">587</code>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Encrypted</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-red-400 font-mono block">No</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Required</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">Conditional (if SMTP)</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Field 10: smtp_encryption -->
+        <div class="bg-slate-800/80 border border-slate-700 rounded-2xl overflow-hidden shadow-xl">
+            <div class="bg-gradient-to-r from-purple-600 to-pink-500 px-6 py-4">
+                <h3 class="text-2xl font-bold text-white flex items-center gap-3">
+                    <span class="bg-white/20 px-3 py-1 rounded-lg">#10</span>
+                    SMTP Encryption
+                </h3>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Type</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-blue-400 font-mono block">select</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Name (Key)</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-green-400 font-mono block">smtp_encryption</code>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Label (Başlık)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-white block">SMTP Şifreleme</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Info Text (Açıklama)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-300 block">SMTP bağlantısı için kullanılacak şifreleme türü. TLS önerilir (port 587).</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Placeholder</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-400 block">Şifreleme türü seçin...</code>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Validation</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">nullable|required_if:mail_driver,smtp</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Default Value</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-yellow-400 font-mono block">tls</code>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Encrypted</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-red-400 font-mono block">No</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Required</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">Conditional (if SMTP)</code>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                    <p class="text-slate-400 text-sm mb-3 font-bold">Select Options:</p>
+                    <div class="space-y-2 font-mono text-sm">
+                        <div class="flex items-center justify-between bg-slate-800 px-4 py-2 rounded">
+                            <span class="text-slate-300">Value: <code class="text-blue-400">tls</code></span>
+                            <span class="text-slate-400">Label: <code class="text-white">TLS (Port 587) - ÖNERİLEN</code></span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800 px-4 py-2 rounded">
+                            <span class="text-slate-300">Value: <code class="text-blue-400">ssl</code></span>
+                            <span class="text-slate-400">Label: <code class="text-white">SSL (Port 465)</code></span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800 px-4 py-2 rounded">
+                            <span class="text-slate-300">Value: <code class="text-blue-400">null</code></span>
+                            <span class="text-slate-400">Label: <code class="text-white">Yok (Şifreleme yok)</code></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Field 11: smtp_username -->
+        <div class="bg-slate-800/80 border border-slate-700 rounded-2xl overflow-hidden shadow-xl">
+            <div class="bg-gradient-to-r from-green-600 to-emerald-500 px-6 py-4">
+                <h3 class="text-2xl font-bold text-white flex items-center gap-3">
+                    <span class="bg-white/20 px-3 py-1 rounded-lg">#11</span>
+                    SMTP Username
+                </h3>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Type</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-blue-400 font-mono block">text</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Name (Key)</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-green-400 font-mono block">smtp_username</code>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Label (Başlık)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-white block">SMTP Kullanıcı Adı</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Info Text (Açıklama)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-300 block">SMTP sunucusuna giriş için kullanılacak kullanıcı adı veya email adresi.</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Placeholder</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-400 block">kullanici@example.com</code>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Validation</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">nullable|required_if:mail_driver,smtp</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Default Value</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-yellow-400 font-mono block">(empty)</code>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Encrypted</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-red-400 font-mono block">No</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Required</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">Conditional (if SMTP)</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Field 12: smtp_password -->
+        <div class="bg-slate-800/80 border border-slate-700 rounded-2xl overflow-hidden shadow-xl">
+            <div class="bg-gradient-to-r from-red-600 to-rose-500 px-6 py-4">
+                <h3 class="text-2xl font-bold text-white flex items-center gap-3">
+                    <span class="bg-white/20 px-3 py-1 rounded-lg">#12</span>
+                    SMTP Password
+                </h3>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Type</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-blue-400 font-mono block">password</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Name (Key)</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-green-400 font-mono block">smtp_password</code>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Label (Başlık)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-white block">SMTP Şifre</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Info Text (Açıklama)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-300 block">SMTP sunucusuna giriş için kullanılacak şifre. Şifreli olarak saklanır.</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Placeholder</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-400 block">Şifre giriniz</code>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Validation</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">nullable|required_if:mail_driver,smtp</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Default Value</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-yellow-400 font-mono block">(empty)</code>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Encrypted</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-green-400 font-mono block">Yes ✓</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Required</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">Conditional (if SMTP)</code>
+                    </div>
+                </div>
+
+                <div class="bg-red-900/30 border border-red-700 rounded-lg p-4 flex items-start gap-3">
+                    <i class="fas fa-lock text-red-400 text-xl"></i>
+                    <div>
+                        <p class="text-red-300 text-sm font-bold mb-1">GÜVENLİK NOTU:</p>
+                        <p class="text-red-200 text-sm">Bu alan mutlaka şifrelenmiş (encrypted) olarak saklanmalıdır!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Summary -->
+    <div class="max-w-6xl mx-auto mt-8 mb-8">
+        <div class="bg-gradient-to-r from-orange-900/50 to-red-900/50 border border-orange-700 rounded-2xl p-6">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                <i class="fas fa-check-circle text-orange-400 text-3xl"></i>
+                SMTP Özet
+            </h2>
+            <div class="grid grid-cols-2 gap-4 text-slate-200">
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Toplam SMTP Field</p>
+                    <p class="text-3xl font-bold text-orange-400">5</p>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Encrypted Field</p>
+                    <p class="text-3xl font-bold text-red-400">1 (Password)</p>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Zorunlu (SMTP seçiliyse)</p>
+                    <p class="text-3xl font-bold text-yellow-400">Tümü</p>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Önerilen Port</p>
+                    <p class="text-3xl font-bold text-green-400">587 (TLS)</p>
+                </div>
+            </div>
+
+            <div class="mt-6 space-y-2 text-slate-300">
+                <p class="flex items-center gap-2"><i class="fas fa-arrow-right text-orange-400"></i> Bu field'ler mail_settings grubuna eklenmeli</p>
+                <p class="flex items-center gap-2"><i class="fas fa-arrow-right text-orange-400"></i> mail_driver = smtp seçiliyse zorunlu olur</p>
+                <p class="flex items-center gap-2"><i class="fas fa-arrow-right text-orange-400"></i> smtp_password mutlaka encrypted</p>
+                <p class="flex items-center gap-2"><i class="fas fa-arrow-right text-orange-400"></i> Gmail, Yandex, Outlook gibi SMTP sunucuları için kullanılır</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="max-w-6xl mx-auto text-center text-slate-500 py-8">
+        <p class="flex items-center justify-center gap-2">
+            <i class="fas fa-robot"></i>
+            Generated with Claude Code
+        </p>
+        <p class="text-sm mt-2">2025-12-17 | SMTP Settings Configuration</p>
+    </div>
+
+    <script>
+        // Clipboard Copy Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const codeElements = document.querySelectorAll('code');
+
+            codeElements.forEach(code => {
+                code.addEventListener('click', function() {
+                    const text = this.textContent.trim();
+
+                    // Copy to clipboard
+                    navigator.clipboard.writeText(text).then(() => {
+                        showToast('✓ Kopyalandı: ' + (text.length > 30 ? text.substring(0, 30) + '...' : text));
+                    }).catch(err => {
+                        console.error('Kopyalama hatası:', err);
+                    });
+                });
+            });
+        });
+
+        function showToast(message) {
+            // Remove existing toast
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            // Create new toast
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = '<i class="fas fa-check-circle mr-2"></i>' + message;
+            document.body.appendChild(toast);
+
+            // Remove after 2 seconds
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease-out reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+    </script>
+
+</body>
+</html>

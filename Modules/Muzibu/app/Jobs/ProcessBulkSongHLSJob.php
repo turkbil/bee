@@ -50,7 +50,7 @@ class ProcessBulkSongHLSJob implements ShouldQueue
     {
         $this->songId = $songId;
         $this->tenantId = tenant('id'); // Mevcut tenant'ı kaydet
-        $this->onQueue('hls'); // HLS kuyruğuna gönder
+        $this->onQueue('muzibu_hls'); // Muzibu HLS kuyruğuna gönder
     }
 
     /**

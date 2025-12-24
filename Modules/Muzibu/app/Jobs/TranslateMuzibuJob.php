@@ -39,7 +39,7 @@ class TranslateMuzibuJob implements ShouldQueue
         public string $operationId = ''
     ) {
         // Force Redis connection ve queue
-        $this->onConnection('redis')->onQueue('tenant_isolated');
+        $this->onConnection('redis')->onQueue('muzibu_isolated');
     }
 
     public function handle(): void

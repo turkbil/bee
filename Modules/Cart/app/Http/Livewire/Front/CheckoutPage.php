@@ -273,7 +273,13 @@ class CheckoutPage extends Component
 
             // Subscription plan parametresi varsa sepete ekle
             if (request()->has('plan') && request()->has('cycle')) {
-                $this->addSubscriptionToCart(request('plan'), request('cycle'));
+                // 🏢 Corporate: users parametresi varsa quantity olarak kullan
+                $quantity = 1;
+                if (request()->has('users')) {
+                    $userIds = explode(',', request('users'));
+                    $quantity = count(array_filter($userIds)); // Boş değerleri temizle
+                }
+                $this->addSubscriptionToCart(request('plan'), request('cycle'), $quantity);
                 // 🔥 FIX: Redirect yapma, cart'ı yeniden yükle (yoksa totaller güncellenmiyor)
                 // URL parametrelerini temizlemek için JavaScript redirect kullanılacak (view'da)
             }
@@ -334,7 +340,7 @@ class CheckoutPage extends Component
     /**
      * Subscription plan'ı sepete ekle
      */
-    protected function addSubscriptionToCart($planId, $cycleKey)
+    protected function addSubscriptionToCart($planId, $cycleKey, $quantity = 1)
     {
         try {
             $plan = \Modules\Subscription\App\Models\SubscriptionPlan::findOrFail($planId);
@@ -364,9 +370,9 @@ class CheckoutPage extends Component
                 $cart->recalculateTotals();
             }
 
-            // Subscription ekle
+            // Subscription ekle (quantity ile)
             $options = $bridge->prepareSubscriptionForCart($plan, $cycleKey, true);
-            $cartService->addItem($cart, $plan, 1, $options);
+            $cartService->addItem($cart, $plan, $quantity, $options);
 
             // 🔥 FIX: Cart'ı refresh et ve toplamları yeniden hesapla
             $cart->refresh();
@@ -376,6 +382,7 @@ class CheckoutPage extends Component
             \Log::info('✅ Subscription auto-added to cart', [
                 'plan_id' => $planId,
                 'cycle_key' => $cycleKey,
+                'quantity' => $quantity,
                 'cart_total' => $cart->total,
             ]);
         } catch (\Exception $e) {
@@ -2017,48 +2024,108 @@ class CheckoutPage extends Component
                 continue;
             }
 
-            // Trial kontrolü - kullanıcı daha önce trial kullandı mı?
-            $hasUsedTrial = \Modules\Subscription\App\Models\Subscription::userHasUsedTrial($order->user_id);
-            $trialDays = (!$hasUsedTrial && isset($cycle['trial_days']) && $cycle['trial_days'] > 0) ? $cycle['trial_days'] : 0;
+            // Corporate Bulk mu kontrol et (Muzibu kurumsal toplu odeme)
+            $isCorporateBulk = ($metadata['type'] ?? null) === 'corporate_bulk';
 
-            // Subscription oluştur (status: pending_payment - ödeme başarılı olunca active/trial olacak)
-            $subscription = \Modules\Subscription\App\Models\Subscription::create([
-                'user_id' => $order->user_id,
-                'subscription_plan_id' => $plan->subscription_plan_id,
-                'cycle_key' => $cycleKey,
-                'cycle_metadata' => [
-                    'label' => $cycle['label'],
-                    'duration_days' => $cycle['duration_days'],
-                    'price' => $cycle['price'],
-                    'compare_price' => $cycle['compare_price'] ?? null,
-                    'trial_days' => $cycle['trial_days'] ?? null,
-                ],
-                'price_per_cycle' => $cycle['price'],
-                'currency' => 'TRY',
-                'has_trial' => $trialDays > 0,
-                'trial_days' => $trialDays,
-                'trial_ends_at' => $trialDays > 0 ? now()->addDays($trialDays) : null,
-                'started_at' => now(),
-                'current_period_start' => $trialDays > 0 ? now()->addDays($trialDays) : now(),
-                'current_period_end' => $trialDays > 0
-                    ? now()->addDays($trialDays + $cycle['duration_days'])
-                    : now()->addDays($cycle['duration_days']),
-                'next_billing_date' => now()->addDays($trialDays + $cycle['duration_days']),
-                'status' => 'pending_payment', // Ödeme başarılı olunca active/trial olacak
-                'auto_renew' => true,
-                'billing_cycles_completed' => 0,
-                'total_paid' => 0,
-            ]);
+            if ($isCorporateBulk) {
+                // Kurumsal toplu odeme - secilen her uye icin subscription olustur
+                $this->createCorporateBulkSubscriptions($order, $plan, $cycle, $cycleKey, $metadata);
+            } else {
+                // Normal subscription - siparis sahibi icin olustur
+                $this->createSingleSubscription($order->user_id, $plan, $cycle, $cycleKey);
+            }
+        }
+    }
 
-            \Log::info('✅ Subscription created from order', [
-                'subscription_id' => $subscription->subscription_id,
+    /**
+     * Kurumsal toplu subscription olustur (Muzibu)
+     */
+    private function createCorporateBulkSubscriptions($order, $plan, $cycle, $cycleKey, $metadata)
+    {
+        $selectedUserIds = $metadata['selected_user_ids'] ?? [];
+        $corporateAccountId = $metadata['corporate_account_id'] ?? null;
+
+        if (empty($selectedUserIds)) {
+            \Log::error('Corporate bulk subscription: No user_ids in metadata!', [
                 'order_id' => $order->order_id,
-                'plan_id' => $plan->subscription_plan_id,
-                'cycle_key' => $cycleKey,
-                'has_trial' => $subscription->has_trial,
-                'trial_days' => $trialDays,
+                'metadata' => $metadata
+            ]);
+            return;
+        }
+
+        \Log::info('🏢 Creating corporate bulk subscriptions', [
+            'order_id' => $order->order_id,
+            'corporate_account_id' => $corporateAccountId,
+            'user_count' => count($selectedUserIds),
+            'plan_id' => $plan->subscription_plan_id,
+        ]);
+
+        foreach ($selectedUserIds as $userId) {
+            $this->createSingleSubscription($userId, $plan, $cycle, $cycleKey, [
+                'purchased_by' => $order->user_id,
+                'corporate_account_id' => $corporateAccountId,
+                'is_corporate_subscription' => true,
             ]);
         }
+
+        \Log::info('✅ Corporate bulk subscriptions created', [
+            'order_id' => $order->order_id,
+            'created_count' => count($selectedUserIds),
+        ]);
+    }
+
+    /**
+     * Tek kullanici icin subscription olustur
+     */
+    private function createSingleSubscription($userId, $plan, $cycle, $cycleKey, $extraMetadata = [])
+    {
+        // Trial kontrolu - kullanici daha once trial kullandi mi?
+        $hasUsedTrial = \Modules\Subscription\App\Models\Subscription::userHasUsedTrial($userId);
+        $trialDays = (!$hasUsedTrial && isset($cycle['trial_days']) && $cycle['trial_days'] > 0) ? $cycle['trial_days'] : 0;
+
+        // Subscription olustur (status: pending_payment - odeme basarili olunca active/trial olacak)
+        $subscription = \Modules\Subscription\App\Models\Subscription::create([
+            'user_id' => $userId,
+            'subscription_plan_id' => $plan->subscription_plan_id,
+            'cycle_key' => $cycleKey,
+            'cycle_metadata' => [
+                'label' => $cycle['label'],
+                'duration_days' => $cycle['duration_days'],
+                'price' => $cycle['price'],
+                'compare_price' => $cycle['compare_price'] ?? null,
+                'trial_days' => $cycle['trial_days'] ?? null,
+            ],
+            'price_per_cycle' => $cycle['price'],
+            'currency' => 'TRY',
+            'has_trial' => $trialDays > 0,
+            'trial_days' => $trialDays,
+            'trial_ends_at' => $trialDays > 0 ? now()->addDays($trialDays) : null,
+            'started_at' => now(),
+            'current_period_start' => $trialDays > 0 ? now()->addDays($trialDays) : now(),
+            'current_period_end' => $trialDays > 0
+                ? now()->addDays($trialDays + $cycle['duration_days'])
+                : now()->addDays($cycle['duration_days']),
+            'next_billing_date' => now()->addDays($trialDays + $cycle['duration_days']),
+            'expires_at' => $trialDays > 0
+                ? now()->addDays($trialDays + $cycle['duration_days'])
+                : now()->addDays($cycle['duration_days']),
+            'status' => 'pending_payment', // Odeme basarili olunca active/trial olacak
+            'auto_renew' => true,
+            'billing_cycles_completed' => 0,
+            'total_paid' => 0,
+            'metadata' => !empty($extraMetadata) ? $extraMetadata : null,
+        ]);
+
+        \Log::info('✅ Subscription created', [
+            'subscription_id' => $subscription->subscription_id,
+            'user_id' => $userId,
+            'plan_id' => $plan->subscription_plan_id,
+            'cycle_key' => $cycleKey,
+            'has_trial' => $subscription->has_trial,
+            'is_corporate' => !empty($extraMetadata['is_corporate_subscription']),
+        ]);
+
+        return $subscription;
     }
 
     public function render()

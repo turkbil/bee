@@ -844,4 +844,114 @@ class QueueRefillController extends Controller
             'algoritma' => $algorithm,
         ];
     }
+
+    /**
+     * Get initial queue on page load
+     * 🚀 INSTANT LOAD: Sayfa açılır açılmaz queue hazır
+     *
+     * - Login user: Son dinlenen şarkı + genre'sinden 14 şarkı
+     * - Guest: Popüler şarkılardan 15 şarkı
+     */
+    public function initialQueue(Request $request): JsonResponse
+    {
+        try {
+            $limit = 15;
+            $userId = auth()->id();
+            $songs = [];
+            $context = null;
+
+            if ($userId) {
+                // 🎵 LOGIN USER: Son dinlenen şarkıyı al
+                $lastPlay = DB::table('muzibu_song_plays')
+                    ->where('user_id', $userId)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+
+                if ($lastPlay) {
+                    $lastSong = Song::with(['album.artist', 'genre'])
+                        ->where('is_active', 1)
+                        ->whereNotNull('hls_path')
+                        ->find($lastPlay->song_id);
+
+                    if ($lastSong) {
+                        // İlk şarkı: Son dinlenen
+                        $songs[] = $this->formatSingleSong($lastSong);
+
+                        // Context: Son dinlenen şarkının genre'si
+                        if ($lastSong->genre_id) {
+                            $context = [
+                                'type' => 'genre',
+                                'id' => $lastSong->genre_id,
+                                'name' => $lastSong->genre?->title ?? 'Müzik',
+                            ];
+
+                            // Kalan şarkılar: Aynı genre'den
+                            $genreSongs = $this->getGenreSongs(
+                                $lastSong->genre_id,
+                                0,
+                                $limit - 1,
+                                [$lastSong->song_id] // Son dinleneni exclude et
+                            );
+                            $songs = array_merge($songs, $genreSongs);
+                        }
+                    }
+                }
+            }
+
+            // Şarkı bulunamadıysa veya guest ise: Popüler şarkılar
+            if (empty($songs)) {
+                $songs = $this->getPopularSongs(0, $limit, []);
+                $context = [
+                    'type' => 'popular',
+                    'id' => null,
+                    'name' => 'Popüler',
+                ];
+            }
+
+            return response()->json([
+                'success' => true,
+                'songs' => $songs,
+                'context' => $context,
+                'count' => count($songs),
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Initial queue error:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'songs' => [],
+            ], 500);
+        }
+    }
+
+    /**
+     * Format single song (helper)
+     */
+    private function formatSingleSong(Song $song): array
+    {
+        $album = $song->album;
+        $artist = $album?->artist;
+
+        return [
+            'song_id' => $song->song_id,
+            'song_title' => $song->title,
+            'song_slug' => $song->slug,
+            'duration' => $song->duration,
+            'file_path' => $song->file_path,
+            'hls_path' => $song->hls_path,
+            'lyrics' => $song->lyrics,
+            'album_id' => $album?->album_id,
+            'album_title' => $album?->title,
+            'album_slug' => $album?->slug,
+            'album_cover' => $album?->media_id,
+            'artist_id' => $artist?->artist_id,
+            'artist_title' => $artist?->title,
+            'artist_slug' => $artist?->slug,
+        ];
+    }
 }

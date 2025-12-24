@@ -56,14 +56,14 @@ Route::middleware(['tenant'])
                 ->where('user_id', $userId)
                 ->get()
                 ->map(function($fav) {
-                    // model_class boş ise atla (eski/veri hatalı kayıtlar)
-                    if (empty($fav->model_class)) {
+                    // favoritable_type boş ise atla
+                    if (empty($fav->favoritable_type)) {
                         return null;
                     }
 
-                    // Model class'tan type'ı çıkar (Modules\Muzibu\app\Models\Song -> song)
-                    $type = strtolower(class_basename($fav->model_class));
-                    return "{$type}-{$fav->model_id}";
+                    // Model class'tan type'ı çıkar (Modules\Muzibu\App\Models\Song -> song)
+                    $type = strtolower(class_basename($fav->favoritable_type));
+                    return "{$type}-{$fav->favoritable_id}";
                 })
                 ->filter()
                 ->values()

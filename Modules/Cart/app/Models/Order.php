@@ -164,16 +164,33 @@ class Order extends BaseModel
     /**
      * Siparişteki subscription item'larını aktifleştir
      * Manuel ödeme onayı veya PayTR callback sonrası çağrılır
+     *
+     * 🔗 ZİNCİR SİSTEMİ:
+     * - Her satın alma ayrı subscription kaydı oluşturur
+     * - Yeni subscription, öncekinin bittiği yerden başlar
+     * - Mevcut aktif varsa yeni subscription "pending" olur
+     * - users.subscription_expires_at otomatik güncellenir
      */
     protected function activateSubscriptionItems(): void
     {
-        // Subscription modülü yüklü mü?
+        \Log::channel('daily')->info('🔵 activateSubscriptionItems START (Chain System)', [
+            'order_id' => $this->order_id,
+            'user_id' => $this->user_id,
+            'items_count' => $this->items->count(),
+        ]);
+
         if (!class_exists(\Modules\Subscription\App\Models\Subscription::class)) {
+            \Log::channel('daily')->warning('⚠️ Subscription class not found');
+            return;
+        }
+
+        $user = \App\Models\User::find($this->user_id);
+        if (!$user) {
+            \Log::channel('daily')->error('❌ User bulunamadı', ['user_id' => $this->user_id]);
             return;
         }
 
         foreach ($this->items as $item) {
-            // SubscriptionPlan item mı?
             if ($item->orderable_type !== 'Modules\\Subscription\\App\\Models\\SubscriptionPlan') {
                 continue;
             }
@@ -181,111 +198,83 @@ class Order extends BaseModel
             try {
                 $plan = $item->orderable;
                 if (!$plan) {
-                    \Log::warning('⚠️ SubscriptionPlan bulunamadı', ['item_id' => $item->order_item_id]);
+                    \Log::channel('daily')->warning('⚠️ SubscriptionPlan bulunamadı', ['item_id' => $item->order_item_id]);
                     continue;
                 }
 
-                // Cycle bilgisini item metadata'dan al
+                // Cycle bilgilerini al
                 $cycleKey = $item->metadata['cycle_key'] ?? null;
                 $cycleMetadata = $item->metadata['cycle_metadata'] ?? null;
 
                 if (!$cycleKey) {
-                    // Fallback: Plan'ın ilk cycle'ını kullan
                     $cycles = $plan->getSortedCycles();
                     $cycleKey = array_key_first($cycles) ?? 'monthly';
                     $cycleMetadata = $cycles[$cycleKey] ?? null;
                 }
 
-                // Cycle süresi
                 $durationDays = $cycleMetadata['duration_days'] ?? 30;
 
-                // ÖNCE: Pending payment subscription var mı kontrol et (duplike oluşturmamak için)
-                $pendingSubscription = \Modules\Subscription\App\Models\Subscription::where('user_id', $this->user_id)
+                // 1️⃣ Pending payment subscription var mı? (Checkout'ta oluşturulan)
+                $pendingPaymentSub = \Modules\Subscription\App\Models\Subscription::where('user_id', $this->user_id)
                     ->where('subscription_plan_id', $plan->subscription_plan_id)
                     ->where('status', 'pending_payment')
+                    ->orderBy('created_at', 'desc')
                     ->first();
 
-                if ($pendingSubscription) {
-                    // Pending subscription'ı aktifleştir (trial varsa trial, yoksa active)
-                    $hasTrialDays = ($pendingSubscription->trial_days ?? 0) > 0;
-                    $pendingSubscription->update([
-                        'status' => $hasTrialDays ? 'trial' : 'active',
+                // 2️⃣ Zincirdeki son subscription'ın bitiş tarihini bul
+                $lastEndDate = $user->getLastSubscriptionEndDate();
+                $hasActiveOrPending = $lastEndDate && $lastEndDate->isFuture();
+
+                // 3️⃣ Yeni subscription tarihleri
+                $startDate = $hasActiveOrPending ? $lastEndDate : now();
+                $endDate = $startDate->copy()->addDays($durationDays);
+
+                // 4️⃣ Status belirleme: mevcut aktif/pending varsa "pending", yoksa "active"
+                $newStatus = $hasActiveOrPending ? 'pending' : 'active';
+
+                if ($pendingPaymentSub) {
+                    // Pending payment subscription'ı güncelle
+                    $pendingPaymentSub->update([
+                        'status' => $newStatus,
+                        'current_period_start' => $startDate,
+                        'current_period_end' => $endDate,
+                        'next_billing_date' => $endDate,
+                        'started_at' => $newStatus === 'active' ? now() : $startDate,
                         'total_paid' => $item->total_price,
                         'billing_cycles_completed' => 1,
-                        'metadata' => array_merge($pendingSubscription->metadata ?? [], [
+                        'metadata' => array_merge($pendingPaymentSub->metadata ?? [], [
                             'order_id' => $this->order_id,
                             'order_number' => $this->order_number,
                             'activated_at' => now()->toDateTimeString(),
+                            'chain_position' => $hasActiveOrPending ? 'queued' : 'first',
                         ]),
                     ]);
 
-                    \Log::info('✅ Pending subscription aktifleştirildi', [
-                        'subscription_id' => $pendingSubscription->subscription_id,
+                    \Log::channel('daily')->info('✅ Subscription zincire eklendi (pending_payment → ' . $newStatus . ')', [
+                        'subscription_id' => $pendingPaymentSub->subscription_id,
                         'user_id' => $this->user_id,
-                        'plan_id' => $plan->subscription_plan_id,
-                        'status' => $hasTrialDays ? 'trial' : 'active',
-                        'has_trial' => $hasTrialDays,
+                        'status' => $newStatus,
+                        'start_date' => $startDate->toDateTimeString(),
+                        'end_date' => $endDate->toDateTimeString(),
+                        'duration_days' => $durationDays,
                     ]);
-
-                    continue; // Bu item için işlem tamamlandı, sonrakine geç
-                }
-
-                // Mevcut aktif subscription var mı kontrol et
-                $existingSubscription = \Modules\Subscription\App\Models\Subscription::where('user_id', $this->user_id)
-                    ->where('subscription_plan_id', $plan->subscription_plan_id)
-                    ->whereIn('status', ['active', 'trial'])
-                    ->first();
-
-                if ($existingSubscription) {
-                    // EXTEND: Mevcut subscription'ı uzat
-                    $currentEnd = \Carbon\Carbon::parse($existingSubscription->current_period_end);
-                    $now = now();
-
-                    // Eğer subscription süresi dolmuşsa, bugünden başlat; yoksa mevcut bitiş tarihine ekle
-                    $newPeriodEnd = $currentEnd->greaterThan($now)
-                        ? $currentEnd->addDays($durationDays)
-                        : $now->addDays($durationDays);
-
-                    $existingSubscription->update([
-                        'current_period_end' => $newPeriodEnd,
-                        'next_billing_date' => $newPeriodEnd,
-                        'billing_cycles_completed' => $existingSubscription->billing_cycles_completed + 1,
-                        'total_paid' => $existingSubscription->total_paid + $item->total_price,
-                        'status' => 'active', // Trial'dan active'e geçiş için
-                        'metadata' => array_merge($existingSubscription->metadata ?? [], [
-                            'last_extended_order' => $this->order_number,
-                            'last_extended_at' => now()->toDateTimeString(),
-                        ]),
-                    ]);
-
-                    \Log::info('✅ Subscription uzatıldı', [
-                        'subscription_id' => $existingSubscription->subscription_id,
-                        'user_id' => $this->user_id,
-                        'plan_id' => $plan->subscription_plan_id,
-                        'order_number' => $this->order_number,
-                        'added_days' => $durationDays,
-                        'old_end' => $currentEnd->toDateTimeString(),
-                        'new_end' => $newPeriodEnd->toDateTimeString(),
-                        'billing_cycles' => $existingSubscription->billing_cycles_completed,
-                    ]);
-
                 } else {
-                    // CREATE: Yeni subscription oluştur
+                    // Yeni subscription oluştur (zincir mantığıyla)
                     $subscription = \Modules\Subscription\App\Models\Subscription::create([
                         'user_id' => $this->user_id,
                         'subscription_plan_id' => $plan->subscription_plan_id,
                         'subscription_number' => \Modules\Subscription\App\Models\Subscription::generateSubscriptionNumber(),
-                        'status' => 'active',
+                        'status' => $newStatus,
                         'cycle_key' => $cycleKey,
                         'cycle_metadata' => $cycleMetadata,
                         'price_per_cycle' => $item->unit_price,
                         'currency' => $this->currency ?? 'TRY',
                         'has_trial' => false,
                         'trial_days' => 0,
-                        'started_at' => now(),
-                        'current_period_start' => now(),
-                        'current_period_end' => now()->addDays($durationDays),
-                        'next_billing_date' => now()->addDays($durationDays),
+                        'started_at' => $newStatus === 'active' ? now() : $startDate,
+                        'current_period_start' => $startDate,
+                        'current_period_end' => $endDate,
+                        'next_billing_date' => $endDate,
                         'auto_renew' => true,
                         'billing_cycles_completed' => 1,
                         'total_paid' => $item->total_price,
@@ -293,24 +282,34 @@ class Order extends BaseModel
                             'order_id' => $this->order_id,
                             'order_number' => $this->order_number,
                             'activated_at' => now()->toDateTimeString(),
+                            'chain_position' => $hasActiveOrPending ? 'queued' : 'first',
                         ],
                     ]);
 
-                    \Log::info('✅ Yeni subscription oluşturuldu', [
+                    \Log::channel('daily')->info('✅ Yeni subscription zincire eklendi', [
                         'subscription_id' => $subscription->subscription_id,
                         'user_id' => $this->user_id,
-                        'plan_id' => $plan->subscription_plan_id,
-                        'order_number' => $this->order_number,
+                        'status' => $newStatus,
+                        'start_date' => $startDate->toDateTimeString(),
+                        'end_date' => $endDate->toDateTimeString(),
                         'duration_days' => $durationDays,
-                        'ends_at' => $subscription->current_period_end->toDateTimeString(),
                     ]);
                 }
 
+                // 5️⃣ users.subscription_expires_at güncelle
+                $user->recalculateSubscriptionExpiry();
+
+                \Log::channel('daily')->info('📅 User subscription_expires_at güncellendi', [
+                    'user_id' => $this->user_id,
+                    'expires_at' => $user->fresh()->subscription_expires_at?->toDateTimeString(),
+                ]);
+
             } catch (\Exception $e) {
-                \Log::error('❌ Subscription aktivasyon hatası', [
+                \Log::channel('daily')->error('❌ Subscription aktivasyon hatası', [
                     'order_id' => $this->order_id,
                     'item_id' => $item->order_item_id,
                     'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
                 ]);
             }
         }
@@ -404,12 +403,20 @@ class Order extends BaseModel
      */
     public function onPaymentCompleted(\Modules\Payment\App\Models\Payment $payment): void
     {
+        // 🔥 DEBUG: Başlangıç
+        \Log::channel('daily')->info('🔵 Order::onPaymentCompleted START', [
+            'order_id' => $this->order_id,
+            'payment_id' => $payment->payment_id,
+        ]);
+
         // 1. Sipariş durumunu güncelle
         $this->status = 'processing'; // pending -> processing
         $this->payment_status = 'paid';
         $this->paid_amount = $payment->amount;
         $this->confirmed_at = now();
         $this->save();
+
+        \Log::channel('daily')->info('🔵 Order status updated', ['status' => $this->status]);
 
         // 2. Kullanıcının sepetini temizle (Cart tablosunda customer_id kullanılıyor!)
         if ($this->user_id) {
@@ -421,10 +428,10 @@ class Order extends BaseModel
                 if ($cart) {
                     $cartService = app(\Modules\Cart\App\Services\CartService::class);
                     $cartService->clearCart($cart);
-                    \Log::info('🛒 Sepet temizlendi', ['customer_id' => $this->user_id, 'cart_id' => $cart->cart_id, 'order_id' => $this->order_id]);
+                    \Log::channel('daily')->info('🛒 Sepet temizlendi', ['customer_id' => $this->user_id, 'cart_id' => $cart->cart_id, 'order_id' => $this->order_id]);
                 }
             } catch (\Exception $e) {
-                \Log::error('❌ Sepet temizleme hatası: ' . $e->getMessage());
+                \Log::channel('daily')->error('❌ Sepet temizleme hatası: ' . $e->getMessage());
             }
         }
 
@@ -437,7 +444,7 @@ class Order extends BaseModel
         // 5. Subscription item varsa aktifleştir
         $this->activateSubscriptionItems();
 
-        \Log::info('✅ Sipariş tamamlandı', [
+        \Log::channel('daily')->info('✅ Sipariş tamamlandı', [
             'order_id' => $this->order_id,
             'order_number' => $this->order_number,
             'amount' => $payment->amount
@@ -453,7 +460,7 @@ class Order extends BaseModel
         $this->payment_status = 'failed';
         $this->save();
 
-        \Log::warning('⚠️ Ödeme başarısız', [
+        \Log::channel('daily')->warning('⚠️ Ödeme başarısız', [
             'order_id' => $this->order_id,
             'order_number' => $this->order_number
         ]);
@@ -492,9 +499,9 @@ class Order extends BaseModel
                 }
             );
 
-            \Log::info('📧 Admin bildirim e-postası gönderildi', ['email' => $adminEmail]);
+            \Log::channel('daily')->info('📧 Admin bildirim e-postası gönderildi', ['email' => $adminEmail]);
         } catch (\Exception $e) {
-            \Log::error('❌ Admin bildirim e-postası gönderilemedi: ' . $e->getMessage());
+            \Log::channel('daily')->error('❌ Admin bildirim e-postası gönderilemedi: ' . $e->getMessage());
         }
     }
 
@@ -530,9 +537,9 @@ class Order extends BaseModel
                 }
             );
 
-            \Log::info('📧 Müşteri onay e-postası gönderildi', ['email' => $this->customer_email]);
+            \Log::channel('daily')->info('📧 Müşteri onay e-postası gönderildi', ['email' => $this->customer_email]);
         } catch (\Exception $e) {
-            \Log::error('❌ Müşteri onay e-postası gönderilemedi: ' . $e->getMessage());
+            \Log::channel('daily')->error('❌ Müşteri onay e-postası gönderilemedi: ' . $e->getMessage());
         }
     }
 }

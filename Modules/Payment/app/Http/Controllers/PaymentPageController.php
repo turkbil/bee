@@ -27,6 +27,9 @@ class PaymentPageController extends Controller
 
     public function show($orderNumber)
     {
+        // 🔥 DEBUG: Controller method called
+        file_put_contents(storage_path('logs/paytr-debug.log'), "[" . date('Y-m-d H:i:s') . "] 🎯 PaymentPageController->show() CALLED: order={$orderNumber}\n", FILE_APPEND);
+
         $layoutPath = $this->getLayoutPath();
 
         $order = Order::where('order_number', $orderNumber)->first();
@@ -54,6 +57,7 @@ class PaymentPageController extends Controller
         $error = null;
 
         if ($payment->gateway_response) {
+            file_put_contents(storage_path('logs/paytr-debug.log'), "[" . date('Y-m-d H:i:s') . "] ✅ Token already exists in gateway_response\n", FILE_APPEND);
             $gatewayResponse = json_decode($payment->gateway_response, true);
             if (isset($gatewayResponse['token'])) {
                 $paymentIframeUrl = 'https://www.paytr.com/odeme/guvenli/' . $gatewayResponse['token'];
@@ -62,6 +66,7 @@ class PaymentPageController extends Controller
 
         // Token yoksa yeni al
         if (!$paymentIframeUrl) {
+            file_put_contents(storage_path('logs/paytr-debug.log'), "[" . date('Y-m-d H:i:s') . "] ⚠️  No token found, requesting new one...\n", FILE_APPEND);
             try {
                 $iframeService = app(PayTRIframeService::class);
 

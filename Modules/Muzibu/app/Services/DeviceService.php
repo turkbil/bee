@@ -113,11 +113,37 @@ class DeviceService
                 ->get();
 
             // Limit aşıldıysa sadece fazla olan kadar session sil (LIFO - en eski önce)
+            // 🛡️ FIX: Aktif playback olan session'ları koruyalım (son 5 dakikada activity varsa)
             $existingCount = $existingSessions->count();
             $overLimit = max(0, $existingCount - $limit + 1); // yeni cihaz için yer aç
 
             if ($overLimit > 0) {
-                $sessionsToRemove = $existingSessions->take($overLimit);
+                $fiveMinutesAgo = now()->subMinutes(5);
+
+                // 🎵 Aktif playback olan session'ları filtrele (last_activity < 5 dakika önce)
+                $activeSessions = $existingSessions->filter(function($session) use ($fiveMinutesAgo) {
+                    return $session->last_activity > $fiveMinutesAgo;
+                });
+
+                // İnactive session'ları bul (silmeye aday)
+                $inactiveSessions = $existingSessions->filter(function($session) use ($fiveMinutesAgo) {
+                    return $session->last_activity <= $fiveMinutesAgo;
+                });
+
+                // Önce inactive olanları sil, yetmezse active'den sil
+                $sessionsToRemove = $inactiveSessions->take($overLimit);
+                $remaining = $overLimit - $sessionsToRemove->count();
+
+                if ($remaining > 0) {
+                    // İnactive yetmedi, active'den de silmek zorundayız
+                    $sessionsToRemove = $sessionsToRemove->merge($activeSessions->take($remaining));
+
+                    \Log::warning('🚨 LIFO: Active playback session silindi (limit aşıldı)', [
+                        'user_id' => $user->id,
+                        'active_count' => $activeSessions->count(),
+                        'limit' => $limit,
+                    ]);
+                }
 
                 foreach ($sessionsToRemove as $oldSession) {
                     $this->terminateSessionAtomicByRow($oldSession, 'lifo', $user);

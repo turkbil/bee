@@ -203,8 +203,8 @@ class SongStreamController extends Controller
 
             // 🔒 TTL: Şarkı süresine göre dinamik imza (uzun parçalarda timeout yaşamamak için)
             $durationSeconds = (int) ($song->duration ?? 0);
-            $bufferSeconds = 180; // 3 dakika tampon
-            $ttlSeconds = max(480, min($durationSeconds + $bufferSeconds, 1800)); // min 8 dk, max 30 dk
+            $bufferSeconds = 300; // 5 dakika tampon (increased from 3)
+            $ttlSeconds = max(1800, min($durationSeconds + $bufferSeconds, 3600)); // min 30 dk, max 60 dk (increased from 8-30)
 
             $hlsUrl = $this->signedUrlService->generateHlsUrl($songId, $ttlSeconds, $loginToken);
 
@@ -566,13 +566,27 @@ class SongStreamController extends Controller
         $signatureBase = "/hls/muzibu/songs/{$songId}";
         $expectedSig = hash_hmac('sha256', "{$signatureBase}|{$token}|{$expires}", config('app.key'));
 
+        // 🔍 DEBUG: Detailed validation checks
+        $tokenProvided = !empty($token);
+        $expiresProvided = !empty($expires);
+        $sigProvided = !empty($sig);
+        $signatureMatch = $sig === $expectedSig;
+        $isExpired = $expires ? Carbon::now()->timestamp > $expires : true;
+        $timeToExpire = $expires ? $expires - Carbon::now()->timestamp : null;
+
         if (!$token || !$expires || !$sig || $sig !== $expectedSig || Carbon::now()->timestamp > $expires) {
-            Log::warning('HLS serve denied (invalid signature)', [
+            Log::warning('🚨 HLS serve denied (validation failed)', [
                 'song_id' => $songId,
                 'file' => $filename,
-                'token_prefix' => $token ? substr($token, 0, 12) : 'NULL',
-                'expires_in' => $expires ? $expires - Carbon::now()->timestamp : null,
+                'token_provided' => $tokenProvided,
+                'expires_provided' => $expiresProvided,
+                'sig_provided' => $sigProvided,
+                'signature_match' => $signatureMatch,
+                'is_expired' => $isExpired,
+                'time_to_expire_sec' => $timeToExpire,
+                'token_prefix' => $token ? substr($token, 0, 16) : 'NULL',
                 'ip' => request()->ip(),
+                'user_agent' => substr(request()->userAgent() ?? '', 0, 80),
             ]);
             return response()->json([
                 'status' => 'session_terminated',
@@ -581,17 +595,26 @@ class SongStreamController extends Controller
             ], 401);
         }
 
-        // Token DB'de geçerli mi? (LIFO sonrası silindiyse 401)
-        $sessionRow = DB::table('user_active_sessions')
-            ->where('login_token', $token)
-            ->first();
+        // 🚀 REDIS CACHE: Token DB'de geçerli mi? (5 dakika cache ile hızlandır)
+        // Cache key: session:{token_hash}
+        $cacheKey = 'session:' . hash('sha256', $token);
+
+        $sessionRow = Cache::remember($cacheKey, 300, function() use ($token) {
+            return DB::table('user_active_sessions')
+                ->where('login_token', $token)
+                ->first();
+        });
 
         if (!$sessionRow) {
-            Log::warning('HLS serve denied (token not found)', [
+            Log::warning('🚨 HLS serve denied (token not found in DB)', [
                 'song_id' => $songId,
                 'file' => $filename,
-                'token_prefix' => substr($token, 0, 12),
+                'token_prefix' => substr($token, 0, 16),
+                'token_full_length' => strlen($token),
+                'expires_timestamp' => $expires,
+                'time_to_expire_sec' => $expires - Carbon::now()->timestamp,
                 'ip' => request()->ip(),
+                'user_agent' => substr(request()->userAgent() ?? '', 0, 80),
             ]);
             return response()->json([
                 'status' => 'session_terminated',

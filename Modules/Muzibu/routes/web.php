@@ -12,6 +12,8 @@ use Modules\Muzibu\app\Http\Controllers\Front\FavoritesController;
 use Modules\Muzibu\app\Http\Controllers\Front\MyPlaylistsController;
 use Modules\Muzibu\app\Http\Controllers\Front\RadioController;
 use Modules\Muzibu\app\Http\Controllers\Front\SongController;
+use Modules\Muzibu\App\Http\Controllers\Front\DashboardController;
+use Modules\Muzibu\App\Http\Controllers\Front\CorporateFrontController;
 
 // 🎵 FRONTEND ROUTES (Blade Views with SPA)
 // Loaded via ServiceProvider with:
@@ -48,13 +50,56 @@ Route::get('/songs/{slug}', [SongController::class, 'show'])->name('muzibu.songs
 // Radios
 Route::get('/radios', [RadioController::class, 'index'])->name('muzibu.radios.index');
 
+// Corporate Public Page (No Auth Required)
+Route::get('/corporate', [CorporateFrontController::class, 'index'])->name('muzibu.corporate.index');
+Route::get('/api/corporate', [CorporateFrontController::class, 'apiIndex'])->name('muzibu.corporate.api');
+
 // User Library (Auth + Verified Required)
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/favorites', [FavoritesController::class, 'index'])->name('muzibu.favorites');
-    Route::get('/my-playlists', [MyPlaylistsController::class, 'index'])->name('muzibu.my-playlists');
+    Route::get('/muzibu/favorites', [FavoritesController::class, 'index'])->name('muzibu.favorites');
+    Route::get('/muzibu/my-playlists', [MyPlaylistsController::class, 'index'])->name('muzibu.my-playlists');
 
     // Playlist Management (Edit Page)
-    Route::get('/playlist/{id}/edit', [MyPlaylistsController::class, 'edit'])->name('muzibu.playlist.edit');
+    Route::get('/muzibu/playlist/{slug}/edit', [MyPlaylistsController::class, 'edit'])->name('muzibu.playlist.edit');
+
+    // Dashboard Routes
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('muzibu.dashboard');
+    Route::get('/api/dashboard', [DashboardController::class, 'apiIndex'])->name('muzibu.dashboard.api');
+    Route::get('/muzibu/listening-history', [DashboardController::class, 'history'])->name('muzibu.listening-history');
+    Route::get('/api/muzibu/listening-history', [DashboardController::class, 'apiHistory'])->name('muzibu.listening-history.api');
+
+    // Corporate Routes (Frontend - Auth Required)
+    Route::prefix('corporate')->name('muzibu.corporate.')->group(function () {
+        Route::get('/dashboard', [CorporateFrontController::class, 'dashboard'])->name('dashboard');
+        Route::get('/api/dashboard', [CorporateFrontController::class, 'apiDashboard'])->name('dashboard.api');
+        Route::get('/join', [CorporateFrontController::class, 'join'])->name('join');
+        Route::get('/api/join', [CorporateFrontController::class, 'apiJoin'])->name('join.api');
+        Route::post('/join', [CorporateFrontController::class, 'doJoin'])->name('doJoin');
+        Route::get('/my-corporate', [CorporateFrontController::class, 'myCorporate'])->name('my');
+        Route::get('/api/my-corporate', [CorporateFrontController::class, 'apiMyCorporate'])->name('my.api');
+        Route::post('/leave', [CorporateFrontController::class, 'leave'])->name('leave');
+        Route::post('/regenerate-code', [CorporateFrontController::class, 'regenerateCode'])->name('regenerate');
+        Route::post('/remove-member/{id}', [CorporateFrontController::class, 'removeMember'])->name('remove-member');
+        Route::post('/update-branch/{id}', [CorporateFrontController::class, 'updateBranchName'])->name('update-branch');
+        Route::post('/update-company-name', [CorporateFrontController::class, 'updateCompanyName'])->name('update-company-name');
+        Route::post('/disband', [CorporateFrontController::class, 'disband'])->name('disband');
+        Route::post('/create', [CorporateFrontController::class, 'createCorporate'])->name('create');
+        Route::post('/check-code', [CorporateFrontController::class, 'checkCodeAvailability'])->name('check-code');
+
+        // Corporate Subscription Management (Üyelikleri Yönet)
+        Route::get('/subscriptions', [CorporateFrontController::class, 'subscriptions'])->name('subscriptions');
+        Route::get('/api/subscriptions', [CorporateFrontController::class, 'apiSubscriptions'])->name('subscriptions.api');
+        Route::post('/subscriptions/purchase', [CorporateFrontController::class, 'purchaseSubscriptions'])->name('subscriptions.purchase');
+    });
+
+    // 🚀 SPA Compatible API Routes (/api/corporate/...)
+    // SPA router uses '/api' + path format, so we need these routes
+    Route::prefix('api/corporate')->group(function () {
+        Route::get('/dashboard', [CorporateFrontController::class, 'apiDashboard'])->name('api.corporate.dashboard');
+        Route::get('/join', [CorporateFrontController::class, 'apiJoin'])->name('api.corporate.join');
+        Route::get('/my-corporate', [CorporateFrontController::class, 'apiMyCorporate'])->name('api.corporate.my');
+        Route::get('/subscriptions', [CorporateFrontController::class, 'apiSubscriptions'])->name('api.corporate.subscriptions');
+    });
 });
 
 // 🔍 Search Results Page (Livewire) - Moved to main routes/web.php (priority route)

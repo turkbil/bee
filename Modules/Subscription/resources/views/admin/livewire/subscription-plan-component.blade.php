@@ -62,10 +62,10 @@
                         </th>
                         <th class="w-1"></th>
                         <th>{{ __('subscription::admin.plan_name') }}</th>
-                        <th>Fiyat Döngüleri</th>
-                        <th>KDV</th>
-                        <th>Para Birimi</th>
-                        <th>Fiyat Gösterim</th>
+                        <th>{{ __('subscription::admin.billing_cycles_header') }}</th>
+                        <th>{{ __('subscription::admin.tax_rate') }}</th>
+                        <th>{{ __('subscription::admin.currency') }}</th>
+                        <th>{{ __('subscription::admin.price_display') }}</th>
                         <th>{{ __('admin.status') }}</th>
                         <th class="w-1"></th>
                     </tr>
@@ -87,7 +87,7 @@
                                 </div>
                                 @if($plan->is_trial)
                                 <span class="badge bg-success ms-2">
-                                    <i class="fas fa-gift me-1"></i>Trial
+                                    <i class="fas fa-gift me-1"></i>{{ __('subscription::admin.trial') }}
                                 </span>
                                 @endif
                                 @if($plan->is_featured)
@@ -101,7 +101,7 @@
                                 $cycleCount = count($cycles);
                             @endphp
                             @if($cycleCount > 0)
-                                <span class="badge bg-blue">{{ $cycleCount }} döngü</span>
+                                <span class="badge bg-blue">{{ __('subscription::admin.cycle_count', ['count' => $cycleCount]) }}</span>
                                 <div class="small text-muted mt-1">
                                     @foreach(array_slice($cycles, 0, 2) as $key => $cycle)
                                         {{ is_array($cycle['label'] ?? null) ? ($cycle['label']['tr'] ?? $key) : $key }}
@@ -128,10 +128,10 @@
                         </td>
                         <td>
                             @php
-                                $displayModeText = match($plan->price_display_mode ?? 'show') {
-                                    'hide' => 'Gizli',
-                                    'request' => 'Fiyat Sorunuz',
-                                    default => 'Göster'
+                                $displayModeKey = match($plan->price_display_mode ?? 'show') {
+                                    'hide' => 'price_display_hide',
+                                    'request' => 'price_display_request',
+                                    default => 'price_display_show'
                                 };
                                 $displayModeBadge = match($plan->price_display_mode ?? 'show') {
                                     'hide' => 'secondary',
@@ -139,7 +139,7 @@
                                     default => 'success'
                                 };
                             @endphp
-                            <span class="badge bg-{{ $displayModeBadge }}">{{ $displayModeText }}</span>
+                            <span class="badge bg-{{ $displayModeBadge }}">{{ __('subscription::admin.' . $displayModeKey) }}</span>
                         </td>
                         <td>
                             <span class="badge bg-{{ $plan->is_active ? 'success' : 'secondary' }}">

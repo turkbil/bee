@@ -7,11 +7,11 @@
     <div class="mb-3">
         <h3 class="px-4 text-xs font-bold text-muzibu-text-gray uppercase tracking-wider mb-2">{{ trans('muzibu::front.sidebar.my_library') }}</h3>
         <nav class="space-y-1">
-            <a href="/my-playlists" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
+            <a href="/muzibu/my-playlists" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
                 <i class="fas fa-list w-5 text-base"></i>
                 <span class="font-medium text-sm">{{ trans('muzibu::front.sidebar.my_playlists') }}</span>
             </a>
-            <a href="/favorites" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
+            <a href="/muzibu/favorites" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
                 <i class="fas fa-heart w-5 text-base"></i>
                 <span class="font-medium text-sm">{{ trans('muzibu::front.general.favorites') }}</span>
             </a>

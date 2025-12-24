@@ -119,6 +119,14 @@ class PlaylistService
      */
     public function clonePlaylist(int $playlistId, int $userId): array
     {
+        // 🔒 Günlük limit kontrolü (max 20 playlist/gün)
+        if (!$this->checkDailyPlaylistLimit($userId)) {
+            return [
+                'success' => false,
+                'message' => 'Günlük playlist oluşturma limitine ulaştınız. Maksimum 20 playlist/gün oluşturabilirsiniz.',
+            ];
+        }
+
         try {
             // Sistem playlist'i bul
             $sourcePlaylist = Playlist::with('songs')->find($playlistId);
@@ -190,36 +198,64 @@ class PlaylistService
     }
 
     /**
+     * Check daily playlist creation limit (max 20 per day)
+     */
+    private function checkDailyPlaylistLimit(int $userId): bool
+    {
+        $todayCount = Playlist::where('user_id', $userId)
+            ->where('is_system', false)
+            ->whereDate('created_at', today())
+            ->count();
+
+        return $todayCount < 20;
+    }
+
+    /**
      * Create playlist with songs
      */
     public function createPlaylistWithSongs(array $data, int $userId): array
     {
+        // 🔒 Günlük limit kontrolü (max 20 playlist/gün)
+        if (!$this->checkDailyPlaylistLimit($userId)) {
+            return [
+                'success' => false,
+                'message' => 'Günlük playlist oluşturma limitine ulaştınız. Maksimum 20 playlist/gün oluşturabilirsiniz.',
+            ];
+        }
+
         try {
             DB::beginTransaction();
 
-            // Playlist oluştur
-            $playlist = new Playlist();
-            $playlist->user_id = $userId;
-            $playlist->title = $data['title'];
+            // Tenant locale
+            $locale = app()->getLocale() ?: config('app.locale', 'tr');
 
-            // 🔧 FIX: Auto-generate slug from title
-            if (isset($data['slug'])) {
-                $playlist->slug = $data['slug'];
-            } else {
-                // Title'dan slug oluştur (multilang support)
-                $slugBase = \Illuminate\Support\Str::slug($data['title']);
-                $playlist->slug = [
-                    'tr' => $slugBase,
-                    'en' => $slugBase,
-                ];
-            }
+            // JSON formatında hazırla
+            $titleJson = json_encode([$locale => $data['title']], JSON_UNESCAPED_UNICODE);
+            $descriptionJson = isset($data['description']) && $data['description']
+                ? json_encode([$locale => $data['description']], JSON_UNESCAPED_UNICODE)
+                : json_encode([$locale => ''], JSON_UNESCAPED_UNICODE);
 
-            $playlist->description = $data['description'] ?? null;
-            $playlist->is_system = false;
-            $playlist->is_public = $data['is_public'] ?? true;
-            $playlist->is_radio = false;
-            $playlist->is_active = true;
-            $playlist->save();
+            $slugBase = isset($data['slug'])
+                ? $data['slug']
+                : \Illuminate\Support\Str::slug($data['title']);
+            $slugJson = json_encode([$locale => $slugBase], JSON_UNESCAPED_UNICODE);
+
+            // 🔥 ZORUNLU: DB::insert ile RAW SQL kullan (HasTranslations trait override etmesin!)
+            $playlistId = DB::connection('tenant')->table('muzibu_playlists')->insertGetId([
+                'user_id' => $userId,
+                'title' => $titleJson,
+                'slug' => $slugJson,
+                'description' => $descriptionJson,
+                'is_system' => false,
+                'is_public' => $data['is_public'] ?? false,
+                'is_radio' => false,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            // Model instance oluştur (ilişkiler için)
+            $playlist = Playlist::find($playlistId);
 
             // Şarkıları ekle (varsa)
             if (!empty($data['song_ids']) && is_array($data['song_ids'])) {
@@ -237,6 +273,17 @@ class PlaylistService
 
             DB::commit();
 
+            // 🎨 MUZIBU: Otomatik playlist kapağı oluştur (Universal Helper - Queue)
+            // İlk şarkı başlığını da ekle (AI için daha iyi context)
+            $firstSong = $playlist->songs()->first();
+            $titleContext = $data['title'];
+
+            if ($firstSong) {
+                $titleContext .= " featuring " . $firstSong->title;
+            }
+
+            muzibu_generate_ai_cover($playlist, $titleContext, 'playlist');
+
             Log::info('Playlist created with songs', [
                 'playlist_id' => $playlist->playlist_id,
                 'user_id' => $userId,
@@ -246,9 +293,10 @@ class PlaylistService
             return [
                 'success' => true,
                 'message' => 'Playlist oluşturuldu',
-                'data' => [
+                'playlist' => [
                     'playlist_id' => $playlist->playlist_id,
                     'title' => $playlist->title,
+                    'slug' => $playlist->slug,
                     'song_count' => $playlist->songs()->count(),
                 ],
             ];

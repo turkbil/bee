@@ -44,9 +44,8 @@ class Genre extends BaseModel implements TranslatableEntity, HasMedia
     ];
 
     protected $casts = [
-        'title' => 'array',
-        'slug' => 'array',
-        'description' => 'array',
+        // NOT: title, slug, description CAST'LANMAMALI!
+        // HasTranslations trait bunları otomatik yönetiyor
         'is_active' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',

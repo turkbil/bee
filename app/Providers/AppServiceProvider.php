@@ -104,6 +104,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Services\AI\ProductSearchService::class);
 
         $this->loadHelperFiles();
+        $this->loadModuleHelperFiles();
     }
 
     public function boot(): void
@@ -283,6 +284,21 @@ class AppServiceProvider extends ServiceProvider
             $files = glob($helpersPath . '/*.php');
             foreach ($files as $file) {
                 require_once $file;
+            }
+        }
+    }
+
+    protected function loadModuleHelperFiles(): void
+    {
+        // Load helpers.php from Modules (MediaManagement, Muzibu, etc.)
+        $modulesPath = base_path('Modules');
+        if (is_dir($modulesPath)) {
+            $modules = array_diff(scandir($modulesPath), ['.', '..']);
+            foreach ($modules as $module) {
+                $helperFile = $modulesPath . '/' . $module . '/helpers.php';
+                if (file_exists($helperFile)) {
+                    require_once $helperFile;
+                }
             }
         }
     }

@@ -1,23 +1,6 @@
 {{-- PLAYER BAR --}}
-<div class="muzibu-player row-start-3 xl:col-span-3 lg:col-span-2 col-span-1 grid grid-cols-[auto_1fr_auto] sm:grid-cols-[1fr_2fr_1fr] items-center px-2 sm:px-3 py-1 gap-2 sm:gap-3">
+<div class="muzibu-player row-start-3 col-span-full grid grid-cols-[auto_1fr_auto] sm:grid-cols-[1fr_2fr_1fr] items-center px-3 pt-2 pb-0 gap-2 sm:gap-3">
 
-    {{-- 🎵 Stream Type Indicator (minimal) - showDebugInfo ile kontrol edilir --}}
-    <div
-        x-show="showDebugInfo && currentSong"
-        x-cloak
-        class="fixed bottom-20 left-4 z-40 flex items-center gap-1"
-    >
-        <span
-            class="px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide"
-            :class="currentStreamType === 'hls' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'"
-            x-text="currentStreamType || 'N/A'"
-        ></span>
-        <span
-            x-show="lastFallbackReason"
-            class="px-2 py-1 rounded text-[10px] font-bold bg-red-500/20 text-red-400 border border-red-500/30"
-            x-text="lastFallbackReason"
-        ></span>
-    </div>
 
     {{-- Song Info --}}
     <div class="flex items-center gap-2 sm:gap-3 min-w-0">
@@ -86,11 +69,20 @@
                 </div>
             </div>
             <span class="text-[10px] sm:text-xs text-muzibu-text-gray w-8 sm:w-10" x-text="formatTime(duration)">0:00</span>
+            {{-- 🎵 Stream Type Indicator (inline, minimal, no box) --}}
+            <span
+                x-show="showDebugInfo && currentSong && currentStreamType"
+                x-cloak
+                class="text-[10px] sm:text-xs font-medium uppercase"
+                :class="currentStreamType === 'hls' ? 'text-green-400' : 'text-blue-400'"
+                x-text="currentStreamType"
+            ></span>
         </div>
     </div>
 
     {{-- Volume Controls --}}
     <div class="flex items-center justify-end gap-1 sm:gap-2">
+        {{-- Keyboard shortcuts button - temporarily hidden
         <button
             class="text-muzibu-text-gray hover:text-white transition-all hidden md:block"
             @click="showKeyboardHelp = !showKeyboardHelp"
@@ -98,6 +90,7 @@
         >
             <i class="fas fa-keyboard"></i>
         </button>
+        --}}
         <button
             x-show="currentSong && currentSong.lyrics"
             x-cloak

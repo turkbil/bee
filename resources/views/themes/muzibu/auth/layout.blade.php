@@ -82,6 +82,67 @@
         </div>
     </div>
 
+    {{-- Page Content Modal - İletişim Sayfası Stili --}}
+    <div x-show="showPageModal"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+         @click.self="closePageModal()"
+         style="display: none;"
+         x-cloak>
+
+        {{-- Modal Content --}}
+        <div x-transition:enter="transition ease-out duration-300 transform"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-200 transform"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+             class="relative w-full max-w-4xl max-h-[90vh] bg-dark-800 rounded-2xl shadow-2xl border border-dark-600 overflow-hidden"
+             @click.stop>
+
+            {{-- Modal Header --}}
+            <div class="sticky top-0 z-10 flex items-center justify-between px-8 py-6 bg-gradient-to-r from-mz-500 to-mz-600">
+                <h3 class="text-2xl font-black text-white pr-8" x-text="pageModalTitle"></h3>
+                <button @click="closePageModal()"
+                        class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 text-white transition-all duration-200 hover:scale-110">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            {{-- Modal Body --}}
+            <div class="overflow-y-auto max-h-[calc(90vh-140px)] px-8 py-6">
+                <div x-show="loadingPageContent" class="flex items-center justify-center py-12">
+                    <i class="fa-solid fa-spinner fa-spin text-4xl text-mz-500"></i>
+                </div>
+                <div x-show="!loadingPageContent"
+                     class="prose prose-lg max-w-none dark:prose-invert
+                          prose-headings:text-white
+                          prose-p:text-gray-300
+                          prose-a:text-mz-400 hover:prose-a:text-mz-300
+                          prose-strong:text-white
+                          prose-ul:text-gray-300
+                          prose-ol:text-gray-300"
+                     x-html="pageModalContent">
+                </div>
+            </div>
+
+            {{-- Modal Footer --}}
+            <div class="sticky bottom-0 z-10 flex items-center justify-end px-8 py-4 bg-gray-900/50 border-t border-gray-700">
+                <button @click="closePageModal()"
+                        class="px-6 py-3 bg-gradient-to-r from-mz-500 to-mz-600 rounded-xl font-bold text-white hover:shadow-lg hover:shadow-mz-500/30 transition-all duration-200 hover:scale-105">
+                    <i class="fa-solid fa-check mr-2"></i>
+                    Anladım
+                </button>
+            </div>
+
+        </div>
+    </div>
+
     @livewireScripts
 
     <script>
@@ -102,6 +163,12 @@
                 terminatingDevices: false,
                 terminateError: null,
 
+                // Page Content Modal
+                showPageModal: false,
+                pageModalTitle: '',
+                pageModalContent: '',
+                loadingPageContent: false,
+
                 init() {
                     // Session flash'tan device limit exceeded kontrolu
                     const deviceData = window.deviceLimitData || null;
@@ -111,6 +178,38 @@
                         this.otherDevices = deviceData.devices || [];
                         this.intendedUrl = deviceData.intendedUrl || '/';
                     }
+                },
+
+                async openPageModal(pageId) {
+                    this.showPageModal = true;
+                    this.pageModalTitle = 'Yükleniyor...';
+                    this.pageModalContent = '';
+                    this.loadingPageContent = true;
+
+                    try {
+                        const response = await fetch(`/api/page-content/${pageId}`);
+                        const data = await response.json();
+
+                        if (data.success && data.data) {
+                            this.pageModalTitle = data.data.title || 'Sayfa';
+                            this.pageModalContent = data.data.body || '<p class="text-gray-300">İçerik bulunamadı.</p>';
+                        } else {
+                            this.pageModalTitle = 'Hata';
+                            this.pageModalContent = '<p class="text-red-400">İçerik yüklenirken hata oluştu.</p>';
+                        }
+                    } catch (error) {
+                        console.error('Page content load error:', error);
+                        this.pageModalTitle = 'Hata';
+                        this.pageModalContent = '<p class="text-red-400">İçerik yüklenirken hata oluştu.</p>';
+                    } finally {
+                        this.loadingPageContent = false;
+                    }
+                },
+
+                closePageModal() {
+                    this.showPageModal = false;
+                    this.pageModalTitle = '';
+                    this.pageModalContent = '';
                 },
 
                 getDeviceIcon(deviceType) {

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Cart\App\Models\Order;
 use Modules\Payment\App\Models\Payment;
+use Modules\Cart\App\Services\CartService;
 use Illuminate\Support\Facades\Log;
 
 class PaymentSuccessController extends Controller
@@ -60,6 +61,27 @@ class PaymentSuccessController extends Controller
             ]);
             return redirect()->to('/')
                 ->with('error', 'Bu siparişi görüntüleme yetkiniz yok.');
+        }
+
+        // 🛒 SEPET TEMİZLE: Ödeme başarılı olduğu için kullanıcının sepetini boşalt
+        try {
+            $cartService = app(CartService::class);
+            $cart = $cartService->getCart(auth()->id(), session()->getId());
+
+            if ($cart && $cart->items()->count() > 0) {
+                $cartService->clearCart($cart);
+                Log::info('🛒 Cart cleared after successful payment', [
+                    'cart_id' => $cart->cart_id,
+                    'user_id' => auth()->id(),
+                    'order_number' => $orderNumber
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Sepet temizleme hatası kritik değil, devam et
+            Log::warning('⚠️ Cart clear failed (non-critical)', [
+                'error' => $e->getMessage(),
+                'user_id' => auth()->id()
+            ]);
         }
 
         // Ödeme kaydını al (en son ödeme)

@@ -46,9 +46,8 @@ class Album extends BaseModel implements TranslatableEntity, HasMedia
     ];
 
     protected $casts = [
-        'title' => 'array',
-        'slug' => 'array',
-        'description' => 'array',
+        // NOT: title, slug, description CAST'LANMAMALI!
+        // HasTranslations trait bunları otomatik yönetiyor
         'is_active' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -138,12 +137,12 @@ class Album extends BaseModel implements TranslatableEntity, HasMedia
     /**
      * Album cover URL'i (Thumbmaker helper ile)
      */
-    public function getCoverUrl(?int $width = 800, ?int $height = 800): ?string
+    public function getCoverUrl(?int $width = 800, ?int $height = 800, int $quality = 90): ?string
     {
         if (!$this->media_id) {
             return null;
         }
-        return thumb($this->coverMedia, $width, $height);
+        return thumb($this->coverMedia, $width, $height, ['quality' => $quality]);
     }
 
     /**

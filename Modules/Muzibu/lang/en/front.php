@@ -164,6 +164,7 @@ return [
         'profile' => 'Profile',
         'settings' => 'Settings',
         'dashboard' => 'Dashboard',
+        'admin_panel' => 'Admin Panel',
 
         // Membership
         'premium_member' => 'Premium Member',
@@ -328,5 +329,175 @@ return [
         'hours_minutes_left' => ':hours hours :minutes min left',
         'minutes_left' => ':minutes minutes left',
         'extend_membership' => 'Extend Membership',
+    ],
+
+    'dashboard' => [
+        'title' => 'My Panel',
+        'welcome' => 'Welcome, :name!',
+        'membership_status' => 'Membership Status',
+        'premium_member' => 'Premium Member',
+        'trial_member' => 'Trial Member',
+        'free_member' => 'Free Member',
+        'time_left' => 'Time Left',
+        'days' => 'days',
+        'hours' => 'hours',
+        'minutes' => 'minutes',
+        'hours_short' => 'h',
+        'extend_membership' => 'Extend Membership',
+        'go_premium' => 'Go Premium',
+        'recently_played' => 'Recently Played',
+        'my_favorites' => 'My Favorites',
+        'my_playlists' => 'My Playlists',
+        'view_all' => 'View All',
+        'songs_count' => ':count songs',
+        'no_recently_played' => 'No songs played yet',
+        'no_favorites_yet' => 'No favorite songs yet',
+        'no_playlists_yet' => 'No playlists yet',
+        'start_listening' => 'Start Listening',
+        'explore_music' => 'Explore Music',
+        'add_favorites' => 'Add to Favorites',
+        'create_playlist' => 'Create Playlist',
+        'unknown_artist' => 'Unknown Artist',
+        'stats' => [
+            'playlists' => 'Playlists',
+            'favorites' => 'Favorites',
+            'plays' => 'Plays',
+            'this_week' => 'This Week',
+        ],
+    ],
+
+    'listening_history' => [
+        'title' => 'Listening History',
+        'description' => 'All the songs you have listened to',
+        'back_to_dashboard' => 'Back to Panel',
+        'no_history_yet' => 'No listening history yet',
+        'no_history_description' => 'Start listening to music to see your history here',
+        'discover' => 'Discover Music',
+    ],
+
+    'corporate' => [
+        // General
+        'title' => 'Corporate Muzibu',
+        'description' => 'Custom music experience for your company. Provide Muzibu Premium access to your employees.',
+        'corporate_member' => 'Corporate Member',
+        'main_branch' => 'Main Branch',
+        'member' => 'Member',
+
+        // Already Member
+        'already_corporate' => 'You are a Corporate Member!',
+        'already_owner' => 'You Already Own a Corporate Account',
+        'already_member' => 'You Are Already Connected to a Company',
+        'leave_first' => 'You need to leave your current company to join another.',
+        'management_panel' => 'Management Panel',
+        'my_membership' => 'My Membership Info',
+
+        // Features
+        'bulk_membership' => 'Bulk Membership',
+        'bulk_membership_desc' => 'Provide Muzibu Premium access to all your employees with a single corporate code.',
+        'statistics' => 'Statistics',
+        'statistics_desc' => 'Get detailed reports about your employees\' listening habits.',
+        'easy_management' => 'Easy Management',
+        'easy_management_desc' => 'Add or remove members. Regenerate your corporate code anytime.',
+
+        // How it works
+        'how_it_works' => 'How It Works?',
+        'step_1_title' => 'Go Corporate',
+        'step_1_desc' => 'Create a corporate account for your company and get a unique code.',
+        'step_2_title' => 'Share Code',
+        'step_2_desc' => 'Invite employees by sharing your corporate code.',
+        'step_3_title' => 'Listen Together',
+        'step_3_desc' => 'All your employees enjoy Muzibu Premium!',
+
+        // Join
+        'join_with_code' => 'Join with Corporate Code',
+        'enter_company_code' => 'Enter your company code',
+        'code_placeholder' => '8-character corporate code',
+        'case_insensitive' => 'Case insensitive',
+        'join' => 'Join',
+        'checking' => 'Checking...',
+        'no_code_question' => 'Don\'t have a corporate code?',
+        'learn_about_corporate' => 'Learn about Corporate Muzibu',
+        'back_to_dashboard' => 'Back to Panel',
+
+        // Create Corporate
+        'create_corporate' => 'Create Corporate Account',
+        'apply_for_company' => 'Apply for your company',
+        'create_corporate_desc' => 'Contact us to create a corporate account and get special pricing.',
+        'contact_us' => 'Contact Us',
+
+        // Dashboard
+        'corporate_panel' => 'Corporate Management Panel',
+        'dashboard' => 'Panel',
+        'total_members' => 'Total Members',
+        'total_listening' => 'Total Plays',
+        'this_week' => 'This Week',
+        'total_duration' => 'Total Duration',
+        'hours' => 'hours',
+
+        // Corporate Code
+        'corporate_code' => 'Corporate Invite Code',
+        'share_code_desc' => 'Share this code with your employees to invite them to your company.',
+        'copy' => 'Copy',
+        'copy_code' => 'Copy Code',
+        'show_qr' => 'Show QR Code',
+        'code_copied' => 'Code copied!',
+        'new_code_created' => 'New code created!',
+        'regenerate_code' => 'Generate New Code',
+        'regenerate_confirm' => 'Are you sure you want to regenerate the corporate code? The old code will no longer work.',
+
+        // Members
+        'corporate_members' => 'Corporate Members',
+        'members_count' => ':count members',
+        'no_members_yet' => 'No members yet',
+        'invite_members' => 'Share your corporate code to invite members.',
+        'last_played' => 'Last Played',
+        'no_listening_yet' => 'No listening yet',
+        'listening_count' => 'plays',
+        'branch_name' => 'Branch Name',
+        'edit_branch_name' => 'Edit Branch Name',
+        'branch_name_placeholder' => 'Branch name (e.g., Istanbul Office)',
+        'branch_name_updated' => 'Branch name updated!',
+        'actions' => 'Actions',
+        'remove_member' => 'Remove',
+        'remove_confirm' => 'Are you sure you want to remove :name from the corporate account?',
+        'member_removed' => ':name has been removed from corporate account.',
+
+        // My Corporate
+        'my_corporate' => 'My Corporate Membership',
+        'member_info' => 'Your connected company information',
+        'connected_company' => 'Your connected company information',
+        'join_date' => 'Join Date',
+        'company_owner' => 'Company Owner',
+        'active' => 'Active',
+        'inactive' => 'Inactive',
+        'passive' => 'Inactive',
+
+        // Premium Benefits
+        'premium_benefits' => 'Premium Benefits',
+        'thanks_to_corporate' => 'Thanks to your corporate membership',
+        'unlimited_listening' => 'Unlimited song listening',
+        'no_ads' => 'Ad-free experience',
+        'high_quality' => 'High quality audio',
+        'offline_listening' => 'Offline listening',
+
+        // Leave
+        'leave_company' => 'Leave Company',
+        'leave_corporate' => 'Leave Corporate',
+        'leave_warning' => 'Your premium benefits will end when you leave the corporate account.',
+        'leave_confirm' => 'Are you sure you want to leave the corporate account? Your premium benefits will end.',
+
+        // Errors
+        'error_occurred' => 'An error occurred.',
+        'cancel' => 'Cancel',
+        'save' => 'Save',
+
+        // Dashboard Panel
+        'code' => 'Code',
+        'manage' => 'Manage',
+        'details' => 'Details',
+        'leave' => 'Leave',
+        'enter_code' => '8 character corporate code',
+        'code_hint' => 'You can get the corporate invite code from your company.',
+        'error' => 'An error occurred.',
     ],
 ];

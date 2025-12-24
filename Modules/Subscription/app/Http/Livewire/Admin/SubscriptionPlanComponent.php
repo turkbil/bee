@@ -94,7 +94,7 @@ class SubscriptionPlanComponent extends Component
 
             $this->dispatch('toast', [
                 'title' => __('admin.success'),
-                'message' => __('subscription::admin.plans.order_updated'),
+                'message' => __('subscription::admin.order_updated'),
                 'type' => 'success'
             ]);
 
@@ -159,7 +159,7 @@ class SubscriptionPlanComponent extends Component
             if ($plan->subscriptions()->exists()) {
                 $this->dispatch('toast', [
                     'title' => __('admin.error'),
-                    'message' => __('subscription::admin.plans.has_subscriptions'),
+                    'message' => __('subscription::admin.has_subscriptions'),
                     'type' => 'error'
                 ]);
                 return;
@@ -237,7 +237,7 @@ class SubscriptionPlanComponent extends Component
         if ($failed > 0) {
             $this->dispatch('toast', [
                 'title' => __('admin.warning'),
-                'message' => __('subscription::admin.plans.bulk_delete_partial', ['deleted' => $deleted, 'failed' => $failed]),
+                'message' => __('subscription::admin.bulk_delete_partial', ['deleted' => $deleted, 'failed' => $failed]),
                 'type' => 'warning'
             ]);
         } else {

@@ -20,7 +20,7 @@ function muzibuKeyboard() {
     return {
         // Keyboard shortcuts state
         showKeyboardHelp: false,
-        keyboardEnabled: true,
+        keyboardEnabled: false, // Disabled temporarily
 
         /**
          * Initialize keyboard shortcuts

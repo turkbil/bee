@@ -85,10 +85,6 @@ class ConversationSummaryService
             }
         }
 
-        // Token kullanımı
-        $summary[] = "";
-        $summary[] = "💰 Token Kullanımı: {$conversation->total_tokens_used} tokens";
-
         $summary[] = str_repeat('-', 50);
 
         return implode("\n", $summary);

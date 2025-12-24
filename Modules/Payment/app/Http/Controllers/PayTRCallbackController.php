@@ -34,9 +34,12 @@ class PayTRCallbackController extends Controller
             // POST verilerini al
             $callbackData = $request->all();
 
-            if (setting('paytr_debug', false)) {
-                Log::info('📨 PayTR callback received', $callbackData);
-            }
+            // 🔥 HER ZAMAN LOGLA - Callback takibi için kritik!
+            Log::channel('daily')->info('📨 PayTR callback received', [
+                'data' => $callbackData,
+                'ip' => $request->ip(),
+                'timestamp' => now()->toDateTimeString(),
+            ]);
 
             // Tenant ID parse et (merchant_oid formatı: T{tenant_id}-ORD-20251112-ABC)
             $merchantOid = $callbackData['merchant_oid'] ?? '';
@@ -64,6 +67,13 @@ class PayTRCallbackController extends Controller
 
             // Callback'i işle
             $result = $this->callbackService->handleCallback($callbackData);
+
+            // 🔥 SONUCU LOGLA
+            Log::channel('daily')->info('📨 PayTR callback processed', [
+                'merchant_oid' => $merchantOid,
+                'tenant_id' => $tenantId,
+                'result' => $result,
+            ]);
 
             // PayTR'ye cevap dön (ZORUNLU!)
             if ($result['success']) {

@@ -17,20 +17,20 @@
     </div>
 
     <div x-data="{
-        title: '{{ $playlist->title }}',
-        description: '{{ $playlist->description }}',
+        title: {!! json_encode($playlist->title) !!},
+        description: {!! json_encode($playlist->description ?? '') !!},
         isPublic: {{ $playlist->is_public ? 'true' : 'false' }},
         loading: false,
         saving: false,
-        songs: {{ \$playlist->songs->map(function(\$song) {
+        songs: {!! json_encode($playlist->songs->map(function($song) {
             return [
-                'song_id' => \$song->song_id,
-                'title' => \$song->getTranslation('title', app()->getLocale()),
-                'artist' => \$song->album && \$song->album->artist ? \$song->album->artist->getTranslation('title', app()->getLocale()) : ''',
-                'cover' => \$song->getCoverUrl(100, 100) ?? '',
-                'position' => \$song->pivot->position ?? 0
+                'song_id' => $song->song_id,
+                'title' => $song->title,
+                'artist' => $song->album && $song->album->artist ? $song->album->artist->title : '',
+                'cover' => $song->getCoverUrl(100, 100) ?? '',
+                'position' => $song->pivot->position ?? 0
             ];
-        })->toJson() }},
+        })->toArray()) !!},
 
         savePlaylist() {
             this.saving = true;

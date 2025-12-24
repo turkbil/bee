@@ -20,6 +20,27 @@ class TenantCacheProfile implements CacheProfile
         return setting('response_cache_enabled', true);
     }
 
+    /**
+     * Dinamik sayfalar - kullanıcıya özel içerik, asla cache'lenmemeli
+     */
+    protected array $dynamicPaths = [
+        'favorites',
+        'favorites/*',
+        'my-playlists',
+        'my-playlists/*',
+        'playlist/*/edit',
+        'dashboard',
+        'dashboard/*',
+        'listening-history',
+        'listening-history/*',
+        'corporate/*',
+        'api/*',
+        'cart',
+        'cart/*',
+        'checkout',
+        'checkout/*',
+    ];
+
     public function shouldCacheRequest(Request $request): bool
     {
         // MUTLAK ADMIN CACHE ENGELLEMESİ - İLK KONTROL
@@ -27,14 +48,22 @@ class TenantCacheProfile implements CacheProfile
         if (str_starts_with($path, 'admin') || str_contains($path, '/admin')) {
             return false;
         }
-        
+
         // Admin No-Cache Header kontrolü
         if ($request->header('X-Cache-Bypass') === 'admin' || $request->header('X-Admin-No-Cache')) {
             return false;
         }
-        
-        // Debug log kaldırıldı - disk dolmasına neden oluyordu
-        
+
+        // 🔴 DİNAMİK SAYFALAR - AUTH KULLANICILARI İÇİN CACHE YOK!
+        // Favoriler, playlist'ler, dashboard vb. kullanıcıya özel sayfalar
+        if (auth()->check()) {
+            foreach ($this->dynamicPaths as $pattern) {
+                if ($request->is($pattern)) {
+                    return false;
+                }
+            }
+        }
+
         // Temel kontroller
         if ($request->ajax() || $request->isMethod('get') === false) {
             return false;

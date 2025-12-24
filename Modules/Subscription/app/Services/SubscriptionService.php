@@ -26,8 +26,9 @@ class SubscriptionService
             'subscription_plan_id' => $plan->id,
             'billing_cycle' => $cycle,
             'price_per_cycle' => $price,
-            'starts_at' => now(),
-            'ends_at' => $this->calculateEndDate($cycle, $trialDays),
+            'started_at' => now(),
+            'current_period_start' => now(),
+            'current_period_end' => $this->calculateEndDate($cycle, $trialDays),
             'trial_ends_at' => $trialDays > 0 ? now()->addDays($trialDays) : null,
             'status' => $trialDays > 0 ? 'trial' : 'active',
             'auto_renew' => true,
@@ -44,11 +45,12 @@ class SubscriptionService
         $newEndDate = $this->calculateEndDate(
             $subscription->billing_cycle,
             0,
-            $subscription->ends_at ?? now()
+            $subscription->current_period_end ?? now()
         );
 
         $subscription->update([
-            'ends_at' => $newEndDate,
+            'current_period_start' => now(),
+            'current_period_end' => $newEndDate,
             'status' => 'active',
             'cancelled_at' => null,
         ]);
@@ -99,7 +101,7 @@ class SubscriptionService
         // Get expired active subscriptions
         $expired = Subscription::whereIn('status', ['active', 'trial'])
             ->where(function ($query) {
-                $query->where('ends_at', '<', now())
+                $query->where('current_period_end', '<', now())
                       ->orWhere('trial_ends_at', '<', now());
             })
             ->get();

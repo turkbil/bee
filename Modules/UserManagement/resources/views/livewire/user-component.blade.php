@@ -121,6 +121,24 @@
                             <span class="badge mt-2 {{ $user->is_active ? 'bg-green-lt' : 'bg-red-lt' }}">
                                 {{ $user->is_active ? __('usermanagement::admin.active') : __('usermanagement::admin.passive') }}
                             </span>
+                            @if(tenant() && tenant()->id == 1001)
+                                @if($user->subscription_expires_at)
+                                    @php
+                                        $expiry = \Carbon\Carbon::parse($user->subscription_expires_at);
+                                        $isExpired = $expiry->isPast();
+                                        $daysLeft = $isExpired ? 0 : (int) now()->diffInDays($expiry);
+                                    @endphp
+                                    @if($isExpired)
+                                        <span class="badge mt-2 bg-red-lt" data-bs-toggle="tooltip" title="{{ $expiry->format('d.m.Y') }}">
+                                            <i class="fas fa-times-circle me-1"></i>Süresi Doldu
+                                        </span>
+                                    @else
+                                        <span class="badge mt-2 bg-yellow-lt" data-bs-toggle="tooltip" title="{{ $expiry->format('d.m.Y H:i') }}">
+                                            <i class="fas fa-crown me-1"></i>{{ $daysLeft }}g
+                                        </span>
+                                    @endif
+                                @endif
+                            @endif
                         </div>
                     </div>
                     <!-- İşlem Butonları -->
@@ -205,6 +223,15 @@
                                 {{ __('usermanagement::admin.status') }}
                             </button>
                         </th>
+                        @if(tenant() && tenant()->id == 1001)
+                        <th class="text-center" style="width: 140px">
+                            <button
+                                class="table-sort {{ $sortField === 'subscription_expires_at' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
+                                wire:click="sortBy('subscription_expires_at')">
+                                <i class="fas fa-crown me-1"></i>Üyelik
+                            </button>
+                        </th>
+                        @endif
                         <th class="text-center" style="width: 160px">{{ __('usermanagement::admin.actions') }}</th>
                     </tr>
                 </thead>
@@ -254,6 +281,38 @@
                                 </div>
                             </button>
                         </td>
+                        @if(tenant() && tenant()->id == 1001)
+                        <td class="text-center">
+                            @if($user->subscription_expires_at)
+                                @php
+                                    $expiry = \Carbon\Carbon::parse($user->subscription_expires_at);
+                                    $isExpired = $expiry->isPast();
+                                    $daysLeft = $isExpired ? 0 : (int) now()->diffInDays($expiry);
+                                @endphp
+                                @if($isExpired)
+                                    <span class="badge bg-red-lt text-red" data-bs-toggle="tooltip" title="{{ $expiry->format('d.m.Y') }}">
+                                        <i class="fas fa-times-circle me-1"></i>Süresi Doldu
+                                    </span>
+                                @elseif($daysLeft <= 7)
+                                    <span class="badge bg-orange-lt text-orange" data-bs-toggle="tooltip" title="{{ $expiry->format('d.m.Y H:i') }}">
+                                        <i class="fas fa-exclamation-triangle me-1"></i>{{ $daysLeft }}g
+                                    </span>
+                                @elseif($daysLeft <= 30)
+                                    <span class="badge bg-yellow-lt text-yellow" data-bs-toggle="tooltip" title="{{ $expiry->format('d.m.Y H:i') }}">
+                                        <i class="fas fa-clock me-1"></i>{{ $daysLeft }}g
+                                    </span>
+                                @else
+                                    <span class="badge bg-green-lt text-green" data-bs-toggle="tooltip" title="{{ $expiry->format('d.m.Y H:i') }}">
+                                        <i class="fas fa-crown me-1"></i>{{ $daysLeft }}g
+                                    </span>
+                                @endif
+                            @else
+                                <span class="badge bg-secondary-lt text-muted">
+                                    <i class="fas fa-user me-1"></i>Ücretsiz
+                                </span>
+                            @endif
+                        </td>
+                        @endif
                         <td class="text-center align-middle">
                             <div class="container">
                                 <div class="row">
@@ -292,7 +351,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7">
+                        <td colspan="{{ (tenant() && tenant()->id == 1001) ? 8 : 7 }}">
                             <div class="empty">
                                 <p class="empty-title">{{ __('usermanagement::admin.no_records') }}</p>
                                 <p class="empty-subtitle text-muted">

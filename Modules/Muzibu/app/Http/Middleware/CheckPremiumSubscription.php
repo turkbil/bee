@@ -59,12 +59,13 @@ class CheckPremiumSubscription
     protected function checkPremiumSubscription(int $userId): bool
     {
         try {
-            // Query central database for active subscription
-            $subscription = DB::connection('central')
-                ->table('subscriptions')
+            // Query TENANT database for active subscription
+            // 🔥 FIX: central → tenant DB, ends_at → current_period_end
+            $subscription = DB::table('subscriptions')
                 ->where('user_id', $userId)
                 ->where('status', 'active')
-                ->where('ends_at', '>', now())
+                ->where('current_period_end', '>', now())
+                ->orderBy('current_period_end', 'desc')
                 ->first();
 
             $hasPremium = $subscription !== null;

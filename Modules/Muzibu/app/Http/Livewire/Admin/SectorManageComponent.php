@@ -475,6 +475,11 @@ class SectorManageComponent extends Component implements AIContentGeneratable
             $this->sectorId = $sector->sector_id;
             log_activity($sector, 'eklendi');
 
+            // 🎨 MUZIBU: Media yoksa otomatik görsel üret (Universal Helper - Tercihen)
+            if (!$sector->media_id) {
+                muzibu_generate_ai_cover($sector, $sector->title, 'sektor');
+            }
+
             // İlişkileri sync et
             $sector->radios()->sync($radioIds);
             $sector->playlists()->sync($playlistIds);

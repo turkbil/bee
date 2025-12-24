@@ -21,10 +21,11 @@ trait HasTranslations
     public function getTranslated(string $field, ?string $locale = null, bool $useFallback = true): ?string
     {
         $locale = $locale ?: App::getLocale() ?: 'tr';
-        
+
         // Alan çevrilebilir mi kontrol et
         if (!$this->isTranslatable($field)) {
-            $value = $this->getAttribute($field);
+            // getAttribute() sonsuz döngüye girmemek için getAttributeFromArray kullan
+            $value = $this->getAttributeFromArray($field);
             // Non-translatable fields için direkt değeri döndür
             if (is_array($value)) {
                 // Arrays should be returned as JSON for non-translatable fields like keywords/tags
@@ -32,9 +33,10 @@ trait HasTranslations
             }
             return is_string($value) ? $value : (string) $value;
         }
-        
-        $translations = $this->getAttribute($field);
-        
+
+        // Raw attributes array'inden direkt al (cast/accessor atla)
+        $translations = $this->getAttributeFromArray($field);
+
         // Double-encoded JSON kontrolü ve düzeltme
         if (is_string($translations)) {
             try {
@@ -50,12 +52,12 @@ trait HasTranslations
                 return $translations;
             }
         }
-        
+
         // Array değilse direkt döndür
         if (!is_array($translations)) {
             return is_string($translations) ? $translations : (string) $translations;
         }
-        
+
         // İstenen dil varsa döndür
         if (isset($translations[$locale]) && !empty($translations[$locale])) {
             $value = $translations[$locale];
@@ -126,21 +128,70 @@ trait HasTranslations
     }
     
     /**
-     * Magic accessor - $page->title_en
+     * Override getAttribute - Translatable field'lar için otomatik parse
      */
-    public function __get($key)
+    public function getAttribute($key)
     {
-        // Translation pattern kontrolü: field_locale (title_en, body_tr, vs.)
-        if (preg_match('/^(.+)_([a-z]{2})$/', $key, $matches)) {
-            $field = $matches[1];
-            $locale = $matches[2];
-            
-            if ($this->isTranslatable($field)) {
-                return $this->getTranslated($field, $locale);
+        // Eğer translatable field ise, önce JSON parse et
+        if ($this->isTranslatable($key)) {
+            // Raw value al (attributes array'inden direkt)
+            $value = $this->getAttributeFromArray($key);
+
+            // JSON parse ve locale'ye göre döndür
+            if (is_string($value)) {
+                try {
+                    // DOUBLE-ENCODE PROTECTION: Handle strings wrapped in quotes
+                    // Database might have: ""{\"tr\":\"value\"}""  or  "{\"tr\":\"value\"}"
+                    $value = trim($value);
+
+                    // First attempt: direct JSON decode
+                    $decoded = json_decode($value, true);
+
+                    // If decode failed or returned string, try removing outer quotes
+                    if (json_last_error() !== JSON_ERROR_NONE || is_string($decoded)) {
+                        // Check for outer quotes and remove them
+                        if (strlen($value) >= 2 && $value[0] === '"' && $value[strlen($value) - 1] === '"') {
+                            // Use json_decode on the outer quotes to properly unescape
+                            $unquoted = json_decode($value);
+                            if (is_string($unquoted)) {
+                                $value = $unquoted;
+                            }
+                        }
+
+                        // Try decoding again
+                        $decoded = json_decode($value, true);
+
+                        // If still a string (double-encoded), decode one more time
+                        if (json_last_error() === JSON_ERROR_NONE && is_string($decoded)) {
+                            $secondDecode = json_decode($decoded, true);
+                            if (json_last_error() === JSON_ERROR_NONE && is_array($secondDecode)) {
+                                $decoded = $secondDecode;
+                            }
+                        }
+                    }
+
+                    if (is_array($decoded)) {
+                        $locale = app()->getLocale() ?: 'tr';
+
+                        // Mevcut locale'deki değer varsa döndür
+                        if (isset($decoded[$locale]) && !empty($decoded[$locale])) {
+                            return $decoded[$locale];
+                        }
+
+                        // Fallback
+                        return $this->getFallbackTranslation($decoded, $locale);
+                    }
+                } catch (\Exception $e) {
+                    // JSON parse hatası, direkt döndür
+                    return $value;
+                }
             }
+
+            return $value;
         }
-        
-        return parent::__get($key);
+
+        // Normal field, parent'a devret (relationlar vs.)
+        return parent::getAttribute($key);
     }
     
     /**

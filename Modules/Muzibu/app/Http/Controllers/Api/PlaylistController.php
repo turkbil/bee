@@ -6,8 +6,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Muzibu\App\Models\Playlist;
+use Modules\Muzibu\App\Models\Song;
 use Modules\Muzibu\App\Services\PlaylistService;
 use Modules\Muzibu\App\Services\MuzibuCacheService;
+use Illuminate\Support\Facades\Log;
 
 class PlaylistController extends Controller
 {
@@ -203,7 +205,7 @@ class PlaylistController extends Controller
     }
 
     /**
-     * Quick create playlist with songs
+     * Quick create playlist with songs + AI cover image generation
      */
     public function quickCreate(Request $request): JsonResponse
     {
@@ -217,14 +219,24 @@ class PlaylistController extends Controller
             ]);
 
             $userId = auth()->id();
+
+            // Create playlist
             $result = $this->playlistService->createPlaylistWithSongs(
                 $request->all(),
                 $userId
             );
 
-            return response()->json($result, $result['success'] ? 201 : 400);
+            if (!$result['success']) {
+                return response()->json($result, 400);
+            }
+
+            // ✅ AI Cover job'u PlaylistService içinde otomatik dispatch ediliyor (muzibu_generate_ai_cover)
+            // Burada tekrar dispatch etmeye GEREK YOK!
+
+            return response()->json($result, 201);
+
         } catch (\Exception $e) {
-            \Log::error('Quick create playlist error:', ['message' => $e->getMessage()]);
+            Log::error('Quick create playlist error:', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Playlist oluşturma başarısız',
@@ -606,6 +618,19 @@ class PlaylistController extends Controller
 
             $userId = auth()->id();
 
+            // 🔒 Günlük limit kontrolü (max 20 playlist/gün)
+            $todayCount = Playlist::where('user_id', $userId)
+                ->where('is_system', false)
+                ->whereDate('created_at', today())
+                ->count();
+
+            if ($todayCount >= 20) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Günlük playlist oluşturma limitine ulaştınız. Maksimum 20 playlist/gün oluşturabilirsiniz.',
+                ], 429); // 429 Too Many Requests
+            }
+
             // 2. Create playlist for authenticated user
             $playlist = Playlist::create([
                 'title' => ['tr' => $validated['title']],
@@ -620,10 +645,20 @@ class PlaylistController extends Controller
             // 3. Attach songs
             $playlist->songs()->attach($validated['song_ids']);
 
-            // 4. Check if user is premium (from central database)
+            // 4. 🎨 AI Cover Generation (Background) - Universal Helper
+            $firstSong = Song::with('album.artist')->find($validated['song_ids'][0] ?? null);
+            $titleContext = $playlist->title;
+
+            if ($firstSong) {
+                $titleContext .= " featuring " . $firstSong->title;
+            }
+
+            muzibu_generate_ai_cover($playlist, $titleContext, 'playlist');
+
+            // 5. Check if user is premium (from central database)
             $isPremium = $this->checkUserPremium($userId);
 
-            // 5. Return response
+            // 6. Return response
             \Log::info('🎯 Playlist created from AI ACTION button', [
                 'user_id' => $userId,
                 'playlist_id' => $playlist->playlist_id,

@@ -45,11 +45,11 @@ class SignedUrlService
      * Generate signed HLS URL (playlist + segments) tied to login token
      *
      * @param int $songId
-     * @param int $expiresInSeconds (default: 300 saniye)
+     * @param int $expiresInSeconds (default: 3600 saniye = 60 dakika)
      * @param string|null $loginToken
      * @return string
      */
-    public function generateHlsUrl(int $songId, int $expiresInSeconds = 300, ?string $loginToken = null): string
+    public function generateHlsUrl(int $songId, int $expiresInSeconds = 3600, ?string $loginToken = null): string
     {
         $expiration = Carbon::now()->addSeconds($expiresInSeconds);
         $expires = $expiration->timestamp;

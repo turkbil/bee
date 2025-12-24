@@ -15,27 +15,49 @@ class FavoritesController extends Controller
             return redirect()->route('login');
         }
 
-        $type = $request->get('type', 'all');
         $userId = auth()->id();
+
+        // Count her tip için
+        $modelMap = [
+            'songs' => Song::class,
+            'albums' => Album::class,
+            'playlists' => Playlist::class,
+            'genres' => \Modules\Muzibu\App\Models\Genre::class,
+            'sectors' => \Modules\Muzibu\App\Models\Sector::class,
+            'radios' => \Modules\Muzibu\App\Models\Radio::class,
+            'blogs' => \Modules\Blog\App\Models\Blog::class,
+        ];
+
+        $counts = [];
+        foreach ($modelMap as $key => $class) {
+            $counts[$key] = Favorite::where('user_id', $userId)
+                ->where('favoritable_type', $class)
+                ->count();
+        }
+
+        // Eğer hiç favori yoksa ve type belirtilmemişse, ilk dolu olan'a yönlendir
+        $type = $request->get('type');
+        if (!$type) {
+            foreach ($counts as $key => $count) {
+                if ($count > 0) {
+                    return redirect()->route('muzibu.favorites', ['type' => $key]);
+                }
+            }
+            // Hiç favori yoksa songs'a yönlendir
+            $type = 'songs';
+        }
 
         $query = Favorite::where('user_id', $userId)
             ->with('favoritable')
             ->latest();
 
-        if ($type !== 'all') {
-            $modelMap = [
-                'songs' => Song::class,
-                'albums' => Album::class,
-                'playlists' => Playlist::class,
-            ];
-            if (isset($modelMap[$type])) {
-                $query->where('favoritable_type', $modelMap[$type]);
-            }
+        if (isset($modelMap[$type])) {
+            $query->where('favoritable_type', $modelMap[$type]);
         }
 
         $favorites = $query->paginate(200);
 
-        return view('themes.muzibu.favorites.index', compact('favorites', 'type'));
+        return view('themes.muzibu.favorites.index', compact('favorites', 'type', 'counts'));
     }
 
     public function apiIndex(Request $request)
@@ -54,6 +76,10 @@ class FavoritesController extends Controller
                 'songs' => Song::class,
                 'albums' => Album::class,
                 'playlists' => Playlist::class,
+                'genres' => \Modules\Muzibu\App\Models\Genre::class,
+                'sectors' => \Modules\Muzibu\App\Models\Sector::class,
+                'radios' => \Modules\Muzibu\App\Models\Radio::class,
+                'blogs' => \Modules\Blog\App\Models\Blog::class,
             ];
             if (isset($modelMap[$type])) {
                 $query->where('favoritable_type', $modelMap[$type]);
@@ -82,7 +108,7 @@ class FavoritesController extends Controller
 
         // 2. Validate
         $validated = $request->validate([
-            'type' => 'required|in:song,playlist,album',
+            'type' => 'required|in:song,playlist,album,genre,sector,radio,blog',
             'id' => 'required|integer'
         ]);
 
@@ -95,6 +121,10 @@ class FavoritesController extends Controller
             'song' => Song::class,
             'playlist' => Playlist::class,
             'album' => Album::class,
+            'genre' => \Modules\Muzibu\App\Models\Genre::class,
+            'sector' => \Modules\Muzibu\App\Models\Sector::class,
+            'radio' => \Modules\Muzibu\App\Models\Radio::class,
+            'blog' => \Modules\Blog\App\Models\Blog::class,
         ];
 
         $modelClass = $modelMap[$type];
@@ -135,6 +165,10 @@ class FavoritesController extends Controller
             'song' => 'Şarkı',
             'playlist' => 'Playlist',
             'album' => 'Albüm',
+            'genre' => 'Tür',
+            'sector' => 'Sektör',
+            'radio' => 'Radyo',
+            'blog' => 'Blog',
         ];
 
         return response()->json([

@@ -472,7 +472,7 @@
                 </div>
 
                 <!-- Marketing Consent Radios -->
-                <div class="space-y-3 pl-7">
+                <div class="space-y-3">
                     <!-- Radio 1: Rıza Göstermiyorum -->
                     <div class="flex items-start gap-3">
                         <input

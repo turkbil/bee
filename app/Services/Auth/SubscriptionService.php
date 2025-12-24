@@ -39,8 +39,9 @@ class SubscriptionService
             'plan_id' => $plan->id,
             'status' => 'active',
             'price_per_cycle' => $price,
-            'starts_at' => $startsAt,
-            'ends_at' => $endsAt,
+            'started_at' => $startsAt,
+            'current_period_start' => $startsAt,
+            'current_period_end' => $endsAt,
             'trial_ends_at' => $trialEndsAt,
             'auto_renewal' => (bool) setting('auth_subscription_auto_renewal', true),
         ]);
@@ -53,10 +54,11 @@ class SubscriptionService
      */
     public function renew(Subscription $subscription): Subscription
     {
-        $newEndsAt = $subscription->ends_at->addDays($subscription->plan->duration_days);
+        $newEndsAt = $subscription->current_period_end->addDays($subscription->plan->duration_days);
 
         $subscription->update([
-            'ends_at' => $newEndsAt,
+            'current_period_start' => now(),
+            'current_period_end' => $newEndsAt,
             'status' => 'active',
         ]);
 
@@ -83,7 +85,7 @@ class SubscriptionService
     public function addTrialDays(Subscription $subscription, int $days): Subscription
     {
         $subscription->update([
-            'ends_at' => $subscription->ends_at->addDays($days),
+            'current_period_end' => $subscription->current_period_end->addDays($days),
             'trial_ends_at' => ($subscription->trial_ends_at ?? now())->addDays($days),
         ]);
 
@@ -96,8 +98,8 @@ class SubscriptionService
     public function getExpiringSoon(int $days = 7): \Illuminate\Database\Eloquent\Collection
     {
         return Subscription::where('status', 'active')
-            ->where('ends_at', '<=', now()->addDays($days))
-            ->where('ends_at', '>', now())
+            ->where('current_period_end', '<=', now()->addDays($days))
+            ->where('current_period_end', '>', now())
             ->with('user', 'plan')
             ->get();
     }
@@ -108,7 +110,7 @@ class SubscriptionService
     public function getExpired(): \Illuminate\Database\Eloquent\Collection
     {
         return Subscription::where('status', 'active')
-            ->where('ends_at', '<=', now())
+            ->where('current_period_end', '<=', now())
             ->with('user', 'plan')
             ->get();
     }
@@ -119,7 +121,7 @@ class SubscriptionService
     public function markExpired(): int
     {
         return Subscription::where('status', 'active')
-            ->where('ends_at', '<=', now())
+            ->where('current_period_end', '<=', now())
             ->update(['status' => 'expired']);
     }
 }

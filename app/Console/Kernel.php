@@ -191,6 +191,12 @@ class Kernel extends ConsoleKernel
 
         // 🔐 SUBSCRIPTION MANAGEMENT CRONS
 
+        // 🔗 Subscription Chain Transitions - Saatlik (active→expired, pending→active)
+        $schedule->command('subscription:process-transitions')
+                 ->hourly()
+                 ->withoutOverlapping()
+                 ->appendOutputTo(storage_path('logs/subscription-transitions.log'));
+
         // Check Expired Subscriptions - Günlük 06:00 (yeni unified command)
         $schedule->command('subscription:check-expired')
                  ->dailyAt('06:00')

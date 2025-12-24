@@ -236,8 +236,6 @@
                     {{-- Color Layer (Dynamic based on active tab) --}}
                     <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-green-500/40 via-green-500/20 to-transparent"
                          x-show="songsTab === 'new'"></div>
-                    <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-blue-500/40 via-blue-500/20 to-transparent"
-                         x-show="songsTab === 'trend'"></div>
                     <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-orange-500/40 via-orange-500/20 to-transparent"
                          x-show="songsTab === 'popular'"></div>
                     {{-- Dark Overlay (Bottom fade to #121212) --}}
@@ -259,36 +257,22 @@
                                 {{ trans('muzibu::front.general.new_songs') }}
                             </span>
                         </template>
-                        <template x-if="songsTab === 'trend'">
-                            <span class="flex items-center gap-2">
-                                <i class="fas fa-chart-line text-blue-400"></i>
-                                {{ trans('muzibu::front.general.trending_songs') }}
-                            </span>
-                        </template>
                     </h3>
                     <p class="text-xs text-gray-400 mt-1 px-3">
                         <template x-if="songsTab === 'new'">
                             <span>{{ trans('muzibu::front.sidebar.newly_added') }}</span>
-                        </template>
-                        <template x-if="songsTab === 'trend'">
-                            <span>{{ trans('muzibu::front.sidebar.trending') }}</span>
                         </template>
                         <template x-if="songsTab === 'popular'">
                             <span>{{ trans('muzibu::front.sidebar.most_played') }}</span>
                         </template>
                     </p>
 
-                    {{-- Tab Headers (3 tabs) - Pill Style: Yeni → Trend → Popüler --}}
-                    <div class="flex gap-1 pt-3 px-3">
+                    {{-- Tab Headers (2 tabs) - Pill Style: Yeni → Popüler --}}
+                    <div class="flex gap-2 pt-3 px-3">
                         <button @click="songsTab = 'new'"
                                 class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
                                 :class="songsTab === 'new' ? 'bg-green-500/20 text-green-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
                             <i class="fas fa-star mr-1"></i>{{ trans('muzibu::front.sidebar.new') }}
-                        </button>
-                        <button @click="songsTab = 'trend'"
-                                class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
-                                :class="songsTab === 'trend' ? 'bg-blue-500/20 text-blue-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
-                            <i class="fas fa-chart-line mr-1"></i>{{ trans('muzibu::front.sidebar.trend') }}
                         </button>
                         <button @click="songsTab = 'popular'"
                                 class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
@@ -339,26 +323,6 @@
                     </div>
                 </template>
 
-                {{-- TREND SONGS TAB --}}
-                <template x-if="songsTab === 'trend'">
-                    <div class="space-y-0.5">
-                        @if(isset($trendSongs) && count($trendSongs) > 0)
-                            @foreach($trendSongs->take(15) as $index => $song)
-                                <x-muzibu.song-list-item :song="$song" :index="$index" />
-                            @endforeach
-                        @elseif(isset($popularSongs) && count($popularSongs) > 0)
-                            {{-- Fallback: Use popularSongs shuffled if trendSongs not available --}}
-                            @foreach($popularSongs->shuffle()->take(15) as $index => $song)
-                                <x-muzibu.song-list-item :song="$song" :index="$index" />
-                            @endforeach
-                        @else
-                            <div class="text-center py-8 text-gray-500">
-                                <i class="fas fa-chart-line text-2xl mb-2"></i>
-                                <p class="text-xs">{{ trans('muzibu::front.messages.no_songs_found') }}</p>
-                            </div>
-                        @endif
-                    </div>
-                </template>
 
             </div>
         </div>

@@ -25,12 +25,22 @@ class TelegramNotificationService
     public function sendPhoneNumberAlert(AIConversation $conversation, array $phoneNumbers): void
     {
         try {
-            // Config kontrolü
-            $botToken = config('services.telegram-bot-api.token');
-            $chatId = config('services.telegram-bot-api.chat_id');
+            // 🔧 TENANT-AWARE: Settings Management'dan al (.env değil!)
+            $botToken = setting('telegram_bot_token');
+            $chatId = setting('telegram_chat_id');
+            $enabled = setting('telegram_enabled');
+
+            // Enabled kontrolü
+            if (!$enabled || $enabled === '0' || $enabled === 0) {
+                Log::info('ℹ️ Telegram bildirimleri devre dışı (tenant: ' . tenant('id') . ')');
+                return;
+            }
 
             if (empty($botToken) || empty($chatId)) {
-                Log::warning('⚠️ Telegram config eksik, bildirim gönderilemedi');
+                Log::warning('⚠️ Telegram ayarları eksik (tenant: ' . tenant('id') . ')', [
+                    'has_token' => !empty($botToken),
+                    'has_chat_id' => !empty($chatId),
+                ]);
                 return;
             }
 
@@ -44,31 +54,42 @@ class TelegramNotificationService
                 $phoneNumbers
             );
 
-            // Generate summary
-            $fullSummary = $summaryService->generateSummary($conversation);
             $adminLink = $summaryService->generateAdminLink($conversation);
+            $tenantDomain = $conversation->tenant?->domains()->first()?->domain ?? 'N/A';
 
-            // Get first user message
-            $firstUserMessage = $conversation->messages()
-                ->where('role', 'user')
-                ->orderBy('created_at', 'asc')
-                ->first();
+            // Get last 10 messages for conversation preview
+            $messages = $conversation->messages()
+                ->orderBy('created_at', 'desc')
+                ->take(10)
+                ->get()
+                ->reverse();
 
-            // Build Telegram message (HTML format - daha okunabilir)
-            $message = "📞 <b>YENİ TELEFON NUMARASI TOPLANDI!</b>\n\n";
-            $message .= "<b>Telefon:</b> " . implode(', ', $formattedPhones) . "\n";
-            $message .= "<b>Konuşma ID:</b> {$conversation->id}\n";
-            $message .= "<b>Mesaj Sayısı:</b> {$conversation->message_count}\n";
-            $message .= "<b>Tenant:</b> " . ($conversation->tenant_id ?? 'N/A') . "\n\n";
+            // Build Telegram message (HTML format - temiz ve okunabilir)
+            $message = "📞 <b>YENİ MÜŞTERİ İLETİŞİMİ</b>\n\n";
 
-            if ($firstUserMessage) {
-                $preview = mb_substr($firstUserMessage->content, 0, 100);
-                $message .= "<b>İlk Mesaj:</b> {$preview}...\n\n";
+            // Temel bilgiler
+            $message .= "<b>📱 Telefon:</b> " . implode(', ', $formattedPhones) . "\n";
+            $message .= "<b>📅 Tarih:</b> " . $conversation->created_at->format('d.m.Y H:i') . "\n";
+            $message .= "<b>🌐 Site:</b> {$tenantDomain}\n\n";
+
+            // Konuşma içeriği
+            $message .= "💬 <b>KONUŞMA</b> ({$conversation->message_count} mesaj)\n";
+            $message .= "─────────────────────────\n";
+
+            foreach ($messages as $msg) {
+                $role = $msg->role === 'user' ? '👤 Müşteri' : '🤖 AI';
+                $content = mb_strlen($msg->content) > 200
+                    ? mb_substr($msg->content, 0, 200) . '...'
+                    : $msg->content;
+
+                // HTML escape
+                $content = htmlspecialchars($content, ENT_QUOTES, 'UTF-8');
+
+                $message .= "\n<b>{$role}:</b>\n{$content}\n";
             }
 
-            $message .= "<b>Admin Panel:</b> {$adminLink}\n\n";
-            $message .= "━━━━━━━━━━━━━━━━━━━━\n";
-            $message .= $this->formatSummaryForTelegram($fullSummary);
+            $message .= "\n─────────────────────────\n";
+            $message .= "🔗 <a href=\"{$adminLink}\">Detaylı İnceleme</a>";
 
             // Send via Telegram Bot API
             $response = Http::post("https://api.telegram.org/bot{$botToken}/sendMessage", [
@@ -99,28 +120,6 @@ class TelegramNotificationService
         }
     }
 
-    /**
-     * Format summary for Telegram (HTML mode)
-     *
-     * @param string $text
-     * @return string
-     */
-    private function formatSummaryForTelegram(string $text): string
-    {
-        // HTML özel karakterlerini escape et
-        $text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
-
-        // Bazı formatlamaları HTML'e çevir
-        $text = preg_replace('/\*\*(.*?)\*\*/', '<b>$1</b>', $text); // **bold** → <b>bold</b>
-        $text = preg_replace('/\*(.*?)\*/', '<i>$1</i>', $text);     // *italic* → <i>italic</i>
-
-        // Uzun metni kısalt (Telegram 4096 karakter limiti)
-        if (strlen($text) > 3500) {
-            $text = mb_substr($text, 0, 3500) . "...\n\n(Detaylar admin panelden görülebilir)";
-        }
-
-        return $text;
-    }
 
     /**
      * Test Telegram connection
@@ -130,13 +129,21 @@ class TelegramNotificationService
     public function testConnection(): array
     {
         try {
-            $botToken = config('services.telegram-bot-api.token');
-            $chatId = config('services.telegram-bot-api.chat_id');
+            // 🔧 TENANT-AWARE: Settings Management'dan al
+            $botToken = setting('telegram_bot_token');
+            $chatId = setting('telegram_chat_id');
+            $enabled = setting('telegram_enabled');
 
             if (empty($botToken) || empty($chatId)) {
                 return [
                     'success' => false,
-                    'error' => 'Telegram config eksik (.env TELEGRAM_BOT_TOKEN ve TELEGRAM_CHAT_ID)',
+                    'error' => 'Telegram ayarları eksik (Admin Panel → Ayarlar → Bildirim Ayarları)',
+                    'tenant_id' => tenant('id'),
+                    'settings' => [
+                        'telegram_enabled' => $enabled ?? '(yok)',
+                        'telegram_bot_token' => $botToken ? '(set)' : '(yok)',
+                        'telegram_chat_id' => $chatId ?? '(yok)',
+                    ],
                 ];
             }
 

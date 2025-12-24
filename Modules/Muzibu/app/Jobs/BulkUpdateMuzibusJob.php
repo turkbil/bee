@@ -46,7 +46,7 @@ class BulkUpdateMuzibusJob implements ShouldQueue
         public string $userId,
         public array $options = []
     ) {
-        $this->onQueue('tenant_isolated');
+        $this->onQueue('muzibu_isolated');
     }
 
     /**

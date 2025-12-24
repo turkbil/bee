@@ -1,117 +1,709 @@
-player-core.js?v=1766411193:1056 Uncaught SyntaxError: Unexpected token ')' (at player-core.js?v=1766411193:1056:27)
-VM752:3 🔐 Auth Debug: {isLoggedIn: false, currentUser: null}
-(index):6628 🔐 Session check component initialized
-(index):6633 🔐 Starting session check polling (5 seconds interval)
-favorites.js?v=1766368636:199 🎵 Loading user favorites...
-(index):8262 ✅ Player store verified
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: muzibuApp is not defined
+<aside x-show="showQueue" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="transform translate-x-full" x-transition:enter-end="transform translate-x-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="transform translate-x-0" x-transition:leave-end="transform translate-x-full" class="fixed top-0 right-0 bottom-0 w-full sm:w-96 bg-gradient-to-b from-zinc-900 via-zinc-900 to-black border-l border-white/5 shadow-2xl z-50 flex flex-col">
+    
+    <div class="flex items-center justify-between px-5 py-4 border-b border-white/5">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-muzibu-coral/20 rounded-lg flex items-center justify-center">
+                <i class="fas fa-stream text-muzibu-coral text-sm"></i>
+            </div>
+            <div>
+                <h3 class="text-base font-bold text-white">Sıra</h3>
+                <p class="text-xs text-zinc-500" x-text="(queue || []).length + ' Şarkı'">11 Şarkı</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-1">
+            <button @click="clearQueue()" class="p-2 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all" title="Sırayı Temizle">
+                <i class="fas fa-trash-alt text-sm"></i>
+            </button>
+            <button @click="showQueue = false" class="p-2 text-zinc-500 hover:text-white hover:bg-white/10 rounded-lg transition-all">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
 
-Expression: "muzibuApp()"
+    
+    <template x-if="currentSong">
+        <div class="px-5 py-4 bg-gradient-to-r from-muzibu-coral/10 to-transparent border-b border-white/5">
+            <div class="flex items-center gap-2 mb-3">
+                <div class="w-1.5 h-1.5 bg-muzibu-coral rounded-full animate-pulse"></div>
+                <span class="text-xs font-semibold text-muzibu-coral uppercase tracking-wider">Şimdi Çalınıyor</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-muzibu-coral to-pink-600 flex-shrink-0 overflow-hidden shadow-lg shadow-muzibu-coral/20">
+                    <template x-if="currentSong.album_cover">
+                        <img :src="getCoverUrl(currentSong.album_cover, 56, 56)" :alt="currentSong.song_title" class="w-full h-full object-cover">
+                    </template>
+                    <template x-if="!currentSong.album_cover">
+                        <div class="w-full h-full flex items-center justify-center text-2xl">🎵</div>
+                    </template>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h4 class="text-sm font-bold text-white truncate" x-text="currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')"></h4>
+                    <p class="text-xs text-zinc-400 truncate mt-0.5" x-text="currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')"></p>
+                </div>
+                <button @click="toggleLike()" class="p-2 transition-all" :class="isLiked ? 'text-muzibu-coral' : 'text-zinc-500 hover:text-white'">
+                    <i :class="isLiked ? 'fas fa-heart' : 'far fa-heart'"></i>
+                </button>
+            </div>
+        </div>
+    </template><div class="px-5 py-4 bg-gradient-to-r from-muzibu-coral/10 to-transparent border-b border-white/5">
+            <div class="flex items-center gap-2 mb-3">
+                <div class="w-1.5 h-1.5 bg-muzibu-coral rounded-full animate-pulse"></div>
+                <span class="text-xs font-semibold text-muzibu-coral uppercase tracking-wider">Şimdi Çalınıyor</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-muzibu-coral to-pink-600 flex-shrink-0 overflow-hidden shadow-lg shadow-muzibu-coral/20">
+                    <template x-if="currentSong.album_cover">
+                        <img :src="getCoverUrl(currentSong.album_cover, 56, 56)" :alt="currentSong.song_title" class="w-full h-full object-cover">
+                    </template>
+                    <template x-if="!currentSong.album_cover">
+                        <div class="w-full h-full flex items-center justify-center text-2xl">🎵</div>
+                    </template><div class="w-full h-full flex items-center justify-center text-2xl">🎵</div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h4 class="text-sm font-bold text-white truncate" x-text="currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Saksıdaki Çiçekler</h4>
+                    <p class="text-xs text-zinc-400 truncate mt-0.5" x-text="currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
+                </div>
+                <button @click="toggleLike()" class="p-2 transition-all text-muzibu-coral" :class="isLiked ? 'text-muzibu-coral' : 'text-zinc-500 hover:text-white'">
+                    <i :class="isLiked ? 'fas fa-heart' : 'far fa-heart'" class="fas fa-heart"></i>
+                </button>
+            </div>
+        </div>
 
- <html lang=​"tr" x-data=​"muzibuApp()​" x-init=​"init()​" class=​"dark">​<head>​…​</head>​<body class=​"bg-black text-white overflow-hidden" @play-song.window=​"playSong($event.detail.songId)​">​…​</body>​</html>​
-handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3564
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: init is not defined
+    
+    <div class="px-5 py-3 flex items-center justify-between border-b border-white/5">
+        <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Sıradaki Şarkılar</span>
+        <span class="text-xs text-zinc-600" x-show="queue &amp;&amp; queue.length &gt; 0" style="">Sürükleyerek sırala</span>
+    </div>
 
-Expression: "init()"
+    
+    <div class="flex-1 overflow-y-auto">
+        
+        <template x-if="!queue || queue.length === 0">
+            <div class="flex flex-col items-center justify-center h-full text-center px-8">
+                <div class="w-20 h-20 bg-zinc-800/50 rounded-full flex items-center justify-center mb-4">
+                    <i class="fas fa-music text-3xl text-zinc-600"></i>
+                </div>
+                <h4 class="text-base font-semibold text-zinc-400 mb-1">Sıra Boş</h4>
+                <p class="text-sm text-zinc-600">Şarkı eklemek için bir playlist veya albüme gidin</p>
+            </div>
+        </template>
 
- <html lang=​"tr" x-data=​"muzibuApp()​" x-init=​"init()​" class=​"dark">​<head>​…​</head>​<body class=​"bg-black text-white overflow-hidden" @play-song.window=​"playSong($event.detail.songId)​">​…​</body>​</html>​
-handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3489
-(anonymous) @ livewire.js?id=df3a17f2:1909
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: muzibuApp is not defined
-    at [Alpine] muzibuApp(/) (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:16)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at evaluate (livewire.js?id=df3a17f2:1140:34)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3564:17)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-    at stopDeferring (livewire.js?id=df3a17f2:1286:7)
-    at deferHandlingDirectives (livewire.js?id=df3a17f2:1289:5)
-    at initTree (livewire.js?id=df3a17f2:1479:5)
-    at livewire.js?id=df3a17f2:1428:7
-[Alpine] muzibuApp() @ VM708:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3564
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: init is not defined
-    at [Alpine] init(/) (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:16)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at evaluate (livewire.js?id=df3a17f2:1140:34)
-    at livewire.js?id=df3a17f2:3489:37
-    at Function.<anonymous> (livewire.js?id=df3a17f2:1909:58)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-    at stopDeferring (livewire.js?id=df3a17f2:1286:7)
-    at deferHandlingDirectives (livewire.js?id=df3a17f2:1289:5)
-    at initTree (livewire.js?id=df3a17f2:1479:5)
-[Alpine] init() @ VM709:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3489
-(anonymous) @ livewire.js?id=df3a17f2:1909
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-VM1229:38 🧪 Debug Panel connected
-(index):8248 ✅ Player store = Proxy to root (auto-forward all properties/methods)
-(index):6642  GET https://muzibu.com.tr/api/session/check 401 (Unauthorized)
-checkSession @ (index):6642
-(anonymous) @ (index):6636
-setInterval
-startSessionCheck @ (index):6635
-init @ (index):6629
-(anonymous) @ livewire.js?id=df3a17f2:1160
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3571
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-(index):6657 🔐 Session terminated - showing modal
+        
+        <div id="queue-list" class="p-2 space-y-0.5">
+            <template x-for="(song, index) in (queue || [])" :key="'queue-' + index + '-' + (song?.song_id || 'song')">
+                <div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group" :class="{
+                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
+                        'hover:bg-white/5': queueIndex !== index,
+                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
+                        'opacity-50': draggedIndex === index
+                    }">
+                    
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
+                        <template x-if="song.album_cover">
+                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
+                        </template>
+                        <template x-if="!song.album_cover">
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        </template>
+                        
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <i class="fas fa-play text-white text-xs"></i>
+                        </div>
+                        
+                        <template x-if="queueIndex === index">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
+                        </template>
+                    </div>
+
+                    
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium truncate transition-colors" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')"></h4>
+                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')"></p>
+                    </div>
+
+                    
+                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)"></div>
+
+                    
+                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                        
+                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                        
+                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
+                            <i class="fas fa-grip-vertical text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+            </template><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
+                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
+                        'hover:bg-white/5': queueIndex !== index,
+                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
+                        'opacity-50': draggedIndex === index
+                    }">
+                    
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
+                        <template x-if="song.album_cover">
+                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
+                        </template>
+                        <template x-if="!song.album_cover">
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        </template><div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <i class="fas fa-play text-white text-xs"></i>
+                        </div>
+                        
+                        <template x-if="queueIndex === index">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
+                        </template>
+                    </div>
+
+                    
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Saksıdaki Çiçekler</h4>
+                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
+                    </div>
+
+                    
+                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:37</div>
+
+                    
+                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                        
+                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                        
+                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
+                            <i class="fas fa-grip-vertical text-xs"></i>
+                        </div>
+                    </div>
+                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
+                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
+                        'hover:bg-white/5': queueIndex !== index,
+                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
+                        'opacity-50': draggedIndex === index
+                    }">
+                    
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
+                        <template x-if="song.album_cover">
+                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
+                        </template>
+                        <template x-if="!song.album_cover">
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        </template><div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <i class="fas fa-play text-white text-xs"></i>
+                        </div>
+                        
+                        <template x-if="queueIndex === index">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
+                        </template>
+                    </div>
+
+                    
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Yalnız Kurt</h4>
+                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
+                    </div>
+
+                    
+                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:55</div>
+
+                    
+                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                        
+                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                        
+                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
+                            <i class="fas fa-grip-vertical text-xs"></i>
+                        </div>
+                    </div>
+                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
+                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
+                        'hover:bg-white/5': queueIndex !== index,
+                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
+                        'opacity-50': draggedIndex === index
+                    }">
+                    
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
+                        <template x-if="song.album_cover">
+                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
+                        </template>
+                        <template x-if="!song.album_cover">
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        </template><div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <i class="fas fa-play text-white text-xs"></i>
+                        </div>
+                        
+                        <template x-if="queueIndex === index">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
+                        </template>
+                    </div>
+
+                    
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Cold Love</h4>
+                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
+                    </div>
+
+                    
+                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:03</div>
+
+                    
+                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                        
+                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                        
+                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
+                            <i class="fas fa-grip-vertical text-xs"></i>
+                        </div>
+                    </div>
+                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
+                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
+                        'hover:bg-white/5': queueIndex !== index,
+                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
+                        'opacity-50': draggedIndex === index
+                    }">
+                    
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
+                        <template x-if="song.album_cover">
+                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
+                        </template>
+                        <template x-if="!song.album_cover">
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        </template><div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <i class="fas fa-play text-white text-xs"></i>
+                        </div>
+                        
+                        <template x-if="queueIndex === index">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
+                        </template>
+                    </div>
+
+                    
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Yalnız Kurt</h4>
+                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
+                    </div>
+
+                    
+                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:55</div>
+
+                    
+                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                        
+                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                        
+                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
+                            <i class="fas fa-grip-vertical text-xs"></i>
+                        </div>
+                    </div>
+                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
+                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
+                        'hover:bg-white/5': queueIndex !== index,
+                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
+                        'opacity-50': draggedIndex === index
+                    }">
+                    
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
+                        <template x-if="song.album_cover">
+                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
+                        </template>
+                        <template x-if="!song.album_cover">
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        </template><div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <i class="fas fa-play text-white text-xs"></i>
+                        </div>
+                        
+                        <template x-if="queueIndex === index">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
+                        </template>
+                    </div>
+
+                    
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Saksıdaki Çiçekler</h4>
+                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
+                    </div>
+
+                    
+                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:37</div>
+
+                    
+                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                        
+                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                        
+                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
+                            <i class="fas fa-grip-vertical text-xs"></i>
+                        </div>
+                    </div>
+                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
+                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
+                        'hover:bg-white/5': queueIndex !== index,
+                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
+                        'opacity-50': draggedIndex === index
+                    }">
+                    
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
+                        <template x-if="song.album_cover">
+                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
+                        </template>
+                        <template x-if="!song.album_cover">
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        </template><div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <i class="fas fa-play text-white text-xs"></i>
+                        </div>
+                        
+                        <template x-if="queueIndex === index">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
+                        </template>
+                    </div>
+
+                    
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Cold Love</h4>
+                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
+                    </div>
+
+                    
+                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:03</div>
+
+                    
+                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                        
+                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                        
+                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
+                            <i class="fas fa-grip-vertical text-xs"></i>
+                        </div>
+                    </div>
+                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group bg-muzibu-coral/10 border border-muzibu-coral/20" :class="{
+                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
+                        'hover:bg-white/5': queueIndex !== index,
+                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
+                        'opacity-50': draggedIndex === index
+                    }">
+                    
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
+                        <template x-if="song.album_cover">
+                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
+                        </template>
+                        <template x-if="!song.album_cover">
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        </template><div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <i class="fas fa-play text-white text-xs"></i>
+                        </div>
+                        
+                        <template x-if="queueIndex === index">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
+                        </template><div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
+                    </div>
+
+                    
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium truncate transition-colors text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Saksıdaki Çiçekler</h4>
+                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
+                    </div>
+
+                    
+                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:37</div>
+
+                    
+                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                        
+                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                        
+                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
+                            <i class="fas fa-grip-vertical text-xs"></i>
+                        </div>
+                    </div>
+                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
+                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
+                        'hover:bg-white/5': queueIndex !== index,
+                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
+                        'opacity-50': draggedIndex === index
+                    }">
+                    
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
+                        <template x-if="song.album_cover">
+                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
+                        </template>
+                        <template x-if="!song.album_cover">
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        </template><div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <i class="fas fa-play text-white text-xs"></i>
+                        </div>
+                        
+                        <template x-if="queueIndex === index">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
+                        </template>
+                    </div>
+
+                    
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Yalnız Kurt</h4>
+                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
+                    </div>
+
+                    
+                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:55</div>
+
+                    
+                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                        
+                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                        
+                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
+                            <i class="fas fa-grip-vertical text-xs"></i>
+                        </div>
+                    </div>
+                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
+                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
+                        'hover:bg-white/5': queueIndex !== index,
+                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
+                        'opacity-50': draggedIndex === index
+                    }">
+                    
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
+                        <template x-if="song.album_cover">
+                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
+                        </template>
+                        <template x-if="!song.album_cover">
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        </template><div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <i class="fas fa-play text-white text-xs"></i>
+                        </div>
+                        
+                        <template x-if="queueIndex === index">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
+                        </template>
+                    </div>
+
+                    
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Cold Love</h4>
+                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
+                    </div>
+
+                    
+                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:03</div>
+
+                    
+                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                        
+                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                        
+                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
+                            <i class="fas fa-grip-vertical text-xs"></i>
+                        </div>
+                    </div>
+                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
+                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
+                        'hover:bg-white/5': queueIndex !== index,
+                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
+                        'opacity-50': draggedIndex === index
+                    }">
+                    
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
+                        <template x-if="song.album_cover">
+                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
+                        </template>
+                        <template x-if="!song.album_cover">
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        </template><div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <i class="fas fa-play text-white text-xs"></i>
+                        </div>
+                        
+                        <template x-if="queueIndex === index">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
+                        </template>
+                    </div>
+
+                    
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Saksıdaki Çiçekler</h4>
+                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
+                    </div>
+
+                    
+                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:37</div>
+
+                    
+                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                        
+                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                        
+                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
+                            <i class="fas fa-grip-vertical text-xs"></i>
+                        </div>
+                    </div>
+                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
+                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
+                        'hover:bg-white/5': queueIndex !== index,
+                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
+                        'opacity-50': draggedIndex === index
+                    }">
+                    
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
+                        <template x-if="song.album_cover">
+                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
+                        </template>
+                        <template x-if="!song.album_cover">
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        </template><div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <i class="fas fa-play text-white text-xs"></i>
+                        </div>
+                        
+                        <template x-if="queueIndex === index">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
+                        </template>
+                    </div>
+
+                    
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Yalnız Kurt</h4>
+                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
+                    </div>
+
+                    
+                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:55</div>
+
+                    
+                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                        
+                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                        
+                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
+                            <i class="fas fa-grip-vertical text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+    
+    <div class="px-5 py-3 border-t border-white/5 bg-transparent">
+        <div class="flex items-center justify-between text-xs text-zinc-600">
+            <span x-show="queue &amp;&amp; queue.length &gt; 0" style="">
+                <i class="fas fa-info-circle mr-1"></i>
+                Şarkılara tıklayarak çal
+            </span>
+            
+        </div>
+    </div>
+</aside>

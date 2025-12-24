@@ -1426,7 +1426,7 @@
                     </div>
 
                     {{-- Ödeme Yöntemi --}}
-                    <div class="p-5 border-b border-gray-200 dark:border-gray-700">
+                    <div id="payment-section" class="p-5 border-b border-gray-200 dark:border-gray-700">
                         <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">
                             <i class="fa-solid fa-wallet text-gray-700 dark:text-gray-500 mr-2"></i>Ödeme Yöntemi
                         </h3>
@@ -1819,6 +1819,23 @@
         const cleanUrl = window.location.pathname; // Sadece path, query parametreleri olmadan
         window.history.replaceState({}, document.title, cleanUrl);
         console.log('🧹 URL parameters cleaned');
+    }
+
+    // 🎯 Auto-scroll to payment section (corporate subscriptions)
+    // Corporate/subscriptions sayfasından ?focus=payment ile gelenler için
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('focus') === 'payment') {
+        // Sayfa tamamen yüklendikten sonra scroll et (Livewire render tamamlansın)
+        setTimeout(() => {
+            const paymentSection = document.getElementById('payment-section');
+            if (paymentSection) {
+                paymentSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                console.log('🎯 Auto-scrolled to payment section');
+            }
+        }, 800); // 800ms bekle (Livewire render + animasyonlar için)
     }
 </script>
 @endscript

@@ -152,7 +152,7 @@ class SubscriptionPlanManageComponent extends Component
         if ($this->inputs['is_trial'] && count($this->cycles) >= 1) {
             $this->dispatch('toast', [
                 'title' => __('admin.error'),
-                'message' => 'Deneme üyeliği için sadece 1 süre eklenebilir!',
+                'message' => __('subscription::admin.trial_single_cycle_only'),
                 'type' => 'error'
             ]);
             return;
@@ -182,7 +182,7 @@ class SubscriptionPlanManageComponent extends Component
 
         $this->dispatch('toast', [
             'title' => __('admin.success'),
-            'message' => 'Cycle eklendi!',
+            'message' => __('subscription::admin.cycle_added'),
             'type' => 'success'
         ]);
     }
@@ -218,7 +218,7 @@ class SubscriptionPlanManageComponent extends Component
 
         $this->dispatch('toast', [
             'title' => __('admin.success'),
-            'message' => 'Cycle güncellendi!',
+            'message' => __('subscription::admin.cycle_updated'),
             'type' => 'success'
         ]);
     }
@@ -232,7 +232,7 @@ class SubscriptionPlanManageComponent extends Component
 
         $this->dispatch('toast', [
             'title' => __('admin.success'),
-            'message' => 'Cycle silindi!',
+            'message' => __('subscription::admin.cycle_deleted'),
             'type' => 'success'
         ]);
     }

@@ -43,8 +43,8 @@ class Radio extends BaseModel implements TranslatableEntity, HasMedia
     ];
 
     protected $casts = [
-        'title' => 'array',
-        'slug' => 'array',
+        // NOT: title, slug CAST'LANMAMALI!
+        // HasTranslations trait bunları otomatik yönetiyor
         'is_active' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',

@@ -1,4 +1,4 @@
-<header class="row-start-1 xl:col-span-3 lg:col-span-2 col-span-1 bg-black/80 backdrop-blur-md border-b border-white/5 px-4 flex items-center justify-between sticky top-0 z-50">
+<header class="row-start-1 bg-black/80 backdrop-blur-md border-b border-white/5 px-4 flex items-center justify-between sticky top-0 z-50" style="grid-column: 1 / -1;">
     <div class="flex items-center gap-4 flex-1">
         {{-- Mobile Hamburger --}}
         <button
@@ -53,9 +53,9 @@
             @endif
         </a>
 
-        {{-- Cache Clear Button - Icon Only (Logonun yanında) - SADECE ADMIN --}}
+        {{-- Cache Clear Button - Icon Only (Logonun yanında) - SADECE ADMIN/ROOT/EDITOR --}}
         @auth
-            @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('super-admin'))
+            @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('root') || auth()->user()->hasRole('editor'))
         <button
             @click="clearCache()"
             class="w-9 h-9 bg-white/5 hover:bg-muzibu-coral/20 rounded-lg flex items-center justify-center text-muzibu-text-gray hover:text-muzibu-coral transition-all duration-300 group"
@@ -534,8 +534,23 @@
     </div>
 
     <div class="flex items-center gap-5">
-        {{-- 🧪 DEBUG: Auth Status --}}
-        <div class="hidden" x-data x-init="console.log('🔐 Auth Debug:', { isLoggedIn, currentUser })"></div>
+        {{-- 🧪 DEBUG: Auth Status (PHP + JS karşılaştırması) --}}
+        <div class="hidden" x-data x-init="
+            const phpAuth = {{ auth()->check() ? 'true' : 'false' }};
+            const jsAuth = isLoggedIn;
+
+            if (phpAuth !== jsAuth) {
+                console.warn('⚠️ Auth TUTARSIZLIK:', {
+                    php_auth: phpAuth,
+                    js_isLoggedIn: jsAuth,
+                    aciklama: phpAuth && !jsAuth
+                        ? 'PHP login ama JS logout - muhtemelen HLS 401 sonrası yanlış logout'
+                        : 'JS login ama PHP logout - session expired'
+                });
+            } else {
+                console.log('✅ Auth Tutarlı:', { isLoggedIn: jsAuth, currentUser: currentUser?.name || null });
+            }
+        "></div>
 
         {{-- Premium Button (non-premium only) - SPA Reactive --}}
         <a
@@ -549,6 +564,36 @@
             <span class="hidden md:inline">{{ trans('muzibu::front.user.go_premium') }}</span>
             <span class="md:hidden">Premium</span>
         </a>
+
+        {{-- 🛒 Cart Icon - Only show when cart has items --}}
+        @php
+            $cartItemCount = 0;
+            if (function_exists('tenant') && tenant()) {
+                try {
+                    $cartService = app(\Modules\Cart\App\Services\CartService::class);
+                    $sessionId = session()->getId();
+                    $customerId = auth()->check() ? auth()->id() : null;
+                    $userCart = $cartService->getCart($customerId, $sessionId);
+                    if ($userCart) {
+                        $cartItemCount = $userCart->items()->where('is_active', true)->sum('quantity');
+                    }
+                } catch (\Exception $e) {
+                    // Silent fail
+                }
+            }
+        @endphp
+
+        @if($cartItemCount > 0)
+            <a href="/cart"
+               class="relative w-10 h-10 bg-white/5 hover:bg-muzibu-coral/20 rounded-full flex items-center justify-center text-white/80 hover:text-muzibu-coral transition-all duration-300 group"
+               title="{{ trans('cart::front.cart') ?? 'Sepet' }}"
+            >
+                <i class="fas fa-shopping-cart text-lg"></i>
+                <span class="absolute -top-1 -right-1 min-w-[20px] h-5 bg-muzibu-coral text-white text-xs font-bold rounded-full flex items-center justify-center px-1 ring-2 ring-black">
+                    {{ $cartItemCount > 99 ? '99+' : $cartItemCount }}
+                </span>
+            </a>
+        @endif
 
         {{-- Notification with badge - SPA Reactive --}}
         <button
@@ -591,32 +636,51 @@
                         <span class="text-yellow-400 text-xs font-semibold">{{ trans('muzibu::front.user.premium_member') }}</span>
                     </div>
 
-                    {{-- Üyelik Tipi Badge (Sadece statik gösterim) --}}
+                    {{-- Trial Badge (Sadece trial üyeler için) --}}
                     @auth
                         @php
                             $subscriptionService = app(\Modules\Subscription\App\Services\SubscriptionService::class);
                             $access = $subscriptionService->checkUserAccess(auth()->user());
                             $isTrial = $access['is_trial'] ?? false;
-                            $isPremiumOrTrial = auth()->user()->isPremiumOrTrial();
+                            $isPremium = auth()->user()->isPremiumOrTrial();
                         @endphp
 
-                        @if($isTrial)
-                            <span class="mt-1 inline-flex items-center gap-1 px-2 py-0.5 bg-green-500/20 border border-green-500/30 rounded-full">
+                        @if($isTrial && !$isPremium)
+                            {{-- Sadece deneme üyeliği var, premium yok --}}
+                            <div class="mt-2 inline-flex items-center gap-1 px-2 py-0.5 bg-green-500/20 border border-green-500/30 rounded-full">
                                 <i class="fas fa-gift text-green-400 text-[10px]"></i>
                                 <span class="text-green-400 text-[10px] font-semibold">{{ trans('muzibu::front.user.trial_member') }}</span>
-                            </span>
-                        @elseif($isPremiumOrTrial)
-                            <span class="mt-1 inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-500/20 border border-yellow-500/30 rounded-full">
-                                <i class="fas fa-crown text-yellow-400 text-[10px]"></i>
-                                <span class="text-yellow-400 text-[10px] font-semibold">{{ trans('muzibu::front.user.premium_member') }}</span>
-                            </span>
-                        @else
-                            <span class="mt-1 inline-flex items-center gap-1 px-2 py-0.5 bg-gray-500/20 border border-gray-500/30 rounded-full">
-                                <span class="text-gray-400 text-[10px] font-semibold">{{ trans('muzibu::front.user.free_member') }}</span>
-                            </span>
+                            </div>
                         @endif
                     @endauth
                 </div>
+
+                {{-- Admin Panel (Sadece admin/root/editor yetkisi olanlara) --}}
+                @auth
+                    @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('root') || auth()->user()->hasRole('editor'))
+                        <a href="/admin" target="_blank" rel="noopener noreferrer" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-blue-500/10 text-blue-400 text-sm transition-colors">
+                            <i class="fas fa-user-shield w-5"></i>
+                            <span>{{ trans('muzibu::front.user.admin_panel') }}</span>
+                            <i class="fas fa-external-link-alt ml-auto text-xs opacity-50"></i>
+                        </a>
+                        <div class="h-px bg-white/10 my-1"></div>
+                    @endif
+                @endauth
+
+                {{-- Kurumsal Panel (Sadece kurumsal sahipleri için) --}}
+                @auth
+                    @php
+                        $isCorporateOwner = \Modules\Muzibu\App\Models\MuzibuCorporateAccount::where('user_id', auth()->id())
+                            ->whereNull('parent_id')
+                            ->exists();
+                    @endphp
+                    @if($isCorporateOwner)
+                        <a href="/corporate/dashboard" @click="userMenuOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-purple-500/10 text-purple-400 text-sm transition-colors" data-spa>
+                            <i class="fas fa-building w-5"></i>
+                            <span>Kurumsal Panel</span>
+                        </a>
+                    @endif
+                @endauth
 
                 {{-- Dashboard Link --}}
                 <a href="/dashboard" @click="userMenuOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-white text-sm transition-colors">

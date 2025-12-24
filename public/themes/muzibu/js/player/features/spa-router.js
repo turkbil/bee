@@ -14,6 +14,10 @@ const MuzibuSpaRouter = {
     // Auth pages that should NOT use SPA navigation
     authPaths: ['/login', '/register', '/forgot-password', '/reset-password', '/verify-email', '/logout'],
 
+    // 🔴 DYNAMIC PAGES: User-specific content - NEVER cache!
+    // Bu sayfalar kullanıcıya özel içerik gösterir, cache'lenmemeli
+    dynamicPaths: ['/favorites', '/my-playlists', '/dashboard', '/listening-history', '/corporate', '/cart', '/checkout'],
+
     // 🚀 PREFETCH SYSTEM
     prefetchCache: new Map(), // URL → {html, timestamp}
     prefetchQueue: new Set(), // URLs being prefetched
@@ -199,6 +203,12 @@ const MuzibuSpaRouter = {
             return false;
         }
 
+        // 🔴 SKIP DYNAMIC PAGES: User-specific content should NEVER be prefetched
+        // Favoriler, playlistler, dashboard vb. her zaman taze veri çekmeli
+        if (this.isDynamicPath(urlPath)) {
+            return false;
+        }
+
         return true;
     },
 
@@ -277,6 +287,36 @@ const MuzibuSpaRouter = {
     },
 
     /**
+     * 🔴 Check if path is a dynamic page (user-specific, should NOT be cached)
+     * Bu sayfalar kullanıcıya özel içerik gösterir: favoriler, playlistler, dashboard vb.
+     */
+    isDynamicPath(path) {
+        return this.dynamicPaths.some(dynamicPath => path === dynamicPath || path.startsWith(dynamicPath + '/') || path.startsWith(dynamicPath + '?'));
+    },
+
+    /**
+     * 🧹 Clear cache for dynamic pages
+     * Favori ekleme/çıkarma gibi işlemlerden sonra çağrılır
+     */
+    clearDynamicCache() {
+        let cleared = 0;
+        for (const [url] of this.prefetchCache) {
+            try {
+                const urlPath = new URL(url, window.location.origin).pathname;
+                if (this.isDynamicPath(urlPath)) {
+                    this.prefetchCache.delete(url);
+                    cleared++;
+                }
+            } catch (e) {
+                // Invalid URL, skip
+            }
+        }
+        if (cleared > 0) {
+            console.log(`🧹 Cleared ${cleared} dynamic page(s) from SPA cache`);
+        }
+    },
+
+    /**
      * Navigate to URL using SPA
      */
     async navigateTo(url) {
@@ -327,25 +367,37 @@ const MuzibuSpaRouter = {
             let html;
             let fetchPromise;
 
-            // 🚀 CHECK CACHE FIRST (instant navigation!)
-            const cached = this.prefetchCache.get(url);
-            if (cached) {
-                const age = Date.now() - cached.timestamp;
-                if (age < this.cacheTimeout) {
-                    console.log('⚡ Using cached page (instant!):', url);
-                    // ⚡ INSTANT: Cancel loading timeout immediately (no overlay needed!)
-                    clearTimeout(loadingTimeout);
-                    this.isLoading = false; // Cache hit - loading gösterme!
-                    html = cached.html;
-                    fetchPromise = Promise.resolve(html);
+            // 🔴 DYNAMIC PAGES: Always fetch fresh (never use cache!)
+            // Favoriler, playlistler, dashboard vb. kullanıcıya özel içerik
+            const urlPath = new URL(url, window.location.origin).pathname;
+            const isDynamic = this.isDynamicPath(urlPath);
+
+            if (isDynamic) {
+                console.log('🔴 Dynamic page detected, fetching fresh:', url);
+                // Remove from cache if exists (stale data)
+                this.prefetchCache.delete(url);
+                fetchPromise = this.fetchPage(url);
+            } else {
+                // 🚀 CHECK CACHE FIRST (instant navigation!)
+                const cached = this.prefetchCache.get(url);
+                if (cached) {
+                    const age = Date.now() - cached.timestamp;
+                    if (age < this.cacheTimeout) {
+                        console.log('⚡ Using cached page (instant!):', url);
+                        // ⚡ INSTANT: Cancel loading timeout immediately (no overlay needed!)
+                        clearTimeout(loadingTimeout);
+                        this.isLoading = false; // Cache hit - loading gösterme!
+                        html = cached.html;
+                        fetchPromise = Promise.resolve(html);
+                    } else {
+                        // Cache expired, fetch fresh
+                        this.prefetchCache.delete(url);
+                        fetchPromise = this.fetchPage(url);
+                    }
                 } else {
-                    // Cache expired, fetch fresh
-                    this.prefetchCache.delete(url);
+                    // Not cached, fetch now
                     fetchPromise = this.fetchPage(url);
                 }
-            } else {
-                // Not cached, fetch now
-                fetchPromise = this.fetchPage(url);
             }
 
             // ⏱️ TIMEOUT: Race between fetch and timeout

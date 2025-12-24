@@ -2909,6 +2909,9 @@ class PublicAIController extends Controller
                 'session_id' => $sessionId
             ]);
 
+            // 📞 PHONE NUMBER DETECTION & TELEGRAM NOTIFICATION (V2)
+            $this->detectPhoneNumberAndLogToTelescope($conversation);
+
             // Map flow result to API response format
             return response()->json([
                 'success' => true,

@@ -97,30 +97,27 @@ class PayTRCallbackService
             }
 
             // 6. Status'e göre işlem yap
-            DB::beginTransaction();
+            // 🔥 FIX v3: Transaction KALDIRILDI - idempotent işlem, duplicate check var
+            Log::channel('daily')->info('🔵 PayTR callback: Processing (no transaction)', [
+                'payment_id' => $payment->payment_id,
+                'status' => $status,
+            ]);
 
-            try {
-                if ($status === 'success') {
-                    $this->handleSuccessPayment($payment, $callbackData);
-                } else {
-                    $this->handleFailedPayment($payment, $callbackData);
-                }
-
-                DB::commit();
-
-                if (setting('paytr_debug', false)) {
-                    Log::info('✅ PayTR callback işlendi', [
-                        'payment_id' => $payment->payment_id,
-                        'status' => $status,
-                    ]);
-                }
-
-                return ['success' => true, 'message' => 'İşlem başarılı'];
-
-            } catch (\Exception $e) {
-                DB::rollBack();
-                throw $e;
+            if ($status === 'success') {
+                $this->handleSuccessPayment($payment, $callbackData);
+            } else {
+                $this->handleFailedPayment($payment, $callbackData);
             }
+
+            // 🔥 DEBUG: İşlem sonrası veritabanı kontrolü
+            $verifyPayment = Payment::find($payment->payment_id);
+            Log::channel('daily')->info('🔵 POST-UPDATE VERIFY', [
+                'payment_id' => $payment->payment_id,
+                'db_status' => $verifyPayment->status ?? 'NOT_FOUND',
+                'db_paid_at' => $verifyPayment->paid_at ?? 'NULL',
+            ]);
+
+            return ['success' => true, 'message' => 'İşlem başarılı'];
 
         } catch (\Exception $e) {
             Log::error('❌ PayTR callback exception', [
@@ -137,18 +134,38 @@ class PayTRCallbackService
      */
     private function handleSuccessPayment(Payment $payment, array $callbackData): void
     {
+        Log::channel('daily')->info('🔵 handleSuccessPayment START', [
+            'payment_id' => $payment->payment_id,
+            'current_status' => $payment->status,
+            'connection' => $payment->getConnectionName(),
+        ]);
+
         // Payment status güncelle
-        $payment->update([
+        // 🔥 FIX: json_encode KALDIRILDI - Model'de 'array' cast var, Laravel otomatik encode eder
+        $updated = $payment->update([
             'status' => 'completed',
             'paid_at' => now(),
-            'gateway_response' => json_encode($callbackData),
+            'gateway_response' => $callbackData,
+        ]);
+
+        Log::channel('daily')->info('🔵 Payment update result', [
+            'payment_id' => $payment->payment_id,
+            'updated' => $updated,
+            'new_status' => $payment->fresh()->status ?? 'FRESH_FAILED',
         ]);
 
         // Payable modeli güncelle (ShopOrder, Membership vb.)
         $payable = $payment->payable;
 
+        Log::channel('daily')->info('🔵 Payable check', [
+            'payable_exists' => $payable ? true : false,
+            'payable_type' => $payable ? get_class($payable) : null,
+            'has_method' => $payable && method_exists($payable, 'onPaymentCompleted'),
+        ]);
+
         if ($payable && method_exists($payable, 'onPaymentCompleted')) {
             $payable->onPaymentCompleted($payment);
+            Log::channel('daily')->info('✅ onPaymentCompleted called');
         }
 
         // Event dispatch (gelecekte: email, sms, notification)
@@ -161,9 +178,10 @@ class PayTRCallbackService
     private function handleFailedPayment(Payment $payment, array $callbackData): void
     {
         // Payment status güncelle
+        // 🔥 FIX: json_encode KALDIRILDI - Model'de 'array' cast var
         $payment->update([
             'status' => 'failed',
-            'gateway_response' => json_encode($callbackData),
+            'gateway_response' => $callbackData,
         ]);
 
         // Payable modeli güncelle

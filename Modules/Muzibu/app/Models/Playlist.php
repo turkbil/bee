@@ -49,9 +49,8 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
     ];
 
     protected $casts = [
-        'title' => 'array',
-        'slug' => 'array',
-        'description' => 'array',
+        // NOT: title, slug, description CAST'LANMAMALI!
+        // HasTranslations trait bunları otomatik yönetiyor
         'is_system' => 'boolean',
         'is_public' => 'boolean',
         'is_radio' => 'boolean',
@@ -63,6 +62,7 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
 
     /**
      * Çevrilebilir alanlar
+     * DB'de JSON constraint var, title/slug/description JSON formatında kayıtlı
      */
     protected $translatable = ['title', 'slug', 'description'];
 
@@ -187,12 +187,12 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
     /**
      * Playlist cover URL'i (Thumbmaker helper ile)
      */
-    public function getCoverUrl(?int $width = 600, ?int $height = 600): ?string
+    public function getCoverUrl(?int $width = 600, ?int $height = 600, int $quality = 90): ?string
     {
         if (!$this->media_id) {
             return null;
         }
-        return thumb($this->coverMedia, $width, $height);
+        return thumb($this->coverMedia, $width, $height, ['quality' => $quality]);
     }
 
     /**

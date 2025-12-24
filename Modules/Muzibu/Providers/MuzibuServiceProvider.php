@@ -3,6 +3,7 @@
 namespace Modules\Muzibu\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Blade;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -48,6 +49,9 @@ class MuzibuServiceProvider extends ServiceProvider
 
         // Livewire Component Kayıtları
         $this->registerLivewireComponents();
+
+        // Blade Component Namespace Kayıtları (x-muzibu.*)
+        $this->registerBladeComponents();
 
         // View Composers - Sidebar için featured playlists
         $this->registerViewComposers();
@@ -113,6 +117,19 @@ class MuzibuServiceProvider extends ServiceProvider
 
         // Frontend Components
         Livewire::component('muzibu::frontend.search-results', \Modules\Muzibu\App\Http\Livewire\Frontend\SearchResults::class);
+    }
+
+    /**
+     * Blade anonymous component'lerini kaydet (x-muzibu.*)
+     * resources/views/themes/muzibu/components/ klasöründeki blade dosyaları
+     */
+    protected function registerBladeComponents(): void
+    {
+        // x-muzibu.* namespace'ini tema component klasörüne bağla
+        Blade::anonymousComponentPath(
+            resource_path('views/themes/muzibu/components'),
+            'muzibu'
+        );
     }
 
     /**

@@ -32,6 +32,24 @@ return [
     'popular' => 'Popüler',
     'toggle_featured' => 'Öne Çıkan Değiştir',
     'order_updated' => 'Sıralama güncellendi',
+    'has_subscriptions' => 'Bu plana bağlı aktif abonelikler var, silinemez.',
+    'bulk_delete_partial' => ':deleted plan silindi, :failed plan silinemedi (aktif abonelik mevcut).',
+
+    // Table Headers
+    'billing_cycles_header' => 'Fiyat Döngüleri',
+    'tax_rate' => 'KDV',
+    'currency' => 'Para Birimi',
+    'price_display' => 'Fiyat Gösterim',
+    'cycle_count' => ':count döngü',
+    'price_display_show' => 'Göster',
+    'price_display_hide' => 'Gizli',
+    'price_display_request' => 'Fiyat Sorunuz',
+
+    // Cycles
+    'cycle_added' => 'Döngü eklendi!',
+    'cycle_updated' => 'Döngü güncellendi!',
+    'cycle_deleted' => 'Döngü silindi!',
+    'trial_single_cycle_only' => 'Deneme üyeliği için sadece 1 süre eklenebilir!',
 
     // Subscriptions
     'subscriptions' => 'Abonelikler',

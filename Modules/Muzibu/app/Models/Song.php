@@ -51,9 +51,8 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
     ];
 
     protected $casts = [
-        'title' => 'array',
-        'slug' => 'array',
-        'lyrics' => 'array',
+        // NOT: title, slug, lyrics CAST'LANMAMALI!
+        // HasTranslations trait bunları otomatik yönetiyor
         'duration' => 'integer',
         'is_featured' => 'boolean',
         'play_count' => 'integer',
@@ -175,16 +174,16 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
      * Song cover URL'i (Thumbmaker helper ile)
      * Önce kendi media_id'sine bakar, yoksa albümün media_id'sini kullanır
      */
-    public function getCoverUrl(?int $width = 600, ?int $height = 600): ?string
+    public function getCoverUrl(?int $width = 600, ?int $height = 600, int $quality = 90): ?string
     {
         // Önce kendi görseli var mı kontrol et
         if ($this->media_id && $this->coverMedia) {
-            return thumb($this->coverMedia, $width, $height);
+            return thumb($this->coverMedia, $width, $height, ['quality' => $quality]);
         }
 
         // Yoksa albümün görselini kullan
         if ($this->album && $this->album->media_id && $this->album->coverMedia) {
-            return thumb($this->album->coverMedia, $width, $height);
+            return thumb($this->album->coverMedia, $width, $height, ['quality' => $quality]);
         }
 
         return null;

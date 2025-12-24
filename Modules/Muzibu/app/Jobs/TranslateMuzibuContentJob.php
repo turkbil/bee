@@ -34,7 +34,7 @@ class TranslateMuzibuContentJob implements ShouldQueue
         $this->progressKey = "muzibu_translation_progress_{$muzibuId}_" . uniqid();
 
         // Tenant-isolated queue kullan
-        $this->onQueue('tenant_isolated');
+        $this->onQueue('muzibu_isolated');
     }
 
     /**

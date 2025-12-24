@@ -10,6 +10,7 @@ return [
     'plans' => 'Subscription Plans',
     'new_plan' => 'New Plan',
     'edit_plan' => 'Edit Plan',
+    'plan_information' => 'Plan Information',
     'plan_name' => 'Plan Name',
     'pricing' => 'Pricing',
     'price_monthly' => 'Monthly Price',
@@ -31,6 +32,24 @@ return [
     'popular' => 'Popular',
     'toggle_featured' => 'Toggle Featured',
     'order_updated' => 'Order updated',
+    'has_subscriptions' => 'This plan has active subscriptions and cannot be deleted.',
+    'bulk_delete_partial' => ':deleted plans deleted, :failed plans could not be deleted (active subscriptions).',
+
+    // Table Headers
+    'billing_cycles_header' => 'Billing Cycles',
+    'tax_rate' => 'Tax Rate',
+    'currency' => 'Currency',
+    'price_display' => 'Price Display',
+    'cycle_count' => ':count cycle|:count cycles',
+    'price_display_show' => 'Show',
+    'price_display_hide' => 'Hidden',
+    'price_display_request' => 'Request Price',
+
+    // Cycles
+    'cycle_added' => 'Cycle added!',
+    'cycle_updated' => 'Cycle updated!',
+    'cycle_deleted' => 'Cycle deleted!',
+    'trial_single_cycle_only' => 'Trial membership can only have 1 cycle!',
 
     // Subscriptions
     'subscriptions' => 'Subscriptions',

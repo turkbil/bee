@@ -101,7 +101,9 @@ module.exports = {
         'bg-muzibu-coral/10', 'bg-muzibu-coral/20',
         'hover:bg-muzibu-coral', 'hover:text-muzibu-coral',
         'ring-muzibu-coral', 'ring-2',
-        'from-muzibu-coral', 'to-pink-600', 'to-orange-600', 'to-purple-600',
+        'from-muzibu-coral', 'to-pink-500', 'to-pink-600', 'to-orange-600', 'to-purple-600',
+        'shadow-lg', 'shadow-muzibu-coral/30', 'shadow-pink-500/30',
+        'hover:opacity-90', 'ring-muzibu-coral',
         // Muzibu gray variants
         'bg-muzibu-gray', 'bg-muzibu-gray/95', 'hover:bg-gray-700',
         'bg-muzibu-gray-light', 'bg-muzibu-gray-light/30',
@@ -116,7 +118,17 @@ module.exports = {
         'bg-orange-500', 'bg-orange-500/20', 'bg-orange-600',
         'bg-red-500/20', 'bg-red-600',
         'bg-indigo-600', 'bg-teal-600',
-        'bg-slate-700', 'bg-slate-800', 'bg-slate-800/50',
+        'bg-slate-700', 'bg-slate-800', 'bg-slate-800/50', 'bg-slate-800/95', 'bg-slate-900',
+        // Corporate subscriptions page - badges
+        'text-red-400', 'border-red-500/30', 'text-yellow-400', 'text-yellow-500',
+        'bg-yellow-500/20', 'border-yellow-500/30', 'bg-amber-500/20', 'text-amber-400', 'border-amber-500/30',
+        'from-purple-500', 'via-pink-500', 'to-rose-500', 'from-purple-600', 'to-pink-600',
+        'shadow-purple-500/25', 'shadow-purple-500/40', 'ring-purple-500',
+        'bg-purple-500/10', 'bg-purple-500/20', 'text-purple-300', 'text-purple-400', 'border-purple-500/30',
+        'hover:bg-purple-500/10', 'hover:bg-purple-500/20',
+        // Orange variants
+        'from-orange-500', 'from-orange-600', 'to-orange-500', 'ring-orange-500',
+        'border-orange-500/50', 'text-orange-400', 'text-orange-500',
         // Gradient from/via/to variants (right sidebar dynamic gradients)
         'from-orange-500/40', 'via-orange-500/20', 'to-transparent',
         'from-green-500/40', 'via-green-500/20',

@@ -118,6 +118,11 @@ class Subscription extends BaseModel
         return $query->where('status', 'pending_payment');
     }
 
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
+
     public function scopeExpiringSoon($query, int $days = 7)
     {
         return $query->whereIn('status', ['active', 'trial'])
@@ -154,6 +159,16 @@ class Subscription extends BaseModel
     public function isPaused(): bool
     {
         return $this->status === 'paused';
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === 'pending';
+    }
+
+    public function isPendingPayment(): bool
+    {
+        return $this->status === 'pending_payment';
     }
 
     // Helpers
@@ -199,11 +214,29 @@ class Subscription extends BaseModel
         return match($this->status) {
             'active' => 'success',
             'trial' => 'info',
+            'pending' => 'info',
             'expired' => 'danger',
             'cancelled' => 'secondary',
             'paused' => 'warning',
             'pending_payment' => 'warning',
             default => 'secondary',
+        };
+    }
+
+    /**
+     * Status label'ı al (çoklu dil desteği)
+     */
+    public function getStatusLabelAttribute(): string
+    {
+        return match($this->status) {
+            'active' => __('subscription::admin.status_active'),
+            'trial' => __('subscription::admin.status_trial'),
+            'pending' => __('subscription::admin.status_pending'),
+            'expired' => __('subscription::admin.status_expired'),
+            'cancelled' => __('subscription::admin.status_cancelled'),
+            'paused' => __('subscription::admin.status_paused'),
+            'pending_payment' => __('subscription::admin.status_pending_payment'),
+            default => $this->status,
         };
     }
 
@@ -292,5 +325,115 @@ class Subscription extends BaseModel
         static::created($clearPremiumCache);
         static::updated($clearPremiumCache);
         static::deleted($clearPremiumCache);
+    }
+
+    // ==========================================
+    // SUBSCRIPTION CHAIN SYSTEM METHODS
+    // ==========================================
+
+    /**
+     * Subscription'ı sil ve zinciri yeniden düzenle
+     * Silinen subscription'dan sonraki tüm subscription'ların tarihlerini geriye kaydır
+     *
+     * @return bool
+     */
+    public function deleteAndRechain(): bool
+    {
+        return \DB::transaction(function () {
+            $userId = $this->user_id;
+            $deletedStart = $this->current_period_start;
+            $deletedEnd = $this->current_period_end;
+
+            // Silinen subscription'ın süresini hesapla
+            $deletedDuration = $deletedStart && $deletedEnd
+                ? $deletedEnd->diffInDays($deletedStart)
+                : 0;
+
+            // Silinen subscription'dan SONRA başlayan tüm subscription'ları bul
+            $laterSubscriptions = self::where('user_id', $userId)
+                ->where('subscription_id', '!=', $this->subscription_id)
+                ->where('current_period_start', '>=', $deletedStart)
+                ->whereIn('status', ['active', 'pending'])
+                ->orderBy('current_period_start', 'asc')
+                ->get();
+
+            // Tarihleri geriye kaydır
+            foreach ($laterSubscriptions as $sub) {
+                $newStart = $sub->current_period_start->subDays($deletedDuration);
+                $newEnd = $sub->current_period_end->subDays($deletedDuration);
+
+                // Eğer yeni başlangıç tarihi şu anki zamandan önceyse ve pending ise active yap
+                $newStatus = $sub->status;
+                if ($newStatus === 'pending' && $newStart->isPast()) {
+                    $newStatus = 'active';
+                }
+
+                $sub->update([
+                    'current_period_start' => $newStart,
+                    'current_period_end' => $newEnd,
+                    'next_billing_date' => $newEnd,
+                    'status' => $newStatus,
+                ]);
+
+                \Log::info('📅 Subscription tarihleri kaydırıldı', [
+                    'subscription_id' => $sub->subscription_id,
+                    'old_start' => $sub->getOriginal('current_period_start'),
+                    'new_start' => $newStart->toDateTimeString(),
+                    'old_end' => $sub->getOriginal('current_period_end'),
+                    'new_end' => $newEnd->toDateTimeString(),
+                    'days_shifted' => $deletedDuration,
+                ]);
+            }
+
+            // Subscription'ı sil
+            $this->delete();
+
+            \Log::info('🗑️ Subscription silindi ve zincir yeniden düzenlendi', [
+                'deleted_subscription_id' => $this->subscription_id,
+                'user_id' => $userId,
+                'duration_days' => $deletedDuration,
+                'affected_subscriptions' => $laterSubscriptions->count(),
+            ]);
+
+            // Kullanıcının subscription_expires_at değerini yeniden hesapla
+            $user = User::find($userId);
+            if ($user) {
+                $user->recalculateSubscriptionExpiry();
+            }
+
+            return true;
+        });
+    }
+
+    /**
+     * Kullanıcının subscription zincirindeki sırasını al
+     * 1 = aktif, 2 = ilk bekleyen, 3 = ikinci bekleyen...
+     */
+    public function getChainPositionAttribute(): int
+    {
+        if ($this->status === 'active') {
+            return 1;
+        }
+
+        if ($this->status !== 'pending') {
+            return 0; // Zincirde değil
+        }
+
+        $position = self::where('user_id', $this->user_id)
+            ->whereIn('status', ['active', 'pending'])
+            ->where('current_period_start', '<', $this->current_period_start)
+            ->count();
+
+        return $position + 1;
+    }
+
+    /**
+     * Bu subscription silinebilir mi?
+     * Sadece pending veya pending_payment durumundakiler silinebilir
+     * Active subscription silinemez (önce cancel edilmeli)
+     */
+    public function canBeDeleted(): bool
+    {
+        return in_array($this->status, ['pending', 'pending_payment']);
     }
 }

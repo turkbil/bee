@@ -56,6 +56,278 @@
     <link rel="stylesheet" href="{{ versioned_asset('themes/muzibu/css/muzibu-layout.css') }}">
     <link rel="stylesheet" href="{{ versioned_asset('themes/muzibu/css/muzibu-custom.css') }}">
 
+    {{-- ✅ Alpine.js Global Functions (SPA-safe) - DO NOT REMOVE! --}}
+    <script>
+        // 🎯 muzibuApp - Root Alpine app
+        window.muzibuApp = function() {
+            return {
+                init() {
+                    console.log('🎯 Root muzibuApp initialized');
+                }
+            };
+        };
+
+        // 🎯 dashboardApp - Dashboard page
+        window.dashboardApp = function() {
+            return {
+                init() {},
+                playSong(songId) { if (window.MuzibuPlayer) window.MuzibuPlayer.playById(songId); },
+                playAllFavorites() { window.location.href = '/muzibu/favorites?autoplay=1'; },
+                shuffleFavorites() { window.location.href = '/muzibu/favorites?shuffle=1'; },
+                copyCode(code) {
+                    navigator.clipboard.writeText(code).then(() => {
+                        window.dispatchEvent(new CustomEvent('toast', { detail: { message: 'Kod kopyalandı!', type: 'success' } }));
+                    });
+                },
+                async leaveCorporate() {
+                    if (!confirm('Kurumsal hesaptan ayrılmak istediğinize emin misiniz?')) return;
+                    try {
+                        const response = await fetch('/corporate/leave', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' }
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            window.dispatchEvent(new CustomEvent('toast', { detail: { message: data.message, type: 'success' } }));
+                            setTimeout(() => window.location.reload(), 1000);
+                        } else throw new Error(data.message);
+                    } catch (error) {
+                        window.dispatchEvent(new CustomEvent('toast', { detail: { message: error.message || 'Bir hata oluştu', type: 'error' } }));
+                    }
+                }
+            };
+        };
+
+        // 🎯 corporatePanel - Corporate join/create
+        window.corporatePanel = function() {
+            return {
+                showCreate: false,
+                code: '',
+                companyName: '',
+                joining: false,
+                creating: false,
+                async joinCorporate() {
+                    if (this.code.length < 8 || this.joining) return;
+                    this.joining = true;
+                    try {
+                        const response = await fetch('/corporate/join', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' },
+                            body: JSON.stringify({ corporate_code: this.code.toUpperCase() })
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            window.dispatchEvent(new CustomEvent('toast', { detail: { message: data.message, type: 'success' } }));
+                            setTimeout(() => window.location.href = data.redirect || '/dashboard', 1000);
+                        } else throw new Error(data.message || 'Geçersiz kod');
+                    } catch (error) {
+                        window.dispatchEvent(new CustomEvent('toast', { detail: { message: error.message, type: 'error' } }));
+                    } finally { this.joining = false; }
+                },
+                async createCorporate() {
+                    if (this.companyName.length < 2 || this.creating) return;
+                    this.creating = true;
+                    try {
+                        const response = await fetch('/corporate/create', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' },
+                            body: JSON.stringify({ company_name: this.companyName })
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            window.dispatchEvent(new CustomEvent('toast', { detail: { message: data.message, type: 'success' } }));
+                            setTimeout(() => window.location.href = data.redirect || '/corporate/dashboard', 1500);
+                        } else throw new Error(data.message || 'Hata oluştu');
+                    } catch (error) {
+                        window.dispatchEvent(new CustomEvent('toast', { detail: { message: error.message, type: 'error' } }));
+                    } finally { this.creating = false; }
+                }
+            };
+        };
+
+        // 🎯 corporateDashboard - Corporate dashboard (parameter-based for SPA)
+        window.corporateDashboard = function(initialData = {}) {
+            return {
+                corporateCode: initialData.corporateCode || '',
+                companyName: initialData.companyName || '',
+                loading: false,
+                regenerating: false,
+                showBranchModal: false,
+                showRandomCodeModal: false,
+                showEditCodeModal: false,
+                showCompanyNameModal: false,
+                showDisbandModal: false,
+                disbanding: false,
+                editingMemberId: null,
+                branchName: '',
+                saving: false,
+                newCode: '',
+                savingCode: false,
+                savingCompanyName: false,
+                disbandConfirmText: '',
+                codeError: '',
+                init() { this.loading = false; },
+                get codeValid() { return this.newCode.length === 8; },
+                validateCode() {
+                    if (this.newCode.length === 0) this.codeError = '';
+                    else if (this.newCode.length < 8) this.codeError = 'Tam olarak 8 karakter gerekli';
+                    else if (this.newCode.length > 8) this.codeError = 'Maximum 8 karakter girebilirsiniz';
+                    else this.codeError = '';
+                },
+                copyCode() {
+                    navigator.clipboard.writeText(this.corporateCode).then(() => {
+                        window.dispatchEvent(new CustomEvent('toast', { detail: { message: 'Kod kopyalandı!', type: 'success' } }));
+                    });
+                },
+                async saveNewCode() {
+                    if (!this.codeValid) { this.validateCode(); return; }
+                    this.savingCode = true;
+                    this.codeError = '';
+                    try {
+                        const response = await fetch('/corporate/regenerate-code', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' },
+                            body: JSON.stringify({ code: this.newCode })
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            this.corporateCode = data.new_code;
+                            this.showEditCodeModal = false;
+                            this.newCode = '';
+                            this.codeError = '';
+                            window.dispatchEvent(new CustomEvent('toast', { detail: { message: 'Kod güncellendi: ' + data.new_code, type: 'success' } }));
+                        } else {
+                            this.codeError = data.message || 'Bu kod zaten kullanımda';
+                            throw new Error(data.message);
+                        }
+                    } catch (error) { this.codeError = error.message || 'Hata oluştu';
+                    } finally { this.savingCode = false; }
+                },
+                async saveCompanyName() {
+                    if (!this.companyName.trim()) return;
+                    this.savingCompanyName = true;
+                    try {
+                        const response = await fetch('/corporate/update-company-name', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' },
+                            body: JSON.stringify({ company_name: this.companyName })
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            // ✅ FIX: Sadece H1 başlığını seç (parent div değil!)
+                            const companyNameEl = document.querySelector('h1[data-company-name]');
+                            if (companyNameEl) companyNameEl.textContent = this.companyName;
+
+                            // ✅ FIX: SPA için parent div'deki data attribute'u güncelle
+                            const parentDiv = document.querySelector('[x-data*="corporateDashboard"]');
+                            if (parentDiv) {
+                                parentDiv.setAttribute('data-company-name', this.companyName);
+                            }
+
+                            this.showCompanyNameModal = false;
+                            window.dispatchEvent(new CustomEvent('toast', { detail: { message: 'Şirket adı güncellendi!', type: 'success' } }));
+                        } else throw new Error(data.message || 'Şirket adı güncellenemedi');
+                    } catch (error) {
+                        window.dispatchEvent(new CustomEvent('toast', { detail: { message: error.message || 'Hata oluştu', type: 'error' } }));
+                    } finally { this.savingCompanyName = false; }
+                },
+                async confirmRandomCode() {
+                    this.regenerating = true;
+                    try {
+                        const response = await fetch('/corporate/regenerate-code', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' }
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            this.corporateCode = data.new_code;
+                            this.showRandomCodeModal = false;
+                            window.dispatchEvent(new CustomEvent('toast', { detail: { message: 'Yeni kod oluşturuldu!', type: 'success' } }));
+                        } else throw new Error(data.message);
+                    } catch (error) {
+                        window.dispatchEvent(new CustomEvent('toast', { detail: { message: error.message || 'Hata oluştu', type: 'error' } }));
+                    } finally { this.regenerating = false; }
+                },
+                async confirmDisband() {
+                    if (this.disbandConfirmText !== 'Kabul Ediyorum') return;
+                    this.disbanding = true;
+                    try {
+                        const response = await fetch('/corporate/disband', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' }
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            window.dispatchEvent(new CustomEvent('toast', { detail: { message: data.message, type: 'success' } }));
+                            setTimeout(() => { window.location.href = data.redirect || '/dashboard'; }, 1500);
+                        } else throw new Error(data.message);
+                    } catch (error) {
+                        window.dispatchEvent(new CustomEvent('toast', { detail: { message: error.message || 'Bir hata oluştu.', type: 'error' } }));
+                    } finally { this.disbanding = false; this.showDisbandModal = false; }
+                },
+                editBranchName(memberId, currentName) {
+                    this.editingMemberId = memberId;
+                    this.branchName = currentName;
+                    this.showBranchModal = true;
+                },
+                async saveBranchName() {
+                    if (!this.editingMemberId) return;
+                    this.saving = true;
+                    try {
+                        const response = await fetch(`/corporate/update-branch/${this.editingMemberId}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' },
+                            body: JSON.stringify({ branch_name: this.branchName })
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            const memberCard = document.querySelector(`[data-member-id="${this.editingMemberId}"]`);
+                            if (memberCard) {
+                                const branchBadge = memberCard.querySelector('.branch-name-badge');
+                                if (branchBadge) branchBadge.textContent = this.branchName || '';
+                            }
+                            window.dispatchEvent(new CustomEvent('toast', { detail: { message: 'Şube adı güncellendi!', type: 'success' } }));
+                            this.showBranchModal = false;
+                        } else throw new Error(data.message || 'Güncelleme başarısız');
+                    } catch (error) {
+                        window.dispatchEvent(new CustomEvent('toast', { detail: { message: error.message || 'Hata oluştu', type: 'error' } }));
+                    } finally { this.saving = false; }
+                },
+                async removeMember(memberId, memberName) {
+                    if (!confirm(memberName + ' kullanıcısını kurumsal hesaptan çıkarmak istediğinize emin misiniz?')) return;
+                    try {
+                        const response = await fetch(`/corporate/remove-member/${memberId}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' }
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            const memberCard = document.querySelector(`[data-member-id="${memberId}"]`);
+                            if (memberCard) {
+                                memberCard.style.transition = 'opacity 0.3s, transform 0.3s';
+                                memberCard.style.opacity = '0';
+                                memberCard.style.transform = 'scale(0.95)';
+                                setTimeout(() => {
+                                    memberCard.remove();
+                                    const totalMembersEl = document.querySelector('[data-total-members]');
+                                    if (totalMembersEl) {
+                                        const currentTotal = parseInt(totalMembersEl.textContent);
+                                        totalMembersEl.textContent = currentTotal - 1;
+                                    }
+                                }, 300);
+                            }
+                            window.dispatchEvent(new CustomEvent('toast', { detail: { message: data.message, type: 'success' } }));
+                        } else throw new Error(data.message || 'Üye çıkarma başarısız');
+                    } catch (error) {
+                        window.dispatchEvent(new CustomEvent('toast', { detail: { message: error.message || 'Hata oluştu', type: 'error' } }));
+                    }
+                }
+            };
+        };
+
+        console.log('✅ Alpine global functions loaded (muzibuApp, dashboardApp, corporatePanel, corporateDashboard)');
+    </script>
+
     @yield('styles')
 
 </head>
@@ -97,7 +369,7 @@
     {{-- Main App Grid - Dynamic columns based on right sidebar visibility --}}
     <div
         id="main-app-grid"
-        class="grid grid-rows-[56px_1fr_52px] grid-cols-1 lg:grid-cols-[220px_1fr] {{ $gridCols }} h-[100dvh] gap-0 lg:gap-3 px-0 pb-0 pt-0 lg:px-3 lg:pb-3 lg:pt-3"
+        class="grid grid-rows-[56px_1fr_auto] grid-cols-1 lg:grid-cols-[220px_1fr] {{ $gridCols }} h-[100dvh] w-full gap-0 lg:gap-3 px-0 pb-0 pt-0 lg:px-3 lg:pt-3"
     >
         @include('themes.muzibu.components.header')
         @include('themes.muzibu.components.sidebar-left')
@@ -123,8 +395,7 @@
     @include('themes.muzibu.components.device-limit-warning-modal')
     @include('themes.muzibu.components.device-selection-modal')
 
-    {{-- Create Playlist Modal --}}
-    <x-muzibu.create-playlist-modal />
+    {{-- Create Playlist Modal - Using theme version at bottom of page (global) --}}
 
     {{-- Play Limits Modals - DEVRE DIŞI (3 şarkı limiti kaldırıldı) --}}
     {{-- @include('themes.muzibu.components.play-limits-modals') --}}
@@ -474,6 +745,96 @@
 
     {{-- PWA Service Worker Registration --}}
     <x-pwa-registration />
+
+    {{-- Create Playlist Modal (Global - SPA Compatible) --}}
+    @include('themes.muzibu.components.create-playlist-modal')
+
+    {{-- Create Playlist Modal Alpine.js Component (SPA Safe) --}}
+    <script>
+    document.addEventListener('alpine:init', () => {
+        if (!Alpine.data('createPlaylistModal')) {
+            Alpine.data('createPlaylistModal', () => ({
+                open: false,
+                loading: false,
+                title: '',
+                description: '',
+                isPublic: true,
+
+                openModal() {
+                    this.open = true;
+                    this.title = '';
+                    this.description = '';
+                    this.isPublic = true;
+                },
+
+                closeModal() {
+                    this.open = false;
+                },
+
+                async createPlaylist() {
+                    if (!this.title.trim()) return;
+
+                    this.loading = true;
+
+                    try {
+                        const response = await fetch('/api/muzibu/playlists/quick-create', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                title: this.title,
+                                description: this.description,
+                                is_public: this.isPublic,
+                                song_ids: []
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success || data.playlist) {
+                            if (window.$store?.toast) {
+                                window.$store.toast.show('Playlist oluşturuldu! Kapak görseli hazırlanıyor...', 'success');
+                            }
+                            this.closeModal();
+
+                            // SPA navigation veya page refresh
+                            const currentPath = window.location.pathname;
+                            if (currentPath === '/muzibu/my-playlists') {
+                                // Zaten my-playlists sayfasındayız, sayfa yenile (SPA cache temizle)
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 500);
+
+                                // 15 saniye sonra bir daha yenile (Leonardo AI görseli için)
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 15000);
+                            } else {
+                                // Başka sayfadayız, my-playlists'e yönlendir
+                                setTimeout(() => {
+                                    window.location.href = '/muzibu/my-playlists';
+                                }, 500);
+                            }
+                        } else {
+                            throw new Error(data.message || 'Bir hata oluştu');
+                        }
+                    } catch (error) {
+                        if (window.$store?.toast) {
+                            window.$store.toast.show(error.message || 'Bir hata oluştu', 'error');
+                        } else {
+                            alert(error.message || 'Bir hata oluştu');
+                        }
+                    } finally {
+                        this.loading = false;
+                    }
+                }
+            }));
+        }
+    });
+    </script>
 
     @yield('scripts')
 </body>

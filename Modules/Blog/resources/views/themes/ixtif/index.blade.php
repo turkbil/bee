@@ -422,11 +422,7 @@
                             $bigNews = $items->skip(13)->first(); // 14. haber
                             if ($bigNews) {
                                 $currentLocale = app()->getLocale();
-                                $slugData = $bigNews->slug;
-                                if (is_string($slugData)) {
-                                    $slugData = json_decode($slugData, true) ?: [];
-                                }
-                                $bigSlug = (is_array($slugData) && isset($slugData[$currentLocale])) ? $slugData[$currentLocale] : 'blog-' . $bigNews->id;
+                                $bigSlug = $bigNews->getTranslated('slug', $currentLocale) ?: 'blog-' . $bigNews->blog_id;
                                 $moduleSlugService = app(\App\Services\ModuleSlugService::class);
                                 $slugPrefix = $moduleSlugService->getMultiLangSlug('Blog', 'index', $currentLocale);
                                 $defaultLocale = get_tenant_default_locale();
@@ -483,11 +479,7 @@
                             @foreach($items->skip(14)->take(2) as $smallNews)
                                 @php
                                     $currentLocale = app()->getLocale();
-                                    $slugData = $smallNews->slug;
-                                    if (is_string($slugData)) {
-                                        $slugData = json_decode($slugData, true) ?: [];
-                                    }
-                                    $smallSlug = (is_array($slugData) && isset($slugData[$currentLocale])) ? $slugData[$currentLocale] : 'blog-' . $smallNews->id;
+                                    $smallSlug = $smallNews->getTranslated('slug', $currentLocale) ?: 'blog-' . $smallNews->blog_id;
                                     $moduleSlugService = app(\App\Services\ModuleSlugService::class);
                                     $slugPrefix = $moduleSlugService->getMultiLangSlug('Blog', 'index', $currentLocale);
                                     $defaultLocale = get_tenant_default_locale();
@@ -551,11 +543,7 @@
                             @foreach($tripleItems as $tripleNews)
                                 @php
                                     $currentLocale = app()->getLocale();
-                                    $slugData = $tripleNews->slug;
-                                    if (is_string($slugData)) {
-                                        $slugData = json_decode($slugData, true) ?: [];
-                                    }
-                                    $tripleSlug = (is_array($slugData) && isset($slugData[$currentLocale])) ? $slugData[$currentLocale] : 'blog-' . $tripleNews->id;
+                                    $tripleSlug = $tripleNews->getTranslated('slug', $currentLocale) ?: 'blog-' . $tripleNews->blog_id;
                                     $moduleSlugService = app(\App\Services\ModuleSlugService::class);
                                     $slugPrefix = $moduleSlugService->getMultiLangSlug('Blog', 'index', $currentLocale);
                                     $defaultLocale = get_tenant_default_locale();
@@ -641,11 +629,7 @@
                                     // Büyük haber (sol 8 kolon)
                                     $bigItem = $setItems->first();
                                     $currentLocale = app()->getLocale();
-                                    $slugData = $bigItem->slug;
-                                    if (is_string($slugData)) {
-                                        $slugData = json_decode($slugData, true) ?: [];
-                                    }
-                                    $bigSlug = (is_array($slugData) && isset($slugData[$currentLocale])) ? $slugData[$currentLocale] : 'blog-' . $bigItem->id;
+                                    $bigSlug = $bigItem->getTranslated('slug', $currentLocale) ?: 'blog-' . $bigItem->blog_id;
                                     $moduleSlugService = app(\App\Services\ModuleSlugService::class);
                                     $slugPrefix = $moduleSlugService->getMultiLangSlug('Blog', 'index', $currentLocale);
                                     $defaultLocale = get_tenant_default_locale();
@@ -695,11 +679,7 @@
                                         @foreach($setItems->slice(1, 2)->values() as $smallIndex => $smallItem)
                                             @php
                                                 $currentLocale = app()->getLocale();
-                                                $slugData = $smallItem->slug;
-                                                if (is_string($slugData)) {
-                                                    $slugData = json_decode($slugData, true) ?: [];
-                                                }
-                                                $smallSlug = (is_array($slugData) && isset($slugData[$currentLocale])) ? $slugData[$currentLocale] : 'blog-' . $smallItem->id;
+                                                $smallSlug = $smallItem->getTranslated('slug', $currentLocale) ?: 'blog-' . $smallItem->blog_id;
                                                 $smallUrl = url($localePrefix . '/' . $slugPrefix . '/' . $smallSlug);
                                                 $smallTitle = $smallItem->getTranslated('title', $currentLocale);
                                                 $smallMediaObj = getFirstMediaWithFallback($smallItem);
@@ -753,11 +733,7 @@
                                 @foreach($items->take(5) as $popularIndex => $popularItem)
                                     @php
                                         $currentLocale = app()->getLocale();
-                                        $slugData = $popularItem->slug;
-                                        if (is_string($slugData)) {
-                                            $slugData = json_decode($slugData, true) ?: [];
-                                        }
-                                        $popularSlug = (is_array($slugData) && isset($slugData[$currentLocale])) ? $slugData[$currentLocale] : 'blog-' . $popularItem->id;
+                                        $popularSlug = $popularItem->getTranslated('slug', $currentLocale) ?: 'blog-' . $popularItem->blog_id;
                                         $moduleSlugService = app(\App\Services\ModuleSlugService::class);
                                         $slugPrefix = $moduleSlugService->getMultiLangSlug('Blog', 'index', $currentLocale);
                                         $defaultLocale = get_tenant_default_locale();
@@ -794,11 +770,7 @@
                                 @foreach($items->skip(28)->take(6) as $sidebarItem)
                                     @php
                                         $currentLocale = app()->getLocale();
-                                        $slugData = $sidebarItem->slug;
-                                        if (is_string($slugData)) {
-                                            $slugData = json_decode($slugData, true) ?: [];
-                                        }
-                                        $sidebarSlug = (is_array($slugData) && isset($slugData[$currentLocale])) ? $slugData[$currentLocale] : 'blog-' . $sidebarItem->id;
+                                        $sidebarSlug = $sidebarItem->getTranslated('slug', $currentLocale) ?: 'blog-' . $sidebarItem->blog_id;
                                         $moduleSlugService = app(\App\Services\ModuleSlugService::class);
                                         $slugPrefix = $moduleSlugService->getMultiLangSlug('Blog', 'index', $currentLocale);
                                         $defaultLocale = get_tenant_default_locale();

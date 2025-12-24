@@ -41,9 +41,11 @@
 
     {{-- Actions (show on hover) --}}
     <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
-        <button @click.stop="$dispatch('toggle-favorite', { type: 'song', id: {{ $song->song_id }} })"
-                class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 text-gray-400 hover:text-muzibu-coral transition-colors">
-            <i class="far fa-heart text-xs"></i>
+        <button @click.stop="$store.favorites.toggle('song', {{ $song->song_id }})"
+                class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"
+                x-bind:class="$store.favorites.isFavorite('song', {{ $song->song_id }}) ? 'text-muzibu-coral' : 'text-gray-400'">
+            <i class="text-xs"
+               x-bind:class="$store.favorites.isFavorite('song', {{ $song->song_id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
         </button>
         <button @click.stop="Alpine.store('contextMenu').openContextMenu($event, 'song', { id: {{ $song->song_id }}, title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}' })"
                 class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">

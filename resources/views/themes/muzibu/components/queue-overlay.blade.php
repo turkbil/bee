@@ -181,10 +181,12 @@
                 <i class="fas fa-info-circle mr-1"></i>
                 {{ trans('muzibu::front.player.click_to_play') }}
             </span>
+            {{-- Keyboard hint - temporarily hidden
             <span x-show="queue && queue.length > 0">
                 <i class="fas fa-keyboard mr-1"></i>
                 0-9 {{ trans('muzibu::front.player.quick_access') }}
             </span>
+            --}}
         </div>
     </div>
 </aside>

@@ -169,6 +169,11 @@ Route::prefix('muzibu')->group(function () {
     Route::post('/queue/refill', [QueueRefillController::class, 'refill'])
         ->name('api.muzibu.queue.refill')
         ->middleware('throttle.user:api');
+
+    // Initial Queue - Sayfa açılır açılmaz queue yükle
+    Route::get('/queue/initial', [QueueRefillController::class, 'initialQueue'])
+        ->name('api.muzibu.queue.initial')
+        ->middleware('throttle.user:api');
 });
 
 // Device Management (Tenant 1001 only) - Outside muzibu prefix

@@ -1,6 +1,6 @@
 @props([
     'src' => null,
-    'alt' => ''',
+    'alt' => '',
     'class' => 'w-full h-full object-cover',
     'wrapperClass' => 'relative overflow-hidden',
     'skeletonClass' => 'absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 animate-pulse',

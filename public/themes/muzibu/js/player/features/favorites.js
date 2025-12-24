@@ -72,6 +72,11 @@ document.addEventListener('alpine:init', () => {
                         this.favorites = this.favorites.filter(f => f !== key);
                     }
 
+                    // 🧹 Clear SPA cache for dynamic pages (favorites page will show fresh data)
+                    if (window.MuzibuSpaRouter?.clearDynamicCache) {
+                        window.MuzibuSpaRouter.clearDynamicCache();
+                    }
+
                     // Show toast
                     if (window.Alpine?.store('toast')?.show) {
                         window.Alpine.store('toast').show(
@@ -157,6 +162,7 @@ document.addEventListener('alpine:init', () => {
          * Load favorites from server (called on init)
          */
         async loadFavorites() {
+            console.log('[Favorites] 🔄 Loading favorites from server...');
             try {
                 const response = await fetch('/api/favorites/list', {
                     headers: {
@@ -165,14 +171,20 @@ document.addEventListener('alpine:init', () => {
                     }
                 });
 
+                console.log('[Favorites] Response status:', response.status);
+
                 if (response.ok) {
                     const data = await response.json();
+                    console.log('[Favorites] Response data:', data);
                     if (data.success && Array.isArray(data.data)) {
                         this.favorites = data.data;
+                        console.log('[Favorites] ✅ Loaded', this.favorites.length, 'favorites:', this.favorites);
                     }
+                } else {
+                    console.warn('[Favorites] ⚠️ Response not OK:', response.status);
                 }
             } catch (error) {
-                console.error('Failed to load favorites:', error);
+                console.error('[Favorites] ❌ Failed to load favorites:', error);
             }
         }
     });

@@ -56,6 +56,24 @@ class RegisteredUserController extends Controller
         // ✅ Email doğrulaması için login yap (ama verified middleware ile bloklanacak)
         Auth::login($user);
 
+        // 🔐 DEVICE LIMIT - Session register (Tenant-aware, email verified olunca aktif olacak)
+        if (tenant()) {
+            try {
+                $deviceService = app(\Modules\Muzibu\App\Services\DeviceService::class);
+                $deviceService->registerSession($user);
+
+                \Log::info('🔐 POST-REGISTER: Session registered', [
+                    'user_id' => $user->id,
+                    'session_id' => substr(session()->getId(), 0, 20) . '...',
+                ]);
+            } catch (\Exception $e) {
+                \Log::error('🔐 POST-REGISTER: Device service failed', [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
         // Kayıt log'u
         activity()
             ->causedBy($user)

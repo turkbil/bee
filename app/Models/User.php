@@ -40,6 +40,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'two_factor_enabled',
         'two_factor_phone',
         'corporate_account_id',
+        'subscription_expires_at', // Toplam subscription bitiş tarihi (zincir sistemi)
     ];
 
     /**
@@ -68,6 +69,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
             'is_approved' => 'boolean',
             'locked_until' => 'datetime',
             'two_factor_enabled' => 'boolean',
+            'subscription_expires_at' => 'datetime', // Zincir subscription bitiş tarihi
         ];
     }
     
@@ -340,11 +342,11 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     /**
      * Premium üye mi? (aktif subscription veya trial)
      *
-     * ⚠️ SADECE TENANT 1001 (muzibu.com.tr) İÇİN!
+     * ⚠️ SADECE TENANT CONTEXT'İNDE ÇALIŞIR
      * Diğer tenant'lar için direkt false döner, cache kullanılmaz
      *
-     * ⚡ PERFORMANCE: 1 saatlik cache ile optimize edildi (sadece Muzibu için)
-     * Her Muzibu stream request'inde çağrılıyor - cache kritik!
+     * ⚡ PERFORMANCE: subscription_expires_at ile ULTRA HIZLI kontrol
+     * Önce tenant DB, sonra central DB kontrol edilir
      */
     public function isPremium(): bool
     {
@@ -353,23 +355,34 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
             return false;
         }
 
-        // 🚀 5 dakikalık cache (güvenlik vs performans balance)
-        // Event-based invalidation: Login/Register/Subscription change → cache flush
+        // 🚀 ULTRA FAST: Önce tenant users tablosundan kontrol
+        // (Model zaten tenant context'inde yüklendiyse bu değer mevcut)
+        if ($this->subscription_expires_at && $this->subscription_expires_at->isFuture()) {
+            return true;
+        }
+
+        // Tenant DB'den fresh kontrol (model eski olabilir)
+        $tenantExpiry = \DB::table('users')
+            ->where('id', $this->id)
+            ->value('subscription_expires_at');
+
+        if ($tenantExpiry && \Carbon\Carbon::parse($tenantExpiry)->isFuture()) {
+            return true;
+        }
+
+        // Fallback: Subscription tablosu kontrolü (geçiş dönemi için)
         $cacheKey = 'user_' . $this->id . '_is_premium_tenant_' . tenant()->id;
 
         return \Cache::remember($cacheKey, 300, function () {
-            // Yeni subscription sistemi: subscriptions tablosundan kontrol et
-            // ✅ FIXED: whereNull kaldırıldı (NULL = sonsuz premium önlendi)
             $activeSubscription = $this->subscriptions()
                 ->where('status', 'active')
-                ->where('current_period_end', '>', now()) // 🔥 Sadece gelecek tarihli subscription'lar
+                ->where('current_period_end', '>', now())
                 ->first();
 
             if ($activeSubscription) {
                 return true;
             }
 
-            // Fallback: Eski sistem (is_premium kolonu)
             return $this->is_premium ?? false;
         });
     }
@@ -421,5 +434,93 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         return $this->hasOne(\Modules\Subscription\App\Models\Subscription::class, 'user_id')
             ->where('status', 'active')
             ->where('current_period_end', '>', now());
+    }
+
+    // ==========================================
+    // SUBSCRIPTION CHAIN SYSTEM METHODS
+    // ==========================================
+
+    /**
+     * Kullanıcının subscription_expires_at değerini yeniden hesapla
+     * Tüm active ve pending subscription'ların en son bitiş tarihini bul
+     *
+     * 🎯 SADECE TENANT DB GÜNCELLENİR:
+     * - subscription_expires_at tenant'a özel veridir (Muzibu)
+     * - Central DB'de bu sütun kullanılmaz
+     */
+    public function recalculateSubscriptionExpiry(): void
+    {
+        // Tenant context yoksa çık
+        if (!tenant()) {
+            return;
+        }
+
+        $lastSubscription = $this->subscriptions()
+            ->whereIn('status', ['active', 'pending'])
+            ->orderBy('current_period_end', 'desc')
+            ->first();
+
+        $expiresAt = $lastSubscription?->current_period_end;
+
+        // Sadece Tenant DB güncelle
+        try {
+            \DB::table('users')
+                ->where('id', $this->id)
+                ->update(['subscription_expires_at' => $expiresAt]);
+        } catch (\Exception $e) {
+            \Log::debug('Tenant users update skipped: ' . $e->getMessage());
+        }
+
+        // Model'i refresh et
+        $this->subscription_expires_at = $expiresAt;
+
+        // Premium cache'i temizle
+        \Cache::forget('user_' . $this->id . '_is_premium_tenant_' . (tenant()?->id ?? 0));
+    }
+
+    /**
+     * Kullanıcının zincirdeki son subscription'ının bitiş tarihini al
+     * Yeni subscription eklerken başlangıç tarihi olarak kullanılır
+     */
+    public function getLastSubscriptionEndDate(): ?\Carbon\Carbon
+    {
+        $lastSubscription = $this->subscriptions()
+            ->whereIn('status', ['active', 'pending'])
+            ->orderBy('current_period_end', 'desc')
+            ->first();
+
+        return $lastSubscription?->current_period_end;
+    }
+
+    /**
+     * Kullanıcının bekleyen (pending) subscription'ları var mı?
+     */
+    public function hasPendingSubscriptions(): bool
+    {
+        return $this->subscriptions()
+            ->where('status', 'pending')
+            ->exists();
+    }
+
+    /**
+     * Kullanıcının aktif subscription'ını getir
+     */
+    public function getActiveSubscription(): ?\Modules\Subscription\App\Models\Subscription
+    {
+        return $this->subscriptions()
+            ->where('status', 'active')
+            ->where('current_period_end', '>', now())
+            ->first();
+    }
+
+    /**
+     * Kullanıcının bekleyen subscription'larını getir (sıralı)
+     */
+    public function getPendingSubscriptions()
+    {
+        return $this->subscriptions()
+            ->where('status', 'pending')
+            ->orderBy('current_period_start', 'asc')
+            ->get();
     }
 }

@@ -14,12 +14,18 @@ class PayTRIframeService
      */
     public function prepareIframePayment(Payment $payment, array $userInfo, array $orderInfo): array
     {
+        // 🔥 DEBUG: Function called - write to MULTIPLE locations
+        file_put_contents(storage_path('logs/paytr-debug.log'), "[" . date('Y-m-d H:i:s') . "] 🚀 prepareIframePayment CALLED: payment_id={$payment->payment_id}\n", FILE_APPEND);
+        file_put_contents('/tmp/paytr-debug.txt', "[" . date('Y-m-d H:i:s') . "] 🚀 prepareIframePayment CALLED: payment_id={$payment->payment_id}\n", FILE_APPEND);
+        \Log::channel('single')->emergency('🚀🚀🚀 prepareIframePayment CALLED: payment_id=' . $payment->payment_id);
+
         // Settings'den PayTR credentials al (tenant-aware)
         $merchantId = setting('paytr_merchant_id');
         $merchantKey = setting('paytr_merchant_key');
         $merchantSalt = setting('paytr_merchant_salt');
 
         if (empty($merchantId) || empty($merchantKey) || empty($merchantSalt)) {
+            file_put_contents(storage_path('logs/paytr-debug.log'), "[" . date('Y-m-d H:i:s') . "] ❌ PayTR credentials missing!\n", FILE_APPEND);
             return [
                 'success' => false,
                 'message' => 'PayTR merchant bilgileri eksik. Lütfen admin panelden ayarları kontrol edin.'
@@ -84,7 +90,8 @@ class PayTRIframeService
             ];
 
             // Debug mode aktifse loglama yap
-            if (setting('paytr_debug', false)) {
+            // 🔍 TEMPORARY: Force debug logging to investigate PayTR error
+            if (true || setting('paytr_debug', false)) {
                 Log::info('📦 PayTR iframe token request', [
                     'payment_id' => $payment->payment_id,
                     'merchant_oid' => $merchantOid,
@@ -92,6 +99,8 @@ class PayTRIframeService
                     'test_mode' => $testMode,
                     'currency' => $currency,
                 ]);
+                // 🔥 EXTRA DEBUG: Write to file directly
+                file_put_contents(storage_path('logs/paytr-debug.log'), "[" . date('Y-m-d H:i:s') . "] 📦 PayTR TOKEN REQUEST: payment_id={$payment->payment_id}, merchant_oid={$merchantOid}, amount={$payment->amount}\n", FILE_APPEND);
             }
 
             // PayTR API'sine token için istek gönder
@@ -118,8 +127,11 @@ class PayTRIframeService
 
             $response = json_decode($result, true);
 
-            if (setting('paytr_debug', false)) {
+            // 🔍 TEMPORARY: Force debug logging to investigate PayTR error
+            if (true || setting('paytr_debug', false)) {
                 Log::info('📥 PayTR iframe token response', ['response' => $response]);
+                // 🔥 EXTRA DEBUG: Write to file directly
+                file_put_contents(storage_path('logs/paytr-debug.log'), "[" . date('Y-m-d H:i:s') . "] 📥 PayTR TOKEN RESPONSE: " . json_encode($response) . "\n", FILE_APPEND);
             }
 
             if (!$response || $response['status'] !== 'success') {

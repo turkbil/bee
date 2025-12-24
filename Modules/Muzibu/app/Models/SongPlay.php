@@ -2,10 +2,14 @@
 
 namespace Modules\Muzibu\App\Models;
 
-use App\Models\BaseModel;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class SongPlay extends BaseModel
+/**
+ * SongPlay Model - Dinleme geçmişi
+ * NOT: BaseModel kullanmıyoruz çünkü SoftDeletes gerektirmiyor
+ */
+class SongPlay extends Model
 {
     use HasFactory;
 

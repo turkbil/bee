@@ -545,7 +545,162 @@ ln -sf v3/index.html index.html
 
 ---
 
-### 📍 3C. README INDEX/MAP SAYFASI (Otomatik Rapor Listesi)
+### 📝 3C. KONUŞMA BAŞLANGIÇ VE KONU DEĞİŞİKLİĞİ RAPORLARI
+
+**🎯 KRİTİK: Her konuşmanın kaydını tutmak için otomatik rapor oluştur!**
+
+#### 🚀 NE ZAMAN RAPOR OLUŞTUR:
+
+**1️⃣ KONUŞMANIN İLK MESAJI (Her Zaman):**
+- Kullanıcı yeni konuşmaya ilk mesajı attığında
+- **MUTLAKA** planlama raporu oluştur
+- Konu: Kullanıcının isteği
+- İçerik: Ne yapılacak, hangi dosyalar etkilenecek, adımlar
+
+**2️⃣ KONU DEĞİŞİKLİĞİ (Farklı İş):**
+- Bir iş tamamen bittikten sonra
+- Kullanıcı **çok farklı** bir konuya geçiyorsa
+- Önceki işle **hiç ilgisi olmayan** yeni istek
+
+**Örnek Senaryolar:**
+
+**İlk Mesaj:**
+```
+Kullanıcı: "Müzik çalarını düzelt"
+Claude:
+  1. Önce planlama HTML'i oluştur (session-start-muzik-calar-duzeltme)
+  2. Kullanıcıya link ver
+  3. İşe başla
+```
+
+**Konu Değişikliği:**
+```
+Kullanıcı: "Müzik çalar tamam, şimdi ödeme sistemini incele"
+Claude:
+  1. Önceki konu (müzik çalar) → Tamamlandı raporu oluştur
+  2. Yeni konu (ödeme sistemi) → Planlama HTML'i oluştur
+  3. Kullanıcıya linkleri ver
+  4. Yeni işe başla
+```
+
+**Konu Değişikliği DEĞİL (Aynı İşin Devamı):**
+```
+Kullanıcı: "Müzik çalarda şarkı değiştirme de çalışmıyor"
+Claude:
+  → YENİ RAPOR OLUŞTURMA! Aynı konunun devamı.
+  → Direkt işe devam et
+```
+
+#### 📂 DOSYA YAPISI:
+
+**İlk Mesaj Raporu:**
+```
+public/readme/[YYYY]/[MM]/[DD]/session-start-[konu]/v1/index.html
+```
+
+**Konu Değişikliği Raporu:**
+```
+public/readme/[YYYY]/[MM]/[DD]/topic-change-[yeni-konu]/v1/index.html
+```
+
+#### 📋 İÇERİK:
+
+**Planlama Raporu İçermeli:**
+- 📝 **Basit Anlatım:** Ne isteniyor? (Günlük Türkçe)
+- 🔧 **Teknik Detaylar:** Hangi dosyalar etkilenecek?
+- 📊 **Yapılacaklar:** Adım adım plan
+- ⚠️ **Riskler:** Dikkat edilecek noktalar
+- 🎯 **Beklenen Sonuç:** İş bitince ne olacak?
+
+**Tasarım:**
+- Mavi tema (planlama)
+- "Planlama" badge
+- İki seviyeli içerik (basit + teknik)
+- Kod bloğu YOK! (sadece dosya path'leri)
+
+#### 🎨 ÖRNEK:
+
+```html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <title>Konuşma Başlangıç: Müzik Çalar Düzeltme</title>
+</head>
+<body class="bg-slate-900 text-white">
+    <header>
+        <span class="badge">📋 Planlama</span>
+        <h1>Müzik Çalar Düzeltme - Planlama</h1>
+        <p>24 Aralık 2025 - 15:30</p>
+    </header>
+
+    <!-- Basit Anlatım -->
+    <div class="bg-green-900/20">
+        <h3>📝 Basit Anlatım</h3>
+        <p>Müzik çalarda şarkı geçişi ve ses kontrolü çalışmıyor.
+           Bu sorunları düzelteceğiz.</p>
+    </div>
+
+    <!-- Teknik Detaylar -->
+    <div class="bg-blue-900/20">
+        <h3>🔧 Teknik Detaylar</h3>
+        <ul>
+            <li>public/themes/muzibu/js/player/core/player-core.js</li>
+            <li>public/themes/muzibu/js/player/features/controls.js</li>
+        </ul>
+    </div>
+
+    <!-- Yapılacaklar -->
+    <div>
+        <h3>📊 Yapılacaklar</h3>
+        <ol>
+            <li>Player core dosyasını incele</li>
+            <li>Şarkı geçiş fonksiyonunu düzelt</li>
+            <li>Ses kontrolünü test et</li>
+            <li>Cache temizle ve production build</li>
+        </ol>
+    </div>
+</body>
+</html>
+```
+
+#### 📎 Kullanıcıya Bildir:
+
+**İlk Mesaj:**
+```
+✅ Konuşma kaydı oluşturuldu!
+📋 Planlama: https://ixtif.com/readme/2025/12/24/session-start-muzik-calar-duzeltme/
+
+Şimdi işe başlıyorum...
+```
+
+**Konu Değişikliği:**
+```
+✅ Önceki konu tamamlandı!
+📊 Tamamlanan: https://ixtif.com/readme/2025/12/24/task-completed-muzik-calar/
+
+✅ Yeni konu için planlama hazır!
+📋 Planlama: https://ixtif.com/readme/2025/12/24/topic-change-odeme-sistemi/
+
+Yeni konuya geçiyorum...
+```
+
+#### ⚠️ DİKKAT:
+
+**RAPOR OLUŞTUR:**
+- ✅ Yeni konuşmanın ilk mesajı
+- ✅ Tamamen farklı konu (müzik → ödeme)
+- ✅ Farklı modül (Blog → Shop)
+
+**RAPOR OLUŞTURMA:**
+- ❌ Aynı konunun devamı (şarkı geçiş → ses kontrolü)
+- ❌ Küçük değişiklikler (CSS düzeltme → text değişikliği)
+- ❌ Aynı modülde farklı sayfa (Blog liste → Blog detay)
+
+**AMAÇ:** Her konuşmayı ve major değişiklikleri görelim, ama spam yapmayalım!
+
+---
+
+### 📍 3D. README INDEX/MAP SAYFASI (Otomatik Rapor Listesi)
 
 **🎯 KRİTİK: `tenant-adi.com/readme` → Tüm raporların otomatik dashboard'u!**
 

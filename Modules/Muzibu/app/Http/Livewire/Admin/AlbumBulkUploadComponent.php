@@ -304,6 +304,9 @@ class AlbumBulkUploadComponent extends Component
                 // HLS conversion job'u kuyruğa ekle
                 \Modules\Muzibu\App\Jobs\ConvertToHLSJob::dispatch($song);
 
+                // 🎨 MUZIBU: Otomatik görsel üret (Universal Helper - Queue)
+                muzibu_generate_ai_cover($song, $file['title'], 'song');
+
                 $this->uploadedFiles[$index]['status'] = 'completed';
                 $this->uploadedFiles[$index]['song_id'] = $song->song_id;
                 $successCount++;

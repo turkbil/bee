@@ -213,6 +213,27 @@ return [
             'timeout' => 300, // HLS conversion için 5 dakika
             'nice' => 0,
         ],
+
+        // Muzibu Module Queue (All Muzibu Jobs)
+        'muzibu-supervisor' => [
+            'connection' => 'redis',
+            'queue' => [
+                'muzibu_my_playlist',      // Playlist cover generation (Leonardo AI)
+                'muzibu_isolated',          // Bulk operations, translations
+                'muzibu_hls',               // HLS conversion (generic)
+                'muzibu_tenant_1001_hls',   // Tenant 1001 HLS conversion
+            ],
+            'balance' => 'auto',
+            'autoScalingStrategy' => 'time',
+            'minProcesses' => 1,
+            'maxProcesses' => 3,
+            'maxTime' => 0,
+            'maxJobs' => 100,
+            'memory' => 256,
+            'tries' => 2,
+            'timeout' => 600, // 10 dakika - HLS conversion için
+            'nice' => 5,
+        ],
         
         // Background Tasks Queue
         'background-supervisor' => [
@@ -251,6 +272,12 @@ return [
                 'balanceCooldown' => 5, // 🔧 OPTIMIZED: Daha uzun cooldown
                 'memory' => 256, // 🔧 OPTIMIZED: 512 → 256 (memory tasarrufu)
             ],
+            'muzibu-supervisor' => [
+                'maxProcesses' => 3,
+                'minProcesses' => 1,
+                'memory' => 256,
+                'timeout' => 600,
+            ],
             'background-supervisor' => [
                 'maxProcesses' => 1, // 🔧 OPTIMIZED: 2 → 1 (background işler için yeterli)
                 'minProcesses' => 1,
@@ -268,6 +295,9 @@ return [
             ],
             'tenant-supervisor' => [
                 'maxProcesses' => 1,
+            ],
+            'muzibu-supervisor' => [
+                'maxProcesses' => 2,
             ],
             'background-supervisor' => [
                 'maxProcesses' => 1,

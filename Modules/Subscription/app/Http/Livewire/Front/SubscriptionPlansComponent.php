@@ -14,7 +14,7 @@ class SubscriptionPlansComponent extends Component
 
     public function mount()
     {
-        // Aktif ve public olan planları getir
+        // Aktif ve public olan planları getir (is_public=false gizli planlar otomatik filtrelenir)
         $this->plans = SubscriptionPlan::where('is_active', true)
             ->where('is_public', true)
             ->orderBy('sort_order')

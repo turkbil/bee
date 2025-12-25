@@ -523,4 +523,12 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
             ->orderBy('current_period_start', 'asc')
             ->get();
     }
+
+    /**
+     * Email doğrulama notification'ını gönder (Custom template ile)
+     */
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new \App\Notifications\VerifyEmailNotification);
+    }
 }

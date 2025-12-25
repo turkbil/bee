@@ -82,23 +82,28 @@ class AlbumController extends Controller
                     'album_id' => $album->album_id,
                     'album_title' => $album->title,
                     'album_slug' => $album->slug,
+                    'album_cover' => $song->getCoverUrl(120, 120), // 🎨 Song cover (fallback to album)
                     'artist_id' => $album->artist?->artist_id,
                     'artist_title' => $album->artist?->title,
                     'artist_slug' => $album->artist?->slug,
                 ];
             });
 
+            // Wrap in 'album' key for JS compatibility
             return response()->json([
-                'album_id' => $album->album_id,
-                'title' => $album->title,
-                'slug' => $album->slug,
-                'media_id' => $album->media_id,
-                'cover_url' => $album->getCoverUrl(200, 200),
-                'artist_id' => $album->artist?->artist_id,
-                'artist_title' => $album->artist?->title,
-                'artist_slug' => $album->artist?->slug,
-                'songs' => $songs,
-                'song_count' => $songs->count(),
+                'album' => [
+                    'id' => $album->album_id,
+                    'album_id' => $album->album_id,
+                    'title' => $album->title,
+                    'slug' => $album->slug,
+                    'media_id' => $album->media_id,
+                    'cover_url' => $album->getCoverUrl(200, 200),
+                    'artist_id' => $album->artist?->artist_id,
+                    'artist_title' => $album->artist?->title,
+                    'artist_slug' => $album->artist?->slug,
+                    'songs' => $songs,
+                    'song_count' => $songs->count(),
+                ]
             ]);
 
         } catch (\Exception $e) {

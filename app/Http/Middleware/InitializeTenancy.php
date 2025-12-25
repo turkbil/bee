@@ -86,20 +86,24 @@ class InitializeTenancy extends BaseMiddleware
                 // Central tenant için özel başlatma - database'i değiştirmez
                 $this->tenancy->initialize($tenant);
 
-                // 🍪 Session domain'i dinamik set et (logout problemi fix)
-                Config::set('session.domain', '.' . $host);
+                // 🍪 Cookie domain: Tenant-aware (session prefix TenantSessionServiceProvider'da)
+                Config::set([
+                    'session.domain' => '.' . $host,
+                ]);
 
                 return $next($request);
             }
-            
+
             // Normal tenant'ı başlat
             $this->tenancy->initialize($tenant);
 
             // 🔥 Dinamik tenant disk registration
             $this->registerTenantDisk($tenant);
 
-            // 🍪 Session domain'i dinamik set et (logout problemi fix)
-            Config::set('session.domain', '.' . $host);
+            // 🍪 Cookie domain: Tenant-aware (session prefix TenantSessionServiceProvider'da)
+            Config::set([
+                'session.domain' => '.' . $host,
+            ]);
 
             return $next($request);
             
@@ -152,6 +156,11 @@ class InitializeTenancy extends BaseMiddleware
 
             // Tenant'ı başlat
             $this->tenancy->initialize($tenant);
+
+            // 🍪 Cookie domain: Tenant-aware (session prefix TenantSessionServiceProvider'da)
+            Config::set([
+                'session.domain' => '.' . $host,
+            ]);
 
             return $next($request);
 

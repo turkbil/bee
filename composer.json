@@ -91,7 +91,10 @@
             "app/Helpers/MenuHelper.php",
             "app/Helpers/tenant_helpers.php",
             "app/Helpers/CacheHelper.php",
-            "app/Helpers/MediaHelper.php"
+            "app/Helpers/MediaHelper.php",
+            "Modules/Muzibu/app/Helpers/helpers.php",
+            "Modules/Muzibu/helpers.php",
+            "Modules/MediaManagement/helpers.php"
         ]
     },
     "autoload-dev": {

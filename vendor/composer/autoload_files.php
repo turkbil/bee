@@ -65,4 +65,7 @@ return array(
     'a02b724d0c8910ca6d2a2dc3ad0e0ebd' => $baseDir . '/app/Helpers/tenant_helpers.php',
     'cc908781867dd803042b960930928b7f' => $baseDir . '/app/Helpers/CacheHelper.php',
     '07ac275da986829f888a465f3856d603' => $baseDir . '/app/Helpers/MediaHelper.php',
+    '71043f39ee883afcc01acd394d88a217' => $baseDir . '/Modules/Muzibu/app/Helpers/helpers.php',
+    '6c47e74104cfb12309542f2014b3563a' => $baseDir . '/Modules/Muzibu/helpers.php',
+    'f56bbfe669446335e4d3c5c496969794' => $baseDir . '/Modules/MediaManagement/helpers.php',
 );

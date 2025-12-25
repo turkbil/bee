@@ -86,7 +86,7 @@
         <!-- Resend Verification Email -->
         <form method="POST" action="{{ route('verification.send') }}" class="flex-1">
             @csrf
-            <button type="submit" class="w-full py-4 bg-gradient-to-r from-mz-500 to-mz-600 hover:from-mz-400 hover:to-mz-500 text-white font-semibold rounded-xl transition-all shadow-lg shadow-mz-500/25">
+            <button type="submit" class="w-full px-6 py-4 bg-gradient-to-r from-mz-500 to-mz-600 hover:from-mz-400 hover:to-mz-500 text-white font-semibold rounded-xl transition-all shadow-lg shadow-mz-500/25">
                 <span class="flex items-center justify-center gap-2">
                     <i class="fas fa-paper-plane"></i>
                     Doğrulama Emailini Tekrar Gönder
@@ -97,7 +97,7 @@
         <!-- Logout -->
         <form method="POST" action="{{ route('logout') }}">
             @csrf
-            <button type="submit" class="w-full sm:w-auto px-6 py-4 bg-dark-700 hover:bg-dark-600 text-white font-semibold rounded-xl transition-all border border-dark-500">
+            <button type="submit" class="w-full sm:w-auto px-8 py-4 bg-dark-700 hover:bg-dark-600 text-white font-semibold rounded-xl transition-all border border-dark-500">
                 <span class="flex items-center justify-center gap-2">
                     <i class="fas fa-sign-out-alt"></i>
                     Çıkış Yap

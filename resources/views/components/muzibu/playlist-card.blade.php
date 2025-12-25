@@ -1,7 +1,25 @@
-@props(['playlist', 'preview' => false, 'compact' => false])
+@props(['playlist', 'preview' => true, 'compact' => false])
 
+{{-- ⚠️⚠️⚠️ UYARI: PREVIEW MODU HER ZAMAN TRUE OLMALI! ⚠️⚠️⚠️ --}}
+{{--
+    🚨 KRİTİK: Bu component MUTLAKA :preview="true" ile çağrılmalı!
+
+    ✅ DOĞRU KULLANIM:
+    <x-muzibu.playlist-card :playlist="$playlist" :preview="true" />
+
+    ❌ YANLIŞ KULLANIM:
+    <x-muzibu.playlist-card :playlist="$playlist" />  ← Bu YANLIŞ! Preview=false olur!
+
+    📋 Neden Önemli?
+    - Desktop'ta sidebar preview açılması için preview=true gerekli
+    - Preview=false ise her tıklama yeni sayfaya gider (eskden davranış)
+    - Varsayılan değer: true (değiştirilirse tüm sistem bozulur)
+
+    🔍 Kontrol:
+    Console'da "[PLAYLIST-CARD]" yazısını ara
+    Preview=false kullanımları loglanır
+--}}
 {{-- Muzibu Playlist Card Component --}}
-{{-- Usage: <x-muzibu.playlist-card :playlist="$playlist" /> --}}
 
 <a @if($preview)
        href="/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}"

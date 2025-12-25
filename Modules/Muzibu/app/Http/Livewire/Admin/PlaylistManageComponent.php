@@ -106,7 +106,7 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
         $languages = available_tenant_languages();
         $this->availableLanguages = array_column($languages, 'code');
         $this->languageNames = array_column($languages, 'native_name', 'code');
-        $this->currentLanguage = get_tenant_default_locale();
+        $this->currentLanguage = \get_tenant_default_locale();
 
         $this->tabConfig = \App\Services\GlobalTabService::getAllTabs('muzibu');
         $this->activeTab = \App\Services\GlobalTabService::getDefaultTabKey('playlist');
@@ -221,7 +221,7 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
 
     protected function getMainLanguage()
     {
-        return get_tenant_default_locale();
+        return \get_tenant_default_locale();
     }
 
     protected function rules()
@@ -398,7 +398,7 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
 
             // 🎨 MUZIBU: Media yoksa otomatik görsel üret (Universal Helper - Tercihen)
             if (!$playlist->media_id) {
-                muzibu_generate_ai_cover($playlist, $playlist->title, 'playlist');
+                \muzibu_generate_ai_cover($playlist, $playlist->title, 'playlist');
             }
 
             // İlişkileri sync et
@@ -434,7 +434,7 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
                 $this->playlistId = null;
                 $this->reset(['inputs', 'multiLangInputs']);
                 $this->inputs = ['is_active' => true];
-                $this->currentLanguage = get_tenant_default_locale();
+                $this->currentLanguage = \get_tenant_default_locale();
                 $this->initializeEmptyInputs();
 
                 Log::info('✅ Form resetlendi - Yeni kayıt için hazır', [

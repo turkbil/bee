@@ -89,6 +89,14 @@ class SectorController extends Controller
     public function apiShow($slug)
     {
         $sector = Sector::with('iconMedia')->where(function($q) use ($slug) { $q->where('slug->tr', $slug)->orWhere('slug->en', $slug); })->where('is_active', 1)->firstOrFail();
+
+        // Sektöre ait aktif radyolar (üstte gösterilecek)
+        $radios = $sector->radios()
+            ->with('logoMedia')
+            ->where('muzibu_radios.is_active', 1)
+            ->get();
+
+        // Only show playlists with active songs (altta gösterilecek)
         $playlists = $sector->playlists()
             ->with('coverMedia')
             ->where('muzibu_playlists.is_active', 1)
@@ -102,7 +110,7 @@ class SectorController extends Controller
                 $q->where('is_active', 1);
             }], 'duration')
             ->get();
-        $html = view('themes.muzibu.partials.sector-detail', compact('sector', 'playlists'))->render();
+        $html = view('themes.muzibu.partials.sector-detail', compact('sector', 'radios', 'playlists'))->render();
         $titleJson = @json_decode($sector->title);
         $title = $titleJson && isset($titleJson->tr) ? $titleJson->tr : $sector->title;
         return response()->json(['html' => $html, 'meta' => ['title' => $title . ' - Muzibu', 'description' => 'Sektör detaylarını inceleyin']]);

@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Shopping Feed - Eklenebilecek Tüm Field'ler</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-slate-800 to-slate-700 border-b border-slate-600 sticky top-0 z-50 backdrop-blur-md bg-opacity-90">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                            🛒 Google Shopping
+                        </span>
+                        <span class="text-slate-400 text-sm">
+                            25 Aralık 2025
+                        </span>
+                    </div>
+                    <h1 class="text-3xl font-bold bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+                        Google Shopping Feed - Eklenebilecek Tüm Field'ler
+                    </h1>
+                    <p class="text-slate-400 text-sm mt-2">
+                        Merchant Center için optimize edilmiş ürün feed'i
+                    </p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-12 space-y-12">
+
+        <!-- 📝 Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-4">
+                <span class="text-4xl">📝</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-green-400 mb-2">Basit Anlatım (Herkes İçin)</h2>
+                    <p class="text-slate-300 text-lg leading-relaxed">
+                        Google Shopping feed'ine ne kadar çok bilgi eklerseniz, Google o kadar iyi sıralar ve kullanıcılar o kadar çok tıklar!
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-lg p-6">
+                <h3 class="text-xl font-semibold text-white mb-4">Şu An Ne Var?</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-green-900/30 border border-green-700 rounded p-4">
+                        <h4 class="font-semibold text-green-400 mb-2">✅ Mevcut Field'ler</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• ID (ürün numarası)</li>
+                            <li>• Başlık</li>
+                            <li>• Açıklama</li>
+                            <li>• Link (ürün sayfası)</li>
+                            <li>• Görsel</li>
+                            <li>• Fiyat</li>
+                            <li>• Stok durumu (in stock)</li>
+                            <li>• Stok miktarı (quantity)</li>
+                            <li>• Durum (new/used)</li>
+                            <li>• Marka</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-yellow-900/30 border border-yellow-700 rounded p-4">
+                        <h4 class="font-semibold text-yellow-400 mb-2">⚡ Eklenebilir Field'ler</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• <strong>Kategori</strong> (Google taxonomy)</li>
+                            <li>• <strong>GTIN/EAN/UPC</strong> (barkod)</li>
+                            <li>• <strong>MPN</strong> (üretici parça no)</li>
+                            <li>• <strong>Renk, Beden, Materyal</strong></li>
+                            <li>• <strong>Kargo bilgisi</strong> (ücretsiz/ücretli)</li>
+                            <li>• <strong>İade süresi</strong> (14 gün vb.)</li>
+                            <li>• <strong>İndirim fiyatı</strong></li>
+                            <li>• <strong>Yaş grubu, Cinsiyet</strong></li>
+                            <li>• <strong>Enerji sınıfı</strong></li>
+                            <li>• Ve daha fazlası...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-blue-900/30 border border-blue-700 rounded-lg p-4">
+                <p class="text-blue-300 text-sm">
+                    💡 <strong>Önemli:</strong> Google Shopping'de daha üst sıralara çıkmak için mümkün olduğunca fazla bilgi eklemelisiniz.
+                    Rakipleriniz ekstra bilgi ekliyorsa, siz de eklemelisiniz!
+                </p>
+            </div>
+        </section>
+
+        <!-- 🔴 ZORUNLU FIELD'LER -->
+        <section class="bg-red-900/20 border border-red-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <span class="text-4xl">🔴</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-red-400 mb-2">Zorunlu Field'ler (Mutlaka Olmalı)</h2>
+                    <p class="text-slate-300 text-lg">Google Merchant Center bunları görmezse ürünü reddeder!</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <!-- ID -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">1. id</h3>
+                        <span class="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">✅ VAR</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Ürünün benzersiz ID'si</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded">123</code></p>
+                        <p><strong>Kodda:</strong> <code class="bg-slate-900 px-2 py-1 rounded">$product->product_id</code></p>
+                    </div>
+                </div>
+
+                <!-- Title -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">2. title</h3>
+                        <span class="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">✅ VAR</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Ürün başlığı (max 150 karakter)</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded text-xs">İXTİF CPD18TVL - 1.8 Ton Li-Ion Forklift</code></p>
+                        <p><strong>İpucu:</strong> Marka + Model + Özellik şeklinde yazın</p>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">3. description</h3>
+                        <span class="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">✅ VAR</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Ürün açıklaması (max 5000 karakter)</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded text-xs">1.8 ton kapasiteli, 80V/205Ah Li-Ion...</code></p>
+                        <p><strong>İpucu:</strong> HTML etiketleri kaldırılmalı (zaten yapılıyor)</p>
+                    </div>
+                </div>
+
+                <!-- Link -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">4. link</h3>
+                        <span class="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">✅ VAR</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Ürün sayfasının URL'si</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded text-xs">https://ixtif.com/shop/forklift-catal</code></p>
+                    </div>
+                </div>
+
+                <!-- Image Link -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">5. image_link</h3>
+                        <span class="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">✅ VAR</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Ana ürün görseli (min 100x100px)</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded text-xs">https://ixtif.com/storage/hero.png</code></p>
+                        <p><strong>Not:</strong> WebP → PNG dönüştürülüyor (Google desteklemez)</p>
+                    </div>
+                </div>
+
+                <!-- Price -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">6. price</h3>
+                        <span class="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">✅ VAR</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Fiyat ve para birimi</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded">9999.00 TRY</code></p>
+                    </div>
+                </div>
+
+                <!-- Availability -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">7. availability</h3>
+                        <span class="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">✅ VAR</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Stok durumu</p>
+                        <p><strong>Değerler:</strong> <code class="bg-slate-900 px-2 py-1 rounded">in stock</code>, <code class="bg-slate-900 px-2 py-1 rounded">out of stock</code>, <code class="bg-slate-900 px-2 py-1 rounded">preorder</code></p>
+                        <p><strong>Kodda:</strong> Hep "in stock" gösteriliyor ✅</p>
+                    </div>
+                </div>
+
+                <!-- Condition -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">8. condition</h3>
+                        <span class="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">✅ VAR</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Ürün durumu</p>
+                        <p><strong>Değerler:</strong> <code class="bg-slate-900 px-2 py-1 rounded">new</code>, <code class="bg-slate-900 px-2 py-1 rounded">used</code>, <code class="bg-slate-900 px-2 py-1 rounded">refurbished</code></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🟡 ÖNERİLEN FIELD'LER -->
+        <section class="bg-yellow-900/20 border border-yellow-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <span class="text-4xl">🟡</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-yellow-400 mb-2">Önerilen Field'ler (Olması İyi)</h2>
+                    <p class="text-slate-300 text-lg">Google bunları görünce sıralamada yukarı çıkarır!</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Brand -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">9. brand</h3>
+                        <span class="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">✅ VAR</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Marka adı</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded">iXtif</code></p>
+                        <p><strong>Önemi:</strong> Marka bilinirliği için kritik!</p>
+                    </div>
+                </div>
+
+                <!-- GTIN -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">10. gtin (Barkod)</h3>
+                        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">❌ YOK</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Global Trade Item Number (UPC, EAN, JAN, ISBN)</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded">885909950805</code></p>
+                        <p><strong>Önemi:</strong> Google ürünü tanır ve daha iyi sıralar!</p>
+                        <p class="text-yellow-400"><strong>Nasıl eklerim?</strong> Database'e gtin field'i ekle</p>
+                    </div>
+                </div>
+
+                <!-- MPN -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">11. mpn (Üretici Parça No)</h3>
+                        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">❌ YOK</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Manufacturer Part Number</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded">CPD18TVL-1070</code></p>
+                        <p><strong>Önemi:</strong> GTIN yoksa MPN şart!</p>
+                        <p class="text-yellow-400"><strong>Nasıl eklerim?</strong> Database'e mpn field'i ekle veya SKU kullan</p>
+                    </div>
+                </div>
+
+                <!-- Google Product Category -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">12. google_product_category</h3>
+                        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">❌ YOK</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Google'ın kategori sistemi (taxonomy)</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded">1167</code> (Business & Industrial > Material Handling)</p>
+                        <p><strong>Önemi:</strong> Google ürünü doğru kategoride gösterir!</p>
+                        <p class="text-yellow-400"><strong>Nasıl eklerim?</strong> Google taxonomy'den kategori ID bul ve ekle</p>
+                        <p class="text-xs text-slate-400">Taxonomy: https://support.google.com/merchants/answer/6324436</p>
+                    </div>
+                </div>
+
+                <!-- Product Type -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">13. product_type</h3>
+                        <span class="bg-yellow-600 text-white px-3 py-1 rounded-full text-xs font-bold">⚡ EKLENEBİLİR</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Kendi kategori yapınız</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded">Forklift > Elektrikli > Li-Ion</code></p>
+                        <p><strong>Önemi:</strong> Shopping kampanyalarında filtreleme için kullanılır</p>
+                        <p class="text-yellow-400"><strong>Nasıl eklerim?</strong> Mevcut kategori yapısını kullan</p>
+                    </div>
+                </div>
+
+                <!-- Additional Image Link -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">14. additional_image_link</h3>
+                        <span class="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">✅ VAR</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Ek ürün görselleri (max 10)</p>
+                        <p><strong>Örnek:</strong> Galeri görselleri</p>
+                        <p><strong>Kodda:</strong> Gallery media eklenmiş ✅</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🟢 İNDİRİM & PROMOSYON -->
+        <section class="bg-green-900/20 border border-green-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <span class="text-4xl">🟢</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-green-400 mb-2">İndirim ve Promosyon Field'leri</h2>
+                    <p class="text-slate-300 text-lg">İndirimli ürünler Google'da öne çıkar!</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Sale Price -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">15. sale_price</h3>
+                        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">❌ YOK</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> İndirimli fiyat</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded">7999.00 TRY</code></p>
+                        <p><strong>Önemi:</strong> İndirim yüzdesi gösterilir, tıklama artar!</p>
+                        <div class="bg-blue-900/30 border border-blue-700 rounded p-3 mt-2">
+                            <p class="text-blue-300 text-xs">
+                                <strong>Database'de var:</strong> discount_price, discount_percentage field'leri var!
+                                Eklenebilir ✅
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sale Price Effective Date -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">16. sale_price_effective_date</h3>
+                        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">❌ YOK</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> İndirim tarihi (başlangıç - bitiş)</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded text-xs">2025-12-25T00:00+03:00/2025-12-31T23:59+03:00</code></p>
+                        <p><strong>Önemi:</strong> Kampanya süresini belirtir</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🔵 KARGO & TESLİMAT -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <span class="text-4xl">🔵</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-blue-400 mb-2">Kargo ve Teslimat Bilgileri</h2>
+                    <p class="text-slate-300 text-lg">Ücretsiz kargo = Daha fazla tıklama!</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Shipping -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">17. shipping</h3>
+                        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">❌ YOK</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Kargo ücreti ve bölge</p>
+                        <p><strong>Örnek:</strong></p>
+                        <pre class="bg-slate-900 rounded p-3 text-xs overflow-x-auto"><code>&lt;g:shipping&gt;
+  &lt;g:country&gt;TR&lt;/g:country&gt;
+  &lt;g:service&gt;Standart&lt;/g:service&gt;
+  &lt;g:price&gt;0.00 TRY&lt;/g:price&gt;
+&lt;/g:shipping&gt;</code></pre>
+                        <p class="text-green-400"><strong>Önemi:</strong> "Ücretsiz kargo" yazısı Google'da görünür!</p>
+                    </div>
+                </div>
+
+                <!-- Shipping Weight -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">18. shipping_weight</h3>
+                        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">❌ YOK</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Kargo ağırlığı</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded">1800 kg</code></p>
+                        <p><strong>Önemi:</strong> Kargo maliyeti hesaplaması için</p>
+                    </div>
+                </div>
+
+                <!-- Shipping Length/Width/Height -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">19. shipping_length/width/height</h3>
+                        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">❌ YOK</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Kargo boyutları</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded">150 cm x 100 cm x 200 cm</code></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🟣 İADE & GARANTİ -->
+        <section class="bg-purple-900/20 border border-purple-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <span class="text-4xl">🟣</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-purple-400 mb-2">İade ve Garanti</h2>
+                    <p class="text-slate-300 text-lg">Müşteri güveni için kritik!</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Return Policy -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">20. return_policy_label</h3>
+                        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">❌ YOK</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> İade süresi</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded">14 gün ücretsiz iade</code></p>
+                        <p><strong>Önemi:</strong> Google bazen "14 gün iade" yazısı gösterir</p>
+                    </div>
+                </div>
+
+                <!-- Warranty -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">21. warranty</h3>
+                        <span class="bg-yellow-600 text-white px-3 py-1 rounded-full text-xs font-bold">⚡ EKLENEBİLİR</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Garanti süresi</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded">2 yıl garanti</code></p>
+                        <div class="bg-blue-900/30 border border-blue-700 rounded p-3 mt-2">
+                            <p class="text-blue-300 text-xs">
+                                <strong>Database'de var:</strong> warranty_info field'i var! Eklenebilir ✅
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🎨 VARYANTLAR (Renk, Beden vb.) -->
+        <section class="bg-pink-900/20 border border-pink-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <span class="text-4xl">🎨</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-pink-400 mb-2">Ürün Varyantları</h2>
+                    <p class="text-slate-300 text-lg">Renk, beden, materyal gibi seçenekler</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Item Group ID -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">22. item_group_id</h3>
+                        <span class="bg-yellow-600 text-white px-3 py-1 rounded-full text-xs font-bold">⚡ EKLENEBİLİR</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Ana ürün ID (varyantları gruplar)</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded">FORKLIFT-18TON</code></p>
+                        <p><strong>Önemi:</strong> Google varyantları aynı ürün olarak gösterir</p>
+                        <div class="bg-blue-900/30 border border-blue-700 rounded p-3 mt-2">
+                            <p class="text-blue-300 text-xs">
+                                <strong>Database'de var:</strong> parent_product_id field'i var! Kullanılabilir ✅
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Color -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">23. color</h3>
+                        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">❌ YOK</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Ürün rengi</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded">Kırmızı</code>, <code class="bg-slate-900 px-2 py-1 rounded">Mavi</code></p>
+                        <p><strong>Önemi:</strong> Varyant seçeneklerini gösterir</p>
+                        <p class="text-yellow-400"><strong>Nasıl eklerim?</strong> Ürün varyant sistemine renk ekle</p>
+                    </div>
+                </div>
+
+                <!-- Size -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">24. size</h3>
+                        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">❌ YOK</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Beden/Boy</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded">1070 mm</code>, <code class="bg-slate-900 px-2 py-1 rounded">1150 mm</code></p>
+                        <p><strong>Önemi:</strong> Forklift çatal uzunluğu gibi ölçüler için ideal</p>
+                    </div>
+                </div>
+
+                <!-- Material -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">25. material</h3>
+                        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">❌ YOK</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Materyal/Malzeme</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded">Çelik</code>, <code class="bg-slate-900 px-2 py-1 rounded">Alüminyum</code></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ⚡ EKSTRA FIELD'LER -->
+        <section class="bg-indigo-900/20 border border-indigo-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <span class="text-4xl">⚡</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-indigo-400 mb-2">Ekstra Field'ler (Bonus)</h2>
+                    <p class="text-slate-300 text-lg">Özel sektörler için ekstra bilgiler</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Age Group -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">26. age_group</h3>
+                        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">❌ YOK</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Yaş grubu (giyim için)</p>
+                        <p><strong>Değerler:</strong> <code class="bg-slate-900 px-2 py-1 rounded">adult</code>, <code class="bg-slate-900 px-2 py-1 rounded">kids</code>, <code class="bg-slate-900 px-2 py-1 rounded">infant</code></p>
+                        <p class="text-slate-500"><strong>İxtif için:</strong> Gerekli değil (endüstriyel ürün)</p>
+                    </div>
+                </div>
+
+                <!-- Gender -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">27. gender</h3>
+                        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">❌ YOK</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Cinsiyet (giyim için)</p>
+                        <p><strong>Değerler:</strong> <code class="bg-slate-900 px-2 py-1 rounded">male</code>, <code class="bg-slate-900 px-2 py-1 rounded">female</code>, <code class="bg-slate-900 px-2 py-1 rounded">unisex</code></p>
+                        <p class="text-slate-500"><strong>İxtif için:</strong> Gerekli değil</p>
+                    </div>
+                </div>
+
+                <!-- Energy Efficiency Class -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">28. energy_efficiency_class</h3>
+                        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">❌ YOK</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Enerji sınıfı (elektronik için)</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded">A++</code>, <code class="bg-slate-900 px-2 py-1 rounded">A+</code></p>
+                        <p class="text-green-400"><strong>İxtif için:</strong> Li-Ion bataryalı forklifter için eklenebilir!</p>
+                    </div>
+                </div>
+
+                <!-- Custom Labels -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">29. custom_label_0 ... custom_label_4</h3>
+                        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">❌ YOK</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Özel etiketler (kampanya filtreleme için)</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded">Yılbaşı Kampanyası</code>, <code class="bg-slate-900 px-2 py-1 rounded">Çok Satan</code></p>
+                        <p><strong>Önemi:</strong> Shopping kampanyalarında filtreleme kolaylaşır</p>
+                    </div>
+                </div>
+
+                <!-- Excluded Destination -->
+                <div class="bg-slate-800/70 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">30. excluded_destination</h3>
+                        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">❌ YOK</span>
+                    </div>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p><strong>Ne:</strong> Hangi platformlarda gösterilmeyecek</p>
+                        <p><strong>Örnek:</strong> <code class="bg-slate-900 px-2 py-1 rounded">Shopping</code> (sadece ürün listesi için)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 📊 ÖNCELİK SIRASI -->
+        <section class="bg-orange-900/20 border border-orange-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <span class="text-4xl">📊</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-orange-400 mb-2">Öncelik Sırası: Neyi Önce Eklemeliyim?</h2>
+                    <p class="text-slate-300 text-lg">En önemliden başlayın!</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <!-- 1. Seviye -->
+                <div class="bg-green-900/30 border-2 border-green-600 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-green-400 mb-4">🥇 1. SEVİYE: Kritik (Hemen Ekle)</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="space-y-2 text-sm text-slate-300">
+                            <p><strong>1. google_product_category</strong></p>
+                            <p class="text-xs text-slate-400">→ Google ürünü doğru kategoride gösterir</p>
+                        </div>
+                        <div class="space-y-2 text-sm text-slate-300">
+                            <p><strong>2. gtin veya mpn</strong></p>
+                            <p class="text-xs text-slate-400">→ Google ürünü tanır ve sıralar</p>
+                        </div>
+                        <div class="space-y-2 text-sm text-slate-300">
+                            <p><strong>3. shipping (ücretsiz kargo)</strong></p>
+                            <p class="text-xs text-slate-400">→ "Ücretsiz kargo" yazısı görünür</p>
+                        </div>
+                        <div class="space-y-2 text-sm text-slate-300">
+                            <p><strong>4. product_type</strong></p>
+                            <p class="text-xs text-slate-400">→ Kampanya filtreleme için</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Seviye -->
+                <div class="bg-blue-900/30 border-2 border-blue-600 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-blue-400 mb-4">🥈 2. SEVİYE: Önemli (Ekle)</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="space-y-2 text-sm text-slate-300">
+                            <p><strong>5. sale_price (indirim)</strong></p>
+                            <p class="text-xs text-slate-400">→ İndirim yüzdesi gösterilir</p>
+                        </div>
+                        <div class="space-y-2 text-sm text-slate-300">
+                            <p><strong>6. item_group_id (varyantlar)</strong></p>
+                            <p class="text-xs text-slate-400">→ Varyantları gruplar</p>
+                        </div>
+                        <div class="space-y-2 text-sm text-slate-300">
+                            <p><strong>7. size/color/material</strong></p>
+                            <p class="text-xs text-slate-400">→ Varyant seçenekleri</p>
+                        </div>
+                        <div class="space-y-2 text-sm text-slate-300">
+                            <p><strong>8. shipping_weight</strong></p>
+                            <p class="text-xs text-slate-400">→ Kargo maliyeti için</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Seviye -->
+                <div class="bg-purple-900/30 border-2 border-purple-600 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-purple-400 mb-4">🥉 3. SEVİYE: Bonus (İsteğe Bağlı)</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="space-y-2 text-sm text-slate-300">
+                            <p><strong>9. energy_efficiency_class</strong></p>
+                            <p class="text-xs text-slate-400">→ Li-Ion için eklenebilir</p>
+                        </div>
+                        <div class="space-y-2 text-sm text-slate-300">
+                            <p><strong>10. custom_label</strong></p>
+                            <p class="text-xs text-slate-400">→ Kampanya filtreleme</p>
+                        </div>
+                        <div class="space-y-2 text-sm text-slate-300">
+                            <p><strong>11. warranty</strong></p>
+                            <p class="text-xs text-slate-400">→ Garanti bilgisi</p>
+                        </div>
+                        <div class="space-y-2 text-sm text-slate-300">
+                            <p><strong>12. return_policy_label</strong></p>
+                            <p class="text-xs text-slate-400">→ İade süresi</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🎯 SONUÇ -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <span class="text-4xl">🎯</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-white mb-2">Sonuç ve Öneriler</h2>
+                    <p class="text-slate-300 text-lg">İxtif için özel öneri listesi</p>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Hemen Ekle -->
+                <div class="bg-green-900/30 border border-green-700 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-green-400 mb-4">✅ HEMEN EKLENMELİ (Kritik)</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-400 text-xl">1.</span>
+                            <div>
+                                <strong>google_product_category</strong>
+                                <p class="text-xs text-slate-400">Google taxonomy'den kategori ID bul → 1167 (Material Handling)</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-400 text-xl">2.</span>
+                            <div>
+                                <strong>mpn (Üretici Parça No)</strong>
+                                <p class="text-xs text-slate-400">SKU field'ini kullan veya yeni field ekle</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-400 text-xl">3.</span>
+                            <div>
+                                <strong>shipping (Ücretsiz Kargo)</strong>
+                                <p class="text-xs text-slate-400">Türkiye için ücretsiz kargo belirt</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-400 text-xl">4.</span>
+                            <div>
+                                <strong>product_type</strong>
+                                <p class="text-xs text-slate-400">Mevcut kategori yapısını kullan</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- İleriye Dönük -->
+                <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-blue-400 mb-4">⏳ İLERİYE DÖNÜK (Önemli)</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-3">
+                            <span class="text-blue-400 text-xl">5.</span>
+                            <div>
+                                <strong>sale_price</strong>
+                                <p class="text-xs text-slate-400">Database'de var (discount_price) → Eklenebilir</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-blue-400 text-xl">6.</span>
+                            <div>
+                                <strong>item_group_id</strong>
+                                <p class="text-xs text-slate-400">parent_product_id kullan → Varyantları grupla</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-blue-400 text-xl">7.</span>
+                            <div>
+                                <strong>size (Ölçü)</strong>
+                                <p class="text-xs text-slate-400">Forklift çatal uzunluğu için kullanılabilir</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Opsiyonel -->
+                <div class="bg-purple-900/30 border border-purple-700 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-purple-400 mb-4">💡 OPSİYONEL (Bonus)</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-3">
+                            <span class="text-purple-400 text-xl">8.</span>
+                            <div>
+                                <strong>energy_efficiency_class</strong>
+                                <p class="text-xs text-slate-400">Li-Ion bataryalı forklifter için</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-purple-400 text-xl">9.</span>
+                            <div>
+                                <strong>custom_label</strong>
+                                <p class="text-xs text-slate-400">Kampanya filtreleme için</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 border-t border-slate-700 mt-20 py-8">
+        <div class="max-w-7xl mx-auto px-6 text-center text-slate-400 text-sm">
+            <p>🤖 Claude Sonnet 4.5 tarafından oluşturuldu</p>
+            <p class="mt-2">Google Shopping Feed - Kapsamlı Field Listesi ve Öneriler</p>
+        </div>
+    </footer>
+</body>
+</html>

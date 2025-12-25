@@ -75,13 +75,10 @@ class GenerateSongCover implements ShouldQueue
             ]);
 
             // 🎨 Prompt oluştur (SADECE BAŞLIK! AI kendi hayal etsin)
-            // Site zaten müzik platformu, "music" kelimesi gereksiz sınırlama yapar!
+            // ⚠️ KRİTİK: SADECE şarkı adı! "by Artist" ASLA EKLEME!
+            // Leonardo AI "by Artist" ifadesini "enstrüman çalan insan" olarak yorumluyor
+            // Hedef: 30 bin farklı görsel (şarkı adlarına göre), 30 bin müzisyen DEĞİL!
             $simplePrompt = $this->songTitle;
-
-            // Artist varsa ekle
-            if ($this->artistName) {
-                $simplePrompt .= " by {$this->artistName}";
-            }
 
             // AI Prompt Enhancer ile 11 Altın Kural uygula
             $enhancer = app(AIPromptEnhancer::class);

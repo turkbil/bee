@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Context Menu & Component Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .coral { color: #ff7f50; }
+        .bg-coral { background-color: #ff7f50; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-gray-100">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <span class="inline-block bg-blue-600 text-white text-xs font-bold px-4 py-1 rounded-full mb-4">
+                <i class="fas fa-mouse-pointer mr-1"></i> CONTEXT MENU ANALİZİ
+            </span>
+            <h1 class="text-4xl font-black text-white mb-2">Muzibu Sağ Tuş Menüleri & Componentler</h1>
+            <p class="text-gray-400">Kategorizasyon • Hiyerarşi • Eksikler • Öneriler</p>
+            <p class="text-gray-500 text-sm mt-2">25 Aralık 2025</p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-400 mb-4"><i class="fas fa-info-circle mr-2"></i>Basit Anlatım (Herkes İçin)</h2>
+            <div class="text-gray-300 space-y-3">
+                <p><strong>Context menu nedir?</strong> Bir şarkı, albüm veya playlist üzerine sağ tıkladığınızda (veya mobilde uzun bastığınızda) açılan menüdür. "Favorilere Ekle", "Sıraya Ekle", "Puan Ver" gibi seçenekler içerir.</p>
+                <p><strong>Ne analiz ettik?</strong> Tüm context menu dosyalarını ve müzik kartı componentlerini inceledik. Hangi özellikler var, hangileri eksik, tutarsızlıklar neler - hepsini raporladık.</p>
+                <p><strong>Sonuç:</strong> Sistem iyi tasarlanmış ama bazı tutarsızlıklar ve eksik özellikler var. Aşağıda detayları bulabilirsiniz.</p>
+            </div>
+        </div>
+
+        <!-- İçindekiler -->
+        <nav class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-8">
+            <h2 class="text-lg font-bold text-white mb-4"><i class="fas fa-list mr-2"></i>İçindekiler</h2>
+            <div class="grid md:grid-cols-2 gap-2 text-sm">
+                <a href="#architecture" class="text-blue-400 hover:text-blue-300">1. Sistem Mimarisi</a>
+                <a href="#components" class="text-blue-400 hover:text-blue-300">2. Blade Componentler</a>
+                <a href="#actions" class="text-blue-400 hover:text-blue-300">3. Menu Actions Karşılaştırması</a>
+                <a href="#hierarchy" class="text-blue-400 hover:text-blue-300">4. Dosya Hiyerarşisi</a>
+                <a href="#issues" class="text-blue-400 hover:text-blue-300">5. Eksikler & Tutarsızlıklar</a>
+                <a href="#recommendations" class="text-blue-400 hover:text-blue-300">6. Öneriler</a>
+            </div>
+        </nav>
+
+        <!-- 1. Sistem Mimarisi -->
+        <section id="architecture" class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-sm">1</span>
+                Sistem Mimarisi
+            </h2>
+
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- UI Layer -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-eye text-white"></i>
+                        </div>
+                        <h3 class="font-bold text-white">UI Layer (Blade)</h3>
+                    </div>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li><i class="fas fa-file text-purple-400 mr-2"></i>context-menu.blade.php</li>
+                        <li><i class="fas fa-file text-purple-400 mr-2"></i>rating-modal.blade.php</li>
+                        <li><i class="fas fa-file text-purple-400 mr-2"></i>playlist-select-modal.blade.php</li>
+                    </ul>
+                    <p class="text-xs text-gray-500 mt-4">Kullanıcıya görünen arayüz</p>
+                </div>
+
+                <!-- Logic Layer -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-cogs text-white"></i>
+                        </div>
+                        <h3 class="font-bold text-white">Logic Layer (JS)</h3>
+                    </div>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li><i class="fas fa-file-code text-blue-400 mr-2"></i>menu-builder.js</li>
+                        <li><i class="fas fa-file-code text-blue-400 mr-2"></i>action-executor.js</li>
+                    </ul>
+                    <p class="text-xs text-gray-500 mt-4">Menü oluşturma ve action yönetimi</p>
+                </div>
+
+                <!-- Handler Layer -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-bolt text-white"></i>
+                        </div>
+                        <h3 class="font-bold text-white">Handler Layer (JS)</h3>
+                    </div>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li><i class="fas fa-play text-green-400 mr-2"></i>play-handler.js</li>
+                        <li><i class="fas fa-plus text-green-400 mr-2"></i>queue-handler.js</li>
+                        <li><i class="fas fa-heart text-green-400 mr-2"></i>favorite-handler.js</li>
+                        <li><i class="fas fa-star text-green-400 mr-2"></i>rating-handler.js</li>
+                        <li><i class="fas fa-list text-green-400 mr-2"></i>playlist-handler.js</li>
+                    </ul>
+                    <p class="text-xs text-gray-500 mt-4">Ortak işlem fonksiyonları</p>
+                </div>
+            </div>
+
+            <!-- Content Type Actions -->
+            <div class="mt-6 bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                <h3 class="font-bold text-white mb-4"><i class="fas fa-layer-group mr-2 text-orange-400"></i>Content Type Actions (JS)</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+                    <div class="bg-slate-700/50 rounded-lg p-3 text-center">
+                        <i class="fas fa-music text-pink-400 text-xl mb-2"></i>
+                        <p class="text-xs text-white">song-actions.js</p>
+                        <span class="text-[10px] text-gray-400">7 action</span>
+                    </div>
+                    <div class="bg-slate-700/50 rounded-lg p-3 text-center">
+                        <i class="fas fa-compact-disc text-blue-400 text-xl mb-2"></i>
+                        <p class="text-xs text-white">album-actions.js</p>
+                        <span class="text-[10px] text-gray-400">4 action</span>
+                    </div>
+                    <div class="bg-slate-700/50 rounded-lg p-3 text-center">
+                        <i class="fas fa-list text-purple-400 text-xl mb-2"></i>
+                        <p class="text-xs text-white">playlist-actions.js</p>
+                        <span class="text-[10px] text-gray-400">5 action</span>
+                    </div>
+                    <div class="bg-slate-700/50 rounded-lg p-3 text-center">
+                        <i class="fas fa-guitar text-green-400 text-xl mb-2"></i>
+                        <p class="text-xs text-white">genre-actions.js</p>
+                        <span class="text-[10px] text-gray-400">3 action</span>
+                    </div>
+                    <div class="bg-slate-700/50 rounded-lg p-3 text-center">
+                        <i class="fas fa-building text-yellow-400 text-xl mb-2"></i>
+                        <p class="text-xs text-white">sector-actions.js</p>
+                        <span class="text-[10px] text-gray-400">3 action</span>
+                    </div>
+                    <div class="bg-slate-700/50 rounded-lg p-3 text-center">
+                        <i class="fas fa-radio text-red-400 text-xl mb-2"></i>
+                        <p class="text-xs text-white">radio-actions.js</p>
+                        <span class="text-[10px] text-gray-400">3 action</span>
+                    </div>
+                    <div class="bg-slate-700/50 rounded-lg p-3 text-center">
+                        <i class="fas fa-microphone text-cyan-400 text-xl mb-2"></i>
+                        <p class="text-xs text-white">artist-actions.js</p>
+                        <span class="text-[10px] text-gray-400">4 action</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Blade Componentler -->
+        <section id="components" class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-sm">2</span>
+                Blade Componentler
+            </h2>
+
+            <!-- Yol 1: components/muzibu -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-white mb-4">
+                    <i class="fas fa-folder-open text-yellow-400 mr-2"></i>
+                    resources/views/components/muzibu/
+                </h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Song Variants -->
+                    <div class="bg-slate-800/50 border border-pink-600/30 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fas fa-music text-pink-400"></i>
+                            <span class="font-semibold text-white">Song Components</span>
+                            <span class="text-xs bg-pink-600 text-white px-2 py-0.5 rounded-full ml-auto">3 varyant</span>
+                        </div>
+                        <ul class="text-sm text-gray-300 space-y-1">
+                            <li><code class="text-pink-300">song-card.blade.php</code> - Grid kart</li>
+                            <li><code class="text-pink-300">song-row.blade.php</code> - Tablo satırı</li>
+                            <li><code class="text-pink-300">song-list-item.blade.php</code> - Kompakt liste</li>
+                        </ul>
+                    </div>
+
+                    <!-- Other Cards -->
+                    <div class="bg-slate-800/50 border border-blue-600/30 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fas fa-th-large text-blue-400"></i>
+                            <span class="font-semibold text-white">Diğer Kartlar</span>
+                            <span class="text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full ml-auto">6 adet</span>
+                        </div>
+                        <ul class="text-sm text-gray-300 space-y-1">
+                            <li><code class="text-blue-300">album-card.blade.php</code></li>
+                            <li><code class="text-blue-300">playlist-card.blade.php</code></li>
+                            <li><code class="text-blue-300">genre-card.blade.php</code></li>
+                            <li><code class="text-blue-300">sector-card.blade.php</code></li>
+                            <li><code class="text-blue-300">radio-card.blade.php</code></li>
+                            <li><code class="text-blue-300">artist-card.blade.php</code></li>
+                        </ul>
+                    </div>
+
+                    <!-- Utilities -->
+                    <div class="bg-slate-800/50 border border-green-600/30 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fas fa-tools text-green-400"></i>
+                            <span class="font-semibold text-white">Yardımcılar</span>
+                        </div>
+                        <ul class="text-sm text-gray-300 space-y-1">
+                            <li><code class="text-green-300">create-playlist-modal.blade.php</code></li>
+                            <li><code class="text-green-300">empty-state.blade.php</code></li>
+                            <li><code class="text-green-300">lazy-image.blade.php</code></li>
+                            <li><code class="text-green-300">horizontal-scroll-section.blade.php</code></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Yol 2: themes/muzibu/components -->
+            <div>
+                <h3 class="text-lg font-semibold text-white mb-4">
+                    <i class="fas fa-folder-open text-orange-400 mr-2"></i>
+                    resources/views/themes/muzibu/components/
+                </h3>
+                <div class="bg-slate-800/50 border border-orange-600/30 rounded-xl p-4">
+                    <div class="grid md:grid-cols-3 gap-4 text-sm">
+                        <div>
+                            <p class="text-orange-400 font-semibold mb-2">Context Menu</p>
+                            <ul class="text-gray-300 space-y-1">
+                                <li><code>context-menu.blade.php</code></li>
+                                <li><code>rating-modal.blade.php</code></li>
+                                <li><code>playlist-select-modal.blade.php</code></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="text-orange-400 font-semibold mb-2">Layout</p>
+                            <ul class="text-gray-300 space-y-1">
+                                <li><code>header.blade.php</code></li>
+                                <li><code>sidebar.blade.php</code></li>
+                                <li><code>footer.blade.php</code></li>
+                                <li><code>player.blade.php</code></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="text-orange-400 font-semibold mb-2">Modals</p>
+                            <ul class="text-gray-300 space-y-1">
+                                <li><code>auth-modal.blade.php</code></li>
+                                <li><code>device-limit-modal.blade.php</code></li>
+                                <li><code>create-playlist-modal.blade.php</code></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Menu Actions Karşılaştırması -->
+        <section id="actions" class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-sm">3</span>
+                Menu Actions Karşılaştırması
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-slate-800">
+                            <th class="px-4 py-3 text-left text-gray-300 font-semibold">İçerik Tipi</th>
+                            <th class="px-3 py-3 text-center text-gray-300"><i class="fas fa-play"></i><br><span class="text-xs">Çal</span></th>
+                            <th class="px-3 py-3 text-center text-gray-300"><i class="fas fa-plus-circle"></i><br><span class="text-xs">Sıraya</span></th>
+                            <th class="px-3 py-3 text-center text-gray-300"><i class="fas fa-heart"></i><br><span class="text-xs">Favori</span></th>
+                            <th class="px-3 py-3 text-center text-gray-300"><i class="fas fa-star"></i><br><span class="text-xs">Puan</span></th>
+                            <th class="px-3 py-3 text-center text-gray-300"><i class="fas fa-list"></i><br><span class="text-xs">Playlist</span></th>
+                            <th class="px-3 py-3 text-center text-gray-300"><i class="fas fa-compact-disc"></i><br><span class="text-xs">Albüm</span></th>
+                            <th class="px-3 py-3 text-center text-gray-300"><i class="fas fa-microphone"></i><br><span class="text-xs">Sanatçı</span></th>
+                            <th class="px-3 py-3 text-center text-gray-300"><i class="fas fa-edit"></i><br><span class="text-xs">Düzenle</span></th>
+                            <th class="px-3 py-3 text-center text-gray-300"><i class="fas fa-trash"></i><br><span class="text-xs">Sil</span></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr class="bg-slate-800/30 hover:bg-slate-700/50">
+                            <td class="px-4 py-3"><i class="fas fa-music text-pink-400 mr-2"></i><span class="font-medium text-white">Song</span></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-yellow-400"><i class="fas fa-asterisk text-xs"></i></td>
+                            <td class="px-3 py-3 text-center text-yellow-400"><i class="fas fa-asterisk text-xs"></i></td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                        </tr>
+                        <tr class="bg-slate-800/30 hover:bg-slate-700/50">
+                            <td class="px-4 py-3"><i class="fas fa-compact-disc text-blue-400 mr-2"></i><span class="font-medium text-white">Album</span></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-red-400"><i class="fas fa-times"></i></td>
+                            <td class="px-3 py-3 text-center text-red-400"><i class="fas fa-times"></i></td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                            <td class="px-3 py-3 text-center text-yellow-400"><i class="fas fa-asterisk text-xs"></i></td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                        </tr>
+                        <tr class="bg-slate-800/30 hover:bg-slate-700/50">
+                            <td class="px-4 py-3"><i class="fas fa-list text-purple-400 mr-2"></i><span class="font-medium text-white">Playlist</span></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-red-400"><i class="fas fa-times"></i></td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                            <td class="px-3 py-3 text-center text-orange-400"><i class="fas fa-user-check text-xs"></i></td>
+                            <td class="px-3 py-3 text-center text-orange-400"><i class="fas fa-user-check text-xs"></i></td>
+                        </tr>
+                        <tr class="bg-slate-800/30 hover:bg-slate-700/50">
+                            <td class="px-4 py-3"><i class="fas fa-guitar text-green-400 mr-2"></i><span class="font-medium text-white">Genre</span></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-red-400"><i class="fas fa-times"></i></td>
+                            <td class="px-3 py-3 text-center text-red-400"><i class="fas fa-times"></i></td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                        </tr>
+                        <tr class="bg-slate-800/30 hover:bg-slate-700/50">
+                            <td class="px-4 py-3"><i class="fas fa-building text-yellow-400 mr-2"></i><span class="font-medium text-white">Sector</span></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-red-400"><i class="fas fa-times"></i></td>
+                            <td class="px-3 py-3 text-center text-red-400"><i class="fas fa-times"></i></td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                        </tr>
+                        <tr class="bg-slate-800/30 hover:bg-slate-700/50">
+                            <td class="px-4 py-3"><i class="fas fa-radio text-red-400 mr-2"></i><span class="font-medium text-white">Radio</span></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-red-400"><i class="fas fa-times"></i></td>
+                            <td class="px-3 py-3 text-center text-red-400"><i class="fas fa-times"></i></td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                        </tr>
+                        <tr class="bg-slate-800/30 hover:bg-slate-700/50">
+                            <td class="px-4 py-3"><i class="fas fa-microphone text-cyan-400 mr-2"></i><span class="font-medium text-white">Artist</span></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-green-400"><i class="fas fa-check"></i></td>
+                            <td class="px-3 py-3 text-center text-red-400"><i class="fas fa-times"></i></td>
+                            <td class="px-3 py-3 text-center text-red-400"><i class="fas fa-times"></i></td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                            <td class="px-3 py-3 text-center text-gray-600">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-4 text-xs text-gray-400">
+                <span><i class="fas fa-check text-green-400 mr-1"></i> Aktif</span>
+                <span><i class="fas fa-times text-red-400 mr-1"></i> Yok</span>
+                <span><i class="fas fa-asterisk text-yellow-400 mr-1"></i> Şartlı (varsa görünür)</span>
+                <span><i class="fas fa-user-check text-orange-400 mr-1"></i> Sadece sahip ise</span>
+                <span class="text-gray-600">- Geçerli değil</span>
+            </div>
+        </section>
+
+        <!-- 4. Dosya Hiyerarşisi -->
+        <section id="hierarchy" class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-sm">4</span>
+                Dosya Hiyerarşisi
+            </h2>
+
+            <div class="bg-slate-900 rounded-xl p-6 font-mono text-sm overflow-x-auto">
+                <pre class="text-gray-300">
+<span class="text-yellow-400">public/themes/muzibu/js/context-menus/</span>
+├── <span class="text-blue-400">menu-builder.js</span>          <span class="text-gray-500"># Dinamik menu item oluşturma</span>
+├── <span class="text-green-400">utils/</span>
+│   └── <span class="text-blue-400">action-executor.js</span>   <span class="text-gray-500"># Merkezi action yönetimi</span>
+├── <span class="text-purple-400">actions/</span>
+│   ├── <span class="text-pink-400">song-actions.js</span>      <span class="text-gray-500"># 7 action: play, queue, fav, rate, playlist, album, artist</span>
+│   ├── <span class="text-cyan-400">album-actions.js</span>     <span class="text-gray-500"># 4 action: play, queue, fav, artist</span>
+│   ├── <span class="text-violet-400">playlist-actions.js</span>  <span class="text-gray-500"># 5 action: play, queue, fav, edit, delete</span>
+│   ├── <span class="text-green-400">genre-actions.js</span>     <span class="text-gray-500"># 3 action: play, queue, fav</span>
+│   ├── <span class="text-yellow-400">sector-actions.js</span>    <span class="text-gray-500"># 3 action: play, queue, fav</span>
+│   ├── <span class="text-red-400">radio-actions.js</span>     <span class="text-gray-500"># 3 action: play, queue, fav</span>
+│   ├── <span class="text-teal-400">artist-actions.js</span>    <span class="text-gray-500"># 4 action: play, queue, fav, goToDetail</span>
+│   └── <span class="text-orange-400">content-actions.js</span>   <span class="text-gray-500"># Ortak (fallback) actions</span>
+└── <span class="text-emerald-400">handlers/</span>
+    ├── <span class="text-green-400">play-handler.js</span>      <span class="text-gray-500"># Tüm tipler için play</span>
+    ├── <span class="text-blue-400">queue-handler.js</span>     <span class="text-gray-500"># Sıraya ekleme</span>
+    ├── <span class="text-red-400">favorite-handler.js</span>  <span class="text-gray-500"># Favori toggle</span>
+    ├── <span class="text-yellow-400">rating-handler.js</span>    <span class="text-gray-500"># Puan modal açma</span>
+    └── <span class="text-purple-400">playlist-handler.js</span>  <span class="text-gray-500"># Playliste ekleme modal</span>
+
+<span class="text-yellow-400">resources/views/</span>
+├── <span class="text-green-400">components/muzibu/</span>       <span class="text-gray-500"># Reusable card components</span>
+│   ├── song-card.blade.php
+│   ├── song-row.blade.php
+│   ├── song-list-item.blade.php
+│   ├── album-card.blade.php
+│   ├── playlist-card.blade.php
+│   ├── genre-card.blade.php
+│   ├── sector-card.blade.php
+│   ├── radio-card.blade.php
+│   └── artist-card.blade.php
+└── <span class="text-orange-400">themes/muzibu/components/</span> <span class="text-gray-500"># Theme-specific components</span>
+    ├── context-menu.blade.php
+    ├── rating-modal.blade.php
+    └── playlist-select-modal.blade.php
+                </pre>
+            </div>
+        </section>
+
+        <!-- 5. Eksikler & Tutarsızlıklar -->
+        <section id="issues" class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center text-sm">5</span>
+                Eksikler & Tutarsızlıklar
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Eksikler -->
+                <div class="bg-red-900/20 border border-red-800 rounded-xl p-5">
+                    <h3 class="font-bold text-red-400 mb-4"><i class="fas fa-exclamation-circle mr-2"></i>Eksik Özellikler</h3>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-times-circle text-red-400 mt-0.5"></i>
+                            <div>
+                                <span class="text-white font-medium">Album için "Puan Ver" yok</span>
+                                <p class="text-gray-400 text-xs">Şarkılara puan verilebiliyor ama albümlere puan verilemiyor.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-times-circle text-red-400 mt-0.5"></i>
+                            <div>
+                                <span class="text-white font-medium">Album için "Playliste Ekle" yok</span>
+                                <p class="text-gray-400 text-xs">Tüm albümü playliste eklemek kullanıcı açısından faydalı olurdu.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-times-circle text-red-400 mt-0.5"></i>
+                            <div>
+                                <span class="text-white font-medium">Artist için "playArtist" TODO</span>
+                                <p class="text-gray-400 text-xs">artist-actions.js'de TODO notu var, özel implementasyon yok.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-times-circle text-red-400 mt-0.5"></i>
+                            <div>
+                                <span class="text-white font-medium">"Detaya Git" menu item'ı eksik</span>
+                                <p class="text-gray-400 text-xs">action-executor.js'de goToDetail var ama menu-builder.js'de yok.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-times-circle text-red-400 mt-0.5"></i>
+                            <div>
+                                <span class="text-white font-medium">"Paylaş" action'ı yok</span>
+                                <p class="text-gray-400 text-xs">Social sharing özelliği hiçbir content type için mevcut değil.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Tutarsızlıklar -->
+                <div class="bg-yellow-900/20 border border-yellow-800 rounded-xl p-5">
+                    <h3 class="font-bold text-yellow-400 mb-4"><i class="fas fa-exclamation-triangle mr-2"></i>Tutarsızlıklar</h3>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-sync text-yellow-400 mt-0.5"></i>
+                            <div>
+                                <span class="text-white font-medium">Sector/Radio delegasyon yapıyor</span>
+                                <p class="text-gray-400 text-xs">getSectorMenuItems ve getRadioMenuItems, getGenreMenuItems'a yönlendiriyor. Kendi özellikleri yok.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-sync text-yellow-400 mt-0.5"></i>
+                            <div>
+                                <span class="text-white font-medium">content-actions.js gereksiz kod tekrarı</span>
+                                <p class="text-gray-400 text-xs">Diğer action dosyalarıyla aynı fonksiyonları içeriyor. DRY prensibine aykırı.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-sync text-yellow-400 mt-0.5"></i>
+                            <div>
+                                <span class="text-white font-medium">Radio card farklı layout</span>
+                                <p class="text-gray-400 text-xs">Play butonu merkeze konumlandırılmış, diğer kartlarda sağ alt.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-sync text-yellow-400 mt-0.5"></i>
+                            <div>
+                                <span class="text-white font-medium">ID field isimleri tutarsız</span>
+                                <p class="text-gray-400 text-xs">song.id, genre.genre_id, radio.radio_id, sector.sector_id - standart yok.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-sync text-yellow-400 mt-0.5"></i>
+                            <div>
+                                <span class="text-white font-medium">Song component 3 varyant</span>
+                                <p class="text-gray-400 text-xs">song-card, song-row, song-list-item var. Diğer tipler için tek varyant.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Öneriler -->
+        <section id="recommendations" class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-sm">6</span>
+                Öneriler
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Öneri 1 -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="font-bold text-white">1</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">Album için "Playliste Ekle" ve "Puan Ver" ekle</h4>
+                            <p class="text-gray-400 text-sm mt-1">Kullanıcılar tüm albümü tek tıkla playliste ekleyebilmeli. Ayrıca albümlere de puan verebilmeliler.</p>
+                            <div class="mt-2 text-xs text-gray-500">
+                                <code class="bg-slate-900 px-2 py-1 rounded">menu-builder.js → getAlbumMenuItems()</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Öneri 2 -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="font-bold text-white">2</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">"Paylaş" action'ı ekle</h4>
+                            <p class="text-gray-400 text-sm mt-1">Tüm content type'lar için Web Share API veya clipboard copy ile paylaşım özelliği.</p>
+                            <div class="mt-2 text-xs text-gray-500">
+                                <code class="bg-slate-900 px-2 py-1 rounded">handlers/ → share-handler.js</code> oluştur
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Öneri 3 -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="font-bold text-white">3</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">content-actions.js'yi kaldır veya base class yap</h4>
+                            <p class="text-gray-400 text-sm mt-1">Kod tekrarını önlemek için ya silinmeli ya da diğer action dosyaları bunu extend etmeli.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Öneri 4 -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="font-bold text-white">4</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">Sector ve Radio için özel menu items</h4>
+                            <p class="text-gray-400 text-sm mt-1">Genre'ye delegasyon yerine kendi özelliklerini içermeli. Örn: Radio için "Canlı Dinle" gibi özel action.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Öneri 5 -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="font-bold text-white">5</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">ID field isimlerini standartlaştır</h4>
+                            <p class="text-gray-400 text-sm mt-1">Tüm modeller için <code class="bg-slate-900 px-1 rounded">id</code> kullan veya <code class="bg-slate-900 px-1 rounded">{type}_id</code> pattern'ini tutarlı uygula.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Öneri 6 -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="font-bold text-white">6</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">Radio card layout'u diğerlerle uyumlu yap</h4>
+                            <p class="text-gray-400 text-sm mt-1">Play butonu sağ alt köşeye taşınmalı. Şu an merkeze konumlandırılmış, diğer kartlardan farklı.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- İstatistik Özet -->
+        <section class="mb-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-center">
+                    <div class="text-3xl font-black text-blue-400">15</div>
+                    <div class="text-xs text-gray-400">JS Dosyası</div>
+                </div>
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-center">
+                    <div class="text-3xl font-black text-green-400">12</div>
+                    <div class="text-xs text-gray-400">Blade Component</div>
+                </div>
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-center">
+                    <div class="text-3xl font-black text-yellow-400">7</div>
+                    <div class="text-xs text-gray-400">Content Type</div>
+                </div>
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-center">
+                    <div class="text-3xl font-black text-red-400">5</div>
+                    <div class="text-xs text-gray-400">Eksik Özellik</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 text-sm py-8 border-t border-slate-800">
+            <p>Claude AI tarafından analiz edildi</p>
+            <p class="text-xs mt-1">muzibu.com.tr Context Menu Sistemi</p>
+        </footer>
+    </div>
+</body>
+</html>

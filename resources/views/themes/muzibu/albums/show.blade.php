@@ -43,11 +43,11 @@
         </div>
     </div>
 
-    {{-- Songs List - Responsive --}}
+    {{-- Songs List - Simple Design --}}
     @if($songs && $songs->count() > 0)
-        <div class="space-y-1">
+        <div class="bg-slate-900/50 rounded-lg overflow-hidden">
             @foreach($songs as $index => $song)
-                <x-muzibu.song-row :song="$song" :index="$index" :show-album="false" />
+                <x-muzibu.song-simple-row :song="$song" :index="$index" :context-data="['album_id' => $album->id]" />
             @endforeach
         </div>
     @else

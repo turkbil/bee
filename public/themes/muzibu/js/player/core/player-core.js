@@ -167,7 +167,7 @@ function muzibuApp() {
          * @param {number} width - thumbnail width
          * @param {number} height - thumbnail height
          */
-        getCoverUrl(cover, width = 56, height = 56) {
+        getCoverUrl(cover, width = 120, height = 120) {
             if (!cover) return null;
 
             // If it's a full URL (starts with http), use it directly
@@ -896,6 +896,19 @@ function muzibuApp() {
             const modes = ['off', 'all', 'one'];
             const idx = modes.indexOf(this.repeatMode);
             this.repeatMode = modes[(idx + 1) % modes.length];
+
+            // 🔔 Toast notification
+            const messages = {
+                'off': this.frontLang?.player?.repeat_off || 'Tekrarlama kapalı',
+                'all': this.frontLang?.player?.repeat_all || 'Tümünü tekrarla',
+                'one': this.frontLang?.player?.repeat_one || 'Tek şarkıyı tekrarla'
+            };
+            const types = {
+                'off': 'info',
+                'all': 'success',
+                'one': 'success'
+            };
+            this.showToast(messages[this.repeatMode], types[this.repeatMode]);
         },
 
         async toggleLike(songId = null) {
@@ -3833,7 +3846,10 @@ onplay: function() {
 
                 const data = await response.json();
 
-                // Cache'e yaz
+                // Cache'e yaz (null check!)
+                if (!this.streamUrlCache) {
+                    this.streamUrlCache = new Map();
+                }
                 this.streamUrlCache.set(nextSong.song_id, {
                     stream_url: data.stream_url,
                     stream_type: data.stream_type,

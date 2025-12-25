@@ -202,11 +202,11 @@ class AutoSeoFillService
                 'og_descriptions' => []
             ]);
 
-            // Mevcut verileri al
-            $titles = $seoSetting->titles ?? [];
-            $descriptions = $seoSetting->descriptions ?? [];
-            $ogTitles = $seoSetting->og_titles ?? [];
-            $ogDescriptions = $seoSetting->og_descriptions ?? [];
+            // Mevcut verileri al (array olduğundan emin ol)
+            $titles = is_array($seoSetting->titles ?? []) ? $seoSetting->titles : [];
+            $descriptions = is_array($seoSetting->descriptions ?? []) ? $seoSetting->descriptions : [];
+            $ogTitles = is_array($seoSetting->og_titles ?? []) ? $seoSetting->og_titles : [];
+            $ogDescriptions = is_array($seoSetting->og_descriptions ?? []) ? $seoSetting->og_descriptions : [];
 
             // Yeni verileri ekle (sadece boş alanlar)
             if (!empty($seoData['seo_title']) && empty(trim($titles[$locale] ?? ''))) {

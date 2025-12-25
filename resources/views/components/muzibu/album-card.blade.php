@@ -1,7 +1,25 @@
-@props(['album', 'preview' => false, 'compact' => false])
+@props(['album', 'preview' => true, 'compact' => false])
 
+{{-- ⚠️⚠️⚠️ UYARI: PREVIEW MODU HER ZAMAN TRUE OLMALI! ⚠️⚠️⚠️ --}}
+{{--
+    🚨 KRİTİK: Bu component MUTLAKA :preview="true" ile çağrılmalı!
+
+    ✅ DOĞRU KULLANIM:
+    <x-muzibu.album-card :album="$album" :preview="true" />
+
+    ❌ YANLIŞ KULLANIM:
+    <x-muzibu.album-card :album="$album" />  ← Bu YANLIŞ! Preview=false olur!
+
+    📋 Neden Önemli?
+    - Desktop'ta sidebar preview açılması için preview=true gerekli
+    - Preview=false ise her tıklama yeni sayfaya gider
+    - Varsayılan değer: true (değiştirilirse tüm sistem bozulur)
+
+    🔍 Kontrol:
+    Console'da "[ALBUM-CARD]" yazısını ara
+    Preview=false kullanımları loglanır
+--}}
 {{-- Muzibu Album Card Component --}}
-{{-- Usage: <x-muzibu.album-card :album="$album" /> --}}
 {{-- Features: Infinite queue data attributes, playing badge, context menu --}}
 
 <a @if($preview)

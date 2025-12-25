@@ -79,7 +79,8 @@ class SectorController extends Controller
                     'duration' => $song->duration,
                     'file_path' => $song->file_path,
                     'hls_path' => $song->hls_path,
-                    'cover_url' => $song->getCoverUrl(80, 80), // Sidebar için cover
+                    'cover_url' => $song->getCoverUrl(120, 120), // ✅ Sidebar için cover (120x120)
+                    'album_cover' => $song->getCoverUrl(120, 120), // ✅ Compatibility
                     'album_id' => $album?->album_id,
                     'album_title' => $album?->title,
                     'artist_id' => $artist?->artist_id,

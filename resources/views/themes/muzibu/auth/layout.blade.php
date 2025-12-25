@@ -69,7 +69,7 @@
 
     <!-- Main Content -->
     <div class="relative min-h-screen flex items-center justify-center p-6">
-        <div class="w-full max-w-md">
+        <div class="w-full max-w-lg">
             @yield('content')
 
             <!-- Footer -->

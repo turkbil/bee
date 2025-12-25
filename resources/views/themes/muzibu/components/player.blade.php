@@ -5,9 +5,9 @@
     {{-- Song Info --}}
     <div class="flex items-center gap-2 sm:gap-3 min-w-0">
         {{-- Album Cover + Mini Heart Overlay (Mobile) --}}
-        <div class="w-10 h-10 sm:w-11 sm:h-11 bg-gradient-to-br from-pink-500 to-purple-600 rounded flex items-center justify-center text-xl sm:text-2xl flex-shrink-0 shadow-lg overflow-hidden relative">
+        <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-pink-500 to-purple-600 rounded flex items-center justify-center text-xl sm:text-2xl flex-shrink-0 shadow-lg overflow-hidden relative">
             <template x-if="currentSong && currentSong.album_cover" x-cloak>
-                <img :src="getCoverUrl(currentSong.album_cover, 56, 56)" :alt="currentSong.song_title" class="w-full h-full object-cover">
+                <img :src="getCoverUrl(currentSong.album_cover, 120, 120)" :alt="currentSong.song_title" class="w-full h-full object-cover">
             </template>
             <template x-if="!currentSong || !currentSong.album_cover">
                 <span>🎵</span>
@@ -40,7 +40,7 @@
     {{-- Player Controls --}}
     <div class="flex flex-col gap-1 sm:gap-2">
         <div class="flex items-center justify-center gap-3 sm:gap-6">
-            <button class="text-muzibu-text-gray hover:text-white transition-all hidden sm:block" :class="shuffle ? 'text-muzibu-coral' : ''" @click="toggleShuffle()" :aria-label="shuffle ? (window.muzibuPlayerConfig?.frontLang?.player?.disable_shuffle || 'Disable shuffle') : (window.muzibuPlayerConfig?.frontLang?.player?.enable_shuffle || 'Enable shuffle')" :aria-pressed="shuffle">
+            <button class="hover:text-white transition-all hidden sm:block" :class="shuffle ? 'text-emerald-400' : 'text-muzibu-text-gray'" @click="toggleShuffle()" :aria-label="shuffle ? (window.muzibuPlayerConfig?.frontLang?.player?.disable_shuffle || 'Disable shuffle') : (window.muzibuPlayerConfig?.frontLang?.player?.enable_shuffle || 'Enable shuffle')" :aria-pressed="shuffle">
                 <i class="fas fa-random"></i>
             </button>
             <button class="text-muzibu-text-gray hover:text-white transition-all" @click="previousTrack()" aria-label="{{ trans('muzibu::front.player.previous_song') }}">
@@ -57,7 +57,7 @@
             <button class="text-muzibu-text-gray hover:text-white transition-all" @click="nextTrack()" aria-label="{{ trans('muzibu::front.player.next_song') }}">
                 <i class="fas fa-step-forward"></i>
             </button>
-            <button class="text-muzibu-text-gray hover:text-white transition-all hidden sm:block" :class="repeatMode !== 'off' ? 'text-muzibu-coral' : ''" @click="cycleRepeat()" :aria-label="repeatMode === 'off' ? (window.muzibuPlayerConfig?.frontLang?.player?.enable_repeat || 'Enable repeat') : ((window.muzibuPlayerConfig?.frontLang?.player?.repeat_mode || 'Repeat mode') + ': ' + repeatMode)" :aria-pressed="repeatMode !== 'off'">
+            <button class="hover:text-white transition-all hidden sm:block" :class="repeatMode !== 'off' ? 'text-emerald-400' : 'text-muzibu-text-gray'" @click="cycleRepeat()" :aria-label="repeatMode === 'off' ? (window.muzibuPlayerConfig?.frontLang?.player?.enable_repeat || 'Enable repeat') : ((window.muzibuPlayerConfig?.frontLang?.player?.repeat_mode || 'Repeat mode') + ': ' + repeatMode)" :aria-pressed="repeatMode !== 'off'">
                 <i class="fas fa-redo"></i>
             </button>
         </div>

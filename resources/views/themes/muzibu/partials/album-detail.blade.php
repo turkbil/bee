@@ -157,97 +157,11 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
         </button>
     </div>
 
-    {{-- Songs List - Modern Table Style --}}
+    {{-- Songs List - Simple Design --}}
     @if($songs && $songs->count() > 0)
-        {{-- Table Header - Desktop Only --}}
-        <div class="hidden md:grid grid-cols-[40px_50px_1fr_100px_60px] gap-4 px-4 py-2 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-white/5">
-            <div class="text-center">#</div>
-            <div></div>
-            <div>Başlık</div>
-            <div class="text-right">Süre</div>
-            <div></div>
-        </div>
-
-        <div class="space-y-0">
+        <div class="bg-slate-900/50 rounded-lg overflow-hidden">
             @foreach($songs as $index => $song)
-                <div
-                    x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'song', {
-                        id: {{ $song->song_id }},
-                        title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
-                        artist: '{{ $song->artist ? addslashes($song->artist->getTranslation('title', app()->getLocale())) : '' }}',
-                        album_id: {{ $album->id }},
-                        is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
-                    })"
-                    x-data="{
-                        touchTimer: null,
-                        touchStartPos: { x: 0, y: 0 }
-                    }"
-                    x-on:touchstart="
-                        touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
-                        touchTimer = setTimeout(() => {
-                            if (navigator.vibrate) navigator.vibrate(50);
-                            $store.contextMenu.openContextMenu({
-                                clientX: $event.touches[0].clientX,
-                                clientY: $event.touches[0].clientY
-                            }, 'song', {
-                                id: {{ $song->song_id }},
-                                title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
-                                artist: '{{ $song->artist ? addslashes($song->artist->getTranslation('title', app()->getLocale())) : '' }}',
-                                album_id: {{ $album->id }},
-                                is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
-                            });
-                        }, 500);
-                    "
-                    x-on:touchend="clearTimeout(touchTimer)"
-                    x-on:touchmove="
-                        const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) > 10 ||
-                                     Math.abs($event.touches[0].clientY - touchStartPos.y) > 10;
-                        if (moved) clearTimeout(touchTimer);
-                    "
-                    class="group grid grid-cols-[40px_50px_1fr_60px] md:grid-cols-[40px_50px_1fr_100px_60px] gap-2 sm:gap-4 px-2 sm:px-4 py-2 sm:py-3 rounded-lg hover:bg-white/10 transition-all cursor-pointer items-center">
-                    {{-- Number/Play Icon --}}
-                    <div class="text-center flex-shrink-0">
-                        <span class="text-gray-400 text-xs sm:text-sm group-hover:hidden">{{ $index + 1 }}</span>
-                        <button
-                            @click="$dispatch('play-song', { songId: {{ $song->song_id }} })"
-                            class="hidden group-hover:inline-block text-white hover:scale-110 transition-transform"
-                        >
-                            <i class="fas fa-play text-sm"></i>
-                        </button>
-                    </div>
-
-                    {{-- Song Cover Image --}}
-                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded overflow-hidden shadow-lg flex-shrink-0">
-                        <x-muzibu.lazy-image
-                            :src="$song->getCoverUrl(80, 80)"
-                            :alt="$song->getTranslation('title', app()->getLocale())"
-                            wrapper-class="w-full h-full"
-                            class="w-full h-full object-cover"
-                        />
-                    </div>
-
-                    {{-- Title --}}
-                    <div class="flex-1 min-w-0">
-                        <h3 class="text-white font-medium text-sm sm:text-base truncate group-hover:text-muzibu-coral transition-colors">
-                            {{ $song->getTranslation('title', app()->getLocale()) }}
-                        </h3>
-                        @if($song->artist)
-                            <p class="text-xs sm:text-sm text-gray-400 truncate md:hidden">
-                                {{ $song->artist->getTranslation('title', app()->getLocale()) }}
-                            </p>
-                        @endif
-                    </div>
-
-                    {{-- Duration - Desktop Only --}}
-                    <div class="hidden md:block text-right text-sm text-gray-400 flex-shrink-0">
-                        {{ gmdate('i:s', $song->duration ?? 0) }}
-                    </div>
-
-                    {{-- Actions Menu --}}
-                    <div @click.stop class="flex-shrink-0 text-right">
-                        <x-muzibu.song-actions-menu :song="$song" />
-                    </div>
-                </div>
+                <x-muzibu.song-simple-row :song="$song" :index="$index" :context-data="['album_id' => $album->id]" />
             @endforeach
         </div>
     @else

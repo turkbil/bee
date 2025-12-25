@@ -83,7 +83,7 @@ class GenreManageComponent extends Component implements AIContentGeneratable
         $languages = available_tenant_languages();
         $this->availableLanguages = array_column($languages, 'code');
         $this->languageNames = array_column($languages, 'native_name', 'code');
-        $this->currentLanguage = get_tenant_default_locale();
+        $this->currentLanguage = \get_tenant_default_locale();
 
         $this->tabConfig = \App\Services\GlobalTabService::getAllTabs('muzibu');
         $this->activeTab = \App\Services\GlobalTabService::getDefaultTabKey('genre');
@@ -195,7 +195,7 @@ class GenreManageComponent extends Component implements AIContentGeneratable
 
     protected function getMainLanguage()
     {
-        return get_tenant_default_locale();
+        return \get_tenant_default_locale();
     }
 
     protected function rules()
@@ -365,7 +365,7 @@ class GenreManageComponent extends Component implements AIContentGeneratable
 
             // 🎨 MUZIBU: Media yoksa otomatik görsel üret (Universal Helper - Tercihen)
             if (!$genre->media_id) {
-                muzibu_generate_ai_cover($genre, $genre->title, 'genre');
+                \muzibu_generate_ai_cover($genre, $genre->title, 'genre');
             }
 
             $toast = [
@@ -403,7 +403,7 @@ class GenreManageComponent extends Component implements AIContentGeneratable
 
         if ($resetForm && !$this->genreId) {
             $this->reset();
-            $this->currentLanguage = get_tenant_default_locale();
+            $this->currentLanguage = \get_tenant_default_locale();
             $this->initializeEmptyInputs();
         }
     }

@@ -13,7 +13,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
     <div class="mb-8 flex items-center justify-between">
         <div>
             <h1 class="text-4xl font-bold text-white mb-2">
-                <i class="fas fa-list-music text-muzibu-coral mr-3"></i>Playlistlerim
+                <i class="fas fa-list text-muzibu-coral mr-3"></i>Playlistlerim
             </h1>
             <p class="text-gray-400">Oluşturduğun tüm playlistler</p>
         </div>

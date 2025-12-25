@@ -19,51 +19,16 @@
             </a>
         </div>
 
-        {{-- History List --}}
-        <div class="bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+        {{-- History List - Simple Design --}}
+        <div class="bg-slate-900/50 rounded-lg overflow-hidden">
             @if($history->count() > 0)
-                <div class="divide-y divide-white/5">
-                    @foreach($history as $play)
-                        @php
-                            $song = $play->song;
-                            if (!$song) continue;
-                            $cover = $song->coverMedia ?? ($song->album ? $song->album->coverMedia : null) ?? null;
-                            $coverUrl = $cover ? thumb($cover, 80, 80) : null;
-                        @endphp
-                        <div class="flex items-center gap-4 p-4 hover:bg-white/5 transition cursor-pointer group"
-                             @click="playSong({{ $song->song_id }})">
-                            <div class="relative w-14 h-14 rounded-lg overflow-hidden flex-shrink-0">
-                                @if($coverUrl)
-                                    <img src="{{ $coverUrl }}" alt="{{ $song->title }}" class="w-full h-full object-cover">
-                                @else
-                                    <div class="w-full h-full bg-gradient-to-br from-muzibu-coral to-pink-600 flex items-center justify-center">
-                                        <i class="fas fa-music text-white/50 text-xl"></i>
-                                    </div>
-                                @endif
-                                <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                                    <i class="fas fa-play text-white"></i>
-                                </div>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-white font-medium truncate">{{ $song->title }}</p>
-                                <p class="text-gray-400 text-sm truncate">
-                                    {{ $song->album->artist->name ?? __('muzibu::front.dashboard.unknown_artist') }}
-                                    @if($song->album)
-                                        <span class="text-gray-600">•</span>
-                                        {{ $song->album->title }}
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="text-right hidden sm:block">
-                                <p class="text-gray-500 text-sm">{{ $play->created_at->diffForHumans() }}</p>
-                                <p class="text-gray-600 text-xs">{{ $play->created_at->format('d.m.Y H:i') }}</p>
-                            </div>
-                            <div class="text-gray-500 text-xs sm:hidden">
-                                {{ $play->created_at->diffForHumans() }}
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
+                @foreach($history as $index => $play)
+                    @php
+                        $song = $play->song;
+                        if (!$song) continue;
+                    @endphp
+                    <x-muzibu.song-simple-row :song="$song" :index="$index" />
+                @endforeach
 
                 {{-- Pagination --}}
                 @if($history->hasPages())

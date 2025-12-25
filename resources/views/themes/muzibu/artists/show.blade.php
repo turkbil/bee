@@ -60,13 +60,13 @@
         </div>
     @endif
 
-    {{-- Songs Section --}}
+    {{-- Songs Section - Simple Design --}}
     @if($songs && $songs->count() > 0)
         <div>
             <h2 class="text-2xl font-bold text-white mb-4">Popüler Şarkılar</h2>
-            <div class="space-y-1">
+            <div class="bg-slate-900/50 rounded-lg overflow-hidden">
                 @foreach($songs->take(20) as $index => $song)
-                    <x-muzibu.song-row :song="$song" :index="$index" :show-album="true" />
+                    <x-muzibu.song-simple-row :song="$song" :index="$index" />
                 @endforeach
             </div>
         </div>

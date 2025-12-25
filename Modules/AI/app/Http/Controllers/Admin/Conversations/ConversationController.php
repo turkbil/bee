@@ -23,19 +23,17 @@ class ConversationController extends Controller
 
     public function index(Request $request)
     {
-        // Root admin ise tüm konuşmaları görebilir, tenant'lar sadece kendi verilerini
+        // Central tenant (is_central = 1) tüm konuşmaları görebilir, diğer tenant'lar sadece kendi verilerini
         $query = Conversation::with(['user', 'tenant'])->withCount('messages');
 
-        if (!auth()->user()->hasRole('root')) {
-            // Tenant kullanıcıları sadece kendi tenant'larının verilerini görebilir
-            $currentTenantId = tenant('id');
-            if ($currentTenantId) {
-                $query->where('tenant_id', $currentTenantId);
-            } else {
-                // Central'da ama root değilse sadece kendi konuşmalarını görsün
-                $query->where('user_id', Auth::id());
-            }
+        $currentTenantId = tenant('id');
+        $isCentral = tenant() ? tenant()->is_central : false;
+
+        // Central tenant değilse sadece kendi tenant'ının konuşmalarını göster
+        if (!$isCentral && $currentTenantId) {
+            $query->where('tenant_id', $currentTenantId);
         }
+        // Central tenant (is_central = 1) ise tüm konuşmaları görebilir, filtre uygulanmaz
 
         // Filtreler
         if ($request->filled('type')) {
@@ -50,7 +48,8 @@ class ConversationController extends Controller
             $query->where('is_demo', $request->boolean('is_demo'));
         }
 
-        if ($request->filled('tenant_id') && auth()->user()->isRoot()) {
+        // Central tenant (is_central = 1) ise tenant filtrelemesine izin ver
+        if ($request->filled('tenant_id') && $isCentral) {
             $query->where('tenant_id', $request->tenant_id);
         }
 
@@ -91,21 +90,20 @@ class ConversationController extends Controller
         $filterOptions = [
             'types' => Conversation::select('type')->distinct()->pluck('type'),
             'features' => Conversation::whereNotNull('feature_name')->select('feature_name')->distinct()->pluck('feature_name'),
-            'tenants' => auth()->user()->isRoot() ? 
-                \App\Models\Tenant::select('id', 'title')->where('id', '!=', 1)->get() : 
+            // Central tenant (is_central = 1) ise tüm tenant'ları göster, diğer tenant'lar göremez
+            'tenants' => $isCentral ?
+                \App\Models\Tenant::select('id', 'title')->where('id', '!=', 1)->get() :
                 collect()
         ];
 
         // İstatistikler - tenant'a göre filtrelenmiş
         $statsQuery = Conversation::active();
-        if (!auth()->user()->hasRole('root')) {
-            $currentTenantId = tenant('id');
-            if ($currentTenantId) {
-                $statsQuery->where('tenant_id', $currentTenantId);
-            } else {
-                $statsQuery->where('user_id', Auth::id());
-            }
+
+        // Central tenant değilse sadece kendi tenant'ının istatistiklerini göster
+        if (!$isCentral && $currentTenantId) {
+            $statsQuery->where('tenant_id', $currentTenantId);
         }
+        // Central tenant (is_central = 1) ise tüm istatistikleri görebilir
 
         // Base query'yi klonla
         $stats = [
@@ -133,17 +131,17 @@ class ConversationController extends Controller
 
     public function archived(Request $request)
     {
-        // Root admin ise tüm arşivlenmiş konuşmaları görebilir, tenant'lar sadece kendi verilerini
+        // Central tenant (is_central = 1) tüm arşivlenmiş konuşmaları görebilir, diğer tenant'lar sadece kendi verilerini
         $query = Conversation::with(['user', 'tenant'])->where('status', 'archived');
 
-        if (!auth()->user()->hasRole('root')) {
-            $currentTenantId = tenant('id');
-            if ($currentTenantId) {
-                $query->where('tenant_id', $currentTenantId);
-            } else {
-                $query->where('user_id', Auth::id());
-            }
+        $currentTenantId = tenant('id');
+        $isCentral = tenant() ? tenant()->is_central : false;
+
+        // Central tenant değilse sadece kendi tenant'ının arşivlenmiş konuşmalarını göster
+        if (!$isCentral && $currentTenantId) {
+            $query->where('tenant_id', $currentTenantId);
         }
+        // Central tenant (is_central = 1) ise tüm arşivlenmiş konuşmaları görebilir
 
         // Filtreler (durum hariç)
         if ($request->filled('type')) {
@@ -158,7 +156,8 @@ class ConversationController extends Controller
             $query->where('is_demo', $request->boolean('is_demo'));
         }
 
-        if ($request->filled('tenant_id') && auth()->user()->isRoot()) {
+        // Central tenant (is_central = 1) ise tenant filtrelemesine izin ver
+        if ($request->filled('tenant_id') && $isCentral) {
             $query->where('tenant_id', $request->tenant_id);
         }
 
@@ -179,8 +178,9 @@ class ConversationController extends Controller
         $filterOptions = [
             'types' => Conversation::select('type')->where('status', 'archived')->distinct()->pluck('type'),
             'features' => Conversation::whereNotNull('feature_name')->where('status', 'archived')->select('feature_name')->distinct()->pluck('feature_name'),
-            'tenants' => auth()->user()->isRoot() ? 
-                \App\Models\Tenant::select('id', 'title')->where('id', '!=', 1)->get() : 
+            // Central tenant (is_central = 1) ise tüm tenant'ları göster, diğer tenant'lar göremez
+            'tenants' => $isCentral ?
+                \App\Models\Tenant::select('id', 'title')->where('id', '!=', 1)->get() :
                 collect()
         ];
 
@@ -200,15 +200,14 @@ class ConversationController extends Controller
     {
         $query = Conversation::with(['user', 'tenant', 'messages']);
 
-        // Root admin değilse sadece kendi tenant'ının konuşmalarını görebilir
-        if (!auth()->user()->hasRole('root')) {
-            $currentTenantId = tenant('id');
-            if ($currentTenantId) {
-                $query->where('tenant_id', $currentTenantId);
-            } else {
-                $query->where('user_id', Auth::id());
-            }
+        $currentTenantId = tenant('id');
+        $isCentral = tenant() ? tenant()->is_central : false;
+
+        // Central tenant değilse sadece kendi tenant'ının konuşmalarını görebilir
+        if (!$isCentral && $currentTenantId) {
+            $query->where('tenant_id', $currentTenantId);
         }
+        // Central tenant (is_central = 1) ise tüm konuşmaları görebilir
 
         $conversation = $query->findOrFail($id);
             
@@ -285,15 +284,14 @@ class ConversationController extends Controller
     {
         $query = Conversation::query();
 
-        // Root admin değilse sadece kendi tenant'ının konuşmalarını silebilir
-        if (!auth()->user()->hasRole('root')) {
-            $currentTenantId = tenant('id');
-            if ($currentTenantId) {
-                $query->where('tenant_id', $currentTenantId);
-            } else {
-                $query->where('user_id', Auth::id());
-            }
+        $currentTenantId = tenant('id');
+        $isCentral = tenant() ? tenant()->is_central : false;
+
+        // Central tenant değilse sadece kendi tenant'ının konuşmalarını silebilir
+        if (!$isCentral && $currentTenantId) {
+            $query->where('tenant_id', $currentTenantId);
         }
+        // Central tenant (is_central = 1) ise tüm konuşmaları silebilir
 
         $conversation = $query->findOrFail($id);
             
@@ -314,14 +312,14 @@ class ConversationController extends Controller
     {
         $query = Conversation::query();
 
-        if (!auth()->user()->hasRole('root')) {
-            $currentTenantId = tenant('id');
-            if ($currentTenantId) {
-                $query->where('tenant_id', $currentTenantId);
-            } else {
-                $query->where('user_id', Auth::id());
-            }
+        $currentTenantId = tenant('id');
+        $isCentral = tenant() ? tenant()->is_central : false;
+
+        // Central tenant değilse sadece kendi tenant'ının konuşmalarını arşivleyebilir
+        if (!$isCentral && $currentTenantId) {
+            $query->where('tenant_id', $currentTenantId);
         }
+        // Central tenant (is_central = 1) ise tüm konuşmaları arşivleyebilir
 
         $conversation = $query->findOrFail($id);
         $conversation->update(['status' => 'archived']);
@@ -337,14 +335,14 @@ class ConversationController extends Controller
     {
         $query = Conversation::query();
 
-        if (!auth()->user()->hasRole('root')) {
-            $currentTenantId = tenant('id');
-            if ($currentTenantId) {
-                $query->where('tenant_id', $currentTenantId);
-            } else {
-                $query->where('user_id', Auth::id());
-            }
+        $currentTenantId = tenant('id');
+        $isCentral = tenant() ? tenant()->is_central : false;
+
+        // Central tenant değilse sadece kendi tenant'ının konuşmalarını arşivden çıkarabilir
+        if (!$isCentral && $currentTenantId) {
+            $query->where('tenant_id', $currentTenantId);
         }
+        // Central tenant (is_central = 1) ise tüm konuşmaları arşivden çıkarabilir
 
         $conversation = $query->findOrFail($id);
         $conversation->update(['status' => 'active']);
@@ -362,15 +360,14 @@ class ConversationController extends Controller
             $q->orderBy('created_at', 'asc');
         }]);
 
-        // Root admin değilse sadece kendi tenant'ının konuşmalarını görebilir
-        if (!auth()->user()->hasRole('root')) {
-            $currentTenantId = tenant('id');
-            if ($currentTenantId) {
-                $query->where('tenant_id', $currentTenantId);
-            } else {
-                $query->where('user_id', Auth::id());
-            }
+        $currentTenantId = tenant('id');
+        $isCentral = tenant() ? tenant()->is_central : false;
+
+        // Central tenant değilse sadece kendi tenant'ının konuşmalarını görebilir
+        if (!$isCentral && $currentTenantId) {
+            $query->where('tenant_id', $currentTenantId);
         }
+        // Central tenant (is_central = 1) ise tüm konuşmaları görebilir
 
         $conversation = $query->findOrFail($id);
 
@@ -409,14 +406,14 @@ class ConversationController extends Controller
 
         $query = Conversation::whereIn('id', $request->conversations);
 
-        if (!auth()->user()->hasRole('root')) {
-            $currentTenantId = tenant('id');
-            if ($currentTenantId) {
-                $query->where('tenant_id', $currentTenantId);
-            } else {
-                $query->where('user_id', Auth::id());
-            }
+        $currentTenantId = tenant('id');
+        $isCentral = tenant() ? tenant()->is_central : false;
+
+        // Central tenant değilse sadece kendi tenant'ının konuşmalarına toplu işlem yapabilir
+        if (!$isCentral && $currentTenantId) {
+            $query->where('tenant_id', $currentTenantId);
         }
+        // Central tenant (is_central = 1) ise tüm konuşmalara toplu işlem yapabilir
 
         $conversations = $query->get();
         

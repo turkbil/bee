@@ -1,32 +1,59 @@
 @extends('themes.muzibu.layouts.app')
 
 @section('content')
-<section class="relative h-64 mb-8 bg-gradient-to-b from-pink-900 via-pink-800 to-transparent">
-    <div class="container mx-auto px-8 h-full flex flex-col justify-end pb-12">
-        <p class="text-sm font-semibold text-white mb-2">TÜRE GÖRE</p>
-        <h1 class="text-6xl font-black mb-2 text-white drop-shadow-2xl">{{ $genre->title['tr'] ?? $genre->title['en'] ?? 'Genre' }}</h1>
-    </div>
-</section>
+<div class="px-4 sm:px-6 py-6 sm:py-8">
+    {{-- Genre Header - Responsive --}}
+    <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6 mb-6 sm:mb-8">
+        @if($genre->media_id && $genre->iconMedia)
+            <img src="{{ thumb($genre->iconMedia, 300, 300, ['scale' => 1]) }}"
+                 alt="{{ $genre->getTranslation('title', app()->getLocale()) }}"
+                 class="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 object-cover rounded-lg shadow-2xl flex-shrink-0">
+        @else
+            <div class="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center text-4xl sm:text-5xl md:text-6xl shadow-2xl flex-shrink-0">
+                🎸
+            </div>
+        @endif
 
-<section class="px-8 pb-12">
-    @if($songs->count() > 0)
+        <div class="flex-1 w-full sm:min-w-0 text-center sm:text-left pb-0 sm:pb-4">
+            <p class="text-xs sm:text-sm font-semibold text-gray-400 uppercase tracking-wide mb-2">Tür</p>
+            <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 truncate">
+                {{ $genre->getTranslation('title', app()->getLocale()) }}
+            </h1>
+
+            @if($genre->description)
+                <p class="text-sm sm:text-base md:text-lg text-gray-300 mb-2 line-clamp-2">
+                    {{ $genre->getTranslation('description', app()->getLocale()) }}
+                </p>
+            @endif
+
+            <p class="text-sm text-gray-400">
+                {{ $songs->count() }} şarkı
+            </p>
+        </div>
+    </div>
+
+    {{-- Actions --}}
+    <div class="flex items-center gap-4 mb-8">
+        <button class="w-14 h-14 bg-muzibu-coral hover:bg-opacity-90 rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-all">
+            <i class="fas fa-play text-white text-xl ml-1"></i>
+        </button>
+
+        <div @click.stop>
+            <x-common.favorite-button :model="$genre" />
+        </div>
+    </div>
+
+    {{-- Songs List --}}
+    @if($songs && $songs->count() > 0)
         <div class="space-y-1">
             @foreach($songs as $index => $song)
-                <x-muzibu.song-row :song="$song" :index="$index" :show-album="true" />
+                <x-muzibu.song-detail-row :song="$song" :index="$index" :show-album="true" />
             @endforeach
         </div>
-
-        @if($songs->hasPages())
-            <div class="mt-8 flex justify-center">{{ $songs->links() }}</div>
-        @endif
     @else
-        <div class="text-center py-20">
-            <div class="mb-6">
-                <i class="fas fa-music text-gray-600 text-6xl"></i>
-            </div>
-            <h3 class="text-2xl font-bold text-white mb-2">Henüz şarkı yok</h3>
-            <p class="text-gray-400">Bu türde şarkı bulunmuyor</p>
+        <div class="text-center py-12">
+            <p class="text-gray-400">Bu türde henüz şarkı yok</p>
         </div>
     @endif
-</section>
+</div>
 @endsection

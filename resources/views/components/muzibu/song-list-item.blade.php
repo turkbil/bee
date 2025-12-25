@@ -7,11 +7,24 @@
 {{-- Usage: <x-muzibu.song-list-item :song="$song" :index="$index" /> --}}
 
 <div class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all"
-     @click="$dispatch('play-song', { songId: {{ $song->song_id }} })">
+     @click="$dispatch('play-song', { songId: {{ $song->song_id }} })"
+     x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'song', {
+        id: {{ $song->song_id }},
+        title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
+        artist: '{{ $song->artist ? addslashes($song->artist->getTranslation('title', app()->getLocale())) : '' }}',
+        cover_url: '{{ $song->getCoverUrl(300, 300) ?? '' }}',
+        album_id: {{ $song->album_id ?? 'null' }},
+        album_slug: '{{ $song->album?->slug ?? '' }}',
+        is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+    })"
+     x-data="{ touchTimer: null, touchStartPos: { x: 0, y: 0 } }"
+     x-on:touchstart="touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY }; touchTimer = setTimeout(() => { if (navigator.vibrate) navigator.vibrate(50); $store.contextMenu.openContextMenu({ clientX: $event.touches[0].clientX, clientY: $event.touches[0].clientY }, 'song', { id: {{ $song->song_id }}, title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}', artist: '{{ $song->artist ? addslashes($song->artist->getTranslation('title', app()->getLocale())) : '' }}', cover_url: '{{ $song->getCoverUrl(300, 300) ?? '' }}', album_id: {{ $song->album_id ?? 'null' }}, album_slug: '{{ $song->album?->slug ?? '' }}', is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }} }); }, 500);"
+     x-on:touchend="clearTimeout(touchTimer)"
+     x-on:touchmove="if (Math.abs($event.touches[0].clientX - touchStartPos.x) > 10 || Math.abs($event.touches[0].clientY - touchStartPos.y) > 10) clearTimeout(touchTimer)">
 
     {{-- Track Thumbnail with Play Overlay --}}
-    @php $coverUrl = $song->getCoverUrl(40, 40); @endphp
-    <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600 relative">
+    @php $coverUrl = $song->getCoverUrl(120, 120); @endphp
+    <div class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600 relative">
         @if($coverUrl)
             <img src="{{ $coverUrl }}" alt="{{ $song->getTranslation('title', app()->getLocale()) }}" class="w-full h-full object-cover" loading="lazy">
         @else

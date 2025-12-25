@@ -43,32 +43,11 @@
         </div>
     </div>
 
-    {{-- Songs List - Responsive --}}
+    {{-- Songs List - Simple Design --}}
     @if($songs && $songs->count() > 0)
-        <div class="space-y-1">
+        <div class="bg-slate-900/50 rounded-lg overflow-hidden">
             @foreach($songs as $index => $song)
-                <div class="group flex items-center gap-2 sm:gap-4 px-2 sm:px-4 py-2 sm:py-3 rounded-lg hover:bg-white/5 transition-all cursor-pointer">
-                    <span class="text-gray-400 w-6 sm:w-8 text-center text-xs sm:text-sm flex-shrink-0">{{ $index + 1 }}</span>
-
-                    <div class="flex-1 min-w-0">
-                        <h3 class="text-white font-medium text-sm sm:text-base truncate">
-                            {{ $song->getTranslation('title', app()->getLocale()) }}
-                        </h3>
-                        @if($song->artist)
-                            <p class="text-xs sm:text-sm text-gray-400 truncate">
-                                {{ $song->artist->getTranslation('title', app()->getLocale()) }}
-                            </p>
-                        @endif
-                    </div>
-
-                    <span class="text-xs sm:text-sm text-gray-400 hidden sm:block flex-shrink-0">
-                        {{ gmdate('i:s', $song->duration ?? 0) }}
-                    </span>
-
-                    <div @click.stop class="flex-shrink-0">
-                        <x-muzibu.song-actions-menu :song="$song" />
-                    </div>
-                </div>
+                <x-muzibu.song-simple-row :song="$song" :index="$index" />
             @endforeach
         </div>
     @else

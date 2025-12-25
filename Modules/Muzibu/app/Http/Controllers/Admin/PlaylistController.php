@@ -119,15 +119,20 @@ class PlaylistController extends Controller
     }
 
     /**
-     * Playlist şarkılarını getir (AJAX)
+     * Playlist şarkılarını getir (AJAX) - Infinite Scroll
      */
     public function getSelectedSongs($id)
     {
         $playlist = \Modules\Muzibu\App\Models\Playlist::findOrFail($id);
 
+        $offset = request('offset', 0);
+        $limit = 50;
+
         $songs = $playlist->songs()
             ->with(['album.artist'])
             ->orderBy('muzibu_playlist_song.position')
+            ->offset($offset)
+            ->limit($limit)
             ->get()
             ->map(function($song) {
                 $title = $song->getTranslated('title', app()->getLocale());
@@ -154,12 +159,17 @@ class PlaylistController extends Controller
                 ];
             });
 
-        // Toplam süre hesapla
+        // Toplam süre hesapla (tüm şarkılar için - cache'lenebilir)
         $totalDuration = $playlist->songs()->sum('duration') ?? 0;
+
+        // Toplam şarkı sayısı (has more kontrolü için)
+        $totalCount = $playlist->songs()->count();
 
         return response()->json([
             'songs' => $songs,
-            'total_duration' => $totalDuration
+            'total_duration' => $totalDuration,
+            'total_count' => $totalCount,
+            'has_more' => ($offset + $limit) < $totalCount
         ]);
     }
 

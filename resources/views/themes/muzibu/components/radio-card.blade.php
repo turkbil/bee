@@ -9,6 +9,7 @@
     $radioId = $radio->radio_id ?? $radio->id;
     $songsCount = $radio->songs_count ?? 0;
     $isLive = $radio->is_live ?? false;
+    $isFavorite = auth()->check() && method_exists($radio, 'isFavoritedBy') && $radio->isFavoritedBy(auth()->id());
 
     $sizeClasses = [
         'small' => 'w-32 sm:w-36',
@@ -18,7 +19,16 @@
     $cardSize = $sizeClasses[$size] ?? $sizeClasses['normal'];
 @endphp
 
-<div class="group flex-shrink-0 {{ $cardSize }} snap-start">
+<div class="group flex-shrink-0 {{ $cardSize }} snap-start"
+     x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'radio', {
+         id: {{ $radioId }},
+         title: '{{ addslashes($radio->title) }}',
+         is_favorite: {{ $isFavorite ? 'true' : 'false' }}
+     })"
+     x-data="{ touchTimer: null, touchStartPos: { x: 0, y: 0 } }"
+     x-on:touchstart="touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY }; touchTimer = setTimeout(() => { if (navigator.vibrate) navigator.vibrate(50); $store.contextMenu.openContextMenu({ clientX: $event.touches[0].clientX, clientY: $event.touches[0].clientY }, 'radio', { id: {{ $radioId }}, title: '{{ addslashes($radio->title) }}', is_favorite: {{ $isFavorite ? 'true' : 'false' }} }); }, 500);"
+     x-on:touchend="clearTimeout(touchTimer)"
+     x-on:touchmove="if (Math.abs($event.touches[0].clientX - touchStartPos.x) > 10 || Math.abs($event.touches[0].clientY - touchStartPos.y) > 10) clearTimeout(touchTimer)">
     <div class="cursor-pointer" @click="playRadio({{ $radioId }})">
         {{-- Cover --}}
         <div class="relative aspect-square rounded-xl overflow-hidden mb-3 bg-white/5">

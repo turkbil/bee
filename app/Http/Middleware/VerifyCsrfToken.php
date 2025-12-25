@@ -65,14 +65,8 @@ class VerifyCsrfToken extends Middleware
     {
         $config = config('session');
 
-        // Session domain ile tutarlı olmalı
-        // Tenant context'te domain'i host'tan al (nokta prefix ile subdomain desteği)
-        if (tenant()) {
-            $host = $request->getHost();
-            // Subdomain desteği için nokta prefix ekle (www.domain.com için .domain.com)
-            $config['domain'] = '.' . $host;
-        }
-        // Central domain için .env SESSION_DOMAIN kullan
+        // 🔐 Cookie domain artık TenancyServiceProvider'da ayarlanıyor (tenant-aware)
+        // Runtime override kaldırıldı - config'den direkt kullanılıyor
 
         $response->headers->setCookie(
             new \Symfony\Component\HttpFoundation\Cookie(

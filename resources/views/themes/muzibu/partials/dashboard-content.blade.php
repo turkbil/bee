@@ -164,7 +164,7 @@
                         @php
                             $song = $play->song;
                             $cover = $song->coverMedia ?? ($song->album ? $song->album->coverMedia : null) ?? null;
-                            $coverUrl = $cover ? thumb($cover, 80, 80) : null;
+                            $coverUrl = $cover ? thumb($cover, 120, 120) : null;
                         @endphp
                         <div class="flex items-center gap-4 p-4 hover:bg-white/5 transition cursor-pointer group" @click="playSong({{ $song->song_id }})">
                             <div class="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
@@ -211,7 +211,7 @@
                             @foreach($favorites->take(6) as $song)
                                 @php
                                     $cover = $song->coverMedia ?? ($song->album ? $song->album->coverMedia : null) ?? null;
-                                    $coverUrl = $cover ? thumb($cover, 150, 150) : null;
+                                    $coverUrl = $cover ? thumb($cover, 120, 120) : null;
                                 @endphp
                                 <div class="relative aspect-square rounded-lg overflow-hidden cursor-pointer group" @click="playSong({{ $song->song_id }})">
                                     @if($coverUrl)

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kapsamlı Stok Sistemi Analizi ve Düzeltmeler</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-slate-800 to-slate-700 border-b border-slate-600 sticky top-0 z-50 backdrop-blur-md bg-opacity-90">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                            📊 Kapsamlı Analiz
+                        </span>
+                        <span class="text-slate-400 text-sm">
+                            25 Aralık 2025
+                        </span>
+                    </div>
+                    <h1 class="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+                        Stok Sistemi - Kapsamlı Analiz ve Düzeltmeler
+                    </h1>
+                    <p class="text-slate-400 text-sm mt-2">
+                        Google SERP + Merchant Feeds + Sitemap + Site Gösterimi
+                    </p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-12 space-y-12">
+
+        <!-- 📝 Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-4">
+                <span class="text-4xl">📝</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-green-400 mb-2">Basit Anlatım (Herkes İçin)</h2>
+                    <p class="text-slate-300 text-lg leading-relaxed">
+                        Stok bilgisi <strong class="text-green-400">4 farklı yerde</strong> kullanılıyor. Hepsini kontrol edip düzelttik.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- 1. Google Arama Sonuçları -->
+                <div class="bg-slate-800/70 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="text-3xl">🔍</span>
+                        <h3 class="text-xl font-bold text-white">1. Google Arama Sonuçları</h3>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-slate-300">Google'da "Stokta var" yazısı görünsün</p>
+                        <div class="bg-green-900/30 border border-green-700 rounded p-3">
+                            <p class="text-green-300 font-semibold">✅ DÜZELTİLDİ</p>
+                            <p class="text-xs text-slate-400 mt-1">Schema.org → InStock</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Google Shopping (Merchant Center) -->
+                <div class="bg-slate-800/70 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="text-3xl">🛒</span>
+                        <h3 class="text-xl font-bold text-white">2. Google Shopping Feed</h3>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-slate-300">Merchant Center için XML feed</p>
+                        <div class="bg-yellow-900/30 border border-yellow-700 rounded p-3">
+                            <p class="text-yellow-300 font-semibold">⚠️ EKSİK</p>
+                            <p class="text-xs text-slate-400 mt-1">Stok miktarı eklenmeli</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Site Gösterimi -->
+                <div class="bg-slate-800/70 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="text-3xl">🌐</span>
+                        <h3 class="text-xl font-bold text-white">3. Site Gösterimi</h3>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-slate-300">Ürün kartında stok bilgisi</p>
+                        <div class="bg-yellow-900/30 border border-yellow-700 rounded p-3">
+                            <p class="text-yellow-300 font-semibold">⚠️ DÜZELTİLECEK</p>
+                            <p class="text-xs text-slate-400 mt-1">Minimum 1 gösterilecek</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Sitemap -->
+                <div class="bg-slate-800/70 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="text-3xl">🗺️</span>
+                        <h3 class="text-xl font-bold text-white">4. Sitemap.xml</h3>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-slate-300">Ürün URL'leri listesi</p>
+                        <div class="bg-green-900/30 border border-green-700 rounded p-3">
+                            <p class="text-green-300 font-semibold">✅ NORMAL</p>
+                            <p class="text-xs text-slate-400 mt-1">Stok bilgisi gösterilmez</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🔍 1. GOOGLE SERP (Schema.org) -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <span class="text-4xl">🔍</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-blue-400 mb-2">1. Google Arama Sonuçları (SERP)</h2>
+                    <p class="text-slate-300 text-lg">Schema.org Product markup</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-white mb-3">📁 Dosya</h3>
+                    <code class="text-xs bg-slate-900 px-2 py-1 rounded block text-blue-300">
+                        Modules/Shop/app/Models/ShopProduct.php
+                    </code>
+                    <p class="text-slate-400 text-xs mt-2">Satır 1087-1091</p>
+                </div>
+
+                <div class="bg-green-900/30 border border-green-700 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-green-400 mb-3">✅ Durum</h3>
+                    <p class="text-green-300 font-semibold">DÜZELTİLDİ</p>
+                    <p class="text-slate-300 text-sm mt-2">
+                        getAvailabilitySchemaUrl() → Hep "InStock" döndürüyor
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-slate-800/50 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-white mb-3">📋 Kod</h3>
+                <pre class="bg-slate-900 rounded p-4 text-xs overflow-x-auto text-green-300"><code>private function getAvailabilitySchemaUrl(): string
+{
+    // ✅ DAIMA stokta göster (Google arama sonuçları için)
+    return 'https://schema.org/InStock';
+}</code></pre>
+            </div>
+
+            <div class="mt-6 bg-blue-900/30 border border-blue-700 rounded-lg p-4">
+                <p class="text-blue-300 text-sm">
+                    💡 <strong>Sonuç:</strong> Google'da "Stokta var" yazısı görünecek (1-14 gün içinde)
+                </p>
+            </div>
+        </section>
+
+        <!-- 🛒 2. GOOGLE SHOPPING FEED -->
+        <section class="bg-orange-900/20 border border-orange-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <span class="text-4xl">🛒</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-orange-400 mb-2">2. Google Shopping Feed (Merchant Center)</h2>
+                    <p class="text-slate-300 text-lg">XML product feed for Google Merchant Center</p>
+                </div>
+            </div>
+
+            <!-- Dosyalar -->
+            <div class="bg-slate-800/50 rounded-lg p-6 mb-6">
+                <h3 class="text-lg font-semibold text-white mb-4">📁 İki Dosya Var</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-700/50 rounded p-4">
+                        <h4 class="font-semibold text-blue-300 mb-2">1. Controller (Laravel Route)</h4>
+                        <code class="text-xs bg-slate-900 px-2 py-1 rounded block text-blue-300 mb-2">
+                            Modules/Shop/app/Http/Controllers/GoogleShoppingFeedController.php
+                        </code>
+                        <div class="text-xs text-slate-400 space-y-1">
+                            <p>Route: /productfeed</p>
+                            <p>Route: /googlemerchant</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-700/50 rounded p-4">
+                        <h4 class="font-semibold text-blue-300 mb-2">2. Standalone PHP</h4>
+                        <code class="text-xs bg-slate-900 px-2 py-1 rounded block text-blue-300 mb-2">
+                            public/productfeed.php
+                        </code>
+                        <div class="text-xs text-slate-400 space-y-1">
+                            <p>Direkt endpoint</p>
+                            <p>Multi-tenant aware</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Şu Anki Durum -->
+            <div class="bg-slate-800/50 rounded-lg p-6 mb-6">
+                <h3 class="text-lg font-semibold text-white mb-4">📋 Şu Anki XML Çıktısı</h3>
+                <pre class="bg-slate-900 rounded p-4 text-xs overflow-x-auto text-blue-300"><code>&lt;item&gt;
+    &lt;g:id&gt;123&lt;/g:id&gt;
+    &lt;g:title&gt;Forklift Çatal Uzatma Kılıfı&lt;/g:title&gt;
+    &lt;g:description&gt;...&lt;/g:description&gt;
+    &lt;g:link&gt;https://ixtif.com/shop/forklift-catal&lt;/g:link&gt;
+    &lt;g:image_link&gt;https://ixtif.com/storage/hero.webp&lt;/g:image_link&gt;
+    &lt;g:price&gt;9999.00 TRY&lt;/g:price&gt;
+    <span class="text-green-400">&lt;g:availability&gt;in stock&lt;/g:availability&gt;</span>
+    <span class="text-red-400">&lt;!-- ⚠️ STOK MİKTARI YOK! --&gt;</span>
+    &lt;g:condition&gt;new&lt;/g:condition&gt;
+    &lt;g:brand&gt;iXtif&lt;/g:brand&gt;
+&lt;/item&gt;</code></pre>
+            </div>
+
+            <!-- Ne Eklenmeli -->
+            <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-6 mb-6">
+                <h3 class="text-lg font-semibold text-yellow-400 mb-4">⚠️ EKSİK: Stok Miktarı</h3>
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="font-semibold text-white mb-2">Google Shopping için opsiyonel ama önerilen field:</h4>
+                        <pre class="bg-slate-900 rounded p-4 text-xs overflow-x-auto text-green-300"><code>&lt;g:quantity&gt;1&lt;/g:quantity&gt;</code></pre>
+                    </div>
+                    <div class="bg-slate-800/50 rounded p-4">
+                        <p class="text-slate-300 text-sm">
+                            <strong class="text-yellow-400">Neden önemli?</strong>
+                        </p>
+                        <ul class="text-slate-400 text-xs space-y-1 mt-2 ml-4">
+                            <li>• Google bazı kategorilerde stok miktarına göre sıralama yapar</li>
+                            <li>• "Son X adet" mesajı gösterilebilir</li>
+                            <li>• Merchant Center dashboard'unda stok takibi yapılabilir</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Düzeltme -->
+            <div class="bg-slate-800/50 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-white mb-4">✅ Düzeltme</h3>
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="font-semibold text-green-400 mb-2">1. Controller'a Eklenecek (Satır 219'dan sonra):</h4>
+                        <pre class="bg-slate-900 rounded p-4 text-xs overflow-x-auto text-green-300"><code>$xml .= '&lt;g:availability&gt;in stock&lt;/g:availability&gt;';
+<span class="text-yellow-400">// ✅ YENİ: Stok miktarı ekle (minimum 1)</span>
+$quantity = max(1, $product->current_stock ?? 1);
+$xml .= '&lt;g:quantity&gt;' . (int)$quantity . '&lt;/g:quantity&gt;';</code></pre>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-green-400 mb-2">2. public/productfeed.php'ye Eklenecek (Satır 228'den sonra):</h4>
+                        <pre class="bg-slate-900 rounded p-4 text-xs overflow-x-auto text-green-300"><code>$xml .= '&lt;g:availability&gt;in stock&lt;/g:availability&gt;';
+<span class="text-yellow-400">// ✅ YENİ: Stok miktarı ekle (minimum 1)</span>
+$quantity = max(1, $product->current_stock ?? 1);
+$xml .= '&lt;g:quantity&gt;' . (int)$quantity . '&lt;/g:quantity&gt;';</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🌐 3. SİTE GÖSTERİMİ -->
+        <section class="bg-purple-900/20 border border-purple-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <span class="text-4xl">🌐</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-purple-400 mb-2">3. Site Gösterimi (Product Card)</h2>
+                    <p class="text-slate-300 text-lg">Ürün kartında stok bilgisi gösterimi</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 mb-6">
+                <h3 class="text-lg font-semibold text-white mb-3">📁 Dosya</h3>
+                <code class="text-xs bg-slate-900 px-2 py-1 rounded block text-blue-300">
+                    resources/views/components/ixtif/product-card.blade.php
+                </code>
+            </div>
+
+            <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-6 mb-6">
+                <h3 class="text-lg font-semibold text-yellow-400 mb-4">⚠️ İSTEK: Minimum 1 Göster</h3>
+                <p class="text-slate-300 text-sm mb-3">
+                    Gerçek stok 0 olsa bile, sitede minimum 1 adet stokta var gibi gösterilsin.
+                </p>
+                <div class="grid md:grid-cols-2 gap-4 mt-4">
+                    <div class="bg-slate-700/50 rounded p-4">
+                        <h4 class="font-semibold text-red-400 mb-2">❌ Şu An</h4>
+                        <pre class="bg-slate-900 rounded p-2 text-xs text-red-300"><code>Stok: {{ $product->current_stock }}</code></pre>
+                        <p class="text-slate-400 text-xs mt-2">0 ise "Stokta yok" gösterir</p>
+                    </div>
+                    <div class="bg-slate-700/50 rounded p-4">
+                        <h4 class="font-semibold text-green-400 mb-2">✅ Yeni</h4>
+                        <pre class="bg-slate-900 rounded p-2 text-xs text-green-300"><code>Stok: {{ max(1, $product->current_stock) }}</code></pre>
+                        <p class="text-slate-400 text-xs mt-2">Minimum 1 gösterir</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-4">
+                <p class="text-blue-300 text-sm">
+                    💡 <strong>Not:</strong> Google için stok durumu değil, sadece site görünümü etkilenir.
+                    Google için zaten "InStock" gösteriyoruz.
+                </p>
+            </div>
+        </section>
+
+        <!-- 🗺️ 4. SITEMAP -->
+        <section class="bg-teal-900/20 border border-teal-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <span class="text-4xl">🗺️</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-teal-400 mb-2">4. Sitemap.xml</h2>
+                    <p class="text-slate-300 text-lg">Ürün URL'lerinin Google'a gönderilmesi</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-white mb-3">📁 Dosya</h3>
+                    <code class="text-xs bg-slate-900 px-2 py-1 rounded block text-blue-300">
+                        app/Services/TenantSitemapService.php
+                    </code>
+                    <p class="text-slate-400 text-xs mt-2">Satır 40: addShopContent()</p>
+                </div>
+
+                <div class="bg-green-900/30 border border-green-700 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-green-400 mb-3">✅ Durum</h3>
+                    <p class="text-green-300 font-semibold">NORMAL ÇALIŞIYOR</p>
+                    <p class="text-slate-300 text-sm mt-2">
+                        Sitemap'te stok bilgisi gösterilmez (standart)
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 mb-6">
+                <h3 class="text-lg font-semibold text-white mb-4">📋 Sitemap Örneği</h3>
+                <pre class="bg-slate-900 rounded p-4 text-xs overflow-x-auto text-blue-300"><code>&lt;url&gt;
+    &lt;loc&gt;https://ixtif.com/shop/forklift-catal-uzatma-kiliflari&lt;/loc&gt;
+    &lt;lastmod&gt;2025-12-25T02:22:38+03:00&lt;/lastmod&gt;
+    &lt;changefreq&gt;weekly&lt;/changefreq&gt;
+    &lt;priority&gt;0.8&lt;/priority&gt;
+&lt;/url&gt;</code></pre>
+                <p class="text-slate-400 text-xs mt-3">
+                    Sitemap sadece URL, son değişiklik tarihi, değişme sıklığı ve öncelik bilgisi içerir.
+                    Stok bilgisi <strong>hiçbir zaman</strong> sitemap'te gösterilmez (Google standardı).
+                </p>
+            </div>
+
+            <div class="bg-teal-900/30 border border-teal-700 rounded-lg p-4">
+                <p class="text-teal-300 text-sm">
+                    💡 <strong>Önemli:</strong> Sitemap otomatik güncelleniyor. Her yeni ürün eklendiğinde sitemap'e ekleniyor.
+                    URL: <code class="bg-slate-800 px-2 py-1 rounded text-xs">https://ixtif.com/sitemap.xml</code>
+                </p>
+            </div>
+        </section>
+
+        <!-- 📊 ÖZET ve YAPILACAKLAR -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <span class="text-4xl">📊</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-white mb-2">Özet ve Yapılacak İşlemler</h2>
+                    <p class="text-slate-300 text-lg">Adım adım uygulama planı</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Adım 1 -->
+                <div class="bg-green-700/50 rounded-lg p-6 border-2 border-green-600">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="bg-green-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">✓</span>
+                        <h3 class="text-lg font-bold text-white">1. Google SERP (Schema.org)</h3>
+                    </div>
+                    <p class="text-green-300 text-sm font-semibold mb-2">✅ TAMAMLANDI</p>
+                    <p class="text-slate-300 text-sm">
+                        ShopProduct.php → getAvailabilitySchemaUrl() düzeltildi. Tüm ürünler "InStock" gösteriliyor.
+                    </p>
+                </div>
+
+                <!-- Adım 2 -->
+                <div class="bg-slate-700/50 rounded-lg p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">2</span>
+                        <h3 class="text-lg font-bold text-white">2. Google Shopping Feed - Stok Miktarı Ekle</h3>
+                    </div>
+                    <p class="text-yellow-400 text-sm font-semibold mb-2">⏳ YAPILACAK</p>
+                    <div class="space-y-2 text-sm text-slate-300 ml-8">
+                        <p><strong>Dosya 1:</strong> GoogleShoppingFeedController.php (satır 219 sonrası)</p>
+                        <p><strong>Dosya 2:</strong> public/productfeed.php (satır 228 sonrası)</p>
+                        <p><strong>Eklenecek:</strong> <code class="bg-slate-800 px-2 py-1 rounded text-xs">&lt;g:quantity&gt;{min 1}&lt;/g:quantity&gt;</code></p>
+                    </div>
+                </div>
+
+                <!-- Adım 3 -->
+                <div class="bg-slate-700/50 rounded-lg p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">3</span>
+                        <h3 class="text-lg font-bold text-white">3. Site Gösterimi - Minimum 1 Stok</h3>
+                    </div>
+                    <p class="text-yellow-400 text-sm font-semibold mb-2">⏳ YAPILACAK (İsteğe Bağlı)</p>
+                    <div class="space-y-2 text-sm text-slate-300 ml-8">
+                        <p><strong>Dosya:</strong> product-card.blade.php</p>
+                        <p><strong>Değişiklik:</strong> Stok gösteriminde <code class="bg-slate-800 px-2 py-1 rounded text-xs">max(1, $current_stock)</code> kullan</p>
+                        <p class="text-slate-400 text-xs">Not: Sadece görünüm, Google'a etki etmez</p>
+                    </div>
+                </div>
+
+                <!-- Adım 4 -->
+                <div class="bg-green-700/50 rounded-lg p-6 border-2 border-green-600">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="bg-green-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">✓</span>
+                        <h3 class="text-lg font-bold text-white">4. Sitemap</h3>
+                    </div>
+                    <p class="text-green-300 text-sm font-semibold mb-2">✅ ÇALIŞIYOR</p>
+                    <p class="text-slate-300 text-sm">
+                        TenantSitemapService otomatik çalışıyor. Stok bilgisi sitemap'te gösterilmez (normal).
+                    </p>
+                </div>
+
+                <!-- Adım 5 -->
+                <div class="bg-slate-700/50 rounded-lg p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">5</span>
+                        <h3 class="text-lg font-bold text-white">5. Cache Temizleme</h3>
+                    </div>
+                    <p class="text-yellow-400 text-sm font-semibold mb-2">⏳ SON ADIM</p>
+                    <div class="space-y-2 text-sm text-slate-300 ml-8">
+                        <p><code class="bg-slate-800 px-2 py-1 rounded text-xs">php artisan view:clear</code></p>
+                        <p><code class="bg-slate-800 px-2 py-1 rounded text-xs">php artisan responsecache:clear</code></p>
+                        <p><code class="bg-slate-800 px-2 py-1 rounded text-xs">curl -s -k https://ixtif.com/opcache-reset.php</code></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ⚠️ ÖNEMLİ NOTLAR -->
+        <section class="bg-red-900/20 border border-red-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-4">
+                <span class="text-4xl">⚠️</span>
+                <div>
+                    <h2 class="text-2xl font-bold text-red-400 mb-2">Önemli Notlar</h2>
+                </div>
+            </div>
+            <ul class="space-y-3 text-slate-300">
+                <li class="flex items-start gap-3">
+                    <span class="text-red-400 text-xl">•</span>
+                    <span><strong class="text-red-400">Google Shopping Feed URL:</strong> https://ixtif.com/productfeed veya https://ixtif.com/googlemerchant</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-red-400 text-xl">•</span>
+                    <span><strong class="text-red-400">Feed güncelleme:</strong> Ürün değişikliği yapınca feed otomatik güncellenir</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-red-400 text-xl">•</span>
+                    <span><strong class="text-red-400">Merchant Center:</strong> Feed URL'sini Merchant Center'a ekleyince otomatik tarama başlar (günde 1 kez)</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-yellow-400 text-xl">•</span>
+                    <span><strong class="text-yellow-400">Stok 0 olan ürünler:</strong> Hem feed hem sitede minimum 1 gösterilecek</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-green-400 text-xl">•</span>
+                    <span><strong class="text-green-400">Schema.org:</strong> Google SERP için "InStock" gösterimi zaten aktif ✅</span>
+                </li>
+            </ul>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 border-t border-slate-700 mt-20 py-8">
+        <div class="max-w-7xl mx-auto px-6 text-center text-slate-400 text-sm">
+            <p>🤖 Claude Sonnet 4.5 tarafından oluşturuldu</p>
+            <p class="mt-2">Kapsamlı Stok Sistemi Analizi - Schema.org + Merchant Feeds + Sitemap</p>
+        </div>
+    </footer>
+</body>
+</html>

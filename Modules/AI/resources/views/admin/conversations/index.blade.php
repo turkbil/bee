@@ -5,6 +5,11 @@
 @section('pretitle', 'AI Konuşmaları ve Test Geçmişi')
 @section('title', 'Konuşma Geçmişi & AI Test Arşivi')
 
+@php
+    // Central tenant kontrolü (is_central = 1 ise tüm konuşmaları görebilir)
+    $isCentral = tenant() ? tenant()->is_central : false;
+@endphp
+
 @section('content')
     <!-- İstatistik Kartları -->
     <div class="row mb-4">
@@ -171,7 +176,7 @@
                             data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
                             <i class="fas fa-filter me-1"></i>
                             Filtreler
-                            @if(request('type') || request('feature_name') || request('is_demo') || (request('status') && request('status') !== 'active') || (request('tenant_id') && auth()->user()->isRoot()) || request('show_tests') || request('show_short'))
+                            @if(request('type') || request('feature_name') || request('is_demo') || (request('status') && request('status') !== 'active') || (request('tenant_id') && $isCentral) || request('show_tests') || request('show_short'))
                             <span class="badge badge-primary ms-1">Aktif</span>
                             @endif
                         </button>
@@ -237,7 +242,7 @@
                             </select>
                         </div>
                         
-                        @if(auth()->user()->isRoot())
+                        @if($isCentral)
                         <div class="col-md-3">
                             <label class="form-label">Tenant</label>
                             <select name="tenant_id" class="form-select">
@@ -278,7 +283,7 @@
                     </form>
                     
                     <!-- Aktif Filtreler -->
-                    @if(request('search') || request('type') || request('feature_name') || request('is_demo') || (request('status') && request('status') !== 'active') || (request('tenant_id') && auth()->user()->isRoot()) || request('show_tests') || request('show_short'))
+                    @if(request('search') || request('type') || request('feature_name') || request('is_demo') || (request('status') && request('status') !== 'active') || (request('tenant_id') && $isCentral) || request('show_tests') || request('show_short'))
                     <div class="d-flex flex-wrap gap-2 mt-3">
                         @if(request('search'))
                             <span class="badge bg-azure-lt">Arama: {{ request('search') }}</span>
@@ -297,7 +302,7 @@
                         @if(request('status') && request('status') !== 'active')
                             <span class="badge bg-yellow-lt">Durum: {{ request('status') === 'archived' ? 'Arşivlenmiş' : 'Tümü' }}</span>
                         @endif
-                        @if(request('tenant_id') && auth()->user()->isRoot())
+                        @if(request('tenant_id') && $isCentral)
                             <span class="badge bg-cyan-lt">Tenant: {{ $filterOptions['tenants']->firstWhere('id', request('tenant_id'))->title ?? 'Tenant #' . request('tenant_id') }}</span>
                         @endif
                         @if(request('show_tests'))

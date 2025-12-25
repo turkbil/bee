@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Console Hata Analizi - HLS Timeout (Şarkı Bilgisi)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1a202e',
+                            950: '#0f1419'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 p-4 sm:p-8">
+    <div class="max-w-5xl mx-auto space-y-8">
+
+        <!-- Header -->
+        <header class="border-b border-slate-700 pb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-red-900/30 border border-red-700 rounded-lg text-red-300 text-sm font-medium">
+                    🚨 Kritik Hata
+                </span>
+                <span class="px-3 py-1 bg-purple-900/30 border border-purple-700 rounded-lg text-purple-300 text-sm font-medium">
+                    Muzibu.com.tr
+                </span>
+                <span class="px-3 py-1 bg-blue-900/30 border border-blue-700 rounded-lg text-blue-300 text-sm font-medium">
+                    v2 - Şarkı Tespit
+                </span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-2">
+                HLS Timeout - Hangi Şarkı?
+            </h1>
+            <p class="text-slate-400 text-lg">
+                Console'da "Object" yazıyor ama şarkı bilgisi içinde var!
+            </p>
+            <div class="flex items-center gap-4 mt-4 text-sm text-slate-400">
+                <span>📅 25 Aralık 2025</span>
+                <span>•</span>
+                <span>🔍 Kod analizi: player-core.js:2296</span>
+            </div>
+        </header>
+
+        <!-- Keşif: Şarkı Bilgisi Object İçinde -->
+        <section class="bg-yellow-900/20 border border-yellow-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-yellow-300 mb-4 flex items-center gap-2">
+                <span>🔍</span>
+                Keşif: Şarkı Bilgisi Aslında Var!
+            </h2>
+            <div class="space-y-4 text-slate-200">
+                <p class="text-lg leading-relaxed">
+                    Console'da sadece "Object" görünüyor ama <strong>kodda şarkı bilgisi loglanıyor!</strong>
+                </p>
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-yellow-200 mb-3">Kod: player-core.js (satır 2296-2301)</h3>
+                    <pre class="bg-slate-950 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800"><code>console.warn('⚠️ HLS TIMEOUT:', {
+    song: self.currentSong?.title,              // 🎵 ŞARKI BAŞLIĞI
+    timeout: hlsTimeoutMs + 'ms',               // ⏱️ TIMEOUT SÜRESİ
+    reason: 'HLS yüklenemedi (timeout)',        // ❌ SEBEP
+    position_sec: Math.round(currentPos)        // 📍 POZİSYON
+});</code></pre>
+                </div>
+                <p class="text-lg leading-relaxed">
+                    <strong>Sorun:</strong> Console'da object otomatik expand edilmemiş, bu yüzden sadece "Object" yazıyor. <strong>Object'e tıklaman lazım!</strong>
+                </p>
+            </div>
+        </section>
+
+        <!-- Basit Anlatım: Nasıl Görebilirim? -->
+        <section class="bg-green-900/20 border border-green-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-green-300 mb-4 flex items-center gap-2">
+                <span>📝</span>
+                Basit Anlatım: Hangi Şarkı Olduğunu Nasıl Görebilirim?
+            </h2>
+            <div class="space-y-4 text-slate-200">
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-green-200 mb-3">
+                        <span class="text-green-400">YÖNtEM 1:</span> Console'da Object'e Tıkla (En Kolay)
+                    </h3>
+                    <ol class="space-y-2 text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400 font-bold">1.</span>
+                            <span>Browser console'u aç (F12 → Console tab)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400 font-bold">2.</span>
+                            <span><code class="bg-slate-800 px-2 py-1 rounded text-sm">⚠️ HLS TIMEOUT: Object</code> satırını bul</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400 font-bold">3.</span>
+                            <span><strong>"Object"</strong> yazısının solundaki <strong>üçgen ok (▶)</strong> işaretine <strong>tıkla</strong></span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400 font-bold">4.</span>
+                            <span>Object açılınca <code class="bg-slate-800 px-2 py-1 rounded text-sm">song: "Şarkı Adı"</code> göreceksin!</span>
+                        </li>
+                    </ol>
+                    <div class="mt-4 bg-slate-950 rounded-lg p-3 border border-slate-800">
+                        <p class="text-slate-400 text-sm mb-2">Örnek expanded object:</p>
+                        <pre class="text-slate-300 text-xs"><code>▶ Object
+  song: "Yalnızlık Senfonisi"
+  timeout: "45000ms"
+  reason: "HLS yüklenemedi (timeout)"
+  position_sec: 0</code></pre>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-green-200 mb-3">
+                        <span class="text-green-400">YÖNTEM 2:</span> Network Tab'den Bak
+                    </h3>
+                    <ol class="space-y-2 text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400 font-bold">1.</span>
+                            <span>F12 → <strong>Network</strong> tab'ine geç</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400 font-bold">2.</span>
+                            <span>Filter'a <code class="bg-slate-800 px-2 py-1 rounded text-sm">.m3u8</code> veya <code class="bg-slate-800 px-2 py-1 rounded text-sm">hls</code> yaz</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400 font-bold">3.</span>
+                            <span>Kırmızı (failed) request'leri bul</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400 font-bold">4.</span>
+                            <span>URL'de şarkı ID'si var: <code class="bg-slate-800 px-2 py-1 rounded text-sm">/songs/<strong>1234</strong>/hls/</code></span>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-green-200 mb-3">
+                        <span class="text-green-400">YÖNTEM 3:</span> Player Store'u İncele
+                    </h3>
+                    <ol class="space-y-2 text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400 font-bold">1.</span>
+                            <span>Console'da şunu yaz:</span>
+                        </li>
+                    </ol>
+                    <div class="mt-2 bg-slate-950 rounded-lg p-3 border border-slate-800">
+                        <pre class="text-slate-300 text-sm"><code>Alpine.store('player').currentSong</code></pre>
+                    </div>
+                    <p class="text-slate-400 text-sm mt-2 ml-6">
+                        Bu komut şu anda çalan (veya çalmaya çalışan) şarkının tüm bilgilerini gösterir.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-blue-300 mb-4 flex items-center gap-2">
+                <span>🔧</span>
+                Teknik Detaylar
+            </h2>
+            <div class="space-y-4">
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-blue-200 mb-3">Console.warn Object Yapısı</h3>
+                    <pre class="bg-slate-950 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800"><code>{
+    song: self.currentSong?.title,              // String | undefined
+    timeout: hlsTimeoutMs + 'ms',               // "45000ms"
+    reason: 'HLS yüklenemedi (timeout)',        // String
+    position_sec: Math.round(currentPos)        // Number (saniye)
+}</code></pre>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-blue-200 mb-3">Timeout Süresi</h3>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-400">⏱️</span>
+                            <span><strong>45 saniye:</strong> HLS stream yüklenme timeout'u</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-400">📝</span>
+                            <span><strong>Kod notu:</strong> <code class="text-xs">15s → 45s (increased for stability)</code></span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-400">🔧</span>
+                            <span>Eğer 45 saniyede yüklenmezse → Retry veya MP3 fallback</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-blue-200 mb-3">Retry Mekanizması</h3>
+                    <p class="text-slate-300 mb-3">
+                        Timeout olunca kod şunu yapıyor:
+                    </p>
+                    <pre class="bg-slate-950 text-slate-300 p-4 rounded-lg text-sm border border-slate-800"><code>// 1. Yeni signed URL al (satır 2303)
+const retried = await self.retryHlsWithNewUrl(
+    targetVolume, autoplay, 'timeout', currentPos
+);
+
+// 2. Retry başarısızsa MP3 fallback (satır 2304-2306)
+if (!retried) {
+    self.triggerMp3Fallback(audio, targetVolume, 'timeout');
+}</code></pre>
+                    <p class="text-slate-400 text-sm mt-3">
+                        <strong>Sorun:</strong> Retry'da da timeout oluyor → Sonsuz döngü!
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ÇÖZüm: Log'u İyileştir -->
+        <section class="bg-emerald-900/20 border border-emerald-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-emerald-300 mb-4 flex items-center gap-2">
+                <span>🛠️</span>
+                Çözüm: Log'u İyileştir (Object Yerine String)
+            </h2>
+            <div class="space-y-4">
+                <p class="text-slate-200">
+                    Console'da "Object" yazmasın, direkt <strong>şarkı adı</strong> yazsın.
+                </p>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-emerald-200 mb-3">
+                        Mevcut Kod (Satır 2296-2301)
+                    </h3>
+                    <pre class="bg-slate-950 text-red-300 p-4 rounded-lg overflow-x-auto text-sm border border-red-800/50"><code>console.warn('⚠️ HLS TIMEOUT:', {
+    song: self.currentSong?.title,
+    timeout: hlsTimeoutMs + 'ms',
+    reason: 'HLS yüklenemedi (timeout)',
+    position_sec: Math.round(currentPos)
+});</code></pre>
+                    <p class="text-slate-400 text-sm mt-2">
+                        ❌ Sorun: Object expand edilmeden şarkı adı görünmüyor
+                    </p>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-emerald-200 mb-3">
+                        İyileştirilmiş Kod (Önerilen)
+                    </h3>
+                    <pre class="bg-slate-950 text-green-300 p-4 rounded-lg overflow-x-auto text-sm border border-green-800/50"><code>// 🔥 Önce şarkı adını string olarak logla
+console.warn('⚠️ HLS TIMEOUT:',
+    self.currentSong?.title || 'Bilinmeyen Şarkı',
+    '(' + hlsTimeoutMs + 'ms)'
+);
+
+// 🔍 Detaylı bilgi için object de logla (opsiyonel)
+console.warn('📊 Timeout Detayları:', {
+    song_id: self.currentSong?.song_id,
+    song_title: self.currentSong?.title,
+    artist: self.currentSong?.artist?.name,
+    timeout: hlsTimeoutMs + 'ms',
+    reason: 'HLS yüklenemedi (timeout)',
+    position_sec: Math.round(currentPos),
+    hls_url: self._lastHlsUrl
+});</code></pre>
+                    <p class="text-slate-400 text-sm mt-2">
+                        ✅ Avantaj: Console'da direkt şarkı adı görünür, detay için object'i expand edebilirsin
+                    </p>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-emerald-200 mb-3">
+                        Örnek Console Çıktısı (İyileştirilmiş)
+                    </h3>
+                    <pre class="bg-slate-950 text-slate-300 p-3 rounded-lg text-sm border border-slate-800"><code>⚠️ HLS TIMEOUT: Yalnızlık Senfonisi (45000ms)
+📊 Timeout Detayları: ▶ Object
+    song_id: 1234
+    song_title: "Yalnızlık Senfonisi"
+    artist: "Sezen Aksu"
+    timeout: "45000ms"
+    reason: "HLS yüklenemedi (timeout)"
+    position_sec: 0
+    hls_url: "https://..."</code></pre>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Hızlı Test: Şimdi Ne Yapmalı? -->
+        <section class="bg-purple-900/20 border border-purple-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-purple-300 mb-4 flex items-center gap-2">
+                <span>⚡</span>
+                Hızlı Test: Şimdi Ne Yapmalı?
+            </h2>
+            <div class="space-y-4">
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-purple-200 mb-3">
+                        <span class="text-purple-400">ADIM 1:</span> Console'da Object'i Expand Et
+                    </h3>
+                    <ol class="space-y-2 text-slate-300 text-sm">
+                        <li>1. Muzibu.com.tr'ye git, F12 aç</li>
+                        <li>2. Bir şarkı çal (timeout olacak)</li>
+                        <li>3. Console'da <code class="bg-slate-800 px-1">⚠️ HLS TIMEOUT: Object</code> gör</li>
+                        <li>4. Object'e tıkla, <code class="bg-slate-800 px-1">song: "..."</code> kısmını bul</li>
+                        <li>5. Şarkı adını not et</li>
+                    </ol>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-purple-200 mb-3">
+                        <span class="text-purple-400">ADIM 2:</span> O Şarkının Storage Durumunu Kontrol Et
+                    </h3>
+                    <pre class="bg-slate-950 text-slate-300 p-3 rounded-lg text-sm border border-slate-800"><code># Örnek: Şarkı adı "Yalnızlık Senfonisi", ID: 1234
+ls -lah storage/tenant1001/app/public/songs/1234/hls/</code></pre>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-purple-200 mb-3">
+                        <span class="text-purple-400">ADIM 3:</span> Network Tab'den HLS URL'i Test Et
+                    </h3>
+                    <pre class="bg-slate-950 text-slate-300 p-3 rounded-lg text-sm border border-slate-800"><code># Network tab'den URL kopyala ve test et
+curl -I https://muzibu.com.tr/storage/songs/1234/hls/master.m3u8</code></pre>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-purple-200 mb-3">
+                        <span class="text-purple-400">ADIM 4:</span> Sorunu Tespit Et
+                    </h3>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li class="flex items-start gap-2">
+                            <span>✅</span>
+                            <span><strong>200 OK:</strong> HLS dosyası var, sorun timeout/network → Timeout süresini artır</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span>❌</span>
+                            <span><strong>404 Not Found:</strong> HLS dosyası yok → Conversion job çalışmamış</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span>❌</span>
+                            <span><strong>403 Forbidden:</strong> Permission sorunu → Nginx/storage config</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span>❌</span>
+                            <span><strong>500 Server Error:</strong> PHP/Nginx hatası → Log'lara bak</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-slate-700 pt-6 text-center text-slate-400 text-sm">
+            <p>🤖 Claude AI tarafından analiz edildi</p>
+            <p class="mt-2">v2 - Console object expand + log iyileştirme önerileri</p>
+        </footer>
+
+    </div>
+</body>
+</html>

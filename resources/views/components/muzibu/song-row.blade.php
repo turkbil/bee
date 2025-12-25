@@ -12,7 +12,44 @@
      data-context-type="song"
      {{-- Playing State (JS will add this class when playing) --}}
      x-bind:class="$store.player.currentSong?.id === {{ $song->id }} ? 'bg-muzibu-coral/10 border-l-4 border-muzibu-coral' : ''"
-     x-on:click="$store.player.playSong({{ $song->id }}, {{ $song->album_id ?? 'null' }}, {{ $song->genre_id ?? ($song->album->genre_id ?? 'null') }})">
+     x-on:click="$store.player.playSong({{ $song->id }}, {{ $song->album_id ?? 'null' }}, {{ $song->genre_id ?? ($song->album->genre_id ?? 'null') }})"
+     x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'song', {
+        id: {{ $song->id }},
+        title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
+        artist: '{{ $song->album && $song->album->artist ? addslashes($song->album->artist->getTranslation('title', app()->getLocale())) : '' }}',
+        cover_url: '{{ $song->getCoverUrl(300, 300) ?? '' }}',
+        album_id: {{ $song->album_id ?? 'null' }},
+        album_slug: '{{ $song->album?->slug ?? '' }}',
+        is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+    })"
+     x-data="{
+        touchTimer: null,
+        touchStartPos: { x: 0, y: 0 }
+    }"
+     x-on:touchstart="
+        touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
+        touchTimer = setTimeout(() => {
+            if (navigator.vibrate) navigator.vibrate(50);
+            $store.contextMenu.openContextMenu({
+                clientX: $event.touches[0].clientX,
+                clientY: $event.touches[0].clientY
+            }, 'song', {
+                id: {{ $song->id }},
+                title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
+                artist: '{{ $song->album && $song->album->artist ? addslashes($song->album->artist->getTranslation('title', app()->getLocale())) : '' }}',
+                cover_url: '{{ $song->getCoverUrl(300, 300) ?? '' }}',
+                album_id: {{ $song->album_id ?? 'null' }},
+                album_slug: '{{ $song->album?->slug ?? '' }}',
+                is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+            });
+        }, 500);
+    "
+     x-on:touchend="clearTimeout(touchTimer)"
+     x-on:touchmove="
+        const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) > 10 ||
+                     Math.abs($event.touches[0].clientY - touchStartPos.y) > 10;
+        if (moved) clearTimeout(touchTimer);
+    ">
 
     {{-- Index / Playing Indicator --}}
     <span class="w-6 sm:w-8 text-center text-xs sm:text-sm flex-shrink-0">
@@ -88,7 +125,18 @@
                x-bind:class="$store.favorites.isFavorite('song', {{ $song->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
         </button>
 
-        {{-- 3-Dot Menu Button --}}
-        <x-muzibu.song-actions-menu :song="$song" />
+        {{-- 3-Dot Menu Button (Context Menu Trigger) --}}
+        <button @click.stop="$store.contextMenu.openContextMenu($event, 'song', {
+                    id: {{ $song->id }},
+                    title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
+                    artist: '{{ $song->album && $song->album->artist ? addslashes($song->album->artist->getTranslation('title', app()->getLocale())) : '' }}',
+                    cover_url: '{{ $song->getCoverUrl(300, 300) ?? '' }}',
+                    album_id: {{ $song->album_id ?? 'null' }},
+                    album_slug: '{{ $song->album?->slug ?? '' }}',
+                    is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+                })"
+                class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+            <i class="fas fa-ellipsis-v text-sm"></i>
+        </button>
     </div>
 </div>

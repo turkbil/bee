@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Context Menu & Playlist Modal - Final Plan v3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-gray-100">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <span class="inline-block bg-purple-600 text-white text-xs font-bold px-4 py-1 rounded-full mb-4">
+                <i class="fas fa-clipboard-check mr-1"></i> FİNAL PLAN v3
+            </span>
+            <h1 class="text-3xl font-black text-white mb-2">Context Menu & Playlist Modal</h1>
+            <p class="text-gray-400">Kapsamlı Düzenleme Planı</p>
+            <p class="text-gray-500 text-sm mt-2">25 Aralık 2025</p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-400 mb-4"><i class="fas fa-info-circle mr-2"></i>Basit Anlatım</h2>
+            <div class="text-gray-300 space-y-2">
+                <p><strong>3 ana değişiklik yapılacak:</strong></p>
+                <ol class="list-decimal list-inside ml-4 space-y-1">
+                    <li><strong>Song-card kaldırılacak</strong> - Şarkılar her yerde satır (row/list) olarak görünecek</li>
+                    <li><strong>Playlist Modal iyileştirilecek</strong> - Hızlı, kolay, çoklu seçim, SPA uyumlu</li>
+                    <li><strong>Context menüler düzenlenecek</strong> - Gereksiz seçenekler kaldırılacak, eksikler eklenecek</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- 3 Ana Bölüm -->
+        <div class="grid gap-6 mb-10">
+
+            <!-- BÖLÜM 1: Song Card Kaldırma -->
+            <section class="bg-red-900/20 border border-red-800 rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
+                        <span class="font-black text-white">1</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Song-Card Kaldırılacak</h2>
+                        <p class="text-red-300 text-sm">Şarkılar artık sadece row/list formatında</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-red-400 mb-2"><i class="fas fa-trash mr-2"></i>Kaldırılacak</h4>
+                        <code class="text-sm text-gray-400">components/muzibu/song-card.blade.php</code>
+                        <p class="text-xs text-gray-500 mt-2">Grid görünümlü şarkı kartı artık kullanılmayacak</p>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-green-400 mb-2"><i class="fas fa-check mr-2"></i>Kullanılacak</h4>
+                        <ul class="text-sm text-gray-400 space-y-1">
+                            <li><code>song-row.blade.php</code> - Tablo satırı</li>
+                            <li><code>song-list-item.blade.php</code> - Kompakt liste</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-4 bg-yellow-900/20 border border-yellow-700 rounded-lg p-3">
+                    <p class="text-yellow-300 text-sm"><i class="fas fa-exclamation-triangle mr-2"></i>
+                        <strong>Kontrol:</strong> Song-card kullanılan tüm sayfalar tespit edilip row/list'e çevrilecek
+                    </p>
+                </div>
+            </section>
+
+            <!-- BÖLÜM 2: Playlist Modal -->
+            <section class="bg-blue-900/20 border border-blue-800 rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <span class="font-black text-white">2</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Playlist Modal İyileştirmeleri</h2>
+                        <p class="text-blue-300 text-sm">Hızlı, kolay, SPA uyumlu</p>
+                    </div>
+                </div>
+
+                <!-- Mevcut Durum -->
+                <div class="mb-4">
+                    <h4 class="font-semibold text-white mb-2">Mevcut Durum Analizi:</h4>
+                    <div class="grid md:grid-cols-2 gap-3 text-sm">
+                        <div class="flex items-center gap-2 text-green-400">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Checkbox ile çoklu seçim VAR</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-green-400">
+                            <i class="fas fa-check-circle"></i>
+                            <span>x-teleport ile body'e taşınıyor (SPA uyumlu)</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-green-400">
+                            <i class="fas fa-check-circle"></i>
+                            <span>songExistsInPlaylists kontrolü VAR</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-green-400">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Yeni playlist oluşturma VAR</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-green-400">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Arama özelliği VAR (5+ playlist)</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-green-400">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Mobile bottom sheet VAR</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- İyileştirmeler -->
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h4 class="font-semibold text-blue-400 mb-3"><i class="fas fa-magic mr-2"></i>Yapılacak İyileştirmeler</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-plus-circle text-green-400 mt-0.5"></i>
+                            <div>
+                                <span class="text-white font-medium">Album desteği ekle</span>
+                                <p class="text-gray-400 text-xs">Şu an sadece song için çalışıyor, album için de çalışmalı</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-plus-circle text-green-400 mt-0.5"></i>
+                            <div>
+                                <span class="text-white font-medium">Loading state ekle</span>
+                                <p class="text-gray-400 text-xs">Playliste eklerken spinner göster</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-plus-circle text-green-400 mt-0.5"></i>
+                            <div>
+                                <span class="text-white font-medium">Başarı animasyonu</span>
+                                <p class="text-gray-400 text-xs">Ekleme sonrası kısa success feedback</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-sync text-yellow-400 mt-0.5"></i>
+                            <div>
+                                <span class="text-white font-medium">contextMenu store'dan bağımsızlaştır</span>
+                                <p class="text-gray-400 text-xs">Kendi Alpine store'u olmalı (playlistModal store)</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Teknik Detay -->
+                <div class="mt-4 bg-slate-900/50 rounded-lg p-4">
+                    <h4 class="font-semibold text-cyan-400 mb-2"><i class="fas fa-code mr-2"></i>Teknik Yapı</h4>
+                    <pre class="text-xs text-gray-400 overflow-x-auto">
+<span class="text-green-400">// Yeni Alpine Store: playlistModal</span>
+Alpine.store('playlistModal', {
+    open: false,
+    contentType: 'song',      <span class="text-gray-500">// 'song' | 'album'</span>
+    contentId: null,
+    contentData: {},          <span class="text-gray-500">// title, cover, artist</span>
+    userPlaylists: [],
+    existsInPlaylists: [],    <span class="text-gray-500">// Bu içerik hangi playlist'lerde var</span>
+    selectedPlaylists: [],
+    loading: false,
+    searchQuery: '',
+
+    <span class="text-blue-400">// Modal aç (herhangi bir yerden çağrılabilir)</span>
+    async show(type, id, data) {
+        this.contentType = type;
+        this.contentId = id;
+        this.contentData = data;
+        this.loading = true;
+        this.open = true;
+        await this.fetchPlaylists();
+        await this.checkExisting();
+        this.loading = false;
+    },
+
+    <span class="text-blue-400">// Çoklu playliste ekle</span>
+    async addToSelected() { ... }
+});
+                    </pre>
+                </div>
+            </section>
+
+            <!-- BÖLÜM 3: Context Menu -->
+            <section class="bg-purple-900/20 border border-purple-800 rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+                        <span class="font-black text-white">3</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Context Menu Değişiklikleri</h2>
+                        <p class="text-purple-300 text-sm">Menü yapısı düzenlemesi</p>
+                    </div>
+                </div>
+
+                <!-- Değişiklik Tablosu -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="bg-slate-800 text-gray-400">
+                                <th class="px-3 py-2 text-left">Menü</th>
+                                <th class="px-3 py-2 text-center">Kaldırılan</th>
+                                <th class="px-3 py-2 text-center">Eklenen</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700">
+                            <tr class="bg-slate-800/30">
+                                <td class="px-3 py-2 text-white"><i class="fas fa-music text-pink-400 mr-2"></i>Song</td>
+                                <td class="px-3 py-2 text-center text-red-400">"Sanatçıya Git"</td>
+                                <td class="px-3 py-2 text-center text-gray-500">-</td>
+                            </tr>
+                            <tr class="bg-slate-800/30">
+                                <td class="px-3 py-2 text-white"><i class="fas fa-compact-disc text-blue-400 mr-2"></i>Album</td>
+                                <td class="px-3 py-2 text-center text-red-400">"Sanatçıya Git"</td>
+                                <td class="px-3 py-2 text-center text-green-400">"Playliste Ekle"</td>
+                            </tr>
+                            <tr class="bg-slate-800/30">
+                                <td class="px-3 py-2 text-white"><i class="fas fa-radio text-red-400 mr-2"></i>Radio</td>
+                                <td class="px-3 py-2 text-center text-red-400">"Sıraya Ekle"</td>
+                                <td class="px-3 py-2 text-center text-gray-500">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Final Menu Yapısı -->
+                <div class="mt-4 bg-slate-900/50 rounded-lg p-4">
+                    <h4 class="font-semibold text-white mb-3">Final Menu Yapısı:</h4>
+                    <div class="grid md:grid-cols-3 gap-4 text-xs">
+                        <div>
+                            <p class="text-pink-400 font-semibold mb-1"><i class="fas fa-music mr-1"></i>Song</p>
+                            <ol class="text-gray-400 space-y-0.5">
+                                <li>1. Çal</li>
+                                <li>2. Sıraya Ekle</li>
+                                <li>3. Favorilere Ekle</li>
+                                <li class="border-t border-slate-700 pt-0.5 mt-0.5">4. Puan Ver</li>
+                                <li>5. Playliste Ekle</li>
+                                <li class="border-t border-slate-700 pt-0.5 mt-0.5 text-yellow-400">6. Albüme Git*</li>
+                            </ol>
+                        </div>
+                        <div>
+                            <p class="text-blue-400 font-semibold mb-1"><i class="fas fa-compact-disc mr-1"></i>Album</p>
+                            <ol class="text-gray-400 space-y-0.5">
+                                <li>1. Çal</li>
+                                <li>2. Sıraya Ekle</li>
+                                <li class="border-t border-slate-700 pt-0.5 mt-0.5">3. Favorilere Ekle</li>
+                                <li class="text-green-400">4. Playliste Ekle ✨</li>
+                            </ol>
+                        </div>
+                        <div>
+                            <p class="text-red-400 font-semibold mb-1"><i class="fas fa-radio mr-1"></i>Radio</p>
+                            <ol class="text-gray-400 space-y-0.5">
+                                <li>1. Çal</li>
+                                <li class="border-t border-slate-700 pt-0.5 mt-0.5">2. Favorilere Ekle</li>
+                            </ol>
+                            <p class="text-yellow-400 text-[10px] mt-2">*Sıraya Ekle yok - direkt çalar</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Dosya Listesi -->
+        <section class="mb-10">
+            <h2 class="text-xl font-bold text-white mb-4"><i class="fas fa-file-code mr-2 text-yellow-400"></i>Değişecek Dosyalar</h2>
+
+            <div class="bg-slate-900 rounded-xl p-5 overflow-x-auto">
+                <table class="w-full text-xs">
+                    <thead>
+                        <tr class="text-gray-400 border-b border-slate-700">
+                            <th class="text-left py-2 px-2">Dosya</th>
+                            <th class="text-center py-2 px-2 w-24">İşlem</th>
+                            <th class="text-left py-2 px-2">Değişiklik</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800 text-gray-300">
+                        <!-- JS Files -->
+                        <tr class="bg-blue-900/10">
+                            <td class="py-2 px-2" colspan="3"><span class="text-blue-400 font-semibold">JavaScript Dosyaları</span></td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-2"><code class="text-cyan-400">menu-builder.js</code></td>
+                            <td class="py-2 px-2 text-center"><span class="text-yellow-400">GÜNCELLE</span></td>
+                            <td class="py-2 px-2">goToArtist kaldır, album'e addToPlaylist ekle, radio'dan queue kaldır</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-2"><code class="text-cyan-400">song-actions.js</code></td>
+                            <td class="py-2 px-2 text-center"><span class="text-yellow-400">GÜNCELLE</span></td>
+                            <td class="py-2 px-2">goToArtist() kaldır</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-2"><code class="text-cyan-400">album-actions.js</code></td>
+                            <td class="py-2 px-2 text-center"><span class="text-yellow-400">GÜNCELLE</span></td>
+                            <td class="py-2 px-2">goToArtist() kaldır, addToPlaylist() ekle</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-2"><code class="text-cyan-400">radio-actions.js</code></td>
+                            <td class="py-2 px-2 text-center"><span class="text-yellow-400">GÜNCELLE</span></td>
+                            <td class="py-2 px-2">addToQueue() kaldır</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-2"><code class="text-cyan-400">action-executor.js</code></td>
+                            <td class="py-2 px-2 text-center"><span class="text-yellow-400">GÜNCELLE</span></td>
+                            <td class="py-2 px-2">goToArtist case kaldır</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-2"><code class="text-cyan-400">content-actions.js</code></td>
+                            <td class="py-2 px-2 text-center"><span class="text-yellow-400">GÜNCELLE</span></td>
+                            <td class="py-2 px-2">goToArtist() kaldır</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-2"><code class="text-green-400">muzibu-store.js</code></td>
+                            <td class="py-2 px-2 text-center"><span class="text-green-400">EKLE</span></td>
+                            <td class="py-2 px-2">playlistModal store ekle (contextMenu'dan ayır)</td>
+                        </tr>
+
+                        <!-- Blade Files -->
+                        <tr class="bg-purple-900/10">
+                            <td class="py-2 px-2" colspan="3"><span class="text-purple-400 font-semibold">Blade Componentleri</span></td>
+                        </tr>
+                        <tr class="bg-red-900/10">
+                            <td class="py-2 px-2"><code class="text-red-400">song-card.blade.php</code></td>
+                            <td class="py-2 px-2 text-center"><span class="text-red-400">KALDIR</span></td>
+                            <td class="py-2 px-2">Artık kullanılmayacak</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-2"><code class="text-cyan-400">song-row.blade.php</code></td>
+                            <td class="py-2 px-2 text-center"><span class="text-yellow-400">GÜNCELLE</span></td>
+                            <td class="py-2 px-2">artist_id/slug kaldır</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-2"><code class="text-cyan-400">song-list-item.blade.php</code></td>
+                            <td class="py-2 px-2 text-center"><span class="text-yellow-400">GÜNCELLE</span></td>
+                            <td class="py-2 px-2">artist_id/slug kaldır</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-2"><code class="text-cyan-400">album-card.blade.php</code></td>
+                            <td class="py-2 px-2 text-center"><span class="text-yellow-400">GÜNCELLE</span></td>
+                            <td class="py-2 px-2">Responsive click kontrol, artist verisi kaldır</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-2"><code class="text-cyan-400">playlist-select-modal.blade.php</code></td>
+                            <td class="py-2 px-2 text-center"><span class="text-yellow-400">GÜNCELLE</span></td>
+                            <td class="py-2 px-2">playlistModal store'a geçiş, album desteği, loading</td>
+                        </tr>
+                        <tr class="bg-yellow-900/10">
+                            <td class="py-2 px-2"><code class="text-yellow-400">radio-card.blade.php</code></td>
+                            <td class="py-2 px-2 text-center"><span class="text-gray-500">-</span></td>
+                            <td class="py-2 px-2 text-yellow-400">Değişiklik yok (özel davranış)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Uygulama Sırası -->
+        <section class="mb-10">
+            <h2 class="text-xl font-bold text-white mb-4"><i class="fas fa-sort-numeric-down mr-2 text-green-400"></i>Uygulama Sırası</h2>
+
+            <div class="space-y-3">
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg p-4">
+                    <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center font-bold text-white">1</div>
+                    <div>
+                        <p class="text-white font-medium">playlistModal store oluştur</p>
+                        <p class="text-gray-400 text-xs">muzibu-store.js'e yeni store ekle</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg p-4">
+                    <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center font-bold text-white">2</div>
+                    <div>
+                        <p class="text-white font-medium">playlist-select-modal.blade.php güncelle</p>
+                        <p class="text-gray-400 text-xs">Yeni store kullan, album desteği ekle</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg p-4">
+                    <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center font-bold text-white">3</div>
+                    <div>
+                        <p class="text-white font-medium">menu-builder.js güncelle</p>
+                        <p class="text-gray-400 text-xs">Menü yapılarını düzenle</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg p-4">
+                    <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center font-bold text-white">4</div>
+                    <div>
+                        <p class="text-white font-medium">Action dosyalarını güncelle</p>
+                        <p class="text-gray-400 text-xs">song-actions, album-actions, radio-actions, action-executor, content-actions</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg p-4">
+                    <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center font-bold text-white">5</div>
+                    <div>
+                        <p class="text-white font-medium">Blade componentleri güncelle</p>
+                        <p class="text-gray-400 text-xs">artist_id/slug kaldır, responsive click kontrol</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg p-4">
+                    <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center font-bold text-white">6</div>
+                    <div>
+                        <p class="text-white font-medium">song-card.blade.php kullanımlarını bul ve değiştir</p>
+                        <p class="text-gray-400 text-xs">Tüm sayfalarda song-row veya song-list-item kullan</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg p-4">
+                    <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center font-bold text-white">7</div>
+                    <div>
+                        <p class="text-white font-medium">Test & Cache temizle</p>
+                        <p class="text-gray-400 text-xs">php artisan view:clear && npm run prod</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Song-Card Kullanım Yerleri -->
+        <section class="mb-10">
+            <h2 class="text-xl font-bold text-white mb-4"><i class="fas fa-search mr-2 text-red-400"></i>Song-Card Kullanım Yerleri (Kontrol Edilecek)</h2>
+            <div class="bg-slate-800/50 rounded-lg p-4">
+                <p class="text-gray-400 text-sm mb-3">Bu sayfalar kontrol edilip song-row/list-item'a çevrilecek:</p>
+                <ul class="text-sm text-gray-300 space-y-1">
+                    <li><i class="fas fa-file text-yellow-400 mr-2"></i>Favoriler sayfası</li>
+                    <li><i class="fas fa-file text-yellow-400 mr-2"></i>Arama sonuçları</li>
+                    <li><i class="fas fa-file text-yellow-400 mr-2"></i>Dashboard öneriler</li>
+                    <li><i class="fas fa-file text-yellow-400 mr-2"></i>Sidebar preview</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Özet -->
+        <section class="bg-gradient-to-r from-green-900/30 to-blue-900/30 border border-green-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-white mb-4"><i class="fas fa-clipboard-check mr-2 text-green-400"></i>Özet</h2>
+            <div class="grid md:grid-cols-3 gap-4 text-center">
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <div class="text-3xl font-black text-red-400">1</div>
+                    <p class="text-sm text-gray-400">Dosya kaldırılacak</p>
+                    <p class="text-xs text-gray-500">song-card.blade.php</p>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <div class="text-3xl font-black text-yellow-400">12</div>
+                    <p class="text-sm text-gray-400">Dosya güncellenecek</p>
+                    <p class="text-xs text-gray-500">JS + Blade</p>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <div class="text-3xl font-black text-green-400">1</div>
+                    <p class="text-sm text-gray-400">Store eklenecek</p>
+                    <p class="text-xs text-gray-500">playlistModal</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÖNEMLİ KURALLAR -->
+        <section class="bg-orange-900/20 border-2 border-orange-600 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-orange-400 mb-4"><i class="fas fa-exclamation-triangle mr-2"></i>ÖNEMLİ KURALLAR</h2>
+
+            <div class="space-y-4">
+                <!-- Radio Özel Davranış -->
+                <div class="bg-red-900/30 border border-red-700 rounded-lg p-4">
+                    <h3 class="font-bold text-red-400 mb-2"><i class="fas fa-radio mr-2"></i>RADIO - ÖZEL DAVRANIŞ</h3>
+                    <ul class="text-sm text-gray-300 space-y-1">
+                        <li><i class="fas fa-times text-red-400 mr-2"></i>Preview <strong>OLMAYACAK</strong></li>
+                        <li><i class="fas fa-times text-red-400 mr-2"></i>Sidebar açılmayacak</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Buton tıklanınca <strong>DİREKT ÇALAR</strong></li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Card tıklanınca <strong>DİREKT ÇALAR</strong></li>
+                        <li><i class="fas fa-info-circle text-blue-400 mr-2"></i>Çalma kodu = Play butonu kodu (aynı fonksiyon)</li>
+                    </ul>
+                </div>
+
+                <!-- Diğer Kartlar -->
+                <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-4">
+                    <h3 class="font-bold text-blue-400 mb-2"><i class="fas fa-th-large mr-2"></i>DİĞER KARTLAR (Album, Playlist, Genre, Sector, Artist)</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-green-400 font-semibold text-sm mb-2"><i class="fas fa-desktop mr-1"></i> Desktop (≥1024px)</p>
+                            <ul class="text-xs text-gray-300 space-y-1">
+                                <li><i class="fas fa-check text-green-400 mr-1"></i>Karta tıkla → Sağ sidebar'da <strong>PREVIEW</strong> açılır</li>
+                                <li><i class="fas fa-check text-green-400 mr-1"></i>İçerik detayları sidebar'da görünür</li>
+                                <li><i class="fas fa-check text-green-400 mr-1"></i>Sayfa değişmez</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="text-orange-400 font-semibold text-sm mb-2"><i class="fas fa-mobile-alt mr-1"></i> Mobile/Tablet (&lt;1024px)</p>
+                            <ul class="text-xs text-gray-300 space-y-1">
+                                <li><i class="fas fa-check text-green-400 mr-1"></i>Karta tıkla → <strong>DETAY SAYFASINA</strong> gider</li>
+                                <li><i class="fas fa-check text-green-400 mr-1"></i>Main area'da içerik açılır</li>
+                                <li><i class="fas fa-check text-green-400 mr-1"></i>Normal link davranışı</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Playlist Modal -->
+                <div class="bg-purple-900/30 border border-purple-700 rounded-lg p-4">
+                    <h3 class="font-bold text-purple-400 mb-2"><i class="fas fa-list mr-2"></i>PLAYLIST MODAL - GLOBAL ERİŞİM</h3>
+                    <ul class="text-sm text-gray-300 space-y-1">
+                        <li><i class="fas fa-globe text-green-400 mr-2"></i><strong>Her yerden erişilebilir</strong> (context menu, butonlar, vb.)</li>
+                        <li><i class="fas fa-sync text-green-400 mr-2"></i>SPA'dan <strong>ETKİLENMEZ</strong> (x-teleport body'e)</li>
+                        <li><i class="fas fa-check-double text-green-400 mr-2"></i>Checkbox ile <strong>ÇOKLU SEÇİM</strong></li>
+                        <li><i class="fas fa-bolt text-green-400 mr-2"></i><strong>HIZLI EKLEME</strong> deneyimi</li>
+                        <li><i class="fas fa-eye text-green-400 mr-2"></i>Şarkı zaten varsa <strong>YEŞİL CHECK</strong> gösterir</li>
+                        <li><i class="fas fa-compact-disc text-green-400 mr-2"></i><strong>ALBUM DESTEĞİ</strong> - Tüm albümü playliste ekle</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- KAPSAMLI TODO LİSTESİ -->
+        <section class="bg-slate-900 border-2 border-green-600 rounded-xl p-6 mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6">
+                <i class="fas fa-tasks mr-2 text-green-400"></i>KAPSAMLI TODO LİSTESİ
+            </h2>
+
+            <!-- FAZA 1: Playlist Modal Store -->
+            <div class="mb-6">
+                <h3 class="text-lg font-bold text-green-400 mb-3 flex items-center gap-2">
+                    <span class="w-6 h-6 bg-green-600 rounded text-white text-xs flex items-center justify-center">1</span>
+                    FAZA 1: Playlist Modal Store
+                </h3>
+                <div class="bg-slate-800/50 rounded-lg p-4 space-y-2">
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-cyan-400">muzibu-store.js</code> → <code>Alpine.store('playlistModal')</code> oluştur</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span>Store property'leri: open, contentType, contentId, contentData, userPlaylists, existsInPlaylists, selectedPlaylists, loading, searchQuery</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-cyan-400">show(type, id, data)</code> metodu - Modal'ı her yerden açmak için</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-cyan-400">fetchPlaylists()</code> metodu - Kullanıcının playlist'lerini çek</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-cyan-400">checkExisting()</code> metodu - İçerik hangi playlist'lerde var kontrol et</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-cyan-400">addToMultiplePlaylists()</code> metodu - Çoklu ekleme</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span>Album desteği ekle (type='album' için tüm şarkıları ekle)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- FAZA 2: Playlist Modal Blade -->
+            <div class="mb-6">
+                <h3 class="text-lg font-bold text-blue-400 mb-3 flex items-center gap-2">
+                    <span class="w-6 h-6 bg-blue-600 rounded text-white text-xs flex items-center justify-center">2</span>
+                    FAZA 2: Playlist Modal Blade Güncelleme
+                </h3>
+                <div class="bg-slate-800/50 rounded-lg p-4 space-y-2">
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-purple-400">playlist-select-modal.blade.php</code> → contextMenu store yerine playlistModal store kullan</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span>Loading spinner ekle (playlist yüklenirken)</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span>Başarı animasyonu ekle (ekleme sonrası)</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span>Album ekleme UI'ı (tüm albüm ekleniyor feedback)</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span>x-teleport="body" olduğundan emin ol (SPA uyumluluğu)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- FAZA 3: Menu Builder -->
+            <div class="mb-6">
+                <h3 class="text-lg font-bold text-purple-400 mb-3 flex items-center gap-2">
+                    <span class="w-6 h-6 bg-purple-600 rounded text-white text-xs flex items-center justify-center">3</span>
+                    FAZA 3: Menu Builder Güncelleme
+                </h3>
+                <div class="bg-slate-800/50 rounded-lg p-4 space-y-2">
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-cyan-400">menu-builder.js</code> → getSongMenuItems() → goToArtist kaldır</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-cyan-400">menu-builder.js</code> → getAlbumMenuItems() → goToArtist kaldır</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-cyan-400">menu-builder.js</code> → getAlbumMenuItems() → addToPlaylist ekle</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-cyan-400">menu-builder.js</code> → getRadioMenuItems() → addToQueue kaldır</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- FAZA 4: Action Dosyaları -->
+            <div class="mb-6">
+                <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2">
+                    <span class="w-6 h-6 bg-yellow-600 rounded text-white text-xs flex items-center justify-center">4</span>
+                    FAZA 4: Action Dosyaları Güncelleme
+                </h3>
+                <div class="bg-slate-800/50 rounded-lg p-4 space-y-2">
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-cyan-400">song-actions.js</code> → goToArtist() fonksiyonunu kaldır</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-cyan-400">album-actions.js</code> → goToArtist() fonksiyonunu kaldır</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-cyan-400">album-actions.js</code> → addToPlaylist() fonksiyonunu ekle (playlistModal.show çağırır)</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-cyan-400">radio-actions.js</code> → addToQueue() fonksiyonunu kaldır</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-cyan-400">action-executor.js</code> → goToArtist case kaldır</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-cyan-400">content-actions.js</code> → goToArtist() fonksiyonunu kaldır</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- FAZA 5: Card Componentleri -->
+            <div class="mb-6">
+                <h3 class="text-lg font-bold text-pink-400 mb-3 flex items-center gap-2">
+                    <span class="w-6 h-6 bg-pink-600 rounded text-white text-xs flex items-center justify-center">5</span>
+                    FAZA 5: Card Component'leri Güncelleme
+                </h3>
+                <div class="bg-slate-800/50 rounded-lg p-4 space-y-2">
+                    <p class="text-xs text-orange-400 mb-2"><i class="fas fa-info-circle mr-1"></i> Desktop: Preview | Mobile: Detay sayfası</p>
+
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-purple-400">album-card.blade.php</code> → Click: Desktop preview, Mobile detay sayfası</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-purple-400">playlist-card.blade.php</code> → Click: Desktop preview, Mobile detay sayfası</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-purple-400">genre-card.blade.php</code> → Click: Desktop preview, Mobile detay sayfası</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-purple-400">sector-card.blade.php</code> → Click: Desktop preview, Mobile detay sayfası</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-purple-400">artist-card.blade.php</code> → Click: Desktop preview, Mobile detay sayfası</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-red-400">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-red-400">radio-card.blade.php</code> → Click: DİREKT ÇALAR (preview yok!)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- FAZA 6: Context Menu Data Temizliği -->
+            <div class="mb-6">
+                <h3 class="text-lg font-bold text-orange-400 mb-3 flex items-center gap-2">
+                    <span class="w-6 h-6 bg-orange-600 rounded text-white text-xs flex items-center justify-center">6</span>
+                    FAZA 6: Context Menu Data Temizliği
+                </h3>
+                <div class="bg-slate-800/50 rounded-lg p-4 space-y-2">
+                    <p class="text-xs text-gray-500 mb-2">Tüm openContextMenu() çağrılarından artist verilerini kaldır:</p>
+
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-purple-400">song-card.blade.php</code> → artist_id, artist_slug kaldır</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-purple-400">song-row.blade.php</code> → artist_id, artist_slug kaldır</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-purple-400">song-list-item.blade.php</code> → artist_id, artist_slug kaldır</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-purple-400">album-card.blade.php</code> → artist verisi kaldır (context menu için)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- FAZA 7: Song-Card Kaldırma -->
+            <div class="mb-6">
+                <h3 class="text-lg font-bold text-red-400 mb-3 flex items-center gap-2">
+                    <span class="w-6 h-6 bg-red-600 rounded text-white text-xs flex items-center justify-center">7</span>
+                    FAZA 7: Song-Card Kaldırma
+                </h3>
+                <div class="bg-slate-800/50 rounded-lg p-4 space-y-2">
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span>Grep ile song-card kullanılan tüm yerleri bul</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span>Favoriler sayfası → song-row kullan</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span>Arama sonuçları → song-row veya song-list-item kullan</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span>Dashboard öneriler → song-list-item kullan</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span>Sidebar preview → song-list-item kullan</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-red-400">song-card.blade.php</code> dosyasını sil veya deprecated olarak işaretle</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- FAZA 8: Test & Deploy -->
+            <div class="mb-6">
+                <h3 class="text-lg font-bold text-cyan-400 mb-3 flex items-center gap-2">
+                    <span class="w-6 h-6 bg-cyan-600 rounded text-white text-xs flex items-center justify-center">8</span>
+                    FAZA 8: Test & Deploy
+                </h3>
+                <div class="bg-slate-800/50 rounded-lg p-4 space-y-2">
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span>Context menu test: Song (Albüme Git görünmeli, Sanatçıya Git olmamalı)</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span>Context menu test: Album (Playliste Ekle görünmeli, Sanatçıya Git olmamalı)</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span>Context menu test: Radio (Sıraya Ekle olmamalı, sadece Çal ve Favori)</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span>Playlist modal test: Song ekleme (checkbox, mevcut kontrolü)</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span>Playlist modal test: Album ekleme (tüm şarkılar eklenmeli)</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span>Card click test: Desktop → Sidebar preview açılmalı</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span>Card click test: Mobile → Detay sayfasına gitmeli</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span>Radio click test: Direkt çalmalı (preview olmamalı)</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-green-400">php artisan view:clear && php artisan responsecache:clear</code></span>
+                    </label>
+                    <label class="flex items-start gap-3 text-sm text-gray-300">
+                        <input type="checkbox" class="mt-1 w-4 h-4 rounded border-gray-600">
+                        <span><code class="text-green-400">npm run prod</code></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Toplam -->
+            <div class="bg-gradient-to-r from-green-900/50 to-blue-900/50 rounded-lg p-4 mt-6">
+                <div class="grid grid-cols-4 gap-4 text-center">
+                    <div>
+                        <div class="text-2xl font-black text-white">8</div>
+                        <div class="text-xs text-gray-400">Faz</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-black text-white">~50</div>
+                        <div class="text-xs text-gray-400">Todo Item</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-black text-white">13</div>
+                        <div class="text-xs text-gray-400">Dosya</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-black text-white">1</div>
+                        <div class="text-xs text-gray-400">Store</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 text-sm py-8 border-t border-slate-800">
+            <p>Claude AI tarafından hazırlandı</p>
+            <p class="text-xs mt-1">Final Plan v3</p>
+        </footer>
+    </div>
+</body>
+</html>

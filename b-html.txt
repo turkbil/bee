@@ -1,709 +1,1098 @@
-<aside x-show="showQueue" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="transform translate-x-full" x-transition:enter-end="transform translate-x-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="transform translate-x-0" x-transition:leave-end="transform translate-x-full" class="fixed top-0 right-0 bottom-0 w-full sm:w-96 bg-gradient-to-b from-zinc-900 via-zinc-900 to-black border-l border-white/5 shadow-2xl z-50 flex flex-col">
+<div class="spa-content-wrapper" id="spaContent" x-show="!isLoading">
+                
+                
+
+
+<div class="px-6 py-8">
     
-    <div class="flex items-center justify-between px-5 py-4 border-b border-white/5">
-        <div class="flex items-center gap-3">
-            <div class="w-8 h-8 bg-muzibu-coral/20 rounded-lg flex items-center justify-center">
-                <i class="fas fa-stream text-muzibu-coral text-sm"></i>
-            </div>
-            <div>
-                <h3 class="text-base font-bold text-white">Sıra</h3>
-                <p class="text-xs text-zinc-500" x-text="(queue || []).length + ' Şarkı'">11 Şarkı</p>
-            </div>
-        </div>
-        <div class="flex items-center gap-1">
-            <button @click="clearQueue()" class="p-2 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all" title="Sırayı Temizle">
-                <i class="fas fa-trash-alt text-sm"></i>
-            </button>
-            <button @click="showQueue = false" class="p-2 text-zinc-500 hover:text-white hover:bg-white/10 rounded-lg transition-all">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
+    <div class="mb-8">
+        <h1 class="text-4xl font-bold text-white mb-2">Sektörler</h1>
+        <p class="text-gray-400">Müzik sektörlerini keşfet</p>
     </div>
 
     
-    <template x-if="currentSong">
-        <div class="px-5 py-4 bg-gradient-to-r from-muzibu-coral/10 to-transparent border-b border-white/5">
-            <div class="flex items-center gap-2 mb-3">
-                <div class="w-1.5 h-1.5 bg-muzibu-coral rounded-full animate-pulse"></div>
-                <span class="text-xs font-semibold text-muzibu-coral uppercase tracking-wider">Şimdi Çalınıyor</span>
-            </div>
-            <div class="flex items-center gap-3">
-                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-muzibu-coral to-pink-600 flex-shrink-0 overflow-hidden shadow-lg shadow-muzibu-coral/20">
-                    <template x-if="currentSong.album_cover">
-                        <img :src="getCoverUrl(currentSong.album_cover, 56, 56)" :alt="currentSong.song_title" class="w-full h-full object-cover">
-                    </template>
-                    <template x-if="!currentSong.album_cover">
-                        <div class="w-full h-full flex items-center justify-center text-2xl">🎵</div>
-                    </template>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <h4 class="text-sm font-bold text-white truncate" x-text="currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')"></h4>
-                    <p class="text-xs text-zinc-400 truncate mt-0.5" x-text="currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')"></p>
-                </div>
-                <button @click="toggleLike()" class="p-2 transition-all" :class="isLiked ? 'text-muzibu-coral' : 'text-zinc-500 hover:text-white'">
-                    <i :class="isLiked ? 'fas fa-heart' : 'far fa-heart'"></i>
-                </button>
-            </div>
-        </div>
-    </template><div class="px-5 py-4 bg-gradient-to-r from-muzibu-coral/10 to-transparent border-b border-white/5">
-            <div class="flex items-center gap-2 mb-3">
-                <div class="w-1.5 h-1.5 bg-muzibu-coral rounded-full animate-pulse"></div>
-                <span class="text-xs font-semibold text-muzibu-coral uppercase tracking-wider">Şimdi Çalınıyor</span>
-            </div>
-            <div class="flex items-center gap-3">
-                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-muzibu-coral to-pink-600 flex-shrink-0 overflow-hidden shadow-lg shadow-muzibu-coral/20">
-                    <template x-if="currentSong.album_cover">
-                        <img :src="getCoverUrl(currentSong.album_cover, 56, 56)" :alt="currentSong.song_title" class="w-full h-full object-cover">
-                    </template>
-                    <template x-if="!currentSong.album_cover">
-                        <div class="w-full h-full flex items-center justify-center text-2xl">🎵</div>
-                    </template><div class="w-full h-full flex items-center justify-center text-2xl">🎵</div>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <h4 class="text-sm font-bold text-white truncate" x-text="currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Saksıdaki Çiçekler</h4>
-                    <p class="text-xs text-zinc-400 truncate mt-0.5" x-text="currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
-                </div>
-                <button @click="toggleLike()" class="p-2 transition-all text-muzibu-coral" :class="isLiked ? 'text-muzibu-coral' : 'text-zinc-500 hover:text-white'">
-                    <i :class="isLiked ? 'fas fa-heart' : 'far fa-heart'" class="fas fa-heart"></i>
-                </button>
-            </div>
-        </div>
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+                            <a href="/sectors/kafe-restoran" @click="if (window.innerWidth &gt;= 1024) {
+       $event.preventDefault();
+       $store.sidebar.showPreview('sector', 1, {
+           type: 'Sector',
+           id: 1,
+           title: 'Kafe &amp; Restoran',
+           slug: 'kafe-restoran',
+           cover: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2048%2Fupload-693255e0d34e9-22.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+           is_favorite: false
+       });
+   }" @mouseenter="$store.sidebar.prefetch('sector', 1)" data-sector-id="1" data-context-type="sector" x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'sector', {
+       id: 1,
+       title: 'Kafe &amp; Restoran',
+       cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2048%2Fupload-693255e0d34e9-22.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+       is_favorite: false
+   })" x-data="{
+       touchTimer: null,
+       touchStartPos: { x: 0, y: 0 }
+   }" x-on:touchstart="
+       touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
+       touchTimer = setTimeout(() =&gt; {
+           if (navigator.vibrate) navigator.vibrate(50);
+           $store.contextMenu.openContextMenu({
+               clientX: $event.touches[0].clientX,
+               clientY: $event.touches[0].clientY
+           }, 'sector', {
+               id: 1,
+               title: 'Kafe &amp; Restoran',
+               cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2048%2Fupload-693255e0d34e9-22.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+               is_favorite: false
+           });
+       }, 500);
+   " x-on:touchend="clearTimeout(touchTimer)" x-on:touchmove="
+       const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) &gt; 10 ||
+                    Math.abs($event.touches[0].clientY - touchStartPos.y) &gt; 10;
+       if (moved) clearTimeout(touchTimer);
+   " class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300">
 
-    
-    <div class="px-5 py-3 flex items-center justify-between border-b border-white/5">
-        <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Sıradaki Şarkılar</span>
-        <span class="text-xs text-zinc-600" x-show="queue &amp;&amp; queue.length &gt; 0" style="">Sürükleyerek sırala</span>
-    </div>
-
-    
-    <div class="flex-1 overflow-y-auto">
+    <div class="relative mb-4">
         
-        <template x-if="!queue || queue.length === 0">
-            <div class="flex flex-col items-center justify-center h-full text-center px-8">
-                <div class="w-20 h-20 bg-zinc-800/50 rounded-full flex items-center justify-center mb-4">
-                    <i class="fas fa-music text-3xl text-zinc-600"></i>
-                </div>
-                <h4 class="text-base font-semibold text-zinc-400 mb-1">Sıra Boş</h4>
-                <p class="text-sm text-zinc-600">Şarkı eklemek için bir playlist veya albüme gidin</p>
-            </div>
-        </template>
+                    <img src="https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2048%2Fupload-693255e0d34e9-22.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1" alt="Kafe &amp; Restoran" class="w-full aspect-square object-cover rounded-lg shadow-lg" loading="lazy">
+        
+        
+        <button x-on:click.stop.prevent="
+            $store.player.setPlayContext({
+                type: 'sector',
+                id: 1,
+                name: 'Kafe &amp; Restoran'
+            });
+            playSector(1);
+        " class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
+            <i class="fas fa-play ml-1"></i>
+        </button>
 
         
-        <div id="queue-list" class="p-2 space-y-0.5">
-            <template x-for="(song, index) in (queue || [])" :key="'queue-' + index + '-' + (song?.song_id || 'song')">
-                <div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group" :class="{
-                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
-                        'hover:bg-white/5': queueIndex !== index,
-                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
-                        'opacity-50': draggedIndex === index
-                    }">
-                    
-                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
-                        <template x-if="song.album_cover">
-                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
-                        </template>
-                        <template x-if="!song.album_cover">
-                            <div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        </template>
-                        
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <i class="fas fa-play text-white text-xs"></i>
-                        </div>
-                        
-                        <template x-if="queueIndex === index">
-                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
-                            </div>
-                        </template>
-                    </div>
-
-                    
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-medium truncate transition-colors" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')"></h4>
-                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')"></p>
-                    </div>
-
-                    
-                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)"></div>
-
-                    
-                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
-                        
-                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
-                            <i class="fas fa-times text-xs"></i>
-                        </button>
-                        
-                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
-                            <i class="fas fa-grip-vertical text-xs"></i>
-                        </div>
-                    </div>
-                </div>
-            </template><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
-                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
-                        'hover:bg-white/5': queueIndex !== index,
-                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
-                        'opacity-50': draggedIndex === index
-                    }">
-                    
-                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
-                        <template x-if="song.album_cover">
-                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
-                        </template>
-                        <template x-if="!song.album_cover">
-                            <div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        </template><div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <i class="fas fa-play text-white text-xs"></i>
-                        </div>
-                        
-                        <template x-if="queueIndex === index">
-                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
-                            </div>
-                        </template>
-                    </div>
-
-                    
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Saksıdaki Çiçekler</h4>
-                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
-                    </div>
-
-                    
-                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:37</div>
-
-                    
-                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
-                        
-                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
-                            <i class="fas fa-times text-xs"></i>
-                        </button>
-                        
-                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
-                            <i class="fas fa-grip-vertical text-xs"></i>
-                        </div>
-                    </div>
-                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
-                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
-                        'hover:bg-white/5': queueIndex !== index,
-                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
-                        'opacity-50': draggedIndex === index
-                    }">
-                    
-                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
-                        <template x-if="song.album_cover">
-                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
-                        </template>
-                        <template x-if="!song.album_cover">
-                            <div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        </template><div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <i class="fas fa-play text-white text-xs"></i>
-                        </div>
-                        
-                        <template x-if="queueIndex === index">
-                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
-                            </div>
-                        </template>
-                    </div>
-
-                    
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Yalnız Kurt</h4>
-                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
-                    </div>
-
-                    
-                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:55</div>
-
-                    
-                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
-                        
-                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
-                            <i class="fas fa-times text-xs"></i>
-                        </button>
-                        
-                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
-                            <i class="fas fa-grip-vertical text-xs"></i>
-                        </div>
-                    </div>
-                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
-                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
-                        'hover:bg-white/5': queueIndex !== index,
-                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
-                        'opacity-50': draggedIndex === index
-                    }">
-                    
-                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
-                        <template x-if="song.album_cover">
-                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
-                        </template>
-                        <template x-if="!song.album_cover">
-                            <div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        </template><div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <i class="fas fa-play text-white text-xs"></i>
-                        </div>
-                        
-                        <template x-if="queueIndex === index">
-                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
-                            </div>
-                        </template>
-                    </div>
-
-                    
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Cold Love</h4>
-                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
-                    </div>
-
-                    
-                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:03</div>
-
-                    
-                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
-                        
-                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
-                            <i class="fas fa-times text-xs"></i>
-                        </button>
-                        
-                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
-                            <i class="fas fa-grip-vertical text-xs"></i>
-                        </div>
-                    </div>
-                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
-                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
-                        'hover:bg-white/5': queueIndex !== index,
-                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
-                        'opacity-50': draggedIndex === index
-                    }">
-                    
-                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
-                        <template x-if="song.album_cover">
-                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
-                        </template>
-                        <template x-if="!song.album_cover">
-                            <div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        </template><div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <i class="fas fa-play text-white text-xs"></i>
-                        </div>
-                        
-                        <template x-if="queueIndex === index">
-                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
-                            </div>
-                        </template>
-                    </div>
-
-                    
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Yalnız Kurt</h4>
-                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
-                    </div>
-
-                    
-                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:55</div>
-
-                    
-                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
-                        
-                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
-                            <i class="fas fa-times text-xs"></i>
-                        </button>
-                        
-                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
-                            <i class="fas fa-grip-vertical text-xs"></i>
-                        </div>
-                    </div>
-                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
-                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
-                        'hover:bg-white/5': queueIndex !== index,
-                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
-                        'opacity-50': draggedIndex === index
-                    }">
-                    
-                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
-                        <template x-if="song.album_cover">
-                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
-                        </template>
-                        <template x-if="!song.album_cover">
-                            <div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        </template><div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <i class="fas fa-play text-white text-xs"></i>
-                        </div>
-                        
-                        <template x-if="queueIndex === index">
-                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
-                            </div>
-                        </template>
-                    </div>
-
-                    
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Saksıdaki Çiçekler</h4>
-                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
-                    </div>
-
-                    
-                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:37</div>
-
-                    
-                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
-                        
-                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
-                            <i class="fas fa-times text-xs"></i>
-                        </button>
-                        
-                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
-                            <i class="fas fa-grip-vertical text-xs"></i>
-                        </div>
-                    </div>
-                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
-                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
-                        'hover:bg-white/5': queueIndex !== index,
-                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
-                        'opacity-50': draggedIndex === index
-                    }">
-                    
-                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
-                        <template x-if="song.album_cover">
-                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
-                        </template>
-                        <template x-if="!song.album_cover">
-                            <div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        </template><div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <i class="fas fa-play text-white text-xs"></i>
-                        </div>
-                        
-                        <template x-if="queueIndex === index">
-                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
-                            </div>
-                        </template>
-                    </div>
-
-                    
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Cold Love</h4>
-                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
-                    </div>
-
-                    
-                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:03</div>
-
-                    
-                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
-                        
-                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
-                            <i class="fas fa-times text-xs"></i>
-                        </button>
-                        
-                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
-                            <i class="fas fa-grip-vertical text-xs"></i>
-                        </div>
-                    </div>
-                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group bg-muzibu-coral/10 border border-muzibu-coral/20" :class="{
-                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
-                        'hover:bg-white/5': queueIndex !== index,
-                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
-                        'opacity-50': draggedIndex === index
-                    }">
-                    
-                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
-                        <template x-if="song.album_cover">
-                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
-                        </template>
-                        <template x-if="!song.album_cover">
-                            <div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        </template><div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <i class="fas fa-play text-white text-xs"></i>
-                        </div>
-                        
-                        <template x-if="queueIndex === index">
-                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
-                            </div>
-                        </template><div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
-                            </div>
-                    </div>
-
-                    
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-medium truncate transition-colors text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Saksıdaki Çiçekler</h4>
-                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
-                    </div>
-
-                    
-                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:37</div>
-
-                    
-                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
-                        
-                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
-                            <i class="fas fa-times text-xs"></i>
-                        </button>
-                        
-                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
-                            <i class="fas fa-grip-vertical text-xs"></i>
-                        </div>
-                    </div>
-                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
-                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
-                        'hover:bg-white/5': queueIndex !== index,
-                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
-                        'opacity-50': draggedIndex === index
-                    }">
-                    
-                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
-                        <template x-if="song.album_cover">
-                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
-                        </template>
-                        <template x-if="!song.album_cover">
-                            <div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        </template><div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <i class="fas fa-play text-white text-xs"></i>
-                        </div>
-                        
-                        <template x-if="queueIndex === index">
-                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
-                            </div>
-                        </template>
-                    </div>
-
-                    
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Yalnız Kurt</h4>
-                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
-                    </div>
-
-                    
-                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:55</div>
-
-                    
-                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
-                        
-                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
-                            <i class="fas fa-times text-xs"></i>
-                        </button>
-                        
-                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
-                            <i class="fas fa-grip-vertical text-xs"></i>
-                        </div>
-                    </div>
-                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
-                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
-                        'hover:bg-white/5': queueIndex !== index,
-                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
-                        'opacity-50': draggedIndex === index
-                    }">
-                    
-                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
-                        <template x-if="song.album_cover">
-                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
-                        </template>
-                        <template x-if="!song.album_cover">
-                            <div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        </template><div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <i class="fas fa-play text-white text-xs"></i>
-                        </div>
-                        
-                        <template x-if="queueIndex === index">
-                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
-                            </div>
-                        </template>
-                    </div>
-
-                    
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Cold Love</h4>
-                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
-                    </div>
-
-                    
-                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:03</div>
-
-                    
-                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
-                        
-                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
-                            <i class="fas fa-times text-xs"></i>
-                        </button>
-                        
-                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
-                            <i class="fas fa-grip-vertical text-xs"></i>
-                        </div>
-                    </div>
-                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
-                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
-                        'hover:bg-white/5': queueIndex !== index,
-                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
-                        'opacity-50': draggedIndex === index
-                    }">
-                    
-                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
-                        <template x-if="song.album_cover">
-                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
-                        </template>
-                        <template x-if="!song.album_cover">
-                            <div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        </template><div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <i class="fas fa-play text-white text-xs"></i>
-                        </div>
-                        
-                        <template x-if="queueIndex === index">
-                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
-                            </div>
-                        </template>
-                    </div>
-
-                    
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Saksıdaki Çiçekler</h4>
-                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
-                    </div>
-
-                    
-                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:37</div>
-
-                    
-                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
-                        
-                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
-                            <i class="fas fa-times text-xs"></i>
-                        </button>
-                        
-                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
-                            <i class="fas fa-grip-vertical text-xs"></i>
-                        </div>
-                    </div>
-                </div><div @click="playFromQueue(index)" @dragstart="dragStart($event, index)" @dragover.prevent="dragOver(index)" @dragleave="dropTargetIndex = null" @drop.prevent="drop(index)" @dragend="draggedIndex = null; dropTargetIndex = null" draggable="true" class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
-                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
-                        'hover:bg-white/5': queueIndex !== index,
-                        'border-t-2 border-muzibu-coral': dropTargetIndex === index &amp;&amp; draggedIndex !== null,
-                        'opacity-50': draggedIndex === index
-                    }">
-                    
-                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
-                        <template x-if="song.album_cover">
-                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
-                        </template>
-                        <template x-if="!song.album_cover">
-                            <div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        </template><div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-music text-white/30 text-xs"></i>
-                            </div>
-                        
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <i class="fas fa-play text-white text-xs"></i>
-                        </div>
-                        
-                        <template x-if="queueIndex === index">
-                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
-                            </div>
-                        </template>
-                    </div>
-
-                    
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Yalnız Kurt</h4>
-                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Erkin Koray çığÖŞÜ</p>
-                    </div>
-
-                    
-                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)">2:55</div>
-
-                    
-                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
-                        
-                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
-                            <i class="fas fa-times text-xs"></i>
-                        </button>
-                        
-                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="Sürükle">
-                            <i class="fas fa-grip-vertical text-xs"></i>
-                        </div>
-                    </div>
-                </div>
-        </div>
-    </div>
-
-    
-    <div class="px-5 py-3 border-t border-white/5 bg-transparent">
-        <div class="flex items-center justify-between text-xs text-zinc-600">
-            <span x-show="queue &amp;&amp; queue.length &gt; 0" style="">
-                <i class="fas fa-info-circle mr-1"></i>
-                Şarkılara tıklayarak çal
-            </span>
+        <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent="">
             
+            <button x-on:click.stop.prevent="$store.favorites.toggle('sector', 1)" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all" x-bind:class="$store.favorites.isFavorite('sector', 1) ? 'text-muzibu-coral' : ''">
+                <i class="text-sm far fa-heart" x-bind:class="$store.favorites.isFavorite('sector', 1) ? 'fas fa-heart' : 'far fa-heart'"></i>
+            </button>
+
+            
+            <button x-on:click.stop.prevent="$store.contextMenu.openContextMenu($event, 'sector', {
+                id: 1,
+                title: 'Kafe &amp; Restoran',
+                cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2048%2Fupload-693255e0d34e9-22.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+                is_favorite: false
+            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+                <i class="fas fa-ellipsis-v text-sm"></i>
+            </button>
         </div>
     </div>
-</aside>
+
+    
+    <div class="h-12 overflow-hidden pb-4">
+        <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
+            Kafe &amp; Restoran
+        </h3>
+        <p class="text-xs text-gray-400 leading-6 line-clamp-1">
+                            &nbsp;
+                    </p>
+    </div>
+</a>
+                            <a href="/sectors/otel" @click="if (window.innerWidth &gt;= 1024) {
+       $event.preventDefault();
+       $store.sidebar.showPreview('sector', 2, {
+           type: 'Sector',
+           id: 2,
+           title: 'Otel &amp; Konaklama',
+           slug: 'otel',
+           cover: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2049%2Fupload-693255e52f7a2-23.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+           is_favorite: false
+       });
+   }" @mouseenter="$store.sidebar.prefetch('sector', 2)" data-sector-id="2" data-context-type="sector" x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'sector', {
+       id: 2,
+       title: 'Otel &amp; Konaklama',
+       cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2049%2Fupload-693255e52f7a2-23.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+       is_favorite: false
+   })" x-data="{
+       touchTimer: null,
+       touchStartPos: { x: 0, y: 0 }
+   }" x-on:touchstart="
+       touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
+       touchTimer = setTimeout(() =&gt; {
+           if (navigator.vibrate) navigator.vibrate(50);
+           $store.contextMenu.openContextMenu({
+               clientX: $event.touches[0].clientX,
+               clientY: $event.touches[0].clientY
+           }, 'sector', {
+               id: 2,
+               title: 'Otel &amp; Konaklama',
+               cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2049%2Fupload-693255e52f7a2-23.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+               is_favorite: false
+           });
+       }, 500);
+   " x-on:touchend="clearTimeout(touchTimer)" x-on:touchmove="
+       const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) &gt; 10 ||
+                    Math.abs($event.touches[0].clientY - touchStartPos.y) &gt; 10;
+       if (moved) clearTimeout(touchTimer);
+   " class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300">
+
+    <div class="relative mb-4">
+        
+                    <img src="https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2049%2Fupload-693255e52f7a2-23.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1" alt="Otel &amp; Konaklama" class="w-full aspect-square object-cover rounded-lg shadow-lg" loading="lazy">
+        
+        
+        <button x-on:click.stop.prevent="
+            $store.player.setPlayContext({
+                type: 'sector',
+                id: 2,
+                name: 'Otel &amp; Konaklama'
+            });
+            playSector(2);
+        " class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
+            <i class="fas fa-play ml-1"></i>
+        </button>
+
+        
+        <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent="">
+            
+            <button x-on:click.stop.prevent="$store.favorites.toggle('sector', 2)" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all" x-bind:class="$store.favorites.isFavorite('sector', 2) ? 'text-muzibu-coral' : ''">
+                <i class="text-sm far fa-heart" x-bind:class="$store.favorites.isFavorite('sector', 2) ? 'fas fa-heart' : 'far fa-heart'"></i>
+            </button>
+
+            
+            <button x-on:click.stop.prevent="$store.contextMenu.openContextMenu($event, 'sector', {
+                id: 2,
+                title: 'Otel &amp; Konaklama',
+                cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2049%2Fupload-693255e52f7a2-23.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+                is_favorite: false
+            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+                <i class="fas fa-ellipsis-v text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    
+    <div class="h-12 overflow-hidden pb-4">
+        <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
+            Otel &amp; Konaklama
+        </h3>
+        <p class="text-xs text-gray-400 leading-6 line-clamp-1">
+                            &nbsp;
+                    </p>
+    </div>
+</a>
+                            <a href="/sectors/alisveris-merkezi" @click="if (window.innerWidth &gt;= 1024) {
+       $event.preventDefault();
+       $store.sidebar.showPreview('sector', 3, {
+           type: 'Sector',
+           id: 3,
+           title: 'Alışveriş Merkezi',
+           slug: 'alisveris-merkezi',
+           cover: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2050%2Fupload-69325612aadae-1.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+           is_favorite: false
+       });
+   }" @mouseenter="$store.sidebar.prefetch('sector', 3)" data-sector-id="3" data-context-type="sector" x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'sector', {
+       id: 3,
+       title: 'Alışveriş Merkezi',
+       cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2050%2Fupload-69325612aadae-1.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+       is_favorite: false
+   })" x-data="{
+       touchTimer: null,
+       touchStartPos: { x: 0, y: 0 }
+   }" x-on:touchstart="
+       touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
+       touchTimer = setTimeout(() =&gt; {
+           if (navigator.vibrate) navigator.vibrate(50);
+           $store.contextMenu.openContextMenu({
+               clientX: $event.touches[0].clientX,
+               clientY: $event.touches[0].clientY
+           }, 'sector', {
+               id: 3,
+               title: 'Alışveriş Merkezi',
+               cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2050%2Fupload-69325612aadae-1.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+               is_favorite: false
+           });
+       }, 500);
+   " x-on:touchend="clearTimeout(touchTimer)" x-on:touchmove="
+       const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) &gt; 10 ||
+                    Math.abs($event.touches[0].clientY - touchStartPos.y) &gt; 10;
+       if (moved) clearTimeout(touchTimer);
+   " class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300">
+
+    <div class="relative mb-4">
+        
+                    <img src="https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2050%2Fupload-69325612aadae-1.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1" alt="Alışveriş Merkezi" class="w-full aspect-square object-cover rounded-lg shadow-lg" loading="lazy">
+        
+        
+        <button x-on:click.stop.prevent="
+            $store.player.setPlayContext({
+                type: 'sector',
+                id: 3,
+                name: 'Alışveriş Merkezi'
+            });
+            playSector(3);
+        " class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
+            <i class="fas fa-play ml-1"></i>
+        </button>
+
+        
+        <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent="">
+            
+            <button x-on:click.stop.prevent="$store.favorites.toggle('sector', 3)" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all" x-bind:class="$store.favorites.isFavorite('sector', 3) ? 'text-muzibu-coral' : ''">
+                <i class="text-sm far fa-heart" x-bind:class="$store.favorites.isFavorite('sector', 3) ? 'fas fa-heart' : 'far fa-heart'"></i>
+            </button>
+
+            
+            <button x-on:click.stop.prevent="$store.contextMenu.openContextMenu($event, 'sector', {
+                id: 3,
+                title: 'Alışveriş Merkezi',
+                cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2050%2Fupload-69325612aadae-1.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+                is_favorite: false
+            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+                <i class="fas fa-ellipsis-v text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    
+    <div class="h-12 overflow-hidden pb-4">
+        <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
+            Alışveriş Merkezi
+        </h3>
+        <p class="text-xs text-gray-400 leading-6 line-clamp-1">
+                            &nbsp;
+                    </p>
+    </div>
+</a>
+                            <a href="/sectors/spor-salonu" @click="if (window.innerWidth &gt;= 1024) {
+       $event.preventDefault();
+       $store.sidebar.showPreview('sector', 4, {
+           type: 'Sector',
+           id: 4,
+           title: 'Spor Salonu',
+           slug: 'spor-salonu',
+           cover: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2051%2Fupload-6932561597825-2.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+           is_favorite: false
+       });
+   }" @mouseenter="$store.sidebar.prefetch('sector', 4)" data-sector-id="4" data-context-type="sector" x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'sector', {
+       id: 4,
+       title: 'Spor Salonu',
+       cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2051%2Fupload-6932561597825-2.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+       is_favorite: false
+   })" x-data="{
+       touchTimer: null,
+       touchStartPos: { x: 0, y: 0 }
+   }" x-on:touchstart="
+       touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
+       touchTimer = setTimeout(() =&gt; {
+           if (navigator.vibrate) navigator.vibrate(50);
+           $store.contextMenu.openContextMenu({
+               clientX: $event.touches[0].clientX,
+               clientY: $event.touches[0].clientY
+           }, 'sector', {
+               id: 4,
+               title: 'Spor Salonu',
+               cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2051%2Fupload-6932561597825-2.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+               is_favorite: false
+           });
+       }, 500);
+   " x-on:touchend="clearTimeout(touchTimer)" x-on:touchmove="
+       const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) &gt; 10 ||
+                    Math.abs($event.touches[0].clientY - touchStartPos.y) &gt; 10;
+       if (moved) clearTimeout(touchTimer);
+   " class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300">
+
+    <div class="relative mb-4">
+        
+                    <img src="https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2051%2Fupload-6932561597825-2.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1" alt="Spor Salonu" class="w-full aspect-square object-cover rounded-lg shadow-lg" loading="lazy">
+        
+        
+        <button x-on:click.stop.prevent="
+            $store.player.setPlayContext({
+                type: 'sector',
+                id: 4,
+                name: 'Spor Salonu'
+            });
+            playSector(4);
+        " class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
+            <i class="fas fa-play ml-1"></i>
+        </button>
+
+        
+        <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent="">
+            
+            <button x-on:click.stop.prevent="$store.favorites.toggle('sector', 4)" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all" x-bind:class="$store.favorites.isFavorite('sector', 4) ? 'text-muzibu-coral' : ''">
+                <i class="text-sm far fa-heart" x-bind:class="$store.favorites.isFavorite('sector', 4) ? 'fas fa-heart' : 'far fa-heart'"></i>
+            </button>
+
+            
+            <button x-on:click.stop.prevent="$store.contextMenu.openContextMenu($event, 'sector', {
+                id: 4,
+                title: 'Spor Salonu',
+                cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2051%2Fupload-6932561597825-2.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+                is_favorite: false
+            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+                <i class="fas fa-ellipsis-v text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    
+    <div class="h-12 overflow-hidden pb-4">
+        <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
+            Spor Salonu
+        </h3>
+        <p class="text-xs text-gray-400 leading-6 line-clamp-1">
+                            &nbsp;
+                    </p>
+    </div>
+</a>
+                            <a href="/sectors/ofis" @click="if (window.innerWidth &gt;= 1024) {
+       $event.preventDefault();
+       $store.sidebar.showPreview('sector', 5, {
+           type: 'Sector',
+           id: 5,
+           title: 'Ofis',
+           slug: 'ofis',
+           cover: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2052%2Fupload-693256187c9a4-3.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+           is_favorite: false
+       });
+   }" @mouseenter="$store.sidebar.prefetch('sector', 5)" data-sector-id="5" data-context-type="sector" x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'sector', {
+       id: 5,
+       title: 'Ofis',
+       cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2052%2Fupload-693256187c9a4-3.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+       is_favorite: false
+   })" x-data="{
+       touchTimer: null,
+       touchStartPos: { x: 0, y: 0 }
+   }" x-on:touchstart="
+       touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
+       touchTimer = setTimeout(() =&gt; {
+           if (navigator.vibrate) navigator.vibrate(50);
+           $store.contextMenu.openContextMenu({
+               clientX: $event.touches[0].clientX,
+               clientY: $event.touches[0].clientY
+           }, 'sector', {
+               id: 5,
+               title: 'Ofis',
+               cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2052%2Fupload-693256187c9a4-3.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+               is_favorite: false
+           });
+       }, 500);
+   " x-on:touchend="clearTimeout(touchTimer)" x-on:touchmove="
+       const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) &gt; 10 ||
+                    Math.abs($event.touches[0].clientY - touchStartPos.y) &gt; 10;
+       if (moved) clearTimeout(touchTimer);
+   " class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300">
+
+    <div class="relative mb-4">
+        
+                    <img src="https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2052%2Fupload-693256187c9a4-3.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1" alt="Ofis" class="w-full aspect-square object-cover rounded-lg shadow-lg" loading="lazy">
+        
+        
+        <button x-on:click.stop.prevent="
+            $store.player.setPlayContext({
+                type: 'sector',
+                id: 5,
+                name: 'Ofis'
+            });
+            playSector(5);
+        " class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
+            <i class="fas fa-play ml-1"></i>
+        </button>
+
+        
+        <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent="">
+            
+            <button x-on:click.stop.prevent="$store.favorites.toggle('sector', 5)" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all" x-bind:class="$store.favorites.isFavorite('sector', 5) ? 'text-muzibu-coral' : ''">
+                <i class="text-sm far fa-heart" x-bind:class="$store.favorites.isFavorite('sector', 5) ? 'fas fa-heart' : 'far fa-heart'"></i>
+            </button>
+
+            
+            <button x-on:click.stop.prevent="$store.contextMenu.openContextMenu($event, 'sector', {
+                id: 5,
+                title: 'Ofis',
+                cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2052%2Fupload-693256187c9a4-3.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+                is_favorite: false
+            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+                <i class="fas fa-ellipsis-v text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    
+    <div class="h-12 overflow-hidden pb-4">
+        <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
+            Ofis
+        </h3>
+        <p class="text-xs text-gray-400 leading-6 line-clamp-1">
+                            &nbsp;
+                    </p>
+    </div>
+</a>
+                            <a href="/sectors/gunun-enerjisi" @click="if (window.innerWidth &gt;= 1024) {
+       $event.preventDefault();
+       $store.sidebar.showPreview('sector', 6, {
+           type: 'Sector',
+           id: 6,
+           title: 'Günün Enerjisi',
+           slug: 'gunun-enerjisi',
+           cover: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2053%2Fupload-6932561eb9658-4.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+           is_favorite: false
+       });
+   }" @mouseenter="$store.sidebar.prefetch('sector', 6)" data-sector-id="6" data-context-type="sector" x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'sector', {
+       id: 6,
+       title: 'Günün Enerjisi',
+       cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2053%2Fupload-6932561eb9658-4.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+       is_favorite: false
+   })" x-data="{
+       touchTimer: null,
+       touchStartPos: { x: 0, y: 0 }
+   }" x-on:touchstart="
+       touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
+       touchTimer = setTimeout(() =&gt; {
+           if (navigator.vibrate) navigator.vibrate(50);
+           $store.contextMenu.openContextMenu({
+               clientX: $event.touches[0].clientX,
+               clientY: $event.touches[0].clientY
+           }, 'sector', {
+               id: 6,
+               title: 'Günün Enerjisi',
+               cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2053%2Fupload-6932561eb9658-4.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+               is_favorite: false
+           });
+       }, 500);
+   " x-on:touchend="clearTimeout(touchTimer)" x-on:touchmove="
+       const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) &gt; 10 ||
+                    Math.abs($event.touches[0].clientY - touchStartPos.y) &gt; 10;
+       if (moved) clearTimeout(touchTimer);
+   " class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300">
+
+    <div class="relative mb-4">
+        
+                    <img src="https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2053%2Fupload-6932561eb9658-4.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1" alt="Günün Enerjisi" class="w-full aspect-square object-cover rounded-lg shadow-lg" loading="lazy">
+        
+        
+        <button x-on:click.stop.prevent="
+            $store.player.setPlayContext({
+                type: 'sector',
+                id: 6,
+                name: 'Günün Enerjisi'
+            });
+            playSector(6);
+        " class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
+            <i class="fas fa-play ml-1"></i>
+        </button>
+
+        
+        <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent="">
+            
+            <button x-on:click.stop.prevent="$store.favorites.toggle('sector', 6)" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all" x-bind:class="$store.favorites.isFavorite('sector', 6) ? 'text-muzibu-coral' : ''">
+                <i class="text-sm far fa-heart" x-bind:class="$store.favorites.isFavorite('sector', 6) ? 'fas fa-heart' : 'far fa-heart'"></i>
+            </button>
+
+            
+            <button x-on:click.stop.prevent="$store.contextMenu.openContextMenu($event, 'sector', {
+                id: 6,
+                title: 'Günün Enerjisi',
+                cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2053%2Fupload-6932561eb9658-4.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+                is_favorite: false
+            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+                <i class="fas fa-ellipsis-v text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    
+    <div class="h-12 overflow-hidden pb-4">
+        <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
+            Günün Enerjisi
+        </h3>
+        <p class="text-xs text-gray-400 leading-6 line-clamp-1">
+                            Güne enerji dolu başlamak için
+                    </p>
+    </div>
+</a>
+                            <a href="/sectors/calisma-odaklanma" @click="if (window.innerWidth &gt;= 1024) {
+       $event.preventDefault();
+       $store.sidebar.showPreview('sector', 7, {
+           type: 'Sector',
+           id: 7,
+           title: 'Çalışma &amp; Odaklanma',
+           slug: 'calisma-odaklanma',
+           cover: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2054%2Fupload-69325638c96cb-6.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+           is_favorite: false
+       });
+   }" @mouseenter="$store.sidebar.prefetch('sector', 7)" data-sector-id="7" data-context-type="sector" x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'sector', {
+       id: 7,
+       title: 'Çalışma &amp; Odaklanma',
+       cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2054%2Fupload-69325638c96cb-6.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+       is_favorite: false
+   })" x-data="{
+       touchTimer: null,
+       touchStartPos: { x: 0, y: 0 }
+   }" x-on:touchstart="
+       touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
+       touchTimer = setTimeout(() =&gt; {
+           if (navigator.vibrate) navigator.vibrate(50);
+           $store.contextMenu.openContextMenu({
+               clientX: $event.touches[0].clientX,
+               clientY: $event.touches[0].clientY
+           }, 'sector', {
+               id: 7,
+               title: 'Çalışma &amp; Odaklanma',
+               cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2054%2Fupload-69325638c96cb-6.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+               is_favorite: false
+           });
+       }, 500);
+   " x-on:touchend="clearTimeout(touchTimer)" x-on:touchmove="
+       const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) &gt; 10 ||
+                    Math.abs($event.touches[0].clientY - touchStartPos.y) &gt; 10;
+       if (moved) clearTimeout(touchTimer);
+   " class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300">
+
+    <div class="relative mb-4">
+        
+                    <img src="https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2054%2Fupload-69325638c96cb-6.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1" alt="Çalışma &amp; Odaklanma" class="w-full aspect-square object-cover rounded-lg shadow-lg" loading="lazy">
+        
+        
+        <button x-on:click.stop.prevent="
+            $store.player.setPlayContext({
+                type: 'sector',
+                id: 7,
+                name: 'Çalışma &amp; Odaklanma'
+            });
+            playSector(7);
+        " class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
+            <i class="fas fa-play ml-1"></i>
+        </button>
+
+        
+        <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent="">
+            
+            <button x-on:click.stop.prevent="$store.favorites.toggle('sector', 7)" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all" x-bind:class="$store.favorites.isFavorite('sector', 7) ? 'text-muzibu-coral' : ''">
+                <i class="text-sm far fa-heart" x-bind:class="$store.favorites.isFavorite('sector', 7) ? 'fas fa-heart' : 'far fa-heart'"></i>
+            </button>
+
+            
+            <button x-on:click.stop.prevent="$store.contextMenu.openContextMenu($event, 'sector', {
+                id: 7,
+                title: 'Çalışma &amp; Odaklanma',
+                cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2054%2Fupload-69325638c96cb-6.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+                is_favorite: false
+            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+                <i class="fas fa-ellipsis-v text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    
+    <div class="h-12 overflow-hidden pb-4">
+        <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
+            Çalışma &amp; Odaklanma
+        </h3>
+        <p class="text-xs text-gray-400 leading-6 line-clamp-1">
+                            Konsantre olmanıza yardımcı müzikler
+                    </p>
+    </div>
+</a>
+                            <a href="/sectors/spor-antrenman" @click="if (window.innerWidth &gt;= 1024) {
+       $event.preventDefault();
+       $store.sidebar.showPreview('sector', 8, {
+           type: 'Sector',
+           id: 8,
+           title: 'Spor &amp; Antrenman',
+           slug: 'spor-antrenman',
+           cover: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2055%2Fupload-69325643c9c74-7.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+           is_favorite: false
+       });
+   }" @mouseenter="$store.sidebar.prefetch('sector', 8)" data-sector-id="8" data-context-type="sector" x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'sector', {
+       id: 8,
+       title: 'Spor &amp; Antrenman',
+       cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2055%2Fupload-69325643c9c74-7.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+       is_favorite: false
+   })" x-data="{
+       touchTimer: null,
+       touchStartPos: { x: 0, y: 0 }
+   }" x-on:touchstart="
+       touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
+       touchTimer = setTimeout(() =&gt; {
+           if (navigator.vibrate) navigator.vibrate(50);
+           $store.contextMenu.openContextMenu({
+               clientX: $event.touches[0].clientX,
+               clientY: $event.touches[0].clientY
+           }, 'sector', {
+               id: 8,
+               title: 'Spor &amp; Antrenman',
+               cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2055%2Fupload-69325643c9c74-7.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+               is_favorite: false
+           });
+       }, 500);
+   " x-on:touchend="clearTimeout(touchTimer)" x-on:touchmove="
+       const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) &gt; 10 ||
+                    Math.abs($event.touches[0].clientY - touchStartPos.y) &gt; 10;
+       if (moved) clearTimeout(touchTimer);
+   " class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300">
+
+    <div class="relative mb-4">
+        
+                    <img src="https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2055%2Fupload-69325643c9c74-7.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1" alt="Spor &amp; Antrenman" class="w-full aspect-square object-cover rounded-lg shadow-lg" loading="lazy">
+        
+        
+        <button x-on:click.stop.prevent="
+            $store.player.setPlayContext({
+                type: 'sector',
+                id: 8,
+                name: 'Spor &amp; Antrenman'
+            });
+            playSector(8);
+        " class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
+            <i class="fas fa-play ml-1"></i>
+        </button>
+
+        
+        <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent="">
+            
+            <button x-on:click.stop.prevent="$store.favorites.toggle('sector', 8)" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all" x-bind:class="$store.favorites.isFavorite('sector', 8) ? 'text-muzibu-coral' : ''">
+                <i class="text-sm far fa-heart" x-bind:class="$store.favorites.isFavorite('sector', 8) ? 'fas fa-heart' : 'far fa-heart'"></i>
+            </button>
+
+            
+            <button x-on:click.stop.prevent="$store.contextMenu.openContextMenu($event, 'sector', {
+                id: 8,
+                title: 'Spor &amp; Antrenman',
+                cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2055%2Fupload-69325643c9c74-7.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+                is_favorite: false
+            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+                <i class="fas fa-ellipsis-v text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    
+    <div class="h-12 overflow-hidden pb-4">
+        <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
+            Spor &amp; Antrenman
+        </h3>
+        <p class="text-xs text-gray-400 leading-6 line-clamp-1">
+                            Egzersiz yaparken dinlenecek müzikler
+                    </p>
+    </div>
+</a>
+                            <a href="/sectors/rahatlatici-meditasyon" @click="if (window.innerWidth &gt;= 1024) {
+       $event.preventDefault();
+       $store.sidebar.showPreview('sector', 9, {
+           type: 'Sector',
+           id: 9,
+           title: 'Rahatlatıcı &amp; Meditasyon',
+           slug: 'rahatlatici-meditasyon',
+           cover: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2056%2Fupload-6932564677bfe-8.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+           is_favorite: false
+       });
+   }" @mouseenter="$store.sidebar.prefetch('sector', 9)" data-sector-id="9" data-context-type="sector" x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'sector', {
+       id: 9,
+       title: 'Rahatlatıcı &amp; Meditasyon',
+       cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2056%2Fupload-6932564677bfe-8.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+       is_favorite: false
+   })" x-data="{
+       touchTimer: null,
+       touchStartPos: { x: 0, y: 0 }
+   }" x-on:touchstart="
+       touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
+       touchTimer = setTimeout(() =&gt; {
+           if (navigator.vibrate) navigator.vibrate(50);
+           $store.contextMenu.openContextMenu({
+               clientX: $event.touches[0].clientX,
+               clientY: $event.touches[0].clientY
+           }, 'sector', {
+               id: 9,
+               title: 'Rahatlatıcı &amp; Meditasyon',
+               cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2056%2Fupload-6932564677bfe-8.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+               is_favorite: false
+           });
+       }, 500);
+   " x-on:touchend="clearTimeout(touchTimer)" x-on:touchmove="
+       const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) &gt; 10 ||
+                    Math.abs($event.touches[0].clientY - touchStartPos.y) &gt; 10;
+       if (moved) clearTimeout(touchTimer);
+   " class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300">
+
+    <div class="relative mb-4">
+        
+                    <img src="https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2056%2Fupload-6932564677bfe-8.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1" alt="Rahatlatıcı &amp; Meditasyon" class="w-full aspect-square object-cover rounded-lg shadow-lg" loading="lazy">
+        
+        
+        <button x-on:click.stop.prevent="
+            $store.player.setPlayContext({
+                type: 'sector',
+                id: 9,
+                name: 'Rahatlatıcı &amp; Meditasyon'
+            });
+            playSector(9);
+        " class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
+            <i class="fas fa-play ml-1"></i>
+        </button>
+
+        
+        <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent="">
+            
+            <button x-on:click.stop.prevent="$store.favorites.toggle('sector', 9)" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all" x-bind:class="$store.favorites.isFavorite('sector', 9) ? 'text-muzibu-coral' : ''">
+                <i class="text-sm far fa-heart" x-bind:class="$store.favorites.isFavorite('sector', 9) ? 'fas fa-heart' : 'far fa-heart'"></i>
+            </button>
+
+            
+            <button x-on:click.stop.prevent="$store.contextMenu.openContextMenu($event, 'sector', {
+                id: 9,
+                title: 'Rahatlatıcı &amp; Meditasyon',
+                cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2056%2Fupload-6932564677bfe-8.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+                is_favorite: false
+            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+                <i class="fas fa-ellipsis-v text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    
+    <div class="h-12 overflow-hidden pb-4">
+        <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
+            Rahatlatıcı &amp; Meditasyon
+        </h3>
+        <p class="text-xs text-gray-400 leading-6 line-clamp-1">
+                            Dinlenmek ve huzur bulmak için
+                    </p>
+    </div>
+</a>
+                            <a href="/sectors/parti-eglence" @click="if (window.innerWidth &gt;= 1024) {
+       $event.preventDefault();
+       $store.sidebar.showPreview('sector', 10, {
+           type: 'Sector',
+           id: 10,
+           title: 'Parti &amp; Eğlence',
+           slug: 'parti-eglence',
+           cover: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2057%2Fupload-6932564aac756-11.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+           is_favorite: false
+       });
+   }" @mouseenter="$store.sidebar.prefetch('sector', 10)" data-sector-id="10" data-context-type="sector" x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'sector', {
+       id: 10,
+       title: 'Parti &amp; Eğlence',
+       cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2057%2Fupload-6932564aac756-11.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+       is_favorite: false
+   })" x-data="{
+       touchTimer: null,
+       touchStartPos: { x: 0, y: 0 }
+   }" x-on:touchstart="
+       touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
+       touchTimer = setTimeout(() =&gt; {
+           if (navigator.vibrate) navigator.vibrate(50);
+           $store.contextMenu.openContextMenu({
+               clientX: $event.touches[0].clientX,
+               clientY: $event.touches[0].clientY
+           }, 'sector', {
+               id: 10,
+               title: 'Parti &amp; Eğlence',
+               cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2057%2Fupload-6932564aac756-11.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+               is_favorite: false
+           });
+       }, 500);
+   " x-on:touchend="clearTimeout(touchTimer)" x-on:touchmove="
+       const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) &gt; 10 ||
+                    Math.abs($event.touches[0].clientY - touchStartPos.y) &gt; 10;
+       if (moved) clearTimeout(touchTimer);
+   " class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300">
+
+    <div class="relative mb-4">
+        
+                    <img src="https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2057%2Fupload-6932564aac756-11.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1" alt="Parti &amp; Eğlence" class="w-full aspect-square object-cover rounded-lg shadow-lg" loading="lazy">
+        
+        
+        <button x-on:click.stop.prevent="
+            $store.player.setPlayContext({
+                type: 'sector',
+                id: 10,
+                name: 'Parti &amp; Eğlence'
+            });
+            playSector(10);
+        " class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
+            <i class="fas fa-play ml-1"></i>
+        </button>
+
+        
+        <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent="">
+            
+            <button x-on:click.stop.prevent="$store.favorites.toggle('sector', 10)" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all" x-bind:class="$store.favorites.isFavorite('sector', 10) ? 'text-muzibu-coral' : ''">
+                <i class="text-sm far fa-heart" x-bind:class="$store.favorites.isFavorite('sector', 10) ? 'fas fa-heart' : 'far fa-heart'"></i>
+            </button>
+
+            
+            <button x-on:click.stop.prevent="$store.contextMenu.openContextMenu($event, 'sector', {
+                id: 10,
+                title: 'Parti &amp; Eğlence',
+                cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2057%2Fupload-6932564aac756-11.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+                is_favorite: false
+            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+                <i class="fas fa-ellipsis-v text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    
+    <div class="h-12 overflow-hidden pb-4">
+        <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
+            Parti &amp; Eğlence
+        </h3>
+        <p class="text-xs text-gray-400 leading-6 line-clamp-1">
+                            Parti ve eğlence için enerjik müzikler
+                    </p>
+    </div>
+</a>
+                            <a href="/sectors/romantik-anlar" @click="if (window.innerWidth &gt;= 1024) {
+       $event.preventDefault();
+       $store.sidebar.showPreview('sector', 11, {
+           type: 'Sector',
+           id: 11,
+           title: 'Romantik Anlar',
+           slug: 'romantik-anlar',
+           cover: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2058%2Fupload-69325649d22ce-10.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+           is_favorite: false
+       });
+   }" @mouseenter="$store.sidebar.prefetch('sector', 11)" data-sector-id="11" data-context-type="sector" x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'sector', {
+       id: 11,
+       title: 'Romantik Anlar',
+       cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2058%2Fupload-69325649d22ce-10.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+       is_favorite: false
+   })" x-data="{
+       touchTimer: null,
+       touchStartPos: { x: 0, y: 0 }
+   }" x-on:touchstart="
+       touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
+       touchTimer = setTimeout(() =&gt; {
+           if (navigator.vibrate) navigator.vibrate(50);
+           $store.contextMenu.openContextMenu({
+               clientX: $event.touches[0].clientX,
+               clientY: $event.touches[0].clientY
+           }, 'sector', {
+               id: 11,
+               title: 'Romantik Anlar',
+               cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2058%2Fupload-69325649d22ce-10.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+               is_favorite: false
+           });
+       }, 500);
+   " x-on:touchend="clearTimeout(touchTimer)" x-on:touchmove="
+       const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) &gt; 10 ||
+                    Math.abs($event.touches[0].clientY - touchStartPos.y) &gt; 10;
+       if (moved) clearTimeout(touchTimer);
+   " class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300">
+
+    <div class="relative mb-4">
+        
+                    <img src="https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2058%2Fupload-69325649d22ce-10.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1" alt="Romantik Anlar" class="w-full aspect-square object-cover rounded-lg shadow-lg" loading="lazy">
+        
+        
+        <button x-on:click.stop.prevent="
+            $store.player.setPlayContext({
+                type: 'sector',
+                id: 11,
+                name: 'Romantik Anlar'
+            });
+            playSector(11);
+        " class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
+            <i class="fas fa-play ml-1"></i>
+        </button>
+
+        
+        <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent="">
+            
+            <button x-on:click.stop.prevent="$store.favorites.toggle('sector', 11)" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all" x-bind:class="$store.favorites.isFavorite('sector', 11) ? 'text-muzibu-coral' : ''">
+                <i class="text-sm far fa-heart" x-bind:class="$store.favorites.isFavorite('sector', 11) ? 'fas fa-heart' : 'far fa-heart'"></i>
+            </button>
+
+            
+            <button x-on:click.stop.prevent="$store.contextMenu.openContextMenu($event, 'sector', {
+                id: 11,
+                title: 'Romantik Anlar',
+                cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2058%2Fupload-69325649d22ce-10.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+                is_favorite: false
+            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+                <i class="fas fa-ellipsis-v text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    
+    <div class="h-12 overflow-hidden pb-4">
+        <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
+            Romantik Anlar
+        </h3>
+        <p class="text-xs text-gray-400 leading-6 line-clamp-1">
+                            Romantik anlar için müzikler
+                    </p>
+    </div>
+</a>
+                            <a href="/sectors/yolculuk-seyahat" @click="if (window.innerWidth &gt;= 1024) {
+       $event.preventDefault();
+       $store.sidebar.showPreview('sector', 12, {
+           type: 'Sector',
+           id: 12,
+           title: 'Yolculuk &amp; Seyahat',
+           slug: 'yolculuk-seyahat',
+           cover: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2059%2Fupload-6932564dc42d4-12.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+           is_favorite: false
+       });
+   }" @mouseenter="$store.sidebar.prefetch('sector', 12)" data-sector-id="12" data-context-type="sector" x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'sector', {
+       id: 12,
+       title: 'Yolculuk &amp; Seyahat',
+       cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2059%2Fupload-6932564dc42d4-12.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+       is_favorite: false
+   })" x-data="{
+       touchTimer: null,
+       touchStartPos: { x: 0, y: 0 }
+   }" x-on:touchstart="
+       touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
+       touchTimer = setTimeout(() =&gt; {
+           if (navigator.vibrate) navigator.vibrate(50);
+           $store.contextMenu.openContextMenu({
+               clientX: $event.touches[0].clientX,
+               clientY: $event.touches[0].clientY
+           }, 'sector', {
+               id: 12,
+               title: 'Yolculuk &amp; Seyahat',
+               cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2059%2Fupload-6932564dc42d4-12.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+               is_favorite: false
+           });
+       }, 500);
+   " x-on:touchend="clearTimeout(touchTimer)" x-on:touchmove="
+       const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) &gt; 10 ||
+                    Math.abs($event.touches[0].clientY - touchStartPos.y) &gt; 10;
+       if (moved) clearTimeout(touchTimer);
+   " class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300">
+
+    <div class="relative mb-4">
+        
+                    <img src="https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2059%2Fupload-6932564dc42d4-12.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1" alt="Yolculuk &amp; Seyahat" class="w-full aspect-square object-cover rounded-lg shadow-lg" loading="lazy">
+        
+        
+        <button x-on:click.stop.prevent="
+            $store.player.setPlayContext({
+                type: 'sector',
+                id: 12,
+                name: 'Yolculuk &amp; Seyahat'
+            });
+            playSector(12);
+        " class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
+            <i class="fas fa-play ml-1"></i>
+        </button>
+
+        
+        <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent="">
+            
+            <button x-on:click.stop.prevent="$store.favorites.toggle('sector', 12)" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all" x-bind:class="$store.favorites.isFavorite('sector', 12) ? 'text-muzibu-coral' : ''">
+                <i class="text-sm far fa-heart" x-bind:class="$store.favorites.isFavorite('sector', 12) ? 'fas fa-heart' : 'far fa-heart'"></i>
+            </button>
+
+            
+            <button x-on:click.stop.prevent="$store.contextMenu.openContextMenu($event, 'sector', {
+                id: 12,
+                title: 'Yolculuk &amp; Seyahat',
+                cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2059%2Fupload-6932564dc42d4-12.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+                is_favorite: false
+            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+                <i class="fas fa-ellipsis-v text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    
+    <div class="h-12 overflow-hidden pb-4">
+        <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
+            Yolculuk &amp; Seyahat
+        </h3>
+        <p class="text-xs text-gray-400 leading-6 line-clamp-1">
+                            Yolculuklarınızda dinlenecek müzikler
+                    </p>
+    </div>
+</a>
+                            <a href="/sectors/nostalji" @click="if (window.innerWidth &gt;= 1024) {
+       $event.preventDefault();
+       $store.sidebar.showPreview('sector', 13, {
+           type: 'Sector',
+           id: 13,
+           title: 'Nostalji',
+           slug: 'nostalji',
+           cover: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2060%2Fupload-6932564e83a25-13.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+           is_favorite: false
+       });
+   }" @mouseenter="$store.sidebar.prefetch('sector', 13)" data-sector-id="13" data-context-type="sector" x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'sector', {
+       id: 13,
+       title: 'Nostalji',
+       cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2060%2Fupload-6932564e83a25-13.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+       is_favorite: false
+   })" x-data="{
+       touchTimer: null,
+       touchStartPos: { x: 0, y: 0 }
+   }" x-on:touchstart="
+       touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
+       touchTimer = setTimeout(() =&gt; {
+           if (navigator.vibrate) navigator.vibrate(50);
+           $store.contextMenu.openContextMenu({
+               clientX: $event.touches[0].clientX,
+               clientY: $event.touches[0].clientY
+           }, 'sector', {
+               id: 13,
+               title: 'Nostalji',
+               cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2060%2Fupload-6932564e83a25-13.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+               is_favorite: false
+           });
+       }, 500);
+   " x-on:touchend="clearTimeout(touchTimer)" x-on:touchmove="
+       const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) &gt; 10 ||
+                    Math.abs($event.touches[0].clientY - touchStartPos.y) &gt; 10;
+       if (moved) clearTimeout(touchTimer);
+   " class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300">
+
+    <div class="relative mb-4">
+        
+                    <img src="https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2060%2Fupload-6932564e83a25-13.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1" alt="Nostalji" class="w-full aspect-square object-cover rounded-lg shadow-lg" loading="lazy">
+        
+        
+        <button x-on:click.stop.prevent="
+            $store.player.setPlayContext({
+                type: 'sector',
+                id: 13,
+                name: 'Nostalji'
+            });
+            playSector(13);
+        " class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
+            <i class="fas fa-play ml-1"></i>
+        </button>
+
+        
+        <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent="">
+            
+            <button x-on:click.stop.prevent="$store.favorites.toggle('sector', 13)" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all" x-bind:class="$store.favorites.isFavorite('sector', 13) ? 'text-muzibu-coral' : ''">
+                <i class="text-sm far fa-heart" x-bind:class="$store.favorites.isFavorite('sector', 13) ? 'fas fa-heart' : 'far fa-heart'"></i>
+            </button>
+
+            
+            <button x-on:click.stop.prevent="$store.contextMenu.openContextMenu($event, 'sector', {
+                id: 13,
+                title: 'Nostalji',
+                cover_url: 'https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2060%2Fupload-6932564e83a25-13.jpg&amp;w=300&amp;h=300&amp;s=1&amp;f=webp&amp;c=1',
+                is_favorite: false
+            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+                <i class="fas fa-ellipsis-v text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    
+    <div class="h-12 overflow-hidden pb-4">
+        <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
+            Nostalji
+        </h3>
+        <p class="text-xs text-gray-400 leading-6 line-clamp-1">
+                            Eski günleri hatırlatan müzikler
+                    </p>
+    </div>
+</a>
+                    </div>
+
+        
+            </div>
+            </div>

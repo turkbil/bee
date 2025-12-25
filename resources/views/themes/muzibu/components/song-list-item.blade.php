@@ -7,8 +7,7 @@
 ])
 
 @php
-    $cover = $song->coverMedia ?? $song->album->coverMedia ?? null;
-    $coverUrl = $cover ? thumb($cover, 80, 80) : '/images/default-cover.png';
+    $coverUrl = $song->getCoverUrl(120, 120) ?? '/images/default-cover.png';
     $artistName = $song->album->artist->title ?? __('muzibu::front.dashboard.unknown_artist');
     $albumTitle = $song->album->title ?? '';
     $duration = $song->duration ? gmdate('i:s', $song->duration) : '';
@@ -27,7 +26,7 @@
     @endif
 
     {{-- Cover --}}
-    <div class="relative w-10 h-10 rounded overflow-hidden flex-shrink-0">
+    <div class="relative w-14 h-14 rounded overflow-hidden flex-shrink-0">
         <img src="{{ $coverUrl }}" alt="{{ $song->title }}" class="w-full h-full object-cover" loading="lazy">
         @if($index === null)
             <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">

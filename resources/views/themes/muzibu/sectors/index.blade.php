@@ -19,7 +19,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
     @if($sectors && $sectors->count() > 0)
         <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
             @foreach($sectors as $sector)
-                <x-muzibu.sector-card :sector="$sector" />
+                <x-muzibu.sector-card :sector="$sector" :preview="false" />
             @endforeach
         </div>
 

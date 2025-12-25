@@ -104,88 +104,34 @@
         </button>
     </div>
 
-    {{-- Playlists Grid --}}
+    {{-- RADYOLAR BÖLÜMÜ (Üstte) --}}
+    @if(isset($radios) && $radios->count() > 0)
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-radio text-red-500"></i>
+                Canlı Radyolar
+                <span class="bg-red-600 text-white text-xs px-2 py-1 rounded-full animate-pulse">CANLI</span>
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+                @foreach($radios as $radio)
+                    <x-muzibu.radio-card :radio="$radio" />
+                @endforeach
+            </div>
+        </div>
+    @endif
+
+    {{-- PLAYLİSTLER BÖLÜMÜ (Altta) --}}
     @if($playlists && $playlists->count() > 0)
-        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
-            @foreach($playlists as $playlist)
-                <a href="/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}"
-                   
-                   class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300">
-                    <div class="relative mb-4">
-                        @if($playlist->media_id && $playlist->coverMedia)
-                            <img src="{{ thumb($playlist->coverMedia, 300, 300, ['scale' => 1]) }}"
-                                 alt="{{ $playlist->getTranslation('title', app()->getLocale()) }}"
-                                 class="w-full aspect-square object-cover rounded-lg shadow-lg"
-                                 loading="lazy">
-                        @else
-                            <div class="w-full aspect-square bg-gradient-to-br from-muzibu-coral to-purple-600 rounded-lg flex items-center justify-center text-4xl shadow-lg">
-                                🎵
-                            </div>
-                        @endif
-
-                        {{-- Play Button Overlay --}}
-                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 rounded-lg flex items-center justify-center">
-                            <button class="opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:scale-110">
-                                <i class="fas fa-play ml-1"></i>
-                            </button>
-                        </div>
-
-                        {{-- Favorite Button --}}
-                        <div class="absolute top-2 right-2" x-on:click.stop>
-                            @auth
-                            <button
-                                x-data="{
-                                    favorited: {{ auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
-                                    loading: false,
-                                    toggle() {
-                                        if (this.loading) return;
-                                        this.loading = true;
-                                        fetch('/api/favorites/toggle', {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json',
-                                                'X-CSRF-TOKEN': document.querySelector('meta[name=\"csrf-token\"]').content,
-                                                'Accept': 'application/json'
-                                            },
-                                            body: JSON.stringify({
-                                                model_class: '{{ addslashes(get_class($playlist)) }}',
-                                                model_id: {{ $playlist->id }}
-                                            })
-                                        })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            if (data.success) {
-                                                this.favorited = data.data.is_favorited;
-                                            }
-                                        })
-                                        .catch(error => console.error('Favorite error:', error))
-                                        .finally(() => this.loading = false);
-                                    }
-                                }"
-                                x-on:click="toggle()"
-                                class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform"
-                            >
-                                <i x-bind:class="favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-white'" class="text-sm"></i>
-                            </button>
-                            @else
-                            <a href="{{ route('login') }}" class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform">
-                                <i class="far fa-heart text-white text-sm"></i>
-                            </a>
-                            @endauth
-                        </div>
-                    </div>
-
-                    <h3 class="font-semibold text-white mb-1 truncate">
-                        {{ $playlist->getTranslation('title', app()->getLocale()) }}
-                    </h3>
-
-                    @if($playlist->description)
-                        <p class="text-sm text-gray-400 truncate">
-                            {{ $playlist->getTranslation('description', app()->getLocale()) }}
-                        </p>
-                    @endif
-                </a>
-            @endforeach
+        <div>
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-list text-muzibu-coral"></i>
+                Playlistler
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+                @foreach($playlists as $playlist)
+                    <x-muzibu.playlist-card :playlist="$playlist" :preview="true" />
+                @endforeach
+            </div>
         </div>
     @else
         <div class="text-center py-12">

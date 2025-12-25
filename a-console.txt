@@ -1,0 +1,45 @@
+VM20131 odaklanma:269 ✅ Alpine global functions loaded (muzibuApp, dashboardApp, corporatePanel, corporateDashboard)
+player-core.js?v=1766617435:4171 ✅ Player state cleared (fresh start)
+spa-router.js?v=1766532809:104 🚀 SPA Router initialized (Prefetch Disabled)
+VM20202:16 ✅ Auth Tutarlı: Object
+favorites.js?v=1766532825:230 🎵 Loading user favorites...
+favorites.js?v=1766532825:165 [Favorites] 🔄 Loading favorites from server...
+VM20151 odaklanma:85 ✅ Player store verified
+VM20592:38 🧪 Debug Panel connected
+VM20151 odaklanma:71 ✅ Player store = Proxy to root (auto-forward all properties/methods)
+player-core.js?v=1766617435:810 🚀 Initial queue loaded: 15 songs
+favorites.js?v=1766532825:174 [Favorites] Response status: 200
+favorites.js?v=1766532825:178 [Favorites] Response data: Object
+favorites.js?v=1766532825:181 [Favorites] ✅ Loaded 17 favorites: Proxy(Array)
+spa-router.js?v=1766532809:92 🚀 SPA Navigation: /
+spa-router.js?v=1766532809:324 🔄 navigateTo() called
+spa-router.js?v=1766532809:353 🔵 loadPage() START: /
+spa-router.js?v=1766532809:365 🔵 loadPage() TRY block entered
+spa-router.js?v=1766532809:411 🔵 loadPage() Parsing HTML...
+spa-router.js?v=1766532809:416 🔵 loadPage() Main element found: true
+spa-router.js?v=1766532809:419 🔵 loadPage() Entering main content update...
+spa-router.js?v=1766532809:430 ✅ Alpine.js components destroyed before DOM replace
+spa-router.js?v=1766532809:461 🔍 SPA: Sidebar check - New: true Current: true
+spa-router.js?v=1766532809:475 ✅ Sidebar Alpine.js components destroyed
+spa-router.js?v=1766532809:482 ✅ SPA: Replacing existing sidebar
+spa-router.js?v=1766532809:523 🔍 SPA: Grid classes - Old: grid grid-rows-[56px_1fr_auto] grid-cols-1 lg:grid-cols-[220px_1fr] xl:grid-cols-[220px_1fr_320px] 2xl:grid-cols-[220px_1fr_360px] h-[100dvh] w-full gap-0 lg:gap-3 px-0 pb-0 pt-0 lg:px-3 lg:pt-3
+spa-router.js?v=1766532809:524 🔍 SPA: Grid classes - New: grid grid-rows-[56px_1fr_auto] grid-cols-1 lg:grid-cols-[220px_1fr] xl:grid-cols-[220px_1fr_320px] 2xl:grid-cols-[220px_1fr_360px] h-[100dvh] w-full gap-0 lg:gap-3 px-0 pb-0 pt-0 lg:px-3 lg:pt-3
+spa-router.js?v=1766532809:529 ✅ SPA: Grid classes updated
+spa-router.js?v=1766532809:533 ✅ Page loaded: /
+spa-router.js?v=1766532809:541 🏠 Homepage detected → Sidebar reset to default
+spa-router.js?v=1766532809:557 ✅ loadPage complete, setting isLoading = false
+spa-router.js?v=1766532809:563 🔍 Final isLoading state: false
+player-core.js?v=1766617435:2296 ⚠️ HLS TIMEOUT: Object
+(anonymous) @ player-core.js?v=1766617435:2296
+player-core.js?v=1766617435:2296 ⚠️ HLS TIMEOUT: Object
+(anonymous) @ player-core.js?v=1766617435:2296
+player-core.js?v=1766617435:2742 🔁 HLS retry with new signed URL Object
+retryHlsWithNewUrl @ player-core.js?v=1766617435:2742
+player-core.js?v=1766617435:2296 ⚠️ HLS TIMEOUT: Object
+(anonymous) @ player-core.js?v=1766617435:2296
+player-core.js?v=1766617435:2296 ⚠️ HLS TIMEOUT: Object
+(anonymous) @ player-core.js?v=1766617435:2296
+player-core.js?v=1766617435:2296 ⚠️ HLS TIMEOUT: Object
+(anonymous) @ player-core.js?v=1766617435:2296
+player-core.js?v=1766617435:2296 ⚠️ HLS TIMEOUT: Object
+(anonymous) @ player-core.js?v=1766617435:2296

@@ -294,5 +294,23 @@ return [
                 'prefix' => 'central_',
             ],
         ],
+
+        // 🔐 SESSION DEDICATED - Tenant-aware session storage
+        'session' => [
+            'url' => env('REDIS_URL'),
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'username' => env('REDIS_USERNAME'),
+            'password' => env('REDIS_PASSWORD'),
+            'port' => env('REDIS_PORT', '6379'),
+            'database' => env('REDIS_SESSION_DB', '0'),
+            'read_write_timeout' => 60,
+            'retry_after' => 100,
+            'retry_attempts' => 3,
+            'options' => [
+                // Prefix will be set dynamically by TenancyServiceProvider
+                // Format: tenant_{id}_session_ (e.g., tenant_2_session_, tenant_1001_session_)
+                'prefix' => 'session_',
+            ],
+        ],
     ],
 ];

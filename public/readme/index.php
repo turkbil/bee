@@ -52,7 +52,7 @@ function scanReports($dir) {
                             'date' => "$year-$month-$day",
                             'topic' => $topic,
                             'title' => $title,
-                            'url' => "/readme/$year/$month/$day/$topic/",
+                            'url' => $latestVersion['url'], // ✅ Dinamik: En son versiyona git
                             'versions' => $versions,
                             'latestModified' => $versions[0]['modified']
                         ];
@@ -62,7 +62,14 @@ function scanReports($dir) {
         }
     }
 
+    // Tarihe göre sırala (en yeni en üstte)
     usort($result, function($a, $b) {
+        // Önce klasör tarihine göre (YYYY-MM-DD)
+        $dateCompare = strcmp($b['date'], $a['date']);
+        if ($dateCompare !== 0) {
+            return $dateCompare;
+        }
+        // Aynı tarihte ise modification time'a göre
         return $b['latestModified'] - $a['latestModified'];
     });
 
@@ -70,6 +77,14 @@ function scanReports($dir) {
 }
 
 $reports = scanReports($baseDir);
+
+// Sıralama parametresi
+$sortBy = $_GET['sort'] ?? 'date'; // 'date' veya 'modified'
+if ($sortBy === 'modified') {
+    usort($reports, function($a, $b) {
+        return $b['latestModified'] - $a['latestModified'];
+    });
+}
 
 $monthNames = [
     '01' => 'Oca', '02' => 'Şub', '03' => 'Mar', '04' => 'Nis',
@@ -81,11 +96,19 @@ $totalReports = count($reports);
 $totalVersions = array_sum(array_map(function($r) { return count($r['versions']); }, $reports));
 $currentDomain = $_SERVER['HTTP_HOST'] ?? 'ixtif.com';
 
-// 3'e böl
-$chunk = ceil($totalReports / 3);
-$col1 = array_slice($reports, 0, $chunk);
-$col2 = array_slice($reports, $chunk, $chunk);
-$col3 = array_slice($reports, $chunk * 2);
+// 3 kolona soldan sağa dağıt
+$col1 = [];
+$col2 = [];
+$col3 = [];
+
+foreach ($reports as $index => $report) {
+    $colIndex = $index % 3;
+    switch ($colIndex) {
+        case 0: $col1[] = $report; break;
+        case 1: $col2[] = $report; break;
+        case 2: $col3[] = $report; break;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="tr">
@@ -94,6 +117,7 @@ $col3 = array_slice($reports, $chunk * 2);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>📚 README</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-slate-950 text-slate-300">
     <!-- Single Line Header -->
@@ -111,10 +135,37 @@ $col3 = array_slice($reports, $chunk * 2);
                    placeholder="🔍 Ara..."
                    class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
 
-            <!-- Right: Stats + Filter -->
+            <!-- Right: Stats + Filter + Sort -->
             <div class="flex justify-end gap-2 items-center">
                 <button onclick="filterReports('all')" class="filter-btn active text-xs text-slate-500 hover:text-slate-300 px-2 py-1 rounded">Hepsi</button>
                 <button onclick="filterReports('favorites')" class="filter-btn text-xs text-slate-500 hover:text-amber-400 px-2 py-1 rounded">⭐</button>
+                <span class="text-xs text-slate-600">•</span>
+                <div x-data="{ show: false }" class="relative">
+                    <a href="?sort=date"
+                       @mouseenter="show = true"
+                       @mouseleave="show = false"
+                       class="sort-btn text-xs <?= $sortBy === 'date' ? 'text-blue-400' : 'text-slate-500 hover:text-slate-300' ?> px-2 py-1 rounded">📅</a>
+                    <div x-show="show"
+                         x-transition:enter="transition ease-out duration-150"
+                         x-transition:enter-start="opacity-0 translate-y-1"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         class="absolute top-full right-0 mt-2 px-3 py-2 bg-slate-700 text-slate-100 text-xs rounded-lg whitespace-nowrap z-50 shadow-xl border border-slate-600">
+                        📅 Tarihe göre sırala
+                    </div>
+                </div>
+                <div x-data="{ show: false }" class="relative">
+                    <a href="?sort=modified"
+                       @mouseenter="show = true"
+                       @mouseleave="show = false"
+                       class="sort-btn text-xs <?= $sortBy === 'modified' ? 'text-blue-400' : 'text-slate-500 hover:text-slate-300' ?> px-2 py-1 rounded">🕐</a>
+                    <div x-show="show"
+                         x-transition:enter="transition ease-out duration-150"
+                         x-transition:enter-start="opacity-0 translate-y-1"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         class="absolute top-full right-0 mt-2 px-3 py-2 bg-slate-700 text-slate-100 text-xs rounded-lg whitespace-nowrap z-50 shadow-xl border border-slate-600">
+                        🕐 Son güncellemeye göre
+                    </div>
+                </div>
                 <span class="text-xs text-slate-600">•</span>
                 <span id="totalReports" class="text-xs text-slate-500"><?= $totalReports ?> rapor</span>
                 <span class="text-xs text-slate-600">•</span>
@@ -133,6 +184,7 @@ $col3 = array_slice($reports, $chunk * 2);
                         list($y, $m, $d) = explode('-', $report['date']);
                         $stripe = $i % 2 === 0 ? 'bg-slate-900/30' : 'bg-slate-900/60';
                         $reportId = $report['topic'];
+                        $reportNumber = ($i * 3) + 1;
                     ?>
                         <tr class="report-row <?= $stripe ?> hover:bg-slate-800 border-b border-slate-900/50 transition-colors"
                             data-id="<?= htmlspecialchars($reportId) ?>"
@@ -145,7 +197,7 @@ $col3 = array_slice($reports, $chunk * 2);
                                     <?= htmlspecialchars($report['title']) ?>
                                 </a>
                                 <div class="flex gap-1.5 flex-wrap mt-2 items-center">
-                                    <span class="report-number px-2 py-0.5 bg-slate-800 text-slate-500 rounded text-xs font-mono">#<?= $i + 1 ?></span>
+                                    <span class="report-number px-2 py-0.5 bg-slate-800 text-slate-500 rounded text-xs font-mono">#<?= $reportNumber ?></span>
                                     <?php foreach ($report['versions'] as $vi => $v): ?>
                                         <a href="<?= htmlspecialchars($v['url']) ?>"
                                            target="_blank"
@@ -160,7 +212,7 @@ $col3 = array_slice($reports, $chunk * 2);
                             </td>
                             <td class="px-2 py-3 align-top">
                                 <div class="flex gap-1 mb-1">
-                                    <button onclick="toggleFavorite('<?= htmlspecialchars($reportId) ?>')" class="fav-btn w-6 h-6 flex items-center justify-center text-slate-600 hover:text-amber-400 transition-colors" title="Favori">⭐</button>
+                                    <button onclick="toggleFavorite('<?= htmlspecialchars($reportId) ?>')" class="fav-btn w-6 h-6 flex items-center justify-center text-slate-600 hover:text-amber-400 transition-colors" title="Favori">☆</button>
                                     <button onclick="hideReport('<?= htmlspecialchars($reportId) ?>')" class="w-6 h-6 flex items-center justify-center text-slate-600 hover:text-red-400 transition-colors" title="Gizle">✕</button>
                                 </div>
                                 <div class="text-slate-500 text-xs whitespace-nowrap"><?= $d ?> <?= $monthNames[$m] ?></div>
@@ -175,13 +227,11 @@ $col3 = array_slice($reports, $chunk * 2);
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <tbody>
-                    <?php
-                    $col1Count = count($col1);
-                    foreach ($col2 as $i => $report):
+                    <?php foreach ($col2 as $i => $report):
                         list($y, $m, $d) = explode('-', $report['date']);
                         $stripe = $i % 2 === 0 ? 'bg-slate-900/30' : 'bg-slate-900/60';
                         $reportId = $report['topic'];
-                        $rowNumber = $col1Count + $i + 1;
+                        $reportNumber = ($i * 3) + 2;
                     ?>
                         <tr class="report-row <?= $stripe ?> hover:bg-slate-800 border-b border-slate-900/50 transition-colors"
                             data-id="<?= htmlspecialchars($reportId) ?>"
@@ -194,7 +244,7 @@ $col3 = array_slice($reports, $chunk * 2);
                                     <?= htmlspecialchars($report['title']) ?>
                                 </a>
                                 <div class="flex gap-1.5 flex-wrap mt-2 items-center">
-                                    <span class="report-number px-2 py-0.5 bg-slate-800 text-slate-500 rounded text-xs font-mono">#<?= $rowNumber ?></span>
+                                    <span class="report-number px-2 py-0.5 bg-slate-800 text-slate-500 rounded text-xs font-mono">#<?= $reportNumber ?></span>
                                     <?php foreach ($report['versions'] as $vi => $v): ?>
                                         <a href="<?= htmlspecialchars($v['url']) ?>"
                                            target="_blank"
@@ -209,7 +259,7 @@ $col3 = array_slice($reports, $chunk * 2);
                             </td>
                             <td class="px-2 py-3 align-top">
                                 <div class="flex gap-1 mb-1">
-                                    <button onclick="toggleFavorite('<?= htmlspecialchars($reportId) ?>')" class="fav-btn w-6 h-6 flex items-center justify-center text-slate-600 hover:text-amber-400 transition-colors" title="Favori">⭐</button>
+                                    <button onclick="toggleFavorite('<?= htmlspecialchars($reportId) ?>')" class="fav-btn w-6 h-6 flex items-center justify-center text-slate-600 hover:text-amber-400 transition-colors" title="Favori">☆</button>
                                     <button onclick="hideReport('<?= htmlspecialchars($reportId) ?>')" class="w-6 h-6 flex items-center justify-center text-slate-600 hover:text-red-400 transition-colors" title="Gizle">✕</button>
                                 </div>
                                 <div class="text-slate-500 text-xs whitespace-nowrap"><?= $d ?> <?= $monthNames[$m] ?></div>
@@ -224,13 +274,11 @@ $col3 = array_slice($reports, $chunk * 2);
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <tbody>
-                    <?php
-                    $col1Col2Count = count($col1) + count($col2);
-                    foreach ($col3 as $i => $report):
+                    <?php foreach ($col3 as $i => $report):
                         list($y, $m, $d) = explode('-', $report['date']);
                         $stripe = $i % 2 === 0 ? 'bg-slate-900/30' : 'bg-slate-900/60';
                         $reportId = $report['topic'];
-                        $rowNumber = $col1Col2Count + $i + 1;
+                        $reportNumber = ($i * 3) + 3;
                     ?>
                         <tr class="report-row <?= $stripe ?> hover:bg-slate-800 border-b border-slate-900/50 transition-colors"
                             data-id="<?= htmlspecialchars($reportId) ?>"
@@ -243,7 +291,7 @@ $col3 = array_slice($reports, $chunk * 2);
                                     <?= htmlspecialchars($report['title']) ?>
                                 </a>
                                 <div class="flex gap-1.5 flex-wrap mt-2 items-center">
-                                    <span class="report-number px-2 py-0.5 bg-slate-800 text-slate-500 rounded text-xs font-mono">#<?= $rowNumber ?></span>
+                                    <span class="report-number px-2 py-0.5 bg-slate-800 text-slate-500 rounded text-xs font-mono">#<?= $reportNumber ?></span>
                                     <?php foreach ($report['versions'] as $vi => $v): ?>
                                         <a href="<?= htmlspecialchars($v['url']) ?>"
                                            target="_blank"
@@ -258,7 +306,7 @@ $col3 = array_slice($reports, $chunk * 2);
                             </td>
                             <td class="px-2 py-3 align-top">
                                 <div class="flex gap-1 mb-1">
-                                    <button onclick="toggleFavorite('<?= htmlspecialchars($reportId) ?>')" class="fav-btn w-6 h-6 flex items-center justify-center text-slate-600 hover:text-amber-400 transition-colors" title="Favori">⭐</button>
+                                    <button onclick="toggleFavorite('<?= htmlspecialchars($reportId) ?>')" class="fav-btn w-6 h-6 flex items-center justify-center text-slate-600 hover:text-amber-400 transition-colors" title="Favori">☆</button>
                                     <button onclick="hideReport('<?= htmlspecialchars($reportId) ?>')" class="w-6 h-6 flex items-center justify-center text-slate-600 hover:text-red-400 transition-colors" title="Gizle">✕</button>
                                 </div>
                                 <div class="text-slate-500 text-xs whitespace-nowrap"><?= $d ?> <?= $monthNames[$m] ?></div>
@@ -314,16 +362,20 @@ $col3 = array_slice($reports, $chunk * 2);
             const favBtns = document.querySelectorAll(`[data-id="${reportId}"] .fav-btn`);
 
             if (index > -1) {
+                // Favoriden çıkar
                 favorites.splice(index, 1);
                 favBtns.forEach(btn => {
                     btn.classList.remove('text-amber-400');
                     btn.classList.add('text-slate-600');
+                    btn.textContent = '☆'; // Boş yıldız
                 });
             } else {
+                // Favoriye ekle
                 favorites.push(reportId);
                 favBtns.forEach(btn => {
                     btn.classList.add('text-amber-400');
                     btn.classList.remove('text-slate-600');
+                    btn.textContent = '⭐'; // Dolu yıldız
                 });
             }
 
@@ -438,9 +490,11 @@ $col3 = array_slice($reports, $chunk * 2);
                     if (favorites.includes(reportId)) {
                         btn.classList.add('text-amber-400');
                         btn.classList.remove('text-slate-600');
+                        btn.textContent = '⭐'; // Dolu yıldız
                     } else {
                         btn.classList.remove('text-amber-400');
                         btn.classList.add('text-slate-600');
+                        btn.textContent = '☆'; // Boş yıldız
                     }
                 });
             });

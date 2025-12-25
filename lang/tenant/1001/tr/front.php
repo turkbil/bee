@@ -96,6 +96,12 @@ return [
         'quick_access' => 'hızlı erişim',
         'remove_from_queue' => 'Sıradan Çıkar',
         'drag' => 'Sürükle',
+        'added_to_queue' => ':count şarkı sıraya eklendi',
+        'added_to_queue_next' => ':count şarkı sırada bir sonrakine eklendi',
+        'added_with_duplicates_removed' => ':count şarkı sıraya eklendi (:removed duplicate kaldırıldı)',
+        'added_next_with_duplicates_removed' => ':count şarkı sıraya eklendi (:removed duplicate kaldırıldı)',
+        'song_not_found_to_add' => 'Eklenecek şarkı bulunamadı',
+        'queue_add_error' => 'Sıraya eklenirken hata oluştu',
 
         // Shuffle & Repeat
         'shuffle' => 'Karıştır',
@@ -106,6 +112,9 @@ return [
         'repeat' => 'Tekrarla',
         'enable_repeat' => 'Tekrarlamayı aç',
         'repeat_mode' => 'Tekrarlama modu',
+        'repeat_off' => 'Tekrarlama kapalı',
+        'repeat_all' => 'Tümünü tekrarla',
+        'repeat_one' => 'Tek şarkıyı tekrarla',
 
         // Favorites
         'add_to_favorites' => 'Favorilere ekle',

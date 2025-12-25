@@ -421,12 +421,25 @@ document.addEventListener('alpine:init', () => {
                 : y;
 
             this.type = type;
+
+            // ✅ Favorites store'dan gerçek is_favorite durumunu al
+            const favoritesStore = Alpine.store('favorites');
+            if (favoritesStore && data && data.id) {
+                data.is_favorite = favoritesStore.isFavorite(type, data.id);
+            }
+
             this.data = data;
             this.actions = this.getActionsForType(type, data);
             this.visible = true;
         },
 
         getActionsForType(type, data) {
+            // 🎯 Use MenuBuilder for dynamic menu generation
+            if (window.MenuBuilder) {
+                return window.MenuBuilder.getMenuItems(type, data);
+            }
+
+            // Fallback to old static menus (if MenuBuilder not loaded yet)
             const actions = {
                 song: [
                     // Çal
@@ -534,27 +547,44 @@ document.addEventListener('alpine:init', () => {
             return actions[type] || [];
         },
 
-        executeAction(action) {
+        async executeAction(action) {
             const { type, data } = this;
 
+            // 🎯 Use ActionExecutor (Hybrid Approach - Centralized)
+            if (window.ActionExecutor) {
+                await window.ActionExecutor.execute(type, action, data);
+                this.visible = false;
+                return;
+            }
 
+            // Fallback: Type-specific handlers
+            const actionHandlers = {
+                song: window.SongActions,
+                album: window.AlbumActions,
+                playlist: window.PlaylistActions,
+                genre: window.GenreActions,
+                sector: window.SectorActions,
+                radio: window.RadioActions,
+                artist: window.ArtistActions
+            };
+
+            const handler = actionHandlers[type];
+            if (handler && typeof handler.execute === 'function') {
+                await handler.execute(action, data);
+                this.visible = false;
+                return;
+            }
+
+            // Last fallback: Legacy switch (for backwards compatibility)
             switch(action) {
                 case 'play':
-                    if (window.playContent) {
-                        window.playContent(type, data.id);
-                    }
-                    Alpine.store('toast').show(`▶️ Çalıyor: ${data.title}`, 'success');
+                    if (window.playContent) window.playContent(type, data.id);
                     break;
                 case 'addToQueue':
-                    if (window.addToQueue) {
-                        window.addToQueue(type, data.id);
-                    }
-                    Alpine.store('toast').show(`➕ Sıraya eklendi: ${data.title}`, 'success');
+                    if (window.addContentToQueue) window.addContentToQueue(type, data.id);
                     break;
                 case 'toggleFavorite':
-                    if (window.toggleFavorite) {
-                        window.toggleFavorite(type, data.id);
-                    }
+                    Alpine.store('favorites')?.toggle(type, data.id);
                     break;
                 case 'rate':
                     this.ratingModal.open = true;
@@ -566,37 +596,23 @@ document.addEventListener('alpine:init', () => {
                     this.playlistModal.open = true;
                     break;
                 case 'goToAlbum':
-                    if (data.album_id) {
-                        window.location.href = `/albums/${data.album_id}`;
-                    }
+                    if (data.album_id) window.location.href = `/albums/${data.album_id}`;
                     break;
                 case 'goToDetail':
-                    // Type'a göre doğru URL'e git
-                    const urlMap = {
-                        genre: '/genres/',
-                        sector: '/sectors/',
-                        artist: '/artists/',
-                        playlist: '/playlists/',
-                        album: '/albums/'
-                    };
-                    if (urlMap[type] && data.slug) {
-                        window.location.href = urlMap[type] + data.slug;
-                    } else if (urlMap[type] && data.id) {
-                        window.location.href = urlMap[type] + data.id;
-                    }
+                    const urlMap = { genre: '/genres/', sector: '/sectors/', artist: '/artists/', playlist: '/playlists/', album: '/albums/' };
+                    if (urlMap[type]) window.location.href = urlMap[type] + (data.slug || data.id);
                     break;
                 case 'edit':
                     window.location.href = `/my-playlists/${data.id}/edit`;
                     break;
                 case 'delete':
-                    if (confirm(`"${data.title}" playlistini silmek istediğinize emin misiniz?\n\nBu işlem geri alınamaz!`)) {
-                        this.deletePlaylist(data.id);
-                    }
+                    if (confirm(`"${data.title}" playlistini silmek istediğinize emin misiniz?`)) this.deletePlaylist(data.id);
                     break;
                 case 'copy':
                     this.copyPlaylist(data.id);
                     break;
             }
+            this.visible = false;
         },
 
         submitRating() {
@@ -641,18 +657,35 @@ document.addEventListener('alpine:init', () => {
 
             const songId = this.data?.id;
 
-            // Fetch user playlists
-            fetch('/api/muzibu/playlists/my-playlists')
-                .then(res => res.json())
+            // Fetch user playlists with credentials
+            fetch('/api/muzibu/playlists/my-playlists', {
+                credentials: 'same-origin',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+                .then(res => {
+                    if (!res.ok) {
+                        console.error('[Playlists] API error:', res.status, res.statusText);
+                        throw new Error(`HTTP ${res.status}`);
+                    }
+                    return res.json();
+                })
                 .then(data => {
+                    console.log('[Playlists] API response:', data);
                     this.userPlaylists = data.data || data || [];
+                    console.log('[Playlists] Loaded', this.userPlaylists.length, 'playlists');
 
                     // If we have a song ID, check which playlists contain it
                     if (songId && this.type === 'song') {
                         this.checkSongInPlaylists(songId);
                     }
                 })
-                .catch(err => console.error('Fetch playlists error:', err));
+                .catch(err => {
+                    console.error('[Playlists] Fetch error:', err);
+                    this.userPlaylists = [];
+                });
         },
 
         // Check which playlists contain the current song
@@ -793,19 +826,248 @@ document.addEventListener('alpine:init', () => {
         }
     });
 
-    // Playlist Select Store (Add to Playlist Modal)
-    Alpine.store('playlistSelect', {
+    // 🎵 Playlist Modal Store - Global, SPA-safe playlist ekleme modal'ı
+    // contextMenu'dan bağımsız, her yerden erişilebilir
+    Alpine.store('playlistModal', {
         open: false,
-        songId: null,
 
-        show(songId) {
-            this.songId = songId;
+        // Content bilgisi (song veya album)
+        contentType: null, // 'song' veya 'album'
+        contentId: null,
+        contentData: null, // { title, artist, cover_url, ... }
+
+        // Playlists
+        userPlaylists: [],
+        searchQuery: '',
+        existsInPlaylists: [], // Bu içeriğin zaten bulunduğu playlist ID'leri
+
+        // Loading states
+        loading: false,
+        adding: false,
+
+        // Selected playlists (checkbox multi-select)
+        selectedPlaylists: [],
+
+        /**
+         * 🎵 Modal'ı şarkı için aç
+         * @param {number} songId - Song ID
+         * @param {Object} songData - Song data (title, artist, cover_url)
+         */
+        showForSong(songId, songData = {}) {
+            this.contentType = 'song';
+            this.contentId = songId;
+            this.contentData = songData;
+            this.selectedPlaylists = [];
+            this.searchQuery = '';
             this.open = true;
+            this.fetchPlaylists();
         },
 
+        /**
+         * 💿 Modal'ı albüm için aç (tüm şarkıları ekle)
+         * @param {number} albumId - Album ID
+         * @param {Object} albumData - Album data (title, artist, cover_url)
+         */
+        showForAlbum(albumId, albumData = {}) {
+            this.contentType = 'album';
+            this.contentId = albumId;
+            this.contentData = albumData;
+            this.selectedPlaylists = [];
+            this.searchQuery = '';
+            this.open = true;
+            this.fetchPlaylists();
+        },
+
+        /**
+         * Modal'ı kapat
+         */
         hide() {
             this.open = false;
-            this.songId = null;
+            this.selectedPlaylists = [];
+        },
+
+        /**
+         * Kullanıcının playlistlerini çek
+         */
+        async fetchPlaylists() {
+            this.loading = true;
+            this.existsInPlaylists = [];
+
+            try {
+                const response = await fetch('/api/muzibu/playlists/my-playlists', {
+                    credentials: 'same-origin',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const data = await response.json();
+                this.userPlaylists = data.data || data || [];
+
+                // Şarkı için hangi playlistlerde var kontrol et
+                if (this.contentType === 'song' && this.contentId) {
+                    await this.checkExistingPlaylists();
+                }
+            } catch (err) {
+                console.error('[PlaylistModal] Fetch error:', err);
+                this.userPlaylists = [];
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        /**
+         * Bu şarkı hangi playlistlerde var kontrol et
+         */
+        async checkExistingPlaylists() {
+            if (this.contentType !== 'song' || !this.contentId) return;
+
+            try {
+                const response = await fetch(`/api/muzibu/songs/${this.contentId}/playlists`);
+                const data = await response.json();
+                this.existsInPlaylists = data.playlist_ids || [];
+            } catch (err) {
+                console.error('[PlaylistModal] Check existing error:', err);
+                this.existsInPlaylists = [];
+            }
+        },
+
+        /**
+         * Playlist ID zaten içeriyor mu?
+         */
+        isInPlaylist(playlistId) {
+            return this.existsInPlaylists.includes(playlistId);
+        },
+
+        /**
+         * Playlist seçili mi?
+         */
+        isSelected(playlistId) {
+            return this.selectedPlaylists.includes(playlistId);
+        },
+
+        /**
+         * Playlist seçimini toggle et
+         */
+        toggleSelection(playlistId) {
+            if (this.isInPlaylist(playlistId)) return; // Zaten varsa toggle yapma
+
+            const idx = this.selectedPlaylists.indexOf(playlistId);
+            if (idx > -1) {
+                this.selectedPlaylists.splice(idx, 1);
+            } else {
+                this.selectedPlaylists.push(playlistId);
+            }
+        },
+
+        /**
+         * Filtered playlists (search ile)
+         */
+        get filteredPlaylists() {
+            if (!this.searchQuery || this.searchQuery.trim() === '') {
+                return this.userPlaylists;
+            }
+            const query = this.searchQuery.toLowerCase().trim();
+            return this.userPlaylists.filter(p =>
+                p.title && p.title.toLowerCase().includes(query)
+            );
+        },
+
+        /**
+         * Seçili playlist var mı?
+         */
+        get hasSelection() {
+            return this.selectedPlaylists.length > 0;
+        },
+
+        /**
+         * Seçili playlistlere içerik ekle
+         */
+        async addToSelected() {
+            if (!this.hasSelection) return;
+
+            this.adding = true;
+
+            try {
+                if (this.contentType === 'song') {
+                    await this.addSongToPlaylists();
+                } else if (this.contentType === 'album') {
+                    await this.addAlbumToPlaylists();
+                }
+            } finally {
+                this.adding = false;
+            }
+        },
+
+        /**
+         * Şarkıyı seçili playlistlere ekle
+         */
+        async addSongToPlaylists() {
+            const promises = this.selectedPlaylists.map(playlistId =>
+                fetch(`/api/muzibu/playlists/${playlistId}/add-song`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                    },
+                    body: JSON.stringify({ song_id: this.contentId })
+                }).then(res => res.json())
+            );
+
+            const results = await Promise.all(promises);
+            const successCount = results.filter(r => r.success).length;
+
+            if (successCount > 0) {
+                Alpine.store('toast').show(
+                    `📋 "${this.contentData?.title || 'Şarkı'}" ${successCount} playlist'e eklendi`,
+                    'success'
+                );
+
+                // Update existsInPlaylists
+                this.existsInPlaylists = [...this.existsInPlaylists, ...this.selectedPlaylists];
+            }
+
+            this.hide();
+        },
+
+        /**
+         * Albümün tüm şarkılarını seçili playlistlere ekle
+         */
+        async addAlbumToPlaylists() {
+            const promises = this.selectedPlaylists.map(playlistId =>
+                fetch(`/api/muzibu/playlists/${playlistId}/add-album`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                    },
+                    body: JSON.stringify({ album_id: this.contentId })
+                }).then(res => res.json())
+            );
+
+            const results = await Promise.all(promises);
+            const successCount = results.filter(r => r.success).length;
+
+            if (successCount > 0) {
+                const totalSongs = results.reduce((sum, r) => sum + (r.added_count || 0), 0);
+                Alpine.store('toast').show(
+                    `📋 "${this.contentData?.title || 'Albüm'}" - ${totalSongs} şarkı ${successCount} playlist'e eklendi`,
+                    'success'
+                );
+            }
+
+            this.hide();
+        },
+
+        /**
+         * Yeni playlist oluştur modal'ını aç
+         */
+        createNewPlaylist() {
+            this.hide();
+            window.dispatchEvent(new CustomEvent('open-create-playlist-modal'));
         }
     });
 
@@ -817,7 +1079,11 @@ document.addEventListener('alpine:init', () => {
 
         // Preview mode (for list page hover)
         previewMode: false,
-        previewTracks: [],
+        previewTracks: [],          // Currently displayed tracks (20, 40, 60, 80, 100)
+        previewAllTracks: [],        // All tracks from API (full list)
+        previewDisplayCount: 20,     // How many tracks currently displayed
+        previewCurrentPage: 1,       // Pagination page (for 100+)
+        previewTotalCount: 0,        // Total track count
         previewInfo: null,
         previewLoading: false,
         previewCache: {}, // Cache for fetched tracks
@@ -894,17 +1160,27 @@ document.addEventListener('alpine:init', () => {
                     if (type === 'genre' || type === 'sector') {
                         // Genre/Sector API returns: { genre/sector: {...}, songs: [...] }
                         tracks = data.songs || (Array.isArray(data) ? data : (data.data || []));
+                    } else if (type === 'playlist') {
+                        // Playlist API returns: { playlist: {..., songs: [...]} }
+                        tracks = data.playlist?.songs || data.songs || [];
+                    } else if (type === 'album') {
+                        // Album API returns: { album: {..., songs: [...]} }
+                        tracks = data.album?.songs || data.songs || [];
                     } else {
                         tracks = data.songs || [];
                     }
 
-                    // Transform and cache
-                    this.previewCache[cacheKey] = tracks.slice(0, 20).map(song => ({
+                    // Transform and cache ALL tracks (no limit)
+                    this.previewCache[cacheKey] = tracks.map(song => ({
                         id: song.song_id,
                         title: this.getLocalizedTitle(song.song_title || song.title),
                         artist: this.getLocalizedTitle(song.artist_title || song.artist?.title || ''),
                         duration: this.formatDuration(song.duration),
-                        cover: song.cover_url || null,
+                        cover: song.cover_url || song.album_cover || null,
+                        album_id: song.album_id || null,
+                        album_slug: song.album_slug || null,
+                        album_title: this.getLocalizedTitle(song.album_title || ''),
+                        album_cover: song.album_cover || null,
                         is_favorite: song.is_favorite || false
                     }));
                 }
@@ -931,7 +1207,11 @@ document.addEventListener('alpine:init', () => {
             // Check cache first (prefetch should have filled this)
             const cacheKey = `${type}_${id}`;
             if (this.previewCache[cacheKey]) {
-                this.previewTracks = this.previewCache[cacheKey];
+                this.previewAllTracks = this.previewCache[cacheKey];
+                this.previewTotalCount = this.previewAllTracks.length;
+                this.previewDisplayCount = 20;
+                this.previewCurrentPage = 1;
+                this.previewTracks = this.previewAllTracks.slice(0, 20);
                 return;
             }
 
@@ -967,27 +1247,131 @@ document.addEventListener('alpine:init', () => {
                     if (type === 'genre' || type === 'sector') {
                         // Genre/Sector API returns: { genre/sector: {...}, songs: [...] }
                         tracks = data.songs || (Array.isArray(data) ? data : (data.data || []));
+                    } else if (type === 'playlist') {
+                        // Playlist API returns: { playlist: {..., songs: [...]} }
+                        tracks = data.playlist?.songs || data.songs || [];
+                    } else if (type === 'album') {
+                        // Album API returns: { album: {..., songs: [...]} }
+                        tracks = data.album?.songs || data.songs || [];
                     } else {
                         tracks = data.songs || [];
                     }
 
-                    // Transform to sidebar format
-                    this.previewTracks = tracks.slice(0, 20).map(song => ({
+                    // Transform ALL tracks to sidebar format
+                    this.previewAllTracks = tracks.map(song => ({
                         id: song.song_id,
                         title: this.getLocalizedTitle(song.song_title || song.title),
                         artist: this.getLocalizedTitle(song.artist_title || song.artist?.title || ''),
                         duration: this.formatDuration(song.duration),
-                        cover: song.cover_url || null,
+                        cover: song.cover_url || song.album_cover || null,
+                        album_id: song.album_id || null,
+                        album_slug: song.album_slug || null,
+                        album_title: this.getLocalizedTitle(song.album_title || ''),
+                        album_cover: song.album_cover || null,
                         is_favorite: song.is_favorite || false
                     }));
 
-                    this.previewCache[cacheKey] = this.previewTracks;
+                    // Set pagination state
+                    this.previewTotalCount = this.previewAllTracks.length;
+                    this.previewDisplayCount = 20;
+                    this.previewCurrentPage = 1;
+                    this.previewTracks = this.previewAllTracks.slice(0, 20);
+
+                    // Cache ALL tracks
+                    this.previewCache[cacheKey] = this.previewAllTracks;
                 }
             } catch (e) {
                 console.error('Preview fetch error:', e);
                 this.previewTracks = [];
             } finally {
                 this.previewLoading = false;
+            }
+        },
+
+        /**
+         * Load more preview tracks (infinite scroll)
+         * Loads 20 more tracks, max 100 total
+         */
+        loadMorePreviewTracks() {
+            if (this.previewDisplayCount >= 100) {
+                return; // Already showing max for infinite scroll
+            }
+
+            const newCount = Math.min(this.previewDisplayCount + 20, 100);
+            this.previewDisplayCount = newCount;
+            this.previewTracks = this.previewAllTracks.slice(0, newCount);
+        },
+
+        /**
+         * Load specific page (pagination for 100+)
+         * @param {number} page - Page number (1-based)
+         */
+        loadPreviewPage(page) {
+            if (!this.previewAllTracks.length) return;
+
+            this.previewCurrentPage = page;
+            const startIndex = (page - 1) * 100;
+            const endIndex = startIndex + 100;
+
+            this.previewTracks = this.previewAllTracks.slice(startIndex, endIndex);
+            this.previewDisplayCount = Math.min(20, this.previewTracks.length);
+
+            // Scroll to top when changing page
+            setTimeout(() => {
+                const scrollContainer = document.querySelector('[x-ref="previewScrollContainer"]');
+                if (scrollContainer) {
+                    scrollContainer.scrollTop = 0;
+                }
+            }, 50);
+        },
+
+        /**
+         * Get total pages for pagination
+         */
+        get previewTotalPages() {
+            return Math.ceil(this.previewTotalCount / 100);
+        },
+
+        /**
+         * Check if more tracks can be loaded (for infinite scroll)
+         */
+        get canLoadMorePreviewTracks() {
+            return this.previewDisplayCount < 100 && this.previewDisplayCount < this.previewTotalCount;
+        },
+
+        /**
+         * Check if pagination should be shown
+         */
+        get showPreviewPagination() {
+            return this.previewTotalCount > 100;
+        },
+
+        /**
+         * Get total duration of all preview tracks
+         * Returns formatted string like "2sa 30dk" or "45dk 12sn"
+         */
+        get previewTotalDuration() {
+            if (!this.previewAllTracks.length) return '0dk';
+
+            // Sum all track durations (format is "mm:ss")
+            let totalSeconds = 0;
+            this.previewAllTracks.forEach(track => {
+                if (track.duration) {
+                    const [mins, secs] = track.duration.split(':').map(Number);
+                    totalSeconds += (mins * 60) + secs;
+                }
+            });
+
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+
+            if (hours > 0) {
+                return `${hours}sa ${minutes}dk`;
+            } else if (minutes > 0) {
+                return seconds > 0 ? `${minutes}dk ${seconds}sn` : `${minutes}dk`;
+            } else {
+                return `${seconds}sn`;
             }
         },
 
@@ -1018,6 +1402,10 @@ document.addEventListener('alpine:init', () => {
         hidePreview() {
             this.previewMode = false;
             this.previewTracks = [];
+            this.previewAllTracks = [];
+            this.previewDisplayCount = 20;
+            this.previewCurrentPage = 1;
+            this.previewTotalCount = 0;
             this.previewInfo = null;
         },
 

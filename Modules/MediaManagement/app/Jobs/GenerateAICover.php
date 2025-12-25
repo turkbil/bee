@@ -141,9 +141,14 @@ class GenerateAICover implements ShouldQueue
             }
 
             // Model'e media_id ata (Spatie Media ID - foreign key constraint için)
+            // CRITICAL: update() yerine DB::table kullan - Observer/validation tetiklenmez!
             if ($spatieMedia) {
-                $model->update([
-                    'media_id' => $spatieMedia->id, // ✅ Spatie media.id (NOT media_library_items.id)
+                $primaryKey = $model->getKeyName();
+                $tableName = $model->getTable();
+
+                \DB::table($tableName)->where($primaryKey, $model->{$primaryKey})->update([
+                    'media_id' => $spatieMedia->id,
+                    'updated_at' => now(),
                 ]);
             }
 

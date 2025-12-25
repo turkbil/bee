@@ -5,6 +5,11 @@
 @section('pretitle', __('ai::admin.conversation_archive'))
 @section('title', __('ai::admin.archived_conversations'))
 
+@php
+    // Central tenant kontrolü (is_central = 1 ise tüm konuşmaları görebilir)
+    $isCentral = tenant() ? tenant()->is_central : false;
+@endphp
+
 @section('content')
     <!-- İstatistik Kartları -->
     <div class="row mb-4">
@@ -112,7 +117,7 @@
                             data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
                             <i class="fas fa-filter me-1"></i>
                             {{ __('ai::admin.filters') }}
-                            @if(request('type') || request('feature_name') || request('is_demo') || (request('tenant_id') && auth()->user()->isRoot()))
+                            @if(request('type') || request('feature_name') || request('is_demo') || (request('tenant_id') && $isCentral))
                             <span class="badge badge-primary ms-1">{{ __('ai::admin.active') }}</span>
                             @endif
                         </button>
@@ -169,7 +174,7 @@
                             </select>
                         </div>
                         
-                        @if(auth()->user()->isRoot())
+                        @if($isCentral)
                         <div class="col-md-3">
                             <label class="form-label">{{ __('ai::admin.tenant_column') }}</label>
                             <select name="tenant_id" class="form-select">
@@ -196,7 +201,7 @@
                     </form>
                     
                     <!-- Aktif Filtreler -->
-                    @if(request('search') || request('type') || request('feature_name') || request('is_demo') || (request('tenant_id') && auth()->user()->isRoot()))
+                    @if(request('search') || request('type') || request('feature_name') || request('is_demo') || (request('tenant_id') && $isCentral))
                     <div class="d-flex flex-wrap gap-2 mt-3">
                         @if(request('search'))
                             <span class="badge bg-azure-lt">{{ __('ai::admin.search_filter') }}: {{ request('search') }}</span>
@@ -212,7 +217,7 @@
                         @elseif(request('is_demo') === '0')
                             <span class="badge bg-teal-lt">{{ __('ai::admin.real_ai_filter') }}</span>
                         @endif
-                        @if(request('tenant_id') && auth()->user()->isRoot())
+                        @if(request('tenant_id') && $isCentral)
                             <span class="badge bg-cyan-lt">{{ __('ai::admin.tenant_filter') }}: {{ $filterOptions['tenants']->firstWhere('id', request('tenant_id'))->title ?? 'Tenant #' . request('tenant_id') }}</span>
                         @endif
                     </div>

@@ -9,7 +9,7 @@
        @click="if (window.innerWidth >= 1024) { $event.preventDefault(); $store.sidebar.showPreview('genre', {{ $genre->genre_id }}, {
            type: 'Genre',
            id: {{ $genre->genre_id }},
-           title: '{{ addslashes($genre->title['tr'] ?? $genre->title['en'] ?? 'Genre') }}',
+           title: '{{ addslashes($genre->getTranslation('title', app()->getLocale())) }}',
            slug: '{{ $genre->getTranslation('slug', app()->getLocale()) }}',
            cover: '{{ $genre->iconMedia ? thumb($genre->iconMedia, 300, 300, ['scale' => 1]) : '' }}',
            is_favorite: {{ auth()->check() && method_exists($genre, 'isFavoritedBy') && $genre->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
@@ -21,7 +21,8 @@
    data-context-type="genre"
    x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'genre', {
        id: {{ $genre->genre_id }},
-       title: '{{ addslashes($genre->title['tr'] ?? $genre->title['en'] ?? 'Genre') }}',
+       title: '{{ addslashes($genre->getTranslation('title', app()->getLocale())) }}',
+       cover_url: '{{ $genre->iconMedia ? thumb($genre->iconMedia, 300, 300, ['scale' => 1]) : '' }}',
        is_favorite: {{ auth()->check() && method_exists($genre, 'isFavoritedBy') && $genre->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
    })"
    x-data="{
@@ -37,7 +38,8 @@
                clientY: $event.touches[0].clientY
            }, 'genre', {
                id: {{ $genre->genre_id }},
-               title: '{{ addslashes($genre->title['tr'] ?? $genre->title['en'] ?? 'Genre') }}',
+               title: '{{ addslashes($genre->getTranslation('title', app()->getLocale())) }}',
+               cover_url: '{{ $genre->iconMedia ? thumb($genre->iconMedia, 300, 300, ['scale' => 1]) : '' }}',
                is_favorite: {{ auth()->check() && method_exists($genre, 'isFavoritedBy') && $genre->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
            });
        }, 500);
@@ -54,7 +56,7 @@
         {{-- Genre Icon/Cover --}}
         @if($genre->media_id && $genre->iconMedia)
             <img src="{{ thumb($genre->iconMedia, 300, 300, ['scale' => 1]) }}"
-                 alt="{{ $genre->title['tr'] ?? $genre->title['en'] ?? 'Genre' }}"
+                 alt="{{ $genre->getTranslation('title', app()->getLocale()) }}"
                  class="w-full aspect-square object-cover rounded-lg shadow-lg"
                  loading="lazy">
         @else
@@ -68,7 +70,7 @@
             $store.player.setPlayContext({
                 type: 'genre',
                 id: {{ $genre->genre_id }},
-                name: '{{ addslashes($genre->title['tr'] ?? $genre->title['en'] ?? 'Genre') }}'
+                name: '{{ addslashes($genre->getTranslation('title', app()->getLocale())) }}'
             });
             playGenres({{ $genre->genre_id }});
         " class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
@@ -88,7 +90,8 @@
             {{-- 3-Dot Menu Button --}}
             <button x-on:click.stop.prevent="$store.contextMenu.openContextMenu($event, 'genre', {
                 id: {{ $genre->genre_id }},
-                title: '{{ addslashes($genre->title['tr'] ?? $genre->title['en'] ?? 'Genre') }}',
+                title: '{{ addslashes($genre->getTranslation('title', app()->getLocale())) }}',
+                cover_url: '{{ $genre->iconMedia ? thumb($genre->iconMedia, 300, 300, ['scale' => 1]) : '' }}',
                 is_favorite: {{ auth()->check() && method_exists($genre, 'isFavoritedBy') && $genre->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
             })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
                 <i class="fas fa-ellipsis-v text-sm"></i>
@@ -99,7 +102,7 @@
     {{-- Text Area (Fixed Height - ALWAYS 48px / 3rem) --}}
     <div class="h-12 overflow-hidden pb-4">
         <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
-            {{ $genre->title['tr'] ?? $genre->title['en'] ?? 'Genre' }}
+            {{ $genre->getTranslation('title', app()->getLocale()) }}
         </h3>
         <p class="text-xs text-gray-400 leading-6 line-clamp-1">
             &nbsp;

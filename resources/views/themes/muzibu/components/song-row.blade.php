@@ -17,7 +17,46 @@
 
 <div class="group flex items-center gap-4 p-3 rounded-lg hover:bg-white/5 transition cursor-pointer"
      @click="playSong({{ $songId }})"
-     data-song-id="{{ $songId }}">
+     data-song-id="{{ $songId }}"
+     x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'song', {
+        id: {{ $songId }},
+        title: '{{ addslashes($song->title) }}',
+        artist: '{{ addslashes($artistName) }}',
+        album_id: {{ $song->album_id ?? 'null' }},
+        album_slug: '{{ $song->album?->slug ?? '' }}',
+        artist_id: {{ $song->artist?->artist_id ?? ($song->album?->artist?->artist_id ?? 'null') }},
+        artist_slug: '{{ $song->artist?->slug ?? ($song->album?->artist?->slug ?? '') }}',
+        is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+    })"
+     x-data="{
+        touchTimer: null,
+        touchStartPos: { x: 0, y: 0 }
+    }"
+     x-on:touchstart="
+        touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
+        touchTimer = setTimeout(() => {
+            if (navigator.vibrate) navigator.vibrate(50);
+            $store.contextMenu.openContextMenu({
+                clientX: $event.touches[0].clientX,
+                clientY: $event.touches[0].clientY
+            }, 'song', {
+                id: {{ $songId }},
+                title: '{{ addslashes($song->title) }}',
+                artist: '{{ addslashes($artistName) }}',
+                album_id: {{ $song->album_id ?? 'null' }},
+                album_slug: '{{ $song->album?->slug ?? '' }}',
+                artist_id: {{ $song->artist?->artist_id ?? ($song->album?->artist?->artist_id ?? 'null') }},
+                artist_slug: '{{ $song->artist?->slug ?? ($song->album?->artist?->slug ?? '') }}',
+                is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+            });
+        }, 500);
+    "
+     x-on:touchend="clearTimeout(touchTimer)"
+     x-on:touchmove="
+        const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) > 10 ||
+                     Math.abs($event.touches[0].clientY - touchStartPos.y) > 10;
+        if (moved) clearTimeout(touchTimer);
+    ">
 
     {{-- Index/Play --}}
     @if($index !== null)
@@ -68,7 +107,19 @@
                     x-bind:title="$store.favorites.isFavorite('song', {{ $songId }}) ? 'Favorilerden çıkar' : 'Favorilere ekle'">
                 <i x-bind:class="$store.favorites.isFavorite('song', {{ $songId }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
             </button>
-            <x-muzibu.song-actions-menu :song="$song" :showPlay="false" />
+            <button @click.stop="$store.contextMenu.openContextMenu($event, 'song', {
+                        id: {{ $songId }},
+                        title: '{{ addslashes($song->title) }}',
+                        artist: '{{ addslashes($artistName) }}',
+                        album_id: {{ $song->album_id ?? 'null' }},
+                        album_slug: '{{ $song->album?->slug ?? '' }}',
+                        artist_id: {{ $song->artist?->artist_id ?? ($song->album?->artist?->artist_id ?? 'null') }},
+                        artist_slug: '{{ $song->artist?->slug ?? ($song->album?->artist?->slug ?? '') }}',
+                        is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+                    })"
+                    class="p-2 transition rounded-full hover:bg-white/10 text-gray-400 hover:text-white">
+                <i class="fas fa-ellipsis-v text-sm"></i>
+            </button>
         </div>
     @endif
 </div>

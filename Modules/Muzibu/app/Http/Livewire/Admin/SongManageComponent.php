@@ -92,7 +92,7 @@ class SongManageComponent extends Component implements AIContentGeneratable
             $this->audioFile = null;
 
             // Title'ı da temizle (şarkıdan otomatik dolmuşsa)
-            $defaultLocale = get_tenant_default_locale();
+            $defaultLocale = \get_tenant_default_locale();
             $this->multiLangInputs[$defaultLocale]['title'] = null;
 
             $this->dispatch('toast', [
@@ -149,7 +149,7 @@ class SongManageComponent extends Component implements AIContentGeneratable
             $fullPath = storage_path('app/public/' . $path);
             $metadata = $this->extractAudioMetadata($fullPath);
 
-            $defaultLocale = get_tenant_default_locale();
+            $defaultLocale = \get_tenant_default_locale();
 
             // Duration'u kaydet
             if (isset($metadata['duration'])) {
@@ -300,7 +300,7 @@ class SongManageComponent extends Component implements AIContentGeneratable
         $languages = available_tenant_languages();
         $this->availableLanguages = array_column($languages, 'code');
         $this->languageNames = array_column($languages, 'native_name', 'code');
-        $this->currentLanguage = get_tenant_default_locale();
+        $this->currentLanguage = \get_tenant_default_locale();
 
         $this->tabConfig = \App\Services\GlobalTabService::getAllTabs('muzibu');
         $this->activeTab = \App\Services\GlobalTabService::getDefaultTabKey('song');
@@ -391,7 +391,7 @@ class SongManageComponent extends Component implements AIContentGeneratable
 
     protected function getMainLanguage()
     {
-        return get_tenant_default_locale();
+        return \get_tenant_default_locale();
     }
 
     protected function rules()
@@ -588,7 +588,7 @@ class SongManageComponent extends Component implements AIContentGeneratable
 
             // 🎨 MUZIBU: Media yoksa otomatik görsel üret (Universal Helper - Queue)
             if (!$song->media_id) {
-                muzibu_generate_ai_cover($song, $song->title, 'song');
+                \muzibu_generate_ai_cover($song, $song->title, 'song');
             }
 
             $toast = [
@@ -621,7 +621,7 @@ class SongManageComponent extends Component implements AIContentGeneratable
                 $this->songId = null;
                 $this->reset(['inputs', 'multiLangInputs']);
                 $this->inputs = ['is_active' => true];
-                $this->currentLanguage = get_tenant_default_locale();
+                $this->currentLanguage = \get_tenant_default_locale();
                 $this->initializeEmptyInputs();
 
                 Log::info('✅ Form resetlendi - Yeni kayıt için hazır', [

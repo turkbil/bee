@@ -29,8 +29,8 @@
                     x-on:click="$store.contextMenu.executeAction(action.action); $store.contextMenu.visible = false"
                     :class="action.debug ? 'bg-orange-900/20 hover:bg-orange-900/40' : 'hover:bg-gray-800'"
                     class="w-full px-3 py-2 text-left transition-colors duration-200 flex items-center gap-2 text-gray-300 text-xs">
-                <i :class="`fas ${action.icon} w-3`"
-                   :class="action.debug ? 'text-orange-500' : 'text-gray-400'"></i>
+                <i :class="`${action.iconPrefix || 'fas'} ${action.icon} w-3`"
+                   :class="[action.debug ? 'text-orange-500' : 'text-gray-400', action.action === 'toggleFavorite' && $store.contextMenu.data?.is_favorite ? 'text-red-500' : '']"></i>
                 <span :class="action.debug ? 'text-orange-300 font-mono text-[10px]' : ''"
                       x-text="action.label"></span>
                 <i x-show="action.submenu" class="fas fa-chevron-right ml-auto text-[10px] text-gray-500"></i>

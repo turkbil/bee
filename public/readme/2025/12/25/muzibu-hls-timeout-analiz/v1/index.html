@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Console Hata Analizi - HLS Timeout Sorunu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1a202e',
+                            950: '#0f1419'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 p-4 sm:p-8">
+    <div class="max-w-5xl mx-auto space-y-8">
+
+        <!-- Header -->
+        <header class="border-b border-slate-700 pb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-red-900/30 border border-red-700 rounded-lg text-red-300 text-sm font-medium">
+                    🚨 Kritik Hata
+                </span>
+                <span class="px-3 py-1 bg-purple-900/30 border border-purple-700 rounded-lg text-purple-300 text-sm font-medium">
+                    Muzibu.com.tr
+                </span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-2">
+                HLS Timeout Hatası Analizi
+            </h1>
+            <p class="text-slate-400 text-lg">
+                Console çıktısında tespit edilen tekrarlayan müzik oynatma hatası
+            </p>
+            <div class="flex items-center gap-4 mt-4 text-sm text-slate-400">
+                <span>📅 25 Aralık 2025</span>
+                <span>•</span>
+                <span>📊 Kaynak: a-console.txt</span>
+                <span>•</span>
+                <span>🎵 Muzibu Player</span>
+            </div>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-green-300 mb-4 flex items-center gap-2">
+                <span>📝</span>
+                Basit Anlatım (Herkes İçin)
+            </h2>
+            <div class="space-y-4 text-slate-200">
+                <p class="text-lg leading-relaxed">
+                    <strong>Sorun Nedir?</strong><br>
+                    Muzibu müzik platformunda şarkı çalmaya çalışıldığında, müzik dosyası yüklenemiyor ve sürekli "zaman aşımı" hatası veriyor. Kullanıcı play butonuna bastığında şarkı başlamıyor veya çok geç başlıyor.
+                </p>
+                <p class="text-lg leading-relaxed">
+                    <strong>Neden Oluyor?</strong><br>
+                    Müzik dosyaları özel bir format (HLS) ile stream ediliyor. Bu format, şarkıyı küçük parçalara bölerek gönderir. Ancak bu parçalar sunucudan gelmiyor veya çok yavaş geliyor. Sistem birkaç kez denedikten sonra pes ediyor.
+                </p>
+                <p class="text-lg leading-relaxed">
+                    <strong>Kullanıcı Etkisi:</strong><br>
+                    🔴 Şarkılar çalmıyor<br>
+                    🔴 Player donuyor<br>
+                    🔴 Müzik deneyimi bozuk<br>
+                    🔴 Kullanıcı frustre oluyor
+                </p>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-blue-300 mb-4 flex items-center gap-2">
+                <span>🔧</span>
+                Teknik Detaylar (Geliştiriciler İçin)
+            </h2>
+            <div class="space-y-4">
+
+                <!-- Hata Özeti -->
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-blue-200 mb-3">Hata Özeti</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <span class="text-red-400">⚠️</span>
+                            <span><strong>Hata Tipi:</strong> HLS TIMEOUT</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-yellow-400">📍</span>
+                            <span><strong>Dosya:</strong> public/themes/muzibu/js/player/core/player-core.js:2296</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-orange-400">🔁</span>
+                            <span><strong>Retry Mekanizması:</strong> Yeni signed URL ile tekrar deniyor (başarısız)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-red-400">♾️</span>
+                            <span><strong>Davranış:</strong> Sürekli tekrarlanan timeout (satır 32-45)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Console Log Örneği -->
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-blue-200 mb-3">Console Log Çıktısı</h3>
+                    <pre class="bg-slate-950 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800"><code>player-core.js:2296 ⚠️ HLS TIMEOUT: Object
+player-core.js:2296 ⚠️ HLS TIMEOUT: Object
+player-core.js:2742 🔁 HLS retry with new signed URL Object
+player-core.js:2296 ⚠️ HLS TIMEOUT: Object
+player-core.js:2296 ⚠️ HLS TIMEOUT: Object
+player-core.js:2296 ⚠️ HLS TIMEOUT: Object
+player-core.js:2296 ⚠️ HLS TIMEOUT: Object</code></pre>
+                    <p class="text-slate-400 text-sm mt-2">
+                        Hata sürekli tekrarlanıyor, retry mekanizması çalışıyor ama başarısız oluyor.
+                    </p>
+                </div>
+
+                <!-- HLS Nedir? -->
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-blue-200 mb-3">HLS (HTTP Live Streaming) Nedir?</h3>
+                    <p class="text-slate-300 mb-3">
+                        HLS, Apple tarafından geliştirilen bir streaming protokolüdür. Müzik/video dosyasını küçük parçalara (segment) bölerek gönderiır.
+                    </p>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-400">📄</span>
+                            <span><strong>Manifest (.m3u8):</strong> Segment'lerin listesini içeren dosya</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-400">🧩</span>
+                            <span><strong>Segment (.ts):</strong> Müziğin küçük parçaları (genellikle 2-10 saniye)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-400">🔐</span>
+                            <span><strong>Signed URL:</strong> Güvenlik için zamana bağlı erişim linki</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Player Durumu -->
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-blue-200 mb-3">Player Başlangıç Durumu (Sorunsuz)</h3>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400">✅</span>
+                            <span>Player state cleared (fresh start)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400">✅</span>
+                            <span>Alpine global functions loaded</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400">✅</span>
+                            <span>Initial queue loaded: 15 songs</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400">✅</span>
+                            <span>Loaded 17 favorites</span>
+                        </li>
+                    </ul>
+                    <p class="text-slate-400 text-sm mt-3">
+                        Player başarıyla başlatılıyor, sorun play edilmeye çalışıldığında başlıyor.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Olası Nedenler -->
+        <section class="bg-orange-900/20 border border-orange-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-orange-300 mb-4 flex items-center gap-2">
+                <span>🔍</span>
+                Olası Nedenler
+            </h2>
+            <div class="space-y-4">
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-orange-200 mb-2 flex items-center gap-2">
+                        <span class="text-2xl">1️⃣</span>
+                        HLS Manifest Dosyası Oluşturulmamış
+                    </h3>
+                    <p class="text-slate-300 mb-2">
+                        Müzik dosyası upload edildiğinde HLS format'ına dönüştürülmüyor olabilir.
+                    </p>
+                    <ul class="text-sm text-slate-400 space-y-1 ml-6">
+                        <li>• FFmpeg job çalışmıyor</li>
+                        <li>• Queue process edilmiyor</li>
+                        <li>• Media Library hook eksik</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-orange-200 mb-2 flex items-center gap-2">
+                        <span class="text-2xl">2️⃣</span>
+                        Storage/CDN Erişim Sorunu
+                    </h3>
+                    <p class="text-slate-300 mb-2">
+                        HLS dosyaları storage'da var ama web'den erişilemiyor olabilir.
+                    </p>
+                    <ul class="text-sm text-slate-400 space-y-1 ml-6">
+                        <li>• Nginx/Apache symlink takip etmiyor</li>
+                        <li>• Permission hatası (403)</li>
+                        <li>• .htaccess bloklama</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-orange-200 mb-2 flex items-center gap-2">
+                        <span class="text-2xl">3️⃣</span>
+                        Signed URL Süresi Dolmuş
+                    </h3>
+                    <p class="text-slate-300 mb-2">
+                        Güvenlik için kullanılan zamana bağlı URL'ler çok kısa süreli olabilir.
+                    </p>
+                    <ul class="text-sm text-slate-400 space-y-1 ml-6">
+                        <li>• Token expiration çok kısa (örn: 30 saniye)</li>
+                        <li>• Kullanıcı yavaş internet → timeout</li>
+                        <li>• Retry'da yeni URL da expire oluyor</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-orange-200 mb-2 flex items-center gap-2">
+                        <span class="text-2xl">4️⃣</span>
+                        Server Timeout Ayarları Kısa
+                    </h3>
+                    <p class="text-slate-300 mb-2">
+                        Nginx/PHP timeout'ları HLS stream için yetersiz olabilir.
+                    </p>
+                    <ul class="text-sm text-slate-400 space-y-1 ml-6">
+                        <li>• Nginx proxy_read_timeout düşük</li>
+                        <li>• PHP max_execution_time kısa</li>
+                        <li>• FastCGI timeout ayarı yetersiz</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-orange-200 mb-2 flex items-center gap-2">
+                        <span class="text-2xl">5️⃣</span>
+                        Media Dosyası Corrupt veya Eksik
+                    </h3>
+                    <p class="text-slate-300 mb-2">
+                        Orijinal müzik dosyası bozuk veya HLS dönüşümü başarısız olmuş olabilir.
+                    </p>
+                    <ul class="text-sm text-slate-400 space-y-1 ml-6">
+                        <li>• Upload işlemi yarıda kesilmiş</li>
+                        <li>• FFmpeg conversion failed</li>
+                        <li>• Disk dolu, segment'ler yazılamamış</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Çözüm Önerileri -->
+        <section class="bg-emerald-900/20 border border-emerald-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-emerald-300 mb-4 flex items-center gap-2">
+                <span>🛠️</span>
+                Çözüm Önerileri
+            </h2>
+            <div class="space-y-4">
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-emerald-200 mb-3">
+                        <span class="text-emerald-400">ADIM 1:</span> HLS Dosyalarını Kontrol Et
+                    </h3>
+                    <p class="text-slate-300 mb-3">
+                        Müzik dosyasının HLS formatına dönüştürülüp dönüştürülmediğini kontrol et.
+                    </p>
+                    <div class="bg-slate-950 text-slate-300 p-4 rounded-lg text-sm border border-slate-800 space-y-2">
+                        <p class="text-slate-400"># Bir şarkı seç ve storage'ı kontrol et:</p>
+                        <code class="block">ls -lah storage/tenant1001/app/public/songs/[song-id]/hls/</code>
+                        <p class="text-slate-400 mt-3"># Beklenen dosyalar:</p>
+                        <code class="block">master.m3u8     # Manifest dosyası</code>
+                        <code class="block">segment-0.ts    # Segment dosyaları</code>
+                        <code class="block">segment-1.ts</code>
+                        <code class="block">...</code>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-emerald-200 mb-3">
+                        <span class="text-emerald-400">ADIM 2:</span> Web Erişimini Test Et
+                    </h3>
+                    <p class="text-slate-300 mb-3">
+                        HLS dosyalarına web üzerinden erişilebildiğini kontrol et.
+                    </p>
+                    <div class="bg-slate-950 text-slate-300 p-4 rounded-lg text-sm border border-slate-800 space-y-2">
+                        <p class="text-slate-400"># Network tab'den bir HLS URL kopyala ve test et:</p>
+                        <code class="block">curl -I https://muzibu.com.tr/storage/songs/[id]/hls/master.m3u8</code>
+                        <p class="text-slate-400 mt-3"># Beklenen: HTTP/2 200</p>
+                        <p class="text-slate-400"># Hata: 403/404/500 → Storage permission veya symlink sorunu</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-emerald-200 mb-3">
+                        <span class="text-emerald-400">ADIM 3:</span> Player Core Kodunu İncele
+                    </h3>
+                    <p class="text-slate-300 mb-3">
+                        Timeout ve retry mekanizmasının nasıl çalıştığını anla.
+                    </p>
+                    <div class="bg-slate-950 text-slate-300 p-4 rounded-lg text-sm border border-slate-800">
+                        <p class="text-slate-400"># İlgili dosya:</p>
+                        <code class="block">public/themes/muzibu/js/player/core/player-core.js</code>
+                        <p class="text-slate-400 mt-3"># Satır 2296: HLS TIMEOUT log</p>
+                        <p class="text-slate-400"># Satır 2742: Retry with new signed URL</p>
+                        <p class="text-slate-400 mt-3"># Kontrol edilecek:</p>
+                        <code class="block">- Timeout süresi (kaç saniye?)</code>
+                        <code class="block">- Retry count (kaç kez deniyor?)</code>
+                        <code class="block">- Signed URL generation logic</code>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-emerald-200 mb-3">
+                        <span class="text-emerald-400">ADIM 4:</span> Backend API'yi Kontrol Et
+                    </h3>
+                    <p class="text-slate-300 mb-3">
+                        HLS URL'leri üreten Laravel endpoint'i kontrol et.
+                    </p>
+                    <div class="bg-slate-950 text-slate-300 p-4 rounded-lg text-sm border border-slate-800">
+                        <p class="text-slate-400"># Muhtemel endpoint'ler:</p>
+                        <code class="block">Modules/Muzibu/app/Http/Controllers/Api/SongController.php</code>
+                        <code class="block">Modules/MediaManagement/app/Services/HlsService.php</code>
+                        <p class="text-slate-400 mt-3"># Kontrol edilecek:</p>
+                        <code class="block">- HLS URL generation logic</code>
+                        <code class="block">- Signed URL expiration time</code>
+                        <code class="block">- Storage path doğruluğu</code>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-emerald-200 mb-3">
+                        <span class="text-emerald-400">ADIM 5:</span> Nginx/PHP Timeout Ayarlarını Artır
+                    </h3>
+                    <p class="text-slate-300 mb-3">
+                        Server timeout'larını streaming için optimize et.
+                    </p>
+                    <div class="bg-slate-950 text-slate-300 p-4 rounded-lg text-sm border border-slate-800 space-y-2">
+                        <p class="text-slate-400"># Nginx config kontrol:</p>
+                        <code class="block">cat /etc/nginx/sites-enabled/muzibu.conf | grep timeout</code>
+                        <p class="text-slate-400 mt-3"># Önerilen değerler:</p>
+                        <code class="block">proxy_read_timeout 300;</code>
+                        <code class="block">proxy_connect_timeout 300;</code>
+                        <code class="block">fastcgi_read_timeout 300;</code>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="text-lg font-semibold text-emerald-200 mb-3">
+                        <span class="text-emerald-400">ADIM 6:</span> Horizon Queue'yu Kontrol Et
+                    </h3>
+                    <p class="text-slate-300 mb-3">
+                        HLS conversion job'larının çalışıp çalışmadığını kontrol et.
+                    </p>
+                    <div class="bg-slate-950 text-slate-300 p-4 rounded-lg text-sm border border-slate-800 space-y-2">
+                        <code class="block">php artisan horizon:status</code>
+                        <code class="block">php artisan queue:failed</code>
+                        <p class="text-slate-400 mt-3"># Failed job varsa:</p>
+                        <code class="block">php artisan queue:retry all</code>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- İlgili Dosyalar -->
+        <section class="bg-purple-900/20 border border-purple-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-purple-300 mb-4 flex items-center gap-2">
+                <span>📁</span>
+                İlgili Dosyalar
+            </h2>
+            <div class="space-y-3">
+                <div class="bg-slate-900/50 rounded-lg p-3 border border-slate-700">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-red-400">🔴</span>
+                        <span class="text-slate-300 font-mono text-sm">public/themes/muzibu/js/player/core/player-core.js:2296</span>
+                    </div>
+                    <p class="text-slate-400 text-xs ml-6">HLS TIMEOUT hatası buradan loglanıyor</p>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-3 border border-slate-700">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-orange-400">🔁</span>
+                        <span class="text-slate-300 font-mono text-sm">public/themes/muzibu/js/player/core/player-core.js:2742</span>
+                    </div>
+                    <p class="text-slate-400 text-xs ml-6">Retry mekanizması (yeni signed URL ile)</p>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-3 border border-slate-700">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-blue-400">🎵</span>
+                        <span class="text-slate-300 font-mono text-sm">Modules/Muzibu/app/Http/Controllers/Api/SongController.php</span>
+                    </div>
+                    <p class="text-slate-400 text-xs ml-6">Song API endpoint (HLS URL generation)</p>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-3 border border-slate-700">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-green-400">📦</span>
+                        <span class="text-slate-300 font-mono text-sm">Modules/MediaManagement/app/Jobs/GenerateHlsJob.php</span>
+                    </div>
+                    <p class="text-slate-400 text-xs ml-6">HLS conversion queue job (muhtemel)</p>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-3 border border-slate-700">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-yellow-400">🗂️</span>
+                        <span class="text-slate-300 font-mono text-sm">storage/tenant1001/app/public/songs/[id]/hls/</span>
+                    </div>
+                    <p class="text-slate-400 text-xs ml-6">HLS dosyalarının storage konumu</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sonraki Adımlar -->
+        <section class="bg-yellow-900/20 border border-yellow-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-yellow-300 mb-4 flex items-center gap-2">
+                <span>🎯</span>
+                Sonraki Adımlar
+            </h2>
+            <ol class="space-y-3 text-slate-200">
+                <li class="flex items-start gap-3">
+                    <span class="text-yellow-400 font-bold text-lg">1.</span>
+                    <span>Browser console'da hatanın tekrar ettiği bir şarkıyı tespit et</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-yellow-400 font-bold text-lg">2.</span>
+                    <span>Network tab'den HLS manifest URL'ini kopyala</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-yellow-400 font-bold text-lg">3.</span>
+                    <span>Curl ile URL'e erişmeyi dene (200 OK gelir mi?)</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-yellow-400 font-bold text-lg">4.</span>
+                    <span>Storage'da HLS dosyalarının varlığını kontrol et</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-yellow-400 font-bold text-lg">5.</span>
+                    <span>Player core kodundaki timeout süresini kontrol et</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-yellow-400 font-bold text-lg">6.</span>
+                    <span>Backend'de HLS URL generation logic'i incele</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-yellow-400 font-bold text-lg">7.</span>
+                    <span>Sorunu tespit et ve fix uygula</span>
+                </li>
+            </ol>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-slate-700 pt-6 text-center text-slate-400 text-sm">
+            <p>🤖 Claude AI tarafından analiz edildi</p>
+            <p class="mt-2">Kaynak: a-console.txt • Muzibu.com.tr Console Çıktısı</p>
+        </footer>
+
+    </div>
+</body>
+</html>

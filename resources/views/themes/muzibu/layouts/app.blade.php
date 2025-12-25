@@ -58,6 +58,27 @@
 
     {{-- ✅ Alpine.js Global Functions (SPA-safe) - DO NOT REMOVE! --}}
     <script>
+        // 🌍 Global Lang Strings for JS
+        window.muzibuLang = {
+            queue: {
+                added_to_queue: "{{ trans('muzibu::front.player.added_to_queue') }}",
+                added_to_queue_next: "{{ trans('muzibu::front.player.added_to_queue_next') }}",
+                added_with_duplicates: "{{ trans('muzibu::front.player.added_with_duplicates_removed') }}",
+                added_next_with_duplicates: "{{ trans('muzibu::front.player.added_next_with_duplicates_removed') }}",
+                song_not_found: "{{ trans('muzibu::front.player.song_not_found_to_add') }}",
+                queue_error: "{{ trans('muzibu::front.player.queue_add_error') }}"
+            }
+        };
+
+        // 🔧 Helper: Replace placeholders in lang strings
+        window.trans = function(key, params = {}) {
+            let text = key;
+            Object.keys(params).forEach(param => {
+                text = text.replace(`:${param}`, params[param]);
+            });
+            return text;
+        };
+
         // 🎯 muzibuApp - Root Alpine app
         window.muzibuApp = function() {
             return {
@@ -438,6 +459,29 @@
     <script src="{{ asset('themes/muzibu/js/player/features/spa-router.js') }}?v={{ filemtime(public_path('themes/muzibu/js/player/features/spa-router.js')) }}"></script>
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/debug.js') }}"></script>
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/play-helpers.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/global-helpers.js') }}"></script>
+
+    {{-- Context Menu System (Hybrid Approach) --}}
+    <script src="{{ versioned_asset('themes/muzibu/js/context-menus/menu-builder.js') }}"></script>
+
+    {{-- Context Menu - Handlers --}}
+    <script src="{{ versioned_asset('themes/muzibu/js/context-menus/handlers/play-handler.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/context-menus/handlers/queue-handler.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/context-menus/handlers/favorite-handler.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/context-menus/handlers/rating-handler.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/context-menus/handlers/playlist-handler.js') }}"></script>
+
+    {{-- Context Menu - Actions (per content type) --}}
+    <script src="{{ versioned_asset('themes/muzibu/js/context-menus/actions/song-actions.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/context-menus/actions/album-actions.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/context-menus/actions/playlist-actions.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/context-menus/actions/genre-actions.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/context-menus/actions/sector-actions.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/context-menus/actions/radio-actions.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/context-menus/actions/artist-actions.js') }}"></script>
+
+    {{-- Context Menu - Utils --}}
+    <script src="{{ versioned_asset('themes/muzibu/js/context-menus/utils/action-executor.js') }}"></script>
 
     {{-- 4. Player Core (en son - features'ı spread eder) --}}
     <script src="{{ asset('themes/muzibu/js/player/core/player-core.js') }}?v={{ filemtime(public_path('themes/muzibu/js/player/core/player-core.js')) }}"></script>
@@ -795,28 +839,44 @@
                         const data = await response.json();
 
                         if (data.success || data.playlist) {
+                            const newPlaylist = data.playlist || data.data;
+
                             if (window.$store?.toast) {
-                                window.$store.toast.show('Playlist oluşturuldu! Kapak görseli hazırlanıyor...', 'success');
+                                window.$store.toast.show('Playlist oluşturuldu!', 'success');
                             }
                             this.closeModal();
 
-                            // SPA navigation veya page refresh
-                            const currentPath = window.location.pathname;
-                            if (currentPath === '/muzibu/my-playlists') {
-                                // Zaten my-playlists sayfasındayız, sayfa yenile (SPA cache temizle)
-                                setTimeout(() => {
-                                    window.location.reload();
-                                }, 500);
+                            // 🎯 SPA: Dispatch event for playlist-created
+                            window.dispatchEvent(new CustomEvent('playlist-created', {
+                                detail: { playlist: newPlaylist }
+                            }));
 
-                                // 15 saniye sonra bir daha yenile (Leonardo AI görseli için)
+                            // If contextMenu playlistModal was open, add new playlist and reopen
+                            const contextMenu = Alpine.store('contextMenu');
+                            if (contextMenu && contextMenu.data) {
+                                // Add new playlist to list
+                                if (newPlaylist) {
+                                    contextMenu.userPlaylists = [
+                                        {
+                                            playlist_id: newPlaylist.playlist_id || newPlaylist.id,
+                                            title: newPlaylist.title,
+                                            cover_url: newPlaylist.cover_url || null,
+                                            song_count: 0
+                                        },
+                                        ...contextMenu.userPlaylists
+                                    ];
+                                }
+
+                                // Reopen playlist select modal
                                 setTimeout(() => {
-                                    window.location.reload();
-                                }, 15000);
+                                    contextMenu.playlistModal.open = true;
+                                }, 300);
                             } else {
-                                // Başka sayfadayız, my-playlists'e yönlendir
-                                setTimeout(() => {
-                                    window.location.href = '/muzibu/my-playlists';
-                                }, 500);
+                                // Playlist select modal closed - check if on my-playlists page
+                                const currentPath = window.location.pathname;
+                                if (currentPath.includes('my-playlists')) {
+                                    setTimeout(() => window.location.reload(), 500);
+                                }
                             }
                         } else {
                             throw new Error(data.message || 'Bir hata oluştu');

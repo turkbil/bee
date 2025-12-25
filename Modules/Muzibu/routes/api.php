@@ -38,20 +38,23 @@ Route::prefix('muzibu')->group(function () {
     Route::prefix('playlists')->middleware('throttle.user:api')->group(function () {
         Route::get('/', [PlaylistController::class, 'index'])->name('api.muzibu.playlists.index');
         Route::get('/featured', [PlaylistController::class, 'featured'])->name('api.muzibu.playlists.featured');
-        Route::get('/{id}', [PlaylistController::class, 'show'])->name('api.muzibu.playlists.show');
 
-        // User Playlist Management (auth required - supports both web session and sanctum token)
+        // User Playlist Management (auth required) - MUST BE BEFORE /{id} catch-all!
         Route::middleware(['web', 'auth'])->group(function () {
             Route::get('/my-playlists', [PlaylistController::class, 'myPlaylists'])->name('api.muzibu.playlists.my-playlists');
             Route::post('/clone', [PlaylistController::class, 'clone'])->name('api.muzibu.playlists.clone');
             Route::post('/quick-create', [PlaylistController::class, 'quickCreate'])->name('api.muzibu.playlists.quick-create');
             Route::post('/{id}/add-song', [PlaylistController::class, 'addSong'])->name('api.muzibu.playlists.add-song');
+            Route::post('/{id}/add-album', [PlaylistController::class, 'addAlbum'])->name('api.muzibu.playlists.add-album');
             Route::post('/{id}/copy', [PlaylistController::class, 'copy'])->name('api.muzibu.playlists.copy');
             Route::delete('/{id}/remove-song/{songId}', [PlaylistController::class, 'removeSong'])->name('api.muzibu.playlists.remove-song');
             Route::put('/{id}/reorder', [PlaylistController::class, 'reorder'])->name('api.muzibu.playlists.reorder');
             Route::put('/{id}', [PlaylistController::class, 'update'])->name('api.muzibu.playlists.update');
             Route::delete('/{id}', [PlaylistController::class, 'delete'])->name('api.muzibu.playlists.delete');
         });
+
+        // Playlist show - MUST BE LAST (catch-all for {id})
+        Route::get('/{id}', [PlaylistController::class, 'show'])->name('api.muzibu.playlists.show')->where('id', '[0-9]+');
     });
 
     // Albums - General API throttle

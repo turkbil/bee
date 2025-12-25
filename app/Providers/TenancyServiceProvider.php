@@ -117,7 +117,44 @@ class TenancyServiceProvider extends ServiceProvider
                     $sessionLifetime = (int) setting('auth_session_lifetime', 525600);
                     if ($sessionLifetime > 0) {
                         config(['session.lifetime' => $sessionLifetime]);
+
+                        // 🔍 DEBUG: Session lifetime set edildi mi?
+                        \Log::info('🔐 Session lifetime set', [
+                            'tenant_id' => tenant('id'),
+                            'setting_value' => $sessionLifetime,
+                            'config_before' => config('session.lifetime'),
+                        ]);
                     }
+
+                    // 🔐 Session prefix: Tenant-aware Redis prefix
+                    $tenantId = tenant('id');
+                    $sessionPrefix = "tenant_{$tenantId}_session_";
+                    config([
+                        'database.redis.session.options.prefix' => $sessionPrefix,
+                    ]);
+
+                    // 🍪 Cookie domain: Tenant-aware cookie domain
+                    // Format: .domain.com (leading dot for subdomain support)
+                    $primaryDomain = \App\Models\Domain::where('tenant_id', $tenantId)
+                        ->where('is_primary', true)
+                        ->first();
+
+                    if ($primaryDomain) {
+                        $domain = $primaryDomain->domain;
+                        // Remove www. if present, add leading dot
+                        $domain = preg_replace('/^www\./', '', $domain);
+                        $cookieDomain = '.' . $domain;
+
+                        config([
+                            'session.domain' => $cookieDomain,
+                        ]);
+                    }
+
+                    \Log::info('🔐 Session config updated', [
+                        'tenant_id' => $tenantId,
+                        'session_prefix' => $sessionPrefix,
+                        'cookie_domain' => config('session.domain'),
+                    ]);
                 },
             ],
 

@@ -849,12 +849,30 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         }
 
         // Image/Gallery (ZORUNLU - Google Search Console hatası için)
+        // 🔧 25.12.2025: Variant ürünlerde parent product image fallback eklendi
         $images = [];
+
+        // 1. Kendi medyasını kontrol et (hero + gallery)
         if ($this->hasMedia('hero')) {
             $images[] = $this->getFirstMediaUrl('hero');
         }
         foreach ($this->getMedia('gallery') as $media) {
             $images[] = $media->getUrl();
+        }
+
+        // 2. Eğer kendi medyası yoksa ve VARIANT ise: Ana ürünün medyasını kullan
+        if (empty($images) && $this->parent_product_id) {
+            $parentProduct = self::find($this->parent_product_id);
+
+            if ($parentProduct && $parentProduct->hasMedia('hero')) {
+                $images[] = $parentProduct->getFirstMediaUrl('hero');
+            }
+
+            if ($parentProduct && $parentProduct->hasMedia('gallery')) {
+                foreach ($parentProduct->getMedia('gallery') as $media) {
+                    $images[] = $media->getUrl();
+                }
+            }
         }
 
         // SADECE gerçek image varsa ekle (Google placeholder 404'ü kabul etmiyor)
@@ -1079,20 +1097,14 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
 
     /**
      * Get availability schema URL
+     *
+     * 🎯 Kullanıcı İsteği (25.12.2025):
+     * Tüm ürünler Google SERP'te "Stokta var" görünsün
+     * Gerçek stok durumu önemli değil, hepsi InStock
      */
     private function getAvailabilitySchemaUrl(): string
     {
-        if ($this->stock_tracking) {
-            if ($this->current_stock > 0) {
-                return 'https://schema.org/InStock';
-            }
-            if ($this->allow_backorder) {
-                return 'https://schema.org/BackOrder';
-            }
-            return 'https://schema.org/OutOfStock';
-        }
-
-        // Stok takibi yoksa hep stokta kabul et
+        // ✅ DAIMA stokta göster (Google arama sonuçları için)
         return 'https://schema.org/InStock';
     }
 

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Muzibu\App\Models\Playlist;
 use Modules\Muzibu\App\Models\Song;
+use Modules\Muzibu\App\Models\Album;
 use Modules\Muzibu\App\Services\PlaylistService;
 use Modules\Muzibu\App\Services\MuzibuCacheService;
 use Illuminate\Support\Facades\Log;
@@ -100,6 +101,7 @@ class PlaylistController extends Controller
                     'album_id' => $album?->album_id,
                     'album_title' => $album?->title,
                     'album_slug' => $album?->slug,
+                    'album_cover' => $song->getCoverUrl(120, 120), // 🎨 Song cover (fallback to album)
                     'artist_id' => $artist?->artist_id,
                     'artist_title' => $artist?->title,
                     'artist_slug' => $artist?->slug,
@@ -107,18 +109,22 @@ class PlaylistController extends Controller
                 ];
             });
 
+            // Wrap in 'playlist' key for JS compatibility
             return response()->json([
-                'playlist_id' => $playlist->playlist_id,
-                'title' => $playlist->title,
-                'slug' => $playlist->slug,
-                'description' => $playlist->description,
-                'media_id' => $playlist->media_id,
-                'cover_url' => $playlist->getCoverUrl(200, 200),
-                'is_system' => $playlist->is_system,
-                'is_public' => $playlist->is_public,
-                'is_active' => $playlist->is_active,
-                'songs' => $songs,
-                'song_count' => $songs->count(),
+                'playlist' => [
+                    'id' => $playlist->playlist_id,
+                    'playlist_id' => $playlist->playlist_id,
+                    'title' => $playlist->title,
+                    'slug' => $playlist->slug,
+                    'description' => $playlist->description,
+                    'media_id' => $playlist->media_id,
+                    'cover_url' => $playlist->getCoverUrl(200, 200),
+                    'is_system' => $playlist->is_system,
+                    'is_public' => $playlist->is_public,
+                    'is_active' => $playlist->is_active,
+                    'songs' => $songs,
+                    'song_count' => $songs->count(),
+                ]
             ]);
 
         } catch (\Exception $e) {
@@ -267,6 +273,68 @@ class PlaylistController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Şarkı ekleme başarısız',
+            ], 500);
+        }
+    }
+
+    /**
+     * Add all songs from album to playlist
+     */
+    public function addAlbum(Request $request, int $id): JsonResponse
+    {
+        try {
+            $request->validate([
+                'album_id' => 'required|integer|exists:muzibu_albums,album_id',
+            ]);
+
+            $userId = auth()->id();
+            $albumId = $request->input('album_id');
+
+            // Get album with active songs
+            $album = Album::with(['songs' => function($query) {
+                $query->where('is_active', 1);
+            }])->findOrFail($albumId);
+
+            $songs = $album->songs;
+
+            if ($songs->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Albümde aktif şarkı bulunamadı',
+                ], 400);
+            }
+
+            // Add all songs to playlist
+            $addedCount = 0;
+            $skippedCount = 0;
+
+            foreach ($songs as $song) {
+                $result = $this->playlistService->addSongToPlaylist(
+                    $id,
+                    $song->song_id,
+                    $userId
+                );
+
+                if ($result['success']) {
+                    $addedCount++;
+                } else {
+                    $skippedCount++;
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'added_count' => $addedCount,
+                'skipped_count' => $skippedCount,
+                'total_songs' => $songs->count(),
+                'message' => "{$addedCount} şarkı playliste eklendi" . ($skippedCount > 0 ? " ({$skippedCount} zaten mevcuttu)" : ""),
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Add album to playlist error:', ['message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Albüm ekleme başarısız',
             ], 500);
         }
     }

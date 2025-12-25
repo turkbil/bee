@@ -61,7 +61,7 @@ $app = Application::configure(basePath: dirname(__DIR__))
 
         // 1. TENANT - Domain belirleme (EN ÖNCELİKLİ) - Sadece web (www redirect'ten SONRA!)
         $middleware->prependToGroup('web', \App\Http\Middleware\InitializeTenancy::class);
-        
+
         // 2. REDIS HEALTH CHECK - Redis bağlantı sağlığı kontrolü
         $middleware->appendToGroup('web', \App\Http\Middleware\RedisHealthCheckMiddleware::class);
         

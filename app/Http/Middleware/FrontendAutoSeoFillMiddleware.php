@@ -38,7 +38,7 @@ class FrontendAutoSeoFillMiddleware
      */
     public function handle(Request $request, Closure $next, ?string $modelType = null): Response
     {
-        // Önce response'u al (sayfa render edilsin)
+        // Önce response'u al (sayfa hemen render edilsin, kullanıcı beklemez)
         $response = $next($request);
 
         // Sadece GET istekleri için çalış
@@ -92,24 +92,26 @@ class FrontendAutoSeoFillMiddleware
                 return $response;
             }
 
-            // SEO üret ve kaydet (arka planda)
-            Log::info('🎯 Premium Tenant Auto SEO Fill başlatıldı', [
+            // SEO üretimini background job'a gönder (sayfa hızını etkilemez)
+            Log::info('🎯 Premium Tenant Auto SEO Fill job dispatch ediliyor', [
                 'tenant' => $tenant->id,
                 'model_type' => $modelType,
                 'model_id' => $modelId,
                 'locale' => $locale
             ]);
 
-            $seoData = $this->autoSeoFillService->autoFillSeoData($model, $locale);
+            // Background job'a gönder
+            \App\Jobs\AutoFillSeoDataJob::dispatch(
+                $modelClass,
+                $modelId,
+                $locale,
+                $tenant->id
+            )->onQueue('default');
 
-            if ($seoData) {
-                $this->autoSeoFillService->saveSeoData($model, $seoData, $locale);
-
-                Log::info('✅ Premium Tenant Auto SEO Fill başarılı', [
-                    'model_type' => $modelType,
-                    'model_id' => $modelId
-                ]);
-            }
+            Log::info('✅ Premium Tenant Auto SEO Fill job kuyruğa eklendi', [
+                'model_type' => $modelType,
+                'model_id' => $modelId
+            ]);
 
         } catch (\Exception $e) {
             // Hata durumunda log at ama response'u etkileme

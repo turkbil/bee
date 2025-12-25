@@ -119,9 +119,9 @@
                     }"
                 >
                     {{-- Cover with Play Overlay --}}
-                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
+                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
                         <template x-if="song.album_cover">
-                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
+                            <img :src="getCoverUrl(song.album_cover, 100, 100)" :alt="song.song_title" class="w-full h-full object-cover">
                         </template>
                         <template x-if="!song.album_cover">
                             <div class="w-full h-full flex items-center justify-center">

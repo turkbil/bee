@@ -111,7 +111,7 @@ class AlbumBulkUploadComponent extends Component
             $metadata = $this->extractAudioMetadata($tempPath);
 
             // Dosya adından title oluştur (Türkçe imla kurallarına uygun)
-            $titleFromFilename = clean_filename_for_title($originalName);
+            $titleFromFilename = \clean_filename_for_title($originalName);
             $title = $metadata['title'] ?? $titleFromFilename;
 
             // Unique ID oluştur
@@ -242,7 +242,7 @@ class AlbumBulkUploadComponent extends Component
             return;
         }
 
-        $defaultLocale = get_tenant_default_locale();
+        $defaultLocale = \get_tenant_default_locale();
         $successCount = 0;
         $errorCount = 0;
 
@@ -305,7 +305,7 @@ class AlbumBulkUploadComponent extends Component
                 \Modules\Muzibu\App\Jobs\ConvertToHLSJob::dispatch($song);
 
                 // 🎨 MUZIBU: Otomatik görsel üret (Universal Helper - Queue)
-                muzibu_generate_ai_cover($song, $file['title'], 'song');
+                \muzibu_generate_ai_cover($song, $file['title'], 'song');
 
                 $this->uploadedFiles[$index]['status'] = 'completed';
                 $this->uploadedFiles[$index]['song_id'] = $song->song_id;

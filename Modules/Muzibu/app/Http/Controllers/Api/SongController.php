@@ -61,11 +61,12 @@ class SongController extends Controller
                         'song_slug' => $song->slug,
                         'duration' => $song->duration,
                         'file_path' => $song->file_path,
-                        'hls_path' => $song->hls_path,                        'lyrics' => $song->lyrics, // 🎤 Lyrics support (dynamic - null if not available)
+                        'hls_path' => $song->hls_path,
+                        'lyrics' => $song->lyrics, // 🎤 Lyrics support (dynamic - null if not available)
                         'album_id' => $album?->album_id,
                         'album_title' => $album?->title,
                         'album_slug' => $album?->slug,
-                        'album_cover' => $song->media_id ?? $album?->media_id,
+                        'album_cover' => $song->getCoverUrl(120, 120), // 🎨 Full URL with 120x120 size
                         'artist_id' => $artist?->artist_id,
                         'artist_title' => $artist?->title,
                         'artist_slug' => $artist?->slug,
@@ -92,8 +93,32 @@ class SongController extends Controller
             $limit = $request->input('limit', 20);
 
             // 🚀 CACHE: Get popular songs from Redis (30min TTL)
-            // Cache service returns already formatted array data
-            $songs = $this->cacheService->getPopularSongs($limit);
+            $cachedSongs = $this->cacheService->getPopularSongs($limit);
+
+            // ✅ Format songs with cover URLs (120x120)
+            $songs = collect($cachedSongs)->map(function ($songData) {
+                $song = Song::hydrate([$songData])->first(); // Hydrate from cached array
+                $album = $song->album;
+                $artist = $album?->artist;
+
+                return [
+                    'song_id' => $song->song_id,
+                    'song_title' => $song->title,
+                    'song_slug' => $song->slug,
+                    'duration' => $song->duration,
+                    'file_path' => $song->file_path,
+                    'hls_path' => $song->hls_path,
+                    'lyrics' => $song->lyrics,
+                    'cover_url' => $song->getCoverUrl(120, 120), // ✅ 120x120
+                    'album_cover' => $song->getCoverUrl(120, 120), // ✅ Compatibility
+                    'album_id' => $album?->album_id,
+                    'album_title' => $album?->title,
+                    'album_slug' => $album?->slug,
+                    'artist_id' => $artist?->artist_id,
+                    'artist_title' => $artist?->title,
+                    'artist_slug' => $artist?->slug,
+                ];
+            });
 
             return response()->json($songs);
 
@@ -450,7 +475,7 @@ class SongController extends Controller
     {
         try {
             $song = Song::with(['artist', 'album', 'coverMedia', 'album.coverMedia'])
-                ->where('id', $id)
+                ->where('song_id', $id)
                 ->where('is_active', 1)
                 ->first();
 
@@ -458,16 +483,25 @@ class SongController extends Controller
                 return response()->json(['error' => 'Song not found'], 404);
             }
 
-            // Return minimal song info for queue display
+            // Return full song info for queue/playback (same format as other endpoints)
             return response()->json([
                 'id' => $song->id,
                 'song_id' => $song->song_id,
+                'song_title' => $song->title,
                 'title' => $song->title,
-                'artist_title' => $song->artist?->title ?? null,
-                'album_title' => $song->album?->title ?? null,
-                'album_cover' => $song->album?->cover_url ?? $song->cover_url ?? null,
-                'duration' => $song->duration ?? '0:00',
-                'slug' => $song->slug ?? null,
+                'song_slug' => $song->slug,
+                'slug' => $song->slug,
+                'duration' => $song->duration,
+                'file_path' => $song->file_path,
+                'hls_path' => $song->hls_path,
+                'lyrics' => $song->lyrics,
+                'album_id' => $song->album?->album_id,
+                'album_title' => $song->album?->title,
+                'album_slug' => $song->album?->slug,
+                'album_cover' => $song->getCoverUrl(120, 120),
+                'artist_id' => $song->artist?->artist_id ?? $song->album?->artist?->artist_id,
+                'artist_title' => $song->artist?->title ?? $song->album?->artist?->title,
+                'artist_slug' => $song->artist?->slug ?? $song->album?->artist?->slug,
             ]);
 
         } catch (\Exception $e) {

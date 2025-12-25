@@ -24,7 +24,7 @@ class CheckApproval
         if (!$user->isApproved()) {
             Auth::logout();
             $request->session()->invalidate();
-            $request->session()->regenerateToken();
+            // regenerateToken() KALDIRILDI - invalidate() zaten session'ı siliyor, gereksiz token yenileme
 
             if ($request->expectsJson()) {
                 return response()->json([
@@ -42,7 +42,7 @@ class CheckApproval
         if ($user->isLocked()) {
             Auth::logout();
             $request->session()->invalidate();
-            $request->session()->regenerateToken();
+            // regenerateToken() KALDIRILDI - invalidate() zaten session'ı siliyor, gereksiz token yenileme
 
             $lockedUntil = $user->locked_until->format('H:i');
 

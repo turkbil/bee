@@ -191,9 +191,9 @@
                     </a>
                 </div>
                 @if($favorites->count() > 0)
-                    <div class="divide-y divide-white/5">
-                        @foreach($favorites->take(5) as $song)
-                            <x-muzibu.song-list-item :song="$song" :showAlbum="true" :showDuration="true" />
+                    <div>
+                        @foreach($favorites->take(5) as $index => $song)
+                            <x-muzibu.song-simple-row :song="$song" :index="$index" />
                         @endforeach
                     </div>
                 @else

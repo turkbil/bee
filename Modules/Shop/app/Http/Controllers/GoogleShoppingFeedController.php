@@ -71,6 +71,7 @@ class GoogleShoppingFeedController extends Controller
                     'sp.currency',
                     'sp.condition',
                     'sp.parent_product_id',
+                    'sp.current_stock',  // ✅ Stok miktarı için eklendi
                     'sb.title as brand_title'
                 )
                 ->whereNull('sp.deleted_at')  // Soft-deleted ürünleri hariç tut
@@ -217,8 +218,28 @@ class GoogleShoppingFeedController extends Controller
 
                 $xml .= '<g:price>' . $price . ' ' . $currency . '</g:price>';
                 $xml .= '<g:availability>in stock</g:availability>';
+
+                // ✅ Stok miktarı ekle (minimum 1) - 25.12.2025
+                // Google Shopping için opsiyonel ama önerilen field
+                // Gerçek stok 0 olsa bile minimum 1 göster
+                $stockQuantity = isset($product->current_stock) && $product->current_stock > 0
+                    ? (int)$product->current_stock
+                    : 1;
+                $xml .= '<g:quantity>' . $stockQuantity . '</g:quantity>';
+
                 $xml .= '<g:condition>' . htmlspecialchars($product->condition ?? 'new', ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</g:condition>';
                 $xml .= '<g:brand>' . htmlspecialchars($brandName, ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</g:brand>';
+
+                // ✅ Google Product Category - 25.12.2025
+                // 1167 = Business & Industrial > Material Handling > Forklifts
+                // https://support.google.com/merchants/answer/6324436
+                $xml .= '<g:google_product_category>1167</g:google_product_category>';
+
+                // ✅ Product Type (Kendi kategori yapısı) - 25.12.2025
+                // Kampanya filtreleme için kullanılır
+                // TODO: Kategori sistemi varsa buraya eklenecek
+                // Şimdilik genel kategori olarak "Material Handling Equipment" kullanıyoruz
+                $xml .= '<g:product_type>Material Handling Equipment &gt; Forklifts</g:product_type>';
                 $xml .= '</item>';
             }
         } catch (\Exception $e) {

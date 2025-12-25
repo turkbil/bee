@@ -66,6 +66,9 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'a02b724d0c8910ca6d2a2dc3ad0e0ebd' => __DIR__ . '/../..' . '/app/Helpers/tenant_helpers.php',
         'cc908781867dd803042b960930928b7f' => __DIR__ . '/../..' . '/app/Helpers/CacheHelper.php',
         '07ac275da986829f888a465f3856d603' => __DIR__ . '/../..' . '/app/Helpers/MediaHelper.php',
+        '71043f39ee883afcc01acd394d88a217' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Helpers/helpers.php',
+        '6c47e74104cfb12309542f2014b3563a' => __DIR__ . '/../..' . '/Modules/Muzibu/helpers.php',
+        'f56bbfe669446335e4d3c5c496969794' => __DIR__ . '/../..' . '/Modules/MediaManagement/helpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -1751,6 +1754,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'App\\Http\\Requests\\ProfileUpdateRequest' => __DIR__ . '/../..' . '/app/Http/Requests/ProfileUpdateRequest.php',
         'App\\Http\\Responses\\LoginResponse' => __DIR__ . '/../..' . '/app/Http/Responses/LoginResponse.php',
         'App\\Http\\SafeJsonResponse' => __DIR__ . '/../..' . '/app/Http/SafeJsonResponse.php',
+        'App\\Jobs\\AutoFillSeoDataJob' => __DIR__ . '/../..' . '/app/Jobs/AutoFillSeoDataJob.php',
         'App\\Jobs\\CreateModuleTenantPermissions' => __DIR__ . '/../..' . '/app/Jobs/CreateModuleTenantPermissions.php',
         'App\\Jobs\\GenerateProductEmbedding' => __DIR__ . '/../..' . '/app/Jobs/GenerateProductEmbedding.php',
         'App\\Jobs\\ReissueLetsEncryptCertificate' => __DIR__ . '/../..' . '/app/Jobs/ReissueLetsEncryptCertificate.php',
@@ -1782,6 +1786,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'App\\Livewire\\ProfileSidebar' => __DIR__ . '/../..' . '/app/Livewire/ProfileSidebar.php',
         'App\\Livewire\\Theme\\MegaMenuV3' => __DIR__ . '/../..' . '/app/Livewire/Theme/MegaMenuV3.php',
         'App\\Livewire\\Theme\\MegaMenuV4' => __DIR__ . '/../..' . '/app/Livewire/Theme/MegaMenuV4.php',
+        'App\\Mail\\VerifyEmailMail' => __DIR__ . '/../..' . '/app/Mail/VerifyEmailMail.php',
         'App\\Models\\AIConversation' => __DIR__ . '/../..' . '/app/Models/AIConversation.php',
         'App\\Models\\AIConversationMessage' => __DIR__ . '/../..' . '/app/Models/AIConversationMessage.php',
         'App\\Models\\AITenantDirective' => __DIR__ . '/../..' . '/app/Models/AITenantDirective.php',
@@ -1802,6 +1807,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Notifications\\CallMeBackNotification' => __DIR__ . '/../..' . '/app/Notifications/CallMeBackNotification.php',
         'App\\Notifications\\RefundRequestNotification' => __DIR__ . '/../..' . '/app/Notifications/RefundRequestNotification.php',
+        'App\\Notifications\\VerifyEmailNotification' => __DIR__ . '/../..' . '/app/Notifications/VerifyEmailNotification.php',
         'App\\Observers\\MegaMenuCacheObserver' => __DIR__ . '/../..' . '/app/Observers/MegaMenuCacheObserver.php',
         'App\\Observers\\ProductObserver' => __DIR__ . '/../..' . '/app/Observers/ProductObserver.php',
         'App\\Observers\\ShopProductCacheObserver' => __DIR__ . '/../..' . '/app/Observers/ShopProductCacheObserver.php',

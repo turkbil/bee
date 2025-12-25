@@ -60,8 +60,140 @@
                 </div>
             </template>
 
-            {{-- Song List - Thumbnail Design with Actions --}}
-            <template x-if="!$store.sidebar.previewLoading && $store.sidebar.hasPreviewTracks">
+            {{-- My-Playlist Preview (Queue Style with Reorder/Delete) - ONLY FOR USER'S OWN PLAYLISTS --}}
+            <template x-if="!$store.sidebar.previewLoading && $store.sidebar.hasPreviewTracks && $store.sidebar.previewInfo?.type === 'Playlist' && $store.sidebar.previewInfo?.is_mine === true">
+                <div class="flex-1 overflow-y-auto bg-slate-900/50">
+                    <template x-for="(track, index) in $store.sidebar.previewTracks" :key="track.id">
+                        <div class="group flex items-center gap-2.5 px-3 py-2 hover:bg-white/5 cursor-pointer transition-all"
+                             @click="$dispatch('play-song', { songId: track.id })">
+
+                            {{-- Thumbnail with Play Overlay --}}
+                            <div class="relative w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-muzibu-coral to-orange-600">
+                                <template x-if="track.cover">
+                                    <img :src="track.cover" :alt="track.title" class="w-full h-full object-cover" loading="lazy">
+                                </template>
+                                <template x-if="!track.cover">
+                                    <div class="w-full h-full flex items-center justify-center">
+                                        <i class="fas fa-music text-white/30 text-xs"></i>
+                                    </div>
+                                </template>
+                                {{-- Play Overlay --}}
+                                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                    <i class="fas fa-play text-white text-xs"></i>
+                                </div>
+                            </div>
+
+                            {{-- Song Info --}}
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-white text-sm font-medium truncate group-hover:text-muzibu-coral transition-colors"
+                                    x-text="track.title"></h4>
+                                <p class="text-gray-400 text-xs truncate" x-text="track.artist"></p>
+                            </div>
+
+                            {{-- Duration (hide on hover) --}}
+                            <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="track.duration" x-text="track.duration"></div>
+
+                            {{-- Actions (show on hover) - Queue Style --}}
+                            <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                                {{-- Remove Button --}}
+                                <button
+                                    @click.stop="if(confirm('Şarkıyı playlist\'ten çıkar?')) { fetch(`/api/muzibu/playlists/${$store.sidebar.previewInfo.id}/remove-song/${track.id}`, { method: 'DELETE', headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content } }).then(r => r.json()).then(d => { if(d.success) { Alpine.store('toast').show('Şarkı çıkarıldı', 'success'); $store.sidebar.refreshPreview(); } }); }"
+                                    class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                                    title="Çıkar"
+                                >
+                                    <i class="fas fa-times text-xs"></i>
+                                </button>
+                                {{-- Drag Handle (Visual Only for Now) --}}
+                                <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab" title="Sürükle">
+                                    <i class="fas fa-grip-vertical text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            {{-- Normal Playlist Preview (Not Mine - Album Style) --}}
+            <template x-if="!$store.sidebar.previewLoading && $store.sidebar.hasPreviewTracks && $store.sidebar.previewInfo?.type === 'Playlist' && $store.sidebar.previewInfo?.is_mine !== true">
+                <div class="flex-1 overflow-y-auto bg-slate-900/50"
+                     x-ref="previewScrollContainer"
+                     @scroll="
+                        if ($store.sidebar.canLoadMorePreviewTracks) {
+                            const container = $refs.previewScrollContainer;
+                            const scrolledToBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 200;
+                            if (scrolledToBottom) {
+                                $store.sidebar.loadMorePreviewTracks();
+                            }
+                        }
+                     ">
+                    <template x-for="(track, index) in $store.sidebar.previewTracks" :key="track.id">
+                        <div class="group flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 cursor-pointer transition-all"
+                             @click="$dispatch('play-song', { songId: track.id })"
+                             x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'song', { id: track.id, title: track.title, artist: track.artist, album_id: track.album_id, album_slug: track.album_slug, album_title: track.album_title, album_cover: track.album_cover, is_favorite: track.is_favorite || false })">
+
+                            {{-- Thumbnail with Play Overlay --}}
+                            <div class="relative w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-muzibu-coral to-orange-600">
+                                <template x-if="track.cover">
+                                    <img :src="track.cover" :alt="track.title" class="w-full h-full object-cover" loading="lazy">
+                                </template>
+                                <template x-if="!track.cover">
+                                    <div class="w-full h-full flex items-center justify-center">
+                                        <i class="fas fa-music text-white/50 text-xs"></i>
+                                    </div>
+                                </template>
+                                {{-- Play Overlay on Hover --}}
+                                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                    <i class="fas fa-play text-white text-sm"></i>
+                                </div>
+                            </div>
+
+                            {{-- Song Info --}}
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-white text-sm font-medium truncate group-hover:text-muzibu-coral transition-colors"
+                                    x-text="track.title"></h4>
+                                <p class="text-gray-400 text-xs truncate" x-text="track.artist"></p>
+                            </div>
+
+                            {{-- Actions (Favorite + Time/3-Dot) - Fixed Width --}}
+                            <div class="flex items-center gap-1 flex-shrink-0">
+                                {{-- Favorite Button (Always Same Position) --}}
+                                <button @click.stop="$store.favorites.toggle('song', track.id)"
+                                        class="w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/10 transition-all"
+                                        :class="$store.favorites.isFavorite('song', track.id) ? 'text-muzibu-coral' : 'text-gray-400 hover:text-white'"
+                                        title="Favorilere Ekle/Çıkar">
+                                    <i :class="$store.favorites.isFavorite('song', track.id) ? 'fas fa-heart' : 'far fa-heart'"
+                                       class="text-xs"></i>
+                                </button>
+
+                                {{-- Duration / 3-Dot Menu Container (Fixed 60px width) --}}
+                                <div class="w-[60px] flex items-center justify-end">
+                                    {{-- Duration (hide on hover) --}}
+                                    <span class="text-xs text-gray-600 group-hover:hidden" x-show="track.duration" x-text="track.duration"></span>
+
+                                    {{-- 3-Dot Menu (show on hover) --}}
+                                    <button @click.stop="$store.contextMenu.openContextMenu($event, 'song', {
+                                            id: track.id,
+                                            title: track.title,
+                                            artist: track.artist,
+                                            album_id: track.album_id,
+                                            album_slug: track.album_slug,
+                                            album_title: track.album_title,
+                                            album_cover: track.album_cover,
+                                            is_favorite: track.is_favorite || false
+                                        })"
+                                        class="w-7 h-7 hidden group-hover:flex items-center justify-center rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-all"
+                                        title="Daha Fazla">
+                                        <i class="fas fa-ellipsis-v text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            {{-- Album/Genre/Sector Preview (Original Design) --}}
+            <template x-if="!$store.sidebar.previewLoading && $store.sidebar.hasPreviewTracks && $store.sidebar.previewInfo?.type !== 'Playlist'">
                 <div class="flex-1 overflow-y-auto bg-slate-900/50"
                      x-ref="previewScrollContainer"
                      @scroll="

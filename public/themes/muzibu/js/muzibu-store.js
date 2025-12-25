@@ -674,7 +674,35 @@ document.addEventListener('alpine:init', () => {
                 })
                 .then(data => {
                     console.log('[Playlists] API response:', data);
-                    this.userPlaylists = data.data || data || [];
+                    const rawPlaylists = data.data || data || [];
+
+                    // Get current locale from HTML lang attribute
+                    const currentLocale = document.documentElement.lang || 'tr';
+
+                    // Parse JSON title fields
+                    this.userPlaylists = rawPlaylists.map(playlist => {
+                        let parsedTitle = playlist.title;
+
+                        // If title is JSON string, parse it
+                        if (typeof parsedTitle === 'string' && parsedTitle.startsWith('{')) {
+                            try {
+                                const titleObj = JSON.parse(parsedTitle);
+                                parsedTitle = titleObj[currentLocale] || titleObj.tr || titleObj.en || parsedTitle;
+                            } catch (e) {
+                                // Keep original if parse fails
+                            }
+                        }
+                        // If title is already object
+                        else if (typeof parsedTitle === 'object' && parsedTitle !== null) {
+                            parsedTitle = parsedTitle[currentLocale] || parsedTitle.tr || parsedTitle.en || 'Playlist';
+                        }
+
+                        return {
+                            ...playlist,
+                            title: parsedTitle
+                        };
+                    });
+
                     console.log('[Playlists] Loaded', this.userPlaylists.length, 'playlists');
 
                     // If we have a song ID, check which playlists contain it
@@ -709,14 +737,23 @@ document.addEventListener('alpine:init', () => {
             const promises = playlistIds.map(playlistId =>
                 fetch(`/api/muzibu/playlists/${playlistId}/add-song`, {
                     method: 'POST',
+                    credentials: 'same-origin',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: JSON.stringify({
                         song_id: data.id
                     })
-                }).then(res => res.json())
+                }).then(res => {
+                    if (!res.ok) {
+                        console.error(`[ContextMenu] Add song failed (${res.status}):`, playlistId);
+                        return { success: false, error: res.statusText };
+                    }
+                    return res.json();
+                })
             );
 
             try {
@@ -734,6 +771,8 @@ document.addEventListener('alpine:init', () => {
                         ...this.songExistsInPlaylists,
                         ...playlistIds
                     ];
+                } else {
+                    Alpine.store('toast').show('❌ Şarkı playlist\'e eklenemedi', 'error');
                 }
 
                 this.playlistModal.open = false;
@@ -753,18 +792,26 @@ document.addEventListener('alpine:init', () => {
         addToPlaylist(playlist) {
             const { type, data } = this;
 
-            fetch(`/api/muzibu/playlists/${playlist.id}/add`, {
+            fetch(`/api/muzibu/playlists/${playlist.id}/add-song`, {
                 method: 'POST',
+                credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'X-Requested-With': 'XMLHttpRequest'
                 },
                 body: JSON.stringify({
-                    type: type,
-                    item_id: data.id
+                    song_id: data.id
                 })
             })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    console.error(`[ContextMenu] Add to playlist failed (${res.status})`);
+                    throw new Error(res.statusText);
+                }
+                return res.json();
+            })
             .then(result => {
                 Alpine.store('toast').show(`📋 "${data.title}" playliste eklendi: ${playlist.title}`, 'success');
                 this.playlistModal.open = false;
@@ -905,7 +952,34 @@ document.addEventListener('alpine:init', () => {
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
                 const data = await response.json();
-                this.userPlaylists = data.data || data || [];
+                const rawPlaylists = data.data || data || [];
+
+                // Get current locale from HTML lang attribute
+                const currentLocale = document.documentElement.lang || 'tr';
+
+                // Parse JSON title fields
+                this.userPlaylists = rawPlaylists.map(playlist => {
+                    let parsedTitle = playlist.title;
+
+                    // If title is JSON string, parse it
+                    if (typeof parsedTitle === 'string' && parsedTitle.startsWith('{')) {
+                        try {
+                            const titleObj = JSON.parse(parsedTitle);
+                            parsedTitle = titleObj[currentLocale] || titleObj.tr || titleObj.en || parsedTitle;
+                        } catch (e) {
+                            // Keep original if parse fails
+                        }
+                    }
+                    // If title is already object
+                    else if (typeof parsedTitle === 'object' && parsedTitle !== null) {
+                        parsedTitle = parsedTitle[currentLocale] || parsedTitle.tr || parsedTitle.en || 'Playlist';
+                    }
+
+                    return {
+                        ...playlist,
+                        title: parsedTitle
+                    };
+                });
 
                 // Şarkı için hangi playlistlerde var kontrol et
                 if (this.contentType === 'song' && this.contentId) {
@@ -950,7 +1024,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         /**
-         * Playlist seçimini toggle et
+         * Playlist seçimini toggle et (eski yöntem - buton ile kullanım için)
          */
         toggleSelection(playlistId) {
             if (this.isInPlaylist(playlistId)) return; // Zaten varsa toggle yapma
@@ -960,6 +1034,133 @@ document.addEventListener('alpine:init', () => {
                 this.selectedPlaylists.splice(idx, 1);
             } else {
                 this.selectedPlaylists.push(playlistId);
+            }
+        },
+
+        /**
+         * 🔥 INSTANT TOGGLE: Playlist'e ekle/çıkar (direkt API çağrısı)
+         */
+        async toggleInstant(playlistId) {
+            const isInPlaylist = this.isInPlaylist(playlistId);
+
+            if (this.contentType === 'song') {
+                if (isInPlaylist) {
+                    // Çıkar
+                    await this.removeSongFromPlaylist(playlistId);
+                } else {
+                    // Ekle
+                    await this.addSongToPlaylist(playlistId);
+                }
+            } else if (this.contentType === 'album') {
+                if (isInPlaylist) {
+                    // Album'ü playlist'ten çıkarmak yok, sadece eklemek var
+                    return;
+                } else {
+                    await this.addAlbumToPlaylist(playlistId);
+                }
+            }
+        },
+
+        /**
+         * Tek playlist'e şarkı ekle
+         */
+        async addSongToPlaylist(playlistId) {
+            try {
+                const response = await fetch(`/api/muzibu/playlists/${playlistId}/add-song`, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ song_id: this.contentId })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    this.existsInPlaylists.push(playlistId);
+                    const playlist = this.userPlaylists.find(p => p.id === playlistId);
+                    Alpine.store('toast').show(
+                        `✅ "${playlist?.title || 'Playlist'}" e eklendi`,
+                        'success'
+                    );
+                } else {
+                    Alpine.store('toast').show(data.message || 'Ekleme başarısız', 'error');
+                }
+            } catch (error) {
+                console.error('Add song error:', error);
+                Alpine.store('toast').show('Bağlantı hatası', 'error');
+            }
+        },
+
+        /**
+         * Playlist'ten şarkı çıkar
+         */
+        async removeSongFromPlaylist(playlistId) {
+            try {
+                const response = await fetch(`/api/muzibu/playlists/${playlistId}/remove-song/${this.contentId}`, {
+                    method: 'DELETE',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const idx = this.existsInPlaylists.indexOf(playlistId);
+                    if (idx > -1) this.existsInPlaylists.splice(idx, 1);
+                    const playlist = this.userPlaylists.find(p => p.id === playlistId);
+                    Alpine.store('toast').show(
+                        `🗑️ "${playlist?.title || 'Playlist'}" ten çıkarıldı`,
+                        'warning'
+                    );
+                } else {
+                    Alpine.store('toast').show(data.message || 'Çıkarma başarısız', 'error');
+                }
+            } catch (error) {
+                console.error('Remove song error:', error);
+                Alpine.store('toast').show('Bağlantı hatası', 'error');
+            }
+        },
+
+        /**
+         * Tek playlist'e albüm ekle
+         */
+        async addAlbumToPlaylist(playlistId) {
+            try {
+                const response = await fetch(`/api/muzibu/playlists/${playlistId}/add-album`, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ album_id: this.contentId })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    this.existsInPlaylists.push(playlistId);
+                    const playlist = this.userPlaylists.find(p => p.id === playlistId);
+                    Alpine.store('toast').show(
+                        `✅ Albüm "${playlist?.title || 'Playlist'}" e eklendi (${data.added_count} şarkı)`,
+                        'success'
+                    );
+                } else {
+                    Alpine.store('toast').show(data.message || 'Ekleme başarısız', 'error');
+                }
+            } catch (error) {
+                console.error('Add album error:', error);
+                Alpine.store('toast').show('Bağlantı hatası', 'error');
             }
         },
 
@@ -1006,15 +1207,34 @@ document.addEventListener('alpine:init', () => {
          * Şarkıyı seçili playlistlere ekle
          */
         async addSongToPlaylists() {
+            console.log('[PlaylistModal] Adding song to playlists:', {
+                song_id: this.contentId,
+                playlist_ids: this.selectedPlaylists
+            });
+
             const promises = this.selectedPlaylists.map(playlistId =>
                 fetch(`/api/muzibu/playlists/${playlistId}/add-song`, {
                     method: 'POST',
+                    credentials: 'same-origin',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: JSON.stringify({ song_id: this.contentId })
-                }).then(res => res.json())
+                }).then(async res => {
+                    const data = await res.json().catch(() => ({ error: 'Parse failed' }));
+                    if (!res.ok) {
+                        console.error(`[PlaylistModal] Add song failed (${res.status}):`, {
+                            playlist_id: playlistId,
+                            response: data
+                        });
+                        return { success: false, error: data.message || res.statusText };
+                    }
+                    console.log(`[PlaylistModal] Song added successfully to playlist ${playlistId}`);
+                    return data;
+                })
             );
 
             const results = await Promise.all(promises);
@@ -1028,6 +1248,11 @@ document.addEventListener('alpine:init', () => {
 
                 // Update existsInPlaylists
                 this.existsInPlaylists = [...this.existsInPlaylists, ...this.selectedPlaylists];
+            } else {
+                Alpine.store('toast').show(
+                    `❌ Şarkı playlist'e eklenemedi`,
+                    'error'
+                );
             }
 
             this.hide();
@@ -1040,12 +1265,21 @@ document.addEventListener('alpine:init', () => {
             const promises = this.selectedPlaylists.map(playlistId =>
                 fetch(`/api/muzibu/playlists/${playlistId}/add-album`, {
                     method: 'POST',
+                    credentials: 'same-origin',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: JSON.stringify({ album_id: this.contentId })
-                }).then(res => res.json())
+                }).then(res => {
+                    if (!res.ok) {
+                        console.error(`[PlaylistModal] Add album failed (${res.status}):`, playlistId);
+                        return { success: false, error: res.statusText };
+                    }
+                    return res.json();
+                })
             );
 
             const results = await Promise.all(promises);
@@ -1056,6 +1290,11 @@ document.addEventListener('alpine:init', () => {
                 Alpine.store('toast').show(
                     `📋 "${this.contentData?.title || 'Albüm'}" - ${totalSongs} şarkı ${successCount} playlist'e eklendi`,
                     'success'
+                );
+            } else {
+                Alpine.store('toast').show(
+                    `❌ Albüm playlist'e eklenemedi`,
+                    'error'
                 );
             }
 
@@ -1286,6 +1525,23 @@ document.addEventListener('alpine:init', () => {
             } finally {
                 this.previewLoading = false;
             }
+        },
+
+        /**
+         * 🔄 Refresh current preview (re-fetch from API)
+         * Used after delete/reorder operations
+         */
+        async refreshPreview() {
+            if (!this.previewMode || !this.previewInfo) return;
+
+            const { type, id } = this.previewInfo;
+            const cacheKey = `${type}_${id}`;
+
+            // Clear cache for this item
+            delete this.previewCache[cacheKey];
+
+            // Re-fetch using showPreview
+            await this.showPreview(type, id, this.previewInfo);
         },
 
         /**

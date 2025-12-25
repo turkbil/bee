@@ -55,8 +55,9 @@
     {{-- Custom Styles --}}
     <link rel="stylesheet" href="{{ versioned_asset('themes/muzibu/css/muzibu-layout.css') }}">
     <link rel="stylesheet" href="{{ versioned_asset('themes/muzibu/css/muzibu-custom.css') }}">
+    <script src="{{ asset('themes/muzibu/js/player/core/player-core.js') }}"></script>
+    <script src="{{ asset('themes/muzibu/js/player/features/play-helpers.js') }}"></script>
 
-    {{-- ✅ Alpine.js Global Functions (SPA-safe) - DO NOT REMOVE! --}}
     <script>
         // 🌍 Global Lang Strings for JS
         window.muzibuLang = {
@@ -79,14 +80,9 @@
             return text;
         };
 
-        // 🎯 muzibuApp - Root Alpine app
-        window.muzibuApp = function() {
-            return {
-                init() {
-                    console.log('🎯 Root muzibuApp initialized');
-                }
-            };
-        };
+        // 🎯 muzibuApp - Will be loaded from player-core.js
+        // REMOVED: Stub was causing Alpine to initialize with empty methods
+        // Real muzibuApp is defined in /public/themes/muzibu/js/player/core/player-core.js
 
         // 🎯 dashboardApp - Dashboard page
         window.dashboardApp = function() {
@@ -352,7 +348,48 @@
     @yield('styles')
 
 </head>
-<body class="bg-black text-white overflow-hidden" @play-song.window="playSong($event.detail.songId)">
+<body class="bg-black text-white overflow-hidden"
+      @play-song.window="playSong($event.detail.songId)"
+      @play-all-preview.window="
+        if ($store.sidebar.previewInfo?.type === 'Playlist') {
+            window.playPlaylist ? window.playPlaylist($store.sidebar.previewInfo.id) : $store.player.playPlaylist($store.sidebar.previewInfo.id);
+        } else if ($store.sidebar.previewInfo?.type === 'Album') {
+            window.playAlbum ? window.playAlbum($store.sidebar.previewInfo.id) : $store.player.playAlbum($store.sidebar.previewInfo.id);
+        } else if ($store.sidebar.previewInfo?.type === 'Genre') {
+            window.playGenres ? window.playGenres($store.sidebar.previewInfo.id) : $store.player.playGenre($store.sidebar.previewInfo.id);
+        } else if ($store.sidebar.previewInfo?.type === 'Sector') {
+            window.playSector ? window.playSector($store.sidebar.previewInfo.id) : $store.player.playSector($store.sidebar.previewInfo.id);
+        } else if ($store.sidebar.previewInfo?.type === 'Radio') {
+            window.playRadio ? window.playRadio($store.sidebar.previewInfo.id) : $store.player.playRadio($store.sidebar.previewInfo.id);
+        }
+      "
+      @play-all-entity.window="
+        if ($store.sidebar.entityInfo?.type === 'Playlist') {
+            window.playPlaylist ? window.playPlaylist($store.sidebar.entityInfo.id) : $store.player.playPlaylist($store.sidebar.entityInfo.id);
+        } else if ($store.sidebar.entityInfo?.type === 'Album') {
+            window.playAlbum ? window.playAlbum($store.sidebar.entityInfo.id) : $store.player.playAlbum($store.sidebar.entityInfo.id);
+        } else if ($store.sidebar.entityInfo?.type === 'Genre') {
+            window.playGenres ? window.playGenres($store.sidebar.entityInfo.id) : $store.player.playGenre($store.sidebar.entityInfo.id);
+        } else if ($store.sidebar.entityInfo?.type === 'Sector') {
+            window.playSector ? window.playSector($store.sidebar.entityInfo.id) : $store.player.playSector($store.sidebar.entityInfo.id);
+        } else if ($store.sidebar.entityInfo?.type === 'Radio') {
+            window.playRadio ? window.playRadio($store.sidebar.entityInfo.id) : $store.player.playRadio($store.sidebar.entityInfo.id);
+        }
+      "
+      @play-all-songs.window="
+        if ($event.detail.playlistId) {
+            window.playPlaylist ? window.playPlaylist($event.detail.playlistId) : $store.player.playPlaylist($event.detail.playlistId);
+        } else if ($event.detail.albumId) {
+            window.playAlbum ? window.playAlbum($event.detail.albumId) : $store.player.playAlbum($event.detail.albumId);
+        } else if ($event.detail.genreId) {
+            window.playGenre ? window.playGenre($event.detail.genreId) : $store.player.playGenre($event.detail.genreId);
+        }
+      "
+      @play-all-playlists.window="
+        if ($event.detail.sectorId) {
+            window.playSector ? window.playSector($event.detail.sectorId) : $store.player.playSector($event.detail.sectorId);
+        }
+      ">
     {{-- Mobile Menu Overlay - Sidebar açıkken arka planı karartır --}}
     <div class="muzibu-mobile-overlay" onclick="toggleMobileMenu()"></div>
 
@@ -458,7 +495,7 @@
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/session.js') }}"></script>
     <script src="{{ asset('themes/muzibu/js/player/features/spa-router.js') }}?v={{ filemtime(public_path('themes/muzibu/js/player/features/spa-router.js')) }}"></script>
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/debug.js') }}"></script>
-    <script src="{{ versioned_asset('themes/muzibu/js/player/features/play-helpers.js') }}"></script>
+    {{-- ❌ REMOVED: play-helpers.js (already loaded in HEAD) --}}
     <script src="{{ versioned_asset('themes/muzibu/js/global-helpers.js') }}"></script>
 
     {{-- Context Menu System (Hybrid Approach) --}}
@@ -483,8 +520,7 @@
     {{-- Context Menu - Utils --}}
     <script src="{{ versioned_asset('themes/muzibu/js/context-menus/utils/action-executor.js') }}"></script>
 
-    {{-- 4. Player Core (en son - features'ı spread eder) --}}
-    <script src="{{ asset('themes/muzibu/js/player/core/player-core.js') }}?v={{ filemtime(public_path('themes/muzibu/js/player/core/player-core.js')) }}"></script>
+    {{-- 4. Player Core - MOVED TO HEAD for early initialization --}}
 
     {{-- 5. Utils --}}
     <script src="{{ versioned_asset('themes/muzibu/js/utils/muzibu-cache.js') }}"></script>
@@ -705,11 +741,16 @@
                     get(target, prop) {
                         const rootData = getRootData();
                         if (!rootData) {
-                            console.error('Root data not accessible');
+                            console.error('❌ Root data not accessible, prop:', prop);
                             return undefined;
                         }
 
                         const value = rootData[prop];
+
+                        // Debug log for missing methods
+                        if (value === undefined && (prop === 'playPlaylist' || prop === 'playAlbum' || prop === 'playGenre')) {
+                            console.error(`❌ Method ${prop} not found in root data. Available methods:`, Object.keys(rootData).filter(k => typeof rootData[k] === 'function'));
+                        }
 
                         // If it's a function, bind it to root context
                         if (typeof value === 'function') {

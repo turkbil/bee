@@ -63,8 +63,9 @@ const ContentActions = {
      * 📝 Playlist düzenle
      */
     edit(type, data) {
-        if (type === 'playlist' && data.id) {
-            window.location.href = `/my-playlists/${data.id}/edit`;
+        if ((type === 'playlist' || type === 'my-playlist') && data.id) {
+            const identifier = data.slug || data.id;
+            window.location.href = `/muzibu/playlist/${identifier}/edit`;
         }
     },
 
@@ -72,7 +73,7 @@ const ContentActions = {
      * 🗑️ Playlist sil
      */
     async delete(type, data) {
-        if (type === 'playlist' && data.id) {
+        if ((type === 'playlist' || type === 'my-playlist') && data.id) {
             if (confirm(`"${data.title}" playlist'ini silmek istediğinizden emin misiniz?`)) {
                 try {
                     const response = await fetch(`/api/muzibu/playlists/${data.id}`, {

@@ -26,9 +26,11 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
         'is_public' => true,     // Varsayılan: Herkese Açık
         'is_radio' => false,     // Varsayılan: Liste Modu
         'sector_ids' => [],
+        'radio_ids' => [],
     ];
 
     public $sectorSearch = '';
+    public $radioSearch = '';
 
     public $currentLanguage;
     public $availableLanguages = [];
@@ -57,6 +59,23 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
         // Search filter
         if (!empty($this->sectorSearch)) {
             $search = strtolower($this->sectorSearch);
+            $query->where(function($q) use ($search) {
+                $q->whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr"))) LIKE ?', ["%{$search}%"])
+                  ->orWhereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.en"))) LIKE ?', ["%{$search}%"]);
+            });
+        }
+
+        return $query->orderBy('title->tr')->get();
+    }
+
+    #[Computed]
+    public function activeRadios()
+    {
+        $query = \Modules\Muzibu\App\Models\Radio::where('is_active', true);
+
+        // Search filter
+        if (!empty($this->radioSearch)) {
+            $search = strtolower($this->radioSearch);
             $query->where(function($q) use ($search) {
                 $q->whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr"))) LIKE ?', ["%{$search}%"])
                   ->orWhereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.en"))) LIKE ?', ["%{$search}%"]);
@@ -189,6 +208,7 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
 
             // İlişkileri yükle
             $this->inputs['sector_ids'] = $playlist->sectors()->pluck('muzibu_sectors.sector_id')->toArray();
+            $this->inputs['radio_ids'] = $playlist->radios()->pluck('muzibu_radios.radio_id')->toArray();
 
             foreach ($this->availableLanguages as $lang) {
                 $this->multiLangInputs[$lang] = [
@@ -360,9 +380,10 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
 
         // İlişkiler için ayrı tut
         $sectorIds = $this->inputs['sector_ids'] ?? [];
+        $radioIds = $this->inputs['radio_ids'] ?? [];
 
         // İlişkileri çıkar
-        $safeInputs = collect($this->inputs)->except(['sector_ids'])->all();
+        $safeInputs = collect($this->inputs)->except(['sector_ids', 'radio_ids'])->all();
 
         $data = array_merge($safeInputs, $multiLangData);
 
@@ -391,6 +412,7 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
 
             // İlişkileri sync et
             $playlist->sectors()->sync($sectorIds);
+            $playlist->radios()->sync($radioIds);
         } else {
             $playlist = Playlist::query()->create($data);
             $this->playlistId = $playlist->playlist_id;
@@ -403,6 +425,7 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
 
             // İlişkileri sync et
             $playlist->sectors()->sync($sectorIds);
+            $playlist->radios()->sync($radioIds);
 
             $toast = [
                 'title' => __('admin.success'),

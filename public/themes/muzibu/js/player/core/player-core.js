@@ -1503,10 +1503,6 @@ function muzibuApp() {
             }
 
             try {
-                // 🚀 INSTANT FEEDBACK: Show loading state immediately
-                this.isLoading = true;
-                this.showToast(this.frontLang?.general?.loading || 'Loading...', 'info');
-
                 const response = await fetch(`/api/muzibu/albums/${id}`);
                 const album = await response.json();
 
@@ -1532,8 +1528,6 @@ function muzibuApp() {
             } catch (error) {
                 console.error('Failed to play album:', error);
                 this.showToast(this.frontLang?.messages?.album_loading_failed || 'Failed to load album', 'error');
-            } finally {
-                this.isLoading = false;
             }
         },
 
@@ -1551,10 +1545,6 @@ function muzibuApp() {
             }
 
             try {
-                // 🚀 INSTANT FEEDBACK: Show loading state immediately
-                this.isLoading = true;
-                this.showToast(this.frontLang?.general?.loading || 'Loading...', 'info');
-
                 const response = await fetch(`/api/muzibu/playlists/${id}`);
                 const playlist = await response.json();
 
@@ -1580,8 +1570,6 @@ function muzibuApp() {
             } catch (error) {
                 console.error('Failed to play playlist:', error);
                 this.showToast(this.frontLang?.messages?.playlist_loading_failed || 'Failed to load playlist', 'error');
-            } finally {
-                this.isLoading = false;
             }
         },
 
@@ -1599,10 +1587,6 @@ function muzibuApp() {
             }
 
             try {
-                // 🚀 INSTANT FEEDBACK: Show loading state immediately
-                this.isLoading = true;
-                this.showToast(this.frontLang?.general?.loading || 'Loading...', 'info');
-
                 const response = await fetch(`/api/muzibu/genres/${id}/songs`);
                 const data = await response.json();
 
@@ -1623,8 +1607,6 @@ function muzibuApp() {
             } catch (error) {
                 console.error('Failed to play genre:', error);
                 this.showToast(this.frontLang?.messages?.genre_loading_failed || 'Failed to load genre', 'error');
-            } finally {
-                this.isLoading = false;
             }
         },
 
@@ -1642,10 +1624,6 @@ function muzibuApp() {
             }
 
             try {
-                // 🚀 INSTANT FEEDBACK: Show loading state immediately
-                this.isLoading = true;
-                this.showToast(this.frontLang?.general?.loading || 'Loading...', 'info');
-
                 const response = await fetch(`/api/muzibu/sectors/${id}/songs`);
                 const data = await response.json();
 
@@ -1666,8 +1644,6 @@ function muzibuApp() {
             } catch (error) {
                 console.error('Failed to play sector:', error);
                 this.showToast(this.frontLang?.messages?.sector_loading_failed || 'Failed to load sector', 'error');
-            } finally {
-                this.isLoading = false;
             }
         },
 
@@ -1685,10 +1661,8 @@ function muzibuApp() {
             }
 
             try {
-                // 🚀 INSTANT FEEDBACK: Show loading state immediately
-                this.isLoading = true;
-                this.showToast(this.frontLang?.messages?.radio_loading || 'Loading radio...', 'info');
-
+                // 📻 RADIO: No loading overlay - Direct playback
+                // Fetch radio songs in background
                 const response = await fetch(`/api/muzibu/radios/${id}/songs`);
                 const data = await response.json();
 
@@ -1713,8 +1687,6 @@ function muzibuApp() {
             } catch (error) {
                 console.error('Failed to play radio:', error);
                 this.showToast(this.frontLang?.messages?.radio_loading_failed || 'Failed to load radio', 'error');
-            } finally {
-                this.isLoading = false;
             }
         },
 
@@ -2300,25 +2272,9 @@ onplay: function() {
             let hlsAborted = false;
             let hlsPlayStarted = false;
 
-            // 🔥 HLS TIMEOUT FALLBACK: 45 saniye icinde calmaya baslamazsa MP3'e dus
-            const hlsTimeoutMs = 45000; // 15s → 45s (HLS yüklenmesi için daha fazla süre - increased for stability)
-            const hlsTimeoutId = setTimeout(async () => {
-                if (!hlsPlayStarted && !hlsAborted && autoplay) {
-                    // Fallback triggered
-                    const currentPos = this.getActiveHlsAudio?.()?.currentTime || 0;
-                    console.warn('⚠️ HLS TIMEOUT:', {
-                        song: self.currentSong?.title,
-                        timeout: hlsTimeoutMs + 'ms',
-                        reason: 'HLS yüklenemedi (timeout)',
-                        position_sec: Math.round(currentPos)
-                    });
-                    hlsAborted = true;
-                    const retried = await self.retryHlsWithNewUrl(targetVolume, autoplay, 'timeout', currentPos);
-                    if (!retried) {
-                        self.triggerMp3Fallback(audio, targetVolume, 'timeout');
-                    }
-                }
-            }, hlsTimeoutMs);
+            // 🔥 HLS TIMEOUT FALLBACK: DISABLED - User requested removal
+            // const hlsTimeoutMs = 45000;
+            const hlsTimeoutId = null; // Timeout disabled
 
             // Helper: HLS timeout'u temizle ve basariyi logla
             const markHlsSuccess = () => {

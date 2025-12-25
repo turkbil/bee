@@ -85,9 +85,10 @@
                             />
                         </div>
 
-                        <!-- 1. Sektörler (Dual Listbox) -->
-                        <div class="row mb-4">
-                            <div class="col-12">
+                        <!-- Dual Listboxes: Sektörler + Radyolar (yan yana) -->
+                        <div class="row g-3 mb-4 mt-4">
+                            <!-- Sektörler (sol taraf - col-6) -->
+                            <div class="col-md-6">
                                 <label class="form-label fw-bold">{{ __('muzibu::admin.playlist.sectors') }}</label>
                                 <div class="dual-listbox-wrapper">
                                     {{-- Search input with float label --}}
@@ -155,6 +156,80 @@
                                         <small class="">
                                             <i class="fa-solid fa-circle-info me-1"></i>
                                             {{ __('muzibu::admin.playlist.sectors_help') }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Radyolar (sağ taraf - col-6) -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">{{ __('muzibu::admin.playlist.radios') }}</label>
+                                <div class="dual-listbox-wrapper">
+                                    {{-- Search input with float label --}}
+                                    <div class="mb-3">
+                                        <div class="form-floating">
+                                            <input type="text"
+                                                class="form-control"
+                                                placeholder="Radyo ara..."
+                                                wire:model.live.debounce.300ms="radioSearch"
+                                                id="radio-search">
+                                            <label for="radio-search">
+                                                <i class="fa-solid fa-magnifying-glass me-2"></i>
+                                                Radyo Ara
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-2">
+                                        <div class="col-5">
+                                            <label class="form-label small">Tüm Radyolar</label>
+                                            <div class="listbox" id="available-radios">
+                                                @if(isset($this->activeRadios))
+                                                    @foreach($this->activeRadios as $radio)
+                                                        @if(!in_array($radio->radio_id, $inputs['radio_ids'] ?? []))
+                                                            <div class="listbox-item"
+                                                                data-value="{{ $radio->radio_id }}"
+                                                                data-title="{{ strtolower($radio->getTranslated('title', app()->getLocale())) }}">
+                                                                {{ $radio->getTranslated('title', app()->getLocale()) }}
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="col-2 d-flex align-items-center justify-content-center">
+                                            <div class="transfer-buttons">
+                                                <button type="button" class="btn btn-sm btn-primary mb-2" onclick="transferRadiosRight()">
+                                                    <i class="fa-solid fa-chevron-right"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="transferRadiosLeft()">
+                                                    <i class="fa-solid fa-chevron-left"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-5">
+                                            <label class="form-label small">Seçilen Radyolar</label>
+                                            <div class="listbox" id="selected-radios">
+                                                @if(isset($this->activeRadios))
+                                                    @foreach($this->activeRadios as $radio)
+                                                        @if(in_array($radio->radio_id, $inputs['radio_ids'] ?? []))
+                                                            <div class="listbox-item"
+                                                                data-value="{{ $radio->radio_id }}"
+                                                                data-title="{{ strtolower($radio->getTranslated('title', app()->getLocale())) }}">
+                                                                {{ $radio->getTranslated('title', app()->getLocale()) }}
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-text mt-2">
+                                        <small class="">
+                                            <i class="fa-solid fa-circle-info me-1"></i>
+                                            Listeye tıklayıp seç, ok tuşları ile taşı
                                         </small>
                                     </div>
                                 </div>
@@ -322,10 +397,23 @@
                 dualListboxTransfer('available-sectors', 'selected-sectors', 'left', updateLivewireSectors);
             }
 
+            function transferRadiosRight() {
+                dualListboxTransfer('available-radios', 'selected-radios', 'right', updateLivewireRadios);
+            }
+
+            function transferRadiosLeft() {
+                dualListboxTransfer('available-radios', 'selected-radios', 'left', updateLivewireRadios);
+            }
+
             // 🔄 Update Livewire (Playlist-specific)
             function updateLivewireSectors() {
                 const selectedValues = getDualListboxValues('selected-sectors');
                 @this.set('inputs.sector_ids', selectedValues);
+            }
+
+            function updateLivewireRadios() {
+                const selectedValues = getDualListboxValues('selected-radios');
+                @this.set('inputs.radio_ids', selectedValues);
             }
         </script>
 

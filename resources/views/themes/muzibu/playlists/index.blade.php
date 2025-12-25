@@ -11,7 +11,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 <div class="px-6 py-8">
     {{-- Header --}}
     <div class="mb-8">
-        <h1 class="text-4xl font-bold text-white mb-2">Popüler Playlistler</h1>
+        <h1 class="text-4xl font-bold text-white mb-2">Çalma Listeleri</h1>
         <p class="text-gray-400">Özenle hazırlanmış müzik koleksiyonları</p>
     </div>
 

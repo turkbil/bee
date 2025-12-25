@@ -48,7 +48,22 @@ class FavoritesController extends Controller
         }
 
         $query = Favorite::where('user_id', $userId)
-            ->with('favoritable')
+            ->with(['favoritable' => function($query) use ($type) {
+                // Polymorphic eager loading optimizasyonu
+                if ($type === 'songs') {
+                    $query->with(['album.artist', 'coverMedia', 'album.coverMedia']);
+                } elseif ($type === 'albums') {
+                    $query->with(['artist', 'coverMedia']);
+                } elseif ($type === 'playlists') {
+                    $query->with('coverMedia')->withCount('songs');
+                } elseif ($type === 'genres' || $type === 'sectors') {
+                    $query->with('iconMedia');
+                } elseif ($type === 'radios') {
+                    $query->with('logoMedia');
+                } elseif ($type === 'blogs') {
+                    $query->with('media');
+                }
+            }])
             ->latest();
 
         if (isset($modelMap[$type])) {
@@ -57,7 +72,11 @@ class FavoritesController extends Controller
 
         $favorites = $query->paginate(200);
 
-        return view('themes.muzibu.favorites.index', compact('favorites', 'type', 'counts'));
+        return response()
+            ->view('themes.muzibu.favorites.index', compact('favorites', 'type', 'counts'))
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     public function apiIndex(Request $request)
@@ -69,7 +88,24 @@ class FavoritesController extends Controller
         $type = $request->get('type', 'all');
         $userId = auth()->id();
 
-        $query = Favorite::where('user_id', $userId)->with('favoritable')->latest();
+        $query = Favorite::where('user_id', $userId)
+            ->with(['favoritable' => function($query) use ($type) {
+                // Polymorphic eager loading optimizasyonu
+                if ($type === 'songs') {
+                    $query->with(['album.artist', 'coverMedia', 'album.coverMedia']);
+                } elseif ($type === 'albums') {
+                    $query->with(['artist', 'coverMedia']);
+                } elseif ($type === 'playlists') {
+                    $query->with('coverMedia')->withCount('songs');
+                } elseif ($type === 'genres' || $type === 'sectors') {
+                    $query->with('iconMedia');
+                } elseif ($type === 'radios') {
+                    $query->with('logoMedia');
+                } elseif ($type === 'blogs') {
+                    $query->with('media');
+                }
+            }])
+            ->latest();
 
         if ($type !== 'all') {
             $modelMap = [
@@ -88,7 +124,10 @@ class FavoritesController extends Controller
 
         $favorites = $query->paginate(200);
         $html = view('themes.muzibu.partials.favorites-list', compact('favorites', 'type'))->render();
-        return response()->json(['html' => $html, 'meta' => ['title' => 'Favorilerim - Muzibu', 'description' => 'Favori içerikleriniz']]);
+        return response()->json(['html' => $html, 'meta' => ['title' => 'Favorilerim - Muzibu', 'description' => 'Favori içerikleriniz']])
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     /**

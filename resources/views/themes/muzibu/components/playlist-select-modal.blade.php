@@ -105,14 +105,12 @@
 
                         <div class="px-3 pb-3 space-y-1">
                             <template x-for="playlist in $store.playlistModal.filteredPlaylists" :key="playlist.playlist_id">
-                                <button @click="$store.playlistModal.toggleSelection(playlist.playlist_id)"
+                                <button @click="$store.playlistModal.toggleInstant(playlist.playlist_id)"
                                         class="w-full flex items-center gap-3 p-2.5 rounded-xl transition group"
                                         :class="{
                                             'bg-green-500/10 border border-green-500/30': $store.playlistModal.isInPlaylist(playlist.playlist_id),
-                                            'bg-blue-500/10 border border-blue-500/30': $store.playlistModal.isSelected(playlist.playlist_id) && !$store.playlistModal.isInPlaylist(playlist.playlist_id),
-                                            'hover:bg-white/5': !$store.playlistModal.isInPlaylist(playlist.playlist_id) && !$store.playlistModal.isSelected(playlist.playlist_id)
-                                        }"
-                                        :disabled="$store.playlistModal.isInPlaylist(playlist.playlist_id)">
+                                            'hover:bg-white/5': !$store.playlistModal.isInPlaylist(playlist.playlist_id)
+                                        }">
                                     {{-- Playlist Cover --}}
                                     <div class="w-10 h-10 rounded-lg flex-shrink-0 overflow-hidden"
                                          :class="playlist.cover_url ? '' : 'bg-gradient-to-br from-purple-500 to-pink-600'">
@@ -130,47 +128,22 @@
                                     <div class="flex-1 text-left min-w-0">
                                         <p class="font-medium text-white truncate text-sm" x-text="playlist.title"></p>
                                         <p class="text-xs"
-                                           :class="{
-                                               'text-green-400': $store.playlistModal.isInPlaylist(playlist.playlist_id),
-                                               'text-blue-400': $store.playlistModal.isSelected(playlist.playlist_id) && !$store.playlistModal.isInPlaylist(playlist.playlist_id),
-                                               'text-zinc-500': !$store.playlistModal.isInPlaylist(playlist.playlist_id) && !$store.playlistModal.isSelected(playlist.playlist_id)
-                                           }">
+                                           :class="$store.playlistModal.isInPlaylist(playlist.playlist_id) ? 'text-green-400' : 'text-zinc-500'">
                                             <span x-show="$store.playlistModal.isInPlaylist(playlist.playlist_id)">Bu playlist'te mevcut ✓</span>
-                                            <span x-show="$store.playlistModal.isSelected(playlist.playlist_id) && !$store.playlistModal.isInPlaylist(playlist.playlist_id)">Seçildi</span>
-                                            <span x-show="!$store.playlistModal.isInPlaylist(playlist.playlist_id) && !$store.playlistModal.isSelected(playlist.playlist_id)" x-text="(playlist.song_count || 0) + ' şarkı'"></span>
+                                            <span x-show="!$store.playlistModal.isInPlaylist(playlist.playlist_id)" x-text="(playlist.song_count || 0) + ' şarkı'"></span>
                                         </p>
                                     </div>
 
                                     {{-- Checkbox --}}
                                     <div class="w-6 h-6 rounded flex items-center justify-center transition"
-                                         :class="{
-                                             'bg-green-500': $store.playlistModal.isInPlaylist(playlist.playlist_id),
-                                             'bg-blue-500': $store.playlistModal.isSelected(playlist.playlist_id) && !$store.playlistModal.isInPlaylist(playlist.playlist_id),
-                                             'border-2 border-zinc-600 group-hover:border-zinc-400': !$store.playlistModal.isInPlaylist(playlist.playlist_id) && !$store.playlistModal.isSelected(playlist.playlist_id)
-                                         }">
-                                        <i x-show="$store.playlistModal.isInPlaylist(playlist.playlist_id) || $store.playlistModal.isSelected(playlist.playlist_id)" class="fas fa-check text-white text-xs"></i>
+                                         :class="$store.playlistModal.isInPlaylist(playlist.playlist_id) ? 'bg-green-500' : 'border-2 border-zinc-600 group-hover:border-zinc-400'">
+                                        <i x-show="$store.playlistModal.isInPlaylist(playlist.playlist_id)" class="fas fa-check text-white text-xs"></i>
                                     </div>
                                 </button>
                             </template>
                         </div>
                     </div>
                 </template>
-
-                {{-- Footer with Add Button --}}
-                <div class="p-3 border-t border-white/10 flex-shrink-0 bg-zinc-900/80 backdrop-blur">
-                    <button @click="$store.playlistModal.addToSelected()"
-                            :disabled="!$store.playlistModal.hasSelection || $store.playlistModal.adding"
-                            class="w-full py-3 rounded-xl font-semibold transition flex items-center justify-center gap-2"
-                            :class="$store.playlistModal.hasSelection && !$store.playlistModal.adding ? 'bg-muzibu-coral hover:bg-red-500 text-white' : 'bg-zinc-800 text-zinc-500 cursor-not-allowed'">
-                        <template x-if="$store.playlistModal.adding">
-                            <div class="animate-spin rounded-full h-4 w-4 border-2 border-white/20 border-t-white"></div>
-                        </template>
-                        <template x-if="!$store.playlistModal.adding">
-                            <i class="fas fa-plus"></i>
-                        </template>
-                        <span x-text="$store.playlistModal.adding ? 'Ekleniyor...' : ($store.playlistModal.hasSelection ? $store.playlistModal.selectedPlaylists.length + ' Playlist\'e Ekle' : 'Playlist Seçin')"></span>
-                    </button>
-                </div>
             </div>
         </div>
 
@@ -257,14 +230,12 @@
 
                         <div class="space-y-1">
                             <template x-for="playlist in $store.playlistModal.filteredPlaylists" :key="playlist.playlist_id">
-                                <button @click="$store.playlistModal.toggleSelection(playlist.playlist_id)"
+                                <button @click="$store.playlistModal.toggleInstant(playlist.playlist_id)"
                                         class="w-full flex items-center gap-3 p-3 rounded-xl transition"
                                         :class="{
                                             'bg-green-500/10 border border-green-500/30': $store.playlistModal.isInPlaylist(playlist.playlist_id),
-                                            'bg-blue-500/10 border border-blue-500/30': $store.playlistModal.isSelected(playlist.playlist_id) && !$store.playlistModal.isInPlaylist(playlist.playlist_id),
-                                            'hover:bg-white/5': !$store.playlistModal.isInPlaylist(playlist.playlist_id) && !$store.playlistModal.isSelected(playlist.playlist_id)
-                                        }"
-                                        :disabled="$store.playlistModal.isInPlaylist(playlist.playlist_id)">
+                                            'hover:bg-white/5': !$store.playlistModal.isInPlaylist(playlist.playlist_id)
+                                        }">
                                     {{-- Playlist Cover --}}
                                     <div class="w-12 h-12 rounded-lg flex-shrink-0 overflow-hidden"
                                          :class="playlist.cover_url ? '' : 'bg-gradient-to-br from-purple-500 to-pink-600'">
@@ -282,47 +253,22 @@
                                     <div class="flex-1 text-left min-w-0">
                                         <p class="font-medium text-white truncate" x-text="playlist.title"></p>
                                         <p class="text-xs"
-                                           :class="{
-                                               'text-green-400': $store.playlistModal.isInPlaylist(playlist.playlist_id),
-                                               'text-blue-400': $store.playlistModal.isSelected(playlist.playlist_id) && !$store.playlistModal.isInPlaylist(playlist.playlist_id),
-                                               'text-zinc-500': !$store.playlistModal.isInPlaylist(playlist.playlist_id) && !$store.playlistModal.isSelected(playlist.playlist_id)
-                                           }">
+                                           :class="$store.playlistModal.isInPlaylist(playlist.playlist_id) ? 'text-green-400' : 'text-zinc-500'">
                                             <span x-show="$store.playlistModal.isInPlaylist(playlist.playlist_id)">Bu playlist'te mevcut ✓</span>
-                                            <span x-show="$store.playlistModal.isSelected(playlist.playlist_id) && !$store.playlistModal.isInPlaylist(playlist.playlist_id)">Seçildi</span>
-                                            <span x-show="!$store.playlistModal.isInPlaylist(playlist.playlist_id) && !$store.playlistModal.isSelected(playlist.playlist_id)" x-text="(playlist.song_count || 0) + ' şarkı'"></span>
+                                            <span x-show="!$store.playlistModal.isInPlaylist(playlist.playlist_id)" x-text="(playlist.song_count || 0) + ' şarkı'"></span>
                                         </p>
                                     </div>
 
                                     {{-- Checkbox --}}
                                     <div class="w-7 h-7 rounded flex items-center justify-center transition"
-                                         :class="{
-                                             'bg-green-500': $store.playlistModal.isInPlaylist(playlist.playlist_id),
-                                             'bg-blue-500': $store.playlistModal.isSelected(playlist.playlist_id) && !$store.playlistModal.isInPlaylist(playlist.playlist_id),
-                                             'border-2 border-zinc-600': !$store.playlistModal.isInPlaylist(playlist.playlist_id) && !$store.playlistModal.isSelected(playlist.playlist_id)
-                                         }">
-                                        <i x-show="$store.playlistModal.isInPlaylist(playlist.playlist_id) || $store.playlistModal.isSelected(playlist.playlist_id)" class="fas fa-check text-white text-sm"></i>
+                                         :class="$store.playlistModal.isInPlaylist(playlist.playlist_id) ? 'bg-green-500' : 'border-2 border-zinc-600'">
+                                        <i x-show="$store.playlistModal.isInPlaylist(playlist.playlist_id)" class="fas fa-check text-white text-sm"></i>
                                     </div>
                                 </button>
                             </template>
                         </div>
                     </div>
                 </template>
-
-                {{-- Footer with Add Button --}}
-                <div class="px-4 py-4 border-t border-white/10 flex-shrink-0 bg-zinc-900/80 backdrop-blur safe-area-bottom">
-                    <button @click="$store.playlistModal.addToSelected()"
-                            :disabled="!$store.playlistModal.hasSelection || $store.playlistModal.adding"
-                            class="w-full py-4 rounded-xl font-bold transition flex items-center justify-center gap-2 text-lg"
-                            :class="$store.playlistModal.hasSelection && !$store.playlistModal.adding ? 'bg-muzibu-coral hover:bg-red-500 text-white' : 'bg-zinc-800 text-zinc-500 cursor-not-allowed'">
-                        <template x-if="$store.playlistModal.adding">
-                            <div class="animate-spin rounded-full h-5 w-5 border-2 border-white/20 border-t-white"></div>
-                        </template>
-                        <template x-if="!$store.playlistModal.adding">
-                            <i class="fas fa-plus"></i>
-                        </template>
-                        <span x-text="$store.playlistModal.adding ? 'Ekleniyor...' : ($store.playlistModal.hasSelection ? $store.playlistModal.selectedPlaylists.length + ' Playlist\'e Ekle' : 'Playlist Seçin')"></span>
-                    </button>
-                </div>
             </div>
         </div>
     </div>

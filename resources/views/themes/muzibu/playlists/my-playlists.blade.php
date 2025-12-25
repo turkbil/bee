@@ -30,10 +30,24 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
         {{-- Playlists Grid --}}
         <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
             @foreach($playlists as $playlist)
-                <div class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg transition-all duration-300 overflow-hidden">
+                <div class="group rounded-lg transition-all duration-300 overflow-hidden">
                     {{-- Playlist Card --}}
                     <a href="/playlists/{{ $playlist->slug }}"
                        class="block px-4 pt-4"
+                       @click="if (window.innerWidth >= 1024) {
+                           $event.preventDefault();
+                           $store.sidebar.showPreview('playlist', {{ $playlist->playlist_id }}, {
+                               type: 'Playlist',
+                               id: {{ $playlist->playlist_id }},
+                               title: '{{ addslashes($playlist->title) }}',
+                               description: '{{ addslashes($playlist->description ?? '') }}',
+                               cover: '{{ $playlist->coverMedia ? thumb($playlist->coverMedia, 300, 300) : '' }}',
+                               is_public: {{ $playlist->is_public ? 'true' : 'false' }},
+                               is_favorite: {{ $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
+                               songs_count: {{ $playlist->songs_count ?? 0 }},
+                               is_mine: true
+                           });
+                       }"
                        data-spa>
 
                         {{-- Cover Image --}}
@@ -50,18 +64,29 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
                             @endif
 
                             {{-- Play Button --}}
-                            <button @click.prevent="$store.player.playPlaylist({{ $playlist->playlist_id }})"
+                            <button @click.prevent="window.playPlaylist ? window.playPlaylist({{ $playlist->playlist_id }}) : $store.player.playPlaylist({{ $playlist->playlist_id }})"
                                     class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
                                 <i class="fas fa-play ml-1"></i>
                             </button>
 
-                            {{-- Favorite Button --}}
-                            <div class="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-all" @click.stop>
-                                <button @click.prevent="$store.favorites.toggle('playlist', {{ $playlist->playlist_id }})"
+                            {{-- Favorite + Menu Buttons (Sağ Üst) - HOVER'DA GÖRÜNÜR --}}
+                            <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent>
+                                {{-- Favorite Button --}}
+                                <button x-on:click.stop.prevent="$store.favorites.toggle('playlist', {{ $playlist->playlist_id }})"
                                         class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all"
                                         x-bind:class="$store.favorites.isFavorite('playlist', {{ $playlist->playlist_id }}) ? 'text-muzibu-coral' : ''">
                                     <i class="text-sm"
                                        x-bind:class="$store.favorites.isFavorite('playlist', {{ $playlist->playlist_id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                                </button>
+
+                                {{-- 3-Dot Menu Button --}}
+                                <button x-on:click.stop.prevent="$store.contextMenu.openContextMenu($event, 'my-playlist', {
+                                    id: {{ $playlist->playlist_id }},
+                                    title: '{{ addslashes($playlist->title) }}',
+                                    slug: '{{ $playlist->slug }}',
+                                    is_favorite: {{ $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+                                })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+                                    <i class="fas fa-ellipsis-v text-sm"></i>
                                 </button>
                             </div>
                         </div>
@@ -80,39 +105,6 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
                             </p>
                         </div>
                     </a>
-
-                    {{-- Edit/Delete Actions (Bottom Bar) --}}
-                    <div class="px-4 pb-3 pt-2 border-t border-white/10 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-all" @click.stop>
-                        <div class="flex items-center gap-2">
-                            {{-- Edit Button --}}
-                            <a href="{{ route('muzibu.playlist.edit', $playlist->slug) }}"
-                               class="w-8 h-8 bg-white/10 hover:bg-muzibu-coral rounded-full flex items-center justify-center text-white transition-all"
-                               title="Düzenle"
-                               data-spa>
-                                <i class="fas fa-edit text-sm"></i>
-                            </a>
-
-                            {{-- Delete Button --}}
-                            <button @click="$dispatch('confirm-delete-playlist', { id: {{ $playlist->playlist_id }}, title: '{{ addslashes($playlist->title) }}' })"
-                                    class="w-8 h-8 bg-white/10 hover:bg-red-500 rounded-full flex items-center justify-center text-white transition-all"
-                                    title="Sil">
-                                <i class="fas fa-trash-alt text-sm"></i>
-                            </button>
-                        </div>
-
-                        {{-- Public/Private Badge --}}
-                        <div class="text-xs">
-                            @if($playlist->is_public)
-                                <span class="inline-flex items-center gap-1 px-2 py-1 bg-green-600/70 text-white rounded-full">
-                                    <i class="fas fa-globe text-xs"></i>
-                                </span>
-                            @else
-                                <span class="inline-flex items-center gap-1 px-2 py-1 bg-gray-700/70 text-white rounded-full">
-                                    <i class="fas fa-lock text-xs"></i>
-                                </span>
-                            @endif
-                        </div>
-                    </div>
                 </div>
             @endforeach
         </div>
@@ -159,92 +151,76 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
     @endif
 </div>
 
-{{-- Delete Confirmation Modal (SPA Compatible) --}}
-<script>
-// 🎯 Define modal function BEFORE template renders
-if (typeof window.deletePlaylistModal === 'undefined') {
-    window.deletePlaylistModal = function() {
-        return {
-            open: false,
-            playlistId: null,
-            playlistTitle: '',
-            deleting: false,
+{{-- Delete Confirmation Modal (SPA Compatible) - Inline x-data for reliable scope --}}
+<div x-data="{
+        open: false,
+        playlistId: null,
+        playlistTitle: '',
+        deleting: false,
 
-            init() {
-                this.$watch('open', value => {
-                    document.body.style.overflow = value ? 'hidden' : '';
-                });
+        init() {
+            this.$watch('open', value => {
+                document.body.style.overflow = value ? 'hidden' : '';
+            });
 
-                // Listen for delete event
-                this.$el.addEventListener('confirm-delete-playlist', (e) => {
-                    this.playlistId = e.detail.id;
-                    this.playlistTitle = e.detail.title;
-                    this.open = true;
-                });
+            // Listen for delete event
+            window.addEventListener('confirm-delete-playlist', (e) => {
+                this.playlistId = e.detail.id;
+                this.playlistTitle = e.detail.title;
+                this.open = true;
+            });
+        },
 
-                // Global window listener
-                window.addEventListener('confirm-delete-playlist', (e) => {
-                    this.playlistId = e.detail.id;
-                    this.playlistTitle = e.detail.title;
-                    this.open = true;
-                });
-            },
+        async deletePlaylist() {
+            this.deleting = true;
 
-            async deletePlaylist() {
-                this.deleting = true;
-
-                try {
-                    const response = await fetch(`/api/muzibu/playlists/${this.playlistId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || ''
-                        }
-                    });
-
-                    const data = await response.json();
-
-                    if (data.success) {
-                        if (window.Alpine?.store('toast')) {
-                            window.Alpine.store('toast').show(data.message || 'Playlist silindi', 'success');
-                        }
-                        setTimeout(() => window.location.reload(), 500);
-                    } else {
-                        if (window.Alpine?.store('toast')) {
-                            window.Alpine.store('toast').show(data.message || 'Hata oluştu', 'error');
-                        } else {
-                            alert(data.message || 'Hata oluştu');
-                        }
-                        this.deleting = false;
+            try {
+                const response = await fetch(`/api/muzibu/playlists/${this.playlistId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || ''
                     }
-                } catch (error) {
-                    console.error('Playlist delete error:', error);
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
                     if (window.Alpine?.store('toast')) {
-                        window.Alpine.store('toast').show('Bağlantı hatası', 'error');
+                        window.Alpine.store('toast').show(data.message || 'Playlist silindi', 'success');
+                    }
+                    setTimeout(() => window.location.reload(), 500);
+                } else {
+                    if (window.Alpine?.store('toast')) {
+                        window.Alpine.store('toast').show(data.message || 'Hata oluştu', 'error');
                     } else {
-                        alert('Bağlantı hatası');
+                        alert(data.message || 'Hata oluştu');
                     }
                     this.deleting = false;
                 }
-            },
-
-            close() {
-                if (!this.deleting) {
-                    this.open = false;
+            } catch (error) {
+                console.error('Playlist delete error:', error);
+                if (window.Alpine?.store('toast')) {
+                    window.Alpine.store('toast').show('Bağlantı hatası', 'error');
+                } else {
+                    alert('Bağlantı hatası');
                 }
+                this.deleting = false;
+            }
+        },
+
+        close() {
+            if (!this.deleting) {
+                this.open = false;
             }
         }
-    };
-}
-</script>
-
-<template x-teleport="body">
-    <div x-data="deletePlaylistModal()"
-         x-show="open"
-         x-cloak
-         @keydown.escape.window="close()"
-         class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-         style="display: none;">
+     }"
+     x-show="open"
+     x-cloak
+     @keydown.escape.window="close()"
+     @confirm-delete-playlist.window="playlistId = $event.detail.id; playlistTitle = $event.detail.title; open = true"
+     class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+     style="display: none;">
 
         {{-- Backdrop --}}
         <div x-show="open"
@@ -310,7 +286,6 @@ if (typeof window.deletePlaylistModal === 'undefined') {
                 </button>
             </div>
         </div>
-    </div>
-</template>
+</div>
 
 @endsection

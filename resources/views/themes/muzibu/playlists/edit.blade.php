@@ -1,6 +1,25 @@
 @extends('themes.muzibu.layouts.app')
 
 @section('content')
+{{-- Playlist Edit Page Data --}}
+<script>
+window.playlistEditData = {
+    playlistId: {{ $playlist->playlist_id }},
+    title: {!! json_encode($playlist->title) !!},
+    description: {!! json_encode($playlist->description ?? '') !!},
+    isPublic: {{ $playlist->is_public ? 'true' : 'false' }},
+    songs: {!! json_encode($playlist->songs->map(function($song) {
+        return [
+            'song_id' => $song->song_id,
+            'title' => $song->title,
+            'artist' => $song->album && $song->album->artist ? $song->album->artist->title : '',
+            'cover' => $song->getCoverUrl(100, 100) ?? '',
+            'position' => $song->pivot->position ?? 0
+        ];
+    })->values()->toArray()) !!}
+};
+</script>
+
 <div class="px-6 py-8 max-w-4xl mx-auto">
     {{-- Header --}}
     <div class="mb-8 flex items-center justify-between">
@@ -9,128 +28,13 @@
             <p class="text-gray-400">{{ $playlist->title }}</p>
         </div>
         <a href="{{ route('muzibu.my-playlists') }}"
-          
            class="px-6 py-3 bg-gray-700 text-white font-semibold rounded-full hover:bg-gray-600 transition-all">
             <i class="fas fa-arrow-left mr-2"></i>
             Geri Dön
         </a>
     </div>
 
-    <div x-data="{
-        title: {!! json_encode($playlist->title) !!},
-        description: {!! json_encode($playlist->description ?? '') !!},
-        isPublic: {{ $playlist->is_public ? 'true' : 'false' }},
-        loading: false,
-        saving: false,
-        songs: {!! json_encode($playlist->songs->map(function($song) {
-            return [
-                'song_id' => $song->song_id,
-                'title' => $song->title,
-                'artist' => $song->album && $song->album->artist ? $song->album->artist->title : '',
-                'cover' => $song->getCoverUrl(100, 100) ?? '',
-                'position' => $song->pivot->position ?? 0
-            ];
-        })->toArray()) !!},
-
-        savePlaylist() {
-            this.saving = true;
-
-            fetch('/api/muzibu/playlists/{{ $playlist->playlist_id }}', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || ''
-                },
-                body: JSON.stringify({
-                    title: this.title,
-                    description: this.description,
-                    is_public: this.isPublic
-                })
-            })
-            .then(r => r.json())
-            .then(data => {
-                this.saving = false;
-                if (data.success) {
-                    \$store.toast.show('Playlist güncellendi', 'success');
-                    setTimeout(() => window.location.href = '{{ route('muzibu.my-playlists') }}', 1000);
-                } else {
-                    \$store.toast.show(data.message || 'Hata oluştu', 'error');
-                }
-            })
-            .catch(err => {
-                this.saving = false;
-                console.error(err);
-                \$store.toast.show('Bağlantı hatası', 'error');
-            });
-        },
-
-        removeSong(songId) {
-            if (!confirm('Bu şarkıyı playlist\'ten çıkarmak istediğinize emin misiniz?')) return;
-
-            fetch('/api/muzibu/playlists/{{ $playlist->playlist_id }}/remove-song/' + songId, {
-                method: 'DELETE',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || ''
-                }
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    this.songs = this.songs.filter(s => s.song_id !== songId);
-                    \$store.toast.show('Şarkı çıkarıldı', 'success');
-                } else {
-                    \$store.toast.show(data.message || 'Hata oluştu', 'error');
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                \$store.toast.show('Bağlantı hatası', 'error');
-            });
-        },
-
-        saveSongOrder() {
-            const songPositions = this.songs.map((song, index) => ({
-                song_id: song.song_id,
-                position: index + 1
-            }));
-
-            fetch('/api/muzibu/playlists/{{ $playlist->playlist_id }}/reorder', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || ''
-                },
-                body: JSON.stringify({ song_positions: songPositions })
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    \$store.toast.show('Sıralama kaydedildi', 'success');
-                } else {
-                    \$store.toast.show(data.message || 'Hata oluştu', 'error');
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                \$store.toast.show('Bağlantı hatası', 'error');
-            });
-        }
-    }" x-init="
-        // Sortable.js for drag & drop
-        new Sortable(\$refs.songList, {
-            animation: 150,
-            ghostClass: 'opacity-50',
-            onEnd: function(evt) {
-                const movedItem = songs[evt.oldIndex];
-                songs.splice(evt.oldIndex, 1);
-                songs.splice(evt.newIndex, 0, movedItem);
-                saveSongOrder();
-            }
-        });
-    ">
+    <div x-data="playlistEditor()" x-init="initEditor()">
         <div class="grid md:grid-cols-2 gap-8">
             {{-- Playlist Bilgileri --}}
             <div class="bg-muzibu-gray rounded-lg p-6">
@@ -244,4 +148,124 @@
 
 {{-- Sortable.js CDN --}}
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+{{-- Playlist Editor Component --}}
+<script>
+function playlistEditor() {
+    return {
+        playlistId: window.playlistEditData.playlistId,
+        title: window.playlistEditData.title,
+        description: window.playlistEditData.description,
+        isPublic: window.playlistEditData.isPublic,
+        songs: window.playlistEditData.songs,
+        saving: false,
+
+        initEditor() {
+            // Initialize Sortable.js for drag & drop
+            if (this.$refs.songList) {
+                new Sortable(this.$refs.songList, {
+                    animation: 150,
+                    ghostClass: 'opacity-50',
+                    onEnd: (evt) => {
+                        const movedItem = this.songs[evt.oldIndex];
+                        this.songs.splice(evt.oldIndex, 1);
+                        this.songs.splice(evt.newIndex, 0, movedItem);
+                        this.saveSongOrder();
+                    }
+                });
+            }
+        },
+
+        async savePlaylist() {
+            this.saving = true;
+
+            try {
+                const response = await fetch(`/api/muzibu/playlists/${this.playlistId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || ''
+                    },
+                    body: JSON.stringify({
+                        title: this.title,
+                        description: this.description,
+                        is_public: this.isPublic
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    Alpine.store('toast').show('Playlist güncellendi', 'success');
+                    setTimeout(() => window.location.href = '{{ route('muzibu.my-playlists') }}', 1000);
+                } else {
+                    Alpine.store('toast').show(data.message || 'Hata oluştu', 'error');
+                    this.saving = false;
+                }
+            } catch (err) {
+                console.error('Playlist save error:', err);
+                Alpine.store('toast').show('Bağlantı hatası', 'error');
+                this.saving = false;
+            }
+        },
+
+        async removeSong(songId) {
+            if (!confirm('Bu şarkıyı playlist\'ten çıkarmak istediğinize emin misiniz?')) return;
+
+            try {
+                const response = await fetch(`/api/muzibu/playlists/${this.playlistId}/remove-song/${songId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || ''
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    this.songs = this.songs.filter(s => s.song_id !== songId);
+                    Alpine.store('toast').show('Şarkı çıkarıldı', 'success');
+                } else {
+                    Alpine.store('toast').show(data.message || 'Hata oluştu', 'error');
+                }
+            } catch (err) {
+                console.error('Song remove error:', err);
+                Alpine.store('toast').show('Bağlantı hatası', 'error');
+            }
+        },
+
+        async saveSongOrder() {
+            const songPositions = this.songs.map((song, index) => ({
+                song_id: song.song_id,
+                position: index + 1
+            }));
+
+            try {
+                const response = await fetch(`/api/muzibu/playlists/${this.playlistId}/reorder`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || ''
+                    },
+                    body: JSON.stringify({ song_positions: songPositions })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    Alpine.store('toast').show('Sıralama kaydedildi', 'success');
+                } else {
+                    Alpine.store('toast').show(data.message || 'Hata oluştu', 'error');
+                }
+            } catch (err) {
+                console.error('Reorder error:', err);
+                Alpine.store('toast').show('Bağlantı hatası', 'error');
+            }
+        }
+    };
+}
+</script>
 @endsection

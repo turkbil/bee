@@ -6,10 +6,55 @@
  */
 
 /**
+ * 🔀 Shuffle array using Fisher-Yates algorithm
+ * @param {Array} array - Array to shuffle
+ * @returns {Array} Shuffled array (new copy)
+ */
+function shuffleArray(array) {
+    const shuffled = [...array]; // Create a copy
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
+/**
+ * ⏱️ Debounce tracker - Prevents rapid clicking on play buttons
+ */
+const playDebounce = {
+    lastCall: {},
+    delay: 1000, // 1 second debounce
+
+    /**
+     * Check if we should allow this call
+     * @param {string} key - Unique key for this action (e.g., "playAlbum-123")
+     * @returns {boolean} True if allowed, false if blocked
+     */
+    shouldAllow(key) {
+        const now = Date.now();
+        const lastTime = this.lastCall[key] || 0;
+
+        if (now - lastTime < this.delay) {
+            console.log(`⏱️ Debounced: ${key} (too soon)`);
+            return false;
+        }
+
+        this.lastCall[key] = now;
+        return true;
+    }
+};
+
+/**
  * 🎸 Play songs from a genre
  * @param {number} genreId - Genre ID
  */
 async function playGenres(genreId) {
+    // 🛡️ DEBOUNCE CHECK
+    if (!playDebounce.shouldAllow(`playGenre-${genreId}`)) {
+        return;
+    }
+
     const player = Alpine.store('player');
 
     if (!player) {
@@ -29,9 +74,6 @@ async function playGenres(genreId) {
             player.showToast(player.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
             return;
         }
-
-        // Show loading
-        player.isLoading = true;
 
         // Fetch songs from genre
         const response = await fetch(`/api/muzibu/genres/${genreId}/songs`);
@@ -44,12 +86,14 @@ async function playGenres(genreId) {
 
         if (!data.songs || data.songs.length === 0) {
             player.showToast(player.frontLang?.messages?.genre_no_playable_songs || 'No songs found in this genre', 'warning');
-            player.isLoading = false;
             return;
         }
 
-        // Load songs into queue and play
-        player.queue = data.songs;
+        // 🔀 SHUFFLE SONGS - Rastgele sıralama
+        const shuffledSongs = shuffleArray(data.songs);
+
+        // Load shuffled songs into queue and play
+        player.queue = shuffledSongs;
         player.queueIndex = 0;
 
         // Play first song
@@ -58,8 +102,6 @@ async function playGenres(genreId) {
     } catch (error) {
         console.error('playGenres error:', error);
         player.showToast(player.frontLang?.messages?.songs_loading_failed || 'Failed to load songs', 'error');
-    } finally {
-        player.isLoading = false;
     }
 }
 
@@ -68,6 +110,11 @@ async function playGenres(genreId) {
  * @param {number} playlistId - Playlist ID
  */
 async function playPlaylist(playlistId) {
+    // 🛡️ DEBOUNCE CHECK
+    if (!playDebounce.shouldAllow(`playPlaylist-${playlistId}`)) {
+        return;
+    }
+
     const player = Alpine.store('player');
 
     if (!player) {
@@ -87,9 +134,6 @@ async function playPlaylist(playlistId) {
             player.showToast(player.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
             return;
         }
-
-        // Show loading
-        player.isLoading = true;
 
         // Fetch playlist with songs
         const response = await fetch(`/api/muzibu/playlists/${playlistId}`);
@@ -102,12 +146,14 @@ async function playPlaylist(playlistId) {
 
         if (!data.playlist || !data.playlist.songs || data.playlist.songs.length === 0) {
             player.showToast(player.frontLang?.messages?.playlist_no_playable_songs || 'No songs found in this playlist', 'warning');
-            player.isLoading = false;
             return;
         }
 
-        // Load songs into queue and play
-        player.queue = data.playlist.songs;
+        // 🔀 SHUFFLE SONGS - Rastgele sıralama
+        const shuffledSongs = shuffleArray(data.playlist.songs);
+
+        // Load shuffled songs into queue and play
+        player.queue = shuffledSongs;
         player.queueIndex = 0;
 
         // Play first song
@@ -116,8 +162,6 @@ async function playPlaylist(playlistId) {
     } catch (error) {
         console.error('playPlaylist error:', error);
         player.showToast(player.frontLang?.messages?.playlist_loading_failed || 'Failed to load playlist', 'error');
-    } finally {
-        player.isLoading = false;
     }
 }
 
@@ -126,6 +170,11 @@ async function playPlaylist(playlistId) {
  * @param {number} albumId - Album ID
  */
 async function playAlbum(albumId) {
+    // 🛡️ DEBOUNCE CHECK
+    if (!playDebounce.shouldAllow(`playAlbum-${albumId}`)) {
+        return;
+    }
+
     const player = Alpine.store('player');
 
     if (!player) {
@@ -145,9 +194,6 @@ async function playAlbum(albumId) {
             player.showToast(player.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
             return;
         }
-
-        // Show loading
-        player.isLoading = true;
 
         // Fetch album with songs
         const response = await fetch(`/api/muzibu/albums/${albumId}`);
@@ -160,12 +206,14 @@ async function playAlbum(albumId) {
 
         if (!data.album || !data.album.songs || data.album.songs.length === 0) {
             player.showToast(player.frontLang?.messages?.album_no_playable_songs || 'No songs found in this album', 'warning');
-            player.isLoading = false;
             return;
         }
 
-        // Load songs into queue and play
-        player.queue = data.album.songs;
+        // 🔀 SHUFFLE SONGS - Rastgele sıralama
+        const shuffledSongs = shuffleArray(data.album.songs);
+
+        // Load shuffled songs into queue and play
+        player.queue = shuffledSongs;
         player.queueIndex = 0;
 
         // Play first song
@@ -174,8 +222,6 @@ async function playAlbum(albumId) {
     } catch (error) {
         console.error('playAlbum error:', error);
         player.showToast(player.frontLang?.messages?.album_loading_failed || 'Failed to load album', 'error');
-    } finally {
-        player.isLoading = false;
     }
 }
 
@@ -184,6 +230,11 @@ async function playAlbum(albumId) {
  * @param {number} radioId - Radio ID
  */
 async function playRadio(radioId) {
+    // 🛡️ DEBOUNCE CHECK
+    if (!playDebounce.shouldAllow(`playRadio-${radioId}`)) {
+        return;
+    }
+
     const player = Alpine.store('player');
 
     if (!player) {
@@ -203,9 +254,6 @@ async function playRadio(radioId) {
             player.showToast(player.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
             return;
         }
-
-        // Show loading
-        player.isLoading = true;
 
         // Fetch radio songs
         const response = await fetch(`/api/muzibu/radios/${radioId}/songs`);
@@ -218,12 +266,14 @@ async function playRadio(radioId) {
 
         if (!data.songs || data.songs.length === 0) {
             player.showToast(player.frontLang?.messages?.radio_no_playable_songs || 'No songs found in this radio', 'warning');
-            player.isLoading = false;
             return;
         }
 
-        // Load songs into queue and play
-        player.queue = data.songs;
+        // 🔀 SHUFFLE SONGS
+        const shuffledSongs = shuffleArray(data.songs);
+
+        // Load shuffled songs into queue and play
+        player.queue = shuffledSongs;
         player.queueIndex = 0;
 
         // Play first song
@@ -232,8 +282,6 @@ async function playRadio(radioId) {
     } catch (error) {
         console.error('playRadio error:', error);
         player.showToast(player.frontLang?.messages?.radio_loading_failed || 'Failed to load radio', 'error');
-    } finally {
-        player.isLoading = false;
     }
 }
 
@@ -242,6 +290,11 @@ async function playRadio(radioId) {
  * @param {number} sectorId - Sector ID
  */
 async function playSector(sectorId) {
+    // 🛡️ DEBOUNCE CHECK
+    if (!playDebounce.shouldAllow(`playSector-${sectorId}`)) {
+        return;
+    }
+
     const player = Alpine.store('player');
 
     if (!player) {
@@ -262,9 +315,6 @@ async function playSector(sectorId) {
             return;
         }
 
-        // Show loading
-        player.isLoading = true;
-
         // Fetch sector songs
         const response = await fetch(`/api/muzibu/sectors/${sectorId}/songs`);
 
@@ -276,12 +326,14 @@ async function playSector(sectorId) {
 
         if (!data.songs || data.songs.length === 0) {
             player.showToast(player.frontLang?.messages?.sector_no_playable_songs || 'No songs found in this sector', 'warning');
-            player.isLoading = false;
             return;
         }
 
-        // Load songs into queue and play
-        player.queue = data.songs;
+        // 🔀 SHUFFLE SONGS - Rastgele sıralama
+        const shuffledSongs = shuffleArray(data.songs);
+
+        // Load shuffled songs into queue and play
+        player.queue = shuffledSongs;
         player.queueIndex = 0;
 
         // Play first song
@@ -290,8 +342,6 @@ async function playSector(sectorId) {
     } catch (error) {
         console.error('playSector error:', error);
         player.showToast(player.frontLang?.messages?.sector_loading_failed || 'Failed to load sector', 'error');
-    } finally {
-        player.isLoading = false;
     }
 }
 

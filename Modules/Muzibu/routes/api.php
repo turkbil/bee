@@ -40,6 +40,7 @@ Route::prefix('muzibu')->group(function () {
         Route::get('/featured', [PlaylistController::class, 'featured'])->name('api.muzibu.playlists.featured');
 
         // User Playlist Management (auth required) - MUST BE BEFORE /{id} catch-all!
+        // NOTE: Using 'web' middleware to enable session-based auth (cookies)
         Route::middleware(['web', 'auth'])->group(function () {
             Route::get('/my-playlists', [PlaylistController::class, 'myPlaylists'])->name('api.muzibu.playlists.my-playlists');
             Route::post('/clone', [PlaylistController::class, 'clone'])->name('api.muzibu.playlists.clone');

@@ -17,7 +17,9 @@ const PlaylistActions = {
     },
 
     edit(data) {
-        if (data.id) window.location.href = `/my-playlists/${data.id}/edit`;
+        // Slug varsa slug kullan, yoksa id kullan
+        const identifier = data.slug || data.id;
+        if (identifier) window.location.href = `/muzibu/playlist/${identifier}/edit`;
     },
 
     async delete(data) {

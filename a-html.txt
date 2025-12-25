@@ -1,0 +1,63 @@
+<div x-show="userMenuOpen" @click.away="userMenuOpen = false" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95 -translate-y-2" x-transition:enter-end="opacity-100 scale-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 -translate-y-2" class="absolute right-0 mt-3 w-64 bg-zinc-900/95 backdrop-blur-xl rounded-xl shadow-2xl border border-white/10 py-2 overflow-hidden z-50">
+                <div class="px-4 py-3 border-b border-white/10">
+                    <p class="text-white font-semibold text-sm" x-text="currentUser?.name || (window.muzibuPlayerConfig?.frontLang?.user?.user || 'User')">Nurullah</p>
+                    <p class="text-zinc-400 text-xs" x-text="currentUser?.email || ''">nurullah@nurullah.net</p>
+
+                    
+                    <div x-show="currentUser?.is_premium" class="mt-2 inline-flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-full">
+                        <i class="fas fa-crown text-yellow-400 text-xs"></i>
+                        <span class="text-yellow-400 text-xs font-semibold">Premium Üye</span>
+                    </div>
+
+                    
+                                            
+                                                            </div>
+
+                
+                                                            <a href="/admin" target="_blank" rel="noopener noreferrer" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-blue-500/10 text-blue-400 text-sm transition-colors">
+                            <i class="fas fa-user-shield w-5"></i>
+                            <span>Admin Paneli</span>
+                            <i class="fas fa-external-link-alt ml-auto text-xs opacity-50"></i>
+                        </a>
+                        <div class="h-px bg-white/10 my-1"></div>
+                                    
+                
+                                                                                <a href="/corporate/dashboard" @click="userMenuOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-purple-500/10 text-purple-400 text-sm transition-colors" data-spa="">
+                            <i class="fas fa-building w-5"></i>
+                            <span>Kurumsal Panel</span>
+                        </a>
+                                    
+                
+                <a href="/dashboard" @click="userMenuOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-white text-sm transition-colors">
+                    <i class="fas fa-th-large w-5"></i>
+                    <span>Kullanıcı Paneli</span>
+                </a>
+
+                
+                <a href="/profile" @click="userMenuOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-white text-sm transition-colors">
+                    <i class="fas fa-user w-5"></i>
+                    <span>Profil</span>
+                </a>
+
+                <div class="h-px bg-white/10 my-1"></div>
+
+                
+                <a href="/subscription/plans" x-show="!currentUser?.is_premium" @click="userMenuOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-yellow-500/10 text-yellow-400 text-sm transition-colors" style="display: none;">
+                    <i class="fas fa-crown w-5"></i>
+                    <span>Premium'a Geç</span>
+                </a>
+
+                
+                <a href="/subscription/plans" x-show="currentUser?.is_premium" @click="userMenuOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-yellow-500/10 text-yellow-400 text-sm transition-colors">
+                    <i class="fas fa-sync-alt w-5"></i>
+                    <span>Üyeliğini Uzat</span>
+                </a>
+
+                <div class="h-px bg-white/10 my-1"></div>
+
+                
+                <button @click.prevent="logout()" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-red-500/10 text-red-400 text-sm transition-colors">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Çıkış Yap</span>
+                </button>
+            </div>

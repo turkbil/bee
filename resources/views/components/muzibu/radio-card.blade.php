@@ -5,7 +5,7 @@
 {{-- Note: Radios play directly, no preview mode --}}
 
 <div class="radio-card group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300 cursor-pointer"
-     @click.stop.prevent="$store.player.playRadio({{ $radio->radio_id }})"
+     @click.stop.prevent="window.playContent('radio', {{ $radio->radio_id }})"
      data-radio-id="{{ $radio->radio_id }}"
      data-genre-id="{{ $radio->genre_id ?? '' }}"
      data-radio-title="{{ $radio->getTranslation('title', app()->getLocale()) }}"
@@ -63,7 +63,7 @@
 
         {{-- Large Play Button Overlay (Center) - Radios have no detail page --}}
         <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 rounded-lg flex items-center justify-center">
-            <button x-on:click.stop.prevent="$store.player.playRadio({{ $radio->radio_id }})"
+            <button x-on:click.stop.prevent="window.playContent('radio', {{ $radio->radio_id }})"
                     class="opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300 bg-muzibu-coral hover:bg-opacity-90 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-2xl hover:scale-110">
                 <i class="fas fa-play text-2xl ml-1"></i>
             </button>

@@ -105,6 +105,30 @@ const MenuBuilder = {
     },
 
     /**
+     * 🎵 My Playlist için menu itemları (My-Playlists sayfası için)
+     * Her zaman edit/delete gösterir çünkü kullanıcının kendi playlist'i
+     */
+    getMyPlaylistMenuItems(data) {
+        const items = [
+            { icon: 'fa-play', iconPrefix: 'fas', label: 'Çal', action: 'play' },
+            { icon: 'fa-plus-circle', iconPrefix: 'fas', label: 'Sıraya Ekle', action: 'addToQueue' }
+        ];
+
+        // Favorilere Ekle/Çıkar (dynamic icon)
+        const favoriteLabel = data.is_favorite ? 'Favorilerimden Çıkar' : 'Favorilerime Ekle';
+        const favoriteIconPrefix = data.is_favorite ? 'fas' : 'far';
+        items.push({ divider: true });
+        items.push({ icon: 'fa-heart', iconPrefix: favoriteIconPrefix, label: favoriteLabel, action: 'toggleFavorite' });
+
+        // Her zaman düzenle/sil göster (my-playlists sayfası kullanıcının kendi playlist'leri)
+        items.push({ divider: true });
+        items.push({ icon: 'fa-edit', iconPrefix: 'fas', label: 'Düzenle', action: 'edit' });
+        items.push({ icon: 'fa-trash', iconPrefix: 'fas', label: 'Sil', action: 'delete' });
+
+        return items;
+    },
+
+    /**
      * 🎸 Genre için menu itemları
      */
     getGenreMenuItems(data) {
@@ -174,6 +198,7 @@ const MenuBuilder = {
             'song': this.getSongMenuItems,
             'album': this.getAlbumMenuItems,
             'playlist': this.getPlaylistMenuItems,
+            'my-playlist': this.getMyPlaylistMenuItems,
             'genre': this.getGenreMenuItems,
             'sector': this.getSectorMenuItems,
             'radio': this.getRadioMenuItems,

@@ -9,9 +9,22 @@ class RadioController extends Controller
 {
     public function index()
     {
+        // Only show radios with at least 1 active playlist (that has active songs) - alfabetik sıralı
         $radios = Radio::with('logoMedia')
             ->where('is_active', 1)
-            ->orderBy('created_at', 'desc')
+            ->whereHas('playlists', function($q) {
+                $q->where('is_active', 1)
+                  ->whereHas('songs', function($sq) {
+                      $sq->where('is_active', 1);
+                  });
+            })
+            ->withCount(['playlists' => function($q) {
+                $q->where('is_active', 1)
+                  ->whereHas('songs', function($sq) {
+                      $sq->where('is_active', 1);
+                  });
+            }])
+            ->orderByRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr")))')
             ->paginate(200);
 
         return view('themes.muzibu.radios.index', compact('radios'));
@@ -19,9 +32,22 @@ class RadioController extends Controller
 
     public function apiIndex()
     {
+        // Only show radios with at least 1 active playlist (that has active songs)
         $radios = Radio::with('logoMedia')
             ->where('is_active', 1)
-            ->orderBy('created_at', 'desc')
+            ->whereHas('playlists', function($q) {
+                $q->where('is_active', 1)
+                  ->whereHas('songs', function($sq) {
+                      $sq->where('is_active', 1);
+                  });
+            })
+            ->withCount(['playlists' => function($q) {
+                $q->where('is_active', 1)
+                  ->whereHas('songs', function($sq) {
+                      $sq->where('is_active', 1);
+                  });
+            }])
+            ->orderByRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr")))')
             ->paginate(200);
 
         $html = view('themes.muzibu.partials.radios-grid', compact('radios'))->render();

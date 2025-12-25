@@ -12,7 +12,7 @@
      data-context-type="song"
      {{-- Playing State (JS will add this class when playing) --}}
      x-bind:class="$store.player.currentSong?.id === {{ $song->id }} ? 'bg-muzibu-coral/10 border-l-4 border-muzibu-coral' : ''"
-     x-on:click="$store.player.playSong({{ $song->id }}, {{ $song->album_id ?? 'null' }}, {{ $song->genre_id ?? ($song->album->genre_id ?? 'null') }})"
+     x-on:click="window.playSong ? window.playSong({{ $song->id }}, {{ $song->album_id ?? 'null' }}, {{ $song->genre_id ?? ($song->album->genre_id ?? 'null') }}) : $store.player.playSong({{ $song->id }}, {{ $song->album_id ?? 'null' }}, {{ $song->genre_id ?? ($song->album->genre_id ?? 'null') }})"
      x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'song', {
         id: {{ $song->id }},
         title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',

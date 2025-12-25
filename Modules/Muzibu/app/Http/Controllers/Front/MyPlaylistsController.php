@@ -21,7 +21,11 @@ class MyPlaylistsController extends Controller
             ->latest()
             ->paginate(200);
 
-        return view('themes.muzibu.playlists.my-playlists', compact('playlists'));
+        return response()
+            ->view('themes.muzibu.playlists.my-playlists', compact('playlists'))
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     public function apiIndex()
@@ -32,7 +36,10 @@ class MyPlaylistsController extends Controller
 
         $playlists = Playlist::where('user_id', auth()->id())->where('is_system', false)->with('coverMedia')->withCount('songs')->latest()->paginate(200);
         $html = view('themes.muzibu.partials.my-playlists-grid', compact('playlists'))->render();
-        return response()->json(['html' => $html, 'meta' => ['title' => 'Çalma Listelerim - Muzibu', 'description' => 'Oluşturduğunuz çalma listeleri']]);
+        return response()->json(['html' => $html, 'meta' => ['title' => 'Çalma Listelerim - Muzibu', 'description' => 'Oluşturduğunuz çalma listeleri']])
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     public function edit($slug)

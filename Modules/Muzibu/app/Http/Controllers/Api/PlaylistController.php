@@ -256,6 +256,13 @@ class PlaylistController extends Controller
     public function addSong(Request $request, int $id): JsonResponse
     {
         try {
+            \Log::info('[PlaylistController] addSong request', [
+                'playlist_id' => $id,
+                'song_id' => $request->input('song_id'),
+                'user_id' => auth()->id(),
+                'request_data' => $request->all(),
+            ]);
+
             $request->validate([
                 'song_id' => 'required|integer|exists:muzibu_songs,song_id',
             ]);
@@ -267,12 +274,19 @@ class PlaylistController extends Controller
                 $userId
             );
 
+            \Log::info('[PlaylistController] addSong result', [
+                'result' => $result,
+            ]);
+
             return response()->json($result, $result['success'] ? 200 : 400);
         } catch (\Exception $e) {
-            \Log::error('Add song to playlist error:', ['message' => $e->getMessage()]);
+            \Log::error('[PlaylistController] Add song exception:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             return response()->json([
                 'success' => false,
-                'message' => 'Şarkı ekleme başarısız',
+                'message' => 'Şarkı ekleme başarısız: ' . $e->getMessage(),
             ], 500);
         }
     }

@@ -327,9 +327,15 @@ class PlaylistService
 
             // Sadece playlist sahibi ekleyebilir
             if ($playlist->user_id !== $userId) {
+                \Log::warning('[PlaylistService] Owner mismatch', [
+                    'playlist_id' => $playlistId,
+                    'playlist_user_id' => $playlist->user_id,
+                    'auth_user_id' => $userId,
+                    'playlist_title' => $playlist->title,
+                ]);
                 return [
                     'success' => false,
-                    'message' => 'Bu playlist\'e şarkı ekleyemezsiniz',
+                    'message' => 'Bu playlist\'e şarkı ekleyemezsiniz (Sadece kendi playlistlerinize ekleyebilirsiniz)',
                 ];
             }
 
@@ -343,7 +349,7 @@ class PlaylistService
             }
 
             // Şarkı zaten playlist'te mi?
-            if ($playlist->songs()->where('song_id', $songId)->exists()) {
+            if ($playlist->songs()->where('muzibu_playlist_song.song_id', $songId)->exists()) {
                 return [
                     'success' => false,
                     'message' => 'Şarkı zaten playlist\'te',

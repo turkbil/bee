@@ -6,6 +6,7 @@ use Spatie\ResponseCache\CacheProfiles\CacheProfile;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use DateTime;
+use App\Services\CacheProfiles\ModuleCacheProfileInterface;
 
 class TenantCacheProfile implements CacheProfile
 {
@@ -21,25 +22,88 @@ class TenantCacheProfile implements CacheProfile
     }
 
     /**
-     * Dinamik sayfalar - kullanıcıya özel içerik, asla cache'lenmemeli
+     * Modül cache profile'larını yükle (otomatik discover)
+     * CacheProfiles klasöründeki tüm profilleri otomatik bulur ve yükler
      */
-    protected array $dynamicPaths = [
-        'favorites',
-        'favorites/*',
-        'my-playlists',
-        'my-playlists/*',
-        'playlist/*/edit',
-        'dashboard',
-        'dashboard/*',
-        'listening-history',
-        'listening-history/*',
-        'corporate/*',
-        'api/*',
-        'cart',
-        'cart/*',
-        'checkout',
-        'checkout/*',
-    ];
+    protected function loadModuleProfiles(): array
+    {
+        $profiles = [];
+        $profilePath = app_path('Services/CacheProfiles');
+
+        if (!is_dir($profilePath)) {
+            return $profiles;
+        }
+
+        // CacheProfiles klasöründeki tüm PHP dosyalarını bul
+        $files = glob($profilePath . '/*CacheProfile.php');
+
+        foreach ($files as $file) {
+            $className = 'App\\Services\\CacheProfiles\\' . basename($file, '.php');
+
+            // Class var mı ve interface implement ediyor mu kontrol et
+            if (class_exists($className)) {
+                $instance = new $className();
+
+                if ($instance instanceof ModuleCacheProfileInterface) {
+                    $profiles[] = $instance;
+                }
+            }
+        }
+
+        return $profiles;
+    }
+
+    /**
+     * Tenant-aware dinamik sayfalar
+     * Modül cache profile'larından otomatik toplar
+     */
+    protected function getDynamicPaths(): array
+    {
+        $tenant = tenant();
+        $tenantId = $tenant ? $tenant->id : null;
+        $allPaths = [];
+
+        // Tüm modül profile'larını yükle
+        $profiles = $this->loadModuleProfiles();
+
+        foreach ($profiles as $profile) {
+            $moduleTenantIds = $profile->getTenantIds();
+
+            // Tenant kontrolü:
+            // - Boş array = tüm tenant'larda aktif
+            // - Dolu array = sadece belirtilen tenant'larda aktif
+            if (empty($moduleTenantIds) || in_array($tenantId, $moduleTenantIds)) {
+                $allPaths = array_merge($allPaths, $profile->getDynamicPaths());
+            }
+        }
+
+        return array_unique($allPaths);
+    }
+
+    /**
+     * Config excluded paths
+     * Modül cache profile'larından otomatik toplar
+     */
+    protected function getModuleExcludedPaths(): array
+    {
+        $tenant = tenant();
+        $tenantId = $tenant ? $tenant->id : null;
+        $allPaths = [];
+
+        // Tüm modül profile'larını yükle
+        $profiles = $this->loadModuleProfiles();
+
+        foreach ($profiles as $profile) {
+            $moduleTenantIds = $profile->getTenantIds();
+
+            // Tenant kontrolü
+            if (empty($moduleTenantIds) || in_array($tenantId, $moduleTenantIds)) {
+                $allPaths = array_merge($allPaths, $profile->getExcludedPaths());
+            }
+        }
+
+        return array_unique($allPaths);
+    }
 
     public function shouldCacheRequest(Request $request): bool
     {
@@ -56,8 +120,9 @@ class TenantCacheProfile implements CacheProfile
 
         // 🔴 DİNAMİK SAYFALAR - AUTH KULLANICILARI İÇİN CACHE YOK!
         // Favoriler, playlist'ler, dashboard vb. kullanıcıya özel sayfalar
+        // TENANT-AWARE: Her tenant kendi modüllerine göre dinamik path'lere sahip
         if (auth()->check()) {
-            foreach ($this->dynamicPaths as $pattern) {
+            foreach ($this->getDynamicPaths() as $pattern) {
                 if ($request->is($pattern)) {
                     return false;
                 }
@@ -69,21 +134,8 @@ class TenantCacheProfile implements CacheProfile
             return false;
         }
 
-        // Config'den excluded paths al
-        $excludedPaths = config('responsecache.excluded_paths', [
-            'admin/*',
-            'language/*',
-            'debug-lang/*',
-            'debug/*',
-            'livewire/*',
-            '*/login',          // Tüm dillerde login
-            '*/register',       // Tüm dillerde register
-            '*/logout',         // Tüm dillerde logout
-            '*/forgot-password',
-            '*/reset-password/*',
-            '*/password/*',
-            '*/verify-email/*'
-        ]);
+        // Modül cache profile'larından excluded paths al (otomatik, tenant-aware)
+        $excludedPaths = $this->getModuleExcludedPaths();
 
         foreach ($excludedPaths as $pattern) {
             if ($request->is($pattern)) {

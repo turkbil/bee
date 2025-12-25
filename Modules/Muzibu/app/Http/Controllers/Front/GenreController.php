@@ -11,7 +11,7 @@ class GenreController extends Controller
 {
     public function index()
     {
-        // Only show genres with at least 1 active song
+        // Only show genres with at least 1 active song (alfabetik sıralı)
         $genres = Genre::with('iconMedia')
             ->where('is_active', 1)
             ->whereHas('songs', function($q) {
@@ -20,6 +20,7 @@ class GenreController extends Controller
             ->withCount(['songs' => function($q) {
                 $q->where('is_active', 1);
             }])
+            ->orderByRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr")))')
             ->paginate(200);
 
         return view('themes.muzibu.genres.index', compact('genres'));
@@ -38,7 +39,7 @@ class GenreController extends Controller
         $songs = Song::with(['album', 'artist', 'coverMedia', 'album.coverMedia'])
             ->where('genre_id', $genre->genre_id)
             ->where('is_active', 1)
-            ->orderBy('play_count', 'desc')
+            ->orderBy('created_at', 'desc')
             ->paginate(200);
 
         return view('themes.muzibu.genres.show', compact('genre', 'songs'));
@@ -55,6 +56,7 @@ class GenreController extends Controller
             ->withCount(['songs' => function($q) {
                 $q->where('is_active', 1);
             }])
+            ->orderByRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr")))')
             ->paginate(200);
         $html = view('themes.muzibu.partials.genres-grid', compact('genres'))->render();
         return response()->json(['html' => $html, 'meta' => ['title' => 'Müzik Türleri - Muzibu', 'description' => 'Tüm müzik türlerini keşfedin']]);
@@ -63,7 +65,7 @@ class GenreController extends Controller
     public function apiShow($slug)
     {
         $genre = Genre::with('iconMedia')->where(function($q) use ($slug) { $q->where('slug->tr', $slug)->orWhere('slug->en', $slug); })->where('is_active', 1)->firstOrFail();
-        $songs = Song::with(['album', 'artist', 'coverMedia', 'album.coverMedia'])->where('genre_id', $genre->genre_id)->where('is_active', 1)->orderBy('play_count', 'desc')->paginate(200);
+        $songs = Song::with(['album', 'artist', 'coverMedia', 'album.coverMedia'])->where('genre_id', $genre->genre_id)->where('is_active', 1)->orderBy('created_at', 'desc')->paginate(200);
         $html = view('themes.muzibu.partials.genre-detail', compact('genre', 'songs'))->render();
         $titleJson = @json_decode($genre->title);
         $title = $titleJson && isset($titleJson->tr) ? $titleJson->tr : $genre->title;

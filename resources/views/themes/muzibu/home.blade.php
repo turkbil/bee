@@ -126,7 +126,7 @@
                 </div>
                 {{-- Play button on hover --}}
                 <button type="button" class="absolute bottom-2 right-2 w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-10"
-                     @click.stop="$store.player.playPlaylist({{ $playlist->playlist_id }})">
+                     @click.stop="window.playPlaylist ? window.playPlaylist({{ $playlist->playlist_id }}) : $store.player.playPlaylist({{ $playlist->playlist_id }})">
                     <i class="fas fa-play text-black ml-0.5"></i>
                 </button>
                 {{-- 3-Dot Menu Button (Sağ Üst) - HER ZAMAN GÖRÜNÜR --}}
@@ -244,7 +244,7 @@
                 </div>
                 {{-- Play button on hover --}}
                 <button type="button" class="absolute bottom-2 right-2 w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-10"
-                     @click.stop="$store.player.playAlbum({{ $album->album_id }})">
+                     @click.stop="window.playAlbum ? window.playAlbum({{ $album->album_id }}) : $store.player.playAlbum({{ $album->album_id }})">
                     <i class="fas fa-play text-black ml-0.5"></i>
                 </button>
                 {{-- 3-Dot Menu Button (Sağ Üst) - HER ZAMAN GÖRÜNÜR --}}
@@ -293,7 +293,7 @@
                  x-on:touchend="clearTimeout(touchTimer)"
                  x-on:touchmove="if (Math.abs($event.touches[0].clientX - touchStartPos.x) > 10 || Math.abs($event.touches[0].clientY - touchStartPos.y) > 10) clearTimeout(touchTimer);"
                  @mouseenter="preloadSongOnHover({{ $song->song_id }})"
-                 @click="$store.player.playSong({{ $song->song_id }})">
+                 @click="window.playSong ? window.playSong({{ $song->song_id }}) : $store.player.playSong({{ $song->song_id }})">
                 {{-- Play Button Overlay --}}
                 <div class="relative">
                     <div class="w-14 h-14 rounded overflow-hidden flex-shrink-0">
@@ -365,7 +365,7 @@
                  x-on:touchend="clearTimeout(touchTimer)"
                  x-on:touchmove="if (Math.abs($event.touches[0].clientX - touchStartPos.x) > 10 || Math.abs($event.touches[0].clientY - touchStartPos.y) > 10) clearTimeout(touchTimer);"
                  @mouseenter="preloadSongOnHover({{ $song->song_id }})"
-                 @click="$store.player.playSong({{ $song->song_id }})">
+                 @click="window.playSong ? window.playSong({{ $song->song_id }}) : $store.player.playSong({{ $song->song_id }})">
                 {{-- Play Button Overlay --}}
                 <div class="relative">
                     <div class="w-14 h-14 rounded overflow-hidden flex-shrink-0">

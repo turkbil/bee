@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Sıralama Düzeni - Frontend Sıralama Standartları</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .card { transition: transform 0.2s, box-shadow 0.2s; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+    <!-- Header -->
+    <header class="border-b border-slate-700 bg-slate-900/50 backdrop-blur">
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="inline-block bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full mb-3">📋 Frontend Sıralama</span>
+                    <h1 class="text-4xl font-bold mb-2">Muzibu Sıralama Düzeni</h1>
+                    <p class="text-slate-400">Frontend sayfa sıralama standartları - 25 Aralık 2025</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-slate-400">Durum</div>
+                    <div class="text-2xl font-bold text-green-400">✅ Uygulandı</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12">
+
+        <!-- Summary Card -->
+        <div class="bg-gradient-to-br from-blue-900/40 to-purple-900/40 border border-blue-800/50 rounded-xl p-8 mb-8 backdrop-blur">
+            <h2 class="text-2xl font-bold mb-4 flex items-center">
+                <span class="bg-blue-600 text-white w-8 h-8 rounded-full inline-flex items-center justify-center mr-3 text-sm">📌</span>
+                Özet
+            </h2>
+            <p class="text-slate-300 text-lg leading-relaxed">
+                Frontend sayfalarında tutarlı ve kullanıcı dostu sıralama düzeni oluşturuldu.
+                Alfabetik sıralama, son ekleme tarihine göre sıralama ve özel pivot position sıralaması
+                sayfa ve içerik tipine göre optimize edildi.
+            </p>
+        </div>
+
+        <!-- Sıralama Tablosu -->
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold mb-6 flex items-center">
+                <span class="bg-green-600 text-white w-10 h-10 rounded-full inline-flex items-center justify-center mr-4">📊</span>
+                Sıralama Matrisi
+            </h2>
+
+            <div class="grid grid-cols-1 gap-6">
+
+                <!-- 1. ALBÜMLER -->
+                <div class="card bg-slate-800/60 border border-slate-700 rounded-xl overflow-hidden">
+                    <div class="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-4">
+                        <h3 class="text-2xl font-bold flex items-center">
+                            <span class="mr-3">💿</span> Albümler
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <!-- Liste Sayfası -->
+                            <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                                <div class="flex items-center mb-3">
+                                    <span class="bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded mr-2">LİSTE</span>
+                                    <span class="text-slate-400 text-sm">/albums</span>
+                                </div>
+                                <div class="text-xl font-semibold mb-2">📝 Alfabetik Sıralı</div>
+                                <div class="text-slate-400 text-sm">A'dan Z'ye sıralama (title bazlı)</div>
+                                <div class="mt-3 bg-slate-950 border border-slate-700 rounded p-3 text-xs font-mono text-green-400">
+                                    orderByRaw('LOWER(JSON_UNQUOTE(...title.tr))')
+                                </div>
+                            </div>
+
+                            <!-- Detay Sayfası -->
+                            <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                                <div class="flex items-center mb-3">
+                                    <span class="bg-pink-500 text-white text-xs font-bold px-2 py-1 rounded mr-2">DETAY</span>
+                                    <span class="text-slate-400 text-sm">/albums/{slug}</span>
+                                </div>
+                                <div class="text-xl font-semibold mb-2">🎵 Şarkılar Alfabetik</div>
+                                <div class="text-slate-400 text-sm">Albümdeki şarkılar A-Z</div>
+                                <div class="mt-3 bg-slate-950 border border-slate-700 rounded p-3 text-xs font-mono text-green-400">
+                                    Song orderByRaw('LOWER(...title.tr)')
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. ÇALMA LİSTELERİ -->
+                <div class="card bg-slate-800/60 border border-slate-700 rounded-xl overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-600 to-cyan-600 px-6 py-4">
+                        <h3 class="text-2xl font-bold flex items-center">
+                            <span class="mr-3">📼</span> Çalma Listeleri
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <!-- Liste Sayfası -->
+                            <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                                <div class="flex items-center mb-3">
+                                    <span class="bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded mr-2">LİSTE</span>
+                                    <span class="text-slate-400 text-sm">/playlists</span>
+                                </div>
+                                <div class="text-xl font-semibold mb-2">🆕 Son Eklenenler Önce</div>
+                                <div class="text-slate-400 text-sm">En yeni playlist'ler en üstte</div>
+                                <div class="mt-3 bg-slate-950 border border-slate-700 rounded p-3 text-xs font-mono text-blue-400">
+                                    orderBy('created_at', 'desc')
+                                </div>
+                            </div>
+
+                            <!-- Detay Sayfası -->
+                            <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                                <div class="flex items-center mb-3">
+                                    <span class="bg-cyan-500 text-white text-xs font-bold px-2 py-1 rounded mr-2">DETAY</span>
+                                    <span class="text-slate-400 text-sm">/playlists/{slug}</span>
+                                </div>
+                                <div class="text-xl font-semibold mb-2">🎯 Özel Sıralama</div>
+                                <div class="text-slate-400 text-sm">Playlist'in kendi position sırası</div>
+                                <div class="mt-3 bg-slate-950 border border-slate-700 rounded p-3 text-xs font-mono text-blue-400">
+                                    orderBy('muzibu_playlist_song.position')
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. TÜRLER -->
+                <div class="card bg-slate-800/60 border border-slate-700 rounded-xl overflow-hidden">
+                    <div class="bg-gradient-to-r from-orange-600 to-red-600 px-6 py-4">
+                        <h3 class="text-2xl font-bold flex items-center">
+                            <span class="mr-3">🎸</span> Türler
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <!-- Liste Sayfası -->
+                            <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                                <div class="flex items-center mb-3">
+                                    <span class="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded mr-2">LİSTE</span>
+                                    <span class="text-slate-400 text-sm">/genres</span>
+                                </div>
+                                <div class="text-xl font-semibold mb-2">📝 Alfabetik Sıralı</div>
+                                <div class="text-slate-400 text-sm">A'dan Z'ye sıralama (title bazlı)</div>
+                                <div class="mt-3 bg-slate-950 border border-slate-700 rounded p-3 text-xs font-mono text-green-400">
+                                    orderByRaw('LOWER(JSON_UNQUOTE(...title.tr))')
+                                </div>
+                            </div>
+
+                            <!-- Detay Sayfası -->
+                            <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                                <div class="flex items-center mb-3">
+                                    <span class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded mr-2">DETAY</span>
+                                    <span class="text-slate-400 text-sm">/genres/{slug}</span>
+                                </div>
+                                <div class="text-xl font-semibold mb-2">🕒 Son Yükleme Tarihi</div>
+                                <div class="text-slate-400 text-sm">Şarkılar yeni → eski</div>
+                                <div class="mt-3 bg-slate-950 border border-slate-700 rounded p-3 text-xs font-mono text-orange-400">
+                                    orderBy('created_at', 'desc')
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. SEKTÖRLER -->
+                <div class="card bg-slate-800/60 border border-slate-700 rounded-xl overflow-hidden">
+                    <div class="bg-gradient-to-r from-green-600 to-teal-600 px-6 py-4">
+                        <h3 class="text-2xl font-bold flex items-center">
+                            <span class="mr-3">🏢</span> Sektörler
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <!-- Liste Sayfası -->
+                            <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                                <div class="flex items-center mb-3">
+                                    <span class="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded mr-2">LİSTE</span>
+                                    <span class="text-slate-400 text-sm">/sectors</span>
+                                </div>
+                                <div class="text-xl font-semibold mb-2">📝 Alfabetik Sıralı</div>
+                                <div class="text-slate-400 text-sm">A'dan Z'ye sıralama (title bazlı)</div>
+                                <div class="mt-3 bg-slate-950 border border-slate-700 rounded p-3 text-xs font-mono text-green-400">
+                                    orderByRaw('LOWER(JSON_UNQUOTE(...title.tr))')
+                                </div>
+                            </div>
+
+                            <!-- Detay Sayfası -->
+                            <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                                <div class="flex items-center mb-3">
+                                    <span class="bg-teal-500 text-white text-xs font-bold px-2 py-1 rounded mr-2">DETAY</span>
+                                    <span class="text-slate-400 text-sm">/sectors/{slug}</span>
+                                </div>
+                                <div class="text-xl font-semibold mb-2">📻 Radyolar + 📼 Playlist'ler</div>
+                                <div class="text-sm space-y-2">
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-slate-500">Radyolar:</span>
+                                        <span class="text-green-400">Alfabetik</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-slate-500">Playlist'ler:</span>
+                                        <span class="text-blue-400">Son Eklenenler</span>
+                                    </div>
+                                </div>
+                                <div class="mt-3 space-y-2">
+                                    <div class="bg-slate-950 border border-slate-700 rounded p-2 text-xs font-mono text-green-400">
+                                        radios: orderByRaw('LOWER(...title.tr)')
+                                    </div>
+                                    <div class="bg-slate-950 border border-slate-700 rounded p-2 text-xs font-mono text-blue-400">
+                                        playlists: orderBy('created_at', 'desc')
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. RADYOLAR -->
+                <div class="card bg-slate-800/60 border border-slate-700 rounded-xl overflow-hidden">
+                    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
+                        <h3 class="text-2xl font-bold flex items-center">
+                            <span class="mr-3">📻</span> Radyolar
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <!-- Liste Sayfası -->
+                            <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                                <div class="flex items-center mb-3">
+                                    <span class="bg-indigo-500 text-white text-xs font-bold px-2 py-1 rounded mr-2">LİSTE</span>
+                                    <span class="text-slate-400 text-sm">/radios</span>
+                                </div>
+                                <div class="text-xl font-semibold mb-2">📝 Alfabetik Sıralı</div>
+                                <div class="text-slate-400 text-sm">A'dan Z'ye sıralama (title bazlı)</div>
+                                <div class="mt-3 bg-slate-950 border border-slate-700 rounded p-3 text-xs font-mono text-green-400">
+                                    orderByRaw('LOWER(JSON_UNQUOTE(...title.tr))')
+                                </div>
+                            </div>
+
+                            <!-- Detay Sayfası -->
+                            <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5 flex items-center justify-center">
+                                <div class="text-center text-slate-500">
+                                    <div class="text-4xl mb-2">🎧</div>
+                                    <div class="text-sm">Detay sayfası yok</div>
+                                    <div class="text-xs">(Canlı yayın)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-8 mb-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="bg-orange-600 text-white w-10 h-10 rounded-full inline-flex items-center justify-center mr-4">🔧</span>
+                Teknik Detaylar
+            </h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                    <h4 class="font-bold mb-2 text-blue-400">📁 Değiştirilen Dosyalar</h4>
+                    <ul class="space-y-1 text-sm font-mono text-slate-400">
+                        <li>• Modules/Muzibu/app/Http/Controllers/Front/AlbumController.php</li>
+                        <li>• Modules/Muzibu/app/Http/Controllers/Front/PlaylistController.php</li>
+                        <li>• Modules/Muzibu/app/Http/Controllers/Front/GenreController.php</li>
+                        <li>• Modules/Muzibu/app/Http/Controllers/Front/SectorController.php</li>
+                        <li>• Modules/Muzibu/app/Http/Controllers/Front/RadioController.php</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                    <h4 class="font-bold mb-2 text-green-400">📊 Sıralama Metodları</h4>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start">
+                            <span class="bg-green-600 text-white px-2 py-1 rounded text-xs mr-3 mt-0.5">ALFABETİK</span>
+                            <div class="flex-1">
+                                <div class="font-mono text-green-400 mb-1">orderByRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr")))')</div>
+                                <div class="text-slate-400">JSON field'den Türkçe başlığı alıp küçük harfe çevirerek sıralar</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs mr-3 mt-0.5">ZAMAN</span>
+                            <div class="flex-1">
+                                <div class="font-mono text-blue-400 mb-1">orderBy('created_at', 'desc')</div>
+                                <div class="text-slate-400">Son eklenen kayıtlar önce gelir</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="bg-purple-600 text-white px-2 py-1 rounded text-xs mr-3 mt-0.5">POSİTİON</span>
+                            <div class="flex-1">
+                                <div class="font-mono text-purple-400 mb-1">orderBy('muzibu_playlist_song.position')</div>
+                                <div class="text-slate-400">Pivot table'daki özel sıralama (manuel düzenlenebilir)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kullanıcı Deneyimi -->
+        <div class="bg-gradient-to-br from-green-900/40 to-teal-900/40 border border-green-800/50 rounded-xl p-8 mb-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="bg-green-600 text-white w-10 h-10 rounded-full inline-flex items-center justify-center mr-4">💡</span>
+                Kullanıcı Deneyimi
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-900/40 border border-green-800/30 rounded-lg p-5">
+                    <h4 class="font-bold mb-3 text-green-400">✅ Avantajlar</h4>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start">
+                            <span class="mr-2">•</span>
+                            <span>Albüm ve radyo bulmak çok kolay (alfabetik)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2">•</span>
+                            <span>Yeni içerikler hemen görünür (playlist/tür şarkıları)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2">•</span>
+                            <span>Playlist'lerde özel sıralama korunur</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2">•</span>
+                            <span>Tutarlı ve tahmin edilebilir davranış</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/40 border border-green-800/30 rounded-lg p-5">
+                    <h4 class="font-bold mb-3 text-yellow-400">⚙️ Optimizasyonlar</h4>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start">
+                            <span class="mr-2">•</span>
+                            <span>JSON field sıralama database seviyesinde</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2">•</span>
+                            <span>Index'ler sayesinde hızlı query</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2">•</span>
+                            <span>Pagination desteği (200 kayıt/sayfa)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2">•</span>
+                            <span>Cache-friendly yapı</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-slate-900/80 backdrop-blur mt-12">
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex items-center justify-between">
+                <div class="text-slate-500 text-sm">
+                    Frontend Sıralama Düzeni - Muzibu Platform
+                </div>
+                <div class="flex items-center text-slate-400 text-sm">
+                    <span class="mr-2">Oluşturulma:</span>
+                    <span class="font-semibold">25 Aralık 2025</span>
+                </div>
+            </div>
+            <div class="text-center text-slate-600 text-xs mt-6">
+                🤖 Generated with <a href="https://claude.com/claude-code" class="text-blue-400 hover:underline" target="_blank">Claude Code</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

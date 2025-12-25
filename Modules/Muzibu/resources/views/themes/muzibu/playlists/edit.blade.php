@@ -22,15 +22,15 @@
         isPublic: {{ $playlist->is_public ? 'true' : 'false' }},
         loading: false,
         saving: false,
-        songs: {{ \$playlist->songs->map(function(\$song) {
+        songs: {!! $playlist->songs->map(function($song) {
             return [
-                'song_id' => \$song->song_id,
-                'title' => \$song->getTranslation('title', app()->getLocale()),
-                'artist' => \$song->album && \$song->album->artist ? \$song->album->artist->getTranslation('title', app()->getLocale()) : ''',
-                'cover' => \$song->album && \$song->album->coverMedia ? thumb(\$song->album->coverMedia, 100, 100, ['scale' => 1]) : ''',
-                'position' => \$song->pivot->position ?? 0
+                'song_id' => $song->song_id,
+                'title' => $song->getTranslation('title', app()->getLocale()),
+                'artist' => $song->album && $song->album->artist ? $song->album->artist->getTranslation('title', app()->getLocale()) : '',
+                'cover' => $song->album && $song->album->coverMedia ? thumb($song->album->coverMedia, 100, 100, ['scale' => 1]) : '',
+                'position' => $song->pivot->position ?? 0
             ];
-        })->toJson() }},
+        })->toJson() !!},
 
         savePlaylist() {
             this.saving = true;
@@ -52,16 +52,16 @@
             .then(data => {
                 this.saving = false;
                 if (data.success) {
-                    \$store.toast.show('Playlist güncellendi', 'success');
+                    Alpine.store('toast').show('Playlist güncellendi', 'success');
                     setTimeout(() => window.location.href = '{{ route('muzibu.my-playlists') }}', 1000);
                 } else {
-                    \$store.toast.show(data.message || 'Hata oluştu', 'error');
+                    Alpine.store('toast').show(data.message || 'Hata oluştu', 'error');
                 }
             })
             .catch(err => {
                 this.saving = false;
                 console.error(err);
-                \$store.toast.show('Bağlantı hatası', 'error');
+                Alpine.store('toast').show('Bağlantı hatası', 'error');
             });
         },
 
@@ -79,14 +79,14 @@
             .then(data => {
                 if (data.success) {
                     this.songs = this.songs.filter(s => s.song_id !== songId);
-                    \$store.toast.show('Şarkı çıkarıldı', 'success');
+                    Alpine.store('toast').show('Şarkı çıkarıldı', 'success');
                 } else {
-                    \$store.toast.show(data.message || 'Hata oluştu', 'error');
+                    Alpine.store('toast').show(data.message || 'Hata oluştu', 'error');
                 }
             })
             .catch(err => {
                 console.error(err);
-                \$store.toast.show('Bağlantı hatası', 'error');
+                Alpine.store('toast').show('Bağlantı hatası', 'error');
             });
         },
 
@@ -108,19 +108,19 @@
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    \$store.toast.show('Sıralama kaydedildi', 'success');
+                    Alpine.store('toast').show('Sıralama kaydedildi', 'success');
                 } else {
-                    \$store.toast.show(data.message || 'Hata oluştu', 'error');
+                    Alpine.store('toast').show(data.message || 'Hata oluştu', 'error');
                 }
             })
             .catch(err => {
                 console.error(err);
-                \$store.toast.show('Bağlantı hatası', 'error');
+                Alpine.store('toast').show('Bağlantı hatası', 'error');
             });
         }
     }" x-init="
         // Sortable.js for drag & drop
-        new Sortable(\$refs.songList, {
+        new Sortable($refs.songList, {
             animation: 150,
             ghostClass: 'opacity-50',
             onEnd: function(evt) {

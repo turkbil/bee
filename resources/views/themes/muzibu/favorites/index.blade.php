@@ -97,7 +97,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 
         @if($type === 'songs')
             {{-- Songs - Simple List Design --}}
-            <div class="bg-slate-900/50 rounded-lg overflow-hidden">
+            <div class="rounded-lg overflow-hidden">
                 @foreach($favorites as $index => $favorite)
                     @if($favorite->favoritable)
                         <x-muzibu.song-simple-row :song="$favorite->favoritable" :index="$index" />
@@ -165,7 +165,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
                             $cover = $blog->coverMedia;
                             $coverUrl = $cover ? thumb($cover, 400, 300) : '/images/default-blog.png';
                         @endphp
-                        <article class="group relative bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-muzibu-coral transition">
+                        <article class="group relative border border-white/10 rounded-xl overflow-hidden hover:border-muzibu-coral transition">
                             <a href="/blog/{{ $blog->slug }}" class="block" data-spa>
                                 {{-- Cover Image --}}
                                 <div class="aspect-[4/3] overflow-hidden bg-gray-900">

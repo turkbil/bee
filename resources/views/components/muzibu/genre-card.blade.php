@@ -66,14 +66,8 @@
         @endif
 
         {{-- Play Button - Spotify Style Bottom Right --}}
-        <button x-on:click.stop.prevent="
-            $store.player.setPlayContext({
-                type: 'genre',
-                id: {{ $genre->genre_id }},
-                name: '{{ addslashes($genre->getTranslation('title', app()->getLocale())) }}'
-            });
-            playGenres({{ $genre->genre_id }});
-        " class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
+        <button x-on:click.stop.prevent="window.playContent('genre', {{ $genre->genre_id }})"
+                class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
             <i class="fas fa-play ml-1"></i>
         </button>
 

@@ -19,15 +19,11 @@
             </a>
         </div>
 
-        {{-- History List - Simple Design --}}
+        {{-- History List - With Date/Time/IP --}}
         <div class="bg-slate-900/50 rounded-lg overflow-hidden">
             @if($history->count() > 0)
                 @foreach($history as $index => $play)
-                    @php
-                        $song = $play->song;
-                        if (!$song) continue;
-                    @endphp
-                    <x-muzibu.song-simple-row :song="$song" :index="$index" />
+                    <x-muzibu.song-history-row :play="$play" :index="$index" />
                 @endforeach
 
                 {{-- Pagination --}}

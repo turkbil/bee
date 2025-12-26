@@ -172,13 +172,21 @@
                 </a>
             </template>
 
-            {{-- Uyeligini Uzat (Premium/Trial uyeler icin) --}}
-            <template x-if="currentUser?.is_premium">
-                <a href="/subscription/plans" class="block w-full mb-3 bg-gradient-to-r from-yellow-500/80 to-orange-500/80 hover:from-yellow-400 hover:to-orange-400 text-white px-4 py-2.5 rounded-lg text-sm font-bold text-center transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02]">
-                    <i class="fas fa-sync-alt mr-2"></i>
-                    {{ trans('muzibu::front.sidebar.extend_membership') }}
-                </a>
-            </template>
+            {{-- Uyeligini Uzat (Premium/Trial uyeler icin - 30 günden az kaldıysa göster) --}}
+            @auth
+                @php
+                    $subscriptionService = app(\Modules\Subscription\App\Services\SubscriptionService::class);
+                    $access = $subscriptionService->checkUserAccess(auth()->user());
+                    $daysRemaining = $access['days_remaining'] ?? null;
+                    $showExtendButton = $daysRemaining !== null && $daysRemaining <= 30;
+                @endphp
+                @if($showExtendButton && auth()->user()->isPremiumOrTrial())
+                    <a href="/subscription/plans" class="block w-full mb-3 bg-gradient-to-r from-yellow-500/80 to-orange-500/80 hover:from-yellow-400 hover:to-orange-400 text-white px-4 py-2.5 rounded-lg text-sm font-bold text-center transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02]">
+                        <i class="fas fa-sync-alt mr-2"></i>
+                        {{ trans('muzibu::front.sidebar.extend_membership') }}
+                    </a>
+                @endif
+            @endauth
 
             {{-- Logout Button --}}
             <button

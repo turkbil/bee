@@ -565,35 +565,7 @@
             <span class="md:hidden">Premium</span>
         </a>
 
-        {{-- 🛒 Cart Icon - Only show when cart has items --}}
-        @php
-            $cartItemCount = 0;
-            if (function_exists('tenant') && tenant()) {
-                try {
-                    $cartService = app(\Modules\Cart\App\Services\CartService::class);
-                    $sessionId = session()->getId();
-                    $customerId = auth()->check() ? auth()->id() : null;
-                    $userCart = $cartService->getCart($customerId, $sessionId);
-                    if ($userCart) {
-                        $cartItemCount = $userCart->items()->where('is_active', true)->sum('quantity');
-                    }
-                } catch (\Exception $e) {
-                    // Silent fail
-                }
-            }
-        @endphp
-
-        @if($cartItemCount > 0)
-            <a href="/cart"
-               class="relative w-10 h-10 bg-white/5 hover:bg-muzibu-coral/20 rounded-full flex items-center justify-center text-white/80 hover:text-muzibu-coral transition-all duration-300 group"
-               title="{{ trans('cart::front.cart') ?? 'Sepet' }}"
-            >
-                <i class="fas fa-shopping-cart text-lg"></i>
-                <span class="absolute -top-1 -right-1 min-w-[20px] h-5 bg-muzibu-coral text-white text-xs font-bold rounded-full flex items-center justify-center px-1 ring-2 ring-black">
-                    {{ $cartItemCount > 99 ? '99+' : $cartItemCount }}
-                </span>
-            </a>
-        @endif
+        {{-- 🛒 Cart Icon - Devre dışı (Muzibu'da sepet yok) --}}
 
         {{-- Notification with badge - SPA Reactive --}}
         <button
@@ -708,17 +680,25 @@
                     <span>{{ trans('muzibu::front.user.go_premium') }}</span>
                 </a>
 
-                {{-- Üyeliğini Uzat (premium/trial üyeler için) --}}
-                <a
-                    href="/subscription/plans"
-
-                    x-show="currentUser?.is_premium"
-                    @click="userMenuOpen = false"
-                    class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-yellow-500/10 text-yellow-400 text-sm transition-colors"
-                >
-                    <i class="fas fa-sync-alt w-5"></i>
-                    <span>{{ trans('muzibu::front.sidebar.extend_membership') }}</span>
-                </a>
+                {{-- Üyeliğini Uzat (premium/trial üyeler için - 30 günden az kaldıysa göster) --}}
+                @auth
+                    @php
+                        $subscriptionServiceHeader = app(\Modules\Subscription\App\Services\SubscriptionService::class);
+                        $accessHeader = $subscriptionServiceHeader->checkUserAccess(auth()->user());
+                        $daysRemainingHeader = $accessHeader['days_remaining'] ?? null;
+                        $showExtendButtonHeader = $daysRemainingHeader !== null && $daysRemainingHeader <= 30;
+                    @endphp
+                    @if($showExtendButtonHeader && auth()->user()->isPremiumOrTrial())
+                        <a
+                            href="/subscription/plans"
+                            @click="userMenuOpen = false"
+                            class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-yellow-500/10 text-yellow-400 text-sm transition-colors"
+                        >
+                            <i class="fas fa-sync-alt w-5"></i>
+                            <span>{{ trans('muzibu::front.sidebar.extend_membership') }}</span>
+                        </a>
+                    @endif
+                @endauth
 
                 <div class="h-px bg-white/10 my-1"></div>
 

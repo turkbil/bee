@@ -1073,6 +1073,129 @@ class CorporateFrontController extends Controller
     }
 
     /**
+     * Üye dinleme geçmişi sayfası
+     * SADECE ana şubeler (owner) erişebilir
+     */
+    public function memberHistory(Request $request, int $id)
+    {
+        $user = auth()->user();
+
+        // Ana şube kontrolü
+        $parentAccount = MuzibuCorporateAccount::where('user_id', $user->id)
+            ->whereNull('parent_id')
+            ->first();
+
+        if (!$parentAccount) {
+            return redirect()->route('muzibu.corporate.index')
+                ->with('error', 'Bu sayfaya erişim yetkiniz yok.');
+        }
+
+        // Üye bu kurumsal hesaba ait mi kontrol et
+        $member = $this->findCorporateMember($parentAccount, $id);
+
+        if (!$member) {
+            return redirect()->route('muzibu.corporate.dashboard')
+                ->with('error', 'Üye bulunamadı.');
+        }
+
+        // Dinleme geçmişini getir
+        $history = SongPlay::where('user_id', $member['user_id'])
+            ->with(['song.album.artist', 'song.album.coverMedia', 'song.coverMedia'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(50);
+
+        return view('themes.muzibu.corporate.member-history', compact('member', 'history', 'parentAccount'));
+    }
+
+    /**
+     * Üye dinleme geçmişi API (SPA)
+     */
+    public function apiMemberHistory(Request $request, int $id)
+    {
+        $user = auth()->user();
+
+        // Ana şube kontrolü
+        $parentAccount = MuzibuCorporateAccount::where('user_id', $user->id)
+            ->whereNull('parent_id')
+            ->first();
+
+        if (!$parentAccount) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Bu sayfaya erişim yetkiniz yok.',
+                'redirect' => '/corporate'
+            ], 403);
+        }
+
+        // Üye bu kurumsal hesaba ait mi kontrol et
+        $member = $this->findCorporateMember($parentAccount, $id);
+
+        if (!$member) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Üye bulunamadı.',
+                'redirect' => '/corporate/dashboard'
+            ], 404);
+        }
+
+        // Dinleme geçmişini getir
+        $history = SongPlay::where('user_id', $member['user_id'])
+            ->with(['song.album.artist', 'song.album.coverMedia', 'song.coverMedia'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(50);
+
+        $html = view('themes.muzibu.partials.member-history-content', compact('member', 'history', 'parentAccount'))->render();
+
+        return response()->json([
+            'html' => $html,
+            'meta' => [
+                'title' => ($member['name'] ?? 'Üye') . ' - Dinleme Geçmişi',
+                'description' => 'Kurumsal üye dinleme geçmişi'
+            ]
+        ]);
+    }
+
+    /**
+     * Kurumsal üyeyi bul (owner veya children)
+     * @param int $id Kurumsal hesap ID (account_id) - user_id DEĞİL!
+     */
+    private function findCorporateMember(MuzibuCorporateAccount $parentAccount, int $id): ?array
+    {
+        // Owner kontrolü (parent account id ile eşleşiyorsa)
+        if ($id === $parentAccount->id) {
+            return [
+                'user_id' => $parentAccount->user_id,
+                'account_id' => $parentAccount->id,
+                'name' => $parentAccount->owner->name ?? 'Ana Şube',
+                'email' => $parentAccount->owner->email ?? '',
+                'branch_name' => 'Ana Şube',
+                'is_owner' => true,
+                'initials' => $this->getInitials($parentAccount->owner->name ?? ''),
+            ];
+        }
+
+        // Alt üye - SADECE account_id ile arama (user_id ile DEĞİL - güvenlik)
+        $member = MuzibuCorporateAccount::where('parent_id', $parentAccount->id)
+            ->where('id', $id)
+            ->with('owner')
+            ->first();
+
+        if (!$member) {
+            return null;
+        }
+
+        return [
+            'user_id' => $member->user_id,
+            'account_id' => $member->id,
+            'name' => $member->owner->name ?? 'Bilinmeyen',
+            'email' => $member->owner->email ?? '',
+            'branch_name' => $member->branch_name ?? $member->owner->name,
+            'is_owner' => false,
+            'initials' => $this->getInitials($member->owner->name ?? ''),
+        ];
+    }
+
+    /**
      * Seçilen üyeler için subscription satın al
      * Cart'a ekler ve checkout'a yönlendirir
      */
@@ -1240,6 +1363,7 @@ class CorporateFrontController extends Controller
     /**
      * Seçilen user_id'lerin bu kurumsal hesaba ait olduğunu doğrula
      * Owner dahil (owner = parentAccount->user_id)
+     * 30 günden fazla süresi olanları hariç tut
      */
     private function validateCorporateUsers(MuzibuCorporateAccount $parentAccount, array $userIds): array
     {
@@ -1254,9 +1378,21 @@ class CorporateFrontController extends Controller
         // Tüm geçerli user_id'ler
         $allValidUserIds = array_merge([$ownerUserId], $childUserIds);
 
+        // 30+ gün süresi olanları bul
+        $lockedUserIds = [];
+        $subscriptions = DB::table('subscriptions')
+            ->whereIn('user_id', $allValidUserIds)
+            ->where('status', 'active')
+            ->where('current_period_end', '>', now()->addDays(30)) // 30 günden fazla
+            ->pluck('user_id')
+            ->toArray();
+        $lockedUserIds = array_map('intval', $subscriptions);
+
         foreach ($userIds as $userId) {
-            if (in_array((int)$userId, $allValidUserIds)) {
-                $validIds[] = (int)$userId;
+            $uid = (int)$userId;
+            // Kurumsal üye mi ve 30+ gün süresi yok mu
+            if (in_array($uid, $allValidUserIds) && !in_array($uid, $lockedUserIds)) {
+                $validIds[] = $uid;
             }
         }
 

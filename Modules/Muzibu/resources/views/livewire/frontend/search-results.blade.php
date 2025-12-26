@@ -38,6 +38,8 @@
                     'genres' => ['label' => 'Türler', 'icon' => 'fa-guitar', 'count' => $counts['genres'] ?? 0],
                     'sectors' => ['label' => 'Sektörler', 'icon' => 'fa-building', 'count' => $counts['sectors'] ?? 0],
                     'radios' => ['label' => 'Radyolar', 'icon' => 'fa-radio', 'count' => $counts['radios'] ?? 0],
+                    'myplaylists' => ['label' => 'Playlistlerim', 'icon' => 'fa-folder-music', 'count' => $counts['myplaylists'] ?? 0],
+                    'favorites' => ['label' => 'Favorilerim', 'icon' => 'fa-heart', 'count' => $counts['favorites'] ?? 0],
                 ];
             @endphp
 

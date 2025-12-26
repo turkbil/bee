@@ -48,7 +48,18 @@ class SearchResults extends Component
         }
 
         return collect($this->allResults)->filter(function ($item) {
-            return $item['type'] === rtrim($this->activeTab, 's'); // songs -> song
+            // favorites tab: favorite_ ile başlayan tüm type'ları göster
+            if ($this->activeTab === 'favorites') {
+                return str_starts_with($item['type'], 'favorite_');
+            }
+
+            // myplaylists tab
+            if ($this->activeTab === 'myplaylists') {
+                return $item['type'] === 'myplaylist';
+            }
+
+            // Diğer tablar: songs -> song, albums -> album, etc.
+            return $item['type'] === rtrim($this->activeTab, 's');
         })->values()->toArray();
     }
 
@@ -98,6 +109,8 @@ class SearchResults extends Component
                 'genres' => 0,
                 'sectors' => 0,
                 'radios' => 0,
+                'myplaylists' => 0,
+                'favorites' => 0,
             ];
 
             // Songs - Eager load relations
@@ -226,6 +239,90 @@ class SearchResults extends Component
                 ];
             }
             $this->counts['radios'] = $radios->count();
+
+            // My Playlists (kullanıcının kendi oluşturduğu playlistler)
+            if (auth()->check()) {
+                $myPlaylists = Playlist::where('user_id', auth()->id())
+                    ->where(function ($q) use ($locale) {
+                        $q->where("title->{$locale}", 'like', '%' . $this->query . '%')
+                          ->orWhere('title->tr', 'like', '%' . $this->query . '%')
+                          ->orWhere('title->en', 'like', '%' . $this->query . '%');
+                    })
+                    ->take(15)
+                    ->get();
+
+                foreach ($myPlaylists as $playlist) {
+                    $this->allResults[] = [
+                        'type' => 'myplaylist',
+                        'type_label' => '📝 Playlistim',
+                        'id' => $playlist->playlist_id,
+                        'title' => $playlist->getTranslated('title', $locale),
+                        'url' => $playlist->getUrl(),
+                        'image' => $playlist->getCoverUrl(300, 300),
+                        'is_mine' => true,
+                    ];
+                }
+                $this->counts['myplaylists'] = $myPlaylists->count();
+
+                // Favorites (kullanıcının favorileri)
+                $favoriteItems = \DB::connection('tenant')
+                    ->table('favorites')
+                    ->where('user_id', auth()->id())
+                    ->get();
+
+                $favCount = 0;
+
+                foreach ($favoriteItems as $fav) {
+                    $model = null;
+                    $type = '';
+                    $typeLabel = '';
+
+                    if (str_contains($fav->model_class, 'Song')) {
+                        $model = Song::with(['album.artist'])->find($fav->model_id);
+                        $type = 'favorite_song';
+                        $typeLabel = '❤️ Favori Şarkı';
+                    } elseif (str_contains($fav->model_class, 'Album')) {
+                        $model = Album::with(['artist'])->find($fav->model_id);
+                        $type = 'favorite_album';
+                        $typeLabel = '❤️ Favori Albüm';
+                    } elseif (str_contains($fav->model_class, 'Playlist')) {
+                        $model = Playlist::find($fav->model_id);
+                        $type = 'favorite_playlist';
+                        $typeLabel = '❤️ Favori Playlist';
+                    } elseif (str_contains($fav->model_class, 'Artist')) {
+                        $model = Artist::find($fav->model_id);
+                        $type = 'favorite_artist';
+                        $typeLabel = '❤️ Favori Sanatçı';
+                    }
+
+                    if ($model) {
+                        $title = $model->getTranslated('title', $locale);
+                        // Arama terimiyle eşleşiyor mu?
+                        if (stripos($title, $this->query) !== false) {
+                            $result = [
+                                'type' => $type,
+                                'type_label' => $typeLabel,
+                                'id' => $model->getKey(),
+                                'title' => $title,
+                                'url' => $model->getUrl(),
+                                'image' => method_exists($model, 'getCoverUrl') ? $model->getCoverUrl(300, 300) : null,
+                            ];
+
+                            if ($model instanceof Song) {
+                                $result['artist'] = $model->album?->artist?->getTranslated('title', $locale);
+                                $result['album'] = $model->album?->getTranslated('title', $locale);
+                                $result['duration'] = $model->getFormattedDuration();
+                            } elseif ($model instanceof Album) {
+                                $result['artist'] = $model->artist?->getTranslated('title', $locale);
+                            }
+
+                            $this->allResults[] = $result;
+                            $favCount++;
+                        }
+                    }
+                }
+                $this->counts['favorites'] = $favCount;
+            }
 
             $this->totalCount = count($this->allResults);
             $this->responseTime = (int) round((microtime(true) - $startTime) * 1000);

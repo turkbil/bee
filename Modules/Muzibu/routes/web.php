@@ -90,6 +90,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/subscriptions', [CorporateFrontController::class, 'subscriptions'])->name('subscriptions');
         Route::get('/api/subscriptions', [CorporateFrontController::class, 'apiSubscriptions'])->name('subscriptions.api');
         Route::post('/subscriptions/purchase', [CorporateFrontController::class, 'purchaseSubscriptions'])->name('subscriptions.purchase');
+
+        // Corporate Member Listening History (Üye Dinleme Geçmişi)
+        Route::get('/member/{id}/history', [CorporateFrontController::class, 'memberHistory'])->name('member-history');
+        Route::get('/api/member/{id}/history', [CorporateFrontController::class, 'apiMemberHistory'])->name('member-history.api');
     });
 
     // 🚀 SPA Compatible API Routes (/api/corporate/...)
@@ -99,6 +103,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/join', [CorporateFrontController::class, 'apiJoin'])->name('api.corporate.join');
         Route::get('/my-corporate', [CorporateFrontController::class, 'apiMyCorporate'])->name('api.corporate.my');
         Route::get('/subscriptions', [CorporateFrontController::class, 'apiSubscriptions'])->name('api.corporate.subscriptions');
+        Route::get('/member/{id}/history', [CorporateFrontController::class, 'apiMemberHistory'])->name('api.corporate.member-history');
     });
 });
 

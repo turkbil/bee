@@ -310,8 +310,16 @@
                                 </div>
 
                                 {{-- Actions --}}
-                                @if(!($member['is_owner'] ?? false))
-                                    <div class="flex flex-wrap gap-2">
+                                <div class="flex flex-wrap gap-2">
+                                    {{-- Dinleme Gecmisi (herkes icin) --}}
+                                    <a href="/corporate/member/{{ $member['account']->id }}/history"
+                                       class="flex-1 px-4 py-2 bg-green-500/10 hover:bg-green-500/20 text-green-400 rounded-lg text-sm transition-colors flex items-center justify-center gap-2"
+                                       data-spa>
+                                        <i class="fas fa-history"></i>
+                                        <span>Dinleme Gecmisi</span>
+                                    </a>
+
+                                    @if(!($member['is_owner'] ?? false))
                                         <button @click="editBranchName({{ $memberId }}, '{{ addslashes($member['account']->branch_name ?? '') }}')"
                                                 class="flex-1 px-4 py-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 rounded-lg text-sm transition-colors flex items-center justify-center gap-2">
                                             <i class="fas fa-edit"></i>
@@ -322,14 +330,8 @@
                                             <i class="fas fa-user-minus"></i>
                                             <span>{{ __('muzibu::front.corporate.remove_member') }}</span>
                                         </button>
-                                    </div>
-                                @else
-                                    <div class="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 text-center">
-                                        <p class="text-yellow-400 text-sm">
-                                            <i class="fas fa-star mr-2"></i>Kurumsal hesap yoneticisi
-                                        </p>
-                                    </div>
-                                @endif
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     @endforeach

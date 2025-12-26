@@ -12,7 +12,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
     {{-- Header - Alternatif 2: Icon + Text --}}
     <div class="mb-8 flex items-center gap-5">
         <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
-            <i class="fas fa-guitar text-3xl text-white"></i>
+            <i class="fas fa-music text-3xl text-white"></i>
         </div>
         <div>
             <h1 class="text-5xl font-extrabold text-white mb-1">Türler</h1>

@@ -14,10 +14,11 @@ class PlaylistController extends Controller
      */
     public function index()
     {
-        // Only show playlists with at least 1 active song
+        // Only show SYSTEM playlists with at least 1 active song
         $playlists = Playlist::with('coverMedia')
             ->where('is_active', 1)
             ->where('is_public', 1)
+            ->where('is_system', 1)
             ->whereHas('songs', function($q) {
                 $q->where('is_active', 1);
             })
@@ -63,10 +64,11 @@ class PlaylistController extends Controller
      */
     public function apiIndex()
     {
-        // Only show playlists with at least 1 active song
+        // Only show SYSTEM playlists with at least 1 active song
         $playlists = Playlist::with('coverMedia')
             ->where('is_active', 1)
             ->where('is_public', 1)
+            ->where('is_system', 1)
             ->whereHas('songs', function($q) {
                 $q->where('is_active', 1);
             })

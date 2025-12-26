@@ -19,8 +19,14 @@ const MuzibuSession = {
     /**
      * 🔐 SESSION POLLING: Start polling for session validity (device limit check)
      * Polls /api/auth/check-session every 30 seconds
+     *
+     * 🔴 GEÇİCİ DEVRE DIŞI - DeviceService kapalı (2025-12-26)
      */
     startSessionPolling() {
+        // 🔴 GEÇİCİ: Polling tamamen devre dışı
+        console.log('🔴 Session polling DISABLED (DeviceService off)');
+        return;
+
         // Clear any existing interval
         if (this.sessionPollInterval) {
             clearInterval(this.sessionPollInterval);

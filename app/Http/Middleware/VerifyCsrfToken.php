@@ -17,6 +17,9 @@ class VerifyCsrfToken extends Middleware
 
         // Payment Gateway Callbacks (PayTR, Stripe vs.)
         'payment/callback/*',
+
+        // Telescope API (delete entries vb.)
+        'telescope/telescope-api/*',
     ];
     
     /**

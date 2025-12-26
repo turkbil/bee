@@ -7,7 +7,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Services\Media\LeonardoAIService;
-use Modules\AI\App\Services\AIPromptEnhancer;
 use Modules\MediaManagement\App\Models\MediaLibraryItem;
 use Illuminate\Support\Facades\Log;
 
@@ -76,39 +75,21 @@ class GenerateGenericMuzibyCover implements ShouldQueue
                 return;
             }
 
-            // Prompt oluştur (Type'a göre özelleştirilmiş)
-            $simplePrompt = $this->buildPrompt($this->type, $this->title);
+            // 🎨 SERBEST HAYAL GÜCÜ: Sadece başlığı ver, AI kendi hayal etsin
+            // Hiçbir yönlendirme, kısıtlama, şablon YOK
+            $prompt = $this->title;
 
-            // AI Prompt Enhancer ile 11 Altın Kural uygula
-            $enhancer = app(AIPromptEnhancer::class);
-
-            // Tenant context
-            $tenantContext = [
-                'sector' => 'general', // ✅ Müzik teması ZORLAMA! Başlık ne diyorsa onu üret
-                'site_name' => 'Muzibu',
-                'locale' => 'tr',
-            ];
-
-            $enhancedPrompt = $enhancer->enhancePrompt(
-                $simplePrompt,
-                'cinematic', // Style
-                '1472x832',  // Size (yatay)
-                $tenantContext
-            );
-
-            Log::info('🎨 Generic Cover Job: AI Prompt Enhanced', [
+            Log::info('🎨 Generic Cover Job: Free imagination mode', [
                 'type' => $this->type,
                 'model_id' => $this->modelId,
-                'original' => $simplePrompt,
-                'enhanced_length' => strlen($enhancedPrompt),
+                'prompt' => $prompt,
             ]);
 
-            // Leonardo AI ile görsel üret
+            // Leonardo AI ile görsel üret (serbest hayal gücü modu)
             $leonardo = app(LeonardoAIService::class);
-            $imageData = $leonardo->generateFromPrompt($enhancedPrompt, [
+            $imageData = $leonardo->generateFreeImagination($prompt, [
                 'width' => 1472,
                 'height' => 832,
-                'style' => 'cinematic',
             ]);
 
             if (!$imageData) {
@@ -121,11 +102,11 @@ class GenerateGenericMuzibyCover implements ShouldQueue
                 'type' => 'image',
                 'created_by' => $this->userId,
                 'generation_source' => 'ai_generated',
-                'generation_prompt' => $enhancedPrompt,
+                'generation_prompt' => $prompt,
                 'generation_params' => [
                     'model' => 'leonardo-lucid-origin',
                     'size' => '1472x832',
-                    'style' => 'cinematic',
+                    'style' => 'free_imagination',
                     'provider' => 'leonardo',
                     'generation_id' => $imageData['generation_id'] ?? null,
                     'tenant_id' => tenant('id'),
@@ -154,9 +135,8 @@ class GenerateGenericMuzibyCover implements ShouldQueue
                 'usage_type' => 'image_generation',
                 'provider_name' => 'leonardo',
                 'model' => 'lucid-origin',
-                'prompt' => $simplePrompt,
-                'enhanced_prompt' => $enhancedPrompt,
-                'operation_type' => $this->type . '_cover_auto',
+                'prompt' => $prompt,
+                'operation_type' => $this->type . '_cover_free_imagination',
                 'media_id' => $mediaItem->id,
                 'content_type' => $this->type,
                 'content_id' => $this->modelId,
@@ -198,15 +178,4 @@ class GenerateGenericMuzibyCover implements ShouldQueue
         };
     }
 
-    /**
-     * Type'a göre basit prompt oluştur
-     *
-     * 🎨 SADECE BAŞLIK! AI kendi hayal etsin (11 Golden Rules genişletir)
-     * Site zaten müzik platformu, "music" kelimesi gereksiz sınırlama yapar!
-     */
-    protected function buildPrompt(string $type, string $title): string
-    {
-        // ✅ SADECE BAŞLIK! AI ne hayal ederse etsin
-        return $title;
-    }
 }

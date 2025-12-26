@@ -8,7 +8,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Modules\Muzibu\App\Models\Song;
 use App\Services\Media\LeonardoAIService;
-use Modules\AI\App\Services\AIPromptEnhancer;
 use Modules\MediaManagement\App\Models\MediaLibraryItem;
 use Illuminate\Support\Facades\Log;
 
@@ -74,41 +73,21 @@ class GenerateSongCover implements ShouldQueue
                 'song_id' => $song->song_id,
             ]);
 
-            // 🎨 Prompt oluştur (SADECE BAŞLIK! AI kendi hayal etsin)
-            // ⚠️ KRİTİK: SADECE şarkı adı! "by Artist" ASLA EKLEME!
-            // Leonardo AI "by Artist" ifadesini "enstrüman çalan insan" olarak yorumluyor
-            // Hedef: 30 bin farklı görsel (şarkı adlarına göre), 30 bin müzisyen DEĞİL!
-            $simplePrompt = $this->songTitle;
+            // 🎨 SERBEST HAYAL GÜCÜ: Sadece başlığı ver, AI kendi hayal etsin
+            // Hiçbir yönlendirme, kısıtlama, şablon YOK
+            // Leonardo AI başlığı alıp kendi yorumlasın
+            $prompt = $this->songTitle;
 
-            // AI Prompt Enhancer ile 11 Altın Kural uygula
-            $enhancer = app(AIPromptEnhancer::class);
-
-            // Tenant context (generic - prompt zaten özelleştirildi)
-            $tenantContext = [
-                'sector' => 'general', // ✅ Müzik teması ZORLAMA! Başlık ne diyorsa onu üret
-                'site_name' => 'Muzibu',
-                'locale' => 'tr',
-            ];
-
-            $enhancedPrompt = $enhancer->enhancePrompt(
-                $simplePrompt,
-                'cinematic', // Style
-                '1472x832',  // Size (yatay)
-                $tenantContext
-            );
-
-            Log::info('🎵 Song Cover Job: AI Prompt Enhanced', [
+            Log::info('🎵 Song Cover Job: Free imagination mode', [
                 'song_id' => $this->songId,
-                'original' => $simplePrompt,
-                'enhanced_length' => strlen($enhancedPrompt),
+                'prompt' => $prompt,
             ]);
 
-            // Leonardo AI ile görsel üret
+            // Leonardo AI ile görsel üret (serbest hayal gücü modu)
             $leonardo = app(LeonardoAIService::class);
-            $imageData = $leonardo->generateFromPrompt($enhancedPrompt, [
+            $imageData = $leonardo->generateFreeImagination($prompt, [
                 'width' => 1472,
                 'height' => 832,
-                'style' => 'cinematic',
             ]);
 
             if (!$imageData) {
@@ -121,11 +100,11 @@ class GenerateSongCover implements ShouldQueue
                 'type' => 'image',
                 'created_by' => $this->userId,
                 'generation_source' => 'ai_generated',
-                'generation_prompt' => $enhancedPrompt,
+                'generation_prompt' => $prompt,
                 'generation_params' => [
                     'model' => 'leonardo-lucid-origin',
                     'size' => '1472x832',
-                    'style' => 'cinematic',
+                    'style' => 'free_imagination',
                     'provider' => 'leonardo',
                     'generation_id' => $imageData['generation_id'] ?? null,
                     'tenant_id' => tenant('id'),
@@ -155,9 +134,8 @@ class GenerateSongCover implements ShouldQueue
                 'usage_type' => 'image_generation',
                 'provider_name' => 'leonardo',
                 'model' => 'lucid-origin',
-                'prompt' => $simplePrompt,
-                'enhanced_prompt' => $enhancedPrompt,
-                'operation_type' => 'song_cover_auto',
+                'prompt' => $prompt,
+                'operation_type' => 'song_cover_free_imagination',
                 'media_id' => $mediaItem->id,
                 'song_id' => $this->songId,
                 'quality' => 'hd',

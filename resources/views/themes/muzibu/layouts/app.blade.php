@@ -35,8 +35,8 @@
     {{-- Tailwind CSS - Tenant Aware (tenant-1001.css) --}}
     <link rel="stylesheet" href="{{ tenant_css() }}">
 
-    {{-- FontAwesome --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    {{-- FontAwesome Pro 7.1.0 (Local) --}}
+    <link rel="stylesheet" href="{{ asset('admin-assets/libs/fontawesome-pro@7.1.0/css/all.css') }}">
 
     {{-- Alpine.js provided by Livewire --}}
 

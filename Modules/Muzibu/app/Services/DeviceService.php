@@ -23,9 +23,15 @@ class DeviceService
 
     /**
      * Servis çalışmalı mı?
+     *
+     * 🔴 GEÇİCİ DEVRE DIŞI - Kullanıcı isteği ile kapatıldı (2025-12-26)
+     * Tekrar açmak için: return false; satırını kaldır
      */
     public function shouldRun(): bool
     {
+        // 🔴 GEÇİCİ: Device limit sistemi tamamen devre dışı
+        return false;
+
         $tenant = tenant();
         if (!$tenant) {
             return false;

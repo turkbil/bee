@@ -104,18 +104,32 @@ class LeonardoAIService
 
     /**
      * Görsel üretimi başlat - Lucid Origin modeli ile
+     *
+     * 🎨 FREE IMAGINATION MODE (2025-12-26)
+     * Eski agresif kısıtlamalar disable edildi.
+     * Sadece minimal NSFW yasağı.
      */
     protected function createGeneration(array $promptData): ?string
     {
+        // 🎨 FREE MODE: Prompt'a ek kısıtlama YOK
+        $finalPrompt = $promptData['prompt'];
+
+        // 🎨 FREE MODE: Minimal negative prompt - sadece NSFW yasağı
+        $negativePrompt = "nsfw, nude, naked, porn, explicit sexual content";
+
+        /*
+        // ========================================
+        // ❌ DISABLED: Eski agresif kısıtlamalar
+        // ========================================
+
         // Gerçekçilik kısıtlaması + yazı yasağı ekle (ULTRA GÜÇLÜ)
-        // 🔧 FIX: Marka isimleri kaldırıldı - Görsellerde marka yazmasin!
         $realismConstraint = " CRITICAL ABSOLUTE REQUIREMENTS: 1) Realistic industrial equipment ONLY - real-world professional designs. Standard colors: yellow, orange, red, blue, gray. NO futuristic/sci-fi/conceptual designs. 2) ABSOLUTELY ZERO TEXT, LETTERS, NUMBERS, OR SYMBOLS ANYWHERE IN THE IMAGE - no text on equipment, no text on signs, no text on floor, no text on walls, no text on screens, no text on labels, no brand names, no logos, no comparison charts, no graphs with text, no infographics. The image must be 100% text-free and logo-free. 3) NO comparison charts, tables, graphs, diagrams, or any visual with data/numbers. 4) NO visible brand names or manufacturer logos.";
 
         $finalPrompt = $promptData['prompt'] . $realismConstraint;
 
-        // ULTRA AGGRESSIVE Negative prompt - Yazı, marka ve kıyaslama grafiklerini kesinlikle engelle
-        // 🔧 FIX: Marka isimleri (Toyota, Yale, Linde, Crown, Jungheinrich) eklendi
+        // ULTRA AGGRESSIVE Negative prompt
         $negativePrompt = "text, letters, words, numbers, digits, brand names, logos, labels, signs, watermarks, typography, writing, captions, subtitles, titles, stamps, badges, stickers, name plates, serial numbers, model numbers, Toyota, Yale, Linde, Crown, Jungheinrich, Hyster, Clark, Caterpillar, Mitsubishi, Komatsu, Doosan, TCM, Nissan, Kalmar, Hyundai, any written content, illegible text, garbled text, distorted letters, comparison chart, comparison table, comparison graphic, infographic, data visualization, graph, pie chart, bar chart, spreadsheet, checklist, bullet points, price tags, specifications text, technical text, measurement text, warning text, instruction text, any form of alphanumeric characters, manufacturer names, company names";
+        */
 
         $response = Http::withHeaders([
             'accept' => 'application/json',
@@ -218,10 +232,24 @@ class LeonardoAIService
     /**
      * Tamamen dinamik prompt oluştur
      * Prompt Zinciri: Subject → Context → Texture → Angle → Background → Lighting → Camera → Lens → Atmosphere
+     *
+     * 🎨 FREE IMAGINATION MODE (2025-12-26)
+     * Tüm tenant'lar için serbest hayal gücü modu aktif.
+     * AI kendi hayal etsin, biz yönlendirmiyoruz.
+     * Eski tenant-spesifik prompt'lar disable edildi (yorum satırında).
      */
     protected function buildDynamicPrompt(string $title, string $context): array
     {
         $tenantId = function_exists('tenant') && tenant() ? tenant('id') : null;
+
+        // 🎨 FREE IMAGINATION MODE: Tüm tenant'lar için serbest mod
+        // Eski yönlendirmeli prompt'lar disable edildi
+        return $this->buildFreeImaginationPrompt($title);
+
+        /*
+        // ========================================
+        // ❌ DISABLED: Eski tenant-spesifik prompt'lar
+        // ========================================
 
         // Tenant 2 (ixtif.com) - Endüstriyel ekipman
         if ($tenantId == 2) {
@@ -235,6 +263,39 @@ class LeonardoAIService
 
         // Genel
         return $this->buildGenericDynamicPrompt($title);
+        */
+    }
+
+    /**
+     * 🎨 FREE IMAGINATION MODE - Serbest Hayal Gücü Prompt Builder
+     *
+     * AI kendi hayal etsin:
+     * - Başlığı alıp GPT-4 ile 11 altın kurala göre zenginleştirir
+     * - Hiçbir yönlendirme, kısıtlama YOK
+     * - Anlamsız/müstehcen başlıklarda abstract/müzik temalı görsel
+     */
+    protected function buildFreeImaginationPrompt(string $title): array
+    {
+        // GPT-4 ile 11 altın kurala göre zenginleştir
+        $enhancedPrompt = $this->enhanceWithGPT4FreeMode($title);
+
+        // Random style seç
+        $styles = ['cinematic', 'dynamic', 'film', 'moody', 'vibrant', 'neutral'];
+        $selectedStyle = $styles[array_rand($styles)];
+        $styleUUID = $this->styleUUIDs[$selectedStyle] ?? $this->styleUUIDs['cinematic'];
+
+        Log::info('🎨 Free Imagination Prompt Built', [
+            'original_title' => $title,
+            'enhanced_length' => strlen($enhancedPrompt),
+            'style' => $selectedStyle,
+        ]);
+
+        return [
+            'prompt' => $enhancedPrompt,
+            'style' => $selectedStyle,
+            'styleUUID' => $styleUUID,
+            'contrast' => 3.5,
+        ];
     }
 
     /**
@@ -1440,6 +1501,207 @@ class LeonardoAIService
 
         if (!$response->successful()) {
             Log::error('Leonardo AI: Create generation failed', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+            return null;
+        }
+
+        $data = $response->json();
+        return $data['sdGenerationJob']['generationId'] ?? null;
+    }
+
+    /**
+     * 🎨 SERBEST HAYAL GÜCÜ MODU - Muzibu için
+     *
+     * AI kendi hayal etsin, biz yönlendirmiyoruz kısıtlamıyoruz.
+     * Sadece başlığı alıp GPT-4 ile 11 altın kurala göre zenginleştirir.
+     * Negative prompt'ta sadece NSFW/çıplaklık yasağı var.
+     *
+     * @param string $title Şarkı/Albüm/Genre başlığı
+     * @param array $options ['width' => 1472, 'height' => 832]
+     * @return array|null
+     */
+    public function generateFreeImagination(string $title, array $options = []): ?array
+    {
+        if (empty($this->apiKey)) {
+            Log::error('Leonardo AI: API key not configured');
+            return null;
+        }
+
+        $width = $options['width'] ?? 1472;
+        $height = $options['height'] ?? 832;
+
+        Log::info('🎨 Leonardo AI: Free imagination mode', [
+            'title' => $title,
+            'dimensions' => "{$width}x{$height}",
+        ]);
+
+        try {
+            // GPT-4 ile 11 altın kurala göre zenginleştir (yönlendirme yok!)
+            $enhancedPrompt = $this->enhanceWithGPT4FreeMode($title);
+
+            Log::info('🎨 Leonardo AI: Prompt enhanced by GPT-4', [
+                'original' => $title,
+                'enhanced_length' => strlen($enhancedPrompt),
+            ]);
+
+            // Generation oluştur (minimal negative prompt)
+            $generationId = $this->createGenerationFreeMode($enhancedPrompt, $width, $height);
+
+            if (!$generationId) {
+                return null;
+            }
+
+            // Sonucu bekle
+            $imageUrl = $this->waitForGeneration($generationId);
+
+            if (!$imageUrl) {
+                return null;
+            }
+
+            // Görseli indir
+            $imageData = $this->downloadImage($imageUrl);
+
+            if (!$imageData) {
+                return null;
+            }
+
+            Log::info('🎨 Leonardo AI: Free imagination successful', [
+                'generation_id' => $generationId,
+                'image_size' => strlen($imageData),
+            ]);
+
+            return [
+                'url' => $imageUrl,
+                'content' => $imageData,
+                'generation_id' => $generationId,
+                'provider' => 'leonardo',
+                'prompt' => $enhancedPrompt,
+                'original_title' => $title,
+                'style' => 'free_imagination',
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('🎨 Leonardo AI: Free imagination failed', [
+                'title' => $title,
+                'error' => $e->getMessage(),
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * GPT-4 ile 11 altın kurala göre zenginleştir - YÖNLENDIRME YOK!
+     *
+     * AI kendi hayal etsin:
+     * - Mekan, zaman, ışık, kamera, atmosfer HEPSİNİ AI seçer
+     * - Biz sadece teknik fotoğraf kalitesi istiyoruz
+     * - İçerik yönlendirmesi YOK
+     */
+    protected function enhanceWithGPT4FreeMode(string $title): string
+    {
+        $openaiKey = config('ai.openai_api_key');
+
+        if (empty($openaiKey)) {
+            Log::warning('Leonardo AI: OpenAI key not configured, using title directly');
+            return $title;
+        }
+
+        try {
+            $systemPrompt = <<<SYSTEM
+Sen profesyonel bir fotoğraf yönetmenisin. Verilen başlığı 11 altın kurala göre zenginleştir.
+
+Başlık ne diyorsa ONU hayal et. Tamamen serbest ol. Kendi hayal gücünü kullan.
+
+ÖZEL DURUMLAR:
+- Başlık anlamsızsa (örn: "a", "asdf", "xxx", rastgele harfler) → abstract sanat veya müzik temalı görsel üret
+- Başlık müstehcen/uygunsuzsa → abstract sanat veya müzik enstrümanları/sahne/stüdyo temalı görsel üret
+- Bu durumlarda: renkli ışıklar, ses dalgaları, müzik notaları, enstrüman siluetleri, konser atmosferi, stüdyo ekipmanları gibi temalar kullan
+
+11 ALTIN KURAL:
+1. Photo Type (Photo of, Editorial photograph of, Cinematic shot of)
+2. Subject (başlıktan ilham al, anlamsızsa abstract/müzik)
+3. Environment (sen seç)
+4. Camera Angle (sen seç)
+5. Composition (sen seç)
+6. Lighting (sen seç)
+7. Camera + Lens (Canon R5, Sony A7R vs.)
+8. Film Stock (Kodak Portra, Fuji Velvia vs.)
+9. Imperfections (lens dust, grain, vignette)
+10. Mood (sen seç)
+11. Post-Processing (sen seç)
+
+OUTPUT: Tek paragraf İngilizce prompt. Maksimum 150 kelime.
+SYSTEM;
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $openaiKey,
+                'Content-Type' => 'application/json',
+            ])->timeout(30)->post('https://api.openai.com/v1/chat/completions', [
+                'model' => 'gpt-4o',
+                'max_tokens' => 500,
+                'temperature' => 0.9, // Yüksek yaratıcılık
+                'messages' => [
+                    ['role' => 'system', 'content' => $systemPrompt],
+                    ['role' => 'user', 'content' => "Başlık: \"{$title}\"\n\n11 altın kurala göre zenginleştir. Kendi hayal gücünü kullan, yönlendirme bekleme."]
+                ]
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $enhanced = $data['choices'][0]['message']['content'] ?? '';
+
+                if (!empty($enhanced)) {
+                    return trim($enhanced);
+                }
+            }
+
+            Log::warning('Leonardo AI: GPT-4 enhancement failed, using title', [
+                'status' => $response->status(),
+            ]);
+
+        } catch (\Exception $e) {
+            Log::warning('Leonardo AI: GPT-4 exception', ['error' => $e->getMessage()]);
+        }
+
+        // Fallback: Sadece başlık
+        return $title;
+    }
+
+    /**
+     * Serbest hayal gücü modu için generation oluştur
+     * Minimal negative prompt - sadece NSFW yasağı
+     */
+    protected function createGenerationFreeMode(string $prompt, int $width, int $height): ?string
+    {
+        // Minimal negative prompt - sadece NSFW yasağı
+        $negativePrompt = "nsfw, nude, naked, porn, explicit sexual content";
+
+        // Random style seç - AI'ın yaratıcılığına katkı
+        $styles = ['cinematic', 'dynamic', 'film', 'moody', 'vibrant', 'neutral'];
+        $selectedStyle = $styles[array_rand($styles)];
+        $styleUUID = $this->styleUUIDs[$selectedStyle] ?? $this->styleUUIDs['cinematic'];
+
+        $response = Http::withHeaders([
+            'accept' => 'application/json',
+            'content-type' => 'application/json',
+            'authorization' => 'Bearer ' . $this->apiKey,
+        ])->timeout(30)->post($this->baseUrl . '/generations', [
+            'modelId' => $this->defaultModel,
+            'prompt' => $prompt,
+            'negative_prompt' => $negativePrompt,
+            'styleUUID' => $styleUUID,
+            'contrast' => 3.5,
+            'num_images' => 1,
+            'width' => $width,
+            'height' => $height,
+            'alchemy' => false,
+            'ultra' => false,
+        ]);
+
+        if (!$response->successful()) {
+            Log::error('Leonardo AI: Free mode generation failed', [
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);

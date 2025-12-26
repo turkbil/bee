@@ -9,12 +9,14 @@
         <div class="mb-3">
             <h3 class="px-4 text-xs font-bold text-muzibu-text-gray uppercase tracking-wider mb-2">{{ trans('muzibu::front.sidebar.my_library') }}</h3>
             <nav class="space-y-1">
-                <a href="/muzibu/my-playlists" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
-                    <i class="fas fa-list w-5 text-base"></i>
+                <a href="/muzibu/my-playlists" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg transition-all duration-300"
+                   x-data="{ h: false }" @mouseenter="h = true" @mouseleave="h = false">
+                    <i :class="h ? 'fas' : 'fal'" class="fa-folder-music w-5 text-base transition-all duration-200"></i>
                     <span class="font-medium text-sm">{{ trans('muzibu::front.sidebar.my_playlists') }}</span>
                 </a>
-                <a href="/muzibu/favorites" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
-                    <i class="fas fa-heart w-5 text-base"></i>
+                <a href="/muzibu/favorites" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg transition-all duration-300"
+                   x-data="{ h: false }" @mouseenter="h = true" @mouseleave="h = false">
+                    <i :class="h ? 'fas' : 'fal'" class="fa-heart w-5 text-base transition-all duration-200"></i>
                     <span class="font-medium text-sm">{{ trans('muzibu::front.general.favorites') }}</span>
                 </a>
             </nav>
@@ -26,24 +28,29 @@
         <div class="mb-3">
             <h3 class="px-4 text-xs font-bold text-muzibu-text-gray uppercase tracking-wider mb-2">{{ trans('muzibu::front.general.discover') }}</h3>
             <nav class="space-y-1">
-                <a href="/playlists" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
-                    <i class="fas fa-stream w-5 text-base"></i>
+                <a href="/playlists" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg transition-all duration-300"
+                   x-data="{ h: false }" @mouseenter="h = true" @mouseleave="h = false">
+                    <i :class="h ? 'fas' : 'fal'" class="fa-list-music w-5 text-base transition-all duration-200"></i>
                     <span class="font-medium text-sm">{{ trans('muzibu::front.general.playlists') }}</span>
                 </a>
-                <a href="/albums" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
-                    <i class="fas fa-compact-disc w-5 text-base"></i>
+                <a href="/albums" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg transition-all duration-300"
+                   x-data="{ h: false }" @mouseenter="h = true" @mouseleave="h = false">
+                    <i :class="h ? 'fas' : 'fal'" class="fa-record-vinyl w-5 text-base transition-all duration-200"></i>
                     <span class="font-medium text-sm">{{ trans('muzibu::front.general.albums') }}</span>
                 </a>
-                <a href="/genres" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
-                    <i class="fas fa-music w-5 text-base"></i>
+                <a href="/genres" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg transition-all duration-300"
+                   x-data="{ h: false }" @mouseenter="h = true" @mouseleave="h = false">
+                    <i :class="h ? 'fas' : 'fal'" class="fa-guitars w-5 text-base transition-all duration-200"></i>
                     <span class="font-medium text-sm">{{ trans('muzibu::front.general.genres') }}</span>
                 </a>
-                <a href="/sectors" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
-                    <i class="fas fa-compass w-5 text-base"></i>
+                <a href="/sectors" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg transition-all duration-300"
+                   x-data="{ h: false }" @mouseenter="h = true" @mouseleave="h = false">
+                    <i :class="h ? 'fas' : 'fal'" class="fa-building w-5 text-base transition-all duration-200"></i>
                     <span class="font-medium text-sm">{{ trans('muzibu::front.general.sectors') }}</span>
                 </a>
-                <a href="/radios" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
-                    <i class="fas fa-broadcast-tower w-5 text-base"></i>
+                <a href="/radios" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg transition-all duration-300"
+                   x-data="{ h: false }" @mouseenter="h = true" @mouseleave="h = false">
+                    <i :class="h ? 'fas' : 'fal'" class="fa-radio w-5 text-base transition-all duration-200"></i>
                     <span class="font-medium text-sm">{{ trans('muzibu::front.general.radios') }}</span>
                 </a>
             </nav>

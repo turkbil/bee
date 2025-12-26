@@ -56,13 +56,33 @@ class TelescopeServiceProvider extends ServiceProvider
 
             $isLocal = $this->app->environment('local');
 
+            // 🎯 TENANT-AWARE TELESCOPE
+            // Central Settings: telescope_tenant_ids = "1001,2,3" veya boş = tüm tenant'lar
+            // Admin Panel > Settings > Debug bölümünden yönetilir
+
             Telescope::filter(function (IncomingEntry $entry) use ($isLocal) {
                 // Local ortamda her şeyi kaydet
                 if ($isLocal) {
                     return true;
                 }
 
-                // Production'da da her şeyi kaydet (admin kullanıcılar için)
+                // İzin verilen tenant ID'lerini al
+                // .env: TELESCOPE_TENANT_IDS=1001,2,3 veya boş = tüm tenant'lar
+                $settingValue = env('TELESCOPE_TENANT_IDS', '');
+                $allowedTenants = $settingValue ? array_map('intval', explode(',', $settingValue)) : [];
+
+                // Boş array = tüm tenant'lara izin ver
+                if (empty($allowedTenants)) {
+                    return true;
+                }
+
+                // Tenant kontrolü - sadece izin verilen tenant'larda kaydet
+                $currentTenantId = function_exists('tenant') && tenant() ? tenant()->id : null;
+
+                if ($currentTenantId === null || !in_array($currentTenantId, $allowedTenants)) {
+                    return false; // Bu tenant için kaydetme
+                }
+
                 return true;
             });
         }

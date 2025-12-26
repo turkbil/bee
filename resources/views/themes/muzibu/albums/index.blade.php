@@ -9,10 +9,10 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 </script>
 
 <div class="px-6 py-8">
-    {{-- Header - Alternatif 2: Icon + Text --}}
+    {{-- Header - Alternatif 2: Icon + Text (FA Beat-Fade Animation) --}}
     <div class="mb-8 flex items-center gap-5">
         <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
-            <i class="fas fa-compact-disc text-3xl text-white"></i>
+            <i class="fas fa-record-vinyl text-3xl text-white fa-beat-fade" style="--fa-animation-duration: 2s; --fa-beat-fade-opacity: 0.4; --fa-beat-fade-scale: 1.1;"></i>
         </div>
         <div>
             <h1 class="text-5xl font-extrabold text-white mb-1">Albümler</h1>

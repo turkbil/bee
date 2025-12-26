@@ -1,19 +1,17 @@
 @extends('themes.muzibu.layouts.app')
 
 @section('content')
-{{-- 🎯 Reset sidebar to homepage state --}}
+{{-- Reset sidebar to homepage state --}}
 <script>
 if (window.Alpine && window.Alpine.store('sidebar')) {
     window.Alpine.store('sidebar').reset();
 }
 </script>
 
-<div class="px-4 sm:px-6 py-8 pb-20 max-w-7xl mx-auto">
+<div class="px-6 py-8">
     {{-- Header --}}
     <div class="mb-8">
-        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">
-            <i class="fas fa-heart text-muzibu-coral mr-3"></i>Favorilerim
-        </h1>
+        <h1 class="text-4xl font-bold text-white mb-2">Favorilerim</h1>
         <p class="text-gray-400">Beğendiğin içerikler</p>
     </div>
 
@@ -140,7 +138,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                 @foreach($favorites as $favorite)
                     @if($favorite->favoritable)
-                        <x-muzibu.sector-card :sector="$favorite->favoritable" :preview="false" />
+                        <x-muzibu.sector-card :sector="$favorite->favoritable" :preview="true" />
                     @endif
                 @endforeach
             </div>
@@ -150,7 +148,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                 @foreach($favorites as $favorite)
                     @if($favorite->favoritable)
-                        <x-muzibu.radio-card :radio="$favorite->favoritable" />
+                        <x-muzibu.radio-card :radio="$favorite->favoritable" :preview="true" />
                     @endif
                 @endforeach
             </div>

@@ -7476,6 +7476,7 @@ return array(
     'Modules\\Muzibu\\App\\Repositories\\SongRepository' => $baseDir . '/Modules/Muzibu/app/Repositories/SongRepository.php',
     'Modules\\Muzibu\\App\\Services\\AlbumService' => $baseDir . '/Modules/Muzibu/app/Services/AlbumService.php',
     'Modules\\Muzibu\\App\\Services\\ArtistService' => $baseDir . '/Modules/Muzibu/app/Services/ArtistService.php',
+    'Modules\\Muzibu\\App\\Services\\CorporateSubscriptionService' => $baseDir . '/Modules/Muzibu/app/Services/CorporateSubscriptionService.php',
     'Modules\\Muzibu\\App\\Services\\DeviceService' => $baseDir . '/Modules/Muzibu/app/Services/DeviceService.php',
     'Modules\\Muzibu\\App\\Services\\GenreService' => $baseDir . '/Modules/Muzibu/app/Services/GenreService.php',
     'Modules\\Muzibu\\App\\Services\\MuzibuCacheService' => $baseDir . '/Modules/Muzibu/app/Services/MuzibuCacheService.php',

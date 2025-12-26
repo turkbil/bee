@@ -9022,6 +9022,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\Muzibu\\App\\Repositories\\SongRepository' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Repositories/SongRepository.php',
         'Modules\\Muzibu\\App\\Services\\AlbumService' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Services/AlbumService.php',
         'Modules\\Muzibu\\App\\Services\\ArtistService' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Services/ArtistService.php',
+        'Modules\\Muzibu\\App\\Services\\CorporateSubscriptionService' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Services/CorporateSubscriptionService.php',
         'Modules\\Muzibu\\App\\Services\\DeviceService' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Services/DeviceService.php',
         'Modules\\Muzibu\\App\\Services\\GenreService' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Services/GenreService.php',
         'Modules\\Muzibu\\App\\Services\\MuzibuCacheService' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Services/MuzibuCacheService.php',

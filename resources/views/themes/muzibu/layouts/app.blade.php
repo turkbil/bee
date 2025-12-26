@@ -643,7 +643,8 @@
             @else
                 deviceLimit: 1,
             @endif
-            sessionPollingInterval: {{ config('muzibu.session.polling_interval', 30000) }}
+            sessionPollingInterval: {{ config('muzibu.session.polling_interval', 30000) }},
+            crossfadeDuration: {{ config('muzibu.player.crossfade_duration', 4000) }}
         };
 
         // 🔐 CSRF Token Auto-Renewal (419 hatası önleme)

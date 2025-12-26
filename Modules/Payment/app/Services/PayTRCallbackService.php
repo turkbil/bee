@@ -171,8 +171,11 @@ class PayTRCallbackService
             Log::channel('daily')->info('✅ onPaymentCompleted called');
         }
 
-        // Send payment success email
+        // Send payment success email to customer
         $this->sendPaymentSuccessEmail($payment);
+
+        // Send admin notification email
+        $this->sendAdminPaymentNotification($payment, $callbackData);
 
         // Event dispatch (gelecekte: sms, notification)
         // event(new OrderPaid($payment));
@@ -341,6 +344,132 @@ class PayTRCallbackService
                 'error' => $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * Send admin notification email about new payment
+     */
+    private function sendAdminPaymentNotification(Payment $payment, array $callbackData): void
+    {
+        try {
+            // Get admin email from settings or fallback
+            $adminEmail = setting('admin_email') ?: setting('site_email') ?: 'ferhat@turkbilisim.com.tr';
+            if (!$adminEmail) {
+                Log::warning('⚠️ Admin payment notification: Admin email not configured');
+                return;
+            }
+
+            // Get mail template
+            $templateService = app(MailTemplateService::class);
+            $template = $templateService->getTemplate('payment_admin_notification');
+
+            if (!$template) {
+                Log::warning('⚠️ Admin payment notification: Template not found');
+                return;
+            }
+
+            // Get user and billing info
+            $user = $this->getUserFromPayment($payment);
+            $billingInfo = $this->getBillingInfoHtml($user);
+
+            // Prepare variables
+            $variables = [
+                'merchant_oid' => $callbackData['merchant_oid'] ?? $payment->gateway_transaction_id ?? '-',
+                'amount' => number_format($payment->amount, 2),
+                'currency' => $payment->currency ?? 'TL',
+                'paid_at' => $payment->paid_at ? $payment->paid_at->format('d.m.Y H:i') : now()->format('d.m.Y H:i'),
+                'billing_info' => $billingInfo,
+                'site_name' => setting('site_name', config('app.name')),
+            ];
+
+            // Get locale and render content
+            $locale = app()->getLocale();
+            $subject = $templateService->renderContent($template->getSubjectForLocale($locale), $variables);
+            $content = $templateService->renderContent($template->getContentForLocale($locale), $variables);
+
+            // Send email
+            Mail::to($adminEmail)->send(new PaymentMail($subject, $content, $adminEmail));
+
+            Log::channel('daily')->info('✅ Admin payment notification sent', [
+                'payment_id' => $payment->payment_id,
+                'admin_email' => $adminEmail,
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('❌ Admin payment notification error', [
+                'payment_id' => $payment->payment_id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Get billing info HTML based on user's billing profile
+     */
+    private function getBillingInfoHtml($user): string
+    {
+        if (!$user) {
+            return '<p style="color: #666; font-size: 14px;">Kullanıcı bilgisi bulunamadı</p>';
+        }
+
+        // Try to get billing profile from tenant database (where billing_profiles are stored)
+        $billingProfile = DB::table('billing_profiles')
+            ->where('user_id', $user->id)
+            ->where('is_default', true)
+            ->whereNull('deleted_at')
+            ->first();
+
+        // If no default, get any
+        if (!$billingProfile) {
+            $billingProfile = DB::table('billing_profiles')
+                ->where('user_id', $user->id)
+                ->whereNull('deleted_at')
+                ->first();
+        }
+
+        $html = '<table style="width: 100%;">';
+
+        // Ad Soyad
+        $name = $billingProfile->contact_name ?? $user->name ?? '-';
+        $html .= '<tr><td style="padding: 5px 0; color: #166534; font-size: 14px; width: 40%;">Ad Soyad:</td>';
+        $html .= '<td style="padding: 5px 0; color: #15803d; font-size: 14px; font-weight: 600;">' . e($name) . '</td></tr>';
+
+        if ($billingProfile && $billingProfile->type === 'corporate') {
+            // Kurumsal
+            $html .= '<tr><td style="padding: 5px 0; color: #166534; font-size: 14px;">Müşteri Tipi:</td>';
+            $html .= '<td style="padding: 5px 0; color: #15803d; font-size: 14px; font-weight: 600;">🏢 Kurumsal</td></tr>';
+
+            $html .= '<tr><td style="padding: 5px 0; color: #166534; font-size: 14px;">Şirket:</td>';
+            $html .= '<td style="padding: 5px 0; color: #15803d; font-size: 14px; font-weight: 600;">' . e($billingProfile->company_name ?? '-') . '</td></tr>';
+
+            $html .= '<tr><td style="padding: 5px 0; color: #166534; font-size: 14px;">Vergi No:</td>';
+            $html .= '<td style="padding: 5px 0; color: #15803d; font-size: 14px; font-weight: 600;">' . e($billingProfile->tax_number ?? '-') . '</td></tr>';
+
+            $html .= '<tr><td style="padding: 5px 0; color: #166534; font-size: 14px;">Vergi Dairesi:</td>';
+            $html .= '<td style="padding: 5px 0; color: #15803d; font-size: 14px; font-weight: 600;">' . e($billingProfile->tax_office ?? '-') . '</td></tr>';
+        } else {
+            // Bireysel
+            $html .= '<tr><td style="padding: 5px 0; color: #166534; font-size: 14px;">Müşteri Tipi:</td>';
+            $html .= '<td style="padding: 5px 0; color: #15803d; font-size: 14px; font-weight: 600;">👤 Bireysel</td></tr>';
+
+            $identityNumber = $billingProfile->identity_number ?? '-';
+            $html .= '<tr><td style="padding: 5px 0; color: #166534; font-size: 14px;">TC Kimlik No:</td>';
+            $html .= '<td style="padding: 5px 0; color: #15803d; font-size: 14px; font-weight: 600;">' . e($identityNumber) . '</td></tr>';
+        }
+
+        // Telefon
+        $phone = $billingProfile->contact_phone ?? $user->phone ?? '-';
+        $html .= '<tr><td style="padding: 5px 0; color: #166534; font-size: 14px;">Telefon:</td>';
+        $html .= '<td style="padding: 5px 0; color: #15803d; font-size: 14px; font-weight: 600;">' . e($phone) . '</td></tr>';
+
+        // Email
+        $email = $billingProfile->contact_email ?? $user->email ?? '-';
+        $html .= '<tr><td style="padding: 5px 0; color: #166534; font-size: 14px;">E-posta:</td>';
+        $html .= '<td style="padding: 5px 0; color: #15803d; font-size: 14px; font-weight: 600;">' . e($email) . '</td></tr>';
+
+        $html .= '</table>';
+
+        return $html;
     }
 
     /**

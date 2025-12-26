@@ -15,6 +15,11 @@ return [
         'hls_timeout' => 6,        // HLS fallback timeout (saniye)
     ],
 
+    // 🎧 Player Settings
+    'player' => [
+        'crossfade_duration' => 7000,  // Crossfade süresi (milliseconds) - 7 saniye
+    ],
+
     // 🔐 Session Settings
     'session' => [
         'polling_interval' => 30000,  // Session polling (milliseconds)

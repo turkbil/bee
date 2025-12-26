@@ -1,7 +1,7 @@
 @extends('themes.muzibu.layouts.app')
 
 @section('content')
-{{-- 🎯 Reset sidebar to homepage state --}}
+{{-- Reset sidebar to homepage state --}}
 <script>
 if (window.Alpine && window.Alpine.store('sidebar')) {
     window.Alpine.store('sidebar').reset();
@@ -12,100 +12,23 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
     {{-- Header --}}
     <div class="mb-8 flex items-center justify-between">
         <div>
-            <h1 class="text-4xl font-bold text-white mb-2">
-                <i class="fas fa-list text-muzibu-coral mr-3"></i>Playlistlerim
-            </h1>
+            <h1 class="text-4xl font-bold text-white mb-2">Playlistlerim</h1>
             <p class="text-gray-400">Oluşturduğun tüm playlistler</p>
         </div>
 
         {{-- Create Playlist Button --}}
         <button @click="$dispatch('open-create-playlist-modal')"
-                class="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-muzibu-coral hover:bg-muzibu-coral/90 text-white font-semibold rounded-full transition-all transform hover:scale-105">
+                class="inline-flex items-center gap-2 px-6 py-3 bg-muzibu-coral hover:bg-muzibu-coral/90 text-white font-semibold rounded-full transition-all transform hover:scale-105">
             <i class="fas fa-plus"></i>
             <span class="hidden sm:inline">Yeni Playlist</span>
         </button>
     </div>
 
+    {{-- Playlists Grid --}}
     @if($playlists->count() > 0)
-        {{-- Playlists Grid --}}
         <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
             @foreach($playlists as $playlist)
-                <div class="group rounded-lg transition-all duration-300 overflow-hidden">
-                    {{-- Playlist Card --}}
-                    <a href="/playlists/{{ $playlist->slug }}"
-                       class="block px-4 pt-4"
-                       @click="if (window.innerWidth >= 1024) {
-                           $event.preventDefault();
-                           $store.sidebar.showPreview('playlist', {{ $playlist->playlist_id }}, {
-                               type: 'Playlist',
-                               id: {{ $playlist->playlist_id }},
-                               title: '{{ addslashes($playlist->title) }}',
-                               description: '{{ addslashes($playlist->description ?? '') }}',
-                               cover: '{{ $playlist->coverMedia ? thumb($playlist->coverMedia, 300, 300) : '' }}',
-                               is_public: {{ $playlist->is_public ? 'true' : 'false' }},
-                               is_favorite: {{ $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
-                               songs_count: {{ $playlist->songs_count ?? 0 }},
-                               is_mine: true
-                           });
-                       }"
-                       data-spa>
-
-                        {{-- Cover Image --}}
-                        <div class="relative mb-4">
-                            @if($playlist->media_id && $playlist->coverMedia)
-                                <img src="{{ thumb($playlist->coverMedia, 300, 300) }}"
-                                     alt="{{ $playlist->title }}"
-                                     class="w-full aspect-square object-cover rounded-lg shadow-lg"
-                                     loading="lazy">
-                            @else
-                                <div class="w-full aspect-square bg-gradient-to-br from-muzibu-coral to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
-                                    <span class="text-5xl">🎵</span>
-                                </div>
-                            @endif
-
-                            {{-- Play Button --}}
-                            <button @click.prevent="window.playPlaylist ? window.playPlaylist({{ $playlist->playlist_id }}) : $store.player.playPlaylist({{ $playlist->playlist_id }})"
-                                    class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
-                                <i class="fas fa-play ml-1"></i>
-                            </button>
-
-                            {{-- Favorite + Menu Buttons (Sağ Üst) - HOVER'DA GÖRÜNÜR --}}
-                            <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent>
-                                {{-- Favorite Button --}}
-                                <button x-on:click.stop.prevent="$store.favorites.toggle('playlist', {{ $playlist->playlist_id }})"
-                                        class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all"
-                                        x-bind:class="$store.favorites.isFavorite('playlist', {{ $playlist->playlist_id }}) ? 'text-muzibu-coral' : ''">
-                                    <i class="text-sm"
-                                       x-bind:class="$store.favorites.isFavorite('playlist', {{ $playlist->playlist_id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
-                                </button>
-
-                                {{-- 3-Dot Menu Button --}}
-                                <button x-on:click.stop.prevent="$store.contextMenu.openContextMenu($event, 'my-playlist', {
-                                    id: {{ $playlist->playlist_id }},
-                                    title: '{{ addslashes($playlist->title) }}',
-                                    slug: '{{ $playlist->slug }}',
-                                    is_favorite: {{ $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
-                                })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
-                                    <i class="fas fa-ellipsis-v text-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        {{-- Text Area --}}
-                        <div class="h-12 overflow-hidden pb-4">
-                            <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
-                                {{ $playlist->title }}
-                            </h3>
-                            <p class="text-xs text-gray-400 leading-6 line-clamp-1">
-                                @if($playlist->songs_count > 0)
-                                    {{ $playlist->songs_count }} şarkı
-                                @else
-                                    Boş playlist
-                                @endif
-                            </p>
-                        </div>
-                    </a>
-                </div>
+                <x-muzibu.my-playlist-card :playlist="$playlist" :preview="true" />
             @endforeach
         </div>
 
@@ -151,7 +74,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
     @endif
 </div>
 
-{{-- Delete Confirmation Modal (SPA Compatible) - Inline x-data for reliable scope --}}
+{{-- Delete Confirmation Modal --}}
 <div x-data="{
         open: false,
         playlistId: null,
@@ -163,7 +86,6 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
                 document.body.style.overflow = value ? 'hidden' : '';
             });
 
-            // Listen for delete event
             window.addEventListener('confirm-delete-playlist', (e) => {
                 this.playlistId = e.detail.id;
                 this.playlistTitle = e.detail.title;
@@ -222,70 +144,70 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
      class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
      style="display: none;">
 
-        {{-- Backdrop --}}
-        <div x-show="open"
-             x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition ease-in duration-200"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             @click="close()"
-             class="absolute inset-0 bg-black/90 backdrop-blur-sm"></div>
+    {{-- Backdrop --}}
+    <div x-show="open"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click="close()"
+         class="absolute inset-0 bg-black/90 backdrop-blur-sm"></div>
 
-        {{-- Modal --}}
-        <div x-show="open"
-             x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0 scale-95"
-             x-transition:enter-end="opacity-100 scale-100"
-             x-transition:leave="transition ease-in duration-200"
-             x-transition:leave-start="opacity-100 scale-100"
-             x-transition:leave-end="opacity-0 scale-95"
-             @click.stop
-             class="relative w-full max-w-md bg-gradient-to-br from-zinc-900 to-black rounded-2xl shadow-2xl border border-red-900/30 p-6">
+    {{-- Modal --}}
+    <div x-show="open"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 scale-95"
+         x-transition:enter-end="opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 scale-95"
+         @click.stop
+         class="relative w-full max-w-md bg-gradient-to-br from-zinc-900 to-black rounded-2xl shadow-2xl border border-red-900/30 p-6">
 
-            {{-- Close Button --}}
-            <button @click="close()"
-                    class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 rounded-full transition-all">
-                <i class="fas fa-times"></i>
-            </button>
+        {{-- Close Button --}}
+        <button @click="close()"
+                class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 rounded-full transition-all">
+            <i class="fas fa-times"></i>
+        </button>
 
-            {{-- Icon --}}
-            <div class="mb-4 flex justify-center">
-                <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center">
-                    <i class="fas fa-trash-alt text-red-500 text-2xl"></i>
-                </div>
-            </div>
-
-            {{-- Title --}}
-            <h3 class="text-2xl font-bold text-white text-center mb-2">Playlist'i Sil</h3>
-
-            {{-- Message --}}
-            <p class="text-gray-400 text-center mb-6">
-                <span class="font-semibold text-white" x-text="playlistTitle"></span> adlı playlist'i silmek istediğinize emin misiniz?
-                <span class="block mt-2 text-red-400 text-sm">Bu işlem geri alınamaz!</span>
-            </p>
-
-            {{-- Actions --}}
-            <div class="flex items-center gap-3">
-                <button type="button"
-                        @click="close()"
-                        :disabled="deleting"
-                        :class="deleting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/20'"
-                        class="flex-1 px-6 py-3 bg-white/10 text-white font-semibold rounded-full transition-all">
-                    İptal
-                </button>
-                <button type="button"
-                        @click="deletePlaylist()"
-                        :disabled="deleting"
-                        :class="deleting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'"
-                        class="flex-1 px-6 py-3 bg-red-500 text-white font-semibold rounded-full transition-all flex items-center justify-center gap-2">
-                    <i class="fas fa-spinner fa-spin" x-show="deleting" x-cloak></i>
-                    <i class="fas fa-trash-alt" x-show="!deleting"></i>
-                    <span x-text="deleting ? 'Siliniyor...' : 'Sil'"></span>
-                </button>
+        {{-- Icon --}}
+        <div class="mb-4 flex justify-center">
+            <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center">
+                <i class="fas fa-trash-alt text-red-500 text-2xl"></i>
             </div>
         </div>
+
+        {{-- Title --}}
+        <h3 class="text-2xl font-bold text-white text-center mb-2">Playlist'i Sil</h3>
+
+        {{-- Message --}}
+        <p class="text-gray-400 text-center mb-6">
+            <span class="font-semibold text-white" x-text="playlistTitle"></span> adlı playlist'i silmek istediğinize emin misiniz?
+            <span class="block mt-2 text-red-400 text-sm">Bu işlem geri alınamaz!</span>
+        </p>
+
+        {{-- Actions --}}
+        <div class="flex items-center gap-3">
+            <button type="button"
+                    @click="close()"
+                    :disabled="deleting"
+                    :class="deleting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/20'"
+                    class="flex-1 px-6 py-3 bg-white/10 text-white font-semibold rounded-full transition-all">
+                İptal
+            </button>
+            <button type="button"
+                    @click="deletePlaylist()"
+                    :disabled="deleting"
+                    :class="deleting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'"
+                    class="flex-1 px-6 py-3 bg-red-500 text-white font-semibold rounded-full transition-all flex items-center justify-center gap-2">
+                <i class="fas fa-spinner fa-spin" x-show="deleting" x-cloak></i>
+                <i class="fas fa-trash-alt" x-show="!deleting"></i>
+                <span x-text="deleting ? 'Siliniyor...' : 'Sil'"></span>
+            </button>
+        </div>
+    </div>
 </div>
 
 @endsection

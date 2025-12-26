@@ -140,8 +140,8 @@ function muzibuApp() {
         showDeviceLimitModal: false, // 🔐 Show device limit exceeded modal
 
         // Crossfade settings (using Howler.js + HLS.js)
-        crossfadeEnabled: true, // ✅ ENABLED: Smooth 7-second crossfade transitions
-        crossfadeDuration: 7000, // 7 seconds for automatic song transitions - smooth crossfade
+        crossfadeEnabled: true, // ✅ ENABLED: Smooth crossfade transitions
+        crossfadeDuration: window.muzibuPlayerConfig?.crossfadeDuration || 7000, // Config'den al, varsayılan 7 saniye
         fadeOutDuration: 0, // 🚀 INSTANT: No fade, immediate volume changes
         isCrossfading: false,
         howl: null, // Current Howler instance (for MP3)
@@ -1701,9 +1701,13 @@ function muzibuApp() {
 
         async playSong(id) {
             try {
+                // 🔄 Loading state başlat
+                this.isSongLoading = true;
+
                 // 🚫 FRONTEND PREMIUM CHECK: Şarkı çalmaya çalışmadan önce kontrol et
                 // Guest kullanıcı → Toast mesajı göster
                 if (!this.isLoggedIn) {
+                    this.isSongLoading = false;
                     this.showToast(this.frontLang?.auth?.login_required || 'Login required to listen', 'warning');
                     return;
                 }
@@ -1711,6 +1715,7 @@ function muzibuApp() {
                 // Premium/Trial olmayan üye → Toast mesajı göster
                 const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
                 if (!isPremiumOrTrial) {
+                    this.isSongLoading = false;
                     this.showToast(this.frontLang?.auth?.premium_required || 'Premium membership required', 'warning');
                     return;
                 }
@@ -1861,6 +1866,7 @@ function muzibuApp() {
                 this.showToast(this.frontLang?.messages?.song_playing || 'Song is playing', 'success');
             } catch (error) {
                 console.error('Failed to play song:', error);
+                this.isSongLoading = false;
                 this.showToast(this.frontLang?.messages?.song_loading_failed || 'Song failed to load', 'error');
             }
         },
@@ -1872,6 +1878,9 @@ function muzibuApp() {
             if (this.deviceLimitExceeded) {
                 return;
             }
+
+            // 🔄 Loading state başlat (validation'dan sonra)
+            this.isSongLoading = true;
 
             const song = this.queue[index];
 
@@ -2137,6 +2146,15 @@ function muzibuApp() {
                 }
             }
 
+            // 🔧 FIX: Also stop howlNext (crossfade için oluşturulan)
+            if (this.howlNext) {
+                try {
+                    this.howlNext.stop();
+                    this.howlNext.unload();
+                } catch (e) {}
+                this.howlNext = null;
+            }
+
             // Stop HLS if playing (check both audio elements)
             if (this.hls) {
                 const audio = this.getActiveHlsAudio();
@@ -2149,6 +2167,14 @@ function muzibuApp() {
                 this._currentHlsInstanceId = null;
                 this.hls.destroy();
                 this.hls = null;
+            }
+
+            // 🔧 FIX: Also destroy hlsNext (crossfade için oluşturulan)
+            if (this.hlsNext) {
+                try {
+                    this.hlsNext.destroy();
+                } catch (e) {}
+                this.hlsNext = null;
             }
 
             // Also clean up hlsAudioNext if exists
@@ -2202,6 +2228,7 @@ function muzibuApp() {
                 },
 onplay: function() {
                     self.isPlaying = true;
+                    self.isSongLoading = false; // 🔄 Loading tamamlandı
                     self.startProgressTracking('howler');
 
                     // Dispatch event for play-limits
@@ -2232,6 +2259,7 @@ onplay: function() {
                     console.error('❌ MP3 playback failed, cannot fallback (already in fallback mode)');
                     self.showToast(self.frontLang?.messages?.song_loading_failed || 'Song failed to load', 'error');
                     self.isPlaying = false;
+                    self.isSongLoading = false; // 🔄 Loading hatası
 
                     // Bir sonraki şarkıya geç
                     setTimeout(() => {
@@ -2242,6 +2270,7 @@ onplay: function() {
                     console.error('Howler play error:', error);
                     self.showToast(self.frontLang?.messages?.playback_error || 'Playback error', 'error');
                     self.isPlaying = false;
+                    self.isSongLoading = false; // 🔄 Loading hatası
                 }
             });
 
@@ -2405,6 +2434,7 @@ onplay: function() {
                             markHlsSuccess();
 
                             self.isPlaying = true;
+                            self.isSongLoading = false; // 🔄 Loading tamamlandı
                             // 🚀 INSTANT: No fade, volume already set
                             self.startProgressTracking('hls');
 
@@ -2422,13 +2452,16 @@ onplay: function() {
                             // 🛡️ Expected errors - don't show toast
                             if (e.name === 'AbortError') {
                                 // Fallback tetiklendi, normal
+                                self.isSongLoading = false; // 🔄 Loading hatası
                             } else if (e.name === 'NotAllowedError') {
                                 // Autoplay policy - preload mode'da normal
                                 // Kullanıcı play basınca çalacak
+                                self.isSongLoading = false; // 🔄 Loading tamamlandı (beklemede)
                             } else {
                                 // Beklenmeyen hata
                                 console.error('HLS play error:', e);
                                 self.showToast(self.frontLang?.messages?.playback_error || 'Playback error', 'error');
+                                self.isSongLoading = false; // 🔄 Loading hatası
                             }
                         });
                     } else {
@@ -2436,6 +2469,7 @@ onplay: function() {
                         markHlsSuccess(); // Preload da basarili sayilir
                         self.duration = audio.duration || 0;
                         self.isPlaying = false;
+                        self.isSongLoading = false; // 🔄 Preload tamamlandı
                     }
                 });
 

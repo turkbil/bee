@@ -1,8 +1,8 @@
-@props(['radio'])
+@props(['radio', 'preview' => false])
 
 {{-- Muzibu Radio Card Component --}}
-{{-- Usage: <x-muzibu.radio-card :radio="$radio" /> --}}
-{{-- Note: Radios play directly, no preview mode --}}
+{{-- Usage: <x-muzibu.radio-card :radio="$radio" :preview="true" /> --}}
+{{-- Note: Radios play directly - preview parameter is accepted but not used (for consistency) --}}
 
 <div class="radio-card group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300 cursor-pointer"
      @click.stop.prevent="window.playContent('radio', {{ $radio->radio_id }})"

@@ -48,7 +48,7 @@
             </button>
             <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black transition-all shadow-lg hover:shadow-white/50" @click="togglePlayPause()" :aria-label="isSongLoading ? (window.muzibuPlayerConfig?.frontLang?.general?.loading || 'Loading...') : (isPlaying ? (window.muzibuPlayerConfig?.frontLang?.player?.pause || 'Pause') : (window.muzibuPlayerConfig?.frontLang?.player?.play || 'Play'))">
                 {{-- 🎵 Loading state: Spinner animation --}}
-                <i x-show="isSongLoading" x-cloak class="fas fa-spinner fa-spin"></i>
+                <i x-show="isSongLoading" x-cloak class="fas fa-spinner fa-spin translate-y-[1px]"></i>
                 {{-- Playing state: Stop icon --}}
                 <i x-show="!isSongLoading && isPlaying" x-cloak class="fas fa-stop translate-y-[1px]"></i>
                 {{-- Paused state: Play icon (visible by default) --}}

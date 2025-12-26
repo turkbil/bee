@@ -144,6 +144,8 @@ function muzibuApp() {
         crossfadeDuration: window.muzibuPlayerConfig?.crossfadeDuration || 7000, // Config'den al, varsayılan 7 saniye
         fadeOutDuration: 0, // 🚀 INSTANT: No fade, immediate volume changes
         isCrossfading: false,
+        crossfadeTimeoutId: null, // 🔧 Crossfade completion timeout (iptal edilebilir)
+        crossfadeNextIndex: -1, // 🔧 Crossfade sırasında yeni şarkının index'i
         howl: null, // Current Howler instance (for MP3)
         howlNext: null, // Next song Howler instance for crossfade
         hls: null, // Current HLS.js instance
@@ -482,20 +484,66 @@ function muzibuApp() {
 
                 const targetVolume = this.isMuted ? 0 : this.volume / 100;
 
-                if (this.isPlaying) {
+                if (this.isPlaying || this.isSongLoading) {
                     // 🚀 INSTANT PAUSE: No fade
+                    // 🔧 FIX: Loading sırasında da durdur
+                    this.isSongLoading = false;
+
+                    // 🔧 FIX: Crossfade sırasında pause yapılırsa, önce crossfade'i tamamla
+                    // Böylece yeni şarkı aktif olur ve play'e basınca yeni şarkı devam eder
+                    if (this.isCrossfading && (this.howlNext || this.hlsNext)) {
+                        // 🔧 FIX: Crossfade timeout'unu iptal et (5sn sonra tekrar tetiklenmesini önle)
+                        if (this.crossfadeTimeoutId) {
+                            clearTimeout(this.crossfadeTimeoutId);
+                            this.crossfadeTimeoutId = null;
+                        }
+
+                        // 🔧 FIX: Doğru index'i kullan (crossfadeNextIndex, getNextSongIndex değil!)
+                        const nextIndex = this.crossfadeNextIndex >= 0 ? this.crossfadeNextIndex : (this.queueIndex + 1);
+                        const nextIsHls = this.hlsNext !== null;
+
+                        // Crossfade'i tamamla (yeni şarkı aktif olsun)
+                        this.completeCrossfade(nextIndex, nextIsHls);
+                        this.crossfadeNextIndex = -1; // Reset
+                    }
+
+                    // Şimdi normal pause yap
                     if (this.howl) {
                         this.howl.pause();
-                        this.isPlaying = false;
-                        window.dispatchEvent(new CustomEvent('player:pause'));
-                    } else if (this.hls) {
+                    }
+
+                    if (this.hls) {
                         const audio = this.getActiveHlsAudio();
                         if (audio) {
                             audio.pause();
-                            this.isPlaying = false;
-                            window.dispatchEvent(new CustomEvent('player:pause'));
                         }
                     }
+
+                    // 🔧 FIX: Her zaman TÜM audio element'leri durdur (crossfade durumlarında gerekli)
+                    const hlsAudio = document.getElementById('hlsAudio');
+                    const hlsAudioNext = document.getElementById('hlsAudioNext');
+                    if (hlsAudio) {
+                        try { hlsAudio.pause(); } catch(e) {}
+                        // 🔧 FIX: Event listener'ları temizle (otomatik başlamayı önle)
+                        hlsAudio.ontimeupdate = null;
+                        hlsAudio.onended = null;
+                    }
+                    if (hlsAudioNext) {
+                        try { hlsAudioNext.pause(); } catch(e) {}
+                        hlsAudioNext.ontimeupdate = null;
+                        hlsAudioNext.onended = null;
+                    }
+
+                    // 🔧 FIX: Progress interval'i temizle (crossfade tetiklenmesini önle)
+                    if (this.progressInterval) {
+                        clearInterval(this.progressInterval);
+                        this.progressInterval = null;
+                    }
+
+                    // State'i sıfırla
+                    this.isPlaying = false;
+                    this.isCrossfading = false;
+                    window.dispatchEvent(new CustomEvent('player:pause'));
                 } else {
                     // 🚀 INSTANT PLAY: No fade, direct volume
                     if (this.howl) {
@@ -1127,8 +1175,13 @@ function muzibuApp() {
                     }
                 }
 
+                // 🔧 FIX: nextIndex'i sakla (pause sırasında doğru şarkıya geçmek için)
+                this.crossfadeNextIndex = nextIndex;
+
                 // After crossfade duration, complete the transition
-                setTimeout(() => {
+                // 🔧 FIX: Timeout'u kaydet (pause sırasında iptal edebilmek için)
+                this.crossfadeTimeoutId = setTimeout(() => {
+                    this.crossfadeTimeoutId = null;
                     this.completeCrossfade(nextIndex, nextIsHls);
                 }, this.crossfadeDuration);
 
@@ -2832,6 +2885,12 @@ onplay: function() {
         startProgressTracking(type) {
             const self = this;
 
+            // 🔧 FIX: Önce mevcut interval'i temizle (çakışma önleme)
+            if (this.progressInterval) {
+                clearInterval(this.progressInterval);
+                this.progressInterval = null;
+            }
+
             this.progressInterval = setInterval(() => {
                 let currentTime = 0;
                 let isCurrentlyPlaying = false;
@@ -2883,6 +2942,12 @@ onplay: function() {
             const self = this;
 
             if (!audioElement) return;
+
+            // 🔧 FIX: Önce mevcut interval'i temizle (çakışma önleme)
+            if (this.progressInterval) {
+                clearInterval(this.progressInterval);
+                this.progressInterval = null;
+            }
 
             this.progressInterval = setInterval(() => {
                 if (!audioElement.paused && this.duration > 0) {

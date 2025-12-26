@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subheader Alternatifleri - Genel Kullanım</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'muzibu-coral': '#FF6B6B',
+                        'muzibu-gray': '#1a1a1a'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: #0a0a0a; }
+        .demo-section { border: 2px dashed #333; margin-bottom: 2rem; }
+        .demo-label { font-size: 11px; }
+    </style>
+</head>
+<body class="text-white min-h-screen p-6">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-3xl font-bold mb-3">Subheader Alternatifleri</h1>
+            <p class="text-gray-400">Tüm sayfalar için genel kullanım - Radyolar, Sektörler, Türler, Albümler vb.</p>
+        </header>
+
+        <!-- ============================================ -->
+        <!-- ALTERNATİF 1: Sadece Text (Mevcut) -->
+        <!-- ============================================ -->
+        <div class="demo-section rounded-xl overflow-hidden">
+            <div class="bg-green-900/30 px-4 py-2">
+                <span class="text-green-400 font-bold">1. Sadece Text (Mevcut Durum)</span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 p-4 bg-black/50">
+                <!-- Radyolar -->
+                <div class="rounded-lg overflow-hidden">
+                    <p class="demo-label text-gray-500 mb-1">Radyolar</p>
+                    <section class="relative h-40 bg-gradient-to-b from-amber-900 via-amber-800 to-transparent">
+                        <div class="px-6 h-full flex flex-col justify-end pb-6">
+                            <h1 class="text-2xl font-bold text-white mb-1">Radyolar</h1>
+                            <p class="text-sm text-gray-300/70">Canlı radyo yayınları</p>
+                        </div>
+                    </section>
+                </div>
+                <!-- Sektörler -->
+                <div class="rounded-lg overflow-hidden">
+                    <p class="demo-label text-gray-500 mb-1">Sektörler</p>
+                    <section class="relative h-40 bg-gradient-to-b from-teal-900 via-teal-800 to-transparent">
+                        <div class="px-6 h-full flex flex-col justify-end pb-6">
+                            <h1 class="text-2xl font-bold text-white mb-1">Sektörler</h1>
+                            <p class="text-sm text-gray-300/70">İşletmenize özel müzikler</p>
+                        </div>
+                    </section>
+                </div>
+                <!-- Türler -->
+                <div class="rounded-lg overflow-hidden">
+                    <p class="demo-label text-gray-500 mb-1">Türler</p>
+                    <section class="relative h-40 bg-gradient-to-b from-pink-900 via-pink-800 to-transparent">
+                        <div class="px-6 h-full flex flex-col justify-end pb-6">
+                            <h1 class="text-2xl font-bold text-white mb-1">Müzik Türleri</h1>
+                            <p class="text-sm text-gray-300/70">Tarzına göre keşfet</p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- ALTERNATİF 2: Icon + Text (Sol Hizalı) -->
+        <!-- ============================================ -->
+        <div class="demo-section rounded-xl overflow-hidden">
+            <div class="bg-blue-900/30 px-4 py-2">
+                <span class="text-blue-400 font-bold">2. Icon + Text (Sol Hizalı)</span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 p-4 bg-black/50">
+                <!-- Radyolar -->
+                <div class="rounded-lg overflow-hidden">
+                    <p class="demo-label text-gray-500 mb-1">Radyolar</p>
+                    <section class="relative h-40 bg-gradient-to-b from-amber-900 via-amber-800 to-transparent">
+                        <div class="px-6 h-full flex items-end pb-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-broadcast-tower text-xl text-amber-400"></i>
+                                </div>
+                                <div>
+                                    <h1 class="text-2xl font-bold text-white">Radyolar</h1>
+                                    <p class="text-sm text-white/60">Canlı radyo yayınları</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <!-- Sektörler -->
+                <div class="rounded-lg overflow-hidden">
+                    <p class="demo-label text-gray-500 mb-1">Sektörler</p>
+                    <section class="relative h-40 bg-gradient-to-b from-teal-900 via-teal-800 to-transparent">
+                        <div class="px-6 h-full flex items-end pb-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-briefcase text-xl text-teal-400"></i>
+                                </div>
+                                <div>
+                                    <h1 class="text-2xl font-bold text-white">Sektörler</h1>
+                                    <p class="text-sm text-white/60">İşletmenize özel müzikler</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <!-- Türler -->
+                <div class="rounded-lg overflow-hidden">
+                    <p class="demo-label text-gray-500 mb-1">Türler</p>
+                    <section class="relative h-40 bg-gradient-to-b from-pink-900 via-pink-800 to-transparent">
+                        <div class="px-6 h-full flex items-end pb-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-guitar text-xl text-pink-400"></i>
+                                </div>
+                                <div>
+                                    <h1 class="text-2xl font-bold text-white">Müzik Türleri</h1>
+                                    <p class="text-sm text-white/60">Tarzına göre keşfet</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- ALTERNATİF 3: Gradient Icon Box -->
+        <!-- ============================================ -->
+        <div class="demo-section rounded-xl overflow-hidden">
+            <div class="bg-purple-900/30 px-4 py-2">
+                <span class="text-purple-400 font-bold">3. Gradient Icon Box</span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 p-4 bg-black/50">
+                <!-- Radyolar -->
+                <div class="rounded-lg overflow-hidden">
+                    <p class="demo-label text-gray-500 mb-1">Radyolar</p>
+                    <section class="relative h-40 bg-gradient-to-b from-amber-900 via-amber-800 to-transparent">
+                        <div class="px-6 h-full flex items-end pb-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/30">
+                                    <i class="fas fa-broadcast-tower text-2xl text-white"></i>
+                                </div>
+                                <div>
+                                    <h1 class="text-2xl font-bold text-white">Radyolar</h1>
+                                    <p class="text-sm text-white/60">Canlı radyo yayınları</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <!-- Sektörler -->
+                <div class="rounded-lg overflow-hidden">
+                    <p class="demo-label text-gray-500 mb-1">Sektörler</p>
+                    <section class="relative h-40 bg-gradient-to-b from-teal-900 via-teal-800 to-transparent">
+                        <div class="px-6 h-full flex items-end pb-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/30">
+                                    <i class="fas fa-briefcase text-2xl text-white"></i>
+                                </div>
+                                <div>
+                                    <h1 class="text-2xl font-bold text-white">Sektörler</h1>
+                                    <p class="text-sm text-white/60">İşletmenize özel müzikler</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <!-- Türler -->
+                <div class="rounded-lg overflow-hidden">
+                    <p class="demo-label text-gray-500 mb-1">Türler</p>
+                    <section class="relative h-40 bg-gradient-to-b from-pink-900 via-pink-800 to-transparent">
+                        <div class="px-6 h-full flex items-end pb-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 bg-gradient-to-br from-pink-500 to-rose-600 rounded-xl flex items-center justify-center shadow-lg shadow-pink-500/30">
+                                    <i class="fas fa-guitar text-2xl text-white"></i>
+                                </div>
+                                <div>
+                                    <h1 class="text-2xl font-bold text-white">Müzik Türleri</h1>
+                                    <p class="text-sm text-white/60">Tarzına göre keşfet</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- ALTERNATİF 4: Üst Etiket + Büyük Başlık -->
+        <!-- ============================================ -->
+        <div class="demo-section rounded-xl overflow-hidden">
+            <div class="bg-orange-900/30 px-4 py-2">
+                <span class="text-orange-400 font-bold">4. Üst Etiket + Büyük Başlık (Spotify Tarzı)</span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 p-4 bg-black/50">
+                <!-- Radyolar -->
+                <div class="rounded-lg overflow-hidden">
+                    <p class="demo-label text-gray-500 mb-1">Radyolar</p>
+                    <section class="relative h-40 bg-gradient-to-b from-amber-900 via-amber-800 to-transparent">
+                        <div class="px-6 h-full flex flex-col justify-end pb-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-broadcast-tower text-amber-400 text-sm"></i>
+                                <span class="text-xs text-white/50 uppercase tracking-widest">Canlı Yayın</span>
+                            </div>
+                            <h1 class="text-3xl font-black text-white">Radyolar</h1>
+                        </div>
+                    </section>
+                </div>
+                <!-- Sektörler -->
+                <div class="rounded-lg overflow-hidden">
+                    <p class="demo-label text-gray-500 mb-1">Sektörler</p>
+                    <section class="relative h-40 bg-gradient-to-b from-teal-900 via-teal-800 to-transparent">
+                        <div class="px-6 h-full flex flex-col justify-end pb-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-briefcase text-teal-400 text-sm"></i>
+                                <span class="text-xs text-white/50 uppercase tracking-widest">İş Yeri Müziği</span>
+                            </div>
+                            <h1 class="text-3xl font-black text-white">Sektörler</h1>
+                        </div>
+                    </section>
+                </div>
+                <!-- Türler -->
+                <div class="rounded-lg overflow-hidden">
+                    <p class="demo-label text-gray-500 mb-1">Türler</p>
+                    <section class="relative h-40 bg-gradient-to-b from-pink-900 via-pink-800 to-transparent">
+                        <div class="px-6 h-full flex flex-col justify-end pb-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-guitar text-pink-400 text-sm"></i>
+                                <span class="text-xs text-white/50 uppercase tracking-widest">Keşfet</span>
+                            </div>
+                            <h1 class="text-3xl font-black text-white">Müzik Türleri</h1>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- ALTERNATİF 5: Minimal Icon Inline -->
+        <!-- ============================================ -->
+        <div class="demo-section rounded-xl overflow-hidden">
+            <div class="bg-cyan-900/30 px-4 py-2">
+                <span class="text-cyan-400 font-bold">5. Minimal Icon Inline</span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 p-4 bg-black/50">
+                <!-- Radyolar -->
+                <div class="rounded-lg overflow-hidden">
+                    <p class="demo-label text-gray-500 mb-1">Radyolar</p>
+                    <section class="relative h-40 bg-gradient-to-b from-amber-900 via-amber-800 to-transparent">
+                        <div class="px-6 h-full flex flex-col justify-end pb-6">
+                            <h1 class="text-2xl font-bold text-white mb-1 flex items-center gap-3">
+                                <i class="fas fa-broadcast-tower text-amber-400"></i>
+                                Radyolar
+                            </h1>
+                            <p class="text-sm text-white/60 ml-9">Canlı radyo yayınları</p>
+                        </div>
+                    </section>
+                </div>
+                <!-- Sektörler -->
+                <div class="rounded-lg overflow-hidden">
+                    <p class="demo-label text-gray-500 mb-1">Sektörler</p>
+                    <section class="relative h-40 bg-gradient-to-b from-teal-900 via-teal-800 to-transparent">
+                        <div class="px-6 h-full flex flex-col justify-end pb-6">
+                            <h1 class="text-2xl font-bold text-white mb-1 flex items-center gap-3">
+                                <i class="fas fa-briefcase text-teal-400"></i>
+                                Sektörler
+                            </h1>
+                            <p class="text-sm text-white/60 ml-9">İşletmenize özel müzikler</p>
+                        </div>
+                    </section>
+                </div>
+                <!-- Türler -->
+                <div class="rounded-lg overflow-hidden">
+                    <p class="demo-label text-gray-500 mb-1">Türler</p>
+                    <section class="relative h-40 bg-gradient-to-b from-pink-900 via-pink-800 to-transparent">
+                        <div class="px-6 h-full flex flex-col justify-end pb-6">
+                            <h1 class="text-2xl font-bold text-white mb-1 flex items-center gap-3">
+                                <i class="fas fa-guitar text-pink-400"></i>
+                                Müzik Türleri
+                            </h1>
+                            <p class="text-sm text-white/60 ml-9">Tarzına göre keşfet</p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- ÖZET TABLO -->
+        <!-- ============================================ -->
+        <div class="mt-8 bg-white/5 rounded-xl p-6">
+            <h2 class="text-xl font-bold mb-4">Özet</h2>
+            <div class="grid grid-cols-5 gap-3 text-center text-sm">
+                <div class="bg-green-900/20 rounded-lg p-3">
+                    <p class="text-green-400 font-bold mb-1">1</p>
+                    <p class="text-gray-400">Sadece Text</p>
+                    <p class="text-xs text-gray-600 mt-1">En sade</p>
+                </div>
+                <div class="bg-blue-900/20 rounded-lg p-3">
+                    <p class="text-blue-400 font-bold mb-1">2</p>
+                    <p class="text-gray-400">Icon + Text</p>
+                    <p class="text-xs text-gray-600 mt-1">Dengeli</p>
+                </div>
+                <div class="bg-purple-900/20 rounded-lg p-3">
+                    <p class="text-purple-400 font-bold mb-1">3</p>
+                    <p class="text-gray-400">Gradient Icon</p>
+                    <p class="text-xs text-gray-600 mt-1">Görsel</p>
+                </div>
+                <div class="bg-orange-900/20 rounded-lg p-3">
+                    <p class="text-orange-400 font-bold mb-1">4</p>
+                    <p class="text-gray-400">Üst Etiket</p>
+                    <p class="text-xs text-gray-600 mt-1">Spotify</p>
+                </div>
+                <div class="bg-cyan-900/20 rounded-lg p-3">
+                    <p class="text-cyan-400 font-bold mb-1">5</p>
+                    <p class="text-gray-400">Inline Icon</p>
+                    <p class="text-xs text-gray-600 mt-1">Kompakt</p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-8 text-center text-gray-600 text-sm pb-6">
+            <p>Numara söyle, hepsine uygulayayım</p>
+        </footer>
+    </div>
+
+</body>
+</html>

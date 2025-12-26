@@ -9,82 +9,80 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 </script>
 
 <div class="px-6 py-8">
-    {{-- Header --}}
-    <div class="mb-8">
-        <h1 class="text-4xl font-bold text-white mb-2">Favorilerim</h1>
-        <p class="text-gray-400">Beğendiğin içerikler</p>
+    {{-- Header - Alternatif 2: Icon + Text --}}
+    <div class="mb-6 flex items-center gap-5">
+        <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-heart text-3xl text-white"></i>
+        </div>
+        <div>
+            <h1 class="text-5xl font-extrabold text-white mb-1">Favorilerim</h1>
+            <p class="text-gray-400 text-lg">Beğendiğin içerikler</p>
+        </div>
     </div>
 
     {{-- Filter Tabs --}}
-    <div class="mb-8 border-b border-gray-800">
-        <nav class="flex space-x-4 sm:space-x-8 overflow-x-auto scrollbar-hide" x-data="{ activeTab: '{{ $type }}' }">
+    <div class="mb-6 border-b border-white/10">
+        <nav class="flex gap-1 overflow-x-auto scrollbar-hide -mb-px">
             @if(($counts['songs'] ?? 0) > 0)
-                <a href="{{ route('muzibu.favorites', ['type' => 'songs']) }}"
-                   class="pb-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors whitespace-nowrap flex items-center gap-2"
-                   :class="activeTab === 'songs' ? 'border-muzibu-coral text-muzibu-coral' : 'border-transparent text-gray-400 hover:text-white hover:border-gray-600'">
-                    <i class="fas fa-music text-xs"></i>
+                <a href="{{ route('muzibu.favorites', ['type' => 'songs']) }}" data-spa
+                   class="px-4 py-3 text-sm font-medium whitespace-nowrap flex items-center gap-2 border-b-2 {{ $type === 'songs' ? 'border-muzibu-coral text-white' : 'border-transparent text-gray-400 hover:text-white' }}">
+                    <i class="fas fa-music"></i>
                     <span>Şarkılar</span>
-                    <span class="px-2 py-0.5 bg-gray-800 rounded-full text-xs">{{ $counts['songs'] }}</span>
+                    <span class="px-2 py-0.5 bg-white/10 rounded-full text-xs">{{ $counts['songs'] }}</span>
                 </a>
             @endif
 
             @if(($counts['albums'] ?? 0) > 0)
-                <a href="{{ route('muzibu.favorites', ['type' => 'albums']) }}"
-                   class="pb-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors whitespace-nowrap flex items-center gap-2"
-                   :class="activeTab === 'albums' ? 'border-muzibu-coral text-muzibu-coral' : 'border-transparent text-gray-400 hover:text-white hover:border-gray-600'">
-                    <i class="fas fa-compact-disc text-xs"></i>
+                <a href="{{ route('muzibu.favorites', ['type' => 'albums']) }}" data-spa
+                   class="px-4 py-3 text-sm font-medium whitespace-nowrap flex items-center gap-2 border-b-2 {{ $type === 'albums' ? 'border-muzibu-coral text-white' : 'border-transparent text-gray-400 hover:text-white' }}">
+                    <i class="fas fa-compact-disc"></i>
                     <span>Albümler</span>
-                    <span class="px-2 py-0.5 bg-gray-800 rounded-full text-xs">{{ $counts['albums'] }}</span>
+                    <span class="px-2 py-0.5 bg-white/10 rounded-full text-xs">{{ $counts['albums'] }}</span>
                 </a>
             @endif
 
             @if(($counts['playlists'] ?? 0) > 0)
-                <a href="{{ route('muzibu.favorites', ['type' => 'playlists']) }}"
-                   class="pb-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors whitespace-nowrap flex items-center gap-2"
-                   :class="activeTab === 'playlists' ? 'border-muzibu-coral text-muzibu-coral' : 'border-transparent text-gray-400 hover:text-white hover:border-gray-600'">
-                    <i class="fas fa-list text-xs"></i>
+                <a href="{{ route('muzibu.favorites', ['type' => 'playlists']) }}" data-spa
+                   class="px-4 py-3 text-sm font-medium whitespace-nowrap flex items-center gap-2 border-b-2 {{ $type === 'playlists' ? 'border-muzibu-coral text-white' : 'border-transparent text-gray-400 hover:text-white' }}">
+                    <i class="fas fa-list"></i>
                     <span>Playlistler</span>
-                    <span class="px-2 py-0.5 bg-gray-800 rounded-full text-xs">{{ $counts['playlists'] }}</span>
+                    <span class="px-2 py-0.5 bg-white/10 rounded-full text-xs">{{ $counts['playlists'] }}</span>
                 </a>
             @endif
 
             @if(($counts['genres'] ?? 0) > 0)
-                <a href="{{ route('muzibu.favorites', ['type' => 'genres']) }}"
-                   class="pb-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors whitespace-nowrap flex items-center gap-2"
-                   :class="activeTab === 'genres' ? 'border-muzibu-coral text-muzibu-coral' : 'border-transparent text-gray-400 hover:text-white hover:border-gray-600'">
-                    <i class="fas fa-guitar text-xs"></i>
+                <a href="{{ route('muzibu.favorites', ['type' => 'genres']) }}" data-spa
+                   class="px-4 py-3 text-sm font-medium whitespace-nowrap flex items-center gap-2 border-b-2 {{ $type === 'genres' ? 'border-muzibu-coral text-white' : 'border-transparent text-gray-400 hover:text-white' }}">
+                    <i class="fas fa-guitar"></i>
                     <span>Türler</span>
-                    <span class="px-2 py-0.5 bg-gray-800 rounded-full text-xs">{{ $counts['genres'] }}</span>
+                    <span class="px-2 py-0.5 bg-white/10 rounded-full text-xs">{{ $counts['genres'] }}</span>
                 </a>
             @endif
 
             @if(($counts['sectors'] ?? 0) > 0)
-                <a href="{{ route('muzibu.favorites', ['type' => 'sectors']) }}"
-                   class="pb-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors whitespace-nowrap flex items-center gap-2"
-                   :class="activeTab === 'sectors' ? 'border-muzibu-coral text-muzibu-coral' : 'border-transparent text-gray-400 hover:text-white hover:border-gray-600'">
-                    <i class="fas fa-briefcase text-xs"></i>
+                <a href="{{ route('muzibu.favorites', ['type' => 'sectors']) }}" data-spa
+                   class="px-4 py-3 text-sm font-medium whitespace-nowrap flex items-center gap-2 border-b-2 {{ $type === 'sectors' ? 'border-muzibu-coral text-white' : 'border-transparent text-gray-400 hover:text-white' }}">
+                    <i class="fas fa-briefcase"></i>
                     <span>Sektörler</span>
-                    <span class="px-2 py-0.5 bg-gray-800 rounded-full text-xs">{{ $counts['sectors'] }}</span>
+                    <span class="px-2 py-0.5 bg-white/10 rounded-full text-xs">{{ $counts['sectors'] }}</span>
                 </a>
             @endif
 
             @if(($counts['radios'] ?? 0) > 0)
-                <a href="{{ route('muzibu.favorites', ['type' => 'radios']) }}"
-                   class="pb-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors whitespace-nowrap flex items-center gap-2"
-                   :class="activeTab === 'radios' ? 'border-muzibu-coral text-muzibu-coral' : 'border-transparent text-gray-400 hover:text-white hover:border-gray-600'">
-                    <i class="fas fa-broadcast-tower text-xs"></i>
+                <a href="{{ route('muzibu.favorites', ['type' => 'radios']) }}" data-spa
+                   class="px-4 py-3 text-sm font-medium whitespace-nowrap flex items-center gap-2 border-b-2 {{ $type === 'radios' ? 'border-muzibu-coral text-white' : 'border-transparent text-gray-400 hover:text-white' }}">
+                    <i class="fas fa-broadcast-tower"></i>
                     <span>Radyolar</span>
-                    <span class="px-2 py-0.5 bg-gray-800 rounded-full text-xs">{{ $counts['radios'] }}</span>
+                    <span class="px-2 py-0.5 bg-white/10 rounded-full text-xs">{{ $counts['radios'] }}</span>
                 </a>
             @endif
 
             @if(($counts['blogs'] ?? 0) > 0)
-                <a href="{{ route('muzibu.favorites', ['type' => 'blogs']) }}"
-                   class="pb-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors whitespace-nowrap flex items-center gap-2"
-                   :class="activeTab === 'blogs' ? 'border-muzibu-coral text-muzibu-coral' : 'border-transparent text-gray-400 hover:text-white hover:border-gray-600'">
-                    <i class="fas fa-blog text-xs"></i>
+                <a href="{{ route('muzibu.favorites', ['type' => 'blogs']) }}" data-spa
+                   class="px-4 py-3 text-sm font-medium whitespace-nowrap flex items-center gap-2 border-b-2 {{ $type === 'blogs' ? 'border-muzibu-coral text-white' : 'border-transparent text-gray-400 hover:text-white' }}">
+                    <i class="fas fa-blog"></i>
                     <span>Bloglar</span>
-                    <span class="px-2 py-0.5 bg-gray-800 rounded-full text-xs">{{ $counts['blogs'] }}</span>
+                    <span class="px-2 py-0.5 bg-white/10 rounded-full text-xs">{{ $counts['blogs'] }}</span>
                 </a>
             @endif
         </nav>
@@ -105,7 +103,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 
         @elseif($type === 'albums')
             {{-- Albums - Grid --}}
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
                 @foreach($favorites as $favorite)
                     @if($favorite->favoritable)
                         <x-muzibu.album-card :album="$favorite->favoritable" :preview="true" />
@@ -115,7 +113,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 
         @elseif($type === 'playlists')
             {{-- Playlists - Grid --}}
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
                 @foreach($favorites as $favorite)
                     @if($favorite->favoritable)
                         <x-muzibu.playlist-card :playlist="$favorite->favoritable" :preview="true" />
@@ -125,7 +123,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 
         @elseif($type === 'genres')
             {{-- Genres - Grid --}}
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
                 @foreach($favorites as $favorite)
                     @if($favorite->favoritable)
                         <x-muzibu.genre-card :genre="$favorite->favoritable" :preview="true" />
@@ -135,7 +133,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 
         @elseif($type === 'sectors')
             {{-- Sectors - Grid --}}
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
                 @foreach($favorites as $favorite)
                     @if($favorite->favoritable)
                         <x-muzibu.sector-card :sector="$favorite->favoritable" :preview="true" />
@@ -145,7 +143,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 
         @elseif($type === 'radios')
             {{-- Radios - Grid --}}
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
                 @foreach($favorites as $favorite)
                     @if($favorite->favoritable)
                         <x-muzibu.radio-card :radio="$favorite->favoritable" :preview="true" />

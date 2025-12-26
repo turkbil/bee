@@ -9,10 +9,15 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 </script>
 
 <div class="px-6 py-8">
-    {{-- Header --}}
-    <div class="mb-8">
-        <h1 class="text-4xl font-bold text-white mb-2">Sektörler</h1>
-        <p class="text-gray-400">Müzik sektörlerini keşfet</p>
+    {{-- Header - Alternatif 2: Icon + Text --}}
+    <div class="mb-8 flex items-center gap-5">
+        <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-briefcase text-3xl text-white"></i>
+        </div>
+        <div>
+            <h1 class="text-5xl font-extrabold text-white mb-1">Sektörler</h1>
+            <p class="text-gray-400 text-lg">Müzik sektörlerini keşfet</p>
+        </div>
     </div>
 
     {{-- Sectors Grid --}}

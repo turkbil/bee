@@ -893,28 +893,25 @@
                                 detail: { playlist: newPlaylist }
                             }));
 
-                            // If contextMenu playlistModal was open, add new playlist and reopen
-                            const contextMenu = Alpine.store('contextMenu');
-                            if (contextMenu && contextMenu.data) {
-                                // Add new playlist to list
-                                if (newPlaylist) {
-                                    contextMenu.userPlaylists = [
-                                        {
-                                            playlist_id: newPlaylist.playlist_id || newPlaylist.id,
-                                            title: newPlaylist.title,
-                                            cover_url: newPlaylist.cover_url || null,
-                                            song_count: 0
-                                        },
-                                        ...contextMenu.userPlaylists
-                                    ];
-                                }
+                            // 🎯 Check if playlistModal had pending context (song/album adding flow)
+                            const pendingContext = window._playlistModalPendingContext;
+                            if (pendingContext && pendingContext.contentType) {
+                                // Clear pending context
+                                window._playlistModalPendingContext = null;
 
-                                // Reopen playlist select modal
-                                setTimeout(() => {
-                                    contextMenu.playlistModal.open = true;
-                                }, 300);
+                                // Reopen playlistModal with the same content
+                                const playlistModal = Alpine.store('playlistModal');
+                                if (playlistModal) {
+                                    setTimeout(() => {
+                                        if (pendingContext.contentType === 'song') {
+                                            playlistModal.showForSong(pendingContext.contentId, pendingContext.contentData);
+                                        } else if (pendingContext.contentType === 'album') {
+                                            playlistModal.showForAlbum(pendingContext.contentId, pendingContext.contentData);
+                                        }
+                                    }, 300);
+                                }
                             } else {
-                                // Playlist select modal closed - check if on my-playlists page
+                                // No pending context - check if on my-playlists page
                                 const currentPath = window.location.pathname;
                                 if (currentPath.includes('my-playlists')) {
                                     setTimeout(() => window.location.reload(), 500);

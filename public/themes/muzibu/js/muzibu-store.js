@@ -1303,8 +1303,16 @@ document.addEventListener('alpine:init', () => {
 
         /**
          * Yeni playlist oluştur modal'ını aç
+         * Context'i sakla ki sonra geri dönebilsin
          */
         createNewPlaylist() {
+            // 🎯 Context'i sakla (playlist oluşturulduktan sonra modal tekrar açılacak)
+            window._playlistModalPendingContext = {
+                contentType: this.contentType,
+                contentId: this.contentId,
+                contentData: this.contentData
+            };
+
             this.hide();
             window.dispatchEvent(new CustomEvent('open-create-playlist-modal'));
         }

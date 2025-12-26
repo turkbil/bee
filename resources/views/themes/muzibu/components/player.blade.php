@@ -50,9 +50,9 @@
                 {{-- 🎵 Loading state: Spinner animation --}}
                 <i x-show="isSongLoading" x-cloak class="fas fa-spinner fa-spin"></i>
                 {{-- Playing state: Stop icon --}}
-                <i x-show="!isSongLoading && isPlaying" x-cloak class="fas fa-stop"></i>
+                <i x-show="!isSongLoading && isPlaying" x-cloak class="fas fa-stop translate-y-[1px]"></i>
                 {{-- Paused state: Play icon (visible by default) --}}
-                <i x-show="!isSongLoading && !isPlaying" class="fas fa-play ml-0.5"></i>
+                <i x-show="!isSongLoading && !isPlaying" class="fas fa-play ml-px translate-y-[1px]"></i>
             </button>
             <button class="text-muzibu-text-gray hover:text-white transition-all" @click="nextTrack()" aria-label="{{ trans('muzibu::front.player.next_song') }}">
                 <i class="fas fa-step-forward"></i>
@@ -61,7 +61,7 @@
                 <i class="fas fa-redo"></i>
             </button>
         </div>
-        <div class="flex items-center gap-1 sm:gap-2">
+        <div class="flex items-center gap-1 sm:gap-2 max-w-2xl mx-auto w-full">
             <span class="text-[10px] sm:text-xs text-muzibu-text-gray w-8 sm:w-10 text-right" x-text="formatTime(currentTime)">0:00</span>
             <div class="flex-1 h-1 sm:h-1.5 bg-muzibu-text-gray/30 rounded-full cursor-pointer group" @click="seekTo($event)" role="progressbar" :aria-valuenow="Math.round(progressPercent)" aria-valuemin="0" aria-valuemax="100" aria-label="{{ trans('muzibu::front.player.song_progress') }}">
                 <div class="h-full bg-white rounded-full relative group-hover:bg-muzibu-coral transition-colors" :style="`width: ${progressPercent}%`">

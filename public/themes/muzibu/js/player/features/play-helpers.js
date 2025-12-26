@@ -350,8 +350,24 @@ async function playSector(sectorId) {
  * @param {string} type - Content type: song, album, playlist, genre, sector, radio, artist
  * @param {number} id - Content ID
  */
-window.playContent = async function(type, id) {
-    console.log(`🎵 playContent called: type=${type}, id=${id}`);
+window.playContent = async function(type, id, options = {}) {
+    console.log(`🎵 playContent called: type=${type}, id=${id}, userInitiated=${options.userInitiated ?? true}`);
+
+    // Default: user initiated (from UI clicks)
+    const isUserInitiated = options.userInitiated ?? true;
+
+    // 🛡️ CLICK PROTECTION: Only for user-initiated plays
+    if (isUserInitiated && window.MuzibuSpaRouter?.isClickProtected?.()) {
+        console.warn('🛡️ playContent BLOCKED: Click protection active after SPA navigation');
+        return;
+    }
+
+    // 🛡️ BACKGROUND TAB PROTECTION: Only for user-initiated plays
+    // System transitions (next song, queue) should NOT be blocked
+    if (isUserInitiated && document.hidden) {
+        console.warn('🛡️ playContent BLOCKED: Tab is in background (user-initiated play blocked)');
+        return;
+    }
 
     const functionMap = {
         'song': async (songId) => {

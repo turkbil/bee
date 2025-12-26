@@ -10,16 +10,24 @@ use Modules\Search\App\Models\SearchQuery;
 class SearchResults extends Component
 {
     public $query = '';
-    public $allResults = []; // Tüm sonuçlar burada cache'lenir
     public $totalCount = 0;
     public $responseTime = 0;
     public $activeTab = 'all';
-    public $counts = []; // Her tip için sayılar
-    public $fromCache = false; // Cache'den mi geldi?
+    public $counts = [];
+    public $fromCache = false;
+
+    // Model ID'leri (cache için)
+    public $songIds = [];
+    public $albumIds = [];
+    public $artistIds = [];
+    public $playlistIds = [];
+    public $genreIds = [];
+    public $sectorIds = [];
+    public $radioIds = [];
+    public $myPlaylistIds = [];
 
     protected $queryString = ['query' => ['as' => 'q'], 'activeTab' => ['as' => 'tab']];
 
-    // Cache süresi (dakika)
     const CACHE_TTL = 10;
 
     public function mount()
@@ -34,73 +42,77 @@ class SearchResults extends Component
         $this->search();
     }
 
-    // Tab değişikliğinde yeniden sorgu YAPILMAZ - sadece frontend'de filtrele
     public function updatedActiveTab()
     {
-        // Hiçbir şey yapma - filtreleme view'da yapılıyor
+        // View'da filtreleme yapılıyor
     }
 
-    // Filtrelenmiş sonuçları döndür (computed property gibi)
-    public function getFilteredResultsProperty()
-    {
-        if ($this->activeTab === 'all') {
-            return $this->allResults;
-        }
-
-        return collect($this->allResults)->filter(function ($item) {
-            // favorites tab: favorite_ ile başlayan tüm type'ları göster
-            if ($this->activeTab === 'favorites') {
-                return str_starts_with($item['type'], 'favorite_');
-            }
-
-            // myplaylists tab
-            if ($this->activeTab === 'myplaylists') {
-                return $item['type'] === 'myplaylist';
-            }
-
-            // Diğer tablar: songs -> song, albums -> album, etc.
-            return $item['type'] === rtrim($this->activeTab, 's');
-        })->values()->toArray();
-    }
-
-    // Cache key oluştur
     private function getCacheKey(): string
     {
         $tenantId = tenant() ? tenant()->id : 'central';
         $locale = app()->getLocale();
         $normalizedQuery = mb_strtolower(trim($this->query));
-        return "muzibu_search:{$tenantId}:{$locale}:" . md5($normalizedQuery);
+        return "muzibu_search_v2:{$tenantId}:{$locale}:" . md5($normalizedQuery);
     }
 
     public function search()
     {
         if (strlen($this->query) < 2) {
-            $this->allResults = [];
-            $this->totalCount = 0;
-            $this->counts = [];
-            $this->fromCache = false;
+            $this->resetResults();
             return;
         }
 
         $startTime = microtime(true);
-        $locale = app()->getLocale();
         $cacheKey = $this->getCacheKey();
 
         // Cache'den dene
         $cached = Cache::get($cacheKey);
         if ($cached) {
-            $this->allResults = $cached['results'];
-            $this->counts = $cached['counts'];
-            $this->totalCount = $cached['total'];
+            $this->loadFromCache($cached);
             $this->responseTime = (int) round((microtime(true) - $startTime) * 1000);
             $this->fromCache = true;
             return;
         }
 
         $this->fromCache = false;
+        $this->performSearch($startTime, $cacheKey);
+    }
 
+    private function resetResults()
+    {
+        $this->songIds = [];
+        $this->albumIds = [];
+        $this->artistIds = [];
+        $this->playlistIds = [];
+        $this->genreIds = [];
+        $this->sectorIds = [];
+        $this->radioIds = [];
+        $this->myPlaylistIds = [];
+        $this->totalCount = 0;
+        $this->counts = [];
+        $this->fromCache = false;
+    }
+
+    private function loadFromCache($cached)
+    {
+        $this->songIds = $cached['songIds'] ?? [];
+        $this->albumIds = $cached['albumIds'] ?? [];
+        $this->artistIds = $cached['artistIds'] ?? [];
+        $this->playlistIds = $cached['playlistIds'] ?? [];
+        $this->genreIds = $cached['genreIds'] ?? [];
+        $this->sectorIds = $cached['sectorIds'] ?? [];
+        $this->radioIds = $cached['radioIds'] ?? [];
+        $this->myPlaylistIds = $cached['myPlaylistIds'] ?? [];
+        $this->counts = $cached['counts'] ?? [];
+        $this->totalCount = $cached['total'] ?? 0;
+    }
+
+    private function performSearch($startTime, $cacheKey)
+    {
         try {
-            $this->allResults = [];
+            $this->resetResults();
+            $locale = app()->getLocale();
+
             $this->counts = [
                 'songs' => 0,
                 'albums' => 0,
@@ -110,137 +122,65 @@ class SearchResults extends Component
                 'sectors' => 0,
                 'radios' => 0,
                 'myplaylists' => 0,
-                'favorites' => 0,
             ];
 
-            // Songs - Eager load relations
+            // Songs
             $songs = Song::search($this->query)
-                ->query(fn ($q) => $q->with(['album.artist'])->where('is_active', 1))
+                ->query(fn ($q) => $q->where('is_active', 1))
                 ->take(30)
                 ->get();
+            $this->songIds = $songs->pluck('song_id')->toArray();
+            $this->counts['songs'] = count($this->songIds);
 
-            foreach ($songs as $song) {
-                $this->allResults[] = [
-                    'type' => 'song',
-                    'type_label' => '🎵 Şarkı',
-                    'id' => $song->song_id,
-                    'title' => $song->getTranslated('title', $locale),
-                    'url' => $song->getUrl(),
-                    'image' => $song->getCoverUrl(300, 300),
-                    'duration' => $song->getFormattedDuration(),
-                    'artist' => $song->album?->artist?->getTranslated('title', $locale),
-                    'album' => $song->album?->getTranslated('title', $locale),
-                ];
-            }
-            $this->counts['songs'] = $songs->count();
-
-            // Albums - Eager load
+            // Albums
             $albums = Album::search($this->query)
-                ->query(fn ($q) => $q->with(['artist'])->where('is_active', 1))
+                ->query(fn ($q) => $q->where('is_active', 1))
                 ->take(15)
                 ->get();
-
-            foreach ($albums as $album) {
-                $this->allResults[] = [
-                    'type' => 'album',
-                    'type_label' => '💿 Albüm',
-                    'id' => $album->album_id,
-                    'title' => $album->getTranslated('title', $locale),
-                    'url' => $album->getUrl(),
-                    'image' => $album->getCoverUrl(300, 300),
-                    'artist' => $album->artist?->getTranslated('title', $locale),
-                ];
-            }
-            $this->counts['albums'] = $albums->count();
+            $this->albumIds = $albums->pluck('album_id')->toArray();
+            $this->counts['albums'] = count($this->albumIds);
 
             // Artists
             $artists = Artist::search($this->query)
                 ->query(fn ($q) => $q->where('is_active', 1))
                 ->take(15)
                 ->get();
-
-            foreach ($artists as $artist) {
-                $this->allResults[] = [
-                    'type' => 'artist',
-                    'type_label' => '🎤 Sanatçı',
-                    'id' => $artist->artist_id,
-                    'title' => $artist->getTranslated('title', $locale),
-                    'url' => $artist->getUrl(),
-                    'image' => $artist->getCoverUrl(300, 300),
-                ];
-            }
-            $this->counts['artists'] = $artists->count();
+            $this->artistIds = $artists->pluck('artist_id')->toArray();
+            $this->counts['artists'] = count($this->artistIds);
 
             // Playlists
             $playlists = Playlist::search($this->query)
                 ->query(fn ($q) => $q->where('is_active', 1)->where('is_public', 1))
                 ->take(15)
                 ->get();
-
-            foreach ($playlists as $playlist) {
-                $this->allResults[] = [
-                    'type' => 'playlist',
-                    'type_label' => '📃 Playlist',
-                    'id' => $playlist->playlist_id,
-                    'title' => $playlist->getTranslated('title', $locale),
-                    'url' => $playlist->getUrl(),
-                    'image' => $playlist->getCoverUrl(300, 300),
-                ];
-            }
-            $this->counts['playlists'] = $playlists->count();
+            $this->playlistIds = $playlists->pluck('playlist_id')->toArray();
+            $this->counts['playlists'] = count($this->playlistIds);
 
             // Genres
             $genres = Genre::search($this->query)
                 ->query(fn ($q) => $q->where('is_active', 1))
                 ->take(15)
                 ->get();
-
-            foreach ($genres as $genre) {
-                $this->allResults[] = [
-                    'type' => 'genre',
-                    'type_label' => '🎼 Tür',
-                    'id' => $genre->genre_id,
-                    'title' => $genre->getTranslated('title', $locale),
-                    'url' => $genre->getUrl(),
-                ];
-            }
-            $this->counts['genres'] = $genres->count();
+            $this->genreIds = $genres->pluck('genre_id')->toArray();
+            $this->counts['genres'] = count($this->genreIds);
 
             // Sectors
             $sectors = Sector::search($this->query)
                 ->query(fn ($q) => $q->where('is_active', 1))
                 ->take(15)
                 ->get();
-
-            foreach ($sectors as $sector) {
-                $this->allResults[] = [
-                    'type' => 'sector',
-                    'type_label' => '🏢 Sektör',
-                    'id' => $sector->sector_id,
-                    'title' => $sector->getTranslated('title', $locale),
-                    'url' => $sector->getUrl(),
-                ];
-            }
-            $this->counts['sectors'] = $sectors->count();
+            $this->sectorIds = $sectors->pluck('sector_id')->toArray();
+            $this->counts['sectors'] = count($this->sectorIds);
 
             // Radios
             $radios = Radio::search($this->query)
                 ->query(fn ($q) => $q->where('is_active', 1))
                 ->take(15)
                 ->get();
+            $this->radioIds = $radios->pluck('radio_id')->toArray();
+            $this->counts['radios'] = count($this->radioIds);
 
-            foreach ($radios as $radio) {
-                $this->allResults[] = [
-                    'type' => 'radio',
-                    'type_label' => '📻 Radyo',
-                    'id' => $radio->radio_id,
-                    'title' => $radio->getTranslated('title', $locale),
-                    'url' => $radio->getUrl(),
-                ];
-            }
-            $this->counts['radios'] = $radios->count();
-
-            // My Playlists (kullanıcının kendi oluşturduğu playlistler)
+            // My Playlists
             if (auth()->check()) {
                 $myPlaylists = Playlist::where('user_id', auth()->id())
                     ->where(function ($q) use ($locale) {
@@ -250,91 +190,28 @@ class SearchResults extends Component
                     })
                     ->take(15)
                     ->get();
-
-                foreach ($myPlaylists as $playlist) {
-                    $this->allResults[] = [
-                        'type' => 'myplaylist',
-                        'type_label' => '📝 Playlistim',
-                        'id' => $playlist->playlist_id,
-                        'title' => $playlist->getTranslated('title', $locale),
-                        'url' => $playlist->getUrl(),
-                        'image' => $playlist->getCoverUrl(300, 300),
-                        'is_mine' => true,
-                    ];
-                }
-                $this->counts['myplaylists'] = $myPlaylists->count();
-
-                // Favorites (kullanıcının favorileri)
-                $favoriteItems = \DB::connection('tenant')
-                    ->table('favorites')
-                    ->where('user_id', auth()->id())
-                    ->get();
-
-                $favCount = 0;
-
-                foreach ($favoriteItems as $fav) {
-                    $model = null;
-                    $type = '';
-                    $typeLabel = '';
-
-                    if (str_contains($fav->model_class, 'Song')) {
-                        $model = Song::with(['album.artist'])->find($fav->model_id);
-                        $type = 'favorite_song';
-                        $typeLabel = '❤️ Favori Şarkı';
-                    } elseif (str_contains($fav->model_class, 'Album')) {
-                        $model = Album::with(['artist'])->find($fav->model_id);
-                        $type = 'favorite_album';
-                        $typeLabel = '❤️ Favori Albüm';
-                    } elseif (str_contains($fav->model_class, 'Playlist')) {
-                        $model = Playlist::find($fav->model_id);
-                        $type = 'favorite_playlist';
-                        $typeLabel = '❤️ Favori Playlist';
-                    } elseif (str_contains($fav->model_class, 'Artist')) {
-                        $model = Artist::find($fav->model_id);
-                        $type = 'favorite_artist';
-                        $typeLabel = '❤️ Favori Sanatçı';
-                    }
-
-                    if ($model) {
-                        $title = $model->getTranslated('title', $locale);
-                        // Arama terimiyle eşleşiyor mu?
-                        if (stripos($title, $this->query) !== false) {
-                            $result = [
-                                'type' => $type,
-                                'type_label' => $typeLabel,
-                                'id' => $model->getKey(),
-                                'title' => $title,
-                                'url' => $model->getUrl(),
-                                'image' => method_exists($model, 'getCoverUrl') ? $model->getCoverUrl(300, 300) : null,
-                            ];
-
-                            if ($model instanceof Song) {
-                                $result['artist'] = $model->album?->artist?->getTranslated('title', $locale);
-                                $result['album'] = $model->album?->getTranslated('title', $locale);
-                                $result['duration'] = $model->getFormattedDuration();
-                            } elseif ($model instanceof Album) {
-                                $result['artist'] = $model->artist?->getTranslated('title', $locale);
-                            }
-
-                            $this->allResults[] = $result;
-                            $favCount++;
-                        }
-                    }
-                }
-                $this->counts['favorites'] = $favCount;
+                $this->myPlaylistIds = $myPlaylists->pluck('playlist_id')->toArray();
+                $this->counts['myplaylists'] = count($this->myPlaylistIds);
             }
 
-            $this->totalCount = count($this->allResults);
+            $this->totalCount = array_sum($this->counts);
             $this->responseTime = (int) round((microtime(true) - $startTime) * 1000);
 
-            // Cache'e kaydet (10 dakika)
+            // Cache'e kaydet
             Cache::put($cacheKey, [
-                'results' => $this->allResults,
+                'songIds' => $this->songIds,
+                'albumIds' => $this->albumIds,
+                'artistIds' => $this->artistIds,
+                'playlistIds' => $this->playlistIds,
+                'genreIds' => $this->genreIds,
+                'sectorIds' => $this->sectorIds,
+                'radioIds' => $this->radioIds,
+                'myPlaylistIds' => $this->myPlaylistIds,
                 'counts' => $this->counts,
                 'total' => $this->totalCount,
             ], now()->addMinutes(self::CACHE_TTL));
 
-            // Log search - sadece ilk aramada (cache miss)
+            // Log search
             SearchQuery::create([
                 'user_id' => auth()->id(),
                 'session_id' => session()->getId(),
@@ -352,17 +229,55 @@ class SearchResults extends Component
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Search error:', ['query' => $this->query, 'message' => $e->getMessage()]);
-            $this->allResults = [];
-            $this->totalCount = 0;
-            $this->counts = [];
+            \Log::error('🔍 Search exception: ' . $e->getMessage());
+            $this->resetResults();
         }
     }
 
     public function render()
     {
+        // Modelleri ID'lerden çek (eager loading ile)
+        $songs = !empty($this->songIds)
+            ? Song::with(['album.artist'])->whereIn('song_id', $this->songIds)->get()
+            : collect();
+
+        $albums = !empty($this->albumIds)
+            ? Album::with(['artist', 'coverMedia'])->whereIn('album_id', $this->albumIds)->get()
+            : collect();
+
+        $artists = !empty($this->artistIds)
+            ? Artist::with(['photoMedia'])->whereIn('artist_id', $this->artistIds)->get()
+            : collect();
+
+        $playlists = !empty($this->playlistIds)
+            ? Playlist::with(['coverMedia'])->whereIn('playlist_id', $this->playlistIds)->get()
+            : collect();
+
+        $genres = !empty($this->genreIds)
+            ? Genre::with(['iconMedia'])->whereIn('genre_id', $this->genreIds)->get()
+            : collect();
+
+        $sectors = !empty($this->sectorIds)
+            ? Sector::with(['iconMedia'])->whereIn('sector_id', $this->sectorIds)->get()
+            : collect();
+
+        $radios = !empty($this->radioIds)
+            ? Radio::with(['logoMedia'])->whereIn('radio_id', $this->radioIds)->get()
+            : collect();
+
+        $myPlaylists = !empty($this->myPlaylistIds)
+            ? Playlist::with(['coverMedia'])->whereIn('playlist_id', $this->myPlaylistIds)->get()
+            : collect();
+
         return view('muzibu::livewire.frontend.search-results', [
-            'results' => $this->filteredResults,
+            'songs' => $songs,
+            'albums' => $albums,
+            'artists' => $artists,
+            'playlists' => $playlists,
+            'genres' => $genres,
+            'sectors' => $sectors,
+            'radios' => $radios,
+            'myPlaylists' => $myPlaylists,
         ])->layout('themes.muzibu.layouts.app');
     }
 }

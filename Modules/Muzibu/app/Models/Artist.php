@@ -119,6 +119,14 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
+     * Alias for getPhotoUrl - Search compatibility
+     */
+    public function getCoverUrl(?int $width = 400, ?int $height = 400): ?string
+    {
+        return $this->getPhotoUrl($width, $height);
+    }
+
+    /**
      * Photo URL accessor (kare, thumbmaker ile)
      * Frontend için otomatik square photo (200x200, ortadan kırp)
      */

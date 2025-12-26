@@ -408,6 +408,26 @@
                                                             <span class="badge bg-purple-lt text-purple ms-1">Dijital</span>
                                                         @endif
                                                     </div>
+                                                    {{-- Kurumsal Üye Bilgisi --}}
+                                                    @if(($item->metadata['type'] ?? null) === 'corporate_bulk' && !empty($item->metadata['target_user_ids']))
+                                                        @php
+                                                            $targetUserIds = $item->metadata['target_user_ids'];
+                                                            $memberNames = \App\Models\User::whereIn('id', $targetUserIds)->pluck('name', 'id')->toArray();
+                                                        @endphp
+                                                        <div class="mt-2 p-2 bg-purple-lt rounded">
+                                                            <div class="d-flex align-items-center gap-1 mb-1">
+                                                                <i class="fas fa-building text-purple"></i>
+                                                                <span class="text-purple fw-medium small">Kurumsal Üyeler:</span>
+                                                            </div>
+                                                            <div class="d-flex flex-wrap gap-1">
+                                                                @foreach($memberNames as $memberId => $memberName)
+                                                                    <span class="badge bg-white text-dark shadow-sm">
+                                                                        <i class="fas fa-user me-1"></i>{{ $memberName }}
+                                                                    </span>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                                 <div class="col-auto">
                                                     <span class="fw-bold">{{ number_format($item->total, 2, ',', '.') }} ₺</span>

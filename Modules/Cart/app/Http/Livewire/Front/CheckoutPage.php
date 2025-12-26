@@ -273,13 +273,15 @@ class CheckoutPage extends Component
 
             // Subscription plan parametresi varsa sepete ekle
             if (request()->has('plan') && request()->has('cycle')) {
-                // 🏢 Corporate: users parametresi varsa quantity olarak kullan
+                // 🏢 Corporate: users parametresi varsa quantity ve user ID'leri sakla
                 $quantity = 1;
+                $targetUserIds = null;
                 if (request()->has('users')) {
-                    $userIds = explode(',', request('users'));
-                    $quantity = count(array_filter($userIds)); // Boş değerleri temizle
+                    $userIds = array_filter(array_map('intval', explode(',', request('users'))));
+                    $quantity = count($userIds);
+                    $targetUserIds = array_values($userIds); // Re-index array
                 }
-                $this->addSubscriptionToCart(request('plan'), request('cycle'), $quantity);
+                $this->addSubscriptionToCart(request('plan'), request('cycle'), $quantity, $targetUserIds);
                 // 🔥 FIX: Redirect yapma, cart'ı yeniden yükle (yoksa totaller güncellenmiyor)
                 // URL parametrelerini temizlemek için JavaScript redirect kullanılacak (view'da)
             }
@@ -339,8 +341,12 @@ class CheckoutPage extends Component
 
     /**
      * Subscription plan'ı sepete ekle
+     * @param int $planId Plan ID
+     * @param string $cycleKey Dönem (monthly, yearly vb)
+     * @param int $quantity Adet (kurumsal için üye sayısı)
+     * @param array|null $targetUserIds 🏢 Kurumsal için: subscription açılacak user ID'leri
      */
-    protected function addSubscriptionToCart($planId, $cycleKey, $quantity = 1)
+    protected function addSubscriptionToCart($planId, $cycleKey, $quantity = 1, $targetUserIds = null)
     {
         try {
             $plan = \Modules\Subscription\App\Models\SubscriptionPlan::findOrFail($planId);
@@ -372,6 +378,19 @@ class CheckoutPage extends Component
 
             // Subscription ekle (quantity ile)
             $options = $bridge->prepareSubscriptionForCart($plan, $cycleKey, true);
+
+            // 🏢 Kurumsal: target_user_ids varsa metadata'ya ekle
+            if ($targetUserIds && is_array($targetUserIds) && count($targetUserIds) > 0) {
+                $options['metadata'] = array_merge($options['metadata'] ?? [], [
+                    'type' => 'corporate_bulk',
+                    'target_user_ids' => $targetUserIds,
+                ]);
+                \Log::info('🏢 Corporate subscription: target_user_ids added', [
+                    'target_user_ids' => $targetUserIds,
+                    'quantity' => $quantity,
+                ]);
+            }
+
             $cartService->addItem($cart, $plan, $quantity, $options);
 
             // 🔥 FIX: Cart'ı refresh et ve toplamları yeniden hesapla
@@ -383,6 +402,7 @@ class CheckoutPage extends Component
                 'plan_id' => $planId,
                 'cycle_key' => $cycleKey,
                 'quantity' => $quantity,
+                'has_target_users' => !empty($targetUserIds),
                 'cart_total' => $cart->total,
             ]);
         } catch (\Exception $e) {

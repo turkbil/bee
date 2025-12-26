@@ -25,6 +25,23 @@ const MuzibuSpaRouter = {
     maxCacheSize: 50, // 🎯 MAX 50 pages (25 → 50 artırıldı)
     observer: null, // Intersection Observer for viewport prefetch
 
+    // 🛡️ CLICK PROTECTION: Prevent accidental clicks after SPA navigation
+    lastNavigationTime: 0, // Timestamp of last DOM change
+    clickProtectionMs: 200, // Block clicks for 200ms after navigation
+
+    /**
+     * Check if we're in click protection period (just after SPA navigation)
+     * Used by playContent to prevent accidental plays
+     */
+    isClickProtected() {
+        const elapsed = Date.now() - this.lastNavigationTime;
+        const isProtected = elapsed < this.clickProtectionMs;
+        if (isProtected) {
+            console.log(`🛡️ Click protected: ${elapsed}ms since navigation (protection: ${this.clickProtectionMs}ms)`);
+        }
+        return isProtected;
+    },
+
     // 🛡️ SINGLETON: Prevent multiple initializations
     isInitialized: false,
     clickHandler: null,
@@ -445,6 +462,9 @@ const MuzibuSpaRouter = {
 
                     // Safely replace content using modern DOM API (prevents script execution)
                     currentMain.replaceChildren(...clonedContent.childNodes);
+
+                    // 🛡️ CLICK PROTECTION: Set navigation time to prevent accidental clicks
+                    MuzibuSpaRouter.lastNavigationTime = Date.now();
 
                     window.scrollTo({ top: 0, behavior: 'smooth' });
 

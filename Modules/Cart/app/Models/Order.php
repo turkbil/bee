@@ -195,6 +195,15 @@ class Order extends BaseModel
                 continue;
             }
 
+            // 🏢 Kurumsal subscription: Muzibu service'e delege et
+            if (($item->metadata['type'] ?? null) === 'corporate_bulk') {
+                if (class_exists(\Modules\Muzibu\App\Services\CorporateSubscriptionService::class)) {
+                    app(\Modules\Muzibu\App\Services\CorporateSubscriptionService::class)
+                        ->activateCorporateSubscriptions($item, $this);
+                    continue; // Bu item için normal subscription oluşturma
+                }
+            }
+
             try {
                 $plan = $item->orderable;
                 if (!$plan) {

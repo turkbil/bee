@@ -173,6 +173,14 @@ class Radio extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
+     * Alias for getLogoUrl - Search compatibility
+     */
+    public function getCoverUrl(?int $width = 400, ?int $height = 400): ?string
+    {
+        return $this->getLogoUrl($width, $height);
+    }
+
+    /**
      * HasSeo trait fallback implementations
      */
     public function getSeoFallbackTitle(): ?string

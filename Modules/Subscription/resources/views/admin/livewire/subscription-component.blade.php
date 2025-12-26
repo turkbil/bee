@@ -321,7 +321,14 @@
                             @if($subscription->customer)
                             <a href="{{ route('admin.usermanagement.manage', $subscription->customer->id) }}"
                                class="text-reset text-decoration-none d-block">
-                                <div class="fw-medium">{{ $subscription->customer->name }}</div>
+                                <div class="fw-medium">
+                                    {{ $subscription->customer->name }}
+                                    @if($subscription->metadata['corporate'] ?? false)
+                                        <span class="badge bg-purple-lt text-purple ms-1" title="Kurumsal abonelik">
+                                            <i class="fas fa-building"></i>
+                                        </span>
+                                    @endif
+                                </div>
                                 <div class="text-muted small">{{ $subscription->customer->email }}</div>
                             </a>
                             @else

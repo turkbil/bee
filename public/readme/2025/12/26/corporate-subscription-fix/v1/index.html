@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurumsal Subscription Düzeltme Planı - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-gray-100 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-12">
+
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-orange-500/20 text-orange-400 rounded-full text-sm font-medium mb-4">
+                <i class="fas fa-tools"></i>
+                <span>Düzeltme Planı</span>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-2">Kurumsal Subscription Sistemi</h1>
+            <p class="text-gray-400">26 Aralık 2025 - Tenant 1001 (Muzibu)</p>
+        </div>
+
+        <!-- Mevcut Sorun -->
+        <div class="bg-red-900/20 border border-red-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-exclamation-triangle"></i>
+                Mevcut Sorunlar
+            </h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-white font-semibold mb-2">1. Subscription Aktive Olmuyor</h3>
+                    <p class="text-gray-400 text-sm">Kurumsal yönetici 2 üye için ödeme yapıyor, ama sadece kendi hesabına subscription açılıyor. Seçilen üyelere subscription AÇILMIYOR.</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-white font-semibold mb-2">2. Admin Panelde Bilgi Eksik</h3>
+                    <p class="text-gray-400 text-sm">/admin/payment modalında hangi üyeler için ödeme yapıldığı görünmüyor. /admin/subscription'da da üye bilgileri yok.</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-white font-semibold mb-2">3. Tenant Context Eksikliği</h3>
+                    <p class="text-gray-400 text-sm">Subscription tablosu tenant DB'de (tenant_muzibu_1528d0). PayTR callback'te tenant context doğru set edilmeli.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Akış Analizi -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-route"></i>
+                Mevcut Akış (Sorunlu)
+            </h2>
+
+            <div class="space-y-3">
+                <div class="flex items-start gap-3">
+                    <span class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">1</span>
+                    <div>
+                        <p class="text-white font-medium">Frontend: Üye Seçimi</p>
+                        <p class="text-gray-500 text-sm">Yönetici 2 üye seçiyor → users=100,101 URL'e ekleniyor ✅</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <span class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">2</span>
+                    <div>
+                        <p class="text-white font-medium">CheckoutPage: Cart'a Ekleme</p>
+                        <p class="text-gray-500 text-sm">users=100,101 → quantity=2 olarak çevriliyor. <strong class="text-red-400">user_id'ler KAYBOLUYOR!</strong></p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <span class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">3</span>
+                    <div>
+                        <p class="text-white font-medium">Order Oluşturma</p>
+                        <p class="text-gray-500 text-sm">CartItem → OrderItem kopyalanıyor. Metadata'da user_id yok.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <span class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">4</span>
+                    <div>
+                        <p class="text-white font-medium">PayTR Callback</p>
+                        <p class="text-gray-500 text-sm">Tenant context set ediliyor (T1001PAY... formatından parse) ✅</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <span class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">5</span>
+                    <div>
+                        <p class="text-white font-medium">activateSubscriptionItems()</p>
+                        <p class="text-gray-500 text-sm"><strong class="text-red-400">SADECE order.user_id için subscription oluşturuyor!</strong> Seçilen üyeler es geçiliyor.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Düzeltme Planı -->
+        <div class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-check-circle"></i>
+                Düzeltme Planı (4 Adım)
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Adım 1 -->
+                <div class="bg-slate-800/50 rounded-lg p-5 border-l-4 border-green-500">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs font-bold">YAPILDI</span>
+                        <h3 class="text-white font-semibold">1. Cart Metadata'ya user_id'leri Ekle</h3>
+                    </div>
+                    <div class="text-gray-400 text-sm space-y-2">
+                        <p><strong>Dosya:</strong> Modules/Cart/app/Http/Livewire/Front/CheckoutPage.php</p>
+                        <p><strong>Değişiklik:</strong></p>
+                        <ul class="list-disc list-inside ml-4 space-y-1">
+                            <li>mount() - users parametresini parse et, targetUserIds olarak sakla</li>
+                            <li>addSubscriptionToCart() - 4. parametre olarak targetUserIds al</li>
+                            <li>Cart metadata'ya target_user_ids ve type=corporate_bulk ekle</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Adım 2 -->
+                <div class="bg-slate-800/50 rounded-lg p-5 border-l-4 border-green-500">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs font-bold">YAPILDI</span>
+                        <h3 class="text-white font-semibold">2. Order'da Tüm Kullanıcılar için Subscription Oluştur</h3>
+                    </div>
+                    <div class="text-gray-400 text-sm space-y-2">
+                        <p><strong>Dosya:</strong> Modules/Cart/app/Models/Order.php</p>
+                        <p><strong>Değişiklik:</strong></p>
+                        <ul class="list-disc list-inside ml-4 space-y-1">
+                            <li>activateSubscriptionItems() - metadata'dan target_user_ids kontrol et</li>
+                            <li>type=corporate_bulk ise her user için ayrı subscription oluştur</li>
+                            <li>createSubscriptionForUser() helper metodu eklendi</li>
+                            <li>Corporate metadata: is_corporate=true, purchased_by=owner_id</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Adım 3 -->
+                <div class="bg-slate-800/50 rounded-lg p-5 border-l-4 border-yellow-500">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs font-bold">BEKLEMEDE</span>
+                        <h3 class="text-white font-semibold">3. Admin Payment Modal'da Üye Bilgisi Göster</h3>
+                    </div>
+                    <div class="text-gray-400 text-sm space-y-2">
+                        <p><strong>Dosya:</strong> Modules/Payment/resources/views/admin/payments/... (modal)</p>
+                        <p><strong>Değişiklik:</strong></p>
+                        <ul class="list-disc list-inside ml-4 space-y-1">
+                            <li>OrderItem metadata'dan target_user_ids çek</li>
+                            <li>User isimlerini listele (User model'den)</li>
+                            <li>"2 üye için kurumsal üyelik" şeklinde göster</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Adım 4 -->
+                <div class="bg-slate-800/50 rounded-lg p-5 border-l-4 border-yellow-500">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs font-bold">BEKLEMEDE</span>
+                        <h3 class="text-white font-semibold">4. Admin Subscription Sayfasında Detay Göster</h3>
+                    </div>
+                    <div class="text-gray-400 text-sm space-y-2">
+                        <p><strong>Dosya:</strong> Modules/Subscription/resources/views/admin/...</p>
+                        <p><strong>Değişiklik:</strong></p>
+                        <ul class="list-disc list-inside ml-4 space-y-1">
+                            <li>Subscription metadata'dan is_corporate ve purchased_by göster</li>
+                            <li>"Kurumsal satın alma" badge ekle</li>
+                            <li>Satın alan kişiyi göster</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dosya Listesi -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-file-code"></i>
+                Değiştirilecek Dosyalar
+            </h2>
+
+            <div class="space-y-4">
+                <div>
+                    <h3 class="text-green-400 font-medium mb-2 flex items-center gap-2">
+                        <i class="fas fa-check"></i> Tamamlanan
+                    </h3>
+                    <ul class="bg-slate-900 rounded-lg p-4 font-mono text-sm space-y-1">
+                        <li class="text-gray-300">Modules/Cart/app/Http/Livewire/Front/CheckoutPage.php</li>
+                        <li class="text-gray-300">Modules/Cart/app/Models/Order.php</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-yellow-400 font-medium mb-2 flex items-center gap-2">
+                        <i class="fas fa-clock"></i> Bekleyen
+                    </h3>
+                    <ul class="bg-slate-900 rounded-lg p-4 font-mono text-sm space-y-1">
+                        <li class="text-gray-300">Modules/Payment/resources/views/admin/payments/index.blade.php (modal)</li>
+                        <li class="text-gray-300">Modules/Subscription/resources/views/admin/subscriptions/index.blade.php</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Planı -->
+        <div class="bg-purple-900/20 border border-purple-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-flask"></i>
+                Test Planı
+            </h2>
+
+            <ol class="space-y-3 text-gray-300">
+                <li class="flex items-start gap-3">
+                    <span class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">1</span>
+                    <span>Kurumsal yönetici olarak giriş yap (Muzibu)</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">2</span>
+                    <span>/corporate/subscriptions sayfasına git</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">3</span>
+                    <span>2 üye seç ve "Ödemeye Geç" tıkla</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">4</span>
+                    <span>Checkout'ta cart item metadata'sını kontrol et (Laravel log)</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">5</span>
+                    <span>Test ödeme yap (PayTR sandbox)</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">6</span>
+                    <span>Callback sonrası: subscriptions tablosunda 2 kayıt olmalı</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">7</span>
+                    <span>/admin/subscription'da her iki üyeyi de gör</span>
+                </li>
+            </ol>
+        </div>
+
+        <!-- Önemli Notlar -->
+        <div class="bg-amber-900/20 border border-amber-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-amber-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-exclamation-circle"></i>
+                Önemli Notlar
+            </h2>
+
+            <ul class="space-y-2 text-gray-300">
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check text-amber-400 mt-1"></i>
+                    <span><strong>Tenant 1001:</strong> Subscription tablosu tenant_muzibu_1528d0 DB'de</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check text-amber-400 mt-1"></i>
+                    <span><strong>PayTR Callback:</strong> Tenant context zaten set ediliyor (T1001PAY... parse)</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check text-amber-400 mt-1"></i>
+                    <span><strong>User ID:</strong> Central users tablosundaki ID (tüm tenantlar ortak)</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check text-amber-400 mt-1"></i>
+                    <span><strong>Mevcut Ödemeler:</strong> Eski ödemeler için subscription oluşturulamaz (metadata yok)</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-gray-500 text-sm">
+            <p>
+                <i class="fas fa-robot mr-1"></i>
+                Claude AI tarafından oluşturuldu - 26 Aralık 2025
+            </p>
+        </div>
+
+    </div>
+</body>
+</html>

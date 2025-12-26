@@ -130,6 +130,14 @@ class Sector extends BaseModel implements HasMedia
     }
 
     /**
+     * Alias for getIconUrl - Search compatibility
+     */
+    public function getCoverUrl(?int $width = 200, ?int $height = 200): ?string
+    {
+        return $this->getIconUrl($width, $height);
+    }
+
+    /**
      * Media collections config
      */
     protected function getMediaConfig(): array

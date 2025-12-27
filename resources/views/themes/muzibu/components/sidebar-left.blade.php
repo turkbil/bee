@@ -87,8 +87,8 @@
 
             {{-- Content --}}
             <div class="relative z-10">
-                {{-- User Row --}}
-                <div class="flex items-center gap-2 mb-3">
+                {{-- User Row - Avatar + Full Name --}}
+                <div class="flex items-center gap-3 mb-3">
                     {{-- Avatar: Premium=Crown, Trial=Gift, Free=Letter --}}
                     <div class="w-10 h-10 flex-shrink-0 rounded-full bg-white/20 flex items-center justify-center border border-white/30">
                         <template x-if="currentUser?.is_premium && !currentUser?.is_trial">
@@ -101,25 +101,27 @@
                             <span class="text-white font-bold text-sm" x-text="currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : 'U'"></span>
                         </template>
                     </div>
-                    {{-- Info --}}
+                    {{-- Info - Full Width --}}
                     <div class="flex-1 min-w-0">
                         <p class="text-white font-semibold text-sm truncate" x-text="currentUser?.name || 'Kullanıcı'"></p>
                         <p class="text-white/70 text-xs truncate" x-text="memberType"></p>
                     </div>
-                    {{-- Settings --}}
-                    <a href="/profile" class="w-8 h-8 flex-shrink-0 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/70 hover:text-white transition-all">
-                        <i class="fas fa-cog text-sm"></i>
-                    </a>
                 </div>
 
-                {{-- Logout Button --}}
-                <button
-                    @click="logout()"
-                    class="w-full bg-black/30 hover:bg-black/50 text-white py-2 rounded-lg text-sm font-medium transition-all border border-white/20 hover:border-white/30"
-                >
-                    <i class="fas fa-sign-out-alt mr-2"></i>
-                    {{ trans('muzibu::front.general.logout') }}
-                </button>
+                {{-- Action Buttons - Side by Side --}}
+                <div class="flex gap-2">
+                    <a href="/profile" class="flex-1 bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg text-sm font-medium text-center transition-all border border-white/20 hover:border-white/30">
+                        <i class="fas fa-cog mr-1"></i>
+                        {{ trans('muzibu::front.user.settings') }}
+                    </a>
+                    <button
+                        @click="logout()"
+                        class="flex-1 bg-black/30 hover:bg-black/50 text-white py-2 rounded-lg text-sm font-medium transition-all border border-white/20 hover:border-white/30"
+                    >
+                        <i class="fas fa-sign-out-alt mr-1"></i>
+                        {{ trans('muzibu::front.general.logout') }}
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -168,7 +170,7 @@
 
             {{-- Content --}}
             <div class="relative z-10">
-                {{-- User Row --}}
+                {{-- User Row - Avatar + Full Name --}}
                 <div class="flex items-center gap-3 mb-3">
                     {{-- Avatar: Premium=Crown, Trial=Gift, Free=Letter --}}
                     <div class="w-10 h-10 flex-shrink-0 rounded-full bg-white/20 flex items-center justify-center border border-white/30">
@@ -182,25 +184,27 @@
                             <span class="text-white font-bold text-sm" x-text="currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : 'U'"></span>
                         </template>
                     </div>
-                    {{-- Info --}}
+                    {{-- Info - Full Width --}}
                     <div class="flex-1 min-w-0">
                         <p class="text-white font-semibold text-sm truncate" x-text="currentUser?.name || 'Kullanıcı'"></p>
                         <p class="text-white/70 text-xs truncate" x-text="memberType"></p>
                     </div>
-                    {{-- Settings --}}
-                    <a href="/profile" class="w-8 h-8 flex-shrink-0 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/70 hover:text-white transition-all">
-                        <i class="fas fa-cog text-sm"></i>
-                    </a>
                 </div>
 
-                {{-- Logout Button --}}
-                <button
-                    @click="logout(); closeMobileMenu();"
-                    class="w-full bg-black/30 hover:bg-black/50 text-white py-2 rounded-lg text-sm font-medium transition-all border border-white/20 hover:border-white/30"
-                >
-                    <i class="fas fa-sign-out-alt mr-2"></i>
-                    {{ trans('muzibu::front.general.logout') }}
-                </button>
+                {{-- Action Buttons - Side by Side --}}
+                <div class="flex gap-2">
+                    <a href="/profile" class="flex-1 bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg text-sm font-medium text-center transition-all border border-white/20 hover:border-white/30">
+                        <i class="fas fa-cog mr-1"></i>
+                        {{ trans('muzibu::front.user.settings') }}
+                    </a>
+                    <button
+                        @click="logout(); closeMobileMenu();"
+                        class="flex-1 bg-black/30 hover:bg-black/50 text-white py-2 rounded-lg text-sm font-medium transition-all border border-white/20 hover:border-white/30"
+                    >
+                        <i class="fas fa-sign-out-alt mr-1"></i>
+                        {{ trans('muzibu::front.general.logout') }}
+                    </button>
+                </div>
             </div>
         </div>
 

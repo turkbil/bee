@@ -196,6 +196,70 @@ function muzibuApp() {
             return cover;
         },
 
+        /**
+         * 🎨 UPDATE PLAYER COLORS: Şarkıya göre gradient renkleri güncelle
+         * color_hash formatı: "hue1,hue2,hue3" (örn: "45,85,125")
+         * Fallback: Şarkı başlığından client-side hesaplama
+         */
+        updatePlayerColors() {
+            if (!this.currentSong) return;
+
+            let hues = [30, 350, 320]; // Varsayılan (turuncu-kırmızı-pembe)
+            let source = 'default';
+
+            // 1. Önce DB'den gelen color_hash'i dene
+            if (this.currentSong.color_hash) {
+                const parsed = this.currentSong.color_hash.split(',').map(h => parseInt(h.trim(), 10));
+                if (parsed.length === 3 && parsed.every(h => !isNaN(h))) {
+                    hues = parsed;
+                    source = 'db';
+                }
+            }
+
+            // 2. Yoksa şarkı başlığından client-side hesapla (fallback)
+            if (source === 'default') {
+                const title = this.currentSong.song_title?.tr || this.currentSong.song_title?.en ||
+                              this.currentSong.song_title || this.currentSong.title || '';
+                if (title) {
+                    hues = this.generateColorHashFromTitle(title);
+                    source = 'client';
+                }
+            }
+
+            // 🔄 Alpine reaktivite için currentSong'u yeniden assign et
+            this.currentSong = {
+                ...this.currentSong,
+                color_hues: hues
+            };
+
+            // CSS değişkenlerini güncelle (border gradient için)
+            document.documentElement.style.setProperty('--player-hue1', hues[0]);
+            document.documentElement.style.setProperty('--player-hue2', hues[1]);
+            document.documentElement.style.setProperty('--player-hue3', hues[2]);
+
+            // Debug log
+            console.log('🎨 Player colors updated:', hues, `(${source})`, 'song:', this.currentSong.song_title || this.currentSong.title);
+        },
+
+        /**
+         * 🎨 Client-side color hash hesaplama (DB'de yoksa fallback)
+         * PHP'deki generateColorHash() ile aynı algoritma
+         */
+        generateColorHashFromTitle(title) {
+            const normalizedTitle = title.toLowerCase().trim();
+            let hash = 0;
+            for (let i = 0; i < normalizedTitle.length; i++) {
+                const char = normalizedTitle.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & 0xFFFFFFFF; // 32-bit integer
+            }
+            hash = Math.abs(hash);
+            const hue1 = hash % 360;
+            const hue2 = (hue1 + 40) % 360;
+            const hue3 = (hue1 + 80) % 360;
+            return [hue1, hue2, hue3];
+        },
+
         // Get the currently active HLS audio element
         getActiveHlsAudio() {
             if (this.activeHlsAudioId === 'hlsAudioNext') {
@@ -461,6 +525,12 @@ function muzibuApp() {
                 } else if (song.duration_seconds) {
                     this.duration = song.duration_seconds;
                 }
+
+                // 🎨 Merge API song data (color_hash dahil) ve renkleri güncelle
+                if (streamData.song) {
+                    this.currentSong = { ...this.currentSong, ...streamData.song };
+                }
+                this.updatePlayerColors();
 
                 this.isPlaying = false;
                 this.isSongLoading = false;
@@ -876,6 +946,9 @@ function muzibuApp() {
                     this.queueIndex = 0;
                     this.currentSong = data.songs[0];
 
+                    // 🎨 Update player gradient colors (initial queue load)
+                    this.updatePlayerColors();
+
                     // Context'i güncelle (genre/popular)
                     if (data.context) {
                         const muzibuStore = Alpine.store('muzibu');
@@ -1163,6 +1236,9 @@ function muzibuApp() {
                 this.progressPercent = 0;
                 this.playTracked = false;
 
+                // 🎨 Update player gradient colors for crossfade
+                this.updatePlayerColors();
+
                 // 🔥 CRITICAL: Stop old progress tracking and start tracking NEXT player
                 // Old interval tracks old song, but we're showing new song info now!
                 if (this.progressInterval) {
@@ -1225,20 +1301,60 @@ function muzibuApp() {
             } catch (error) {
                 console.error('❌ Crossfade error:', error);
 
-                // 🔥 CRITICAL FIX: Restore previous song volume (prevent silence!)
-                // If next song failed to load, current song volume is already at 0
-                // We need to fade it BACK UP to prevent dead silence
+                // ⚡ SMART CROSSFADE: Hata olursa crossfade'i atlayıp direkt geçiş yap
+                console.warn('⚡ Smart Crossfade: Skipping crossfade, direct transition to next song...');
 
-                if (hasActiveHowler && this.howl) {
-                    // Fade Howler back to original volume (instant or quick fade)
-                    this.howl.fade(0, targetVolume, 1000); // 1 second fade-back
-                } else if (hasActiveHls && audio) {
-                    // Fade HLS audio back to original volume
-                    this.fadeAudioElement(audio, 0, targetVolume, 1000); // 1 second fade-back
+                // Cleanup crossfade state
+                this.isCrossfading = false;
+
+                // Cleanup failed next player
+                if (this.hlsNext) {
+                    try { this.hlsNext.destroy(); } catch (e) {}
+                    this.hlsNext = null;
+                }
+                if (this.howlNext) {
+                    try { this.howlNext.unload(); } catch (e) {}
+                    this.howlNext = null;
                 }
 
-                this.isCrossfading = false;
-                this.showToast(this.frontLang?.messages?.next_song_failed || 'Failed to load next song, current song continues', 'warning');
+                // Cleanup next audio element
+                const nextAudioEl = document.getElementById(this.nextHlsAudioId);
+                if (nextAudioEl) {
+                    nextAudioEl.pause();
+                    nextAudioEl.src = '';
+                    nextAudioEl.load();
+                }
+
+                // Stop current player completely
+                if (hasActiveHowler && this.howl) {
+                    this.howl.stop();
+                    this.howl.unload();
+                    this.howl = null;
+                } else if (hasActiveHls && audio) {
+                    audio.pause();
+                    audio.src = '';
+                    audio.load();
+                    if (this.hls) {
+                        this.hls.destroy();
+                        this.hls = null;
+                    }
+                }
+
+                // Clear progress tracking
+                if (this.progressInterval) {
+                    clearInterval(this.progressInterval);
+                    this.progressInterval = null;
+                }
+
+                // Direct transition to next song (NO crossfade)
+                const directNextIndex = this.getNextSongIndex();
+                if (directNextIndex !== -1) {
+                    console.log('🎵 Direct transition to song index:', directNextIndex);
+                    this.playSongFromQueue(directNextIndex);
+                } else {
+                    this.isPlaying = false;
+                    console.log('🛑 No next song available, playback stopped');
+                }
             }
         },
 
@@ -1457,6 +1573,9 @@ function muzibuApp() {
             this.queueIndex = nextIndex;
             this.currentSong = this.queue[nextIndex];
             this.playTracked = false; // 🎵 Reset play tracking for new song
+
+            // 🎨 Update player gradient colors after crossfade completion
+            this.updatePlayerColors();
 
             // Reset crossfade state
             this.isCrossfading = false;
@@ -1900,6 +2019,9 @@ function muzibuApp() {
                 this.currentSong = streamData.song ? { ...song, ...streamData.song } : song;
                 this.playTracked = false;
 
+                // 🎨 Update player gradient colors based on song's color_hash
+                this.updatePlayerColors();
+
                 // 🔄 Her şarkı çalmada premium status ve subscription bilgilerini güncelle
                 if (this.currentUser) {
                     if (streamData.is_premium !== undefined) {
@@ -2013,6 +2135,9 @@ function muzibuApp() {
             this._nextSongPreloaded = false; // 🔄 Reset preload flag for new song
             this._firstFragLoaded = false; // 🔄 Reset first fragment flag for new song
 
+            // 🎨 Update player gradient colors
+            this.updatePlayerColors();
+
             // 🎯 RECENTLY PLAYED: Şarkıyı exclude listesine ekle (tekrar gelmemesi için)
             const playerStore = Alpine.store('player') || Alpine.store('muzibu');
             if (playerStore && playerStore.addToRecentlyPlayed) {
@@ -2078,6 +2203,14 @@ function muzibuApp() {
                     this._lastHlsUrl = preloaded.streamUrl;
                     this.currentFallbackUrl = preloaded.streamData?.fallback_url || null;
 
+                    // 🎨 Merge streamData.song bilgilerini currentSong'a (color_hash dahil)
+                    if (preloaded.streamData?.song) {
+                        this.currentSong = { ...this.currentSong, ...preloaded.streamData.song };
+                    }
+
+                    // 🎨 Update player gradient colors (preloaded path)
+                    this.updatePlayerColors();
+
                     // 🔊 Volume ayarla
                     const targetVolume = this.isMuted ? 0 : this.volume / 100;
                     preloadedAudio.volume = targetVolume;
@@ -2137,6 +2270,9 @@ function muzibuApp() {
                             }));
 
                             console.log('✅ Preloaded song playing instantly!');
+
+                            // 🎨 Update player gradient colors for preloaded song
+                            this.updatePlayerColors();
                         } catch (e) {
                             console.warn('Preloaded play failed:', e);
                             this.isPlaying = false;

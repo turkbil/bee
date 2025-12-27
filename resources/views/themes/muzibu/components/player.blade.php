@@ -5,12 +5,40 @@
     @media (min-width: 1024px) { .mobile-player-wrapper { display: none !important; } }
     @media (max-width: 1023px) { .desktop-player-wrapper { display: none !important; } }
 
+    /* 🎨 Dinamik Gradient Border - Şarkıya göre renk değişimi */
+    :root {
+        --player-hue1: 30;
+        --player-hue2: 350;
+        --player-hue3: 320;
+    }
+
+    /* Hareketli Gradient Animasyonu */
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
     /* Gradient Border - Mobile & Desktop */
     .mobile-player-wrapper,
     .desktop-player-wrapper {
-        background: linear-gradient(#18181b, #18181b) padding-box,
-                    linear-gradient(135deg, #ff8a00, #ff5e62, #ec4899) border-box;
+        background:
+            linear-gradient(#18181b, #18181b) padding-box,
+            linear-gradient(
+                135deg,
+                hsl(var(--player-hue1), 80%, 50%),
+                hsl(var(--player-hue2), 80%, 50%),
+                hsl(var(--player-hue3), 80%, 50%),
+                hsl(var(--player-hue1), 80%, 50%)
+            ) border-box;
+        background-size: 100% 100%, 300% 300%;
         border: 2px solid transparent;
+        animation: gradientShift 8s ease infinite;
+        transition: --player-hue1 1s ease, --player-hue2 1s ease, --player-hue3 1s ease;
+    }
+
+    /* Progress Ring Gradient Transition */
+    .progress-ring-gradient {
+        transition: stroke 1s ease;
     }
 </style>
 <div class="mobile-player-wrapper row-start-3 col-span-full mx-3 mb-3 px-3 py-2 relative rounded-full shadow-lg">
@@ -18,11 +46,19 @@
     <div class="flex items-center gap-3">
         {{-- Cover with Progress Ring --}}
         <div class="relative w-12 h-12 flex-shrink-0">
-            {{-- Progress Ring (pink) --}}
+            {{-- Progress Ring (Dinamik Gradient) --}}
             <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 48 48">
+                <defs>
+                    <linearGradient id="mobileRingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" class="mobile-gradient-stop1" :style="`stop-color: hsl(${currentSong?.color_hues?.[0] || 30}, 80%, 55%)`"/>
+                        <stop offset="50%" class="mobile-gradient-stop2" :style="`stop-color: hsl(${currentSong?.color_hues?.[1] || 350}, 80%, 55%)`"/>
+                        <stop offset="100%" class="mobile-gradient-stop3" :style="`stop-color: hsl(${currentSong?.color_hues?.[2] || 320}, 80%, 55%)`"/>
+                    </linearGradient>
+                </defs>
                 <circle cx="24" cy="24" r="21" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="3"/>
-                <circle cx="24" cy="24" r="21" fill="none" stroke="#ff8a00" stroke-width="3"
+                <circle cx="24" cy="24" r="21" fill="none" stroke="url(#mobileRingGradient)" stroke-width="3"
                         stroke-linecap="round"
+                        class="progress-ring-gradient"
                         :stroke-dasharray="132"
                         :stroke-dashoffset="132 - (132 * progressPercent / 100)"/>
             </svg>
@@ -150,11 +186,19 @@
 
     {{-- Cover with Progress Ring --}}
     <div class="relative w-14 h-14 flex-shrink-0">
-        {{-- Progress Ring (orange) --}}
+        {{-- Progress Ring (Dinamik Gradient) --}}
         <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 56 56">
+            <defs>
+                <linearGradient id="desktopRingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" class="desktop-gradient-stop1" :style="`stop-color: hsl(${currentSong?.color_hues?.[0] || 30}, 80%, 55%)`"/>
+                    <stop offset="50%" class="desktop-gradient-stop2" :style="`stop-color: hsl(${currentSong?.color_hues?.[1] || 350}, 80%, 55%)`"/>
+                    <stop offset="100%" class="desktop-gradient-stop3" :style="`stop-color: hsl(${currentSong?.color_hues?.[2] || 320}, 80%, 55%)`"/>
+                </linearGradient>
+            </defs>
             <circle cx="28" cy="28" r="25" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="3"/>
-            <circle cx="28" cy="28" r="25" fill="none" stroke="#ff8a00" stroke-width="3"
+            <circle cx="28" cy="28" r="25" fill="none" stroke="url(#desktopRingGradient)" stroke-width="3"
                     stroke-linecap="round"
+                    class="progress-ring-gradient"
                     :stroke-dasharray="157"
                     :stroke-dashoffset="157 - (157 * progressPercent / 100)"/>
         </svg>
@@ -217,11 +261,11 @@
         </button>
     </div>
 
-    {{-- Progress Bar (Linear) --}}
+    {{-- Progress Bar (Linear - Dynamic Gradient) --}}
     <div class="flex items-center gap-2 w-64">
         <div class="flex-1 h-1.5 bg-white/20 rounded-full cursor-pointer group" @click="seekTo($event)">
-            <div class="h-full bg-gradient-to-r from-orange-500 to-pink-500 rounded-full relative transition-all"
-                 :style="`width: ${progressPercent}%`">
+            <div class="h-full rounded-full relative transition-all progress-bar-gradient"
+                 :style="`width: ${progressPercent}%; background: linear-gradient(90deg, hsl(${currentSong?.color_hues?.[0] || 30}, 80%, 55%), hsl(${currentSong?.color_hues?.[1] || 350}, 80%, 55%), hsl(${currentSong?.color_hues?.[2] || 320}, 80%, 55%))`">
                 <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 shadow-lg transition-opacity"></div>
             </div>
         </div>

@@ -132,6 +132,8 @@ class SongStreamController extends Controller
                         'has_encryption_key' => !empty($song->encryption_key),
                         'has_encryption_iv' => !empty($song->encryption_iv),
                         'has_hls_path' => !empty($song->hls_path),
+                        // 🎨 Player gradient colors
+                        'color_hash' => $song->getOrGenerateColorHash(),
                     ]
                 ], $this->getSubscriptionData($user)));
             }
@@ -172,6 +174,8 @@ class SongStreamController extends Controller
                     'has_encryption_key' => !empty($song->encryption_key),
                     'has_encryption_iv' => !empty($song->encryption_iv),
                     'has_hls_path' => !empty($song->hls_path),
+                    // 🎨 Player gradient colors
+                    'color_hash' => $song->getOrGenerateColorHash(),
                 ]
             ], $subscriptionData));
 

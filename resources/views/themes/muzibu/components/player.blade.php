@@ -62,13 +62,15 @@
                         :stroke-dasharray="132"
                         :stroke-dashoffset="132 - (132 * progressPercent / 100)"/>
             </svg>
-            {{-- Album Cover (simple circle) --}}
-            <div class="absolute inset-[4px] rounded-full overflow-hidden bg-zinc-800 flex items-center justify-center">
+            {{-- Album Cover (simple circle) with Coral Fallback --}}
+            <div class="absolute inset-[4px] rounded-full overflow-hidden flex items-center justify-center"
+                 :class="(currentSong?.album_cover || currentSong?.cover_url) ? 'bg-zinc-800' : 'bg-gradient-to-br from-muzibu-coral via-orange-500 to-pink-500'">
                 <img x-ref="mobileCover"
+                     x-show="currentSong?.album_cover || currentSong?.cover_url"
                      x-effect="const cover = currentSong?.album_cover || currentSong?.cover_url; if(cover && $refs.mobileCover) { $refs.mobileCover.src = (typeof cover === 'string' && cover.startsWith('http')) ? cover : `/thumb/${cover}/100/100`; }"
                      alt="Cover"
                      class="absolute inset-0 w-full h-full object-cover">
-                <i x-show="!currentSong?.cover_url && !currentSong?.album_cover" class="fas fa-music text-zinc-600 text-sm"></i>
+                <i x-show="!currentSong?.cover_url && !currentSong?.album_cover" class="fas fa-music text-white/80 text-sm"></i>
             </div>
             {{-- Time Badge --}}
             <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-zinc-800 text-white text-[10px] px-1.5 py-0.5 rounded-full border border-zinc-700"
@@ -161,15 +163,10 @@
             </button>
             --}}
             <div class="h-px bg-zinc-700 mx-4 my-1"></div>
-            <button class="w-full px-4 py-3 flex items-center gap-3 text-sm text-white active:bg-zinc-700"
-                    @click="if(currentSong?.artist_slug) { window.location.href = '/artists/' + currentSong.artist_slug; } showMobileMenu = false"
-                    x-show="currentSong?.artist_slug">
-                <i class="fas fa-user text-purple-400 w-5 text-center"></i>
-                <span>Sanatçıya Git</span>
-            </button>
-            <button class="w-full px-4 py-3 flex items-center gap-3 text-sm text-white active:bg-zinc-700"
-                    @click="if(currentSong?.album_slug) { window.location.href = '/albums/' + currentSong.album_slug; } showMobileMenu = false"
-                    x-show="currentSong?.album_slug">
+            {{-- Albüme Git - her zaman görünür (slug yoksa disabled) --}}
+            <button class="w-full px-4 py-3 flex items-center gap-3 text-sm active:bg-zinc-700"
+                    :class="currentSong?.album_slug ? 'text-white' : 'text-zinc-500 pointer-events-none'"
+                    @click="if(currentSong?.album_slug) { window.location.href = '/albums/' + currentSong.album_slug; } showMobileMenu = false">
                 <i class="fas fa-compact-disc text-cyan-400 w-5 text-center"></i>
                 <span>Albüme Git</span>
             </button>
@@ -199,13 +196,15 @@
                     :stroke-dasharray="157"
                     :stroke-dashoffset="157 - (157 * progressPercent / 100)"/>
         </svg>
-        {{-- Album Cover (simple circle) --}}
-        <div class="absolute inset-[4px] rounded-full overflow-hidden bg-zinc-800 flex items-center justify-center">
+        {{-- Album Cover (simple circle) with Coral Fallback --}}
+        <div class="absolute inset-[4px] rounded-full overflow-hidden flex items-center justify-center"
+             :class="(currentSong?.album_cover || currentSong?.cover_url) ? 'bg-zinc-800' : 'bg-gradient-to-br from-muzibu-coral via-orange-500 to-pink-500'">
             <img x-ref="desktopCover"
+                 x-show="currentSong?.album_cover || currentSong?.cover_url"
                  x-effect="const cover = currentSong?.album_cover || currentSong?.cover_url; if(cover && $refs.desktopCover) { $refs.desktopCover.src = (typeof cover === 'string' && cover.startsWith('http')) ? cover : `/thumb/${cover}/120/120`; }"
                  alt="Cover"
                  class="absolute inset-0 w-full h-full object-cover">
-            <i x-show="!currentSong?.cover_url && !currentSong?.album_cover" class="fas fa-music text-zinc-600 text-lg"></i>
+            <i x-show="!currentSong?.cover_url && !currentSong?.album_cover" class="fas fa-music text-white/80 text-lg"></i>
         </div>
         {{-- Time Badge --}}
         <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-zinc-800 text-white text-[10px] px-1.5 py-0.5 rounded-full border border-zinc-700"

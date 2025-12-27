@@ -1,213 +1,633 @@
-🚀 Next song preloaded + STOPPED: 466 After Hours
-player-core.js:1354 HLS crossfade fatal error: 
-{type: 'mediaError', parent: 'main', details: 'bufferAppendError', frag: Proxy, part: null, …}
-chunkMeta
-: 
-wr {level: 0, sn: 1, part: -1, id: 1, size: 349304, …}
-details
-: 
-"bufferAppendError"
-err
-: 
-DOMException: Failed to execute 'appendBuffer' on 'SourceBuffer': This SourceBuffer has been removed from the parent media source. at e.appendExecutor (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:275521) at Proxy.execute (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:268499) at e.executeNext (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:261585) at e.append (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:261216) at e.onBufferAppending (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:269401) at o.emit (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:189771) at e.emit (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:368391) at e.trigger (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:368489) at r.bufferFragmentData (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:123156) at r._handleTransmuxComplete (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:218018)
-error
-: 
-DOMException: Failed to execute 'appendBuffer' on 'SourceBuffer': This SourceBuffer has been removed from the parent media source. at e.appendExecutor (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:275521) at Proxy.execute (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:268499) at e.executeNext (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:261585) at e.append (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:261216) at e.onBufferAppending (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:269401) at o.emit (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:189771) at e.emit (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:368391) at e.trigger (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:368489) at r.bufferFragmentData (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:123156) at r._handleTransmuxComplete (https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js:1:218018)
-fatal
-: 
-true
-frag
-: 
-Proxy {_byteRange: null, _url: 'https://muzibu.com.tr/hls/muzibu/songs/465/segment…752725448689ff7012f75b130c5b9286e7ec24904226267f2', baseurl: 'https://muzibu.com.tr/hls/muzibu/songs/465/playlis…752725448689ff7012f75b130c5b9286e7ec24904226267f2', relurl: 'segment-001.ts?expires=1766855144&token=37&sig=a28…752725448689ff7012f75b130c5b9286e7ec24904226267f2', elementaryStreams: {…}, …}
-parent
-: 
-"main"
-part
-: 
-null
-type
-: 
-"mediaError"
-[[Prototype]]
-: 
-Object
-(anonymous)	@	player-core.js:1354
-o.emit	@	index.js:203
-e.emit	@	hls.ts:287
-e.trigger	@	hls.ts:298
-onError	@	buffer-controller.ts:448
-e.executeNext	@	buffer-operation-queue.ts:65
-e.append	@	buffer-operation-queue.ts:25
-e.onBufferAppending	@	buffer-controller.ts:451
-o.emit	@	index.js:182
-e.emit	@	hls.ts:287
-e.trigger	@	hls.ts:298
-r.bufferFragmentData	@	base-stream-controller.ts:928
-r._handleTransmuxComplete	@	stream-controller.ts:1203
-r.handleTransmuxComplete	@	transmuxer-interface.ts:407
-r.push	@	transmuxer-interface.ts:282
-r._handleFragmentLoadProgress	@	stream-controller.ts:741
-(anonymous)	@	base-stream-controller.ts:364
-(anonymous)	@	base-stream-controller.ts:780
-Promise.then (async)		
-r._doFragLoad	@	base-stream-controller.ts:778
-r._loadFragForPlayback	@	base-stream-controller.ts:367
-r.loadFragment	@	base-stream-controller.ts:343
-r.loadFragment	@	stream-controller.ts:373
-r.doTickIdle	@	stream-controller.ts:349
-r.doTick	@	stream-controller.ts:204
-e.tick	@	task-loop.ts:106
-r.fragBufferedComplete	@	base-stream-controller.ts:598
-r.onFragBuffered	@	stream-controller.ts:879
-o.emit	@	index.js:203
-e.emit	@	hls.ts:287
-e.trigger	@	hls.ts:298
-(anonymous)	@	buffer-controller.ts:514
-(anonymous)	@	buffer-controller.ts:935
-Promise.then (async)		
-e.blockBuffers	@	buffer-controller.ts:933
-e.onFragParsed	@	buffer-controller.ts:528
-o.emit	@	index.js:182
-e.emit	@	hls.ts:287
-e.trigger	@	hls.ts:298
-r.updateLevelTiming	@	base-stream-controller.ts:1752
-r._handleTransmuxerFlush	@	base-stream-controller.ts:870
-r.handleFlushResult	@	transmuxer-interface.ts:350
-r.flush	@	transmuxer-interface.ts:315
-r._handleFragmentLoadComplete	@	base-stream-controller.ts:622
-(anonymous)	@	base-stream-controller.ts:391
-Promise.then (async)		
-r._loadFragForPlayback	@	base-stream-controller.ts:368
-r.loadFragment	@	base-stream-controller.ts:343
-r.loadFragment	@	stream-controller.ts:373
-r.doTickIdle	@	stream-controller.ts:349
-r.doTick	@	stream-controller.ts:204
-e.tick	@	task-loop.ts:106
-r.fragBufferedComplete	@	base-stream-controller.ts:598
-r.onFragBuffered	@	stream-controller.ts:879
-o.emit	@	index.js:203
-e.emit	@	hls.ts:287
-e.trigger	@	hls.ts:298
-(anonymous)	@	buffer-controller.ts:514
-(anonymous)	@	buffer-controller.ts:935
-Promise.then (async)		
-e.blockBuffers	@	buffer-controller.ts:933
-e.onFragParsed	@	buffer-controller.ts:528
-o.emit	@	index.js:182
-e.emit	@	hls.ts:287
-e.trigger	@	hls.ts:298
-r.updateLevelTiming	@	base-stream-controller.ts:1752
-r._handleTransmuxerFlush	@	base-stream-controller.ts:870
-r.handleFlushResult	@	transmuxer-interface.ts:350
-r.flush	@	transmuxer-interface.ts:315
-r._handleFragmentLoadComplete	@	base-stream-controller.ts:622
-(anonymous)	@	base-stream-controller.ts:391
-Promise.then (async)		
-r._loadFragForPlayback	@	base-stream-controller.ts:368
-r.loadFragment	@	base-stream-controller.ts:343
-r.loadFragment	@	stream-controller.ts:373
-r.doTickIdle	@	stream-controller.ts:349
-r.doTick	@	stream-controller.ts:204
-e.tick	@	task-loop.ts:106
-r.fragBufferedComplete	@	base-stream-controller.ts:598
-r.onFragBuffered	@	stream-controller.ts:879
-o.emit	@	index.js:203
-e.emit	@	hls.ts:287
-e.trigger	@	hls.ts:298
-(anonymous)	@	buffer-controller.ts:514
-(anonymous)	@	buffer-controller.ts:935
-Promise.then (async)		
-e.blockBuffers	@	buffer-controller.ts:933
-e.onFragParsed	@	buffer-controller.ts:528
-o.emit	@	index.js:182
-e.emit	@	hls.ts:287
-e.trigger	@	hls.ts:298
-r.updateLevelTiming	@	base-stream-controller.ts:1752
-r._handleTransmuxerFlush	@	base-stream-controller.ts:870
-r.handleFlushResult	@	transmuxer-interface.ts:350
-r.flush	@	transmuxer-interface.ts:315
-r._handleFragmentLoadComplete	@	base-stream-controller.ts:622
-(anonymous)	@	base-stream-controller.ts:391
-Promise.then (async)		
-r._loadFragForPlayback	@	base-stream-controller.ts:368
-r.loadFragment	@	base-stream-controller.ts:343
-r.loadFragment	@	stream-controller.ts:373
-r.doTickIdle	@	stream-controller.ts:349
-r.doTick	@	stream-controller.ts:204
-e.tick	@	task-loop.ts:106
-r.fragBufferedComplete	@	base-stream-controller.ts:598
-r.onFragBuffered	@	stream-controller.ts:879
-o.emit	@	index.js:203
-e.emit	@	hls.ts:287
-e.trigger	@	hls.ts:298
-(anonymous)	@	buffer-controller.ts:514
-(anonymous)	@	buffer-controller.ts:935
-Promise.then (async)		
-e.blockBuffers	@	buffer-controller.ts:933
-e.onFragParsed	@	buffer-controller.ts:528
-o.emit	@	index.js:182
-e.emit	@	hls.ts:287
-e.trigger	@	hls.ts:298
-r.updateLevelTiming	@	base-stream-controller.ts:1752
-r._handleTransmuxerFlush	@	base-stream-controller.ts:870
-r.handleFlushResult	@	transmuxer-interface.ts:350
-r.flush	@	transmuxer-interface.ts:315
-r._handleFragmentLoadComplete	@	base-stream-controller.ts:622
-(anonymous)	@	base-stream-controller.ts:391
-Promise.then (async)		
-r._loadFragForPlayback	@	base-stream-controller.ts:368
-r.loadFragment	@	base-stream-controller.ts:343
-r.loadFragment	@	stream-controller.ts:373
-r.doTickIdle	@	stream-controller.ts:349
-r.doTick	@	stream-controller.ts:204
-e.tick	@	task-loop.ts:106
-r.fragBufferedComplete	@	base-stream-controller.ts:598
-r.onFragBuffered	@	stream-controller.ts:879
-o.emit	@	index.js:203
-e.emit	@	hls.ts:287
-e.trigger	@	hls.ts:298
-(anonymous)	@	buffer-controller.ts:514
-(anonymous)	@	buffer-controller.ts:935
-Promise.then (async)		
-e.blockBuffers	@	buffer-controller.ts:933
-e.onFragParsed	@	buffer-controller.ts:528
-o.emit	@	index.js:182
-e.emit	@	hls.ts:287
-e.trigger	@	hls.ts:298
-r.updateLevelTiming	@	base-stream-controller.ts:1752
-r._handleTransmuxerFlush	@	base-stream-controller.ts:870
-r.handleFlushResult	@	transmuxer-interface.ts:350
-r.flush	@	transmuxer-interface.ts:315
-r._handleFragmentLoadComplete	@	base-stream-controller.ts:622
-(anonymous)	@	base-stream-controller.ts:391
-Promise.then (async)		
-r._loadFragForPlayback	@	base-stream-controller.ts:368
-r.loadFragment	@	base-stream-controller.ts:343
-r.loadFragment	@	stream-controller.ts:373
-r.doTickIdle	@	stream-controller.ts:349
-r.doTick	@	stream-controller.ts:204
-e.tick	@	task-loop.ts:106
-r.onLevelLoaded	@	stream-controller.ts:691
-o.emit	@	index.js:203
-e.emit	@	hls.ts:287
-e.trigger	@	hls.ts:298
-e.handlePlaylistLoaded	@	playlist-loader.ts:676
-e.handleTrackOrLevelPlaylist	@	playlist-loader.ts:498
-onSuccess	@	playlist-loader.ts:314
-e.readystatechange	@	xhr-loader.ts:231
-XMLHttpRequest.send (async)		
-e.openAndSendXhr	@	xhr-loader.ts:158
-(anonymous)	@	xhr-loader.ts:104
-Promise.then (async)		
-e.loadInternal	@	xhr-loader.ts:102
-e.load	@	xhr-loader.ts:76
-e.load	@	playlist-loader.ts:347
-e.onManifestLoading	@	playlist-loader.ts:154
-o.emit	@	index.js:203
-e.emit	@	hls.ts:287
-e.trigger	@	hls.ts:298
-e.loadSource	@	hls.ts:389
-(anonymous)	@	player-core.js:1320
-createNextHlsPlayer	@	player-core.js:1302
-startCrossfade	@	player-core.js:1151
-(anonymous)	@	player-core.js:3233
+(index):329 ✅ Alpine global functions loaded (muzibuApp, dashboardApp, corporatePanel, corporateDashboard)
+player-core.js:4710 ✅ Player state cleared (fresh start)
+player-core.js:4724 🔴 Session polling DISABLED (DeviceService off)
+spa-router.js?v=1766859168:121 🚀 SPA Router initialized (Prefetch Disabled)
+VM7929:16 ✅ Auth Tutarlı: {isLoggedIn: true, currentUser: 'Nurullah'}
+favorites.js?v=1766532825:230 🎵 Loading user favorites...
+favorites.js?v=1766532825:165 [Favorites] 🔄 Loading favorites from server...
+(index):10059 ✅ Player store verified
+(index):10045 ✅ Player store = Proxy to root (auto-forward all properties/methods)
+player-core.js:5211 🔴 checkDeviceLimitOnPageLoad DISABLED (DeviceService off)
+favorites.js?v=1766532825:174 [Favorites] Response status: 200
+favorites.js?v=1766532825:178 [Favorites] Response data: {success: true, data: Array(27)}
+favorites.js?v=1766532825:181 [Favorites] ✅ Loaded 27 favorites: Proxy(Array) {0: 'playlist-1', 1: 'sector-1', 2: 'playlist-2', 3: 'genre-3', 4: 'radio-3', 5: 'playlist-4', 6: 'playlist-9', 7: 'radio-9', 8: 'song-10', 9: 'album-12', 10: 'playlist-12', 11: 'song-12', 12: 'playlist-13', 13: 'song-13', 14: 'song-15', 15: 'playlist-17', 16: 'song-18', 17: 'song-323', 18: 'song-334', 19: 'song-339', 20: 'song-344', 21: 'song-351', 22: 'song-461', 23: 'song-466', 24: 'song-472', 25: 'song-478', 26: 'song-479'}
+player-core.js:919 🚀 Initial queue loaded: 15 songs
+player-core.js:2296 🎵 HLS DEBUG v3 (new /hls/ route) stream_url: https://muzibu.com.tr/hls/muzibu/songs/466/playlist.m3u8?expires=1766873699&token=1&sig=74560440c1048ddd0a7904067be22c574508524d1c4bdbd959ee6245c8c24242 type: hls autoplay: true
+player-core.js:499 🚀 Last-played URL cached (ready for instant play): 466 After Hours
+player-core.js:2712 🎵 Duration from HLS manifest: 166.650644 seconds (DB: 167 )
+player-core.js:3017 🎵 Duration already set, skipping loadedmetadata: 166.650644
+player-core.js:4215 ⏳ Preload already in progress, skipping...
+player-core.js:4331 📋 Next song manifest loaded: 463
+player-core.js:4322 🚀 Next song preloaded + STOPPED: 463 Saksıdaki Çiçekler
+player-core.js:2066 ⚡ Using PRELOADED HLS instance directly: 463
+player-core.js:2174 ✅ Preloaded song playing instantly!
+player-core.js:4331 📋 Next song manifest loaded: 465
+player-core.js:3017 🎵 Duration already set, skipping loadedmetadata: 157
+player-core.js:4322 🚀 Next song preloaded + STOPPED: 465 Kar Tanesi
+player-core.js:2712 🎵 Duration from HLS manifest: 189.010644 seconds (DB: 03:09 )
+player-core.js:3017 🎵 Duration already set, skipping loadedmetadata: 189.010644
+player-core.js:4331 📋 Next song manifest loaded: 462
+player-core.js:4322 🚀 Next song preloaded + STOPPED: 462 Cold Love
+player-core.js:2698 HLS Fatal Error: mediaError bufferAppendError
+(anonymous) @ player-core.js:2698
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+onError @ buffer-controller.ts:448
+e.executeNext @ buffer-operation-queue.ts:65
+e.append @ buffer-operation-queue.ts:25
+e.onBufferAppending @ buffer-controller.ts:451
+o.emit @ index.js:182
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.bufferFragmentData @ base-stream-controller.ts:928
+r._handleTransmuxComplete @ stream-controller.ts:1203
+r.handleTransmuxComplete @ transmuxer-interface.ts:407
+r.push @ transmuxer-interface.ts:282
+r._handleFragmentLoadProgress @ stream-controller.ts:741
+(anonymous) @ base-stream-controller.ts:364
+(anonymous) @ base-stream-controller.ts:780
+Promise.then
+r._doFragLoad @ base-stream-controller.ts:778
+r._loadFragForPlayback @ base-stream-controller.ts:367
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.fragBufferedComplete @ base-stream-controller.ts:598
+r.onFragBuffered @ stream-controller.ts:879
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+(anonymous) @ buffer-controller.ts:514
+(anonymous) @ buffer-controller.ts:935
+Promise.then
+e.blockBuffers @ buffer-controller.ts:933
+e.onFragParsed @ buffer-controller.ts:528
+o.emit @ index.js:182
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.updateLevelTiming @ base-stream-controller.ts:1752
+r._handleTransmuxerFlush @ base-stream-controller.ts:870
+r.handleFlushResult @ transmuxer-interface.ts:350
+r.flush @ transmuxer-interface.ts:315
+r._handleFragmentLoadComplete @ base-stream-controller.ts:622
+(anonymous) @ base-stream-controller.ts:391
+Promise.then
+r._loadFragForPlayback @ base-stream-controller.ts:368
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.fragBufferedComplete @ base-stream-controller.ts:598
+r.onFragBuffered @ stream-controller.ts:879
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+(anonymous) @ buffer-controller.ts:514
+(anonymous) @ buffer-controller.ts:935
+Promise.then
+e.blockBuffers @ buffer-controller.ts:933
+e.onFragParsed @ buffer-controller.ts:528
+o.emit @ index.js:182
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.updateLevelTiming @ base-stream-controller.ts:1752
+r._handleTransmuxerFlush @ base-stream-controller.ts:870
+r.handleFlushResult @ transmuxer-interface.ts:350
+r.flush @ transmuxer-interface.ts:315
+r._handleFragmentLoadComplete @ base-stream-controller.ts:622
+(anonymous) @ base-stream-controller.ts:391
+Promise.then
+r._loadFragForPlayback @ base-stream-controller.ts:368
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.fragBufferedComplete @ base-stream-controller.ts:598
+r.onFragBuffered @ stream-controller.ts:879
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+(anonymous) @ buffer-controller.ts:514
+(anonymous) @ buffer-controller.ts:935
+Promise.then
+e.blockBuffers @ buffer-controller.ts:933
+e.onFragParsed @ buffer-controller.ts:528
+o.emit @ index.js:182
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.updateLevelTiming @ base-stream-controller.ts:1752
+r._handleTransmuxerFlush @ base-stream-controller.ts:870
+r.handleFlushResult @ transmuxer-interface.ts:350
+r.flush @ transmuxer-interface.ts:315
+r._handleFragmentLoadComplete @ base-stream-controller.ts:622
+(anonymous) @ base-stream-controller.ts:391
+Promise.then
+r._loadFragForPlayback @ base-stream-controller.ts:368
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.fragBufferedComplete @ base-stream-controller.ts:598
+r.onFragBuffered @ stream-controller.ts:879
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+(anonymous) @ buffer-controller.ts:514
+(anonymous) @ buffer-controller.ts:935
+Promise.then
+e.blockBuffers @ buffer-controller.ts:933
+e.onFragParsed @ buffer-controller.ts:528
+o.emit @ index.js:182
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.updateLevelTiming @ base-stream-controller.ts:1752
+r._handleTransmuxerFlush @ base-stream-controller.ts:870
+r.handleFlushResult @ transmuxer-interface.ts:350
+r.flush @ transmuxer-interface.ts:315
+r._handleFragmentLoadComplete @ base-stream-controller.ts:622
+(anonymous) @ base-stream-controller.ts:391
+Promise.then
+r._loadFragForPlayback @ base-stream-controller.ts:368
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.fragBufferedComplete @ base-stream-controller.ts:598
+r.onFragBuffered @ stream-controller.ts:879
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+(anonymous) @ buffer-controller.ts:514
+(anonymous) @ buffer-controller.ts:935
+Promise.then
+e.blockBuffers @ buffer-controller.ts:933
+e.onFragParsed @ buffer-controller.ts:528
+o.emit @ index.js:182
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.updateLevelTiming @ base-stream-controller.ts:1752
+r._handleTransmuxerFlush @ base-stream-controller.ts:870
+r.handleFlushResult @ transmuxer-interface.ts:350
+r.flush @ transmuxer-interface.ts:315
+r._handleFragmentLoadComplete @ base-stream-controller.ts:622
+(anonymous) @ base-stream-controller.ts:391
+Promise.then
+r._loadFragForPlayback @ base-stream-controller.ts:368
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.onLevelLoaded @ stream-controller.ts:691
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.handlePlaylistLoaded @ playlist-loader.ts:676
+e.handleTrackOrLevelPlaylist @ playlist-loader.ts:498
+onSuccess @ playlist-loader.ts:314
+e.readystatechange @ xhr-loader.ts:231
+XMLHttpRequest.send
+e.openAndSendXhr @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+e.loadInternal @ xhr-loader.ts:102
+e.load @ xhr-loader.ts:76
+e.load @ playlist-loader.ts:347
+e.onManifestLoading @ playlist-loader.ts:154
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.loadSource @ hls.ts:389
+playHlsStream @ player-core.js:2690
+loadAndPlaySong @ player-core.js:2408
+await in loadAndPlaySong
+playSong @ player-core.js:2009
+await in playSong
+[Alpine] playSong($event.detail.songId) @ VM7879:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+dispatch2 @ livewire.js?id=df3a17f2:1386
+[Alpine] $dispatch('play-song', { songId: 479 }) @ VM8317:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+(anonymous) @ livewire.js?id=df3a17f2:3185
+player-core.js:2865 🔴 HLS FATAL ERROR: {song_id: 479, song: 'Go', artist: 'Unknown', hls_path: 'Unknown', errorType: 'mediaError', …}
+(anonymous) @ player-core.js:2865
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+onError @ buffer-controller.ts:448
+e.executeNext @ buffer-operation-queue.ts:65
+e.append @ buffer-operation-queue.ts:25
+e.onBufferAppending @ buffer-controller.ts:451
+o.emit @ index.js:182
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.bufferFragmentData @ base-stream-controller.ts:928
+r._handleTransmuxComplete @ stream-controller.ts:1203
+r.handleTransmuxComplete @ transmuxer-interface.ts:407
+r.push @ transmuxer-interface.ts:282
+r._handleFragmentLoadProgress @ stream-controller.ts:741
+(anonymous) @ base-stream-controller.ts:364
+(anonymous) @ base-stream-controller.ts:780
+Promise.then
+r._doFragLoad @ base-stream-controller.ts:778
+r._loadFragForPlayback @ base-stream-controller.ts:367
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.fragBufferedComplete @ base-stream-controller.ts:598
+r.onFragBuffered @ stream-controller.ts:879
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+(anonymous) @ buffer-controller.ts:514
+(anonymous) @ buffer-controller.ts:935
+Promise.then
+e.blockBuffers @ buffer-controller.ts:933
+e.onFragParsed @ buffer-controller.ts:528
+o.emit @ index.js:182
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.updateLevelTiming @ base-stream-controller.ts:1752
+r._handleTransmuxerFlush @ base-stream-controller.ts:870
+r.handleFlushResult @ transmuxer-interface.ts:350
+r.flush @ transmuxer-interface.ts:315
+r._handleFragmentLoadComplete @ base-stream-controller.ts:622
+(anonymous) @ base-stream-controller.ts:391
+Promise.then
+r._loadFragForPlayback @ base-stream-controller.ts:368
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.fragBufferedComplete @ base-stream-controller.ts:598
+r.onFragBuffered @ stream-controller.ts:879
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+(anonymous) @ buffer-controller.ts:514
+(anonymous) @ buffer-controller.ts:935
+Promise.then
+e.blockBuffers @ buffer-controller.ts:933
+e.onFragParsed @ buffer-controller.ts:528
+o.emit @ index.js:182
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.updateLevelTiming @ base-stream-controller.ts:1752
+r._handleTransmuxerFlush @ base-stream-controller.ts:870
+r.handleFlushResult @ transmuxer-interface.ts:350
+r.flush @ transmuxer-interface.ts:315
+r._handleFragmentLoadComplete @ base-stream-controller.ts:622
+(anonymous) @ base-stream-controller.ts:391
+Promise.then
+r._loadFragForPlayback @ base-stream-controller.ts:368
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.fragBufferedComplete @ base-stream-controller.ts:598
+r.onFragBuffered @ stream-controller.ts:879
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+(anonymous) @ buffer-controller.ts:514
+(anonymous) @ buffer-controller.ts:935
+Promise.then
+e.blockBuffers @ buffer-controller.ts:933
+e.onFragParsed @ buffer-controller.ts:528
+o.emit @ index.js:182
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.updateLevelTiming @ base-stream-controller.ts:1752
+r._handleTransmuxerFlush @ base-stream-controller.ts:870
+r.handleFlushResult @ transmuxer-interface.ts:350
+r.flush @ transmuxer-interface.ts:315
+r._handleFragmentLoadComplete @ base-stream-controller.ts:622
+(anonymous) @ base-stream-controller.ts:391
+Promise.then
+r._loadFragForPlayback @ base-stream-controller.ts:368
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.fragBufferedComplete @ base-stream-controller.ts:598
+r.onFragBuffered @ stream-controller.ts:879
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+(anonymous) @ buffer-controller.ts:514
+(anonymous) @ buffer-controller.ts:935
+Promise.then
+e.blockBuffers @ buffer-controller.ts:933
+e.onFragParsed @ buffer-controller.ts:528
+o.emit @ index.js:182
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.updateLevelTiming @ base-stream-controller.ts:1752
+r._handleTransmuxerFlush @ base-stream-controller.ts:870
+r.handleFlushResult @ transmuxer-interface.ts:350
+r.flush @ transmuxer-interface.ts:315
+r._handleFragmentLoadComplete @ base-stream-controller.ts:622
+(anonymous) @ base-stream-controller.ts:391
+Promise.then
+r._loadFragForPlayback @ base-stream-controller.ts:368
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.fragBufferedComplete @ base-stream-controller.ts:598
+r.onFragBuffered @ stream-controller.ts:879
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+(anonymous) @ buffer-controller.ts:514
+(anonymous) @ buffer-controller.ts:935
+Promise.then
+e.blockBuffers @ buffer-controller.ts:933
+e.onFragParsed @ buffer-controller.ts:528
+o.emit @ index.js:182
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.updateLevelTiming @ base-stream-controller.ts:1752
+r._handleTransmuxerFlush @ base-stream-controller.ts:870
+r.handleFlushResult @ transmuxer-interface.ts:350
+r.flush @ transmuxer-interface.ts:315
+r._handleFragmentLoadComplete @ base-stream-controller.ts:622
+(anonymous) @ base-stream-controller.ts:391
+Promise.then
+r._loadFragForPlayback @ base-stream-controller.ts:368
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.onLevelLoaded @ stream-controller.ts:691
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.handlePlaylistLoaded @ playlist-loader.ts:676
+e.handleTrackOrLevelPlaylist @ playlist-loader.ts:498
+onSuccess @ playlist-loader.ts:314
+e.readystatechange @ xhr-loader.ts:231
+XMLHttpRequest.send
+e.openAndSendXhr @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+e.loadInternal @ xhr-loader.ts:102
+e.load @ xhr-loader.ts:76
+e.load @ playlist-loader.ts:347
+e.onManifestLoading @ playlist-loader.ts:154
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.loadSource @ hls.ts:389
+playHlsStream @ player-core.js:2690
+loadAndPlaySong @ player-core.js:2408
+await in loadAndPlaySong
+playSong @ player-core.js:2009
+await in playSong
+[Alpine] playSong($event.detail.songId) @ VM7879:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+dispatch2 @ livewire.js?id=df3a17f2:1386
+[Alpine] $dispatch('play-song', { songId: 479 }) @ VM8317:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+(anonymous) @ livewire.js?id=df3a17f2:3185
+player-core.js:2918 🔍 FALLBACK DEBUG: {hasCurrentSong: true, hasFallbackUrl: true, fallbackUrl: 'https://muzibu.com.tr/api/muzibu/songs/463/serve?e…es=1766873708&signature=11f6269e798f5f1159dc28...'}
+player-core.js:3132 🔁 HLS retry with new signed URL {reason: 'bufferAppendError', attempt: 1}
+retryHlsWithNewUrl @ player-core.js:3132
+await in retryHlsWithNewUrl
+(anonymous) @ player-core.js:2929
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+onError @ buffer-controller.ts:448
+e.executeNext @ buffer-operation-queue.ts:65
+e.append @ buffer-operation-queue.ts:25
+e.onBufferAppending @ buffer-controller.ts:451
+o.emit @ index.js:182
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.bufferFragmentData @ base-stream-controller.ts:928
+r._handleTransmuxComplete @ stream-controller.ts:1203
+r.handleTransmuxComplete @ transmuxer-interface.ts:407
+r.push @ transmuxer-interface.ts:282
+r._handleFragmentLoadProgress @ stream-controller.ts:741
+(anonymous) @ base-stream-controller.ts:364
+(anonymous) @ base-stream-controller.ts:780
+Promise.then
+r._doFragLoad @ base-stream-controller.ts:778
+r._loadFragForPlayback @ base-stream-controller.ts:367
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.fragBufferedComplete @ base-stream-controller.ts:598
+r.onFragBuffered @ stream-controller.ts:879
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+(anonymous) @ buffer-controller.ts:514
+(anonymous) @ buffer-controller.ts:935
+Promise.then
+e.blockBuffers @ buffer-controller.ts:933
+e.onFragParsed @ buffer-controller.ts:528
+o.emit @ index.js:182
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.updateLevelTiming @ base-stream-controller.ts:1752
+r._handleTransmuxerFlush @ base-stream-controller.ts:870
+r.handleFlushResult @ transmuxer-interface.ts:350
+r.flush @ transmuxer-interface.ts:315
+r._handleFragmentLoadComplete @ base-stream-controller.ts:622
+(anonymous) @ base-stream-controller.ts:391
+Promise.then
+r._loadFragForPlayback @ base-stream-controller.ts:368
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.fragBufferedComplete @ base-stream-controller.ts:598
+r.onFragBuffered @ stream-controller.ts:879
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+(anonymous) @ buffer-controller.ts:514
+(anonymous) @ buffer-controller.ts:935
+Promise.then
+e.blockBuffers @ buffer-controller.ts:933
+e.onFragParsed @ buffer-controller.ts:528
+o.emit @ index.js:182
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.updateLevelTiming @ base-stream-controller.ts:1752
+r._handleTransmuxerFlush @ base-stream-controller.ts:870
+r.handleFlushResult @ transmuxer-interface.ts:350
+r.flush @ transmuxer-interface.ts:315
+r._handleFragmentLoadComplete @ base-stream-controller.ts:622
+(anonymous) @ base-stream-controller.ts:391
+Promise.then
+r._loadFragForPlayback @ base-stream-controller.ts:368
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.fragBufferedComplete @ base-stream-controller.ts:598
+r.onFragBuffered @ stream-controller.ts:879
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+(anonymous) @ buffer-controller.ts:514
+(anonymous) @ buffer-controller.ts:935
+Promise.then
+e.blockBuffers @ buffer-controller.ts:933
+e.onFragParsed @ buffer-controller.ts:528
+o.emit @ index.js:182
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.updateLevelTiming @ base-stream-controller.ts:1752
+r._handleTransmuxerFlush @ base-stream-controller.ts:870
+r.handleFlushResult @ transmuxer-interface.ts:350
+r.flush @ transmuxer-interface.ts:315
+r._handleFragmentLoadComplete @ base-stream-controller.ts:622
+(anonymous) @ base-stream-controller.ts:391
+Promise.then
+r._loadFragForPlayback @ base-stream-controller.ts:368
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.fragBufferedComplete @ base-stream-controller.ts:598
+r.onFragBuffered @ stream-controller.ts:879
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+(anonymous) @ buffer-controller.ts:514
+(anonymous) @ buffer-controller.ts:935
+Promise.then
+e.blockBuffers @ buffer-controller.ts:933
+e.onFragParsed @ buffer-controller.ts:528
+o.emit @ index.js:182
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.updateLevelTiming @ base-stream-controller.ts:1752
+r._handleTransmuxerFlush @ base-stream-controller.ts:870
+r.handleFlushResult @ transmuxer-interface.ts:350
+r.flush @ transmuxer-interface.ts:315
+r._handleFragmentLoadComplete @ base-stream-controller.ts:622
+(anonymous) @ base-stream-controller.ts:391
+Promise.then
+r._loadFragForPlayback @ base-stream-controller.ts:368
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.fragBufferedComplete @ base-stream-controller.ts:598
+r.onFragBuffered @ stream-controller.ts:879
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+(anonymous) @ buffer-controller.ts:514
+(anonymous) @ buffer-controller.ts:935
+Promise.then
+e.blockBuffers @ buffer-controller.ts:933
+e.onFragParsed @ buffer-controller.ts:528
+o.emit @ index.js:182
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.updateLevelTiming @ base-stream-controller.ts:1752
+r._handleTransmuxerFlush @ base-stream-controller.ts:870
+r.handleFlushResult @ transmuxer-interface.ts:350
+r.flush @ transmuxer-interface.ts:315
+r._handleFragmentLoadComplete @ base-stream-controller.ts:622
+(anonymous) @ base-stream-controller.ts:391
+Promise.then
+r._loadFragForPlayback @ base-stream-controller.ts:368
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.onLevelLoaded @ stream-controller.ts:691
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.handlePlaylistLoaded @ playlist-loader.ts:676
+e.handleTrackOrLevelPlaylist @ playlist-loader.ts:498
+onSuccess @ playlist-loader.ts:314
+e.readystatechange @ xhr-loader.ts:231
+XMLHttpRequest.send
+e.openAndSendXhr @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+e.loadInternal @ xhr-loader.ts:102
+e.load @ xhr-loader.ts:76
+e.load @ playlist-loader.ts:347
+e.onManifestLoading @ playlist-loader.ts:154
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.loadSource @ hls.ts:389
+playHlsStream @ player-core.js:2690
+loadAndPlaySong @ player-core.js:2408
+await in loadAndPlaySong
+playSong @ player-core.js:2009
+await in playSong
+[Alpine] playSong($event.detail.songId) @ VM7879:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+dispatch2 @ livewire.js?id=df3a17f2:1386
+[Alpine] $dispatch('play-song', { songId: 479 }) @ VM8317:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+(anonymous) @ livewire.js?id=df3a17f2:3185
+player-core.js:2712 🎵 Duration from HLS manifest: 189.010644 seconds (DB: 03:09 )
+player-core.js:3017 🎵 Duration already set, skipping loadedmetadata: 189.010644
+player-core.js:2806 🏁 HLS Buffer EOS - stream ended, triggering track end...
+player-core.js:1139 🧹 Cleaning preload before crossfade (URL stays in cache): 462
+player-core.js:4331 📋 Next song manifest loaded: 463
+player-core.js:3017 🎵 Duration already set, skipping loadedmetadata: 122.850644
+player-core.js:4322 🚀 Next song preloaded + STOPPED: 463 Saksıdaki Çiçekler
+player-core.js:1139 🧹 Cleaning preload before crossfade (URL stays in cache): 463
+player-core.js:3017 🎵 Duration already set, skipping loadedmetadata: 122.850644
+player-core.js:4331 📋 Next song manifest loaded: 464
+player-core.js:4322 🚀 Next song preloaded + STOPPED: 464 Yalnız Kurt
+player-core.js:1139 🧹 Cleaning preload before crossfade (URL stays in cache): 464
+player-core.js:4331 📋 Next song manifest loaded: 465
+player-core.js:3017 🎵 Duration already set, skipping loadedmetadata: 174.930644
+player-core.js:4322 🚀 Next song preloaded + STOPPED: 465 Kar Tanesi

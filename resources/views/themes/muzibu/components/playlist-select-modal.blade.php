@@ -159,9 +159,14 @@
              @click.stop>
 
             <div class="bg-zinc-900 rounded-t-3xl border-t border-white/10 max-h-[85vh] flex flex-col">
-                {{-- Handle --}}
-                <div class="flex justify-center py-3 flex-shrink-0">
+                {{-- Handle & Close Button --}}
+                <div class="flex items-center justify-between px-4 py-3 flex-shrink-0">
+                    <div class="w-8"></div> {{-- Spacer for centering --}}
                     <div class="w-10 h-1 bg-zinc-700 rounded-full"></div>
+                    <button @click="$store.playlistModal.hide()"
+                            class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-white rounded-full active:bg-white/10 transition">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
                 </div>
 
                 {{-- Content Info --}}

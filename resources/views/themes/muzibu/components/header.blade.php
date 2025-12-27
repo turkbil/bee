@@ -285,6 +285,51 @@
                     }
                     this.closeDropdown();
                 },
+                playAlbum(album, event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    const slug = this.getSlug(album);
+                    if (window.Alpine?.store('player')?.playAlbum) {
+                        window.Alpine.store('player').playAlbum(slug);
+                    }
+                    this.closeDropdown();
+                },
+                playPlaylist(playlist, event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    const slug = this.getSlug(playlist);
+                    if (window.Alpine?.store('player')?.playPlaylist) {
+                        window.Alpine.store('player').playPlaylist(slug);
+                    }
+                    this.closeDropdown();
+                },
+                playGenre(genre, event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    const slug = this.getSlug(genre);
+                    if (window.Alpine?.store('player')?.playGenre) {
+                        window.Alpine.store('player').playGenre(slug);
+                    }
+                    this.closeDropdown();
+                },
+                playSector(sector, event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    const slug = this.getSlug(sector);
+                    if (window.Alpine?.store('player')?.playSector) {
+                        window.Alpine.store('player').playSector(slug);
+                    }
+                    this.closeDropdown();
+                },
+                playRadio(radio, event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    const slug = this.getSlug(radio);
+                    if (window.Alpine?.store('player')?.playRadio) {
+                        window.Alpine.store('player').playRadio(slug);
+                    }
+                    this.closeDropdown();
+                },
                 getBadge(type) {
                     const lang = window.muzibuPlayerConfig?.frontLang?.general || {};
                     const badges = {
@@ -403,14 +448,21 @@
                                 <template x-for="album in results.albums" :key="'album-'+album.album_id">
                                     <a href="#"
                                        @click.prevent="selectItem({...album, _type: 'album'})"
-                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all">
-                                        <div class="w-8 h-8 rounded bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center flex-shrink-0">
+                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all group">
+                                        <div class="w-8 h-8 rounded bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
                                             <i class="fas fa-record-vinyl text-purple-400/60 text-xs"></i>
+                                            <button
+                                                @click="playAlbum(album, $event)"
+                                                class="absolute inset-0 bg-purple-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+                                                title="{{ trans('muzibu::front.player.play') }}"
+                                            >
+                                                <i class="fas fa-play text-white text-[10px] ml-0.5"></i>
+                                            </button>
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <div class="text-sm text-white truncate" x-text="getTitle(album)"></div>
                                         </div>
-                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-purple-500/20 text-purple-400">{{ trans('muzibu::front.general.album') }}</span>
+                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-purple-500/20 text-purple-400 group-hover:hidden">{{ trans('muzibu::front.general.album') }}</span>
                                     </a>
                                 </template>
                             </div>
@@ -445,14 +497,21 @@
                                 <template x-for="playlist in results.playlists" :key="'playlist-'+playlist.playlist_id">
                                     <a href="#"
                                        @click.prevent="selectItem({...playlist, _type: 'playlist'})"
-                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all">
-                                        <div class="w-8 h-8 rounded bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all group">
+                                        <div class="w-8 h-8 rounded bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
                                             <i class="fas fa-list-music text-green-400/60 text-xs"></i>
+                                            <button
+                                                @click="playPlaylist(playlist, $event)"
+                                                class="absolute inset-0 bg-green-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+                                                title="{{ trans('muzibu::front.player.play') }}"
+                                            >
+                                                <i class="fas fa-play text-white text-[10px] ml-0.5"></i>
+                                            </button>
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <div class="text-sm text-white truncate" x-text="getTitle(playlist)"></div>
                                         </div>
-                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-green-500/20 text-green-400">{{ trans('muzibu::front.general.playlist') }}</span>
+                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-green-500/20 text-green-400 group-hover:hidden">{{ trans('muzibu::front.general.playlist') }}</span>
                                     </a>
                                 </template>
                             </div>
@@ -466,14 +525,21 @@
                                 <template x-for="genre in results.genres" :key="'genre-'+genre.genre_id">
                                     <a href="#"
                                        @click.prevent="selectItem({...genre, _type: 'genre'})"
-                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all">
-                                        <div class="w-8 h-8 rounded bg-gradient-to-br from-yellow-500/20 to-orange-500/20 flex items-center justify-center flex-shrink-0">
+                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all group">
+                                        <div class="w-8 h-8 rounded bg-gradient-to-br from-yellow-500/20 to-orange-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
                                             <i class="fas fa-guitar text-yellow-400/60 text-xs"></i>
+                                            <button
+                                                @click="playGenre(genre, $event)"
+                                                class="absolute inset-0 bg-yellow-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+                                                title="{{ trans('muzibu::front.player.play') }}"
+                                            >
+                                                <i class="fas fa-play text-white text-[10px] ml-0.5"></i>
+                                            </button>
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <div class="text-sm text-white truncate" x-text="getTitle(genre)"></div>
                                         </div>
-                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-yellow-500/20 text-yellow-400">{{ trans('muzibu::front.general.genre') }}</span>
+                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-yellow-500/20 text-yellow-400 group-hover:hidden">{{ trans('muzibu::front.general.genre') }}</span>
                                     </a>
                                 </template>
                             </div>
@@ -487,14 +553,21 @@
                                 <template x-for="sector in results.sectors" :key="'sector-'+sector.sector_id">
                                     <a href="#"
                                        @click.prevent="selectItem({...sector, _type: 'sector'})"
-                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all">
-                                        <div class="w-8 h-8 rounded bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center flex-shrink-0">
+                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all group">
+                                        <div class="w-8 h-8 rounded bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
                                             <i class="fas fa-building text-orange-400/60 text-xs"></i>
+                                            <button
+                                                @click="playSector(sector, $event)"
+                                                class="absolute inset-0 bg-orange-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+                                                title="{{ trans('muzibu::front.player.play') }}"
+                                            >
+                                                <i class="fas fa-play text-white text-[10px] ml-0.5"></i>
+                                            </button>
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <div class="text-sm text-white truncate" x-text="getTitle(sector)"></div>
                                         </div>
-                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-orange-500/20 text-orange-400">{{ trans('muzibu::front.general.sector') }}</span>
+                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-orange-500/20 text-orange-400 group-hover:hidden">{{ trans('muzibu::front.general.sector') }}</span>
                                     </a>
                                 </template>
                             </div>
@@ -508,14 +581,21 @@
                                 <template x-for="radio in results.radios" :key="'radio-'+radio.radio_id">
                                     <a href="#"
                                        @click.prevent="selectItem({...radio, _type: 'radio'})"
-                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all">
-                                        <div class="w-8 h-8 rounded bg-gradient-to-br from-red-500/20 to-pink-500/20 flex items-center justify-center flex-shrink-0">
+                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all group">
+                                        <div class="w-8 h-8 rounded bg-gradient-to-br from-red-500/20 to-pink-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
                                             <i class="fas fa-broadcast-tower text-red-400/60 text-xs"></i>
+                                            <button
+                                                @click="playRadio(radio, $event)"
+                                                class="absolute inset-0 bg-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+                                                title="{{ trans('muzibu::front.player.play') }}"
+                                            >
+                                                <i class="fas fa-play text-white text-[10px] ml-0.5"></i>
+                                            </button>
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <div class="text-sm text-white truncate" x-text="getTitle(radio)"></div>
                                         </div>
-                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-red-500/20 text-red-400">{{ trans('muzibu::front.general.radio') }}</span>
+                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-red-500/20 text-red-400 group-hover:hidden">{{ trans('muzibu::front.general.radio') }}</span>
                                     </a>
                                 </template>
                             </div>

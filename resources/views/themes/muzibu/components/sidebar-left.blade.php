@@ -110,9 +110,8 @@
 
                 {{-- Action Buttons - Side by Side --}}
                 <div class="flex gap-2">
-                    <a href="/profile" class="flex-1 bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg text-sm font-medium text-center transition-all border border-white/20 hover:border-white/30">
-                        <i class="fas fa-cog mr-1"></i>
-                        {{ trans('muzibu::front.user.settings') }}
+                    <a href="/profile" class="w-10 flex-shrink-0 bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg text-sm font-medium text-center transition-all border border-white/20 hover:border-white/30">
+                        <i class="fas fa-cog"></i>
                     </a>
                     <button
                         @click="logout()"
@@ -193,9 +192,8 @@
 
                 {{-- Action Buttons - Side by Side --}}
                 <div class="flex gap-2">
-                    <a href="/profile" class="flex-1 bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg text-sm font-medium text-center transition-all border border-white/20 hover:border-white/30">
-                        <i class="fas fa-cog mr-1"></i>
-                        {{ trans('muzibu::front.user.settings') }}
+                    <a href="/profile" class="w-10 flex-shrink-0 bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg text-sm font-medium text-center transition-all border border-white/20 hover:border-white/30">
+                        <i class="fas fa-cog"></i>
                     </a>
                     <button
                         @click="logout(); closeMobileMenu();"

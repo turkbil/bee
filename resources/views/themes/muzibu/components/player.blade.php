@@ -105,9 +105,9 @@
         </div>
 
         {{-- Three Dots Menu --}}
-        <button class="w-8 h-8 text-white/60 flex items-center justify-center active:scale-90 transition-transform"
-                @click="showMobileMenu = !showMobileMenu">
-            <i class="fas fa-ellipsis-v"></i>
+        <button class="w-10 h-10 -mr-1 text-white/60 flex items-center justify-center active:scale-90 transition-transform"
+                @click.stop="showMobileMenu = !showMobileMenu">
+            <i class="fas fa-ellipsis-v text-lg"></i>
         </button>
     </div>
 
@@ -120,8 +120,8 @@
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100 translate-y-0"
          x-transition:leave-end="opacity-0 translate-y-2"
-         @click.away="showMobileMenu = false"
-         class="absolute bottom-full left-0 right-0 mb-2 mx-3 bg-zinc-900 rounded-xl border border-zinc-700 shadow-2xl overflow-hidden z-50">
+         @click.outside="showMobileMenu = false"
+         class="absolute bottom-full left-0 right-0 mb-2 mx-3 bg-zinc-900 rounded-xl border border-zinc-700 shadow-2xl overflow-hidden z-[60]">
 
         {{-- Menu Header --}}
         <div class="px-4 py-3 border-b border-zinc-700 bg-zinc-800">
@@ -144,10 +144,11 @@
                 <span>Sıradakiler</span>
             </button>
             <button class="w-full px-4 py-3 flex items-center gap-3 text-sm text-white active:bg-zinc-700"
-                    @click="if(currentSong) { $store.playlist.openModal(currentSong.song_id); } showMobileMenu = false">
+                    @click="if(currentSong) { $store.playlistModal.showForSong(currentSong.song_id, currentSong); } showMobileMenu = false">
                 <i class="fas fa-plus text-green-400 w-5 text-center"></i>
                 <span>Playlist'e Ekle</span>
             </button>
+            {{-- DISABLED: Shuffle & Repeat - şimdilik gizli
             <button class="w-full px-4 py-3 flex items-center gap-3 text-sm text-white active:bg-zinc-700"
                     @click="toggleShuffle(); showMobileMenu = false">
                 <i class="fas fa-random w-5 text-center" :class="shuffle ? 'text-emerald-400' : 'text-zinc-400'"></i>
@@ -158,6 +159,7 @@
                 <i class="fas fa-redo w-5 text-center" :class="repeatMode !== 'off' ? 'text-emerald-400' : 'text-zinc-400'"></i>
                 <span x-text="repeatMode === 'off' ? 'Tekrar: Kapalı' : (repeatMode === 'all' ? 'Tekrar: Tümü' : 'Tekrar: Tek')"></span>
             </button>
+            --}}
             <div class="h-px bg-zinc-700 mx-4 my-1"></div>
             <button class="w-full px-4 py-3 flex items-center gap-3 text-sm text-white active:bg-zinc-700"
                     @click="if(currentSong?.artist_slug) { window.location.href = '/artists/' + currentSong.artist_slug; } showMobileMenu = false"
@@ -170,11 +172,6 @@
                     x-show="currentSong?.album_slug">
                 <i class="fas fa-compact-disc text-cyan-400 w-5 text-center"></i>
                 <span>Albüme Git</span>
-            </button>
-            <button class="w-full px-4 py-3 flex items-center gap-3 text-sm text-white active:bg-zinc-700"
-                    @click="if(navigator.share && currentSong) { navigator.share({ title: currentSong.song_title, url: window.location.origin + '/songs/' + currentSong.song_id }); } showMobileMenu = false">
-                <i class="fas fa-share text-zinc-400 w-5 text-center"></i>
-                <span>Paylaş</span>
             </button>
         </div>
     </div>
@@ -215,8 +212,14 @@
              x-text="formatTime(currentTime)">0:00</div>
     </div>
 
+    {{-- Heart Button (önce) --}}
+    <button class="w-9 h-9 text-white/60 hover:text-pink-500 flex items-center justify-center transition-colors flex-shrink-0"
+            @click="toggleLike()" :class="{ 'text-pink-500': isLiked }">
+        <i :class="isLiked ? 'fas fa-heart' : 'far fa-heart'" class="text-base"></i>
+    </button>
+
     {{-- Song Info: Title + Artist --}}
-    <div class="min-w-0 w-48">
+    <div class="min-w-0 w-44">
         <p class="text-white text-sm font-medium truncate"
            x-text="currentSong ? (currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || 'Şarkı') : 'Şarkı Seç'">
             Şarkı Seç
@@ -226,19 +229,15 @@
         </p>
     </div>
 
-    {{-- Heart Button --}}
-    <button class="w-9 h-9 text-white/60 hover:text-pink-500 flex items-center justify-center transition-colors"
-            @click="toggleLike()" :class="{ 'text-pink-500': isLiked }">
-        <i :class="isLiked ? 'fas fa-heart' : 'far fa-heart'" class="text-base"></i>
-    </button>
-
-    {{-- Controls: Shuffle, Prev, Play/Pause, Next, Repeat --}}
+    {{-- Controls: Prev, Play/Pause, Next (Shuffle & Repeat disabled) --}}
     <div class="flex items-center gap-1 flex-1 justify-center">
+        {{-- DISABLED: Shuffle - şimdilik gizli
         <button class="w-9 h-9 flex items-center justify-center transition-colors"
                 :class="shuffle ? 'text-emerald-400' : 'text-white/60 hover:text-white'"
                 @click="toggleShuffle()">
             <i class="fas fa-random text-sm"></i>
         </button>
+        --}}
         <button class="w-10 h-10 text-white/80 hover:text-white flex items-center justify-center transition-colors"
                 @click="previousTrack()">
             <i class="fas fa-backward text-base"></i>
@@ -253,12 +252,14 @@
                 @click="nextTrack()">
             <i class="fas fa-forward text-base"></i>
         </button>
+        {{-- DISABLED: Repeat - şimdilik gizli
         <button class="w-9 h-9 flex items-center justify-center transition-colors"
                 :class="repeatMode !== 'off' ? 'text-emerald-400' : 'text-white/60 hover:text-white'"
                 @click="cycleRepeat()">
             <i class="fas fa-redo text-sm"></i>
             <span x-show="repeatMode === 'one'" class="absolute text-[8px] font-bold">1</span>
         </button>
+        --}}
     </div>
 
     {{-- Progress Bar (Linear - Dynamic Gradient) --}}

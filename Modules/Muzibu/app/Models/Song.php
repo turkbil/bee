@@ -47,6 +47,7 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
         'media_id',
         'is_featured',
         'play_count',
+        'color_hash',
         'is_active',
     ];
 
@@ -673,5 +674,117 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
     public function getScoutKeyName()
     {
         return 'song_id';
+    }
+
+    /**
+     * Generate color hash from song title
+     * Returns 3 HSL hue values for gradient (format: "hue1,hue2,hue3")
+     *
+     * @param string $title Song title
+     * @return string Color hash (e.g., "45,85,125")
+     */
+    public static function generateColorHash(string $title): string
+    {
+        // Remove whitespace and convert to lowercase for consistency
+        $normalizedTitle = mb_strtolower(trim($title));
+
+        // Calculate hash from string
+        $hash = 0;
+        $length = mb_strlen($normalizedTitle);
+
+        for ($i = 0; $i < $length; $i++) {
+            $char = mb_ord(mb_substr($normalizedTitle, $i, 1));
+            $hash = (($hash << 5) - $hash) + $char;
+            $hash = $hash & 0xFFFFFFFF; // Convert to 32bit integer
+        }
+
+        // Make sure hash is positive
+        $hash = abs($hash);
+
+        // Generate 3 hue values for gradient (0-359 degrees)
+        $hue1 = $hash % 360;
+        $hue2 = ($hue1 + 40) % 360;  // +40 degrees
+        $hue3 = ($hue1 + 80) % 360;  // +80 degrees
+
+        return "{$hue1},{$hue2},{$hue3}";
+    }
+
+    /**
+     * Get or generate color hash for this song
+     * If color_hash is null, generates and saves it
+     *
+     * @return string Color hash
+     */
+    public function getOrGenerateColorHash(): string
+    {
+        if ($this->color_hash) {
+            return $this->color_hash;
+        }
+
+        // Get title (prefer Turkish, fallback to English or raw)
+        $title = $this->getTranslated('title', 'tr')
+            ?? $this->getTranslated('title', 'en')
+            ?? $this->title
+            ?? 'Untitled';
+
+        $colorHash = self::generateColorHash($title);
+
+        // Save to database
+        $this->update(['color_hash' => $colorHash]);
+
+        return $colorHash;
+    }
+
+    /**
+     * Get CSS gradient string for player background
+     * Returns a 3-color gradient CSS value
+     *
+     * @param int $saturation HSL saturation (default: 70)
+     * @param int $lightness HSL lightness (default: 45)
+     * @param int $angle Gradient angle in degrees (default: 135)
+     * @return string CSS gradient (e.g., "linear-gradient(135deg, hsl(45, 70%, 45%), ...)")
+     */
+    public function getGradientCss(int $saturation = 70, int $lightness = 45, int $angle = 135): string
+    {
+        $colorHash = $this->getOrGenerateColorHash();
+        $hues = explode(',', $colorHash);
+
+        // Fallback if invalid format
+        if (count($hues) !== 3) {
+            $hues = [200, 240, 280];
+        }
+
+        return sprintf(
+            'linear-gradient(%ddeg, hsl(%d, %d%%, %d%%), hsl(%d, %d%%, %d%%), hsl(%d, %d%%, %d%%))',
+            $angle,
+            (int) $hues[0], $saturation, $lightness,
+            (int) $hues[1], $saturation, $lightness,
+            (int) $hues[2], $saturation, $lightness
+        );
+    }
+
+    /**
+     * Boot method - Register model events
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Auto-generate color_hash when creating a new song
+        static::creating(function ($song) {
+            if (empty($song->color_hash)) {
+                $title = $song->title;
+
+                // Handle JSON title (translations)
+                if (is_array($title)) {
+                    $title = $title['tr'] ?? $title['en'] ?? reset($title) ?? 'Untitled';
+                } elseif (is_string($title) && str_starts_with($title, '{')) {
+                    $decoded = json_decode($title, true);
+                    $title = $decoded['tr'] ?? $decoded['en'] ?? reset($decoded) ?? 'Untitled';
+                }
+
+                $song->color_hash = self::generateColorHash($title ?: 'Untitled');
+            }
+        });
     }
 }

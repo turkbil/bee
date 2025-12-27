@@ -271,62 +271,48 @@
                 playSong(song, event) {
                     event.preventDefault();
                     event.stopPropagation();
-                    if (window.Alpine?.store('player')?.playSingle) {
-                        window.Alpine.store('player').playSingle({
-                            song_id: song.song_id,
-                            title: song.title,
-                            slug: song.slug,
-                            duration: song.duration,
-                            file_path: song.file_path,
-                            hls_path: song.hls_path,
-                            album: song.album,
-                            artist: song.artist
-                        });
+                    if (window.Alpine?.store('player')?.playSong && song.song_id) {
+                        window.Alpine.store('player').playSong(song.song_id);
                     }
                     this.closeDropdown();
                 },
                 playAlbum(album, event) {
                     event.preventDefault();
                     event.stopPropagation();
-                    const slug = this.getSlug(album);
-                    if (window.Alpine?.store('player')?.playAlbum) {
-                        window.Alpine.store('player').playAlbum(slug);
+                    if (window.Alpine?.store('player')?.playAlbum && album.album_id) {
+                        window.Alpine.store('player').playAlbum(album.album_id);
                     }
                     this.closeDropdown();
                 },
                 playPlaylist(playlist, event) {
                     event.preventDefault();
                     event.stopPropagation();
-                    const slug = this.getSlug(playlist);
-                    if (window.Alpine?.store('player')?.playPlaylist) {
-                        window.Alpine.store('player').playPlaylist(slug);
+                    if (window.Alpine?.store('player')?.playPlaylist && playlist.playlist_id) {
+                        window.Alpine.store('player').playPlaylist(playlist.playlist_id);
                     }
                     this.closeDropdown();
                 },
                 playGenre(genre, event) {
                     event.preventDefault();
                     event.stopPropagation();
-                    const slug = this.getSlug(genre);
-                    if (window.Alpine?.store('player')?.playGenre) {
-                        window.Alpine.store('player').playGenre(slug);
+                    if (window.Alpine?.store('player')?.playGenre && genre.genre_id) {
+                        window.Alpine.store('player').playGenre(genre.genre_id);
                     }
                     this.closeDropdown();
                 },
                 playSector(sector, event) {
                     event.preventDefault();
                     event.stopPropagation();
-                    const slug = this.getSlug(sector);
-                    if (window.Alpine?.store('player')?.playSector) {
-                        window.Alpine.store('player').playSector(slug);
+                    if (window.Alpine?.store('player')?.playSector && sector.sector_id) {
+                        window.Alpine.store('player').playSector(sector.sector_id);
                     }
                     this.closeDropdown();
                 },
                 playRadio(radio, event) {
                     event.preventDefault();
                     event.stopPropagation();
-                    const slug = this.getSlug(radio);
-                    if (window.Alpine?.store('player')?.playRadio) {
-                        window.Alpine.store('player').playRadio(slug);
+                    if (window.Alpine?.store('player')?.playRadio && radio.radio_id) {
+                        window.Alpine.store('player').playRadio(radio.radio_id);
                     }
                     this.closeDropdown();
                 },

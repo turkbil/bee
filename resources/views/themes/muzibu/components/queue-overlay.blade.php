@@ -1,4 +1,74 @@
 {{-- QUEUE OVERLAY - Modern Spotify-style Design --}}
+
+{{-- Queue Drag & Drop Styles --}}
+<style>
+    /* Queue itemlarda text seçimi engelle */
+    .queue-item,
+    .queue-drag-handle {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+        touch-action: manipulation;
+    }
+
+    /* Sürüklenen item - havada asılı efekti */
+    .sortable-drag {
+        opacity: 1 !important;
+        transform: scale(1.02) rotate(1deg) !important;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 107, 107, 0.3) !important;
+        z-index: 9999 !important;
+        background: linear-gradient(135deg, rgba(39, 39, 42, 0.98), rgba(24, 24, 27, 0.98)) !important;
+        border: 1px solid rgba(255, 107, 107, 0.4) !important;
+    }
+
+    /* Ghost - bırakılacak yeri gösteren placeholder */
+    .sortable-ghost {
+        opacity: 0.4 !important;
+        background: linear-gradient(90deg, transparent, rgba(255, 107, 107, 0.15), transparent) !important;
+        border: 2px dashed rgba(255, 107, 107, 0.5) !important;
+        border-radius: 0.75rem !important;
+    }
+
+    /* Seçilen item */
+    .sortable-chosen {
+        background: rgba(255, 107, 107, 0.15) !important;
+        border-radius: 0.75rem !important;
+    }
+
+    /* Diğer itemların kayma animasyonu */
+    .queue-item-animate {
+        transition: transform 200ms cubic-bezier(0.25, 1, 0.5, 1) !important;
+    }
+
+    /* Bırakıldığında parlama efekti */
+    @keyframes queue-item-drop {
+        0% {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+        }
+        50% {
+            transform: scale(1);
+            box-shadow: 0 0 30px rgba(255, 107, 107, 0.3);
+        }
+        100% {
+            transform: scale(1);
+            box-shadow: none;
+        }
+    }
+
+    .queue-item-dropped {
+        animation: queue-item-drop 400ms ease-out !important;
+    }
+
+    /* Sürükleme sırasında diğer itemların hafif solması */
+    .queue-dragging .queue-item:not(.sortable-drag):not(.sortable-ghost) {
+        opacity: 0.7;
+        transition: opacity 150ms ease;
+    }
+</style>
+
 <template x-if="typeof queue !== 'undefined'">
 <div>
 {{-- Backdrop (invisible - no darkening) --}}
@@ -100,22 +170,64 @@
         </template>
 
         {{-- Queue List --}}
-        <div id="queue-list" class="p-2 space-y-0.5">
+        <div id="queue-list"
+             class="p-2 space-y-0.5"
+             x-ref="queueList"
+             x-effect="
+                if (showQueue && $refs.queueList && queue && queue.length > 0 && typeof Sortable !== 'undefined') {
+                    $nextTick(() => {
+                        if ($refs.queueList._sortable) $refs.queueList._sortable.destroy();
+                        $refs.queueList._sortable = new Sortable($refs.queueList, {
+                            animation: 250,
+                            easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
+                            handle: '.queue-drag-handle',
+                            ghostClass: 'sortable-ghost',
+                            chosenClass: 'sortable-chosen',
+                            dragClass: 'sortable-drag',
+                            forceFallback: true,
+                            fallbackClass: 'sortable-drag',
+                            onStart: (evt) => {
+                                $refs.queueList.classList.add('queue-dragging');
+                                evt.item.style.transition = 'none';
+                            },
+                            onEnd: (evt) => {
+                                $refs.queueList.classList.remove('queue-dragging');
+
+                                // Drop animasyonu
+                                evt.item.classList.add('queue-item-dropped');
+                                setTimeout(() => evt.item.classList.remove('queue-item-dropped'), 400);
+
+                                if (evt.oldIndex === evt.newIndex) return;
+
+                                const movedSong = queue[evt.oldIndex];
+                                const newQueue = [...queue];
+                                newQueue.splice(evt.oldIndex, 1);
+                                newQueue.splice(evt.newIndex, 0, movedSong);
+
+                                if (queueIndex === evt.oldIndex) {
+                                    queueIndex = evt.newIndex;
+                                } else if (evt.oldIndex < queueIndex && evt.newIndex >= queueIndex) {
+                                    queueIndex--;
+                                } else if (evt.oldIndex > queueIndex && evt.newIndex <= queueIndex) {
+                                    queueIndex++;
+                                }
+
+                                queue = newQueue;
+                                showToast('{{ trans('muzibu::front.player.queue_updated') }}', 'success');
+                            }
+                        });
+                    });
+                }
+             ">
             <template x-for="(song, index) in (queue || [])" :key="'queue-' + index + '-' + (song?.song_id || 'song')">
                 <div
+                    data-queue-item
+                    :data-queue-index="index"
                     @click="playFromQueue(index)"
-                    @dragstart="dragStart($event, index)"
-                    @dragover.prevent="dragOver(index)"
-                    @dragleave="dropTargetIndex = null"
-                    @drop.prevent="drop(index)"
-                    @dragend="draggedIndex = null; dropTargetIndex = null"
-                    draggable="true"
-                    class="flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group"
+                    class="queue-item flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group"
                     :class="{
                         'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
-                        'hover:bg-white/5': queueIndex !== index,
-                        'border-t-2 border-muzibu-coral': dropTargetIndex === index && draggedIndex !== null,
-                        'opacity-50': draggedIndex === index
+                        'hover:bg-white/5': queueIndex !== index
                     }"
                 >
                     {{-- Cover with Play Overlay --}}
@@ -150,24 +262,25 @@
                         <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')"></p>
                     </div>
 
-                    {{-- Duration (hide on hover) --}}
-                    <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)"></div>
+                    {{-- Duration (hide on hover on desktop) --}}
+                    <div class="text-xs text-gray-600 flex-shrink-0 sm:group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)"></div>
 
-                    {{-- Actions (show on hover) --}}
-                    <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
-                        {{-- Remove from queue button --}}
-                        <button
-                            x-show="queue.length > 1"
-                            @click.stop="removeFromQueue(index)"
-                            class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
-                            title="{{ trans('muzibu::front.player.remove_from_queue') }}"
-                        >
-                            <i class="fas fa-times text-xs"></i>
-                        </button>
-                        {{-- Drag handle --}}
-                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab active:cursor-grabbing" title="{{ trans('muzibu::front.player.drag') }}">
-                            <i class="fas fa-grip-vertical text-xs"></i>
-                        </div>
+                    {{-- Remove button (desktop hover only) --}}
+                    <button
+                        x-show="queue.length > 1"
+                        @click.stop="removeFromQueue(index)"
+                        class="hidden sm:group-hover:flex w-6 h-6 items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all flex-shrink-0"
+                        title="{{ trans('muzibu::front.player.remove_from_queue') }}"
+                    >
+                        <i class="fas fa-times text-xs"></i>
+                    </button>
+
+                    {{-- Drag handle (always visible) --}}
+                    <div
+                        class="queue-drag-handle w-7 h-7 flex items-center justify-center rounded-full text-gray-500 cursor-grab active:cursor-grabbing hover:bg-white/10 hover:text-white transition-all flex-shrink-0"
+                        title="{{ trans('muzibu::front.player.drag') }}"
+                    >
+                        <i class="fas fa-grip-vertical text-xs"></i>
                     </div>
                 </div>
             </template>

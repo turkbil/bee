@@ -44,6 +44,9 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
 
+    {{-- SortableJS for Queue Drag & Drop (Mobile + Desktop) --}}
+    <script src="{{ asset('admin-assets/libs/sortable/sortable.min.js') }}"></script>
+
     {{-- ⚡ instant.page DISABLED - Conflicts with SPA Router (causes double navigation) --}}
     {{-- <script src="//instant.page/5.2.0" type="module" data-intensity="hover" data-delay="50"></script> --}}
 
@@ -395,9 +398,11 @@
     <audio id="hlsAudioNext" class="hidden"></audio>
 
     @php
-        // Sağ blok gösterilecek route'lar (music pages + my-playlists)
+        // 🚀 HYBRID: PHP initial value + Alpine SPA updates
+        // Sağ sidebar gösterilecek route'lar (music pages + my-playlists)
         $showRightSidebar = in_array(Route::currentRouteName(), [
             'muzibu.home',
+            'muzibu.songs.index',
             'muzibu.songs.show',
             'muzibu.albums.index',
             'muzibu.albums.show',
@@ -415,20 +420,21 @@
             'muzibu.my-playlists',
         ]);
 
-        // Grid column classes - sağ sidebar varsa dinamik, yoksa 2 kolon
-        // md (768px+): Sağ sidebar görünür (sol gizli)
-        // lg (1024px+): Sol + Sağ sidebar görünür
-        $gridCols = $showRightSidebar
-            ? 'md:grid-cols-[1fr_280px] lg:grid-cols-[220px_1fr_280px] xl:grid-cols-[220px_1fr_320px] 2xl:grid-cols-[220px_1fr_360px]'
-            : 'lg:grid-cols-[220px_1fr] xl:grid-cols-[220px_1fr] 2xl:grid-cols-[220px_1fr]';
+        // Grid class'ları - PHP initial, Alpine SPA override
+        $gridColsWithSidebar = 'md:grid-cols-[1fr_280px] lg:grid-cols-[220px_1fr_280px] xl:grid-cols-[220px_1fr_320px] 2xl:grid-cols-[220px_1fr_360px]';
+        $gridColsNoSidebar = 'lg:grid-cols-[220px_1fr] xl:grid-cols-[220px_1fr] 2xl:grid-cols-[220px_1fr]';
+        $initialGridCols = $showRightSidebar ? $gridColsWithSidebar : $gridColsNoSidebar;
     @endphp
 
-    {{-- Main App Grid - Dynamic columns based on right sidebar visibility --}}
+    {{-- Main App Grid - Hybrid: PHP initial + Alpine SPA updates --}}
     {{-- md (768px+): gap ve padding başlar, sağ sidebar görünür --}}
     {{-- lg (1024px+): sol sidebar da görünür --}}
     <div
         id="main-app-grid"
-        class="grid grid-rows-[56px_1fr_auto] grid-cols-1 {{ $gridCols }} h-[100dvh] w-full gap-0 md:gap-3 px-0 pb-0 pt-0 md:px-3 md:pt-3"
+        class="grid grid-rows-[56px_1fr_auto] grid-cols-1 {{ $initialGridCols }} h-[100dvh] w-full gap-0 md:gap-3 px-0 pb-0 pt-0 md:px-3 md:pt-3"
+        x-bind:class="$store.sidebar?.rightSidebarVisible
+            ? '{{ $gridColsWithSidebar }}'
+            : '{{ $gridColsNoSidebar }}'"
     >
         @include('themes.muzibu.components.header')
         @include('themes.muzibu.components.sidebar-left')
@@ -438,14 +444,15 @@
 
         @include('themes.muzibu.components.main-content')
 
-        {{-- Right Sidebar - MD+ screens (768px+), music pages only --}}
+        {{-- Right Sidebar - MD+ screens (768px+), Hybrid: PHP initial + Alpine SPA --}}
         {{-- 768px-1023px: Sol sidebar gizli, sağ sidebar görünür --}}
         {{-- 1024px+: Her iki sidebar da görünür --}}
-        @if($showRightSidebar)
-            <aside class="muzibu-right-sidebar row-start-2 overflow-y-auto rounded-2xl hidden md:block">
-                @include('themes.muzibu.components.sidebar-right')
-            </aside>
-        @endif
+        <aside
+            class="muzibu-right-sidebar row-start-2 overflow-y-auto rounded-2xl {{ $showRightSidebar ? 'hidden md:block' : 'hidden' }}"
+            x-bind:class="$store.sidebar?.rightSidebarVisible ? 'md:block' : 'hidden'"
+        >
+            @include('themes.muzibu.components.sidebar-right')
+        </aside>
 
         @include('themes.muzibu.components.player')
         @include('themes.muzibu.components.queue-overlay')

@@ -59,7 +59,27 @@ module.exports = {
                 'sub-coral-hover': '#ff5252',
                 'sub-dark': '#141414',
                 'sub-darker': '#0a0a0a',
-            }
+            },
+            // Ring color için muzibu-coral tanımı
+            ringColor: {
+                'muzibu-coral': '#ff7f50',
+            },
+            // Hover shimmer/gloss animasyonu
+            animation: {
+                'shimmer': 'shimmer 2s linear infinite',
+                'shimmer-sweep': 'shimmer-sweep 0.8s ease-out forwards',
+            },
+            keyframes: {
+                shimmer: {
+                    '0%': { backgroundPosition: '-200% 0' },
+                    '100%': { backgroundPosition: '200% 0' },
+                },
+                'shimmer-sweep': {
+                    '0%': { transform: 'translateX(-100%)', opacity: '0' },
+                    '20%': { opacity: '1' },
+                    '100%': { transform: 'translateX(100%)', opacity: '0' },
+                },
+            },
         }
     },
 
@@ -107,6 +127,7 @@ module.exports = {
         // Muzibu gray variants
         'bg-muzibu-gray', 'bg-muzibu-gray/95', 'hover:bg-gray-700',
         'bg-muzibu-gray-light', 'bg-muzibu-gray-light/30',
+        'border-muzibu-gray', 'border-2',
         // Muzibu text-gray variants (progress bar, text)
         'text-muzibu-text-gray', 'bg-muzibu-text-gray', 'bg-muzibu-text-gray/30', 'bg-muzibu-text-gray/50',
         'hover:text-muzibu-coral', 'hover:text-white', 'group-hover:bg-muzibu-coral',
@@ -148,6 +169,29 @@ module.exports = {
         'md:gap-3', 'md:px-3', 'md:pt-3',
         // Right sidebar visibility
         'md:block',
+        // Card hover shimmer/parlama efekti (çapraz)
+        'animate-shimmer', 'group-hover:animate-shimmer',
+        'animate-shimmer-sweep', 'group-hover:animate-shimmer-sweep',
+        'bg-gradient-to-r', 'from-transparent', 'via-white/10', 'via-white/5', 'via-white/20',
+        'group-hover:opacity-100', 'opacity-0',
+        'overflow-hidden', 'pointer-events-none',
+        '-translate-x-full', 'group-hover:translate-x-full',
+        '-inset-full', 'skew-x-12',
+        'transition-transform', 'duration-1000', 'ease-in-out',
+        'transition-opacity', 'duration-500',
+        // Hover koyu renk (açık değil!)
+        'hover:bg-spotify-black', 'hover:bg-[#121212]',
+        // Currently playing - subtle border
+        'border-muzibu-coral/50', 'border-muzibu-coral/60', 'border-2', 'border-transparent',
+        'hover:bg-gray-700/80',
+        // Dynamic grid columns (Alpine x-bind)
+        'md:grid-cols-[1fr_280px]',
+        'lg:grid-cols-[220px_1fr_280px]',
+        'xl:grid-cols-[220px_1fr_320px]',
+        '2xl:grid-cols-[220px_1fr_360px]',
+        'lg:grid-cols-[220px_1fr]',
+        'xl:grid-cols-[220px_1fr]',
+        '2xl:grid-cols-[220px_1fr]',
     ],
 
     plugins: [

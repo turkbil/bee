@@ -146,7 +146,7 @@
 
 
 {{-- ==================== DESKTOP PLAYER (>= 1024px) ==================== --}}
-<div class="desktop-player-wrapper row-start-3 col-span-full mx-4 mb-3 px-4 py-2.5 relative rounded-full shadow-lg flex items-center gap-4">
+<div class="desktop-player-wrapper row-start-3 col-span-full mx-4 px-4 py-2.5 relative rounded-full shadow-lg flex items-center gap-4">
 
     {{-- Cover with Progress Ring --}}
     <div class="relative w-14 h-14 flex-shrink-0">

@@ -73,8 +73,13 @@
                     Math.abs($event.touches[0].clientY - touchStartPos.y) > 10;
        if (moved) clearTimeout(touchTimer);
    "
-   class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg transition-all duration-300 @if($compact) flex-shrink-0 w-[190px] px-3 pt-3 @else px-4 pt-4 @endif"
-   x-bind:class="$store.player.currentSong?.id === {{ $songId }} ? 'ring-2 ring-muzibu-coral' : ''">
+   class="group bg-muzibu-gray hover:bg-spotify-black rounded-lg transition-all duration-300 relative overflow-hidden border-2 border-muzibu-gray @if($compact) flex-shrink-0 w-[190px] px-3 pt-3 @else px-4 pt-4 @endif"
+   x-bind:class="$store.player.currentSong?.id === {{ $songId }} ? 'border-muzibu-coral/60' : ''">
+
+    {{-- Hover Shimmer/Buz Efekti --}}
+    <div class="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
+        <div class="absolute -inset-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:animate-shimmer-sweep"></div>
+    </div>
 
     <div class="relative @if($compact) mb-2 @else mb-4 @endif">
         {{-- Song Cover (Album artwork) --}}

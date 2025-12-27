@@ -4,7 +4,7 @@
 {{-- Usage: <x-muzibu.radio-card :radio="$radio" :compact="true" /> --}}
 {{-- Note: Radios play directly - preview parameter is accepted but not used (for consistency) --}}
 
-<div class="radio-card group rounded-lg transition-all duration-300 cursor-pointer @if($compact) flex-shrink-0 w-[190px] p-3 bg-transparent hover:bg-white/10 @else bg-muzibu-gray hover:bg-gray-700 px-4 pt-4 @endif"
+<div class="radio-card group rounded-lg transition-all duration-300 cursor-pointer relative overflow-hidden border-2 border-muzibu-gray @if($compact) flex-shrink-0 w-[190px] p-3 bg-transparent hover:bg-white/10 @else bg-muzibu-gray hover:bg-spotify-black px-4 pt-4 @endif"
      @click.stop.prevent="window.playContent('radio', {{ $radio->radio_id }})"
      data-radio-id="{{ $radio->radio_id }}"
      data-genre-id="{{ $radio->genre_id ?? '' }}"
@@ -39,7 +39,12 @@
                       Math.abs($event.touches[0].clientY - touchStartPos.y) > 10;
          if (moved) clearTimeout(touchTimer);
      "
-     x-bind:class="$store.player.currentContext?.type === 'radio' && $store.player.currentContext?.id === {{ $radio->radio_id }} ? 'ring-2 ring-muzibu-coral animate-pulse' : ''">
+     x-bind:class="$store.player.currentContext?.type === 'radio' && $store.player.currentContext?.id === {{ $radio->radio_id }} ? 'border-muzibu-coral/60' : ''">
+
+    {{-- Hover Shimmer/Buz Efekti --}}
+    <div class="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
+        <div class="absolute -inset-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:animate-shimmer-sweep"></div>
+    </div>
 
     {{-- Radio Logo/Icon --}}
     <div class="relative @if($compact) mb-3 @else mb-4 @endif">

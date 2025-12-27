@@ -1324,6 +1324,47 @@ document.addEventListener('alpine:init', () => {
         tracks: [],
         entityInfo: null, // { title, cover, type, id }
 
+        // 🚀 Right sidebar visibility (dynamic based on route)
+        // Initial value calculated from current path
+        rightSidebarVisible: (() => {
+            const path = window.location.pathname;
+            const routes = [
+                '/', '/home',
+                '/songs', '/albums', '/artists', '/playlists',
+                '/genres', '/sectors', '/radios', '/search',
+                '/muzibu/favorites', '/favorites',
+                '/muzibu/my-playlists', '/my-playlists'
+            ];
+            return routes.some(route => {
+                if (route === '/') return path === '/';
+                return path === route || path.startsWith(route + '/');
+            });
+        })(),
+
+        // Routes where right sidebar should be visible
+        _rightSidebarRoutes: [
+            '/', '/home',
+            '/songs', '/albums', '/artists', '/playlists',
+            '/genres', '/sectors', '/radios', '/search',
+            '/muzibu/favorites', '/favorites',
+            '/muzibu/my-playlists', '/my-playlists'
+        ],
+
+        /**
+         * 🚀 Update right sidebar visibility based on current URL
+         */
+        updateRightSidebarVisibility() {
+            const path = window.location.pathname;
+
+            // Check if path matches any of the routes or starts with them (for detail pages)
+            const shouldShow = this._rightSidebarRoutes.some(route => {
+                if (route === '/') return path === '/';
+                return path === route || path.startsWith(route + '/');
+            });
+
+            this.rightSidebarVisible = shouldShow;
+        },
+
         // Preview mode (for list page hover)
         previewMode: false,
         previewTracks: [],          // Currently displayed tracks (20, 40, 60, 80, 100)

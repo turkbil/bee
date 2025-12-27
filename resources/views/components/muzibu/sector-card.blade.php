@@ -53,7 +53,12 @@
                     Math.abs($event.touches[0].clientY - touchStartPos.y) > 10;
        if (moved) clearTimeout(touchTimer);
    "
-   class="group rounded-lg transition-all duration-300 @if($compact) flex-shrink-0 w-[190px] p-3 bg-transparent hover:bg-white/10 @else bg-muzibu-gray hover:bg-gray-700 px-4 pt-4 @endif">
+   class="group rounded-lg transition-all duration-300 relative overflow-hidden border-2 border-muzibu-gray @if($compact) flex-shrink-0 w-[190px] p-3 bg-transparent hover:bg-white/10 @else bg-muzibu-gray hover:bg-spotify-black px-4 pt-4 @endif">
+
+    {{-- Hover Shimmer/Buz Efekti --}}
+    <div class="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
+        <div class="absolute -inset-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:animate-shimmer-sweep"></div>
+    </div>
 
     <div class="relative @if($compact) mb-3 @else mb-4 @endif">
         {{-- Sector Icon/Cover --}}

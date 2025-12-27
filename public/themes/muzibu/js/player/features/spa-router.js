@@ -562,6 +562,12 @@ const MuzibuSpaRouter = {
                         }
                     }
 
+                    // 🚀 UPDATE RIGHT SIDEBAR VISIBILITY: Dynamic based on route
+                    if (window.Alpine?.store('sidebar')) {
+                        window.Alpine.store('sidebar').updateRightSidebarVisibility();
+                        console.log('🔄 Right sidebar visibility updated for:', urlPath);
+                    }
+
                     // 🔥 RE-OBSERVE NEW LINKS: DISABLED (viewport prefetch kapatıldı)
                     // setTimeout(() => this.observeLinks(), 100);
                 }

@@ -10,7 +10,7 @@
 <div class="mb-6">
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
         @foreach($featuredPlaylists->take(8) as $playlist)
-        <div class="playlist-card group flex items-center gap-3 bg-white/5 hover:bg-white/10 rounded transition-all cursor-pointer overflow-hidden h-16 relative"
+        <div class="playlist-card group flex items-center gap-3 bg-white/5 hover:bg-spotify-black rounded transition-all cursor-pointer overflow-hidden h-16 relative"
            x-data="{ touchTimer: null, touchStartPos: { x: 0, y: 0 } }"
            x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'playlist', {
                id: {{ $playlist->playlist_id }},
@@ -106,7 +106,7 @@
 
     <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
         @foreach($featuredPlaylists as $playlist)
-        <div class="playlist-card group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10"
+        <div class="playlist-card group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-spotify-black relative overflow-hidden"
            x-data="{ touchTimer: null, touchStartPos: { x: 0, y: 0 } }"
            x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'playlist', {
                id: {{ $playlist->playlist_id }},
@@ -124,6 +124,11 @@
                cover: '{{ $playlist->coverMedia ? thumb($playlist->coverMedia, 300, 300, ['scale' => 1]) : '' }}',
                is_favorite: {{ is_favorited('playlist', $playlist->playlist_id) ? 'true' : 'false' }}
            })">
+            {{-- Hover Shimmer/Buz Efekti --}}
+            <div class="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
+                <div class="absolute -inset-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:animate-shimmer-sweep"></div>
+            </div>
+
             <div class="relative mb-3">
                 <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
                     @if($playlist->coverMedia)
@@ -210,7 +215,7 @@
 
     <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
         @foreach($newReleases as $album)
-        <div class="album-card group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10"
+        <div class="album-card group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-spotify-black relative overflow-hidden"
            x-data="{
                touchTimer: null,
                touchStartPos: { x: 0, y: 0 }
@@ -250,6 +255,11 @@
                cover: '{{ $album->coverMedia ? thumb($album->coverMedia, 300, 300, ['scale' => 1]) : '' }}',
                is_favorite: {{ is_favorited('album', $album->album_id) ? 'true' : 'false' }}
            })">
+            {{-- Hover Shimmer/Buz Efekti --}}
+            <div class="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
+                <div class="absolute -inset-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:animate-shimmer-sweep"></div>
+            </div>
+
             <div class="relative mb-3">
                 <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl" class="bg-gradient-to-br from-muzibu-coral to-purple-600">
                     @if($album->coverMedia)
@@ -496,7 +506,7 @@
 
     <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
         @foreach($genres as $genre)
-        <div class="group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10"
+        <div class="genre-card group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-spotify-black relative overflow-hidden"
            x-data="{
                touchTimer: null,
                touchStartPos: { x: 0, y: 0 }
@@ -536,6 +546,11 @@
                cover: '{{ $genre->iconMedia ? thumb($genre->iconMedia, 300, 300, ['scale' => 1]) : '' }}',
                is_favorite: {{ is_favorited('genre', $genre->genre_id) ? 'true' : 'false' }}
            })">
+            {{-- Hover Shimmer/Buz Efekti --}}
+            <div class="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
+                <div class="absolute -inset-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:animate-shimmer-sweep"></div>
+            </div>
+
             <div class="relative mb-3">
                 <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl"
                      class="bg-gradient-to-br from-muzibu-coral to-purple-600">
@@ -619,7 +634,7 @@
 
     <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
         @foreach($radios as $radio)
-        <div class="radio-card group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10"
+        <div class="radio-card group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-spotify-black relative overflow-hidden"
            x-data="{
                touchTimer: null,
                touchStartPos: { x: 0, y: 0 }
@@ -650,6 +665,11 @@
                if (moved) clearTimeout(touchTimer);
            "
            @click="window.playContent('radio', {{ $radio->radio_id }})">
+            {{-- Hover Shimmer/Buz Efekti --}}
+            <div class="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
+                <div class="absolute -inset-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:animate-shimmer-sweep"></div>
+            </div>
+
             <div class="relative mb-3">
                 <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
                     @if($radio->media_id && $radio->logoMedia)
@@ -735,7 +755,7 @@
 
     <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
         @foreach($sectors as $sector)
-        <div class="sector-card group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10"
+        <div class="sector-card group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-spotify-black relative overflow-hidden"
            x-data="{
                touchTimer: null,
                touchStartPos: { x: 0, y: 0 }
@@ -773,6 +793,11 @@
                cover: '{{ $sector->iconMedia ? thumb($sector->iconMedia, 300, 300, ['scale' => 1]) : '' }}',
                is_favorite: {{ is_favorited('sector', $sector->sector_id) ? 'true' : 'false' }}
            })">
+            {{-- Hover Shimmer/Buz Efekti --}}
+            <div class="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
+                <div class="absolute -inset-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:animate-shimmer-sweep"></div>
+            </div>
+
             <div class="relative mb-3">
                 <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
                     @if($sector->media_id && $sector->iconMedia)

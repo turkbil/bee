@@ -30,12 +30,12 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
                        id: {{ $artist->artist_id }},
                        title: '{{ addslashes($artist->getTranslation('title', app()->getLocale())) }}',
                        photo: '{{ $artist->photoMedia ? thumb($artist->photoMedia, 300, 300) : '' }}',
-                       is_favorite: {{ auth()->check() && $artist->isFavoritedBy(auth()->user()) ? 'true' : 'false' }}
+                       is_favorite: {{ is_favorited('artist', $artist->artist_id) ? 'true' : 'false' }}
                    }); }"
                    class="artist-card group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300"
                    data-artist-id="{{ $artist->artist_id }}"
                    data-artist-title="{{ $artist->getTranslation('title', app()->getLocale()) }}"
-                   data-is-favorite="{{ auth()->check() && $artist->isFavoritedBy(auth()->user()) ? '1' : '0' }}">
+                   data-is-favorite="{{ is_favorited('artist', $artist->artist_id) ? '1' : '0' }}">
                     <div class="relative mb-4">
                         @if($artist->media_id && $artist->photoMedia)
                             <img src="{{ thumb($artist->photoMedia, 300, 300, ['scale' => 1]) }}"
@@ -65,7 +65,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
                             <button @click="Alpine.store('contextMenu').openContextMenu($event, 'artist', {
                                 id: {{ $artist->artist_id }},
                                 title: '{{ addslashes($artist->getTranslation('title', app()->getLocale())) }}',
-                                is_favorite: {{ auth()->check() && $artist->isFavoritedBy(auth()->user()) ? 'true' : 'false' }}
+                                is_favorite: {{ is_favorited('artist', $artist->artist_id) ? 'true' : 'false' }}
                             })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
                                 <i class="fas fa-ellipsis-v text-sm"></i>
                             </button>

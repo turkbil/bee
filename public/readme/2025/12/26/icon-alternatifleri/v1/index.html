@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu - Icon Alternatifleri (FontAwesome Pro)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.4.2/css/all.css">
+    <style>
+        body { background: #0f172a; }
+        .icon-box { transition: all 0.3s ease; }
+        .icon-box:hover { transform: scale(1.1); }
+        .icon-box:hover .icon-light { display: none; }
+        .icon-box:hover .icon-solid { display: block; }
+        .icon-solid { display: none; }
+    </style>
+</head>
+<body class="text-white p-8">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <span class="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-full text-sm font-medium">FontAwesome Pro</span>
+            <h1 class="text-4xl font-bold mt-4 mb-2">Icon Alternatifleri</h1>
+            <p class="text-gray-400">Hover efekti: Light → Solid geçişi</p>
+        </div>
+
+        <!-- Current vs Proposed -->
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+            <!-- Current -->
+            <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700">
+                <h2 class="text-xl font-bold mb-6 text-gray-300">Mevcut Durum</h2>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4 p-3 bg-slate-900/50 rounded-xl">
+                        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-broadcast-tower text-xl"></i>
+                        </div>
+                        <span>Radyolar</span>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 bg-slate-900/50 rounded-xl">
+                        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-compass text-xl"></i>
+                        </div>
+                        <span>Sektörler</span>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 bg-slate-900/50 rounded-xl">
+                        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-music text-xl"></i>
+                        </div>
+                        <span>Türler</span>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 bg-slate-900/50 rounded-xl">
+                        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-compact-disc text-xl"></i>
+                        </div>
+                        <span>Albümler</span>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 bg-slate-900/50 rounded-xl">
+                        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-stream text-xl"></i>
+                        </div>
+                        <span>Çalma Listeleri</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proposed with Hover -->
+            <div class="bg-slate-800/50 rounded-2xl p-6 border border-purple-500/30">
+                <h2 class="text-xl font-bold mb-2 text-purple-400">Önerilen (Hover Dene!)</h2>
+                <p class="text-sm text-gray-500 mb-6">Light → Solid geçişi</p>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4 p-3 bg-slate-900/50 rounded-xl cursor-pointer group">
+                        <div class="icon-box w-12 h-12 bg-white/10 group-hover:bg-orange-500/20 rounded-xl flex items-center justify-center">
+                            <i class="fa-light fa-radio text-xl icon-light"></i>
+                            <i class="fa-solid fa-radio text-xl icon-solid text-orange-400"></i>
+                        </div>
+                        <span>Radyolar</span>
+                        <code class="ml-auto text-xs text-gray-500">fa-radio</code>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 bg-slate-900/50 rounded-xl cursor-pointer group">
+                        <div class="icon-box w-12 h-12 bg-white/10 group-hover:bg-blue-500/20 rounded-xl flex items-center justify-center">
+                            <i class="fa-light fa-building text-xl icon-light"></i>
+                            <i class="fa-solid fa-building text-xl icon-solid text-blue-400"></i>
+                        </div>
+                        <span>Sektörler</span>
+                        <code class="ml-auto text-xs text-gray-500">fa-building</code>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 bg-slate-900/50 rounded-xl cursor-pointer group">
+                        <div class="icon-box w-12 h-12 bg-white/10 group-hover:bg-pink-500/20 rounded-xl flex items-center justify-center">
+                            <i class="fa-light fa-guitars text-xl icon-light"></i>
+                            <i class="fa-solid fa-guitars text-xl icon-solid text-pink-400"></i>
+                        </div>
+                        <span>Türler</span>
+                        <code class="ml-auto text-xs text-gray-500">fa-guitars</code>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 bg-slate-900/50 rounded-xl cursor-pointer group">
+                        <div class="icon-box w-12 h-12 bg-white/10 group-hover:bg-purple-500/20 rounded-xl flex items-center justify-center">
+                            <i class="fa-light fa-record-vinyl text-xl icon-light"></i>
+                            <i class="fa-solid fa-record-vinyl text-xl icon-solid text-purple-400"></i>
+                        </div>
+                        <span>Albümler</span>
+                        <code class="ml-auto text-xs text-gray-500">fa-record-vinyl</code>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 bg-slate-900/50 rounded-xl cursor-pointer group">
+                        <div class="icon-box w-12 h-12 bg-white/10 group-hover:bg-green-500/20 rounded-xl flex items-center justify-center">
+                            <i class="fa-light fa-list-music text-xl icon-light"></i>
+                            <i class="fa-solid fa-list-music text-xl icon-solid text-green-400"></i>
+                        </div>
+                        <span>Çalma Listeleri</span>
+                        <code class="ml-auto text-xs text-gray-500">fa-list-music</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full Icon Set -->
+        <div class="bg-slate-800/50 rounded-2xl p-8 border border-slate-700 mb-12">
+            <h2 class="text-2xl font-bold mb-8 text-center">Tüm Sayfalar - Önerilen İkonlar</h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                <!-- Radyolar -->
+                <div class="text-center group cursor-pointer">
+                    <div class="icon-box w-20 h-20 bg-white/10 group-hover:bg-orange-500/20 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-transparent group-hover:border-orange-500/30">
+                        <i class="fa-light fa-radio text-3xl icon-light"></i>
+                        <i class="fa-solid fa-radio text-3xl icon-solid text-orange-400"></i>
+                    </div>
+                    <p class="font-medium">Radyolar</p>
+                    <code class="text-xs text-orange-400">fa-radio</code>
+                </div>
+
+                <!-- Sektörler -->
+                <div class="text-center group cursor-pointer">
+                    <div class="icon-box w-20 h-20 bg-white/10 group-hover:bg-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-transparent group-hover:border-blue-500/30">
+                        <i class="fa-light fa-building text-3xl icon-light"></i>
+                        <i class="fa-solid fa-building text-3xl icon-solid text-blue-400"></i>
+                    </div>
+                    <p class="font-medium">Sektörler</p>
+                    <code class="text-xs text-blue-400">fa-building</code>
+                </div>
+
+                <!-- Türler -->
+                <div class="text-center group cursor-pointer">
+                    <div class="icon-box w-20 h-20 bg-white/10 group-hover:bg-pink-500/20 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-transparent group-hover:border-pink-500/30">
+                        <i class="fa-light fa-guitars text-3xl icon-light"></i>
+                        <i class="fa-solid fa-guitars text-3xl icon-solid text-pink-400"></i>
+                    </div>
+                    <p class="font-medium">Türler</p>
+                    <code class="text-xs text-pink-400">fa-guitars</code>
+                </div>
+
+                <!-- Albümler -->
+                <div class="text-center group cursor-pointer">
+                    <div class="icon-box w-20 h-20 bg-white/10 group-hover:bg-purple-500/20 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-transparent group-hover:border-purple-500/30">
+                        <i class="fa-light fa-record-vinyl text-3xl icon-light"></i>
+                        <i class="fa-solid fa-record-vinyl text-3xl icon-solid text-purple-400"></i>
+                    </div>
+                    <p class="font-medium">Albümler</p>
+                    <code class="text-xs text-purple-400">fa-record-vinyl</code>
+                </div>
+
+                <!-- Playlists -->
+                <div class="text-center group cursor-pointer">
+                    <div class="icon-box w-20 h-20 bg-white/10 group-hover:bg-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-transparent group-hover:border-green-500/30">
+                        <i class="fa-light fa-list-music text-3xl icon-light"></i>
+                        <i class="fa-solid fa-list-music text-3xl icon-solid text-green-400"></i>
+                    </div>
+                    <p class="font-medium">Çalma Listeleri</p>
+                    <code class="text-xs text-green-400">fa-list-music</code>
+                </div>
+
+                <!-- Sanatçılar -->
+                <div class="text-center group cursor-pointer">
+                    <div class="icon-box w-20 h-20 bg-white/10 group-hover:bg-indigo-500/20 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-transparent group-hover:border-indigo-500/30">
+                        <i class="fa-light fa-microphone-stand text-3xl icon-light"></i>
+                        <i class="fa-solid fa-microphone-stand text-3xl icon-solid text-indigo-400"></i>
+                    </div>
+                    <p class="font-medium">Sanatçılar</p>
+                    <code class="text-xs text-indigo-400">fa-microphone-stand</code>
+                </div>
+
+                <!-- Şarkılar -->
+                <div class="text-center group cursor-pointer">
+                    <div class="icon-box w-20 h-20 bg-white/10 group-hover:bg-cyan-500/20 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-transparent group-hover:border-cyan-500/30">
+                        <i class="fa-light fa-waveform-lines text-3xl icon-light"></i>
+                        <i class="fa-solid fa-waveform-lines text-3xl icon-solid text-cyan-400"></i>
+                    </div>
+                    <p class="font-medium">Şarkılar</p>
+                    <code class="text-xs text-cyan-400">fa-waveform-lines</code>
+                </div>
+
+                <!-- Favorilerim -->
+                <div class="text-center group cursor-pointer">
+                    <div class="icon-box w-20 h-20 bg-white/10 group-hover:bg-red-500/20 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-transparent group-hover:border-red-500/30">
+                        <i class="fa-light fa-heart text-3xl icon-light"></i>
+                        <i class="fa-solid fa-heart text-3xl icon-solid text-red-400"></i>
+                    </div>
+                    <p class="font-medium">Favorilerim</p>
+                    <code class="text-xs text-red-400">fa-heart</code>
+                </div>
+
+                <!-- Playlistlerim -->
+                <div class="text-center group cursor-pointer">
+                    <div class="icon-box w-20 h-20 bg-white/10 group-hover:bg-emerald-500/20 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-transparent group-hover:border-emerald-500/30">
+                        <i class="fa-light fa-folder-music text-3xl icon-light"></i>
+                        <i class="fa-solid fa-folder-music text-3xl icon-solid text-emerald-400"></i>
+                    </div>
+                    <p class="font-medium">Playlistlerim</p>
+                    <code class="text-xs text-emerald-400">fa-folder-music</code>
+                </div>
+
+                <!-- Blog -->
+                <div class="text-center group cursor-pointer">
+                    <div class="icon-box w-20 h-20 bg-white/10 group-hover:bg-amber-500/20 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-transparent group-hover:border-amber-500/30">
+                        <i class="fa-light fa-newspaper text-3xl icon-light"></i>
+                        <i class="fa-solid fa-newspaper text-3xl icon-solid text-amber-400"></i>
+                    </div>
+                    <p class="font-medium">Blog</p>
+                    <code class="text-xs text-amber-400">fa-newspaper</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alternative Icon Options -->
+        <div class="bg-slate-800/50 rounded-2xl p-8 border border-slate-700 mb-12">
+            <h2 class="text-2xl font-bold mb-8 text-center">Alternatif İkon Seçenekleri</h2>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Sektörler Alternatifleri -->
+                <div class="bg-slate-900/50 rounded-xl p-6">
+                    <h3 class="font-bold mb-4 text-blue-400">Sektörler için:</h3>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="text-center group cursor-pointer">
+                            <div class="icon-box w-14 h-14 bg-white/10 group-hover:bg-blue-500/20 rounded-xl flex items-center justify-center mb-2">
+                                <i class="fa-light fa-building text-2xl icon-light"></i>
+                                <i class="fa-solid fa-building text-2xl icon-solid text-blue-400"></i>
+                            </div>
+                            <code class="text-[10px] text-gray-500">fa-building</code>
+                        </div>
+                        <div class="text-center group cursor-pointer">
+                            <div class="icon-box w-14 h-14 bg-white/10 group-hover:bg-blue-500/20 rounded-xl flex items-center justify-center mb-2">
+                                <i class="fa-light fa-industry text-2xl icon-light"></i>
+                                <i class="fa-solid fa-industry text-2xl icon-solid text-blue-400"></i>
+                            </div>
+                            <code class="text-[10px] text-gray-500">fa-industry</code>
+                        </div>
+                        <div class="text-center group cursor-pointer">
+                            <div class="icon-box w-14 h-14 bg-white/10 group-hover:bg-blue-500/20 rounded-xl flex items-center justify-center mb-2">
+                                <i class="fa-light fa-store text-2xl icon-light"></i>
+                                <i class="fa-solid fa-store text-2xl icon-solid text-blue-400"></i>
+                            </div>
+                            <code class="text-[10px] text-gray-500">fa-store</code>
+                        </div>
+                        <div class="text-center group cursor-pointer">
+                            <div class="icon-box w-14 h-14 bg-white/10 group-hover:bg-blue-500/20 rounded-xl flex items-center justify-center mb-2">
+                                <i class="fa-light fa-grid-2 text-2xl icon-light"></i>
+                                <i class="fa-solid fa-grid-2 text-2xl icon-solid text-blue-400"></i>
+                            </div>
+                            <code class="text-[10px] text-gray-500">fa-grid-2</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Türler Alternatifleri -->
+                <div class="bg-slate-900/50 rounded-xl p-6">
+                    <h3 class="font-bold mb-4 text-pink-400">Türler için:</h3>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="text-center group cursor-pointer">
+                            <div class="icon-box w-14 h-14 bg-white/10 group-hover:bg-pink-500/20 rounded-xl flex items-center justify-center mb-2">
+                                <i class="fa-light fa-guitars text-2xl icon-light"></i>
+                                <i class="fa-solid fa-guitars text-2xl icon-solid text-pink-400"></i>
+                            </div>
+                            <code class="text-[10px] text-gray-500">fa-guitars</code>
+                        </div>
+                        <div class="text-center group cursor-pointer">
+                            <div class="icon-box w-14 h-14 bg-white/10 group-hover:bg-pink-500/20 rounded-xl flex items-center justify-center mb-2">
+                                <i class="fa-light fa-music text-2xl icon-light"></i>
+                                <i class="fa-solid fa-music text-2xl icon-solid text-pink-400"></i>
+                            </div>
+                            <code class="text-[10px] text-gray-500">fa-music</code>
+                        </div>
+                        <div class="text-center group cursor-pointer">
+                            <div class="icon-box w-14 h-14 bg-white/10 group-hover:bg-pink-500/20 rounded-xl flex items-center justify-center mb-2">
+                                <i class="fa-light fa-album-collection text-2xl icon-light"></i>
+                                <i class="fa-solid fa-album-collection text-2xl icon-solid text-pink-400"></i>
+                            </div>
+                            <code class="text-[10px] text-gray-500">fa-album-collection</code>
+                        </div>
+                        <div class="text-center group cursor-pointer">
+                            <div class="icon-box w-14 h-14 bg-white/10 group-hover:bg-pink-500/20 rounded-xl flex items-center justify-center mb-2">
+                                <i class="fa-light fa-layer-group text-2xl icon-light"></i>
+                                <i class="fa-solid fa-layer-group text-2xl icon-solid text-pink-400"></i>
+                            </div>
+                            <code class="text-[10px] text-gray-500">fa-layer-group</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Albümler Alternatifleri -->
+                <div class="bg-slate-900/50 rounded-xl p-6">
+                    <h3 class="font-bold mb-4 text-purple-400">Albümler için:</h3>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="text-center group cursor-pointer">
+                            <div class="icon-box w-14 h-14 bg-white/10 group-hover:bg-purple-500/20 rounded-xl flex items-center justify-center mb-2">
+                                <i class="fa-light fa-record-vinyl text-2xl icon-light"></i>
+                                <i class="fa-solid fa-record-vinyl text-2xl icon-solid text-purple-400"></i>
+                            </div>
+                            <code class="text-[10px] text-gray-500">fa-record-vinyl</code>
+                        </div>
+                        <div class="text-center group cursor-pointer">
+                            <div class="icon-box w-14 h-14 bg-white/10 group-hover:bg-purple-500/20 rounded-xl flex items-center justify-center mb-2">
+                                <i class="fa-light fa-compact-disc text-2xl icon-light"></i>
+                                <i class="fa-solid fa-compact-disc text-2xl icon-solid text-purple-400"></i>
+                            </div>
+                            <code class="text-[10px] text-gray-500">fa-compact-disc</code>
+                        </div>
+                        <div class="text-center group cursor-pointer">
+                            <div class="icon-box w-14 h-14 bg-white/10 group-hover:bg-purple-500/20 rounded-xl flex items-center justify-center mb-2">
+                                <i class="fa-light fa-album text-2xl icon-light"></i>
+                                <i class="fa-solid fa-album text-2xl icon-solid text-purple-400"></i>
+                            </div>
+                            <code class="text-[10px] text-gray-500">fa-album</code>
+                        </div>
+                        <div class="text-center group cursor-pointer">
+                            <div class="icon-box w-14 h-14 bg-white/10 group-hover:bg-purple-500/20 rounded-xl flex items-center justify-center mb-2">
+                                <i class="fa-light fa-disc-drive text-2xl icon-light"></i>
+                                <i class="fa-solid fa-disc-drive text-2xl icon-solid text-purple-400"></i>
+                            </div>
+                            <code class="text-[10px] text-gray-500">fa-disc-drive</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sanatçılar Alternatifleri -->
+                <div class="bg-slate-900/50 rounded-xl p-6">
+                    <h3 class="font-bold mb-4 text-indigo-400">Sanatçılar için:</h3>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="text-center group cursor-pointer">
+                            <div class="icon-box w-14 h-14 bg-white/10 group-hover:bg-indigo-500/20 rounded-xl flex items-center justify-center mb-2">
+                                <i class="fa-light fa-microphone-stand text-2xl icon-light"></i>
+                                <i class="fa-solid fa-microphone-stand text-2xl icon-solid text-indigo-400"></i>
+                            </div>
+                            <code class="text-[10px] text-gray-500">fa-microphone-stand</code>
+                        </div>
+                        <div class="text-center group cursor-pointer">
+                            <div class="icon-box w-14 h-14 bg-white/10 group-hover:bg-indigo-500/20 rounded-xl flex items-center justify-center mb-2">
+                                <i class="fa-light fa-user-music text-2xl icon-light"></i>
+                                <i class="fa-solid fa-user-music text-2xl icon-solid text-indigo-400"></i>
+                            </div>
+                            <code class="text-[10px] text-gray-500">fa-user-music</code>
+                        </div>
+                        <div class="text-center group cursor-pointer">
+                            <div class="icon-box w-14 h-14 bg-white/10 group-hover:bg-indigo-500/20 rounded-xl flex items-center justify-center mb-2">
+                                <i class="fa-light fa-microphone text-2xl icon-light"></i>
+                                <i class="fa-solid fa-microphone text-2xl icon-solid text-indigo-400"></i>
+                            </div>
+                            <code class="text-[10px] text-gray-500">fa-microphone</code>
+                        </div>
+                        <div class="text-center group cursor-pointer">
+                            <div class="icon-box w-14 h-14 bg-white/10 group-hover:bg-indigo-500/20 rounded-xl flex items-center justify-center mb-2">
+                                <i class="fa-light fa-users text-2xl icon-light"></i>
+                                <i class="fa-solid fa-users text-2xl icon-solid text-indigo-400"></i>
+                            </div>
+                            <code class="text-[10px] text-gray-500">fa-users</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Style Comparison -->
+        <div class="bg-slate-800/50 rounded-2xl p-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-8 text-center">FontAwesome Stil Karşılaştırması</h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
+                <div>
+                    <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-thin fa-music text-3xl"></i>
+                    </div>
+                    <p class="text-sm font-medium">Thin</p>
+                    <code class="text-xs text-gray-500">fa-thin</code>
+                </div>
+                <div>
+                    <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-light fa-music text-3xl"></i>
+                    </div>
+                    <p class="text-sm font-medium">Light</p>
+                    <code class="text-xs text-gray-500">fa-light</code>
+                </div>
+                <div>
+                    <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-regular fa-music text-3xl"></i>
+                    </div>
+                    <p class="text-sm font-medium">Regular</p>
+                    <code class="text-xs text-gray-500">fa-regular</code>
+                </div>
+                <div>
+                    <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-solid fa-music text-3xl"></i>
+                    </div>
+                    <p class="text-sm font-medium">Solid</p>
+                    <code class="text-xs text-gray-500">fa-solid</code>
+                </div>
+                <div>
+                    <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-duotone fa-music text-3xl text-purple-400"></i>
+                    </div>
+                    <p class="text-sm font-medium">Duotone</p>
+                    <code class="text-xs text-gray-500">fa-duotone</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-12 text-center text-gray-500 text-sm">
+            <p>Hover efektleri çalışıyor - ikonların üzerine gel!</p>
+            <p class="mt-2">Hangi setini beğenirsen söyle, uygulayayım.</p>
+        </div>
+    </div>
+</body>
+</html>

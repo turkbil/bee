@@ -109,7 +109,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
             @auth
             <button
                 x-data="{
-                    favorited: {{ auth()->check() && method_exists($album, 'isFavoritedBy') && $album->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
+                    favorited: {{ is_favorited('album', $album->id) ? 'true' : 'false' }},
                     count: {{ method_exists($album, 'favoritesCount') ? $album->favoritesCount() : 0 }},
                     loading: false,
                     toggle() {
@@ -176,7 +176,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
     @else
         <div class="text-center py-16 sm:py-20">
             <div class="mb-6">
-                <i class="fas fa-compact-disc text-gray-600 text-5xl sm:text-6xl"></i>
+                <i class="fas fa-record-vinyl text-gray-600 text-5xl sm:text-6xl"></i>
             </div>
             <h3 class="text-xl sm:text-2xl font-bold text-white mb-2">Bu albümde henüz şarkı yok</h3>
             <p class="text-sm sm:text-base text-gray-400">Albüme şarkı eklendiğinde burada görünecek</p>

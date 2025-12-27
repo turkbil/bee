@@ -10,7 +10,7 @@
         title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
         artist: '{{ $song->artist ? addslashes($song->artist->getTranslation('title', app()->getLocale())) : '' }}',
         album_id: {{ isset($contextData['album_id']) ? $contextData['album_id'] : ($song->album ? $song->album->id : 'null') }},
-        is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+        is_favorite: {{ is_favorited('song', $song->song_id) ? 'true' : 'false' }}
     })"
     x-data="{
         touchTimer: null,
@@ -28,7 +28,7 @@
                 title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
                 artist: '{{ $song->artist ? addslashes($song->artist->getTranslation('title', app()->getLocale())) : '' }}',
                 album_id: {{ isset($contextData['album_id']) ? $contextData['album_id'] : ($song->album ? $song->album->id : 'null') }},
-                is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+                is_favorite: {{ is_favorited('song', $song->song_id) ? 'true' : 'false' }}
             });
         }, 500);
     "
@@ -100,7 +100,7 @@
     <div @click.stop class="flex items-center gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
         {{-- Favorite Button --}}
         @php
-            $isFavorited = auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id());
+            $isFavorited = is_favorited('song', $song->song_id);
         @endphp
 
         <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-muzibu-coral transition-colors hover:scale-110 rounded-full hover:bg-white/10 {{ $isFavorited ? '!opacity-100' : '' }}"
@@ -116,7 +116,7 @@
                     title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
                     artist: '{{ $song->artist ? addslashes($song->artist->getTranslation('title', app()->getLocale())) : '' }}',
                     album_id: {{ isset($contextData['album_id']) ? $contextData['album_id'] : ($song->album ? $song->album->id : 'null') }},
-                    is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+                    is_favorite: {{ is_favorited('song', $song->song_id) ? 'true' : 'false' }}
                 })"
                 class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
             <i class="fas fa-ellipsis-v text-sm"></i>

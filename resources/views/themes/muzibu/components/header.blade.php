@@ -117,7 +117,8 @@
         @endauth
 
         {{-- Search Box - Meilisearch Powered (All Types) --}}
-        <div class="relative flex-1 max-w-2xl mx-auto hidden md:block"
+        {{-- Hidden below 1024px (mobile/tablet mode) --}}
+        <div class="relative flex-1 max-w-2xl mx-auto hidden lg:block"
              x-data="{
                 query: '',
                 results: { songs: [], albums: [], artists: [], playlists: [], genres: [], sectors: [], radios: [] },
@@ -282,9 +283,9 @@
                     const lang = window.muzibuPlayerConfig?.frontLang?.general || {};
                     const badges = {
                         song: { icon: 'fa-music', label: lang.song || 'Song', color: 'bg-pink-500/20 text-pink-400' },
-                        album: { icon: 'fa-compact-disc', label: lang.album || 'Album', color: 'bg-purple-500/20 text-purple-400' },
+                        album: { icon: 'fa-record-vinyl', label: lang.album || 'Album', color: 'bg-purple-500/20 text-purple-400' },
                         artist: { icon: 'fa-user', label: lang.artist || 'Artist', color: 'bg-blue-500/20 text-blue-400' },
-                        playlist: { icon: 'fa-list', label: lang.playlist || 'Playlist', color: 'bg-green-500/20 text-green-400' },
+                        playlist: { icon: 'fa-list-music', label: lang.playlist || 'Playlist', color: 'bg-green-500/20 text-green-400' },
                         genre: { icon: 'fa-guitar', label: lang.genre || 'Genre', color: 'bg-yellow-500/20 text-yellow-400' },
                         sector: { icon: 'fa-building', label: lang.sector || 'Sector', color: 'bg-orange-500/20 text-orange-400' },
                         radio: { icon: 'fa-broadcast-tower', label: lang.radio || 'Radio', color: 'bg-red-500/20 text-red-400' }
@@ -390,7 +391,7 @@
                             {{-- Albums --}}
                             <div x-show="results.albums?.length > 0" class="space-y-2">
                                 <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-white/5">
-                                    <i class="fas fa-compact-disc text-purple-400 text-xs"></i>
+                                    <i class="fas fa-record-vinyl text-purple-400 text-xs"></i>
                                     <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">{{ trans('muzibu::front.general.albums') }}</span>
                                 </div>
                                 <template x-for="album in results.albums" :key="'album-'+album.album_id">
@@ -398,7 +399,7 @@
                                        @click.prevent="selectItem({...album, _type: 'album'})"
                                        class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all">
                                         <div class="w-8 h-8 rounded bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center flex-shrink-0">
-                                            <i class="fas fa-compact-disc text-purple-400/60 text-xs"></i>
+                                            <i class="fas fa-record-vinyl text-purple-400/60 text-xs"></i>
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <div class="text-sm text-white truncate" x-text="getTitle(album)"></div>
@@ -432,7 +433,7 @@
                             {{-- Playlists --}}
                             <div x-show="results.playlists?.length > 0" class="space-y-2">
                                 <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-white/5">
-                                    <i class="fas fa-list text-green-400 text-xs"></i>
+                                    <i class="fas fa-list-music text-green-400 text-xs"></i>
                                     <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">{{ trans('muzibu::front.general.playlists') }}</span>
                                 </div>
                                 <template x-for="playlist in results.playlists" :key="'playlist-'+playlist.playlist_id">
@@ -440,7 +441,7 @@
                                        @click.prevent="selectItem({...playlist, _type: 'playlist'})"
                                        class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all">
                                         <div class="w-8 h-8 rounded bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                                            <i class="fas fa-list text-green-400/60 text-xs"></i>
+                                            <i class="fas fa-list-music text-green-400/60 text-xs"></i>
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <div class="text-sm text-white truncate" x-text="getTitle(playlist)"></div>

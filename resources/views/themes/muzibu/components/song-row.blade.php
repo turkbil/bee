@@ -26,7 +26,7 @@
         album_slug: '{{ $song->album?->slug ?? '' }}',
         artist_id: {{ $song->artist?->artist_id ?? ($song->album?->artist?->artist_id ?? 'null') }},
         artist_slug: '{{ $song->artist?->slug ?? ($song->album?->artist?->slug ?? '') }}',
-        is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+        is_favorite: {{ is_favorited('song', $song->song_id) ? 'true' : 'false' }}
     })"
      x-data="{
         touchTimer: null,
@@ -47,7 +47,7 @@
                 album_slug: '{{ $song->album?->slug ?? '' }}',
                 artist_id: {{ $song->artist?->artist_id ?? ($song->album?->artist?->artist_id ?? 'null') }},
                 artist_slug: '{{ $song->artist?->slug ?? ($song->album?->artist?->slug ?? '') }}',
-                is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+                is_favorite: {{ is_favorited('song', $song->song_id) ? 'true' : 'false' }}
             });
         }, 500);
     "
@@ -115,7 +115,7 @@
                         album_slug: '{{ $song->album?->slug ?? '' }}',
                         artist_id: {{ $song->artist?->artist_id ?? ($song->album?->artist?->artist_id ?? 'null') }},
                         artist_slug: '{{ $song->artist?->slug ?? ($song->album?->artist?->slug ?? '') }}',
-                        is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+                        is_favorite: {{ is_favorited('song', $song->song_id) ? 'true' : 'false' }}
                     })"
                     class="p-2 transition rounded-full hover:bg-white/10 text-gray-400 hover:text-white">
                 <i class="fas fa-ellipsis-v text-sm"></i>

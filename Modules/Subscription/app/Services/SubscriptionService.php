@@ -11,6 +11,12 @@ use Carbon\Carbon;
 class SubscriptionService
 {
     /**
+     * 🚀 Request-level cache for checkUserAccess()
+     * Prevents duplicate queries when called from header, sidebar, etc.
+     */
+    protected static array $accessCache = [];
+
+    /**
      * Create a new subscription for a user
      */
     public function create(User $user, SubscriptionPlan $plan, string $cycle = 'monthly'): Subscription
@@ -273,30 +279,42 @@ class SubscriptionService
     }
 
     /**
-     * Check user access (FRESH - no cache!)
+     * Check user access (with request-level cache)
+     * 🚀 OPTIMIZED: Same user's access is cached per request (3 queries → 1 query)
      * @param User $user
      * @return array
      */
     public function checkUserAccess(User $user): array
     {
-        // 1. Subscription kontrolü (FRESH - cache yok!)
+        $cacheKey = 'user_' . $user->id;
+
+        // Return cached result if available
+        if (isset(self::$accessCache[$cacheKey])) {
+            return self::$accessCache[$cacheKey];
+        }
+
+        // 1. Subscription kontrolü
         $sub = Subscription::where('user_id', $user->id)
             ->where('status', 'active')
             ->where('current_period_end', '>', now())
             ->first();
 
         if ($sub) {
-            return [
+            $result = [
                 'status' => 'unlimited',
                 'is_trial' => $sub->plan->is_trial ?? false,
                 'expires_at' => $sub->current_period_end,
             ];
+        } else {
+            // 2. Abonelik yok/bitti - subscription gerekli
+            $result = [
+                'status' => 'subscription_required',
+                'message' => 'Müzik dinlemek için premium üyelik gereklidir',
+            ];
         }
 
-        // 2. Abonelik yok/bitti - subscription gerekli
-        return [
-            'status' => 'subscription_required',
-            'message' => 'Müzik dinlemek için premium üyelik gereklidir',
-        ];
+        // Cache for this request
+        self::$accessCache[$cacheKey] = $result;
+        return $result;
     }
 }

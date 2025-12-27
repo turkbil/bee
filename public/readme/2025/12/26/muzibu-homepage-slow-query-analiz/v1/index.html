@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Ana Sayfa Performans Analizi - 2864ms</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="max-w-6xl mx-auto p-6">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold">KRİTİK</span>
+                <span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm">Performans Analizi</span>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">Muzibu Ana Sayfa - 2864ms Yavaşlık Analizi</h1>
+            <p class="text-slate-400">Telescope Request ID: a0afb058-10f2-42f0-8198-f614a964e32e</p>
+            <p class="text-slate-500 text-sm">26 Aralık 2025 - muzibu.com.tr (Tenant 1001)</p>
+        </header>
+
+        <!-- Özet -->
+        <div class="bg-red-900/30 border border-red-700 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-bold text-red-400 mb-4">📊 Özet İstatistikler</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-slate-800 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-red-400">2864ms</div>
+                    <div class="text-slate-400 text-sm">Toplam Süre</div>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-orange-400">284</div>
+                    <div class="text-slate-400 text-sm">SQL Query</div>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-yellow-400">86</div>
+                    <div class="text-slate-400 text-sm">View Render</div>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-blue-400">18MB</div>
+                    <div class="text-slate-400 text-sm">Memory</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-400 mb-4">📝 Basit Anlatım (Herkes İçin)</h2>
+            <div class="space-y-4 text-slate-300">
+                <p>
+                    <strong>Ana sayfa neden yavaş?</strong> Sayfa açıldığında sistem veritabanına
+                    <span class="text-red-400 font-bold">284 kez</span> soru soruyor. Bunun
+                    <span class="text-red-400 font-bold">174'ü aynı soru</span>:
+                    "Bu içerik favorilere ekli mi?"
+                </p>
+
+                <div class="bg-slate-800 rounded p-4">
+                    <p class="text-sm">
+                        <strong>Benzetme:</strong> Bir markete gittiğinizi düşünün. Her ürün için
+                        "Bu ürün indirimde mi?" diye kasaya koşup soruyorsunuz. Oysa tek seferde
+                        "Hangi ürünler indirimde?" diye sorsanız işlem çok hızlı olurdu.
+                    </p>
+                </div>
+
+                <p>
+                    <strong>Sonuç:</strong> Sayfa açılması <span class="text-red-400">2.8 saniye</span> sürüyor.
+                    Optimize edilirse <span class="text-green-400">0.5 saniye</span> altına düşürülebilir.
+                </p>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-bold text-blue-400 mb-4">🔧 Teknik Detaylar (Geliştiriciler İçin)</h2>
+
+            <!-- En Büyük Sorun -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-red-400 mb-3">🚨 #1 - N+1 Problem: Favorites Check (174 query)</h3>
+                <div class="bg-slate-800 rounded p-4 mb-3 overflow-x-auto">
+                    <code class="text-sm text-yellow-300">
+                        select exists(select * from `favorites` where `favorites`.`favoritable_type` = 'Modules\Muzibu\App\Models\...' and ...)
+                    </code>
+                </div>
+                <ul class="text-slate-300 space-y-2 text-sm">
+                    <li>• <strong>Toplam Süre:</strong> 82.86ms (174 query x ~0.5ms)</li>
+                    <li>• <strong>Sorun:</strong> Her şarkı/playlist/album için ayrı ayrı favorite kontrolü</li>
+                    <li>• <strong>Kaynak:</strong> <code class="bg-slate-700 px-2 py-1 rounded">isFavorite()</code> metodu Blade'de loop içinde çağrılıyor</li>
+                </ul>
+                <div class="mt-3 bg-green-900/30 border border-green-700 rounded p-3">
+                    <p class="text-green-400 font-semibold mb-2">✅ Çözüm:</p>
+                    <p class="text-slate-300 text-sm">
+                        Controller'da tüm favorileri tek sorguda çek, view'a geçir.
+                        <code class="bg-slate-700 px-1 rounded">$favoriteIds = auth()->user()->favorites()->pluck('favoritable_id')</code>
+                    </p>
+                </div>
+            </div>
+
+            <!-- İkinci Sorun -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-orange-400 mb-3">⚠️ #2 - Playlist Songs Count Subquery (66.87ms)</h3>
+                <div class="bg-slate-800 rounded p-4 mb-3 overflow-x-auto">
+                    <code class="text-sm text-yellow-300">
+                        select `muzibu_playlists`.*, (select count(*) from `muzibu_songs` inner join `muzibu_playlist_song`...) as songs_count
+                    </code>
+                </div>
+                <ul class="text-slate-300 space-y-2 text-sm">
+                    <li>• <strong>Sorun:</strong> Her playlist için subquery ile şarkı sayısı hesaplanıyor</li>
+                    <li>• <strong>Çözüm:</strong> <code class="bg-slate-700 px-2 py-1 rounded">withCount('songs')</code> kullan veya songs_count field'ı cache'le</li>
+                </ul>
+            </div>
+
+            <!-- Üçüncü Sorun -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-orange-400 mb-3">⚠️ #3 - Album Songs Count Subquery (35.21ms)</h3>
+                <div class="bg-slate-800 rounded p-4 mb-3 overflow-x-auto">
+                    <code class="text-sm text-yellow-300">
+                        select `muzibu_albums`.*, (select count(*) from `muzibu_songs` where...) as `songs_count`
+                    </code>
+                </div>
+                <ul class="text-slate-300 space-y-2 text-sm">
+                    <li>• <strong>Çözüm:</strong> <code class="bg-slate-700 px-2 py-1 rounded">songs_count</code> field'ı ekle, şarkı eklendiğinde increment yap</li>
+                </ul>
+            </div>
+
+            <!-- Dördüncü Sorun -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-yellow-400 mb-3">📋 #4 - Settings Queries (~15 query, 41ms)</h3>
+                <ul class="text-slate-300 space-y-2 text-sm">
+                    <li>• Her <code class="bg-slate-700 px-2 py-1 rounded">setting('key')</code> çağrısı 2 query atıyor</li>
+                    <li>• <strong>Çözüm:</strong> Settings service'te cache kullan veya eager load</li>
+                </ul>
+            </div>
+
+            <!-- Beşinci Sorun -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-yellow-400 mb-3">📋 #5 - Subscriptions Check (3 query, 23ms)</h3>
+                <ul class="text-slate-300 space-y-2 text-sm">
+                    <li>• Aynı kullanıcının subscription'ı 3 kez kontrol ediliyor</li>
+                    <li>• <strong>Çözüm:</strong> Session'a cache'le veya UserService'te singleton kullan</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Query Breakdown -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-bold mb-4">📈 Query Dağılımı (En Yavaşlar)</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-600">
+                            <th class="text-left py-2 px-3">Süre</th>
+                            <th class="text-left py-2 px-3">Query</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 px-3 text-red-400 font-mono">61.58ms</td>
+                            <td class="py-2 px-3">Playlist songs count (subquery)</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 px-3 text-red-400 font-mono">35.21ms</td>
+                            <td class="py-2 px-3">Album songs_count (subquery)</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 px-3 text-orange-400 font-mono">28.86ms</td>
+                            <td class="py-2 px-3">Playlist songs pivot query</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 px-3 text-orange-400 font-mono">27.06ms</td>
+                            <td class="py-2 px-3">Corporate accounts exists check</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 px-3 text-orange-400 font-mono">26.90ms</td>
+                            <td class="py-2 px-3">Genres with songs exists</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 px-3 text-yellow-400 font-mono">21.68ms</td>
+                            <td class="py-2 px-3">User subscription check</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-2 px-3 text-yellow-400 font-mono">18.29ms</td>
+                            <td class="py-2 px-3">Settings values (setting_id = 241)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Öncelikli Düzeltmeler -->
+        <div class="bg-purple-900/20 border border-purple-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-bold text-purple-400 mb-4">🎯 Öncelikli Düzeltmeler</h2>
+            <div class="space-y-4">
+                <div class="flex items-start gap-3">
+                    <span class="bg-red-600 text-white px-2 py-1 rounded text-xs font-bold">P1</span>
+                    <div>
+                        <p class="font-semibold">Favorites N+1 Çözümü</p>
+                        <p class="text-slate-400 text-sm">174 query → 1 query = ~80ms kazanç</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="bg-orange-600 text-white px-2 py-1 rounded text-xs font-bold">P2</span>
+                    <div>
+                        <p class="font-semibold">Playlist/Album songs_count Cache</p>
+                        <p class="text-slate-400 text-sm">Subquery → Cached field = ~100ms kazanç</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="bg-yellow-600 text-white px-2 py-1 rounded text-xs font-bold">P3</span>
+                    <div>
+                        <p class="font-semibold">User Subscription Session Cache</p>
+                        <p class="text-slate-400 text-sm">3 query → Session = ~23ms kazanç</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs font-bold">P4</span>
+                    <div>
+                        <p class="font-semibold">Settings Eager Loading</p>
+                        <p class="text-slate-400 text-sm">~15 query → 1 query = ~40ms kazanç</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Beklenen Sonuç -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-400 mb-4">🚀 Beklenen İyileşme</h2>
+            <div class="grid grid-cols-2 gap-6">
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-red-400 mb-2">2864ms</div>
+                    <div class="text-slate-400">Şu anki durum</div>
+                    <div class="text-sm text-slate-500">284 query</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-green-400 mb-2">~400ms</div>
+                    <div class="text-slate-400">Optimize sonrası (hedef)</div>
+                    <div class="text-sm text-slate-500">~30 query</div>
+                </div>
+            </div>
+            <p class="text-center text-slate-400 mt-4">
+                <strong>7x</strong> hızlanma potansiyeli
+            </p>
+        </div>
+
+        <!-- İlgili Dosyalar -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-bold mb-4">📁 İlgili Dosyalar</h2>
+            <ul class="space-y-2 text-sm text-slate-300 font-mono">
+                <li>• Modules/Muzibu/app/Http/Controllers/Front/HomeController.php</li>
+                <li>• Modules/Muzibu/app/Models/Song.php (isFavorite trait)</li>
+                <li>• Modules/Muzibu/app/Models/Playlist.php (songs count)</li>
+                <li>• Modules/Muzibu/app/Models/Album.php (songs count)</li>
+                <li>• resources/views/themes/muzibu/index.blade.php</li>
+                <li>• resources/views/components/muzibu/song-card.blade.php</li>
+                <li>• resources/views/components/muzibu/playlist-card.blade.php</li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-700 pt-6">
+            <p>Claude AI - Performans Analizi</p>
+            <p>26 Aralık 2025</p>
+        </footer>
+    </div>
+</body>
+</html>

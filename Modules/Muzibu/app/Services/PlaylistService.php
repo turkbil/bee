@@ -161,9 +161,9 @@ class PlaylistService
             $newPlaylist->is_active = true;
             $newPlaylist->save();
 
-            // Şarkıları kopyala (position ile)
+            // Şarkıları kopyala (position ile) - cache count'ları da güncelle
             foreach ($sourcePlaylist->songs as $song) {
-                $newPlaylist->songs()->attach($song->song_id, [
+                $newPlaylist->attachSongWithCache($song, [
                     'position' => $song->pivot->position,
                     'created_at' => now(),
                     'updated_at' => now(),
@@ -257,12 +257,13 @@ class PlaylistService
             // Model instance oluştur (ilişkiler için)
             $playlist = Playlist::find($playlistId);
 
-            // Şarkıları ekle (varsa)
+            // Şarkıları ekle (varsa) - cache count'ları da güncelle
             if (!empty($data['song_ids']) && is_array($data['song_ids'])) {
                 foreach ($data['song_ids'] as $index => $songId) {
                     // Şarkının var olduğunu kontrol et
-                    if (Song::find($songId)) {
-                        $playlist->songs()->attach($songId, [
+                    $song = Song::find($songId);
+                    if ($song) {
+                        $playlist->attachSongWithCache($song, [
                             'position' => $index + 1,
                             'created_at' => now(),
                             'updated_at' => now(),
@@ -359,8 +360,8 @@ class PlaylistService
             // Son position'ı bul
             $maxPosition = $playlist->songs()->max('muzibu_playlist_song.position') ?? 0;
 
-            // Şarkıyı ekle
-            $playlist->songs()->attach($songId, [
+            // Şarkıyı ekle (cache count'ları da güncelle)
+            $playlist->attachSongWithCache($song, [
                 'position' => $maxPosition + 1,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -412,8 +413,8 @@ class PlaylistService
                 ];
             }
 
-            // Şarkıyı çıkar
-            $playlist->songs()->detach($songId);
+            // Şarkıyı çıkar (cache count'ları da güncelle)
+            $playlist->detachSongWithCache($songId);
 
             Log::info('Song removed from playlist', [
                 'playlist_id' => $playlistId,

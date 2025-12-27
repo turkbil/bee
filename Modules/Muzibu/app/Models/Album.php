@@ -14,10 +14,11 @@ use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 use Modules\Favorite\App\Traits\HasFavorites;
 use Modules\ReviewSystem\App\Traits\HasReviews;
+use Modules\Muzibu\App\Traits\HasCachedCounts;
 
 class Album extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, HasFavorites, HasReviews, Searchable;
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, HasFavorites, HasReviews, Searchable, HasCachedCounts;
 
     protected $table = 'muzibu_albums';
     protected $primaryKey = 'album_id';
@@ -100,11 +101,31 @@ class Album extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
-     * Toplam süreyi hesapla
+     * HasCachedCounts configuration
+     * Defines cached count fields and their calculators
+     */
+    protected function getCachedCountsConfig(): array
+    {
+        return [
+            'songs_count' => fn() => $this->songs()->where('is_active', true)->count(),
+            'total_duration' => fn() => $this->songs()->where('is_active', true)->sum('duration'),
+        ];
+    }
+
+    /**
+     * Songs count accessor (cached)
+     */
+    public function getSongsCountAttribute(): int
+    {
+        return $this->getCachedCount('songs_count');
+    }
+
+    /**
+     * Toplam süreyi hesapla (cached)
      */
     public function getTotalDuration(): int
     {
-        return $this->songs->sum('duration');
+        return $this->getCachedCount('total_duration');
     }
 
     /**

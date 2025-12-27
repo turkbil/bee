@@ -105,7 +105,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
             @auth
             <button
                 x-data="{
-                    favorited: {{ auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
+                    favorited: {{ is_favorited('playlist', $playlist->id) ? 'true' : 'false' }},
                     count: {{ method_exists($playlist, 'favoritesCount') ? $playlist->favoritesCount() : 0 }},
                     loading: false,
                     toggle() {

@@ -141,15 +141,16 @@ if (!function_exists('tenant_name')) {
 if (!function_exists('tenant_domain')) {
     /**
      * Aktif tenant'ın domain adresini döndürür, tenant yoksa null döner
-     * 
+     * 🚀 CACHED - N+1 query fix
+     *
      * @return string|null
      */
     function tenant_domain()
     {
         if (is_tenant()) {
-            return tenant()->domains->first()->domain ?? null;
+            return TenantHelpers::getTenantDomain(tenant()->id);
         }
-        
+
         return null;
     }
 }

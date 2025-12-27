@@ -34,14 +34,22 @@ class TelescopeServiceProvider extends ServiceProvider
             );
 
             // Telescope tag'lerine tenant bilgisi ekle
-            Telescope::tag(function (IncomingEntry $entry) {
+            // 🚀 OPTIMIZED: Cache tenant domain to avoid duplicate queries
+            static $cachedTenantTags = null;
+
+            Telescope::tag(function (IncomingEntry $entry) use (&$cachedTenantTags) {
+                // Return cached tags if available
+                if ($cachedTenantTags !== null) {
+                    return $cachedTenantTags;
+                }
+
                 $tags = [];
 
                 // Tenant bilgisini tag olarak ekle
                 if (function_exists('tenant') && tenant()) {
                     $tags[] = 'tenant:' . tenant()->id;
 
-                    // Domain bilgisini de ekle
+                    // Domain bilgisini de ekle (single query, then cached)
                     $domains = tenant()->domains ?? [];
                     if (!empty($domains)) {
                         $domain = is_object($domains[0]) ? $domains[0]->domain : $domains[0];
@@ -51,6 +59,7 @@ class TelescopeServiceProvider extends ServiceProvider
                     $tags[] = 'tenant:central';
                 }
 
+                $cachedTenantTags = $tags;
                 return $tags;
             });
 

@@ -6,13 +6,13 @@
 
 <a @if($preview)
        href="/genres/{{ $genre->getTranslation('slug', app()->getLocale()) }}"
-       @click="if (window.innerWidth >= 1024) { $event.preventDefault(); $store.sidebar.showPreview('genre', {{ $genre->genre_id }}, {
+       @click="if (window.innerWidth >= 768) { $event.preventDefault(); $store.sidebar.showPreview('genre', {{ $genre->genre_id }}, {
            type: 'Genre',
            id: {{ $genre->genre_id }},
            title: '{{ addslashes($genre->getTranslation('title', app()->getLocale())) }}',
            slug: '{{ $genre->getTranslation('slug', app()->getLocale()) }}',
            cover: '{{ $genre->iconMedia ? thumb($genre->iconMedia, 300, 300, ['scale' => 1]) : '' }}',
-           is_favorite: {{ auth()->check() && method_exists($genre, 'isFavoritedBy') && $genre->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+           is_favorite: {{ is_favorited('genre', $genre->genre_id) ? 'true' : 'false' }}
        }); }"
    @else
        href="/genres/{{ $genre->getTranslation('slug', app()->getLocale()) }}"
@@ -23,7 +23,7 @@
        id: {{ $genre->genre_id }},
        title: '{{ addslashes($genre->getTranslation('title', app()->getLocale())) }}',
        cover_url: '{{ $genre->iconMedia ? thumb($genre->iconMedia, 300, 300, ['scale' => 1]) : '' }}',
-       is_favorite: {{ auth()->check() && method_exists($genre, 'isFavoritedBy') && $genre->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+       is_favorite: {{ is_favorited('genre', $genre->genre_id) ? 'true' : 'false' }}
    })"
    x-data="{
        touchTimer: null,
@@ -40,7 +40,7 @@
                id: {{ $genre->genre_id }},
                title: '{{ addslashes($genre->getTranslation('title', app()->getLocale())) }}',
                cover_url: '{{ $genre->iconMedia ? thumb($genre->iconMedia, 300, 300, ['scale' => 1]) : '' }}',
-               is_favorite: {{ auth()->check() && method_exists($genre, 'isFavoritedBy') && $genre->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+               is_favorite: {{ is_favorited('genre', $genre->genre_id) ? 'true' : 'false' }}
            });
        }, 500);
    "
@@ -86,7 +86,7 @@
                 id: {{ $genre->genre_id }},
                 title: '{{ addslashes($genre->getTranslation('title', app()->getLocale())) }}',
                 cover_url: '{{ $genre->iconMedia ? thumb($genre->iconMedia, 300, 300, ['scale' => 1]) : '' }}',
-                is_favorite: {{ auth()->check() && method_exists($genre, 'isFavoritedBy') && $genre->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+                is_favorite: {{ is_favorited('genre', $genre->genre_id) ? 'true' : 'false' }}
             })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
                 <i class="fas fa-ellipsis-v text-sm"></i>
             </button>

@@ -390,9 +390,6 @@
             window.playSector ? window.playSector($event.detail.sectorId) : $store.player.playSector($event.detail.sectorId);
         }
       ">
-    {{-- Mobile Menu Overlay - Sidebar açıkken arka planı karartır --}}
-    <div class="muzibu-mobile-overlay" onclick="toggleMobileMenu()"></div>
-
     {{-- Hidden Audio Elements --}}
     <audio id="hlsAudio" x-ref="hlsAudio" class="hidden"></audio>
     <audio id="hlsAudioNext" class="hidden"></audio>
@@ -418,7 +415,7 @@
             'muzibu.my-playlists',
         ]);
 
-        // Grid column classes - sağ blok varsa 3 kolon, yoksa 2 kolon
+        // Grid column classes - sağ sidebar varsa 3 kolon, yoksa 2 kolon
         $gridCols = $showRightSidebar
             ? 'xl:grid-cols-[220px_1fr_320px] 2xl:grid-cols-[220px_1fr_360px]'
             : 'xl:grid-cols-[220px_1fr] 2xl:grid-cols-[220px_1fr]';
@@ -431,9 +428,13 @@
     >
         @include('themes.muzibu.components.header')
         @include('themes.muzibu.components.sidebar-left')
+
+        {{-- Mobile Menu Overlay - Grid içinde (sidebar ile aynı stacking context) --}}
+        <div class="muzibu-mobile-overlay" onclick="toggleMobileMenu()"></div>
+
         @include('themes.muzibu.components.main-content')
 
-        {{-- Right Sidebar - XL+ screens, music pages only --}}
+        {{-- Right Sidebar - XL+ screens (1280px+), music pages only --}}
         @if($showRightSidebar)
             <aside class="muzibu-right-sidebar row-start-2 overflow-y-auto rounded-2xl hidden xl:block">
                 @include('themes.muzibu.components.sidebar-right')
@@ -469,9 +470,6 @@
     @include('themes.muzibu.components.rating-modal')
     @include('themes.muzibu.components.playlist-select-modal')
 
-    {{-- 🧪 DEBUG PANEL - Queue & Playback Debugger --}}
-    @include('themes.muzibu.components.debug-panel')
-
     {{-- 🍪 COOKIE CONSENT - Design 2 (Compact Modern) --}}
     @include('themes.muzibu.components.cookie-consent')
 
@@ -494,7 +492,6 @@
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/api.js') }}"></script>
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/session.js') }}"></script>
     <script src="{{ asset('themes/muzibu/js/player/features/spa-router.js') }}?v={{ filemtime(public_path('themes/muzibu/js/player/features/spa-router.js')) }}"></script>
-    <script src="{{ versioned_asset('themes/muzibu/js/player/features/debug.js') }}"></script>
     {{-- ❌ REMOVED: play-helpers.js (already loaded in HEAD) --}}
     <script src="{{ versioned_asset('themes/muzibu/js/global-helpers.js') }}"></script>
 

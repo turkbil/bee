@@ -84,7 +84,7 @@
     @if($relatedSongs && $relatedSongs->count() > 0)
         <div class="mt-10">
             <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                <i class="fas fa-compact-disc text-muzibu-coral"></i>
+                <i class="fas fa-record-vinyl text-muzibu-coral"></i>
                 Aynı Albümden
             </h2>
 

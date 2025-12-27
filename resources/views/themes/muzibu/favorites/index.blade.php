@@ -35,7 +35,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
             @if(($counts['albums'] ?? 0) > 0)
                 <a href="{{ route('muzibu.favorites', ['type' => 'albums']) }}" data-spa
                    class="px-4 py-3 text-sm font-medium whitespace-nowrap flex items-center gap-2 border-b-2 {{ $type === 'albums' ? 'border-muzibu-coral text-white' : 'border-transparent text-gray-400 hover:text-white' }}">
-                    <i class="fas fa-compact-disc"></i>
+                    <i class="fas fa-record-vinyl"></i>
                     <span>Albümler</span>
                     <span class="px-2 py-0.5 bg-white/10 rounded-full text-xs">{{ $counts['albums'] }}</span>
                 </a>
@@ -44,7 +44,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
             @if(($counts['playlists'] ?? 0) > 0)
                 <a href="{{ route('muzibu.favorites', ['type' => 'playlists']) }}" data-spa
                    class="px-4 py-3 text-sm font-medium whitespace-nowrap flex items-center gap-2 border-b-2 {{ $type === 'playlists' ? 'border-muzibu-coral text-white' : 'border-transparent text-gray-400 hover:text-white' }}">
-                    <i class="fas fa-list"></i>
+                    <i class="fas fa-list-music"></i>
                     <span>Playlistler</span>
                     <span class="px-2 py-0.5 bg-white/10 rounded-full text-xs">{{ $counts['playlists'] }}</span>
                 </a>

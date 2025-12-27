@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Responsive Sidebar Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .breakpoint-card { transition: all 0.3s ease; }
+        .breakpoint-card:hover { transform: translateY(-2px); }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="mb-10">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-bold rounded-full border border-purple-500/30">
+                    <i class="fas fa-mobile-alt mr-1"></i> RESPONSIVE ANALİZ
+                </span>
+                <span class="text-slate-500 text-sm">27 Aralık 2025</span>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">Muzibu Responsive Sidebar Analizi</h1>
+            <p class="text-slate-400">Hangi çözünürlükte hangi sidebar görünüyor? Detaylı breakpoint haritası.</p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-8">
+            <h3 class="text-lg font-bold text-green-400 mb-3"><i class="fas fa-lightbulb mr-2"></i>Basit Anlatım (Herkes İçin)</h3>
+            <p class="text-slate-300 mb-4">
+                Muzibu'da <strong>3 ana bölüm</strong> var: Sol menü (navigasyon), Ana içerik (şarkılar/playlistler), Sağ panel (yeni/popüler şarkılar).
+            </p>
+            <ul class="space-y-2 text-slate-300">
+                <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Telefonda (0-767px):</strong> Sadece ana içerik görünür. Sol menü hamburger butonu ile açılır.</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Tablette (768-1023px):</strong> Aynı telefon gibi, hamburger menü kullanılır.</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Küçük Laptop (1024-1279px):</strong> Sol menü görünür, sağ panel hala gizli.</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Büyük Ekran (1280px+):</strong> Her üç bölüm de görünür - tam deneyim!</li>
+            </ul>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-xl p-6 mb-8">
+            <h3 class="text-lg font-bold text-blue-400 mb-3"><i class="fas fa-code mr-2"></i>Teknik Detaylar (Geliştiriciler İçin)</h3>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h4 class="font-semibold text-white mb-2">Tailwind Breakpoint'ler:</h4>
+                    <ul class="space-y-1 text-slate-300 font-mono text-xs">
+                        <li><span class="text-yellow-400">sm:</span> 640px</li>
+                        <li><span class="text-yellow-400">md:</span> 768px</li>
+                        <li><span class="text-orange-400">lg:</span> 1024px <span class="text-slate-500">(Sol sidebar açılır)</span></li>
+                        <li><span class="text-red-400">xl:</span> 1280px <span class="text-slate-500">(Sağ sidebar açılır)</span></li>
+                        <li><span class="text-purple-400">2xl:</span> 1536px</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white mb-2">İlgili Dosyalar:</h4>
+                    <ul class="space-y-1 text-slate-400 text-xs">
+                        <li><i class="fas fa-file-code text-blue-400 mr-1"></i> resources/views/themes/muzibu/layouts/app.blade.php</li>
+                        <li><i class="fas fa-file-code text-blue-400 mr-1"></i> resources/views/themes/muzibu/components/sidebar-left.blade.php</li>
+                        <li><i class="fas fa-file-code text-blue-400 mr-1"></i> resources/views/themes/muzibu/components/sidebar-right.blade.php</li>
+                        <li><i class="fas fa-file-code text-blue-400 mr-1"></i> public/themes/muzibu/css/muzibu-layout.css</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Breakpoint Haritası -->
+        <h2 class="text-2xl font-bold mb-6"><i class="fas fa-map mr-2 text-orange-400"></i>Breakpoint Haritası</h2>
+
+        <div class="overflow-x-auto mb-10">
+            <table class="w-full text-sm border-collapse">
+                <thead>
+                    <tr class="bg-slate-800/50">
+                        <th class="px-4 py-3 text-left border border-slate-700">Çözünürlük</th>
+                        <th class="px-4 py-3 text-center border border-slate-700">Hamburger</th>
+                        <th class="px-4 py-3 text-center border border-slate-700">Sol Sidebar</th>
+                        <th class="px-4 py-3 text-center border border-slate-700">Ana İçerik</th>
+                        <th class="px-4 py-3 text-center border border-slate-700">Sağ Sidebar</th>
+                        <th class="px-4 py-3 text-center border border-slate-700">Arama Kutusu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Mobile -->
+                    <tr class="bg-red-900/10 hover:bg-red-900/20 transition-colors">
+                        <td class="px-4 py-3 border border-slate-700">
+                            <span class="font-bold text-red-400">0 - 639px</span>
+                            <div class="text-xs text-slate-500">Küçük Telefon</div>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <i class="fas fa-check text-green-400"></i>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-red-400"><i class="fas fa-times"></i> Gizli</span>
+                            <div class="text-xs text-slate-500">(Hamburger ile açılır)</div>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-green-400"><i class="fas fa-check"></i> Tek Kolon</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-red-400"><i class="fas fa-times"></i> Gizli</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-red-400"><i class="fas fa-times"></i> Gizli</span>
+                        </td>
+                    </tr>
+
+                    <!-- SM -->
+                    <tr class="bg-orange-900/10 hover:bg-orange-900/20 transition-colors">
+                        <td class="px-4 py-3 border border-slate-700">
+                            <span class="font-bold text-orange-400">640 - 767px</span>
+                            <div class="text-xs text-slate-500">Büyük Telefon (sm)</div>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <i class="fas fa-check text-green-400"></i>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-red-400"><i class="fas fa-times"></i> Gizli</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-green-400"><i class="fas fa-check"></i> Tek Kolon</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-red-400"><i class="fas fa-times"></i> Gizli</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-red-400"><i class="fas fa-times"></i> Gizli</span>
+                        </td>
+                    </tr>
+
+                    <!-- MD -->
+                    <tr class="bg-yellow-900/10 hover:bg-yellow-900/20 transition-colors">
+                        <td class="px-4 py-3 border border-slate-700">
+                            <span class="font-bold text-yellow-400">768 - 1023px</span>
+                            <div class="text-xs text-slate-500">Tablet (md)</div>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <i class="fas fa-check text-green-400"></i>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-red-400"><i class="fas fa-times"></i> Gizli</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-green-400"><i class="fas fa-check"></i> Tek Kolon</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-red-400"><i class="fas fa-times"></i> Gizli</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-red-400"><i class="fas fa-times"></i> Gizli</span>
+                        </td>
+                    </tr>
+
+                    <!-- LG -->
+                    <tr class="bg-green-900/10 hover:bg-green-900/20 transition-colors">
+                        <td class="px-4 py-3 border border-slate-700">
+                            <span class="font-bold text-green-400">1024 - 1279px</span>
+                            <div class="text-xs text-slate-500">Laptop (lg)</div>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-red-400"><i class="fas fa-times"></i> Gizli</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-green-400"><i class="fas fa-check"></i> 220px</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-green-400"><i class="fas fa-check"></i> Kalan Alan</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-red-400"><i class="fas fa-times"></i> Gizli</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-green-400"><i class="fas fa-check"></i> Görünür</span>
+                        </td>
+                    </tr>
+
+                    <!-- XL -->
+                    <tr class="bg-blue-900/10 hover:bg-blue-900/20 transition-colors">
+                        <td class="px-4 py-3 border border-slate-700">
+                            <span class="font-bold text-blue-400">1280 - 1535px</span>
+                            <div class="text-xs text-slate-500">Büyük Laptop (xl)</div>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-red-400"><i class="fas fa-times"></i> Gizli</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-green-400"><i class="fas fa-check"></i> 220px</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-green-400"><i class="fas fa-check"></i> Kalan Alan</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-green-400"><i class="fas fa-check"></i> 320px</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-green-400"><i class="fas fa-check"></i> Görünür</span>
+                        </td>
+                    </tr>
+
+                    <!-- 2XL -->
+                    <tr class="bg-purple-900/10 hover:bg-purple-900/20 transition-colors">
+                        <td class="px-4 py-3 border border-slate-700">
+                            <span class="font-bold text-purple-400">1536px+</span>
+                            <div class="text-xs text-slate-500">Masaüstü (2xl)</div>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-red-400"><i class="fas fa-times"></i> Gizli</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-green-400"><i class="fas fa-check"></i> 220px</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-green-400"><i class="fas fa-check"></i> Kalan Alan</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-green-400"><i class="fas fa-check"></i> 360px</span>
+                        </td>
+                        <td class="px-4 py-3 text-center border border-slate-700">
+                            <span class="text-green-400"><i class="fas fa-check"></i> Görünür</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Visual Diagram -->
+        <h2 class="text-2xl font-bold mb-6"><i class="fas fa-desktop mr-2 text-cyan-400"></i>Görsel Diagram</h2>
+
+        <div class="grid md:grid-cols-3 gap-6 mb-10">
+
+            <!-- Mobile Layout -->
+            <div class="breakpoint-card bg-slate-800/50 rounded-xl p-4 border border-slate-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-red-400"><i class="fas fa-mobile-alt mr-2"></i>Mobil</h3>
+                    <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">0-1023px</span>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-3 aspect-[9/16] flex flex-col">
+                    <!-- Header -->
+                    <div class="bg-slate-700 h-8 rounded flex items-center px-2 mb-2">
+                        <i class="fas fa-bars text-xs text-slate-400"></i>
+                        <span class="text-xs text-slate-500 ml-2">Logo</span>
+                    </div>
+                    <!-- Main Content -->
+                    <div class="flex-1 bg-slate-800 rounded p-2">
+                        <div class="text-xs text-slate-500 text-center">Ana İçerik</div>
+                        <div class="mt-2 space-y-1">
+                            <div class="h-2 bg-slate-700 rounded w-full"></div>
+                            <div class="h-2 bg-slate-700 rounded w-4/5"></div>
+                            <div class="h-2 bg-slate-700 rounded w-3/5"></div>
+                        </div>
+                    </div>
+                    <!-- Player -->
+                    <div class="bg-slate-700 h-12 rounded mt-2 flex items-center px-2">
+                        <div class="w-8 h-8 bg-slate-600 rounded"></div>
+                        <div class="flex-1 mx-2">
+                            <div class="h-1.5 bg-slate-600 rounded w-full"></div>
+                        </div>
+                        <i class="fas fa-play text-xs text-slate-500"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-slate-500 mt-3 text-center">Sol sidebar hamburger ile açılır</p>
+            </div>
+
+            <!-- Laptop Layout -->
+            <div class="breakpoint-card bg-slate-800/50 rounded-xl p-4 border border-slate-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-green-400"><i class="fas fa-laptop mr-2"></i>Laptop</h3>
+                    <span class="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded">1024-1279px</span>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-3 aspect-[16/10] flex flex-col">
+                    <!-- Header -->
+                    <div class="bg-slate-700 h-6 rounded flex items-center px-2 mb-2">
+                        <span class="text-xs text-slate-500">Logo</span>
+                        <div class="flex-1 mx-4 h-4 bg-slate-600 rounded-full"></div>
+                        <i class="fas fa-user text-xs text-slate-500"></i>
+                    </div>
+                    <!-- Body -->
+                    <div class="flex-1 flex gap-2">
+                        <!-- Left Sidebar -->
+                        <div class="w-1/4 bg-green-900/30 border border-green-800/50 rounded p-1">
+                            <div class="text-[8px] text-green-400 text-center mb-1">Sol Menü</div>
+                            <div class="space-y-1">
+                                <div class="h-1.5 bg-green-800/50 rounded"></div>
+                                <div class="h-1.5 bg-green-800/50 rounded"></div>
+                                <div class="h-1.5 bg-green-800/50 rounded"></div>
+                            </div>
+                        </div>
+                        <!-- Main Content -->
+                        <div class="flex-1 bg-slate-800 rounded p-1">
+                            <div class="text-[8px] text-slate-500 text-center">Ana İçerik</div>
+                        </div>
+                    </div>
+                    <!-- Player -->
+                    <div class="bg-slate-700 h-6 rounded mt-2"></div>
+                </div>
+                <p class="text-xs text-slate-500 mt-3 text-center">Sağ sidebar hala gizli</p>
+            </div>
+
+            <!-- Desktop Layout -->
+            <div class="breakpoint-card bg-slate-800/50 rounded-xl p-4 border border-slate-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-purple-400"><i class="fas fa-desktop mr-2"></i>Masaüstü</h3>
+                    <span class="text-xs bg-purple-500/20 text-purple-400 px-2 py-1 rounded">1280px+</span>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-3 aspect-[16/10] flex flex-col">
+                    <!-- Header -->
+                    <div class="bg-slate-700 h-6 rounded flex items-center px-2 mb-2">
+                        <span class="text-xs text-slate-500">Logo</span>
+                        <div class="flex-1 mx-4 h-4 bg-slate-600 rounded-full"></div>
+                        <i class="fas fa-user text-xs text-slate-500"></i>
+                    </div>
+                    <!-- Body -->
+                    <div class="flex-1 flex gap-2">
+                        <!-- Left Sidebar -->
+                        <div class="w-1/5 bg-green-900/30 border border-green-800/50 rounded p-1">
+                            <div class="text-[8px] text-green-400 text-center">Sol</div>
+                        </div>
+                        <!-- Main Content -->
+                        <div class="flex-1 bg-slate-800 rounded p-1">
+                            <div class="text-[8px] text-slate-500 text-center">Ana İçerik</div>
+                        </div>
+                        <!-- Right Sidebar -->
+                        <div class="w-1/4 bg-blue-900/30 border border-blue-800/50 rounded p-1">
+                            <div class="text-[8px] text-blue-400 text-center">Sağ</div>
+                        </div>
+                    </div>
+                    <!-- Player -->
+                    <div class="bg-slate-700 h-6 rounded mt-2"></div>
+                </div>
+                <p class="text-xs text-slate-500 mt-3 text-center">Tam deneyim - 3 kolon</p>
+            </div>
+        </div>
+
+        <!-- Kod Referansları -->
+        <h2 class="text-2xl font-bold mb-6"><i class="fas fa-code mr-2 text-yellow-400"></i>Kod Referansları</h2>
+
+        <div class="space-y-4 mb-10">
+
+            <!-- Grid Layout -->
+            <div class="bg-slate-800/50 rounded-xl p-5 border border-slate-700">
+                <h3 class="font-bold text-white mb-3"><i class="fas fa-th-large text-orange-400 mr-2"></i>Ana Grid Layout</h3>
+                <p class="text-slate-400 text-sm mb-3">Dosya: <code class="text-yellow-400">app.blade.php:424-428</code></p>
+                <div class="bg-slate-900 rounded-lg p-4 font-mono text-xs overflow-x-auto">
+                    <pre class="text-slate-300">class="grid
+  <span class="text-green-400">grid-rows-[56px_1fr_auto]</span>     <span class="text-slate-500">// Header + Content + Player</span>
+  <span class="text-red-400">grid-cols-1</span>                    <span class="text-slate-500">// Mobile: tek kolon</span>
+  <span class="text-yellow-400">lg:grid-cols-[220px_1fr]</span>        <span class="text-slate-500">// 1024px+: Sol sidebar + İçerik</span>
+  <span class="text-blue-400">xl:grid-cols-[220px_1fr_320px]</span>  <span class="text-slate-500">// 1280px+: + Sağ sidebar 320px</span>
+  <span class="text-purple-400">2xl:grid-cols-[220px_1fr_360px]</span> <span class="text-slate-500">// 1536px+: Sağ sidebar 360px</span>
+"</pre>
+                </div>
+            </div>
+
+            <!-- Left Sidebar -->
+            <div class="bg-slate-800/50 rounded-xl p-5 border border-slate-700">
+                <h3 class="font-bold text-white mb-3"><i class="fas fa-chevron-left text-green-400 mr-2"></i>Sol Sidebar</h3>
+                <p class="text-slate-400 text-sm mb-3">Dosya: <code class="text-yellow-400">sidebar-left.blade.php:3-6</code></p>
+                <div class="bg-slate-900 rounded-lg p-4 font-mono text-xs overflow-x-auto">
+                    <pre class="text-slate-300">class="muzibu-left-sidebar row-start-2
+  <span class="text-red-400">hidden</span>       <span class="text-slate-500">// Varsayılan: Gizli</span>
+  <span class="text-green-400">lg:flex</span>      <span class="text-slate-500">// 1024px+: Görünür (flex)</span>
+  <span class="text-green-400">lg:flex-col</span>  <span class="text-slate-500">// Dikey düzen</span>
+"</pre>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="bg-slate-800/50 rounded-xl p-5 border border-slate-700">
+                <h3 class="font-bold text-white mb-3"><i class="fas fa-chevron-right text-blue-400 mr-2"></i>Sağ Sidebar</h3>
+                <p class="text-slate-400 text-sm mb-3">Dosya: <code class="text-yellow-400">app.blade.php:439</code></p>
+                <div class="bg-slate-900 rounded-lg p-4 font-mono text-xs overflow-x-auto">
+                    <pre class="text-slate-300">class="muzibu-right-sidebar row-start-2 overflow-y-auto rounded-2xl
+  <span class="text-red-400">hidden</span>     <span class="text-slate-500">// Varsayılan: Gizli</span>
+  <span class="text-blue-400">xl:block</span>   <span class="text-slate-500">// 1280px+: Görünür</span>
+"</pre>
+                </div>
+            </div>
+
+            <!-- Hamburger -->
+            <div class="bg-slate-800/50 rounded-xl p-5 border border-slate-700">
+                <h3 class="font-bold text-white mb-3"><i class="fas fa-bars text-orange-400 mr-2"></i>Hamburger Menü</h3>
+                <p class="text-slate-400 text-sm mb-3">Dosya: <code class="text-yellow-400">header.blade.php:4-9</code></p>
+                <div class="bg-slate-900 rounded-lg p-4 font-mono text-xs overflow-x-auto">
+                    <pre class="text-slate-300">class="<span class="text-orange-400">lg:hidden</span> text-muzibu-text-gray hover:text-white"
+<span class="text-slate-500">// 1024px altında görünür, üstünde gizli</span></pre>
+                </div>
+            </div>
+
+            <!-- Search Box -->
+            <div class="bg-slate-800/50 rounded-xl p-5 border border-slate-700">
+                <h3 class="font-bold text-white mb-3"><i class="fas fa-search text-cyan-400 mr-2"></i>Arama Kutusu</h3>
+                <p class="text-slate-400 text-sm mb-3">Dosya: <code class="text-yellow-400">header.blade.php:121</code></p>
+                <div class="bg-slate-900 rounded-lg p-4 font-mono text-xs overflow-x-auto">
+                    <pre class="text-slate-300">class="...
+  <span class="text-red-400">hidden</span>     <span class="text-slate-500">// Varsayılan: Gizli (mobilde)</span>
+  <span class="text-green-400">lg:block</span>   <span class="text-slate-500">// 1024px+: Görünür</span>
+"</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Sidebar Gösterim Koşulları -->
+        <h2 class="text-2xl font-bold mb-6"><i class="fas fa-filter mr-2 text-pink-400"></i>Sağ Sidebar - Hangi Sayfalarda Görünür?</h2>
+
+        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 mb-10">
+            <p class="text-slate-400 text-sm mb-4">Sağ sidebar <strong>sadece müzik sayfalarında</strong> görünür. Dashboard, Corporate, Profile gibi sayfalarda gizlenir.</p>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <h4 class="font-semibold text-green-400 mb-2"><i class="fas fa-check-circle mr-1"></i>Görünür Olduğu Sayfalar:</h4>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li><code class="text-yellow-400">muzibu.home</code> - Ana Sayfa</li>
+                        <li><code class="text-yellow-400">muzibu.songs.show</code> - Şarkı Detay</li>
+                        <li><code class="text-yellow-400">muzibu.albums.*</code> - Albümler</li>
+                        <li><code class="text-yellow-400">muzibu.artists.*</code> - Sanatçılar</li>
+                        <li><code class="text-yellow-400">muzibu.playlists.*</code> - Playlistler</li>
+                        <li><code class="text-yellow-400">muzibu.genres.*</code> - Türler</li>
+                        <li><code class="text-yellow-400">muzibu.sectors.*</code> - Sektörler</li>
+                        <li><code class="text-yellow-400">muzibu.radios.*</code> - Radyolar</li>
+                        <li><code class="text-yellow-400">muzibu.search</code> - Arama</li>
+                        <li><code class="text-yellow-400">muzibu.favorites</code> - Favoriler</li>
+                        <li><code class="text-yellow-400">muzibu.my-playlists</code> - Playlistlerim</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-red-400 mb-2"><i class="fas fa-times-circle mr-1"></i>Gizli Olduğu Sayfalar:</h4>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li><code class="text-slate-500">dashboard</code> - Kullanıcı Paneli</li>
+                        <li><code class="text-slate-500">corporate/*</code> - Kurumsal Sayfalar</li>
+                        <li><code class="text-slate-500">profile</code> - Profil</li>
+                        <li><code class="text-slate-500">subscription/*</code> - Üyelik</li>
+                        <li><code class="text-slate-500">login/register</code> - Giriş/Kayıt</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-4 p-3 bg-slate-900 rounded-lg">
+                <p class="text-xs text-slate-500">
+                    <i class="fas fa-info-circle text-blue-400 mr-1"></i>
+                    <strong>Kod:</strong> <code>app.blade.php:397-416</code> - $showRightSidebar değişkeni route kontrolü yapar
+                </p>
+            </div>
+        </div>
+
+        <!-- Özet -->
+        <div class="bg-gradient-to-r from-purple-900/30 to-blue-900/30 rounded-xl p-6 border border-purple-800/50 mb-10">
+            <h2 class="text-xl font-bold mb-4"><i class="fas fa-clipboard-list mr-2 text-purple-400"></i>Özet</h2>
+            <div class="grid md:grid-cols-3 gap-4 text-center">
+                <div class="p-4 bg-slate-800/50 rounded-lg">
+                    <div class="text-3xl font-bold text-green-400">1024px</div>
+                    <div class="text-sm text-slate-400">Sol sidebar açılır</div>
+                </div>
+                <div class="p-4 bg-slate-800/50 rounded-lg">
+                    <div class="text-3xl font-bold text-blue-400">1280px</div>
+                    <div class="text-sm text-slate-400">Sağ sidebar açılır</div>
+                </div>
+                <div class="p-4 bg-slate-800/50 rounded-lg">
+                    <div class="text-3xl font-bold text-purple-400">1536px</div>
+                    <div class="text-sm text-slate-400">Sağ sidebar genişler</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm py-6 border-t border-slate-800">
+            <i class="fas fa-robot mr-1"></i> Claude AI tarafından oluşturuldu | 27 Aralık 2025
+        </footer>
+    </div>
+</body>
+</html>

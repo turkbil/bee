@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Şarkı Tıklama - İstek Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen p-8">
+    <div class="max-w-4xl mx-auto">
+
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <span class="bg-red-500/20 text-red-400 px-4 py-1 rounded-full text-sm">Performans Sorunu</span>
+            <h1 class="text-3xl font-bold mt-4">Tek Şarkıya Tıklayınca Ne Oluyor?</h1>
+            <p class="text-slate-400 mt-2">27 Aralık 2025</p>
+        </div>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-700 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-400 mb-4">📝 Basit Anlatım</h2>
+            <p class="text-lg leading-relaxed">
+                Bir şarkıya tıkladığında sistem <strong class="text-white">40+ istek</strong> gönderiyor.
+                Bunun nedeni: sistem "acaba kullanıcı sonraki şarkılara da geçer" diye
+                <strong class="text-white">3 şarkıyı önceden hazırlıyor</strong>.
+                Ama bu çok fazla!
+            </p>
+        </div>
+
+        <!-- Görsel Karşılaştırma -->
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+
+            <!-- Şu An -->
+            <div class="bg-red-900/20 border border-red-700 rounded-xl p-6">
+                <h3 class="text-lg font-bold text-red-400 mb-4">❌ Şu An (Kötü)</h3>
+                <div class="space-y-3 text-sm">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-red-500 text-white px-2 py-1 rounded text-xs">4x</span>
+                        <span>Şarkı stream API'si</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="bg-red-500 text-white px-2 py-1 rounded text-xs">4x</span>
+                        <span>HLS playlist dosyası</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="bg-red-500 text-white px-2 py-1 rounded text-xs">2x</span>
+                        <span>Queue refill</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="bg-red-500 text-white px-2 py-1 rounded text-xs">12+</span>
+                        <span>Thumbnail resmi</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="bg-slate-500 text-white px-2 py-1 rounded text-xs">11+</span>
+                        <span>HLS segment (normal)</span>
+                    </div>
+                    <div class="border-t border-red-700 pt-3 mt-3">
+                        <span class="text-red-400 font-bold text-lg">Toplam: ~35+ istek</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Olması Gereken -->
+            <div class="bg-green-900/20 border border-green-700 rounded-xl p-6">
+                <h3 class="text-lg font-bold text-green-400 mb-4">✅ Olması Gereken</h3>
+                <div class="space-y-3 text-sm">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-green-500 text-white px-2 py-1 rounded text-xs">1x</span>
+                        <span>Şarkı stream API'si</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="bg-green-500 text-white px-2 py-1 rounded text-xs">1x</span>
+                        <span>HLS playlist dosyası</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="bg-green-500 text-white px-2 py-1 rounded text-xs">1x</span>
+                        <span>Queue refill</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="bg-green-500 text-white px-2 py-1 rounded text-xs">1x</span>
+                        <span>Thumbnail (sadece çalan)</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="bg-slate-500 text-white px-2 py-1 rounded text-xs">11+</span>
+                        <span>HLS segment (normal)</span>
+                    </div>
+                    <div class="border-t border-green-700 pt-3 mt-3">
+                        <span class="text-green-400 font-bold text-lg">Toplam: ~15 istek</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Akış Diyagramı -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold mb-6">🔄 Şu Anki Akış (Sorunlu)</h2>
+
+            <div class="space-y-4">
+                <!-- Step 1 -->
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0">1</div>
+                    <div class="bg-slate-700 rounded-lg p-4 flex-1">
+                        <div class="font-bold">Kullanıcı şarkıya tıklıyor</div>
+                        <div class="text-slate-400 text-sm">Tek bir tık</div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0">2</div>
+                    <div class="bg-slate-700 rounded-lg p-4 flex-1">
+                        <div class="font-bold">Stream API çağrılıyor</div>
+                        <div class="text-slate-400 text-sm">/api/muzibu/songs/478/stream</div>
+                    </div>
+                </div>
+
+                <!-- Step 3 - Problem -->
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0">3</div>
+                    <div class="bg-red-900/30 border border-red-700 rounded-lg p-4 flex-1">
+                        <div class="font-bold text-red-400">🚨 SORUN: Queue Refill 2 KEZ çağrılıyor!</div>
+                        <div class="text-slate-400 text-sm">1. playSong() içinde • 2. Başka bir yerden</div>
+                    </div>
+                </div>
+
+                <!-- Step 4 - Problem -->
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0">4</div>
+                    <div class="bg-red-900/30 border border-red-700 rounded-lg p-4 flex-1">
+                        <div class="font-bold text-red-400">🚨 SORUN: 3 şarkı önceden yükleniyor!</div>
+                        <div class="text-slate-400 text-sm">
+                            preloadNextThreeSongs() → 3 stream API + 3 playlist<br>
+                            <span class="text-red-400">Toplam: 6 gereksiz istek</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0">5</div>
+                    <div class="bg-slate-700 rounded-lg p-4 flex-1">
+                        <div class="font-bold">HLS segmentleri indirilmeye başlıyor</div>
+                        <div class="text-slate-400 text-sm">segment-000.ts, segment-001.ts... (Bu normal)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Çözüm Seçenekleri -->
+        <div class="bg-blue-900/20 border border-blue-700 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-blue-400 mb-4">🛠️ Çözüm Seçenekleri</h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="bg-yellow-500 text-black px-2 py-1 rounded text-xs font-bold">1</span>
+                        <span class="font-bold">Hafif Düzeltme</span>
+                    </div>
+                    <p class="text-slate-400">Prefetch sayısını 3 → 1'e düşür. Sonraki şarkıyı hazırla ama 3 değil.</p>
+                </div>
+
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="bg-green-500 text-black px-2 py-1 rounded text-xs font-bold">2</span>
+                        <span class="font-bold">Önerilen</span>
+                    </div>
+                    <p class="text-slate-400">Prefetch'i tamamen kapat. Şarkı bitince sonrakini yükle. Spotify/YouTube böyle çalışıyor.</p>
+                </div>
+
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">3</span>
+                        <span class="font-bold">Agresif</span>
+                    </div>
+                    <p class="text-slate-400">Tüm önceden yüklemeyi kapat + çift refill'i düzelt + lazy thumbnail.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Etkilenen Dosyalar -->
+        <div class="bg-slate-800 rounded-xl p-6">
+            <h2 class="text-xl font-bold mb-4">📁 Düzeltilecek Dosyalar</h2>
+            <div class="space-y-2 font-mono text-sm">
+                <div class="text-slate-400">public/themes/muzibu/js/player/core/</div>
+                <div class="text-yellow-400 pl-4">→ player-core.js (preloadNextThreeSongs, prefetchHlsForQueue)</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-12 text-slate-500 text-sm">
+            Claude AI Analizi • 27 Aralık 2025
+        </div>
+    </div>
+</body>
+</html>

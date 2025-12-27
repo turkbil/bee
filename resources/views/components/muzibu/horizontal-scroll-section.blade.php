@@ -1,4 +1,4 @@
-@props(['title' => null, 'gridMode' => false])
+@props(['title' => null, 'icon' => null, 'viewAllUrl' => null, 'gridMode' => false])
 
 {{--
 ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -48,9 +48,21 @@
 ╚═══════════════════════════════════════════════════════════════════════════╝
 --}}
 
-<div class="mb-6 relative group/scroll" x-data="horizontalScroll()">
+<div class="mb-6 relative group/scroll" x-data="{ ...horizontalScroll(), h: false }" @mouseenter="h = true" @mouseleave="h = false">
     @if($title)
-        <h2 class="text-2xl font-bold text-white mb-2">{{ $title }}</h2>
+        <div class="flex items-center justify-between mb-2">
+            <a href="{{ $viewAllUrl ?? '#' }}" class="flex items-center gap-3 transition-all duration-300" :class="h ? 'text-white' : 'text-white/70'">
+                @if($icon)
+                    <i :class="h ? 'fas' : 'fal'" class="{{ $icon }} text-lg transition-all duration-200"></i>
+                @endif
+                <span class="text-xl font-bold">{{ $title }}</span>
+            </a>
+            @if($viewAllUrl)
+                <a href="{{ $viewAllUrl }}" class="text-sm transition-all" :class="h ? 'text-white/70' : 'text-white/40'">
+                    Tümünü gör
+                </a>
+            @endif
+        </div>
     @endif
 
     {{-- Left Arrow --}}

@@ -119,7 +119,7 @@
             <div class="bg-white/5 border border-white/10 rounded-xl p-5 hover:border-purple-500/30 transition">
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-list text-purple-400 text-xl"></i>
+                        <i class="fas fa-list-music text-purple-400 text-xl"></i>
                     </div>
                     <div>
                         <p class="text-gray-400 text-sm">{{ __('muzibu::front.dashboard.playlist') }}</p>
@@ -221,7 +221,7 @@
         <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden mb-8">
             <div class="flex items-center justify-between p-5 border-b border-white/10">
                 <h2 class="text-lg font-bold text-white flex items-center gap-2">
-                    <i class="fas fa-list text-purple-400"></i>
+                    <i class="fas fa-list-music text-purple-400"></i>
                     {{ __('muzibu::front.dashboard.my_playlists') }}
                 </h2>
                 <a href="/muzibu/my-playlists" class="text-sm text-muzibu-coral hover:text-white transition" data-spa>
@@ -236,7 +236,7 @@
                                 {{-- Playlist Card --}}
                                 <a href="/playlists/{{ $playlist->slug }}"
                                    class="block px-4 pt-4"
-                                   @click="if (window.innerWidth >= 1024) {
+                                   @click="if (window.innerWidth >= 768) {
                                        $event.preventDefault();
                                        $store.sidebar.showPreview('playlist', {{ $playlist->playlist_id }}, {
                                            type: 'Playlist',
@@ -245,7 +245,7 @@
                                            description: '{{ addslashes($playlist->description ?? '') }}',
                                            cover: '{{ $playlist->coverMedia ? thumb($playlist->coverMedia, 300, 300) : '' }}',
                                            is_public: {{ $playlist->is_public ? 'true' : 'false' }},
-                                           is_favorite: {{ $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
+                                           is_favorite: {{ is_favorited('playlist', $playlist->playlist_id) ? 'true' : 'false' }},
                                            songs_count: {{ $playlist->songs_count ?? 0 }},
                                            is_mine: true
                                        });
@@ -286,7 +286,7 @@
                                                 id: {{ $playlist->playlist_id }},
                                                 title: '{{ addslashes($playlist->title) }}',
                                                 slug: '{{ $playlist->slug }}',
-                                                is_favorite: {{ $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+                                                is_favorite: {{ is_favorited('playlist', $playlist->playlist_id) ? 'true' : 'false' }}
                                             })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
                                                 <i class="fas fa-ellipsis-v text-sm"></i>
                                             </button>
@@ -309,7 +309,7 @@
                 </div>
             @else
                 <div class="p-8 text-center text-gray-400">
-                    <i class="fas fa-list text-4xl mb-3 opacity-50"></i>
+                    <i class="fas fa-list-music text-4xl mb-3 opacity-50"></i>
                     <p>{{ __('muzibu::front.dashboard.no_playlists_yet') }}</p>
                     <a href="/muzibu/my-playlists" class="text-purple-400 hover:underline text-sm mt-2 inline-block">
                         <i class="fas fa-plus mr-1"></i>{{ __('muzibu::front.dashboard.create_playlist') }}

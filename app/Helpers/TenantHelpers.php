@@ -247,14 +247,29 @@ class TenantHelpers
 
     /**
      * Mevcut tenant'ın domain'ini al
-     * 
+     *
+     * 🔥 CRITICAL FIX: domains tablosu CENTRAL database'de!
+     * Tenant context aktifken $tenant->domains() tenant db'ye gider ve hata verir.
+     * Bu yüzden doğrudan central db'den sorgu yapıyoruz.
+     *
      * @param int|null $tenantId
      * @return string|null
      */
     public static function getTenantDomain(?int $tenantId = null): ?string
     {
-        $tenant = self::getTenantById($tenantId);
-        return $tenant?->domains()->first()?->domain;
+        if (!$tenantId) {
+            $tenantId = self::resolveCurrentTenantId();
+        }
+
+        if (!$tenantId) {
+            return null;
+        }
+
+        // Central database'den doğrudan sorgu (tenant context'ten bağımsız)
+        return DB::connection('mysql')->table('domains')
+            ->where('tenant_id', $tenantId)
+            ->orderByDesc('is_primary')
+            ->value('domain');
     }
 
     /**

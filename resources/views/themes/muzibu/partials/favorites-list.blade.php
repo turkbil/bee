@@ -23,13 +23,13 @@
             <a href="/favorites?type=albums"
                class="flex-shrink-0 px-6 py-3 rounded-full font-semibold text-base transition-all duration-200"
                :class="activeTab === 'albums' ? 'bg-muzibu-coral text-white shadow-lg shadow-muzibu-coral/30' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'">
-                <i class="fas fa-compact-disc mr-2"></i>
+                <i class="fas fa-record-vinyl mr-2"></i>
                 Albümler
             </a>
             <a href="/favorites?type=playlists"
                class="flex-shrink-0 px-6 py-3 rounded-full font-semibold text-base transition-all duration-200"
                :class="activeTab === 'playlists' ? 'bg-muzibu-coral text-white shadow-lg shadow-muzibu-coral/30' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'">
-                <i class="fas fa-stream mr-2"></i>
+                <i class="fas fa-list-music mr-2"></i>
                 Playlistler
             </a>
         </nav>

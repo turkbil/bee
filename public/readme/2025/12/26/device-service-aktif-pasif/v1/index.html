@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeviceService Aktif/Pasif Yapma Rehberi - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .code-block { background: #1e293b; border-radius: 8px; padding: 16px; overflow-x: auto; }
+        .code-block code { color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 14px; }
+        .keyword { color: #c792ea; }
+        .function { color: #82aaff; }
+        .string { color: #c3e88d; }
+        .comment { color: #546e7a; }
+        .boolean { color: #ff9cac; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-red-900/50 to-orange-900/50 border-b border-red-800/50">
+        <div class="max-w-6xl mx-auto px-6 py-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-red-600 text-white text-sm font-medium rounded-full">Sistem Yönetimi</span>
+                <span class="px-3 py-1 bg-slate-700 text-slate-300 text-sm rounded-full">Muzibu</span>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-2">DeviceService Aktif/Pasif Yapma Rehberi</h1>
+            <p class="text-slate-400">Cihaz limiti sisteminin açılması ve kapatılması</p>
+            <div class="mt-4 text-sm text-slate-500">
+                <span>26 Aralık 2025</span> · <span>Claude AI</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-10 space-y-10">
+
+        <!-- Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-800/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Basit Anlatım (Herkes İçin)
+            </h2>
+            <div class="space-y-4 text-slate-300">
+                <p>
+                    <strong>DeviceService nedir?</strong><br>
+                    Muzibu'da kullanıcıların aynı anda kaç cihazdan müzik dinleyebileceğini kontrol eden sistemdir.
+                    Örneğin: Premium üye 3 cihazdan dinleyebilir, ücretsiz üye sadece 1 cihazdan.
+                </p>
+                <p>
+                    <strong>Ne yapıyor?</strong><br>
+                    - Kullanıcı giriş yaptığında cihazı kaydeder<br>
+                    - Limit aşılırsa eski cihazı otomatik çıkış yaptırır (LIFO)<br>
+                    - Her 30 saniyede session kontrolü yapar
+                </p>
+                <p>
+                    <strong>Neden kapatılır?</strong><br>
+                    - Test aşamasında sorun çıkarsa<br>
+                    - Geçici olarak limitsiz erişim vermek için<br>
+                    - Hata ayıklama (debug) için
+                </p>
+            </div>
+        </section>
+
+        <!-- Mevcut Durum -->
+        <section class="bg-red-900/30 border border-red-700/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                Mevcut Durum (26 Aralık 2025)
+            </h2>
+            <div class="bg-red-950/50 rounded-lg p-4">
+                <div class="flex items-center gap-3">
+                    <span class="w-4 h-4 bg-red-500 rounded-full animate-pulse"></span>
+                    <span class="text-red-300 font-bold text-lg">SİSTEM DEVRE DIŞI</span>
+                </div>
+                <p class="text-slate-400 mt-2">
+                    DeviceService kodu içinde <code class="bg-slate-800 px-2 py-1 rounded">return false;</code> ile hardcode kapatıldı.
+                </p>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="bg-blue-900/20 border border-blue-800/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                </svg>
+                Teknik Detaylar (Geliştiriciler İçin)
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Dosya Konumu -->
+                <div>
+                    <h3 class="text-lg font-semibold text-slate-200 mb-2">Ana Dosya</h3>
+                    <div class="code-block">
+                        <code>Modules/Muzibu/app/Services/DeviceService.php</code>
+                    </div>
+                </div>
+
+                <!-- shouldRun Metodu -->
+                <div>
+                    <h3 class="text-lg font-semibold text-slate-200 mb-2">Kontrol Metodu: shouldRun()</h3>
+                    <p class="text-slate-400 mb-3">
+                        Tüm DeviceService fonksiyonları bu metodu kontrol eder. False dönerse hiçbir işlem yapılmaz.
+                    </p>
+                    <div class="code-block">
+<pre><code><span class="keyword">public function</span> <span class="function">shouldRun</span>(): <span class="keyword">bool</span>
+{
+    <span class="comment">// 🔴 GEÇİCİ: Device limit sistemi tamamen devre dışı</span>
+    <span class="keyword">return</span> <span class="boolean">false</span>;
+
+    <span class="comment">// Normal kontroller (şu an çalışmıyor)</span>
+    $tenant = <span class="function">tenant</span>();
+    <span class="keyword">if</span> (!$tenant) <span class="keyword">return</span> <span class="boolean">false</span>;
+
+    <span class="keyword">if</span> (!<span class="function">setting</span>(<span class="string">'auth_subscription'</span>, <span class="boolean">false</span>)) <span class="keyword">return</span> <span class="boolean">false</span>;
+
+    <span class="keyword">return</span> (<span class="keyword">bool</span>) <span class="function">setting</span>(<span class="string">'auth_device'</span>, <span class="boolean">false</span>);
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Kontrol Hiyerarşisi -->
+                <div>
+                    <h3 class="text-lg font-semibold text-slate-200 mb-2">Kontrol Hiyerarşisi</h3>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                                <div>
+                                    <span class="text-slate-200 font-medium">Hardcode return false</span>
+                                    <span class="text-slate-500 text-sm ml-2">(Satır 33)</span>
+                                    <p class="text-slate-400 text-sm">En öncelikli - diğer kontrolleri atlar</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 opacity-50">
+                                <span class="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                                <div>
+                                    <span class="text-slate-200 font-medium">tenant() kontrolü</span>
+                                    <p class="text-slate-400 text-sm">Tenant yoksa çalışmaz</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 opacity-50">
+                                <span class="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                                <div>
+                                    <span class="text-slate-200 font-medium">auth_subscription setting</span>
+                                    <p class="text-slate-400 text-sm">Abonelik sistemi kapalıysa çalışmaz</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 opacity-50">
+                                <span class="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center text-sm font-bold">4</span>
+                                <div>
+                                    <span class="text-slate-200 font-medium">auth_device setting</span>
+                                    <p class="text-slate-400 text-sm">Device limit özelliği kapalıysa çalışmaz</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Aktif/Pasif Yapma -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-slate-200 mb-6 flex items-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                </svg>
+                Aktif/Pasif Yapma Yöntemleri
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Yöntem 1: Kod -->
+                <div class="bg-slate-900/50 rounded-lg p-5 border border-slate-700">
+                    <h3 class="text-lg font-bold text-orange-400 mb-3">Yöntem 1: Kod ile (Şu An Aktif)</h3>
+                    <p class="text-slate-400 text-sm mb-4">En güvenli yöntem. Setting ne olursa olsun çalışmaz.</p>
+
+                    <div class="space-y-4">
+                        <div>
+                            <span class="text-red-400 font-medium">Kapatmak için:</span>
+                            <div class="code-block mt-2">
+<pre><code><span class="comment">// Satır 32-33</span>
+<span class="keyword">return</span> <span class="boolean">false</span>;</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-green-400 font-medium">Açmak için:</span>
+                            <div class="code-block mt-2">
+<pre><code><span class="comment">// return false; satırını sil veya yorum yap</span>
+<span class="comment">// return false;</span></code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yöntem 2: Setting -->
+                <div class="bg-slate-900/50 rounded-lg p-5 border border-slate-700">
+                    <h3 class="text-lg font-bold text-purple-400 mb-3">Yöntem 2: Admin Panel Setting</h3>
+                    <p class="text-slate-400 text-sm mb-4">Kod değişikliği gerektirmez. Hızlı açma/kapama.</p>
+
+                    <div class="space-y-4">
+                        <div>
+                            <span class="text-slate-300 font-medium">Admin Panel Yolu:</span>
+                            <div class="code-block mt-2">
+                                <code class="text-cyan-400">https://muzibu.com.tr/admin/settingmanagement/values/23</code>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-slate-300 font-medium">Setting Key:</span>
+                            <div class="code-block mt-2">
+                                <code>auth_device</code>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                                <span class="text-slate-400">ON = Aktif</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 bg-red-500 rounded-full"></span>
+                                <span class="text-slate-400">OFF = Pasif</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Etkilenen Fonksiyonlar -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-slate-200 mb-4">Devre Dışı Kalınca Ne Olur?</h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-red-950/30 rounded-lg p-4 border border-red-900/50">
+                    <h3 class="text-red-400 font-bold mb-3">Çalışmayan Özellikler</h3>
+                    <ul class="space-y-2 text-slate-400">
+                        <li class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                            Session kayıt (registerSession)
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                            LIFO kontrolü (yeni giriş eskiyi atmaz)
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                            Device limit popup
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                            Session terminated uyarısı
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                            Active devices listesi
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-green-950/30 rounded-lg p-4 border border-green-900/50">
+                    <h3 class="text-green-400 font-bold mb-3">Çalışmaya Devam Eden</h3>
+                    <ul class="space-y-2 text-slate-400">
+                        <li class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            Normal login/logout
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            Subscription sistemi
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            Müzik çalar
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            Premium kontrolleri
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            Sınırsız cihaz girişi
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- İlgili Endpoint'ler -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-slate-200 mb-4">İlgili API Endpoint'leri</h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="py-3 px-4 text-slate-400 font-medium">Endpoint</th>
+                            <th class="py-3 px-4 text-slate-400 font-medium">Açıklama</th>
+                            <th class="py-3 px-4 text-slate-400 font-medium">Devre Dışı Davranış</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4"><code class="text-cyan-400">/api/auth/check-session</code></td>
+                            <td class="py-3 px-4">Session geçerliliği kontrolü</td>
+                            <td class="py-3 px-4 text-yellow-400">Sadece { valid: true } döner</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4"><code class="text-cyan-400">/api/auth/active-devices</code></td>
+                            <td class="py-3 px-4">Aktif cihaz listesi</td>
+                            <td class="py-3 px-4 text-yellow-400">Boş liste döner</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4"><code class="text-cyan-400">/api/auth/terminate-device</code></td>
+                            <td class="py-3 px-4">Cihaz oturumu sonlandır</td>
+                            <td class="py-3 px-4 text-yellow-400">"Feature not enabled" hatası</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Hızlı Referans -->
+        <section class="bg-gradient-to-r from-slate-800 to-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-slate-200 mb-4">Hızlı Referans</h2>
+
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="text-sm text-slate-400 mb-2">Dosya</h3>
+                    <code class="text-cyan-400 text-sm break-all">Modules/Muzibu/app/Services/DeviceService.php</code>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="text-sm text-slate-400 mb-2">Metod</h3>
+                    <code class="text-purple-400">shouldRun()</code>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="text-sm text-slate-400 mb-2">Satır</h3>
+                    <code class="text-orange-400">32-33</code>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-yellow-900/20 border border-yellow-800/50 rounded-lg">
+                <p class="text-yellow-300 font-medium">Tekrar Aktif Etmek İçin:</p>
+                <p class="text-slate-400 mt-1">
+                    DeviceService.php dosyasında <code class="bg-slate-800 px-2 py-1 rounded">return false;</code> satırını (32-33) silin veya yorum satırı yapın.
+                    Ardından OPcache temizleyin: <code class="bg-slate-800 px-2 py-1 rounded">curl https://muzibu.com.tr/opcache-reset.php</code>
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 mt-10">
+        <div class="max-w-6xl mx-auto px-6 py-6 text-center text-slate-500 text-sm">
+            <p>Claude AI tarafından oluşturuldu · 26 Aralık 2025</p>
+        </div>
+    </footer>
+</body>
+</html>

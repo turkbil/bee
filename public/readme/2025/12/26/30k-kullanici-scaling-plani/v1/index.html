@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu 30K Kullanıcı Scaling Planı - CDN Nedir?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-gray-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 bg-orange-500/20 text-orange-400 px-4 py-2 rounded-full text-sm mb-4">
+                <i class="fas fa-server"></i>
+                <span>Scaling Planı</span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-4">Muzibu: 30.000 Eşzamanlı Kullanıcı</h1>
+            <p class="text-gray-400">CDN Nedir? Nasıl Çalışır? 3 Sunucu Yeterli Mi?</p>
+            <p class="text-gray-500 text-sm mt-2">26 Aralık 2025</p>
+        </header>
+
+        <!-- BÖLÜM 1: CDN NEDİR? -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-blue-900/40 to-blue-800/20 border border-blue-700/50 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-blue-400 mb-6 flex items-center gap-3">
+                    <i class="fas fa-globe"></i>
+                    CDN Nedir? (Basit Anlatım)
+                </h2>
+
+                <!-- Günlük Hayat Örneği -->
+                <div class="bg-slate-800/50 rounded-xl p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">
+                        <i class="fas fa-coffee text-yellow-500 mr-2"></i>
+                        Günlük Hayattan Örnek: Kargo Şirketi
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-red-900/30 border border-red-800/50 rounded-lg p-4">
+                            <h4 class="text-red-400 font-semibold mb-2">❌ CDN Olmadan</h4>
+                            <p class="text-gray-300 text-sm">
+                                Tüm kargolar İstanbul'daki tek bir depodan gönderiliyor.
+                                Antalya'daki müşteri 3 gün bekliyor. Van'daki müşteri 5 gün bekliyor.
+                                Depo aşırı yüklenince herkes bekliyor.
+                            </p>
+                        </div>
+                        <div class="bg-green-900/30 border border-green-800/50 rounded-lg p-4">
+                            <h4 class="text-green-400 font-semibold mb-2">✅ CDN İle</h4>
+                            <p class="text-gray-300 text-sm">
+                                Her şehirde küçük depolar var. Antalya'daki müşteriye Antalya deposundan,
+                                Van'daki müşteriye Van deposundan gönderim yapılıyor. Herkes 1 günde alıyor!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teknik Açıklama -->
+                <div class="bg-slate-800/50 rounded-xl p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">
+                        <i class="fas fa-network-wired text-blue-500 mr-2"></i>
+                        Teknik Açıklama
+                    </h3>
+                    <p class="text-gray-300 mb-4">
+                        <strong class="text-white">CDN (Content Delivery Network)</strong> = İçerik Dağıtım Ağı
+                    </p>
+                    <p class="text-gray-300 mb-4">
+                        Dünya genelinde yüzlerce sunucuya (edge server) sahip bir ağ. Senin dosyalarını
+                        (müzik, resim, video) bu sunuculara kopyalıyor. Kullanıcı en yakın sunucudan alıyor.
+                    </p>
+
+                    <!-- Diagram -->
+                    <div class="bg-slate-900 rounded-lg p-6 text-center">
+                        <div class="text-sm text-gray-400 mb-4">CDN Çalışma Prensibi</div>
+                        <div class="flex flex-col items-center gap-4">
+                            <div class="bg-orange-600 text-white px-4 py-2 rounded-lg">
+                                <i class="fas fa-server mr-2"></i>Ana Sunucu (İstanbul)
+                            </div>
+                            <i class="fas fa-arrow-down text-gray-500"></i>
+                            <div class="text-gray-400 text-sm">Cloudflare dosyaları kopyalar</div>
+                            <i class="fas fa-arrow-down text-gray-500"></i>
+                            <div class="flex flex-wrap justify-center gap-3">
+                                <div class="bg-blue-600 text-white px-3 py-1 rounded text-sm">
+                                    <i class="fas fa-map-marker-alt mr-1"></i>Londra
+                                </div>
+                                <div class="bg-blue-600 text-white px-3 py-1 rounded text-sm">
+                                    <i class="fas fa-map-marker-alt mr-1"></i>Frankfurt
+                                </div>
+                                <div class="bg-blue-600 text-white px-3 py-1 rounded text-sm">
+                                    <i class="fas fa-map-marker-alt mr-1"></i>New York
+                                </div>
+                                <div class="bg-blue-600 text-white px-3 py-1 rounded text-sm">
+                                    <i class="fas fa-map-marker-alt mr-1"></i>Tokyo
+                                </div>
+                                <div class="bg-green-600 text-white px-3 py-1 rounded text-sm">
+                                    <i class="fas fa-map-marker-alt mr-1"></i>İstanbul
+                                </div>
+                            </div>
+                            <i class="fas fa-arrow-down text-gray-500"></i>
+                            <div class="flex flex-wrap justify-center gap-3">
+                                <div class="bg-slate-700 text-gray-300 px-3 py-1 rounded text-sm">
+                                    <i class="fas fa-user mr-1"></i>Türkiye'deki kullanıcı → İstanbul sunucusundan
+                                </div>
+                                <div class="bg-slate-700 text-gray-300 px-3 py-1 rounded text-sm">
+                                    <i class="fas fa-user mr-1"></i>Almanya'daki kullanıcı → Frankfurt'tan
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CDN Ne İşe Yarar -->
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-3xl mb-2">⚡</div>
+                        <h4 class="text-white font-semibold mb-1">Hız</h4>
+                        <p class="text-gray-400 text-sm">Kullanıcı yakın sunucudan indiriyor. 200ms → 20ms</p>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-3xl mb-2">🛡️</div>
+                        <h4 class="text-white font-semibold mb-1">Koruma</h4>
+                        <p class="text-gray-400 text-sm">DDoS saldırılarını CDN karşılıyor, sunucun korunuyor</p>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-3xl mb-2">💰</div>
+                        <h4 class="text-white font-semibold mb-1">Maliyet</h4>
+                        <p class="text-gray-400 text-sm">Ana sunucu yükü %90 azalır, daha az sunucu yeterli</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 2: MÜZİK STREAMING İÇİN CDN -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-purple-900/40 to-purple-800/20 border border-purple-700/50 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-purple-400 mb-6 flex items-center gap-3">
+                    <i class="fas fa-music"></i>
+                    Müzik Streaming İçin CDN Nasıl Çalışır?
+                </h2>
+
+                <div class="bg-slate-800/50 rounded-xl p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">HLS (HTTP Live Streaming) Nedir?</h3>
+                    <p class="text-gray-300 mb-4">
+                        Muzibu şarkıları <strong class="text-purple-400">HLS</strong> formatında sunuyor.
+                        Bir şarkı küçük parçalara (segment) bölünüyor:
+                    </p>
+
+                    <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm mb-4">
+                        <div class="text-gray-400 mb-2"># Örnek: 3 dakikalık şarkı</div>
+                        <div class="text-green-400">sarki.m3u8</div>
+                        <div class="text-gray-500 ml-4">├── segment_001.ts (10 saniye, ~800KB)</div>
+                        <div class="text-gray-500 ml-4">├── segment_002.ts (10 saniye, ~800KB)</div>
+                        <div class="text-gray-500 ml-4">├── segment_003.ts (10 saniye, ~800KB)</div>
+                        <div class="text-gray-500 ml-4">├── ... (18 segment toplam)</div>
+                        <div class="text-gray-500 ml-4">└── segment_018.ts</div>
+                    </div>
+
+                    <p class="text-gray-300">
+                        Her 10 saniyede bir yeni segment indirilir. 30.000 kullanıcı =
+                        <strong class="text-red-400">saniyede 3.000 segment isteği!</strong>
+                    </p>
+                </div>
+
+                <!-- CDN vs Sunucu Karşılaştırma -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-red-900/30 border border-red-800/50 rounded-lg p-5">
+                        <h4 class="text-red-400 font-semibold mb-3 flex items-center gap-2">
+                            <i class="fas fa-times-circle"></i>
+                            CDN Olmadan (Şu Anki Durum)
+                        </h4>
+                        <ul class="text-gray-300 text-sm space-y-2">
+                            <li><i class="fas fa-server text-red-400 mr-2"></i>Tüm HLS segmentleri ana sunucudan</li>
+                            <li><i class="fas fa-tachometer-alt text-red-400 mr-2"></i>3.000 req/sn → Sunucu çöker</li>
+                            <li><i class="fas fa-hdd text-red-400 mr-2"></i>Bandwidth: 2.4 Gbps gerekli</li>
+                            <li><i class="fas fa-fire text-red-400 mr-2"></i>693MB HLS sürekli okunuyor</li>
+                        </ul>
+                    </div>
+                    <div class="bg-green-900/30 border border-green-800/50 rounded-lg p-5">
+                        <h4 class="text-green-400 font-semibold mb-3 flex items-center gap-2">
+                            <i class="fas fa-check-circle"></i>
+                            CDN İle (Cloudflare)
+                        </h4>
+                        <ul class="text-gray-300 text-sm space-y-2">
+                            <li><i class="fas fa-globe text-green-400 mr-2"></i>Segmentler 200+ edge sunucuda</li>
+                            <li><i class="fas fa-tachometer-alt text-green-400 mr-2"></i>Ana sunucuya sadece %5 istek</li>
+                            <li><i class="fas fa-hdd text-green-400 mr-2"></i>Bandwidth: CDN karşılıyor</li>
+                            <li><i class="fas fa-shield-alt text-green-400 mr-2"></i>DDoS koruması dahil</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 3: CLOUDFLARE KURULUMU -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-orange-900/40 to-orange-800/20 border border-orange-700/50 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-orange-400 mb-6 flex items-center gap-3">
+                    <i class="fab fa-cloudflare"></i>
+                    Cloudflare Ne Yapacak?
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-slate-800/50 rounded-lg p-5">
+                        <h4 class="text-white font-semibold mb-3">1. DNS Yönetimi</h4>
+                        <p class="text-gray-400 text-sm">
+                            muzibu.com.tr domain'ini Cloudflare üzerinden yöneteceksin.
+                            Tüm trafik önce Cloudflare'den geçecek.
+                        </p>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-5">
+                        <h4 class="text-white font-semibold mb-3">2. Static Asset Cache</h4>
+                        <p class="text-gray-400 text-sm">
+                            CSS, JS, resimler, HLS segmentleri otomatik cache'lenir.
+                            Kullanıcı en yakın edge sunucudan alır.
+                        </p>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-5">
+                        <h4 class="text-white font-semibold mb-3">3. DDoS Koruması</h4>
+                        <p class="text-gray-400 text-sm">
+                            Saldırılar Cloudflare'de filtrelenir. Ana sunucuna temiz trafik gelir.
+                        </p>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-5">
+                        <h4 class="text-white font-semibold mb-3">4. SSL/HTTPS</h4>
+                        <p class="text-gray-400 text-sm">
+                            Ücretsiz SSL sertifikası. HTTPS zorunlu yönlendirme.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Cloudflare Ayarları -->
+                <div class="bg-slate-800/50 rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">
+                        <i class="fas fa-cog text-orange-400 mr-2"></i>
+                        Önerilen Cloudflare Ayarları
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-center justify-between bg-slate-900/50 rounded p-3">
+                            <span class="text-gray-300">Caching Level</span>
+                            <span class="text-orange-400 font-mono">Standard</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-900/50 rounded p-3">
+                            <span class="text-gray-300">Browser Cache TTL</span>
+                            <span class="text-orange-400 font-mono">1 year (HLS için)</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-900/50 rounded p-3">
+                            <span class="text-gray-300">Edge Cache TTL</span>
+                            <span class="text-orange-400 font-mono">1 month</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-900/50 rounded p-3">
+                            <span class="text-gray-300">Cache Everything (Page Rule)</span>
+                            <span class="text-orange-400 font-mono">/storage/*/hls/*</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-900/50 rounded p-3">
+                            <span class="text-gray-300">Polish (Image Optimization)</span>
+                            <span class="text-orange-400 font-mono">Lossy (Pro plan)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 4: 3 SUNUCU YETERLİ Mİ? -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-green-900/40 to-green-800/20 border border-green-700/50 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-green-400 mb-6 flex items-center gap-3">
+                    <i class="fas fa-server"></i>
+                    3 Sunucu Yeterli Mi?
+                </h2>
+
+                <!-- Mevcut Durum -->
+                <div class="bg-slate-800/50 rounded-xl p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">Mevcut Sunucu Durumu</h3>
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <div class="bg-slate-900/50 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-blue-400">8</div>
+                            <div class="text-gray-400 text-sm">CPU Core</div>
+                        </div>
+                        <div class="bg-slate-900/50 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-blue-400">31 GB</div>
+                            <div class="text-gray-400 text-sm">RAM</div>
+                        </div>
+                        <div class="bg-slate-900/50 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-blue-400">77 GB</div>
+                            <div class="text-gray-400 text-sm">Disk</div>
+                        </div>
+                        <div class="bg-slate-900/50 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-green-400">Redis</div>
+                            <div class="text-gray-400 text-sm">Cache/Session</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hesaplama -->
+                <div class="bg-slate-800/50 rounded-xl p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">30.000 Kullanıcı Hesaplama</h3>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-left text-gray-400 border-b border-gray-700">
+                                    <th class="pb-3">Metrik</th>
+                                    <th class="pb-3">CDN Olmadan</th>
+                                    <th class="pb-3">CDN İle</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-gray-800">
+                                    <td class="py-3">HLS Segment İsteği</td>
+                                    <td class="py-3 text-red-400">3.000/sn (sunucu)</td>
+                                    <td class="py-3 text-green-400">~150/sn (sunucu)</td>
+                                </tr>
+                                <tr class="border-b border-gray-800">
+                                    <td class="py-3">Bandwidth</td>
+                                    <td class="py-3 text-red-400">2.4 Gbps</td>
+                                    <td class="py-3 text-green-400">~120 Mbps</td>
+                                </tr>
+                                <tr class="border-b border-gray-800">
+                                    <td class="py-3">API İstekleri</td>
+                                    <td class="py-3">~500/sn</td>
+                                    <td class="py-3">~500/sn</td>
+                                </tr>
+                                <tr class="border-b border-gray-800">
+                                    <td class="py-3">DB Queries</td>
+                                    <td class="py-3">~2.000/sn</td>
+                                    <td class="py-3 text-green-400">~500/sn (cache)</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 font-semibold">Gereken Sunucu</td>
+                                    <td class="py-3 text-red-400 font-bold">10+ sunucu</td>
+                                    <td class="py-3 text-green-400 font-bold">2-3 sunucu</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Sonuç -->
+                <div class="bg-green-900/40 border border-green-700 rounded-lg p-5">
+                    <h4 class="text-green-400 font-semibold mb-2 flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i>
+                        Sonuç: 3 Sunucu YETERLİ (CDN ile)
+                    </h4>
+                    <p class="text-gray-300 text-sm">
+                        Cloudflare CDN + Redis cache + 3 sunucu (Load Balanced) ile 30.000 eşzamanlı
+                        kullanıcı rahat kaldırılır. CDN olmadan aynı iş için 10+ sunucu gerekir.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 5: MİMARİ PLAN -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-cyan-900/40 to-cyan-800/20 border border-cyan-700/50 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-cyan-400 mb-6 flex items-center gap-3">
+                    <i class="fas fa-project-diagram"></i>
+                    Önerilen Mimari
+                </h2>
+
+                <div class="bg-slate-900 rounded-xl p-6 mb-6">
+                    <pre class="text-sm text-gray-300 overflow-x-auto">
+┌─────────────────────────────────────────────────────────────────────────┐
+│                            KULLANICILAR                                  │
+│                    (30.000 eşzamanlı dinleyici)                         │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         CLOUDFLARE CDN                                   │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐    │
+│  │   İstanbul  │  │  Frankfurt  │  │   Londra    │  │   Diğer     │    │
+│  │   Edge      │  │   Edge      │  │   Edge      │  │   200+ Edge │    │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘    │
+│                                                                          │
+│  Cache: HLS segments, CSS, JS, Images                                   │
+│  DDoS Protection, SSL/TLS, WAF                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼ (Sadece cache miss + API)
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        LOAD BALANCER                                     │
+│                    (HAProxy veya Nginx)                                  │
+└─────────────────────────────────────────────────────────────────────────┘
+                    │               │               │
+                    ▼               ▼               ▼
+            ┌───────────┐   ┌───────────┐   ┌───────────┐
+            │  WEB 1    │   │  WEB 2    │   │  WEB 3    │
+            │  Laravel  │   │  Laravel  │   │  Laravel  │
+            │  PHP-FPM  │   │  PHP-FPM  │   │  PHP-FPM  │
+            │  8 CPU    │   │  8 CPU    │   │  8 CPU    │
+            │  16GB RAM │   │  16GB RAM │   │  16GB RAM │
+            └───────────┘   └───────────┘   └───────────┘
+                    │               │               │
+                    └───────────────┼───────────────┘
+                                    │
+            ┌───────────────────────┼───────────────────────┐
+            │                       │                       │
+            ▼                       ▼                       ▼
+    ┌───────────────┐      ┌───────────────┐      ┌───────────────┐
+    │    REDIS      │      │   MYSQL       │      │  SHARED       │
+    │   Cluster     │      │  Primary +    │      │  STORAGE      │
+    │               │      │  Read Replica │      │  (HLS Files)  │
+    │  - Sessions   │      │               │      │  - NFS/GlusterFS
+    │  - Cache      │      │  - tuufi_4ekim│      │  - veya S3    │
+    │  - Queues     │      │  - tenant_*   │      │               │
+    └───────────────┘      └───────────────┘      └───────────────┘
+                    </pre>
+                </div>
+
+                <!-- Sunucu Özellikleri -->
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-5">
+                        <h4 class="text-cyan-400 font-semibold mb-3">Web Sunucuları (x3)</h4>
+                        <ul class="text-gray-400 text-sm space-y-1">
+                            <li>• 8 vCPU</li>
+                            <li>• 16 GB RAM</li>
+                            <li>• 100 GB SSD</li>
+                            <li>• PHP 8.3 + OPcache</li>
+                            <li>• Nginx + PHP-FPM</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-5">
+                        <h4 class="text-cyan-400 font-semibold mb-3">Database Sunucu</h4>
+                        <ul class="text-gray-400 text-sm space-y-1">
+                            <li>• 8 vCPU</li>
+                            <li>• 32 GB RAM</li>
+                            <li>• 500 GB NVMe SSD</li>
+                            <li>• MySQL 8 / MariaDB</li>
+                            <li>• Read Replica (opsiyonel)</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-5">
+                        <h4 class="text-cyan-400 font-semibold mb-3">Redis Sunucu</h4>
+                        <ul class="text-gray-400 text-sm space-y-1">
+                            <li>• 4 vCPU</li>
+                            <li>• 16 GB RAM</li>
+                            <li>• Redis 7+</li>
+                            <li>• Sentinel (HA için)</li>
+                            <li>• Sessions + Cache + Queues</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 6: YAPILACAKLAR -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-yellow-900/40 to-yellow-800/20 border border-yellow-700/50 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-yellow-400 mb-6 flex items-center gap-3">
+                    <i class="fas fa-tasks"></i>
+                    Yapılacaklar Listesi
+                </h2>
+
+                <div class="space-y-4">
+                    <!-- Phase 1 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5">
+                        <h4 class="text-yellow-400 font-semibold mb-3">Phase 1: Cloudflare Kurulumu (1-2 gün)</h4>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center gap-3 text-gray-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                Cloudflare hesabı aç (Pro plan önerilir - $20/ay)
+                            </label>
+                            <label class="flex items-center gap-3 text-gray-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                DNS'i Cloudflare'e taşı (nameserver değiştir)
+                            </label>
+                            <label class="flex items-center gap-3 text-gray-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                SSL ayarları: Full (Strict)
+                            </label>
+                            <label class="flex items-center gap-3 text-gray-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                Page Rule: /storage/*/hls/* → Cache Everything
+                            </label>
+                            <label class="flex items-center gap-3 text-gray-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                Browser Cache TTL: 1 year
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Phase 2 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5">
+                        <h4 class="text-yellow-400 font-semibold mb-3">Phase 2: Kod Optimizasyonları (1 hafta)</h4>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center gap-3 text-gray-300">
+                                <input type="checkbox" class="w-4 h-4 rounded" checked disabled>
+                                ✅ N+1 query fix (tamamlandı - 284 → 50)
+                            </label>
+                            <label class="flex items-center gap-3 text-gray-300">
+                                <input type="checkbox" class="w-4 h-4 rounded" checked disabled>
+                                ✅ Settings cache (tamamlandı)
+                            </label>
+                            <label class="flex items-center gap-3 text-gray-300">
+                                <input type="checkbox" class="w-4 h-4 rounded" checked disabled>
+                                ✅ Subscription cache (tamamlandı)
+                            </label>
+                            <label class="flex items-center gap-3 text-gray-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                Play count queue'a al (async INSERT)
+                            </label>
+                            <label class="flex items-center gap-3 text-gray-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                API rate limiting ekle
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Phase 3 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5">
+                        <h4 class="text-yellow-400 font-semibold mb-3">Phase 3: Multi-Server Kurulum (2-3 gün)</h4>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center gap-3 text-gray-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                2 yeni web sunucu kur (aynı config)
+                            </label>
+                            <label class="flex items-center gap-3 text-gray-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                Load Balancer kur (HAProxy/Nginx)
+                            </label>
+                            <label class="flex items-center gap-3 text-gray-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                Shared storage (NFS veya S3) kur
+                            </label>
+                            <label class="flex items-center gap-3 text-gray-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                Redis'i ayrı sunucuya taşı
+                            </label>
+                            <label class="flex items-center gap-3 text-gray-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                MySQL read replica ekle (opsiyonel)
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Phase 4 -->
+                    <div class="bg-slate-800/50 rounded-lg p-5">
+                        <h4 class="text-yellow-400 font-semibold mb-3">Phase 4: Test & Monitoring</h4>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center gap-3 text-gray-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                Load test (k6 veya locust ile)
+                            </label>
+                            <label class="flex items-center gap-3 text-gray-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                Monitoring kur (Grafana + Prometheus)
+                            </label>
+                            <label class="flex items-center gap-3 text-gray-300">
+                                <input type="checkbox" class="w-4 h-4 rounded">
+                                Alert sistemleri kur
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MALİYET TAHMİNİ -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-emerald-900/40 to-emerald-800/20 border border-emerald-700/50 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-emerald-400 mb-6 flex items-center gap-3">
+                    <i class="fas fa-dollar-sign"></i>
+                    Aylık Maliyet Tahmini
+                </h2>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-left text-gray-400 border-b border-gray-700">
+                                <th class="pb-3">Kalem</th>
+                                <th class="pb-3">Detay</th>
+                                <th class="pb-3 text-right">Aylık</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-300">
+                            <tr class="border-b border-gray-800">
+                                <td class="py-3">Cloudflare Pro</td>
+                                <td class="py-3 text-gray-500">CDN + DDoS + WAF</td>
+                                <td class="py-3 text-right">$20</td>
+                            </tr>
+                            <tr class="border-b border-gray-800">
+                                <td class="py-3">Web Sunucu x3</td>
+                                <td class="py-3 text-gray-500">8 vCPU, 16GB RAM</td>
+                                <td class="py-3 text-right">$150-300</td>
+                            </tr>
+                            <tr class="border-b border-gray-800">
+                                <td class="py-3">Database Sunucu</td>
+                                <td class="py-3 text-gray-500">8 vCPU, 32GB RAM</td>
+                                <td class="py-3 text-right">$100-200</td>
+                            </tr>
+                            <tr class="border-b border-gray-800">
+                                <td class="py-3">Redis Sunucu</td>
+                                <td class="py-3 text-gray-500">4 vCPU, 16GB RAM</td>
+                                <td class="py-3 text-right">$50-100</td>
+                            </tr>
+                            <tr class="border-b border-gray-800">
+                                <td class="py-3">Load Balancer</td>
+                                <td class="py-3 text-gray-500">Managed veya VM</td>
+                                <td class="py-3 text-right">$20-50</td>
+                            </tr>
+                            <tr class="bg-emerald-900/30">
+                                <td class="py-3 font-bold text-emerald-400">TOPLAM</td>
+                                <td class="py-3"></td>
+                                <td class="py-3 text-right font-bold text-emerald-400">$340-670/ay</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="text-gray-400 text-sm mt-4">
+                    * Fiyatlar cloud provider'a göre değişir (Hetzner, DigitalOcean, AWS, vb.)
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 text-sm pt-8 border-t border-gray-800">
+            <p>Hazırlayan: Claude AI | 26 Aralık 2025</p>
+            <p class="mt-2">Muzibu.com.tr Scaling Planı v1</p>
+        </footer>
+
+    </div>
+</body>
+</html>

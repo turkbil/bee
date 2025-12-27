@@ -138,7 +138,7 @@ class PlaylistRepository
             return false;
         }
 
-        $playlist->songs()->attach($songId, ['position' => $position]);
+        $playlist->attachSongWithCache($songId, ['position' => $position]);
         return true;
     }
 
@@ -149,7 +149,7 @@ class PlaylistRepository
             return false;
         }
 
-        $playlist->songs()->detach($songId);
+        $playlist->detachSongWithCache($songId);
         return true;
     }
 

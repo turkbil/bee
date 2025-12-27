@@ -17,12 +17,12 @@
 
 <a @if($preview)
        href="/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}"
-       @click="if (window.innerWidth >= 1024) { $event.preventDefault(); $store.sidebar.showPreview('playlist', {{ $playlistId }}, {
+       @click="if (window.innerWidth >= 768) { $event.preventDefault(); $store.sidebar.showPreview('playlist', {{ $playlistId }}, {
            type: 'Playlist',
            id: {{ $playlistId }},
            title: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}',
            cover: '{{ $playlist->coverMedia ? thumb($playlist->coverMedia, 300, 300, ['scale' => 1]) : '' }}',
-           is_favorite: {{ auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
+           is_favorite: {{ is_favorited('playlist', $playlistId) ? 'true' : 'false' }},
            is_public: {{ $playlist->is_public ? 'true' : 'false' }},
            songs_count: {{ $playlist->songs_count ?? 0 }},
            is_mine: true
@@ -37,7 +37,7 @@
        id: {{ $playlistId }},
        title: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}',
        slug: '{{ $playlist->getTranslation('slug', app()->getLocale()) }}',
-       is_favorite: {{ auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+       is_favorite: {{ is_favorited('playlist', $playlistId) ? 'true' : 'false' }}
    })"
    {{-- Context Menu (Mobile: Long Press) --}}
    x-data="{
@@ -55,7 +55,7 @@
                id: {{ $playlistId }},
                title: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}',
                slug: '{{ $playlist->getTranslation('slug', app()->getLocale()) }}',
-               is_favorite: {{ auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+               is_favorite: {{ is_favorited('playlist', $playlistId) ? 'true' : 'false' }}
            });
        }, 500);
    "
@@ -108,7 +108,7 @@
                 id: {{ $playlistId }},
                 title: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}',
                 slug: '{{ $playlist->getTranslation('slug', app()->getLocale()) }}',
-                is_favorite: {{ auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+                is_favorite: {{ is_favorited('playlist', $playlistId) ? 'true' : 'false' }}
             })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
                 <i class="fas fa-ellipsis-v text-sm"></i>
             </button>

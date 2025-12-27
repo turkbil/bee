@@ -17,8 +17,8 @@
                     }" class="w-16 h-16 rounded-lg flex items-center justify-center">
                         <i :class="{
                             'fa-music': $store.contextMenu.type === 'song',
-                            'fa-compact-disc': $store.contextMenu.type === 'album',
-                            'fa-list': $store.contextMenu.type === 'playlist'
+                            'fa-record-vinyl': $store.contextMenu.type === 'album',
+                            'fa-list-music': $store.contextMenu.type === 'playlist'
                         }" class="fas text-white text-2xl opacity-80"></i>
                     </div>
                 </div>
@@ -32,8 +32,8 @@
                     }">
                         <i :class="{
                             'fa-music': $store.contextMenu.type === 'song',
-                            'fa-compact-disc': $store.contextMenu.type === 'album',
-                            'fa-list': $store.contextMenu.type === 'playlist'
+                            'fa-record-vinyl': $store.contextMenu.type === 'album',
+                            'fa-list-music': $store.contextMenu.type === 'playlist'
                         }" class="fas mr-1"></i>
                         <span x-text="{
                             'song': 'Şarkıya Puan Ver',

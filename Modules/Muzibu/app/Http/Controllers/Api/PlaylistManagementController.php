@@ -61,10 +61,8 @@ class PlaylistManagementController extends Controller
         if ($request->type === 'song') {
             $song = Song::findOrFail($request->item_id);
 
-            // Zaten ekliyse ekleme
-            if (!$playlist->songs()->where('song_id', $song->id)->exists()) {
-                $playlist->songs()->attach($song->id);
-            }
+            // Zaten ekliyse ekleme - attachSongWithCache zaten kontrol ediyor
+            $playlist->attachSongWithCache($song);
 
             return response()->json([
                 'success' => true,
@@ -73,12 +71,9 @@ class PlaylistManagementController extends Controller
         } else {
             // Album - tüm şarkılarını ekle
             $album = Album::with('songs')->findOrFail($request->item_id);
+            $songIds = $album->songs->pluck('song_id')->toArray();
 
-            foreach ($album->songs as $song) {
-                if (!$playlist->songs()->where('song_id', $song->id)->exists()) {
-                    $playlist->songs()->attach($song->id);
-                }
-            }
+            $playlist->attachManySongsWithCache($songIds);
 
             return response()->json([
                 'success' => true,
@@ -132,10 +127,9 @@ class PlaylistManagementController extends Controller
             'is_public' => false, // Kullanıcının kopyası private
         ]);
 
-        // Tüm şarkıları kopyala
-        foreach ($sourcePlaylist->songs as $song) {
-            $newPlaylist->songs()->attach($song->id);
-        }
+        // Tüm şarkıları kopyala (cache count'ları da güncelle)
+        $songIds = $sourcePlaylist->songs->pluck('song_id')->toArray();
+        $newPlaylist->attachManySongsWithCache($songIds);
 
         return response()->json([
             'success' => true,

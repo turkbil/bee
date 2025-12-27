@@ -4,6 +4,7 @@ namespace Modules\Blog\App\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Modules\Blog\App\Models\BlogAIDraft;
@@ -21,13 +22,19 @@ use Illuminate\Support\Facades\Log;
  * Çünkü tenant model'ler serialize edilirken tenant context kayboluyor
  * Çözüm: Model yerine ID geçir, tenant context restore ettikten sonra model'i fetch et
  */
-class GenerateBlogFromDraftJob implements ShouldQueue
+class GenerateBlogFromDraftJob implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable;
 
     public $tries = 3;
     public $timeout = 1200; // 🔧 FIX: 20 dakika (OpenAI API için yeterli)
     public $backoff = 60; // 60 saniye retry beklemesi
+
+    /**
+     * 🔧 FIX: Unique lock süresi - job tamamlanana kadar aynı draftId için yeni job başlatılmasın
+     * Default 0 = Job tamamlanana kadar bekle (job'un timeout'u kadar)
+     */
+    public $uniqueFor = 1800; // 30 dakika unique lock (timeout'tan uzun)
 
     public ?int $tenantId = null; // Tenant context
 
@@ -43,6 +50,15 @@ class GenerateBlogFromDraftJob implements ShouldQueue
 
         // Explicit queue belirt - tenant_2_default yerine blog-ai kullan
         $this->onQueue('blog-ai');
+    }
+
+    /**
+     * 🔧 FIX: Unique ID - aynı tenant + draft kombinasyonu için sadece 1 job çalışsın
+     * Bu sayede paralel worker'lar aynı draft için duplicate job çalıştıramaz
+     */
+    public function uniqueId(): string
+    {
+        return 'blog_draft_' . $this->tenantId . '_' . $this->draftId;
     }
 
     /**

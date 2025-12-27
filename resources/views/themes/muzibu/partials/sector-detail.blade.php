@@ -56,7 +56,7 @@
             @auth
             <button
                 x-data="{
-                    favorited: {{ auth()->check() && method_exists($sector, 'isFavoritedBy') && $sector->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
+                    favorited: {{ is_favorited('sector', $sector->id) ? 'true' : 'false' }},
                     count: {{ method_exists($sector, 'favoritesCount') ? $sector->favoritesCount() : 0 }},
                     loading: false,
                     toggle() {

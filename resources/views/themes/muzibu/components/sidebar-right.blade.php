@@ -2,7 +2,7 @@
 <div class="h-full" x-data="{ songsTab: 'new' }">
 
     {{-- PREVIEW MODE: Premium Card Design (when clicking on list item - WORKS EVERYWHERE) --}}
-    <template x-if="$store.sidebar.previewMode">
+    <template x-if="$store.sidebar?.previewMode">
         <div class="animate-fade-in h-full flex flex-col">
             {{-- Large Cover Header with Gradient --}}
             <div class="relative h-56 flex-shrink-0 overflow-hidden rounded-t-xl">
@@ -320,7 +320,7 @@
     </template>
 
     {{-- DETAIL PAGE: Premium Card Design (only when NOT in preview mode) --}}
-    <template x-if="$store.sidebar.isDetailPage && !$store.sidebar.previewMode && $store.sidebar.hasTracks">
+    <template x-if="$store.sidebar?.isDetailPage && !$store.sidebar?.previewMode && $store.sidebar?.hasTracks">
         <div class="animate-fade-in h-full flex flex-col">
             {{-- Large Cover Header with Gradient --}}
             <div class="relative h-56 flex-shrink-0 overflow-hidden rounded-t-xl">
@@ -431,8 +431,11 @@
     </template>
 
     {{-- HOMEPAGE: Tab System with Songs (v6 Design - when NOT in preview/detail) --}}
-    <template x-if="!$store.sidebar.isDetailPage && !$store.sidebar.previewMode">
-        <div class="h-full flex flex-col">
+    {{-- Default visible, hidden when preview or detail page --}}
+    <div x-show="!$store.sidebar?.previewMode && !$store.sidebar?.isDetailPage"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:leave="transition ease-in duration-150"
+         class="h-full flex flex-col">
 
             {{-- Premium Header with Tabs --}}
             <div class="relative rounded-t-lg overflow-hidden">
@@ -528,13 +531,11 @@
                     </div>
                 </template>
 
-
             </div>
-        </div>
-    </template>
+    </div>
 
     {{-- FALLBACK: Loading State (detail page without tracks, not in preview) --}}
-    <template x-if="$store.sidebar.isDetailPage && !$store.sidebar.previewMode && !$store.sidebar.hasTracks">
+    <template x-if="$store.sidebar?.isDetailPage && !$store.sidebar?.previewMode && !$store.sidebar?.hasTracks">
         <div class="h-full flex items-center justify-center">
             <div class="text-center text-gray-500">
                 <i class="fas fa-spinner fa-spin text-muzibu-coral text-2xl mb-3"></i>

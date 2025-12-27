@@ -197,8 +197,8 @@ class PlaylistController extends Controller
         $maxPosition = $playlist->songs()->max('muzibu_playlist_song.position') ?? -1;
         $newPosition = $maxPosition + 1;
 
-        // Ekle
-        $playlist->songs()->attach($songId, ['position' => $newPosition]);
+        // Ekle (cache count'ları da güncelle)
+        $playlist->attachSongWithCache($songId, ['position' => $newPosition]);
 
         return response()->json([
             'success' => true,
@@ -219,8 +219,8 @@ class PlaylistController extends Controller
 
         $playlist = \Modules\Muzibu\App\Models\Playlist::findOrFail($id);
 
-        // Çıkar
-        $playlist->songs()->detach($songId);
+        // Çıkar (cache count'ları da güncelle)
+        $playlist->detachSongWithCache($songId);
 
         // Sıralamayı düzelt (gap kalmasın)
         $songs = $playlist->songs()->orderBy('muzibu_playlist_song.position')->get();

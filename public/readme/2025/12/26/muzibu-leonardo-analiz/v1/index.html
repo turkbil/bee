@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Leonardo AI Görsel Üretim Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-gray-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600/20 border border-purple-500 rounded-full mb-4">
+                <i class="fas fa-palette text-purple-400"></i>
+                <span class="text-purple-300 text-sm font-medium">Analiz Raporu</span>
+            </div>
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
+                Muzibu Leonardo AI Görsel Üretim Sistemi
+            </h1>
+            <p class="text-gray-400 text-lg">Tenant 1001 - Otomatik Kapak Görseli Üretimi</p>
+            <p class="text-gray-500 text-sm mt-2">26 Aralık 2025</p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-lightbulb"></i>
+                Basit Anlatım (Herkes İçin)
+            </h2>
+            <div class="space-y-4 text-gray-300">
+                <p>
+                    <strong>Ne Yapılıyor?</strong> Muzibu'da şarkı, albüm, playlist gibi içerikler eklendiğinde otomatik olarak kapak görseli üretiliyor. Bu iş için Leonardo AI kullanılıyor.
+                </p>
+                <p>
+                    <strong>Sorun:</strong> Leonardo AI şu anda her görselde <span class="text-red-400 font-semibold">insan figürü koymaya çalışıyor</span>. "Müzisyen", "el", "parmak", "performans" gibi ifadeler prompt'larda bol miktarda var.
+                </p>
+                <p>
+                    <strong>İstenen:</strong> İnsan olmadan, soyut, artistik, atmosferik görseller üretilmesi. Şarkı adına göre hayal gücü kullanılması.
+                </p>
+            </div>
+        </section>
+
+        <!-- Teknik Özet -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-code"></i>
+                Teknik Detaylar (Geliştiriciler İçin)
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-semibold text-blue-300 mb-2">Ana Dosyalar:</h3>
+                    <ul class="text-sm text-gray-400 space-y-1">
+                        <li><code class="bg-slate-800 px-2 py-0.5 rounded">Modules/Muzibu/app/Jobs/GenerateSongCover.php</code></li>
+                        <li><code class="bg-slate-800 px-2 py-0.5 rounded">Modules/Muzibu/app/Jobs/GenerateGenericMuzibyCover.php</code></li>
+                        <li><code class="bg-slate-800 px-2 py-0.5 rounded">app/Services/Media/LeonardoAIService.php</code></li>
+                        <li><code class="bg-slate-800 px-2 py-0.5 rounded">Modules/AI/app/Services/AIPromptEnhancer.php</code></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-blue-300 mb-2">Görsel Boyutu:</h3>
+                    <ul class="text-sm text-gray-400 space-y-1">
+                        <li><i class="fas fa-expand-arrows-alt text-blue-400 mr-2"></i>1472x832 px (Yatay)</li>
+                        <li><i class="fas fa-paint-brush text-blue-400 mr-2"></i>Style: Cinematic</li>
+                        <li><i class="fas fa-robot text-blue-400 mr-2"></i>Model: Lucid Origin</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Görsel Üretilen İçerikler -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                <i class="fas fa-images text-purple-400"></i>
+                Otomatik Görsel Üretilen İçerik Türleri
+            </h2>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Song -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5 hover:border-purple-500 transition-colors">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-purple-600/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-music text-2xl text-purple-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white">Şarkı (Song)</h3>
+                            <span class="text-xs text-green-400">Aktif</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-400">Şarkı eklendiğinde otomatik kapak görseli üretilir.</p>
+                    <div class="mt-3 text-xs text-gray-500">
+                        <code>GenerateSongCover.php</code>
+                    </div>
+                </div>
+
+                <!-- Album -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5 hover:border-purple-500 transition-colors">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-pink-600/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-compact-disc text-2xl text-pink-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white">Albüm (Album)</h3>
+                            <span class="text-xs text-green-400">Aktif</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-400">Albüm oluşturulduğunda otomatik kapak üretilir.</p>
+                    <div class="mt-3 text-xs text-gray-500">
+                        <code>GenerateGenericMuzibyCover.php</code>
+                    </div>
+                </div>
+
+                <!-- Genre -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5 hover:border-purple-500 transition-colors">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-orange-600/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-guitar text-2xl text-orange-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white">Tür (Genre)</h3>
+                            <span class="text-xs text-green-400">Aktif</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-400">Rock, Pop, Jazz gibi türler için görsel.</p>
+                    <div class="mt-3 text-xs text-gray-500">
+                        <code>GenerateGenericMuzibyCover.php</code>
+                    </div>
+                </div>
+
+                <!-- Sector -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5 hover:border-purple-500 transition-colors">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-cyan-600/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-industry text-2xl text-cyan-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white">Sektör (Sector)</h3>
+                            <span class="text-xs text-green-400">Aktif</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-400">Kurumsal müzik sektörleri için görsel.</p>
+                    <div class="mt-3 text-xs text-gray-500">
+                        <code>GenerateGenericMuzibyCover.php</code>
+                    </div>
+                </div>
+
+                <!-- Radio -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5 hover:border-purple-500 transition-colors">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-red-600/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-broadcast-tower text-2xl text-red-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white">Radyo (Radio)</h3>
+                            <span class="text-xs text-green-400">Aktif</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-400">Radyo kanalları için kapak görseli.</p>
+                    <div class="mt-3 text-xs text-gray-500">
+                        <code>GenerateGenericMuzibyCover.php</code>
+                    </div>
+                </div>
+
+                <!-- Playlist -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5 hover:border-purple-500 transition-colors">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-green-600/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-list-ul text-2xl text-green-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white">Çalma Listesi (Playlist)</h3>
+                            <span class="text-xs text-green-400">Aktif</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-400">Kullanıcı playlistleri için otomatik görsel.</p>
+                    <div class="mt-3 text-xs text-gray-500">
+                        <code>GenerateGenericMuzibyCover.php</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SORUN: İnsan Fotoğrafı -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-red-400 mb-6 flex items-center gap-2">
+                <i class="fas fa-exclamation-triangle"></i>
+                Sorun: İnsan Fotoğrafı Sorunu
+            </h2>
+
+            <div class="bg-red-900/20 border border-red-800 rounded-xl p-6 mb-6">
+                <h3 class="font-bold text-red-300 mb-4">Mevcut Prompt'larda İnsan Referansları:</h3>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- LeonardoAIService.php -->
+                    <div>
+                        <h4 class="text-sm font-semibold text-red-200 mb-2">
+                            <i class="fas fa-file-code mr-1"></i>
+                            LeonardoAIService.php (Satır 509-530)
+                        </h4>
+                        <div class="bg-slate-800 rounded-lg p-4 text-sm font-mono text-red-200 space-y-2 max-h-64 overflow-y-auto">
+                            <p>"a <span class="text-red-400 font-bold">musician</span> deeply focused playing..."</p>
+                            <p>"<span class="text-red-400 font-bold">weathered hands</span> positioned on..."</p>
+                            <p>"<span class="text-red-400 font-bold">musician's fingers</span> dancing across..."</p>
+                            <p>"<span class="text-red-400 font-bold">sweat drops on musician</span> playing..."</p>
+                            <p>"<span class="text-red-400 font-bold">musician</span> lost in the moment..."</p>
+                            <p>"<span class="text-red-400 font-bold">senior operator</span> demonstrating..."</p>
+                            <p>"<span class="text-red-400 font-bold">workers</span> inspecting..."</p>
+                            <p>"<span class="text-red-400 font-bold">technician</span> repairing..."</p>
+                            <p>"<span class="text-red-400 font-bold">new employee</span> nervously training..."</p>
+                        </div>
+                    </div>
+
+                    <!-- AIPromptEnhancer.php -->
+                    <div>
+                        <h4 class="text-sm font-semibold text-red-200 mb-2">
+                            <i class="fas fa-file-code mr-1"></i>
+                            AIPromptEnhancer.php (music_platform config)
+                        </h4>
+                        <div class="bg-slate-800 rounded-lg p-4 text-sm font-mono text-red-200 space-y-2 max-h-64 overflow-y-auto">
+                            <p>"subtle wear on <span class="text-red-400 font-bold">guitar frets, fingerprints</span>..."</p>
+                            <p>"<span class="text-red-400 font-bold">breath condensation</span>..."</p>
+                            <p>"showing <span class="text-red-400 font-bold">gentle wear patterns</span>..."</p>
+                            <p>"<span class="text-red-400 font-bold">warm skin tones</span>..."</p>
+                            <p>"<span class="text-red-400 font-bold">artist performance</span>..."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-4 bg-red-950/50 rounded-lg">
+                    <p class="text-red-200">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        <strong>Sonuç:</strong> 20 subject tanımının <span class="text-red-400 font-bold">TAMAMINDA</span> insan referansı var!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÇÖZÜM ÖNERİLERİ -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-emerald-400 mb-6 flex items-center gap-2">
+                <i class="fas fa-lightbulb"></i>
+                Çözüm Planı: İnsansız Görsel Üretimi
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Çözüm 1 -->
+                <div class="bg-emerald-900/20 border border-emerald-800 rounded-xl p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-emerald-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-bold">1</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-emerald-300 text-lg mb-2">Negative Prompt'a İnsan Yasağı Ekle</h3>
+                            <p class="text-gray-400 mb-3">En hızlı çözüm. Leonardo API'nin negative_prompt parametresine ekle.</p>
+                            <div class="bg-slate-800 rounded-lg p-4 text-sm font-mono text-emerald-200">
+                                <p class="text-gray-500 mb-2">// LeonardoAIService.php - createGenerationDirect()</p>
+                                <p>$negativePrompt = "... <span class="text-emerald-400">human, person, people, hands, fingers, face, musician, performer, artist, worker, operator, body parts, silhouette of person</span> ...";</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Çözüm 2 -->
+                <div class="bg-emerald-900/20 border border-emerald-800 rounded-xl p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-emerald-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-bold">2</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-emerald-300 text-lg mb-2">Subject Havuzunu Yeniden Yaz (İnsansız)</h3>
+                            <p class="text-gray-400 mb-3">buildMusicDynamicPrompt() içindeki $subjects array'i tamamen değiştir.</p>
+                            <div class="bg-slate-800 rounded-lg p-4 text-sm font-mono text-emerald-200">
+                                <p class="text-gray-500 mb-2">// Yeni İnsansız Subject Havuzu:</p>
+                                <p>"a vintage guitar resting against amplifier in empty studio"</p>
+                                <p>"piano keys catching golden hour light through dusty window"</p>
+                                <p>"vinyl records scattered on wooden floor"</p>
+                                <p>"neon-lit synthesizer in dark room"</p>
+                                <p>"acoustic guitar silhouette against sunset"</p>
+                                <p>"microphone stand alone on empty stage"</p>
+                                <p>"drum kit in spotlight, smoke wisps"</p>
+                                <p>"tangled cables and pedals on stage floor"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Çözüm 3 -->
+                <div class="bg-emerald-900/20 border border-emerald-800 rounded-xl p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-emerald-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-bold">3</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-emerald-300 text-lg mb-2">Soyut/Atmosferik Prompt Havuzu Ekle</h3>
+                            <p class="text-gray-400 mb-3">Şarkı adına göre yaratıcı, soyut görseller.</p>
+                            <div class="bg-slate-800 rounded-lg p-4 text-sm font-mono text-emerald-200">
+                                <p class="text-gray-500 mb-2">// Soyut/Artistik Prompt Örnekleri:</p>
+                                <p>"abstract sound waves visualized as colorful ribbons"</p>
+                                <p>"cosmic nebula with musical note formations"</p>
+                                <p>"geometric patterns pulsating with rhythm"</p>
+                                <p>"underwater soundscape with bubble formations"</p>
+                                <p>"aurora borealis dancing to invisible melody"</p>
+                                <p>"fractal patterns in musical frequencies"</p>
+                                <p>"cinematic landscape reflecting song mood"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Çözüm 4 -->
+                <div class="bg-emerald-900/20 border border-emerald-800 rounded-xl p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-emerald-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-bold">4</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-emerald-300 text-lg mb-2">AIPromptEnhancer Sistem Prompt'u Güncelle</h3>
+                            <p class="text-gray-400 mb-3">GPT-4'e "insan üretme" talimatı ekle.</p>
+                            <div class="bg-slate-800 rounded-lg p-4 text-sm font-mono text-emerald-200">
+                                <p class="text-gray-500 mb-2">// System Prompt'a Ekle:</p>
+                                <p class="text-yellow-300">## İNSAN YASAĞI (KRİTİK!):</p>
+                                <p>- ASLA insan figürü, el, parmak, yüz, siluet EKLEME</p>
+                                <p>- ASLA "musician", "performer", "artist", "player" kullanma</p>
+                                <p>- Sadece enstrüman, ekipman, mekan, atmosfer</p>
+                                <p>- Soyut, artistik, atmosferik görseller tercih et</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Uygulama Önceliği -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-yellow-400 mb-6 flex items-center gap-2">
+                <i class="fas fa-tasks"></i>
+                Önerilen Uygulama Sırası
+            </h2>
+
+            <div class="bg-yellow-900/20 border border-yellow-800 rounded-xl p-6">
+                <ol class="space-y-4">
+                    <li class="flex items-start gap-3">
+                        <span class="w-8 h-8 bg-yellow-600 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">1</span>
+                        <div>
+                            <p class="font-semibold text-yellow-200">Negative Prompt Güncelle (Acil)</p>
+                            <p class="text-sm text-gray-400">LeonardoAIService.php → createGenerationDirect() ve createGeneration()</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="w-8 h-8 bg-yellow-600 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">2</span>
+                        <div>
+                            <p class="font-semibold text-yellow-200">Subject Havuzunu Değiştir</p>
+                            <p class="text-sm text-gray-400">LeonardoAIService.php → buildMusicDynamicPrompt() $subjects array</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="w-8 h-8 bg-yellow-600 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">3</span>
+                        <div>
+                            <p class="font-semibold text-yellow-200">AIPromptEnhancer Güncelle</p>
+                            <p class="text-sm text-gray-400">System prompt ve music_platform config'i düzenle</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="w-8 h-8 bg-yellow-600 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">4</span>
+                        <div>
+                            <p class="font-semibold text-yellow-200">Test Et</p>
+                            <p class="text-sm text-gray-400">Birkaç test şarkı/albüm ekleyerek sonuçları kontrol et</p>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Kod Değişikliği Özeti -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-cyan-400 mb-6 flex items-center gap-2">
+                <i class="fas fa-code-branch"></i>
+                Değiştirilecek Dosyalar
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-800">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-cyan-300">Dosya</th>
+                            <th class="px-4 py-3 text-left text-cyan-300">Fonksiyon/Bölüm</th>
+                            <th class="px-4 py-3 text-left text-cyan-300">Değişiklik</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-mono text-xs">app/Services/Media/LeonardoAIService.php</td>
+                            <td class="px-4 py-3">createGeneration()</td>
+                            <td class="px-4 py-3 text-yellow-300">negative_prompt'a insan kelimeleri ekle</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-mono text-xs">app/Services/Media/LeonardoAIService.php</td>
+                            <td class="px-4 py-3">createGenerationDirect()</td>
+                            <td class="px-4 py-3 text-yellow-300">negative_prompt'a insan kelimeleri ekle</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-mono text-xs">app/Services/Media/LeonardoAIService.php</td>
+                            <td class="px-4 py-3">buildMusicDynamicPrompt() $subjects</td>
+                            <td class="px-4 py-3 text-red-300">Tüm array yeniden yazılacak (20 item)</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-mono text-xs">Modules/AI/app/Services/AIPromptEnhancer.php</td>
+                            <td class="px-4 py-3">buildSevenRuleSystemPrompt()</td>
+                            <td class="px-4 py-3 text-yellow-300">İnsan yasağı kuralı ekle</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="px-4 py-3 font-mono text-xs">Modules/AI/app/Services/AIPromptEnhancer.php</td>
+                            <td class="px-4 py-3">getSectorConfig('music_platform')</td>
+                            <td class="px-4 py-3 text-yellow-300">İnsan referansları temizle</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t border-slate-700 text-center text-gray-500 text-sm">
+            <p>
+                <i class="fas fa-robot mr-1"></i>
+                Claude AI tarafından oluşturuldu | 26 Aralık 2025
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

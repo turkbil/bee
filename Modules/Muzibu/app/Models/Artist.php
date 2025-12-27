@@ -13,10 +13,11 @@ use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 use Modules\ReviewSystem\App\Traits\HasReviews;
+use Modules\Muzibu\App\Traits\HasCachedCounts;
 
 class Artist extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, HasReviews, Searchable;
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, HasReviews, Searchable, HasCachedCounts;
 
     protected $table = 'muzibu_artists';
     protected $primaryKey = 'artist_id';
@@ -96,6 +97,43 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
     public function songs()
     {
         return $this->hasManyThrough(Song::class, Album::class, 'artist_id', 'album_id', 'artist_id', 'album_id');
+    }
+
+    /**
+     * HasCachedCounts configuration
+     * Defines cached count fields and their calculators
+     */
+    protected function getCachedCountsConfig(): array
+    {
+        return [
+            'albums_count' => fn() => $this->albums()->where('is_active', true)->count(),
+            'songs_count' => fn() => $this->songs()->where('muzibu_songs.is_active', true)->count(),
+            'total_duration' => fn() => $this->songs()->where('muzibu_songs.is_active', true)->sum('muzibu_songs.duration'),
+        ];
+    }
+
+    /**
+     * Albums count accessor (cached)
+     */
+    public function getAlbumsCountAttribute(): int
+    {
+        return $this->getCachedCount('albums_count');
+    }
+
+    /**
+     * Songs count accessor (cached)
+     */
+    public function getSongsCountAttribute(): int
+    {
+        return $this->getCachedCount('songs_count');
+    }
+
+    /**
+     * Total duration accessor (cached)
+     */
+    public function getTotalDurationAttribute(): int
+    {
+        return $this->getCachedCount('total_duration');
     }
 
     /**

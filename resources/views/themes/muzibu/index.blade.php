@@ -28,25 +28,41 @@ document.addEventListener('alpine:init', () => {
 </x-muzibu.horizontal-scroll-section>
 @endif
 
-{{-- Featured Playlists (Spotify Style) --}}
+{{-- Çalma Listeleri (Spotify Style) --}}
 @if($featuredPlaylists && $featuredPlaylists->count() > 0)
-<x-muzibu.horizontal-scroll-section title="Öne Çıkan Listeler">
+<x-muzibu.horizontal-scroll-section title="Çalma Listeleri" icon="fa-list-music" viewAllUrl="/playlists">
     @foreach($featuredPlaylists as $playlist)
         <x-muzibu.playlist-card :playlist="$playlist" :preview="true" :compact="true" />
     @endforeach
 </x-muzibu.horizontal-scroll-section>
 @endif
 
-{{-- New Releases (Horizontal Scroll - Spotify Style) --}}
+{{-- Yeni Albümler (Horizontal Scroll - Spotify Style) --}}
 @if($newReleases && $newReleases->count() > 0)
-<x-muzibu.horizontal-scroll-section title="Yeni Çıkanlar">
+<x-muzibu.horizontal-scroll-section title="Albümler" icon="fa-microphone-lines" viewAllUrl="/albums">
     @foreach($newReleases as $album)
         <x-muzibu.album-card :album="$album" :preview="true" :compact="true" />
     @endforeach
 </x-muzibu.horizontal-scroll-section>
 @endif
 
-{{-- SONGS GRID kaldırıldı - Şarkılar artık sağ sidebar'da gösteriliyor --}}
+{{-- Radyolar --}}
+@if(isset($radios) && $radios->count() > 0)
+<x-muzibu.horizontal-scroll-section title="Radyolar" icon="fa-radio" viewAllUrl="/radios">
+    @foreach($radios as $radio)
+        <x-muzibu.radio-card :radio="$radio" :compact="true" />
+    @endforeach
+</x-muzibu.horizontal-scroll-section>
+@endif
+
+{{-- Sektörler --}}
+@if(isset($sectors) && $sectors->count() > 0)
+<x-muzibu.horizontal-scroll-section title="Sektörler" icon="fa-building" viewAllUrl="/sectors">
+    @foreach($sectors as $sector)
+        <x-muzibu.sector-card :sector="$sector" :preview="true" :compact="true" />
+    @endforeach
+</x-muzibu.horizontal-scroll-section>
+@endif
 
 
 </div>

@@ -32,13 +32,13 @@
                 $tabs = [
                     'all' => ['label' => 'Tumu', 'icon' => 'fa-grid-2', 'count' => $totalCount],
                     'songs' => ['label' => 'Sarkilar', 'icon' => 'fa-music', 'count' => $counts['songs'] ?? 0],
-                    'albums' => ['label' => 'Albumler', 'icon' => 'fa-compact-disc', 'count' => $counts['albums'] ?? 0],
+                    'albums' => ['label' => 'Albumler', 'icon' => 'fa-microphone-lines', 'count' => $counts['albums'] ?? 0],
                     'artists' => ['label' => 'Sanatcilar', 'icon' => 'fa-microphone', 'count' => $counts['artists'] ?? 0],
-                    'playlists' => ['label' => 'Playlistler', 'icon' => 'fa-list-music', 'count' => $counts['playlists'] ?? 0],
+                    'playlists' => ['label' => 'Playlistler', 'icon' => 'fa-album-collection', 'count' => $counts['playlists'] ?? 0],
                     'genres' => ['label' => 'Turler', 'icon' => 'fa-guitar', 'count' => $counts['genres'] ?? 0],
                     'sectors' => ['label' => 'Sektorler', 'icon' => 'fa-building', 'count' => $counts['sectors'] ?? 0],
                     'radios' => ['label' => 'Radyolar', 'icon' => 'fa-radio', 'count' => $counts['radios'] ?? 0],
-                    'myplaylists' => ['label' => 'Playlistlerim', 'icon' => 'fa-folder-music', 'count' => $counts['myplaylists'] ?? 0],
+                    'myplaylists' => ['label' => 'Playlistlerim', 'icon' => 'fa-album-collection', 'count' => $counts['myplaylists'] ?? 0],
                 ];
             @endphp
 
@@ -86,7 +86,7 @@
                 <div class="mb-8">
                     @if($activeTab === 'all')
                         <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                            <i class="fas fa-compact-disc text-muzibu-coral"></i>
+                            <i class="fas fa-microphone-lines text-muzibu-coral"></i>
                             Albumler
                         </h2>
                     @endif
@@ -120,7 +120,7 @@
                 <div class="mb-8">
                     @if($activeTab === 'all')
                         <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                            <i class="fas fa-list-music text-muzibu-coral"></i>
+                            <i class="fas fa-album-collection text-muzibu-coral"></i>
                             Playlistler
                         </h2>
                     @endif
@@ -188,7 +188,7 @@
                 <div class="mb-8">
                     @if($activeTab === 'all')
                         <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                            <i class="fas fa-folder-music text-muzibu-coral"></i>
+                            <i class="fas fa-album-collection text-muzibu-coral"></i>
                             Playlistlerim
                         </h2>
                     @endif

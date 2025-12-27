@@ -63,6 +63,31 @@ if (!function_exists('turkish_title_case')) {
     }
 }
 
+if (!function_exists('is_favorited')) {
+    /**
+     * 🔥 P1 FIX: Check if item is favorited using pre-loaded data
+     * Uses $userFavoritedIds from SidebarComposer (bulk loaded)
+     * Reduces N+1 problem (174 queries → 0 queries during render)
+     *
+     * @param string $type - 'song', 'album', 'playlist', 'genre', 'sector', 'radio', 'artist'
+     * @param int $id - Entity ID
+     * @return bool
+     */
+    function is_favorited(string $type, int $id): bool
+    {
+        // Get pre-loaded favorites from view
+        $userFavoritedIds = view()->shared('userFavoritedIds', []);
+
+        // If not available in shared data, return false (guest user or not loaded yet)
+        if (empty($userFavoritedIds)) {
+            return false;
+        }
+
+        // Check if ID exists in the type array
+        return isset($userFavoritedIds[$type]) && in_array($id, $userFavoritedIds[$type], true);
+    }
+}
+
 if (!function_exists('clean_filename_for_title')) {
     /**
      * Dosya adından başlık oluştur (Türkçe imla kurallarına uygun)

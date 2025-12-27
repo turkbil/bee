@@ -15,10 +15,10 @@
          title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
          artist: '{{ $song->artist ? addslashes($song->artist->getTranslation('title', app()->getLocale())) : '' }}',
          album_id: {{ isset($contextData['album_id']) ? $contextData['album_id'] : ($song->album_id ?? 'null') }},
-         is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+         is_favorite: {{ is_favorited('song', $song->song_id) ? 'true' : 'false' }}
      })"
      x-data="{ touchTimer: null, touchStartPos: { x: 0, y: 0 } }"
-     x-on:touchstart="touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY }; touchTimer = setTimeout(() => { if (navigator.vibrate) navigator.vibrate(50); $store.contextMenu.openContextMenu({ clientX: $event.touches[0].clientX, clientY: $event.touches[0].clientY }, 'song', { id: {{ $song->song_id }}, title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}', artist: '{{ $song->artist ? addslashes($song->artist->getTranslation('title', app()->getLocale())) : '' }}', album_id: {{ isset($contextData['album_id']) ? $contextData['album_id'] : ($song->album_id ?? 'null') }}, is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }} }); }, 500);"
+     x-on:touchstart="touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY }; touchTimer = setTimeout(() => { if (navigator.vibrate) navigator.vibrate(50); $store.contextMenu.openContextMenu({ clientX: $event.touches[0].clientX, clientY: $event.touches[0].clientY }, 'song', { id: {{ $song->song_id }}, title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}', artist: '{{ $song->artist ? addslashes($song->artist->getTranslation('title', app()->getLocale())) : '' }}', album_id: {{ isset($contextData['album_id']) ? $contextData['album_id'] : ($song->album_id ?? 'null') }}, is_favorite: {{ is_favorited('song', $song->song_id) ? 'true' : 'false' }} }); }, 500);"
      x-on:touchend="clearTimeout(touchTimer)"
      x-on:touchmove="if (Math.abs($event.touches[0].clientX - touchStartPos.x) > 10 || Math.abs($event.touches[0].clientY - touchStartPos.y) > 10) clearTimeout(touchTimer)">
 
@@ -71,7 +71,7 @@
                         title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
                         artist: '{{ $song->artist ? addslashes($song->artist->getTranslation('title', app()->getLocale())) : '' }}',
                         album_id: {{ isset($contextData['album_id']) ? $contextData['album_id'] : ($song->album_id ?? 'null') }},
-                        is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+                        is_favorite: {{ is_favorited('song', $song->song_id) ? 'true' : 'false' }}
                     })"
                     class="hidden group-hover:flex items-center justify-center w-full h-full rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
                 <i class="fas fa-ellipsis-v text-sm"></i>

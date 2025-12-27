@@ -38,7 +38,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
         {{-- Empty State --}}
         <div class="text-center py-20">
             <div class="mb-6">
-                <i class="fas fa-stream text-gray-600 text-6xl"></i>
+                <i class="fas fa-list-music text-gray-600 text-6xl"></i>
             </div>
             <h3 class="text-2xl font-bold text-white mb-2">Henüz playlist yok</h3>
             <p class="text-gray-400">Yakında yeni playlistler eklenecek</p>

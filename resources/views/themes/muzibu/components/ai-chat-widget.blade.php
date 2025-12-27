@@ -1,7 +1,7 @@
 {{-- Muzibu AI Music Assistant Widget --}}
+{{-- 🚀 FIXED: Removed duplicate x-init (Alpine store auto-calls init()) --}}
 <div
     x-data="$store.tenant1001AI"
-    x-init="init()"
     class="fixed bottom-24 right-4 z-[35]"
     x-cloak
 >

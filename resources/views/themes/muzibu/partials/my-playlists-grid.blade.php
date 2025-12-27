@@ -13,7 +13,7 @@
                    x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'playlist', {
                        id: {{ $playlist->id }},
                        title: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}',
-                       is_favorite: {{ auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
+                       is_favorite: {{ is_favorited('playlist', $playlist->id) ? 'true' : 'false' }},
                        is_mine: true
                    })"
                    x-data="{
@@ -30,7 +30,7 @@
                            }, 'playlist', {
                                id: {{ $playlist->id }},
                                title: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}',
-                               is_favorite: {{ auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
+                               is_favorite: {{ is_favorited('playlist', $playlist->id) ? 'true' : 'false' }},
                                is_mine: true
                            });
                        }, 500);
@@ -64,7 +64,7 @@
                             @auth
                             <button
                                 x-data="{
-                                    favorited: {{ auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
+                                    favorited: {{ is_favorited('playlist', $playlist->id) ? 'true' : 'false' }},
                                     loading: false,
                                     toggle() {
                                         if (this.loading) return;
@@ -127,7 +127,7 @@
         {{-- Modern Empty State --}}
         <div class="text-center py-16 sm:py-24">
             <div class="mb-6 sm:mb-8 animate-pulse">
-                <i class="fas fa-stream text-gray-600 text-6xl sm:text-7xl md:text-8xl"></i>
+                <i class="fas fa-album-collection text-gray-600 text-6xl sm:text-7xl md:text-8xl"></i>
             </div>
             <h3 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">
                 Henüz playlist oluşturmadın

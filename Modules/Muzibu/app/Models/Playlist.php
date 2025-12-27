@@ -14,10 +14,11 @@ use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 use Modules\Favorite\App\Traits\HasFavorites;
 use Modules\ReviewSystem\App\Traits\HasReviews;
+use Modules\Muzibu\App\Traits\HasCachedCounts;
 
 class Playlist extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, HasFavorites, HasReviews, Searchable;
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, HasFavorites, HasReviews, Searchable, HasCachedCounts;
 
     protected $table = 'muzibu_playlists';
     protected $primaryKey = 'playlist_id';
@@ -146,6 +147,170 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
+     * HasCachedCounts configuration
+     * Defines cached count fields and their calculators
+     */
+    protected function getCachedCountsConfig(): array
+    {
+        return [
+            'songs_count' => fn() => $this->songs()->where('muzibu_songs.is_active', true)->count(),
+            'total_duration' => fn() => $this->songs()->where('muzibu_songs.is_active', true)->sum('duration'),
+        ];
+    }
+
+    /**
+     * Songs count accessor (cached)
+     */
+    public function getSongsCountAttribute(): int
+    {
+        return $this->getCachedCount('songs_count');
+    }
+
+    /**
+     * Total duration accessor (cached)
+     */
+    public function getTotalDurationAttribute(): int
+    {
+        return $this->getCachedCount('total_duration');
+    }
+
+    /**
+     * Playlist'e şarkı ekle ve cache count'ları güncelle
+     * @param int|Song $song Song ID veya Song instance
+     * @param array $pivotData Pivot data (position vb.)
+     */
+    public function attachSongWithCache($song, array $pivotData = []): void
+    {
+        $songModel = $song instanceof Song ? $song : Song::find($song);
+
+        if (!$songModel) {
+            return;
+        }
+
+        // Zaten var mı kontrol et
+        if ($this->songs()->where('muzibu_songs.song_id', $songModel->song_id)->exists()) {
+            return;
+        }
+
+        // Şarkıyı ekle
+        $this->songs()->attach($songModel->song_id, $pivotData);
+
+        // Active şarkı ise cache'i güncelle
+        if ($songModel->is_active) {
+            $this->incrementCachedCount('songs_count');
+            $this->incrementCachedCount('total_duration', (int) $songModel->duration);
+        }
+    }
+
+    /**
+     * Playlist'ten şarkı çıkar ve cache count'ları güncelle
+     * @param int|Song $song Song ID veya Song instance
+     */
+    public function detachSongWithCache($song): void
+    {
+        $songModel = $song instanceof Song ? $song : Song::find($song);
+
+        if (!$songModel) {
+            return;
+        }
+
+        // Var mı kontrol et
+        if (!$this->songs()->where('muzibu_songs.song_id', $songModel->song_id)->exists()) {
+            return;
+        }
+
+        // Şarkıyı çıkar
+        $this->songs()->detach($songModel->song_id);
+
+        // Active şarkı ise cache'i güncelle
+        if ($songModel->is_active) {
+            $this->decrementCachedCount('songs_count');
+            $this->decrementCachedCount('total_duration', (int) $songModel->duration);
+        }
+    }
+
+    /**
+     * Playlist şarkılarını senkronize et ve cache count'ları güncelle
+     * @param array $songIds Şarkı ID'leri
+     */
+    public function syncSongsWithCache(array $songIds): void
+    {
+        // Şarkıları senkronize et
+        $this->songs()->sync($songIds);
+
+        // Cache'leri tamamen recalculate et
+        $this->recalculateCachedCounts();
+    }
+
+    /**
+     * Birden fazla şarkı ekle ve cache count'ları güncelle
+     * @param array $songIds Şarkı ID'leri
+     * @param array $pivotData Pivot data
+     */
+    public function attachManySongsWithCache(array $songIds, array $pivotData = []): void
+    {
+        if (empty($songIds)) {
+            return;
+        }
+
+        // Mevcut şarkıları al
+        $existingSongIds = $this->songs()->pluck('muzibu_songs.song_id')->toArray();
+        $newSongIds = array_diff($songIds, $existingSongIds);
+
+        if (empty($newSongIds)) {
+            return;
+        }
+
+        // Yeni şarkıları ekle
+        $attachData = [];
+        foreach ($newSongIds as $songId) {
+            $attachData[$songId] = $pivotData;
+        }
+        $this->songs()->attach($attachData);
+
+        // Active şarkıların count ve duration'ını hesapla
+        $addedSongs = Song::whereIn('song_id', $newSongIds)->where('is_active', true)->get();
+        $addedCount = $addedSongs->count();
+        $addedDuration = (int) $addedSongs->sum('duration');
+
+        if ($addedCount > 0) {
+            $this->incrementCachedCount('songs_count', $addedCount);
+            $this->incrementCachedCount('total_duration', $addedDuration);
+        }
+    }
+
+    /**
+     * Birden fazla şarkı çıkar ve cache count'ları güncelle
+     * @param array $songIds Şarkı ID'leri
+     */
+    public function detachManySongsWithCache(array $songIds): void
+    {
+        if (empty($songIds)) {
+            return;
+        }
+
+        // Mevcut şarkıları al (çıkarılacak olanları)
+        $existingSongIds = $this->songs()->whereIn('muzibu_songs.song_id', $songIds)->pluck('muzibu_songs.song_id')->toArray();
+
+        if (empty($existingSongIds)) {
+            return;
+        }
+
+        // Active şarkıların count ve duration'ını hesapla
+        $removedSongs = Song::whereIn('song_id', $existingSongIds)->where('is_active', true)->get();
+        $removedCount = $removedSongs->count();
+        $removedDuration = (int) $removedSongs->sum('duration');
+
+        // Şarkıları çıkar
+        $this->songs()->detach($existingSongIds);
+
+        if ($removedCount > 0) {
+            $this->decrementCachedCount('songs_count', $removedCount);
+            $this->decrementCachedCount('total_duration', $removedDuration);
+        }
+    }
+
+    /**
      * Sektörler ilişkisi (many-to-many)
      */
     public function sectors()
@@ -212,31 +377,11 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
-     * Toplam süreyi hesapla
-     * Not: Performans için songs_sum_duration (withSum) kullanılırsa onu tercih eder
-     */
-    public function getTotalDuration(): int
-    {
-        // Eğer withSum kullanılmışsa (songs_sum_duration attribute'u varsa)
-        if (isset($this->attributes['songs_sum_duration'])) {
-            return (int) $this->attributes['songs_sum_duration'];
-        }
-
-        // Eğer songs ilişkisi yüklenmişse
-        if ($this->relationLoaded('songs')) {
-            return $this->songs->sum('duration');
-        }
-
-        // Hiçbiri yoksa sorgu at
-        return $this->songs()->sum('duration');
-    }
-
-    /**
      * Formatlanmış toplam süre (HH:MM:SS)
      */
     public function getFormattedTotalDuration(): string
     {
-        $totalSeconds = $this->getTotalDuration();
+        $totalSeconds = $this->total_duration;
 
         $hours = floor($totalSeconds / 3600);
         $minutes = floor(($totalSeconds % 3600) / 60);
@@ -254,7 +399,7 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
      */
     public function getTurkishFormattedDuration(): string
     {
-        $totalSeconds = $this->getTotalDuration();
+        $totalSeconds = $this->total_duration;
 
         if ($totalSeconds == 0) {
             return '0dk';
@@ -285,14 +430,6 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
-     * Şarkı sayısı
-     */
-    public function getSongsCount(): int
-    {
-        return $this->songs()->count();
-    }
-
-    /**
      * HasSeo trait fallback implementations
      */
     public function getSeoFallbackTitle(): ?string
@@ -309,7 +446,7 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
         }
 
         // Fallback: Song count + Duration
-        $songsCount = $this->getSongsCount();
+        $songsCount = $this->songs_count;
         $duration = $this->getFormattedTotalDuration();
 
         return "{$songsCount} şarkı - {$duration}";
@@ -357,7 +494,7 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
             'description' => $this->getSeoFallbackDescription(),
             'url' => $this->getSeoFallbackCanonicalUrl(),
             'image' => $this->getSeoFallbackImage(),
-            'numTracks' => $this->getSongsCount(),
+            'numTracks' => $this->songs_count,
         ];
 
         // ⭐ Aggregated Rating - HasReviews trait'inden alınır

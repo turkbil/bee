@@ -770,13 +770,24 @@ Route::get('/thumbmaker', [\Modules\MediaManagement\App\Http\Controllers\Thumbma
     ->name('thumbmaker.generate');
 
 // Thumbmaker - Short Format (/thumb/{media_id}/{width}/{height})
+// 🚀 OPTIMIZED: Cache media URL + direct processing instead of redirect
 Route::get('/thumb/{mediaId}/{width?}/{height?}', function ($mediaId, $width = null, $height = null) {
     try {
-        $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::findOrFail($mediaId);
-        $url = $media->getUrl();
+        // 🔥 CACHE: Media URL (5 min TTL) - avoid DB query on every request
+        $cacheKey = "media_url_{$mediaId}";
+        $url = \Cache::remember($cacheKey, 300, function () use ($mediaId) {
+            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($mediaId);
+            return $media ? $media->getUrl() : null;
+        });
 
-        // Thumbmaker'a yönlendir
-        $params = array_filter([
+        if (!$url) {
+            abort(404, 'Media not found');
+        }
+
+        // 🚀 OPTIMIZED: Forward to thumbmaker controller directly (no redirect)
+        // This avoids the 302 redirect overhead
+        $request = request();
+        $request->merge([
             'src' => $url,
             'w' => $width,
             'h' => $height,
@@ -784,7 +795,7 @@ Route::get('/thumb/{mediaId}/{width?}/{height?}', function ($mediaId, $width = n
             'c' => 1,
         ]);
 
-        return redirect('/thumbmaker?' . http_build_query($params));
+        return app(\Modules\MediaManagement\App\Http\Controllers\ThumbmakerController::class)->generate($request);
     } catch (\Exception $e) {
         abort(404, 'Media not found');
     }

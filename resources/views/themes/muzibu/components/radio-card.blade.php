@@ -9,7 +9,7 @@
     $radioId = $radio->radio_id ?? $radio->id;
     $songsCount = $radio->songs_count ?? 0;
     $isLive = $radio->is_live ?? false;
-    $isFavorite = auth()->check() && method_exists($radio, 'isFavoritedBy') && $radio->isFavoritedBy(auth()->id());
+    $isFavorite = is_favorited('radio', $radio->radio_id);
 
     $sizeClasses = [
         'small' => 'w-32 sm:w-36',

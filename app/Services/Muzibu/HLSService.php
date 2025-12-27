@@ -205,10 +205,8 @@ class HLSService
         $keyInfoPath = $storagePath . '/enc.keyinfo';
 
         // Key URI (HTTP endpoint - token-based auth)
-        // Tenant domain kullan (ixtif.com, müzibu.com vb.)
-        $domain = tenant() && tenant()->domains->count() > 0
-            ? tenant()->domains->first()->domain
-            : 'ixtif.com'; // Fallback
+        // 🚀 CACHED: Tenant domain lookup
+        $domain = \App\Helpers\TenantHelpers::getTenantDomain() ?? 'ixtif.com';
         $keyUri = "https://{$domain}/stream/key/{$songHash}";
 
         // IV (initialization vector) - opsiyonel, 16 byte hex

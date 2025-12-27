@@ -12,7 +12,7 @@
     $albumUrl = '/albums/' . ($album->slug ?? $album->album_id);
     $songsCount = $album->songs_count ?? $album->songs()->where('is_active', 1)->count();
     $albumId = $album->album_id ?? $album->id;
-    $isFavorite = auth()->check() && method_exists($album, 'isFavoritedBy') && $album->isFavoritedBy(auth()->id());
+    $isFavorite = is_favorited('album', $album->album_id);
 
     $sizeClasses = [
         'small' => 'w-32 sm:w-36',
@@ -39,7 +39,7 @@
     {{-- Link with Preview/Mobile behavior --}}
     <a href="{{ $albumUrl }}"
        @if($preview)
-       @click="if (window.innerWidth >= 1024) {
+       @click="if (window.innerWidth >= 768) {
            $event.preventDefault();
            $store.sidebar.showPreview('album', {{ $albumId }}, {
                type: 'Album',

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobil Player Tasarım Alternatifleri - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .phone-frame {
+            width: 375px;
+            height: 667px;
+            border-radius: 40px;
+            border: 12px solid #1a1a1a;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 30px;
+            background: #1a1a1a;
+            border-radius: 0 0 20px 20px;
+            z-index: 100;
+        }
+        .phone-home {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 134px;
+            height: 5px;
+            background: white;
+            border-radius: 5px;
+            z-index: 100;
+        }
+        .gradient-coral { background: linear-gradient(135deg, #ff6b6b, #ff8e53); }
+        .gradient-purple { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .gradient-dark { background: linear-gradient(180deg, #1a1a1a, #0a0a0a); }
+        .blur-bg { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        .choice-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .choice-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .selected-badge {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-slate-800 to-slate-900 border-b border-slate-700 py-8 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-pink-500/20 text-pink-400 rounded-full text-sm font-medium">
+                    🎨 Tasarım Draft
+                </span>
+                <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm font-medium">
+                    Muzibu Mobile Player
+                </span>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-2">
+                📱 Mobil Player Tasarım Alternatifleri
+            </h1>
+            <p class="text-slate-400">
+                27 Aralık 2025 • 4 Farklı Tasarım Konsepti
+            </p>
+        </div>
+    </header>
+
+    <!-- Intro -->
+    <section class="max-w-7xl mx-auto px-6 py-8">
+        <div class="bg-green-900/20 border border-green-700/50 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-400 mb-3">📝 Nasıl Seçim Yapacaksınız?</h2>
+            <ul class="text-green-200 space-y-2">
+                <li>• Her tasarımı inceleyin (telefon mockup'ları ile)</li>
+                <li>• Beğendiğiniz tasarımın numarasını söyleyin (örn: "2 numarayı uygula")</li>
+                <li>• Kombinasyon isteyebilirsiniz (örn: "1'in butonu + 3'ün layout'u")</li>
+                <li>• Değişiklik isteyebilirsiniz (örn: "3 güzel ama rengi pembe olsun")</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Design Options -->
+    <section class="max-w-7xl mx-auto px-6 pb-16">
+        <div class="grid lg:grid-cols-2 gap-12">
+
+            <!-- OPTION 1: Spotify Style - Minimal Bar + Slide Up -->
+            <div class="choice-card bg-slate-800/50 rounded-2xl p-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-black font-bold text-xl">1</span>
+                    <div>
+                        <h3 class="text-xl font-bold">Spotify Tarzı</h3>
+                        <p class="text-slate-400 text-sm">Minimal Bar + Tıkla Genişlet</p>
+                    </div>
+                </div>
+
+                <!-- Phone Mockup -->
+                <div class="flex justify-center mb-6">
+                    <div class="phone-frame bg-slate-900">
+                        <div class="phone-notch"></div>
+
+                        <!-- Content Area (simulated) -->
+                        <div class="h-full gradient-dark pt-8 pb-24 px-4">
+                            <div class="text-center text-slate-500 text-sm mt-32">
+                                <i class="fas fa-music text-4xl mb-4 opacity-20"></i>
+                                <p>Sayfa İçeriği</p>
+                            </div>
+                        </div>
+
+                        <!-- PLAYER BAR -->
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/95 to-black/80 blur-bg">
+                            <!-- Mini Bar -->
+                            <div class="flex items-center gap-3 p-3">
+                                <!-- Album Cover -->
+                                <div class="w-12 h-12 rounded-lg gradient-coral flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-music text-white"></i>
+                                </div>
+
+                                <!-- Song Info -->
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="text-white text-sm font-semibold truncate">Yıldızların Altında</h4>
+                                    <p class="text-slate-400 text-xs truncate">Sezen Aksu</p>
+                                </div>
+
+                                <!-- Controls -->
+                                <div class="flex items-center gap-4">
+                                    <button class="text-white">
+                                        <i class="fas fa-heart text-pink-500"></i>
+                                    </button>
+                                    <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                                        <i class="fas fa-pause text-black"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Progress Bar -->
+                            <div class="h-1 bg-slate-700">
+                                <div class="h-full bg-white w-1/3"></div>
+                            </div>
+                        </div>
+
+                        <div class="phone-home"></div>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="bg-slate-700/30 rounded-xl p-4">
+                    <h4 class="font-semibold text-green-400 mb-3"><i class="fas fa-check-circle mr-2"></i>Özellikler</h4>
+                    <ul class="text-sm text-slate-300 space-y-2">
+                        <li>✓ Kompakt mini bar (56px yükseklik)</li>
+                        <li>✓ Kapak + Şarkı adı + Sanatçı</li>
+                        <li>✓ Favori + Play/Pause butonları</li>
+                        <li>✓ Alt progress bar</li>
+                        <li>✓ Tıklayınca full-screen açılır (opsiyonel)</li>
+                    </ul>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <span class="text-slate-400 text-sm">İlham: Spotify, Deezer</span>
+                </div>
+            </div>
+
+            <!-- OPTION 2: Floating Card -->
+            <div class="choice-card bg-slate-800/50 rounded-2xl p-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xl">2</span>
+                    <div>
+                        <h3 class="text-xl font-bold">Floating Card</h3>
+                        <p class="text-slate-400 text-sm">Yüzen Kart + Gölge</p>
+                    </div>
+                </div>
+
+                <!-- Phone Mockup -->
+                <div class="flex justify-center mb-6">
+                    <div class="phone-frame bg-slate-900">
+                        <div class="phone-notch"></div>
+
+                        <!-- Content Area -->
+                        <div class="h-full gradient-dark pt-8 pb-28 px-4">
+                            <div class="text-center text-slate-500 text-sm mt-32">
+                                <i class="fas fa-music text-4xl mb-4 opacity-20"></i>
+                                <p>Sayfa İçeriği</p>
+                            </div>
+                        </div>
+
+                        <!-- FLOATING PLAYER CARD -->
+                        <div class="absolute bottom-4 left-3 right-3">
+                            <div class="bg-slate-800/95 blur-bg rounded-2xl p-3 shadow-2xl border border-slate-700/50">
+                                <div class="flex items-center gap-3">
+                                    <!-- Album Cover -->
+                                    <div class="w-14 h-14 rounded-xl gradient-purple flex items-center justify-center flex-shrink-0 shadow-lg">
+                                        <i class="fas fa-music text-white text-xl"></i>
+                                    </div>
+
+                                    <!-- Song Info + Progress -->
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="text-white text-sm font-semibold truncate">Yıldızların Altında</h4>
+                                        <p class="text-slate-400 text-xs truncate mb-2">Sezen Aksu</p>
+
+                                        <!-- Inline Progress -->
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-[10px] text-slate-500">1:23</span>
+                                            <div class="flex-1 h-1 bg-slate-600 rounded-full">
+                                                <div class="h-full bg-purple-500 rounded-full w-1/3"></div>
+                                            </div>
+                                            <span class="text-[10px] text-slate-500">3:45</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Controls -->
+                                    <div class="flex items-center gap-2">
+                                        <button class="w-9 h-9 text-slate-400 flex items-center justify-center">
+                                            <i class="fas fa-step-backward"></i>
+                                        </button>
+                                        <button class="w-11 h-11 bg-purple-500 rounded-full flex items-center justify-center shadow-lg shadow-purple-500/30">
+                                            <i class="fas fa-pause text-white"></i>
+                                        </button>
+                                        <button class="w-9 h-9 text-slate-400 flex items-center justify-center">
+                                            <i class="fas fa-step-forward"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="phone-home"></div>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="bg-slate-700/30 rounded-xl p-4">
+                    <h4 class="font-semibold text-purple-400 mb-3"><i class="fas fa-check-circle mr-2"></i>Özellikler</h4>
+                    <ul class="text-sm text-slate-300 space-y-2">
+                        <li>✓ Yüzen kart tasarımı (kenarlardan boşluk)</li>
+                        <li>✓ Blur arka plan + gölge</li>
+                        <li>✓ Büyük kapak (56px)</li>
+                        <li>✓ Inline süre gösterimi</li>
+                        <li>✓ Prev/Play/Next butonları</li>
+                    </ul>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <span class="text-slate-400 text-sm">İlham: Apple Music, YouTube Music</span>
+                </div>
+            </div>
+
+            <!-- OPTION 3: Ultra Compact Pill -->
+            <div class="choice-card bg-slate-800/50 rounded-2xl p-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-xl">3</span>
+                    <div>
+                        <h3 class="text-xl font-bold">Ultra Compact Pill</h3>
+                        <p class="text-slate-400 text-sm">Hap Şekli + Minimal</p>
+                    </div>
+                </div>
+
+                <!-- Phone Mockup -->
+                <div class="flex justify-center mb-6">
+                    <div class="phone-frame bg-slate-900">
+                        <div class="phone-notch"></div>
+
+                        <!-- Content Area -->
+                        <div class="h-full gradient-dark pt-8 pb-24 px-4">
+                            <div class="text-center text-slate-500 text-sm mt-32">
+                                <i class="fas fa-music text-4xl mb-4 opacity-20"></i>
+                                <p>Sayfa İçeriği</p>
+                            </div>
+                        </div>
+
+                        <!-- PILL PLAYER -->
+                        <div class="absolute bottom-4 left-4 right-4">
+                            <div class="bg-gradient-to-r from-orange-500 to-pink-500 rounded-full p-1 shadow-2xl shadow-orange-500/30">
+                                <div class="bg-black/90 blur-bg rounded-full px-3 py-2 flex items-center gap-3">
+                                    <!-- Album Cover (circular) -->
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center flex-shrink-0 animate-spin" style="animation-duration: 3s;">
+                                        <div class="w-3 h-3 bg-black rounded-full"></div>
+                                    </div>
+
+                                    <!-- Song Info (minimal) -->
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-white text-sm font-medium truncate">Yıldızların Altında</p>
+                                    </div>
+
+                                    <!-- Controls (minimal) -->
+                                    <div class="flex items-center gap-3">
+                                        <button class="text-white/70">
+                                            <i class="fas fa-backward"></i>
+                                        </button>
+                                        <button class="w-9 h-9 bg-white rounded-full flex items-center justify-center">
+                                            <i class="fas fa-pause text-black"></i>
+                                        </button>
+                                        <button class="text-white/70">
+                                            <i class="fas fa-forward"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="phone-home"></div>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="bg-slate-700/30 rounded-xl p-4">
+                    <h4 class="font-semibold text-orange-400 mb-3"><i class="fas fa-check-circle mr-2"></i>Özellikler</h4>
+                    <ul class="text-sm text-slate-300 space-y-2">
+                        <li>✓ Hap şekli (pill shape)</li>
+                        <li>✓ Gradient border efekti</li>
+                        <li>✓ Dönen vinyl plak (kapak)</li>
+                        <li>✓ Sadece şarkı adı (sanatçı yok)</li>
+                        <li>✓ Süper kompakt (44px yükseklik)</li>
+                    </ul>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <span class="text-slate-400 text-sm">İlham: SoundCloud, Shazam</span>
+                </div>
+            </div>
+
+            <!-- OPTION 4: Full Info Bar -->
+            <div class="choice-card bg-slate-800/50 rounded-2xl p-8 border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="w-10 h-10 bg-cyan-500 rounded-full flex items-center justify-center text-black font-bold text-xl">4</span>
+                    <div>
+                        <h3 class="text-xl font-bold">Full Info Bar</h3>
+                        <p class="text-slate-400 text-sm">İki Satır + Tüm Bilgiler</p>
+                    </div>
+                </div>
+
+                <!-- Phone Mockup -->
+                <div class="flex justify-center mb-6">
+                    <div class="phone-frame bg-slate-900">
+                        <div class="phone-notch"></div>
+
+                        <!-- Content Area -->
+                        <div class="h-full gradient-dark pt-8 pb-32 px-4">
+                            <div class="text-center text-slate-500 text-sm mt-32">
+                                <i class="fas fa-music text-4xl mb-4 opacity-20"></i>
+                                <p>Sayfa İçeriği</p>
+                            </div>
+                        </div>
+
+                        <!-- FULL INFO PLAYER -->
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-cyan-950 to-slate-900/95 blur-bg border-t border-cyan-500/30">
+                            <!-- Row 1: Song Info + Controls -->
+                            <div class="flex items-center gap-3 px-4 py-3">
+                                <!-- Album Cover -->
+                                <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-music text-white"></i>
+                                </div>
+
+                                <!-- Song Info -->
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="text-white text-sm font-semibold truncate">Yıldızların Altında</h4>
+                                    <p class="text-cyan-300 text-xs truncate">Sezen Aksu • Gülümse Albümü</p>
+                                </div>
+
+                                <!-- Controls -->
+                                <div class="flex items-center gap-3">
+                                    <button class="text-cyan-400">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                    <button class="text-slate-400">
+                                        <i class="fas fa-step-backward"></i>
+                                    </button>
+                                    <button class="w-10 h-10 bg-cyan-500 rounded-full flex items-center justify-center shadow-lg shadow-cyan-500/30">
+                                        <i class="fas fa-pause text-black"></i>
+                                    </button>
+                                    <button class="text-slate-400">
+                                        <i class="fas fa-step-forward"></i>
+                                    </button>
+                                    <button class="text-slate-400">
+                                        <i class="fas fa-list"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Row 2: Progress Bar -->
+                            <div class="px-4 pb-3 flex items-center gap-3">
+                                <span class="text-xs text-slate-400 w-10 text-right">1:23</span>
+                                <div class="flex-1 h-1.5 bg-slate-700 rounded-full">
+                                    <div class="h-full bg-gradient-to-r from-cyan-400 to-cyan-500 rounded-full w-1/3 relative">
+                                        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-cyan-400 rounded-full shadow-lg"></div>
+                                    </div>
+                                </div>
+                                <span class="text-xs text-slate-400 w-10">3:45</span>
+                            </div>
+                        </div>
+
+                        <div class="phone-home"></div>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="bg-slate-700/30 rounded-xl p-4">
+                    <h4 class="font-semibold text-cyan-400 mb-3"><i class="fas fa-check-circle mr-2"></i>Özellikler</h4>
+                    <ul class="text-sm text-slate-300 space-y-2">
+                        <li>✓ İki satır layout</li>
+                        <li>✓ Şarkı + Sanatçı + Albüm bilgisi</li>
+                        <li>✓ Favori + Prev/Play/Next + Queue</li>
+                        <li>✓ Ayrı satırda süre + progress bar</li>
+                        <li>✓ Draggable progress handle</li>
+                    </ul>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <span class="text-slate-400 text-sm">İlham: Tidal, Amazon Music</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Comparison Table -->
+    <section class="max-w-7xl mx-auto px-6 pb-16">
+        <div class="bg-slate-800/50 rounded-2xl p-8 border border-slate-700">
+            <h2 class="text-2xl font-bold mb-6">📊 Karşılaştırma Tablosu</h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-600">
+                            <th class="text-left py-3 px-4">Özellik</th>
+                            <th class="text-center py-3 px-4 text-green-400">1. Spotify</th>
+                            <th class="text-center py-3 px-4 text-purple-400">2. Floating</th>
+                            <th class="text-center py-3 px-4 text-orange-400">3. Pill</th>
+                            <th class="text-center py-3 px-4 text-cyan-400">4. Full</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-3 px-4">Yükseklik</td>
+                            <td class="text-center py-3 px-4">~56px</td>
+                            <td class="text-center py-3 px-4">~80px</td>
+                            <td class="text-center py-3 px-4">~44px</td>
+                            <td class="text-center py-3 px-4">~100px</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-3 px-4">Kapak Boyutu</td>
+                            <td class="text-center py-3 px-4">48px</td>
+                            <td class="text-center py-3 px-4">56px</td>
+                            <td class="text-center py-3 px-4">40px (yuvarlak)</td>
+                            <td class="text-center py-3 px-4">48px</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-3 px-4">Sanatçı Göster</td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-check text-green-400"></i></td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-check text-green-400"></i></td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-times text-red-400"></i></td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-check text-green-400"></i></td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-3 px-4">Süre Göster</td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-times text-red-400"></i></td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-check text-green-400"></i></td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-times text-red-400"></i></td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-check text-green-400"></i></td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-3 px-4">Prev/Next</td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-times text-red-400"></i></td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-check text-green-400"></i></td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-check text-green-400"></i></td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-check text-green-400"></i></td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-3 px-4">Favori Butonu</td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-check text-green-400"></i></td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-times text-red-400"></i></td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-times text-red-400"></i></td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-check text-green-400"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4">Blur Efekti</td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-check text-green-400"></i></td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-check text-green-400"></i></td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-check text-green-400"></i></td>
+                            <td class="text-center py-3 px-4"><i class="fas fa-check text-green-400"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Decision -->
+    <section class="max-w-7xl mx-auto px-6 pb-16">
+        <div class="bg-gradient-to-r from-pink-500/10 to-purple-500/10 border border-pink-500/30 rounded-2xl p-8">
+            <h2 class="text-2xl font-bold mb-6">🎯 Hızlı Karar Rehberi</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <h3 class="font-semibold text-green-400 mb-3">1️⃣ Spotify Tarzı</h3>
+                    <p class="text-slate-300 text-sm">En az yer kaplar, hızlı erişim için ideal. Şarkı detayları önemli değilse tercih edin.</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <h3 class="font-semibold text-purple-400 mb-3">2️⃣ Floating Card</h3>
+                    <p class="text-slate-300 text-sm">Şık ve modern görünüm. Süre bilgisi ve prev/next önemli ise tercih edin.</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <h3 class="font-semibold text-orange-400 mb-3">3️⃣ Ultra Pill</h3>
+                    <p class="text-slate-300 text-sm">En modern ve minimal. İçerik alanı maksimum olsun istiyorsanız tercih edin.</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <h3 class="font-semibold text-cyan-400 mb-3">4️⃣ Full Info</h3>
+                    <p class="text-slate-300 text-sm">Tüm bilgiler görünsün. Progress bar ile seek önemli ise tercih edin.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-800 py-8 px-6">
+        <div class="max-w-7xl mx-auto text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından hazırlanmıştır</p>
+            <p class="mt-2">Seçiminizi söyleyin, hemen uygulayayım!</p>
+        </div>
+    </footer>
+
+</body>
+</html>

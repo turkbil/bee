@@ -436,6 +436,13 @@ class ValuesComponent extends Component
         $this->temporaryImages = [];
         $this->temporaryMultipleImages = [];
 
+        // ✅ BULK CACHE: Settings cache'ini yenile (anında yeni değerler aktif olsun)
+        try {
+            app(\App\Services\SettingsService::class)->refreshCache();
+        } catch (\Exception $e) {
+            \Log::warning("Settings cache refresh hatası: " . $e->getMessage());
+        }
+
         // ✅ Redirect handling
         if ($redirect) {
             session()->flash('success', __('settingmanagement.messages.values_saved'));

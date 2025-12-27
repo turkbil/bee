@@ -1,13 +1,13 @@
-@props(['sector', 'preview' => false])
+@props(['sector', 'preview' => false, 'compact' => false])
 
 {{-- Muzibu Sector Card Component --}}
-{{-- Usage: <x-muzibu.sector-card :sector="$sector" /> --}}
+{{-- Usage: <x-muzibu.sector-card :sector="$sector" :compact="true" /> --}}
 {{-- STANDARD PATTERN: Same layout as playlist/album/genre cards --}}
 {{-- Preview: Desktop (≥1024px) = sidebar preview, Mobile (<1024px) = detail page --}}
 
 <a href="/sectors/{{ $sector->getTranslation('slug', app()->getLocale()) }}"
    @if($preview)
-   @click="if (window.innerWidth >= 1024) {
+   @click="if (window.innerWidth >= 768) {
        $event.preventDefault();
        $store.sidebar.showPreview('sector', {{ $sector->sector_id }}, {
            type: 'Sector',
@@ -15,7 +15,7 @@
            title: '{{ addslashes($sector->getTranslation('title', app()->getLocale())) }}',
            slug: '{{ $sector->getTranslation('slug', app()->getLocale()) }}',
            cover: '{{ $sector->iconMedia ? thumb($sector->iconMedia, 300, 300, ['scale' => 1]) : '' }}',
-           is_favorite: {{ auth()->check() && method_exists($sector, 'isFavoritedBy') && $sector->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+           is_favorite: {{ is_favorited('sector', $sector->sector_id) ? 'true' : 'false' }}
        });
    }"
    @mouseenter="$store.sidebar.prefetch('sector', {{ $sector->sector_id }})"
@@ -26,7 +26,7 @@
        id: {{ $sector->sector_id }},
        title: '{{ addslashes($sector->getTranslation('title', app()->getLocale())) }}',
        cover_url: '{{ $sector->iconMedia ? thumb($sector->iconMedia, 300, 300, ['scale' => 1]) : '' }}',
-       is_favorite: {{ auth()->check() && method_exists($sector, 'isFavoritedBy') && $sector->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+       is_favorite: {{ is_favorited('sector', $sector->sector_id) ? 'true' : 'false' }}
    })"
    x-data="{
        touchTimer: null,
@@ -43,7 +43,7 @@
                id: {{ $sector->sector_id }},
                title: '{{ addslashes($sector->getTranslation('title', app()->getLocale())) }}',
                cover_url: '{{ $sector->iconMedia ? thumb($sector->iconMedia, 300, 300, ['scale' => 1]) : '' }}',
-               is_favorite: {{ auth()->check() && method_exists($sector, 'isFavoritedBy') && $sector->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+               is_favorite: {{ is_favorited('sector', $sector->sector_id) ? 'true' : 'false' }}
            });
        }, 500);
    "
@@ -53,9 +53,9 @@
                     Math.abs($event.touches[0].clientY - touchStartPos.y) > 10;
        if (moved) clearTimeout(touchTimer);
    "
-   class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300">
+   class="group rounded-lg transition-all duration-300 @if($compact) flex-shrink-0 w-[190px] p-3 bg-transparent hover:bg-white/10 @else bg-muzibu-gray hover:bg-gray-700 px-4 pt-4 @endif">
 
-    <div class="relative mb-4">
+    <div class="relative @if($compact) mb-3 @else mb-4 @endif">
         {{-- Sector Icon/Cover --}}
         @if($sector->media_id && $sector->iconMedia)
             <img src="{{ thumb($sector->iconMedia, 300, 300, ['scale' => 1]) }}"
@@ -89,7 +89,7 @@
                 id: {{ $sector->sector_id }},
                 title: '{{ addslashes($sector->getTranslation('title', app()->getLocale())) }}',
                 cover_url: '{{ $sector->iconMedia ? thumb($sector->iconMedia, 300, 300, ['scale' => 1]) : '' }}',
-                is_favorite: {{ auth()->check() && method_exists($sector, 'isFavoritedBy') && $sector->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+                is_favorite: {{ is_favorited('sector', $sector->sector_id) ? 'true' : 'false' }}
             })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
                 <i class="fas fa-ellipsis-v text-sm"></i>
             </button>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Icon Alternatifleri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .icon-card:hover { transform: scale(1.05); }
+        .selected { border-color: #ff6b6b !important; background: rgba(255,107,107,0.1) !important; }
+    </style>
+</head>
+<body class="bg-zinc-950 text-white min-h-screen p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-2">Icon Alternatifleri</h1>
+        <p class="text-zinc-400 mb-8">Sade ve minimal ikonlar - Hangisini istersen onu secerim</p>
+
+        <!-- ALBUMLER -->
+        <div class="mb-12">
+            <h2 class="text-xl font-bold mb-4 text-orange-400">ALBUMLER</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+
+                <div class="icon-card bg-zinc-900 border-2 border-zinc-700 rounded-xl p-6 text-center transition-all cursor-pointer hover:border-zinc-500">
+                    <i class="fas fa-record-vinyl text-4xl mb-3 text-white"></i>
+                    <p class="text-xs text-zinc-400">A1: record-vinyl</p>
+                    <p class="text-[10px] text-zinc-600">Simdi kullanilan</p>
+                </div>
+
+                <div class="icon-card bg-zinc-900 border-2 border-zinc-700 rounded-xl p-6 text-center transition-all cursor-pointer hover:border-zinc-500">
+                    <i class="fas fa-compact-disc text-4xl mb-3 text-white"></i>
+                    <p class="text-xs text-zinc-400">A2: compact-disc</p>
+                    <p class="text-[10px] text-zinc-600">CD ikonu</p>
+                </div>
+
+                <div class="icon-card bg-zinc-900 border-2 border-zinc-700 rounded-xl p-6 text-center transition-all cursor-pointer hover:border-zinc-500">
+                    <i class="fas fa-circle text-4xl mb-3 text-white"></i>
+                    <p class="text-xs text-zinc-400">A3: circle</p>
+                    <p class="text-[10px] text-zinc-600">Sade daire</p>
+                </div>
+
+                <div class="icon-card bg-zinc-900 border-2 border-zinc-700 rounded-xl p-6 text-center transition-all cursor-pointer hover:border-zinc-500">
+                    <i class="fas fa-album text-4xl mb-3 text-white"></i>
+                    <p class="text-xs text-zinc-400">A4: album</p>
+                    <p class="text-[10px] text-zinc-600">Album kapagi</p>
+                </div>
+
+                <div class="icon-card bg-zinc-900 border-2 border-zinc-700 rounded-xl p-6 text-center transition-all cursor-pointer hover:border-zinc-500">
+                    <i class="fas fa-disc-drive text-4xl mb-3 text-white"></i>
+                    <p class="text-xs text-zinc-400">A5: disc-drive</p>
+                    <p class="text-[10px] text-zinc-600">Disk surucu</p>
+                </div>
+
+                <div class="icon-card bg-zinc-900 border-2 border-zinc-700 rounded-xl p-6 text-center transition-all cursor-pointer hover:border-zinc-500">
+                    <i class="fas fa-square text-4xl mb-3 text-white"></i>
+                    <p class="text-xs text-zinc-400">A6: square</p>
+                    <p class="text-[10px] text-zinc-600">Minimal kare</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- PLAYLISTLERIM (Kullanicinin kendi playlistleri) -->
+        <div class="mb-12">
+            <h2 class="text-xl font-bold mb-4 text-purple-400">PLAYLISTLERIM (Benim Playlistlerim)</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+
+                <div class="icon-card bg-zinc-900 border-2 border-zinc-700 rounded-xl p-6 text-center transition-all cursor-pointer hover:border-zinc-500">
+                    <i class="fas fa-folder-music text-4xl mb-3 text-white"></i>
+                    <p class="text-xs text-zinc-400">P1: folder-music</p>
+                    <p class="text-[10px] text-zinc-600">Simdi kullanilan</p>
+                </div>
+
+                <div class="icon-card bg-zinc-900 border-2 border-zinc-700 rounded-xl p-6 text-center transition-all cursor-pointer hover:border-zinc-500">
+                    <i class="fas fa-folder text-4xl mb-3 text-white"></i>
+                    <p class="text-xs text-zinc-400">P2: folder</p>
+                    <p class="text-[10px] text-zinc-600">Sade klasor</p>
+                </div>
+
+                <div class="icon-card bg-zinc-900 border-2 border-zinc-700 rounded-xl p-6 text-center transition-all cursor-pointer hover:border-zinc-500">
+                    <i class="fas fa-folder-open text-4xl mb-3 text-white"></i>
+                    <p class="text-xs text-zinc-400">P3: folder-open</p>
+                    <p class="text-[10px] text-zinc-600">Acik klasor</p>
+                </div>
+
+                <div class="icon-card bg-zinc-900 border-2 border-zinc-700 rounded-xl p-6 text-center transition-all cursor-pointer hover:border-zinc-500">
+                    <i class="fas fa-layer-group text-4xl mb-3 text-white"></i>
+                    <p class="text-xs text-zinc-400">P4: layer-group</p>
+                    <p class="text-[10px] text-zinc-600">Katmanlar</p>
+                </div>
+
+                <div class="icon-card bg-zinc-900 border-2 border-zinc-700 rounded-xl p-6 text-center transition-all cursor-pointer hover:border-zinc-500">
+                    <i class="fas fa-bookmark text-4xl mb-3 text-white"></i>
+                    <p class="text-xs text-zinc-400">P5: bookmark</p>
+                    <p class="text-[10px] text-zinc-600">Yer imi</p>
+                </div>
+
+                <div class="icon-card bg-zinc-900 border-2 border-zinc-700 rounded-xl p-6 text-center transition-all cursor-pointer hover:border-zinc-500">
+                    <i class="fas fa-box text-4xl mb-3 text-white"></i>
+                    <p class="text-xs text-zinc-400">P6: box</p>
+                    <p class="text-[10px] text-zinc-600">Kutu</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- CALMA LISTELERI (Genel playlistler) -->
+        <div class="mb-12">
+            <h2 class="text-xl font-bold mb-4 text-green-400">CALMA LISTELERI (Genel Playlistler)</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+
+                <div class="icon-card bg-zinc-900 border-2 border-zinc-700 rounded-xl p-6 text-center transition-all cursor-pointer hover:border-zinc-500">
+                    <i class="fas fa-list-music text-4xl mb-3 text-white"></i>
+                    <p class="text-xs text-zinc-400">C1: list-music</p>
+                    <p class="text-[10px] text-zinc-600">Simdi kullanilan</p>
+                </div>
+
+                <div class="icon-card bg-zinc-900 border-2 border-zinc-700 rounded-xl p-6 text-center transition-all cursor-pointer hover:border-zinc-500">
+                    <i class="fas fa-list text-4xl mb-3 text-white"></i>
+                    <p class="text-xs text-zinc-400">C2: list</p>
+                    <p class="text-[10px] text-zinc-600">Sade liste</p>
+                </div>
+
+                <div class="icon-card bg-zinc-900 border-2 border-zinc-700 rounded-xl p-6 text-center transition-all cursor-pointer hover:border-zinc-500">
+                    <i class="fas fa-list-ul text-4xl mb-3 text-white"></i>
+                    <p class="text-xs text-zinc-400">C3: list-ul</p>
+                    <p class="text-[10px] text-zinc-600">Madde listesi</p>
+                </div>
+
+                <div class="icon-card bg-zinc-900 border-2 border-zinc-700 rounded-xl p-6 text-center transition-all cursor-pointer hover:border-zinc-500">
+                    <i class="fas fa-bars text-4xl mb-3 text-white"></i>
+                    <p class="text-xs text-zinc-400">C4: bars</p>
+                    <p class="text-[10px] text-zinc-600">Cizgiler</p>
+                </div>
+
+                <div class="icon-card bg-zinc-900 border-2 border-zinc-700 rounded-xl p-6 text-center transition-all cursor-pointer hover:border-zinc-500">
+                    <i class="fas fa-stream text-4xl mb-3 text-white"></i>
+                    <p class="text-xs text-zinc-400">C5: stream</p>
+                    <p class="text-[10px] text-zinc-600">Akis</p>
+                </div>
+
+                <div class="icon-card bg-zinc-900 border-2 border-zinc-700 rounded-xl p-6 text-center transition-all cursor-pointer hover:border-zinc-500">
+                    <i class="fas fa-grip-lines text-4xl mb-3 text-white"></i>
+                    <p class="text-xs text-zinc-400">C6: grip-lines</p>
+                    <p class="text-[10px] text-zinc-600">Tutma cizgi</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- HOVER ORNEKLERI -->
+        <div class="mb-12">
+            <h2 class="text-xl font-bold mb-4 text-blue-400">HOVER EFEKTI ORNEKLERI (Sidebar tarzinda)</h2>
+            <p class="text-zinc-500 text-sm mb-4">Mouse ile ustune gel, ikon dolsun</p>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+
+                <div x-data="{ h: false }" @mouseenter="h = true" @mouseleave="h = false"
+                     class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex items-center gap-3 cursor-pointer hover:bg-zinc-800 transition-all">
+                    <i :class="h ? 'fas' : 'fal'" class="fa-record-vinyl text-2xl text-white transition-all"></i>
+                    <span class="text-sm">Albumler</span>
+                </div>
+
+                <div x-data="{ h: false }" @mouseenter="h = true" @mouseleave="h = false"
+                     class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex items-center gap-3 cursor-pointer hover:bg-zinc-800 transition-all">
+                    <i :class="h ? 'fas' : 'fal'" class="fa-folder-music text-2xl text-white transition-all"></i>
+                    <span class="text-sm">Playlistlerim</span>
+                </div>
+
+                <div x-data="{ h: false }" @mouseenter="h = true" @mouseleave="h = false"
+                     class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex items-center gap-3 cursor-pointer hover:bg-zinc-800 transition-all">
+                    <i :class="h ? 'fas' : 'fal'" class="fa-list-music text-2xl text-white transition-all"></i>
+                    <span class="text-sm">Calma Listeleri</span>
+                </div>
+
+                <div x-data="{ h: false }" @mouseenter="h = true" @mouseleave="h = false"
+                     class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex items-center gap-3 cursor-pointer hover:bg-zinc-800 transition-all">
+                    <i :class="h ? 'fas' : 'fal'" class="fa-compact-disc text-2xl text-white transition-all"></i>
+                    <span class="text-sm">Albumler (CD)</span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SECIM -->
+        <div class="bg-zinc-900 border border-zinc-700 rounded-xl p-6">
+            <h3 class="text-lg font-bold mb-3">Secimini Yaz</h3>
+            <p class="text-zinc-400 text-sm mb-4">Ornek: "Albumler icin A2, Playlistlerim icin P4, Calma Listeleri icin C2"</p>
+            <div class="text-zinc-500 text-xs">
+                <p>A = Album ikonlari</p>
+                <p>P = Playlistlerim ikonlari</p>
+                <p>C = Calma Listeleri ikonlari</p>
+            </div>
+        </div>
+
+        <p class="text-center text-zinc-600 text-xs mt-8">Claude AI - 27 Aralik 2025</p>
+    </div>
+
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</body>
+</html>

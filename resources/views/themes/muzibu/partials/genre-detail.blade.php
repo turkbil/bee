@@ -103,7 +103,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
             @auth
             <button
                 x-data="{
-                    favorited: {{ auth()->check() && method_exists($genre, 'isFavoritedBy') && $genre->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
+                    favorited: {{ is_favorited('genre', $genre->id) ? 'true' : 'false' }},
                     count: {{ method_exists($genre, 'favoritesCount') ? $genre->favoritesCount() : 0 }},
                     loading: false,
                     toggle() {

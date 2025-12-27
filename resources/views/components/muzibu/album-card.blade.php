@@ -24,13 +24,13 @@
 
 <a @if($preview)
        href="/albums/{{ $album->getTranslation('slug', app()->getLocale()) }}"
-       @click="if (window.innerWidth >= 1024) { $event.preventDefault(); $store.sidebar.showPreview('album', {{ $album->id }}, {
+       @click="if (window.innerWidth >= 768) { $event.preventDefault(); $store.sidebar.showPreview('album', {{ $album->id }}, {
            type: 'Album',
            id: {{ $album->id }},
            title: '{{ addslashes($album->getTranslation('title', app()->getLocale())) }}',
            artist: '{{ $album->artist ? addslashes($album->artist->getTranslation('title', app()->getLocale())) : '' }}',
            cover: '{{ $album->coverMedia ? thumb($album->coverMedia, 300, 300, ['scale' => 1]) : '' }}',
-           is_favorite: {{ auth()->check() && method_exists($album, 'isFavoritedBy') && $album->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+           is_favorite: {{ is_favorited('album', $album->album_id ?? $album->id) ? 'true' : 'false' }}
        }); }"
    @else
        href="/albums/{{ $album->getTranslation('slug', app()->getLocale()) }}"
@@ -44,7 +44,7 @@
        id: {{ $album->id }},
        title: '{{ addslashes($album->getTranslation('title', app()->getLocale())) }}',
        artist: '{{ $album->artist ? addslashes($album->artist->getTranslation('title', app()->getLocale())) : '' }}',
-       is_favorite: {{ auth()->check() && method_exists($album, 'isFavoritedBy') && $album->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+       is_favorite: {{ is_favorited('album', $album->album_id ?? $album->id) ? 'true' : 'false' }}
    })"
    {{-- Context Menu (Mobile: Long Press) --}}
    x-data="{
@@ -62,7 +62,7 @@
                id: {{ $album->id }},
                title: '{{ addslashes($album->getTranslation('title', app()->getLocale())) }}',
                artist: '{{ $album->artist ? addslashes($album->artist->getTranslation('title', app()->getLocale())) : '' }}',
-               is_favorite: {{ auth()->check() && method_exists($album, 'isFavoritedBy') && $album->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+               is_favorite: {{ is_favorited('album', $album->album_id ?? $album->id) ? 'true' : 'false' }}
            });
        }, 500);
    "
@@ -117,7 +117,7 @@
                 id: {{ $album->id }},
                 title: '{{ addslashes($album->getTranslation('title', app()->getLocale())) }}',
                 artist: '{{ $album->artist ? addslashes($album->artist->getTranslation('title', app()->getLocale())) : '' }}',
-                is_favorite: {{ auth()->check() && method_exists($album, 'isFavoritedBy') && $album->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+                is_favorite: {{ is_favorited('album', $album->album_id ?? $album->id) ? 'true' : 'false' }}
             })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
                 <i class="fas fa-ellipsis-v text-sm"></i>
             </button>

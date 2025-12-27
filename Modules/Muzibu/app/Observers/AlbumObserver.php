@@ -3,6 +3,7 @@
 namespace Modules\Muzibu\App\Observers;
 
 use Modules\Muzibu\App\Models\Album;
+use Modules\Muzibu\App\Models\Artist;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -62,6 +63,14 @@ class AlbumObserver
     {
         // Cache temizle
         $this->clearAlbumCaches();
+
+        // Update Artist albums_count
+        if ($album->is_active && $album->artist_id) {
+            $artist = Artist::find($album->artist_id);
+            if ($artist) {
+                $artist->incrementCachedCount('albums_count');
+            }
+        }
 
         // Activity log
         if (function_exists('log_activity')) {
@@ -209,6 +218,14 @@ class AlbumObserver
     {
         // Cache temizle
         $this->clearAlbumCaches($album->album_id);
+
+        // Update Artist albums_count
+        if ($album->is_active && $album->artist_id) {
+            $artist = Artist::find($album->artist_id);
+            if ($artist) {
+                $artist->decrementCachedCount('albums_count');
+            }
+        }
 
         // SEO ayarlarını da sil
         if ($album->seoSetting) {

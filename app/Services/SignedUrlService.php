@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use App\Helpers\TenantHelpers;
 
 class SignedUrlService
 {
@@ -22,9 +23,8 @@ class SignedUrlService
         $expires = $expiration->timestamp;
 
         // Build the URL manually with signature (use current tenant domain)
-        // 🔧 Use tenant's primary domain instead of request domain
-        $tenant = tenancy()->tenant;
-        $tenantDomain = $tenant ? $tenant->domains()->where('is_primary', 1)->first()?->domain : null;
+        // 🚀 CACHED: Use TenantHelpers for cached domain lookup
+        $tenantDomain = TenantHelpers::getTenantDomain();
         $domain = $tenantDomain ? 'https://' . $tenantDomain : request()->getSchemeAndHttpHost();
         $baseUrl = $domain . "/api/muzibu/songs/{$songId}/serve";
 
@@ -55,11 +55,8 @@ class SignedUrlService
         $expires = $expiration->timestamp;
 
         // Build HLS playlist URL (use current tenant domain)
-        $tenant = tenancy()->tenant;
-        $tenantDomain = $tenant
-            ? ($tenant->domains()->where('is_primary', 1)->first()?->domain
-               ?? $tenant->domains()->first()?->domain)
-            : null;
+        // 🚀 CACHED: Use TenantHelpers for cached domain lookup
+        $tenantDomain = TenantHelpers::getTenantDomain();
         $domain = $tenantDomain ? 'https://' . $tenantDomain : request()->getSchemeAndHttpHost();
 
         $basePath = "/hls/muzibu/songs/{$songId}/playlist.m3u8";

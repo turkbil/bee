@@ -40,7 +40,7 @@
                             </template>
                             <template x-if="!$store.playlistModal.contentData?.cover_url">
                                 <div class="w-full h-full flex items-center justify-center">
-                                    <i :class="$store.playlistModal.contentType === 'album' ? 'fas fa-compact-disc' : 'fas fa-music'" class="text-white/60"></i>
+                                    <i :class="$store.playlistModal.contentType === 'album' ? 'fas fa-record-vinyl' : 'fas fa-music'" class="text-white/60"></i>
                                 </div>
                             </template>
                         </div>
@@ -119,7 +119,7 @@
                                         </template>
                                         <template x-if="!playlist.cover_url">
                                             <div class="w-full h-full flex items-center justify-center">
-                                                <i class="fas fa-list text-white/60 text-sm"></i>
+                                                <i class="fas fa-list-music text-white/60 text-sm"></i>
                                             </div>
                                         </template>
                                     </div>
@@ -173,7 +173,7 @@
                         </template>
                         <template x-if="!$store.playlistModal.contentData?.cover_url">
                             <div class="w-full h-full flex items-center justify-center">
-                                <i :class="$store.playlistModal.contentType === 'album' ? 'fas fa-compact-disc' : 'fas fa-music'" class="text-white/60 text-xl"></i>
+                                <i :class="$store.playlistModal.contentType === 'album' ? 'fas fa-record-vinyl' : 'fas fa-music'" class="text-white/60 text-xl"></i>
                             </div>
                         </template>
                     </div>
@@ -244,7 +244,7 @@
                                         </template>
                                         <template x-if="!playlist.cover_url">
                                             <div class="w-full h-full flex items-center justify-center">
-                                                <i class="fas fa-list text-white/60"></i>
+                                                <i class="fas fa-list-music text-white/60"></i>
                                             </div>
                                         </template>
                                     </div>

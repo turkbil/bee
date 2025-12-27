@@ -1,7 +1,8 @@
 {{-- LEFT SIDEBAR - Modern & Clean --}}
+{{-- Hidden below 1024px (mobile/tablet uses hamburger menu) --}}
 <aside
     id="leftSidebar"
-    class="muzibu-left-sidebar row-start-2 lg:flex lg:flex-col"
+    class="muzibu-left-sidebar row-start-2 hidden lg:flex lg:flex-col"
 >
     {{-- Scrollable Navigation Area --}}
     <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
@@ -11,7 +12,7 @@
             <nav class="space-y-1">
                 <a href="/muzibu/my-playlists" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg transition-all duration-300"
                    x-data="{ h: false }" @mouseenter="h = true" @mouseleave="h = false">
-                    <i :class="h ? 'fas' : 'fal'" class="fa-folder-music w-5 text-base transition-all duration-200"></i>
+                    <i :class="h ? 'fas' : 'fal'" class="fa-album-collection w-5 text-base transition-all duration-200"></i>
                     <span class="font-medium text-sm">{{ trans('muzibu::front.sidebar.my_playlists') }}</span>
                 </a>
                 <a href="/muzibu/favorites" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg transition-all duration-300"
@@ -35,7 +36,7 @@
                 </a>
                 <a href="/albums" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg transition-all duration-300"
                    x-data="{ h: false }" @mouseenter="h = true" @mouseleave="h = false">
-                    <i :class="h ? 'fas' : 'fal'" class="fa-record-vinyl w-5 text-base transition-all duration-200"></i>
+                    <i :class="h ? 'fas' : 'fal'" class="fa-microphone-lines w-5 text-base transition-all duration-200"></i>
                     <span class="font-medium text-sm">{{ trans('muzibu::front.general.albums') }}</span>
                 </a>
                 <a href="/genres" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg transition-all duration-300"
@@ -58,6 +59,7 @@
     </div>
 
     {{-- User Profile Card - Bottom - TEK COMPONENT ILE KALAN SURE --}}
+    {{-- Hidden on mobile (<1024px) - only show on desktop sidebar --}}
     <div
         x-show="isLoggedIn"
         x-cloak
@@ -130,7 +132,7 @@
                 return window.muzibuPlayerConfig?.currentUser || null;
             }
         }"
-        class="mt-4 bg-gradient-to-br from-[#ff6b6b] via-[#ff5252] to-[#e91e63] rounded-2xl p-4 shadow-xl relative overflow-hidden group"
+        class="hidden lg:block mt-4 bg-gradient-to-br from-[#ff6b6b] via-[#ff5252] to-[#e91e63] rounded-2xl p-4 shadow-xl relative overflow-hidden group"
     >
         {{-- Animated Background Pattern --}}
         <div class="absolute inset-0 opacity-10">

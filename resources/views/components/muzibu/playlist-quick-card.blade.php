@@ -29,7 +29,7 @@
 --}}
 
 @php
-    $isFavorite = auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id());
+    $isFavorite = is_favorited('playlist', $playlist->id ?? $playlist->playlist_id);
     $isMine = auth()->check() && isset($playlist->user_id) && $playlist->user_id == auth()->id();
 @endphp
 

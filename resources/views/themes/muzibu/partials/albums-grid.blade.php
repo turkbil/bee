@@ -23,7 +23,7 @@
         {{-- Empty State --}}
         <div class="text-center py-20">
             <div class="mb-6">
-                <i class="fas fa-compact-disc text-gray-600 text-6xl"></i>
+                <i class="fas fa-record-vinyl text-gray-600 text-6xl"></i>
             </div>
             <h3 class="text-2xl font-bold text-white mb-2">Henüz albüm yok</h3>
             <p class="text-gray-400">Yakında yeni albümler eklenecek</p>

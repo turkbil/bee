@@ -59,7 +59,7 @@
          title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
          artist: '{{ $song->artist ? addslashes($song->artist->getTranslation('title', app()->getLocale())) : '' }}',
          album_id: {{ $song->album_id ?? 'null' }},
-         is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+         is_favorite: {{ is_favorited('song', $song->song_id) ? 'true' : 'false' }}
      })">
 
     {{-- Thumbnail --}}
@@ -115,7 +115,7 @@
                     title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
                     artist: '{{ $song->artist ? addslashes($song->artist->getTranslation('title', app()->getLocale())) : '' }}',
                     album_id: {{ $song->album_id ?? 'null' }},
-                    is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+                    is_favorite: {{ is_favorited('song', $song->song_id) ? 'true' : 'false' }}
                 })"
                 class="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors opacity-0 group-hover:opacity-100">
             <i class="fas fa-ellipsis-v text-xs"></i>

@@ -23,12 +23,12 @@
 
 <a @if($preview)
        href="/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}"
-       @click="if (window.innerWidth >= 1024) { $event.preventDefault(); $store.sidebar.showPreview('playlist', {{ $playlist->id }}, {
+       @click="if (window.innerWidth >= 768) { $event.preventDefault(); $store.sidebar.showPreview('playlist', {{ $playlist->id }}, {
            type: 'Playlist',
            id: {{ $playlist->id }},
            title: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}',
            cover: '{{ $playlist->coverMedia ? thumb($playlist->coverMedia, 300, 300, ['scale' => 1]) : '' }}',
-           is_favorite: {{ auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+           is_favorite: {{ is_favorited('playlist', $playlist->playlist_id ?? $playlist->id) ? 'true' : 'false' }}
        }); }"
    @else
        href="/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}"
@@ -38,7 +38,7 @@
    x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'playlist', {
        id: {{ $playlist->id }},
        title: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}',
-       is_favorite: {{ auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
+       is_favorite: {{ is_favorited('playlist', $playlist->playlist_id ?? $playlist->id) ? 'true' : 'false' }},
        is_mine: {{ $playlist->user_id && auth()->check() && $playlist->user_id == auth()->id() ? 'true' : 'false' }}
    })"
    x-data="{
@@ -55,7 +55,7 @@
            }, 'playlist', {
                id: {{ $playlist->id }},
                title: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}',
-               is_favorite: {{ auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
+               is_favorite: {{ is_favorited('playlist', $playlist->playlist_id ?? $playlist->id) ? 'true' : 'false' }},
                is_mine: {{ $playlist->user_id && auth()->check() && $playlist->user_id == auth()->id() ? 'true' : 'false' }}
            });
        }, 500);
@@ -108,7 +108,7 @@
             <button x-on:click.stop.prevent="$store.contextMenu.openContextMenu($event, 'playlist', {
                 id: {{ $playlist->id }},
                 title: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}',
-                is_favorite: {{ auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
+                is_favorite: {{ is_favorited('playlist', $playlist->playlist_id ?? $playlist->id) ? 'true' : 'false' }},
                 is_mine: {{ $playlist->user_id && auth()->check() && $playlist->user_id == auth()->id() ? 'true' : 'false' }}
             })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
                 <i class="fas fa-ellipsis-v text-sm"></i>

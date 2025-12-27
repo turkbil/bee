@@ -11,7 +11,7 @@
     $playlistUrl = '/playlists/' . ($playlist->slug ?? $playlist->playlist_id);
     $playlistId = $playlist->playlist_id ?? $playlist->id;
     $isOwner = auth()->check() && $playlist->user_id === auth()->id();
-    $isFavorite = auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id());
+    $isFavorite = is_favorited('playlist', $playlist->playlist_id);
 
     $sizeClasses = [
         'small' => 'w-32 sm:w-36',
@@ -39,7 +39,7 @@
     {{-- Link with Preview/Mobile behavior --}}
     <a href="{{ $playlistUrl }}"
        @if($preview)
-       @click="if (window.innerWidth >= 1024) {
+       @click="if (window.innerWidth >= 768) {
            $event.preventDefault();
            $store.sidebar.showPreview('playlist', {{ $playlistId }}, {
                type: 'Playlist',

@@ -36,6 +36,7 @@ function muzibuApp() {
         showAuthModal: null,
         showQueue: false,
         showLyrics: false,
+        showMobileMenu: false, // 📱 Mobile 3-dots context menu
         showKeyboardHelp: false, // 🎹 Keyboard shortcuts overlay
         progressPercent: 0,
         authLoading: false,
@@ -155,6 +156,10 @@ function muzibuApp() {
         activeHlsAudioId: 'hlsAudio', // Which HLS audio element is active ('hlsAudio' or 'hlsAudioNext')
         progressInterval: null, // Interval for updating progress
         _fadeAnimation: null, // For requestAnimationFrame fade
+
+        // 🚀 PRELOAD NEXT SONG: HLS instance ile gerçek preload
+        _preloadedNext: null, // { songId, hls, audioId, ready } - Preloaded next song info
+        _preloadNextInProgress: false, // Preload işlemi devam ediyor mu
 
         // Computed: Current stream type
         get currentStreamType() {
@@ -370,9 +375,13 @@ function muzibuApp() {
                 this.initSpaNavigation();
             }
 
-            // 🚫 DISABLED: Otomatik preload kaldırıldı - kullanıcı play'e basana kadar hiçbir şey yüklenmeyecek
-            // Sorun: autoPlay=false olsa bile bazen şarkı otomatik başlıyordu
-            // Çözüm: Kullanıcı play'e bastığında togglePlayPause içinde yüklenecek
+            // 🚀 PRELOAD LAST PLAYED: Sayfa yüklenince son şarkıyı hazırla (instant play için)
+            // ⏱️ 500ms delay: Sayfa render'ı tamamlansın, sonra preload başlasın
+            if (this.isLoggedIn && (this.currentUser?.is_premium || this.currentUser?.is_trial)) {
+                setTimeout(() => {
+                    this.preloadLastPlayedSong();
+                }, 500);
+            }
         },
 
         async loadFeaturedPlaylists() {
@@ -384,7 +393,9 @@ function muzibuApp() {
             }
         },
 
-        // 🎯 PRELOAD: Load last played song in PAUSE mode for instant playback
+        // 🎯 PRELOAD: Cache last played song URL for instant playback
+        // NOT: HLS instance oluşturmuyoruz (startLoad sorunları önlemek için)
+        // Sadece URL cache'liyoruz, play basınca playSongFromQueue yeni HLS oluşturur
         async preloadLastPlayedSong() {
             // 🚫 Skip if not premium (prevent 402 spam)
             if (!this.isLoggedIn || (!this.currentUser?.is_premium && !this.currentUser?.is_trial)) {
@@ -392,55 +403,71 @@ function muzibuApp() {
             }
 
             try {
+                let song = null;
+
+                // 1️⃣ Try last-played first
                 const response = await fetch('/api/muzibu/songs/last-played');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.last_played) {
+                        song = data.last_played;
+                    }
+                }
 
-                // Silently skip if endpoint not found
-                if (!response.ok) {
+                // 2️⃣ Fallback: Queue'daki ilk şarkıyı kullan (last-played yoksa)
+                if (!song && this.queue && this.queue.length > 0) {
+                    song = this.queue[0];
+                    console.log('🎵 No last-played, using first song from queue:', song.song_id);
+                }
+
+                // 3️⃣ Son çare: Hiç şarkı yoksa çık
+                if (!song) {
+                    console.log('⚠️ No song to preload (no history, no queue)');
                     return;
                 }
 
-                const data = await response.json();
-
-                if (!data.last_played) {
-                    return;
-                }
-
-                const song = data.last_played;
-
-                // Add to queue (single song)
+                // Add to queue
                 this.queue = [song];
                 this.queueIndex = 0;
                 this.currentSong = song;
 
                 // Load song stream URL (🔐 401 kontrolü ile)
                 const streamResponse = await this.authenticatedFetch(`/api/muzibu/songs/${song.song_id}/stream`);
-                if (!streamResponse) return; // 401 aldıysa logout olacak
+                if (!streamResponse) return;
 
-                // 🚫 CRITICAL: Sadece başarılı response'ları kullan (402, 403, 500 hariç)
                 if (!streamResponse.ok) {
                     return;
                 }
 
                 const streamData = await streamResponse.json();
 
-                // Load audio in PAUSE mode
-                if (streamData.stream_url) {
-                    const useHls = streamData.stream_type === 'hls';
+                // 🚀 URL'i cache'le (HLS instance oluşturmadan)
+                // Play basınca playSongFromQueue bu cache'i kullanarak yeni HLS oluşturur
+                if (!this.streamUrlCache) {
+                    this.streamUrlCache = new Map();
+                }
+                this.streamUrlCache.set(song.song_id, {
+                    stream_url: streamData.stream_url,
+                    stream_type: streamData.stream_type,
+                    fallback_url: streamData.fallback_url,
+                    preview_duration: streamData.preview_duration,
+                    song: streamData.song,
+                    cached_at: Date.now()
+                });
 
-                    // Load but DON'T play
-                    if (useHls) {
-                        this.isHlsStream = true;
-                        await this.playHlsStream(streamData.stream_url, 0, true); // autoplay: false
-                    } else {
-                        this.isHlsStream = false;
-                        await this.playWithHowler(streamData.stream_url, 0, true); // autoplay: false
-                    }
-
-                    this.isPlaying = false; // Ensure paused
+                // Duration'ı set et (varsa)
+                if (streamData.song?.duration_seconds) {
+                    this.duration = streamData.song.duration_seconds;
+                } else if (song.duration_seconds) {
+                    this.duration = song.duration_seconds;
                 }
 
+                this.isPlaying = false;
+                this.isSongLoading = false;
+                console.log('🚀 Last-played URL cached (ready for instant play):', song.song_id, song.song_title?.tr || song.song_title);
+
             } catch (error) {
-                // Silently ignore errors (endpoint may not exist yet)
+                console.error('preloadLastPlayedSong error:', error);
             }
         },
 
@@ -563,6 +590,8 @@ function muzibuApp() {
                     } else if (this.hls) {
                         const audio = this.getActiveHlsAudio();
                         if (audio) {
+                            // 🎵 Resume playback - startLoad() gerekli değil
+                            // HLS zaten normal buffer ile çalışıyor (playSongFromQueue oluşturdu)
                             audio.volume = targetVolume;
                             try {
                                 await audio.play();
@@ -1071,6 +1100,14 @@ function muzibuApp() {
 
             const nextSong = this.queue[nextIndex];
             if (!nextSong) return;
+
+            // 🧹 Preload varsa temizle (crossfade kendi HLS'ini oluşturacak)
+            // Ama URL cache'de kalır, crossfade onu kullanır
+            if (this._preloadedNext) {
+                console.log('🧹 Cleaning preload before crossfade (URL stays in cache):', this._preloadedNext.songId);
+                this._cleanupPreloadedNext();
+                this._preloadNextInProgress = false;
+            }
 
             this.isCrossfading = true;
 
@@ -1776,6 +1813,29 @@ function muzibuApp() {
                 // 🚨 INSTANT PLAY: Cancel crossfade (manual song change)
                 this.isCrossfading = false;
 
+                // 🚀 PRELOAD CHECK: Eğer aynı şarkı zaten yüklüyse, tekrar fetch etme!
+                if (this.currentSong?.song_id === id && this.hls) {
+                    const audio = this.getActiveHlsAudio();
+                    if (audio) {
+                        this.hls.startLoad(); // Resume loading if stopped
+                        try {
+                            await audio.play();
+                            this.isPlaying = true;
+                            this.isSongLoading = false;
+                            if (!this.progressInterval) {
+                                this.startProgressTracking('hls');
+                            }
+                            window.dispatchEvent(new CustomEvent('player:play', {
+                                detail: { songId: id, isLoggedIn: this.isLoggedIn }
+                            }));
+                            console.log('🚀 Preloaded song resumed - no re-fetch needed');
+                            return;
+                        } catch (e) {
+                            console.warn('Preloaded play failed, will re-fetch:', e);
+                        }
+                    }
+                }
+
                 // Stop current playback FIRST before loading new song
                 await this.stopCurrentPlayback();
 
@@ -1950,6 +2010,8 @@ function muzibuApp() {
             this.currentSong = song;
             this.queueIndex = index;
             this.playTracked = false;
+            this._nextSongPreloaded = false; // 🔄 Reset preload flag for new song
+            this._firstFragLoaded = false; // 🔄 Reset first fragment flag for new song
 
             // 🎯 RECENTLY PLAYED: Şarkıyı exclude listesine ekle (tekrar gelmemesi için)
             const playerStore = Alpine.store('player') || Alpine.store('muzibu');
@@ -1963,6 +2025,43 @@ function muzibuApp() {
             // 🔧 FIX: Local variable kullan (race condition önleme)
             // Instance variable yerine closure ile autoplay değerini koru
             const shouldAutoplayLocal = autoplay;
+
+            // 🚀 INSTANT PLAY: Preloaded next song varsa, cache'deki URL'i kullan (yeni HLS instance)
+            if (this._preloadedNext && this._preloadedNext.songId === song.song_id && this._preloadedNext.ready) {
+                console.log('⚡ Using cached URL from preload (fresh HLS):', song.song_id);
+
+                // Preload'dan URL ve data al
+                const cachedStreamUrl = this._preloadedNext.streamUrl;
+                const cachedStreamData = this._preloadedNext.streamData;
+
+                // 🧹 Eski preload HLS'i temizle (yeni instance oluşturacağız)
+                this._cleanupPreloadedNext();
+                this._preloadNextInProgress = false;
+
+                // Mevcut playback'i durdur
+                await this.stopCurrentPlayback();
+
+                // 🎯 Duration'ı set et
+                if (cachedStreamData?.song?.duration_seconds) {
+                    this.duration = cachedStreamData.song.duration_seconds;
+                } else if (song.duration_seconds) {
+                    this.duration = song.duration_seconds;
+                }
+
+                // 🆕 YENİ HLS instance oluştur (normal buffer ile)
+                // Browser cache'den manifest ve segment hızlı yüklenecek
+                const targetVolume = this.isMuted ? 0 : this.volume / 100;
+                await this.playHlsStream(cachedStreamUrl, targetVolume, shouldAutoplayLocal);
+                return;
+            }
+
+            // 🧹 CLEANUP: Preload kullanılmadıysa (hazır değil veya farklı şarkı) temizle
+            // Bu sayede yeni preload başlayabilir
+            if (this._preloadedNext || this._preloadNextInProgress) {
+                console.log('🧹 Cleaning up unused preload state for:', this._preloadedNext?.songId);
+                this._cleanupPreloadedNext();
+                this._preloadNextInProgress = false;
+            }
 
             try {
                 let data;
@@ -2083,8 +2182,8 @@ function muzibuApp() {
                 }
                 // 🔧 FIX: _autoplayNext artık kullanılmıyor (local variable kullanıyoruz)
 
-                // 🚀 Preload next songs in background (don't wait)
-                this.preloadNextThreeSongs();
+                // 🚫 REMOVED: Başlangıçta preload yapmıyoruz, %80'de yapılacak
+                // this.preloadNextThreeSongs();
             } catch (error) {
                 console.error('Failed to load song:', error);
                 this.showToast(this.frontLang?.messages?.song_loading_failed || 'Song failed to load', 'error');
@@ -2231,8 +2330,9 @@ function muzibuApp() {
             }
 
             // Also clean up hlsAudioNext if exists
+            // 🚀 PRELOAD PROTECTION: Preloaded song hlsAudioNext kullanıyorsa temizleme!
             const nextAudio = document.getElementById('hlsAudioNext');
-            if (nextAudio) {
+            if (nextAudio && !(this._preloadedNext && this._preloadedNext.audioId === 'hlsAudioNext')) {
                 nextAudio.pause();
                 nextAudio.src = '';
             }
@@ -2371,12 +2471,18 @@ onplay: function() {
                 // Used to ignore stale error events from destroyed instances
                 const hlsInstanceId = Date.now();
 
+                // 🚀 PRELOAD MODE: Minimal buffer kullan (sadece ilk segment için)
+                const isPreloadMode = !autoplay;
+                const bufferLength = isPreloadMode ? 1 : 90; // Preload: sadece 1 saniye buffer istek
+                const bufferSize = isPreloadMode ? 5 * 1000 * 1000 : 120 * 1000 * 1000;
+
                 this.hls = new Hls({
                     enableWorker: false, // 🔧 FIX: Disable worker to avoid internal exceptions
                     lowLatencyMode: false,
-                    maxBufferLength: 90, // Daha uzun buffer (seek beklemesini azalt)
-                    maxBufferSize: 120 * 1000 * 1000, // 120MB
-                    backBufferLength: 30,
+                    maxBufferLength: bufferLength, // Preload: 1sn, Normal: 90sn
+                    maxMaxBufferLength: isPreloadMode ? 5 : 180, // Preload: max 5sn, Normal: max 180sn
+                    maxBufferSize: bufferSize, // Preload: 5MB, Normal: 120MB
+                    backBufferLength: isPreloadMode ? 0 : 30,
                     // 🔑 KEY LOADING POLICY - Prevent keyLoadError with aggressive retries
                     keyLoadPolicy: {
                         default: {
@@ -2491,8 +2597,8 @@ onplay: function() {
                             // 🚀 INSTANT: No fade, volume already set
                             self.startProgressTracking('hls');
 
-                            // 🚀 PRELOAD: Bir sonraki şarkıyı cache'e yükle (instant crossfade için)
-                            self.preloadNextSong();
+                            // 🚫 REMOVED: Başlangıçta preload yok, %80'de yapılacak
+                            // self.preloadNextSong();
 
                             // Dispatch event for play-limits (HLS)
                             window.dispatchEvent(new CustomEvent('player:play', {
@@ -2519,10 +2625,25 @@ onplay: function() {
                         });
                     } else {
                         // Preload mode: load but don't play
-                        markHlsSuccess(); // Preload da basarili sayilir
+                        // 🚀 İlk segment'i buffer'la (instant play için)
                         self.duration = audio.duration || 0;
                         self.isPlaying = false;
-                        self.isSongLoading = false; // 🔄 Preload tamamlandı
+                        // isSongLoading = true kalacak, FRAG_BUFFERED'da false olacak
+                    }
+                });
+
+                // 🚀 PRELOAD FIRST SEGMENT: İlk .ts dosyası yüklenince dur (bandwidth tasarrufu)
+                this.hls.on(Hls.Events.FRAG_BUFFERED, function(event, data) {
+                    // Sadece ilk fragment için tetikle (bir kez)
+                    if (!autoplay && !self._firstFragLoaded) {
+                        self._firstFragLoaded = true;
+                        markHlsSuccess();
+                        self.isSongLoading = false;
+
+                        // 🛑 STOP LOADING: İlk segment yüklendi, geri kalanı durdur
+                        // Play basınca startLoad() ile devam edecek
+                        self.hls.stopLoad();
+                        console.log('🚀 First segment buffered - stopped loading, ready for instant play');
                     }
                 });
 
@@ -2678,9 +2799,19 @@ onplay: function() {
                 // Bu event page hidden olsa bile düzgün çalışır
                 audio.ontimeupdate = function() {
                     if (!self.duration || self.duration <= 0) return;
+
+                    const currentTime = audio.currentTime;
+                    const timeRemaining = self.duration - currentTime;
+                    const progressPercent = (currentTime / self.duration) * 100;
+
+                    // 🚀 INSTANT PRELOAD: Şarkı başladığında hemen sonraki şarkıyı yükle
+                    if (!self._nextSongPreloaded && currentTime >= 2) {
+                        self._nextSongPreloaded = true;
+                        self.preloadNextSong();
+                    }
+
                     if (self.isCrossfading) return;
 
-                    const timeRemaining = self.duration - audio.currentTime;
                     // Son 1.5 saniyede crossfade başlat
                     if (self.crossfadeEnabled && timeRemaining <= (self.crossfadeDuration / 1000) && timeRemaining > 0) {
                         self.startCrossfade();
@@ -2711,9 +2842,19 @@ onplay: function() {
                 // 🎵 CROSSFADE TRIGGER: timeupdate event for Safari
                 audio.ontimeupdate = function() {
                     if (!self.duration || self.duration <= 0) return;
+
+                    const currentTime = audio.currentTime;
+                    const timeRemaining = self.duration - currentTime;
+                    const progressPercent = (currentTime / self.duration) * 100;
+
+                    // 🚀 INSTANT PRELOAD: Şarkı başladığında hemen sonraki şarkıyı yükle
+                    if (!self._nextSongPreloaded && currentTime >= 2) {
+                        self._nextSongPreloaded = true;
+                        self.preloadNextSong();
+                    }
+
                     if (self.isCrossfading) return;
 
-                    const timeRemaining = self.duration - audio.currentTime;
                     if (self.crossfadeEnabled && timeRemaining <= (self.crossfadeDuration / 1000) && timeRemaining > 0) {
                         self.startCrossfade();
                     }
@@ -2735,8 +2876,8 @@ onplay: function() {
                     // 🚀 INSTANT: No fade, volume already set
                     self.startProgressTracking('hls');
 
-                    // 🚀 PRELOAD: Bir sonraki şarkıyı cache'e yükle (instant crossfade için)
-                    self.preloadNextSong();
+                    // 🚫 REMOVED: Başlangıçta preload yok, %80'de yapılacak
+                    // self.preloadNextSong();
 
                     // Dispatch event for play-limits (Safari native HLS)
                     window.dispatchEvent(new CustomEvent('player:play', {
@@ -3678,8 +3819,8 @@ onplay: function() {
          * 🚀 PRELOAD FIRST IN QUEUE: Backward compatibility wrapper
          */
         async preloadFirstInQueue() {
-            // Backward compatibility: Still works as before (preloads first song)
-            await this.preloadNextThreeSongs();
+            // 🔄 OPTIMIZED: Sadece 1 şarkı preload et (3 değil)
+            await this.preloadNextSong();
         },
 
         /**
@@ -3873,35 +4014,50 @@ onplay: function() {
         },
 
         /**
-         * 🚀 PRELOAD NEXT SONG: Bir sonraki şarkıyı cache'e yükle (instant crossfade için)
-         * Şarkı başladığında arka planda çalışır, crossfade için hazır tutar
+         * 🚀 PRELOAD NEXT SONG: Sonraki şarkının ilk HLS segment'ini yükle (instant geçiş için)
+         * Şarkı çalarken 10 saniye sonra çağrılır, next basınca anında geçiş sağlar
          */
         async preloadNextSong() {
+            // Zaten preload işlemi devam ediyorsa çık
+            if (this._preloadNextInProgress) {
+                console.log('⏳ Preload already in progress, skipping...');
+                return;
+            }
+
             const nextIndex = this.getNextSongIndex();
             if (nextIndex === -1) return; // Sonraki şarkı yok
 
             const nextSong = this.queue[nextIndex];
             if (!nextSong) return;
 
-            // Zaten cache'de mi kontrol et
-            const cached = this.getCachedStream(nextSong.song_id);
-            if (cached) {
+            // Zaten bu şarkı preload edilmişse çık
+            if (this._preloadedNext && this._preloadedNext.songId === nextSong.song_id && this._preloadedNext.ready) {
+                console.log('✅ Next song already preloaded:', nextSong.song_id);
                 return;
             }
 
-            // Arka planda API'den çek ve cache'e yaz
-            try {
-                const response = await this.authenticatedFetch(`/api/muzibu/songs/${nextSong.song_id}/stream`, { ignoreAuthError: true });
-                if (!response) return; // 401 aldıysa çık
+            // Önceki preload'u temizle (farklı şarkıysa)
+            this._cleanupPreloadedNext();
 
-                // 🚫 CRITICAL: Sadece başarılı response'ları cache'le (402, 403, 500 hariç)
+            this._preloadNextInProgress = true;
+            const self = this;
+
+            try {
+                // 1️⃣ Stream URL'i al
+                const response = await this.authenticatedFetch(`/api/muzibu/songs/${nextSong.song_id}/stream`, { ignoreAuthError: true });
+                if (!response) {
+                    this._preloadNextInProgress = false;
+                    return;
+                }
+
                 if (!response.ok) {
+                    this._preloadNextInProgress = false;
                     return;
                 }
 
                 const data = await response.json();
 
-                // Cache'e yaz (null check!)
+                // URL Cache'e yaz (backup için)
                 if (!this.streamUrlCache) {
                     this.streamUrlCache = new Map();
                 }
@@ -3913,8 +4069,100 @@ onplay: function() {
                     cached_at: Date.now()
                 });
 
+                // 2️⃣ HLS ise gerçek preload yap (ilk segment)
+                if (data.stream_type === 'hls' && data.stream_url && typeof Hls !== 'undefined' && Hls.isSupported()) {
+                    // 🔄 Aktif OLMAYAN audio element'i kullan (çakışma önleme)
+                    // Eğer hlsAudioNext aktifse → hlsAudio kullan, tersi de geçerli
+                    const audioId = this.activeHlsAudioId === 'hlsAudioNext' ? 'hlsAudio' : 'hlsAudioNext';
+                    let nextAudio = document.getElementById(audioId);
+                    if (!nextAudio) {
+                        nextAudio = document.createElement('audio');
+                        nextAudio.id = audioId;
+                        nextAudio.crossOrigin = 'anonymous';
+                        nextAudio.preload = 'auto';
+                        document.body.appendChild(nextAudio);
+                    } else {
+                        // 🧹 Mevcut audio'yu temizle (çakışma önleme)
+                        try {
+                            nextAudio.pause();
+                            nextAudio.src = '';
+                            nextAudio.load();
+                        } catch (e) {}
+                    }
+
+                    // Yeni HLS instance oluştur (minimal buffer - sadece ilk segment)
+                    const hlsPreload = new Hls({
+                        enableWorker: true,
+                        lowLatencyMode: false,
+                        maxBufferLength: 1, // Sadece 1 saniye buffer istek (1 segment)
+                        maxMaxBufferLength: 5,
+                        startLevel: -1,
+                        abrEwmaDefaultEstimate: 500000
+                    });
+
+                    // State'i kaydet
+                    this._preloadedNext = {
+                        songId: nextSong.song_id,
+                        song: nextSong,
+                        hls: hlsPreload,
+                        audioId: audioId,
+                        streamUrl: data.stream_url,
+                        streamData: data,
+                        ready: false
+                    };
+
+                    hlsPreload.loadSource(data.stream_url);
+                    hlsPreload.attachMedia(nextAudio);
+
+                    // İlk segment yüklenince hazır işaretle
+                    hlsPreload.on(Hls.Events.FRAG_BUFFERED, function(event, fragData) {
+                        if (self._preloadedNext && self._preloadedNext.songId === nextSong.song_id && !self._preloadedNext.ready) {
+                            self._preloadedNext.ready = true;
+                            self._preloadNextInProgress = false;
+
+                            // ⚠️ stopLoad() KULLANMIYORUZ - internal state bozuyor
+                            // Minimal buffer config (maxBufferLength: 1) yeterli, HLS otomatik durur
+                            console.log('🚀 Next song preloaded (first segment ready):', nextSong.song_id, nextSong.song_title?.tr || nextSong.song_title);
+                        }
+                    });
+
+                    // Manifest parsed
+                    hlsPreload.on(Hls.Events.MANIFEST_PARSED, function() {
+                        console.log('📋 Next song manifest loaded:', nextSong.song_id);
+                    });
+
+                    // Hata durumu
+                    hlsPreload.on(Hls.Events.ERROR, function(event, errData) {
+                        if (errData.fatal) {
+                            console.warn('⚠️ Preload HLS error:', errData.details);
+                            self._cleanupPreloadedNext();
+                            self._preloadNextInProgress = false;
+                        }
+                    });
+
+                } else {
+                    // MP3 veya HLS desteklenmiyorsa sadece URL cache'le
+                    this._preloadNextInProgress = false;
+                    console.log('📦 Next song URL cached (no HLS preload):', nextSong.song_id);
+                }
+
             } catch (error) {
                 console.error('Preload error:', error);
+                this._preloadNextInProgress = false;
+            }
+        },
+
+        /**
+         * 🧹 Preloaded next song'u temizle
+         */
+        _cleanupPreloadedNext() {
+            if (this._preloadedNext) {
+                if (this._preloadedNext.hls) {
+                    try {
+                        this._preloadedNext.hls.destroy();
+                    } catch (e) {}
+                }
+                this._preloadedNext = null;
             }
         },
 

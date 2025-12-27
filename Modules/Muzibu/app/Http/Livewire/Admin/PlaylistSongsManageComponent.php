@@ -108,8 +108,8 @@ class PlaylistSongsManageComponent extends Component
             $maxPosition = $this->playlist->songs()->max('muzibu_playlist_song.position') ?? -1;
             $newPosition = $maxPosition + 1;
 
-            // 4. Pivot table'a ekle
-            $this->playlist->songs()->attach($songId, ['position' => $newPosition]);
+            // 4. Pivot table'a ekle (cache count'ları da güncelle)
+            $this->playlist->attachSongWithCache($songId, ['position' => $newPosition]);
 
             // 5. Log
             Log::info('Muzibu: Playlist\'e şarkı eklendi', [
@@ -147,8 +147,8 @@ class PlaylistSongsManageComponent extends Component
     public function removeSong(int $songId): void
     {
         try {
-            // 1. Pivot'tan sil
-            $this->playlist->songs()->detach($songId);
+            // 1. Pivot'tan sil (cache count'ları da güncelle)
+            $this->playlist->detachSongWithCache($songId);
 
             // 2. Sıralamayı yeniden düzenle (gap kalmasın)
             $this->reorderSequentially();

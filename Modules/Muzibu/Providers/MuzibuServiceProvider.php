@@ -68,19 +68,25 @@ class MuzibuServiceProvider extends ServiceProvider
 
     /**
      * Model Observer'larını kaydet
-     * Yeni eklenen her Song/Album/Artist/Playlist/Radio/Genre/Sector otomatik UTF-8 temizlenir
+     * - MuzikDataObserver: UTF-8 temizleme
+     * - SongObserver: Cache count güncellemeleri (Album, Genre, Artist)
+     * - AlbumObserver: Cache, SEO, Artist albums_count
      */
     protected function registerModelObservers(): void
     {
-        $observer = \Modules\Muzibu\App\Observers\MuzikDataObserver::class;
+        // UTF-8 Temizleme Observer
+        $dataObserver = \Modules\Muzibu\App\Observers\MuzikDataObserver::class;
+        \Modules\Muzibu\App\Models\Song::observe($dataObserver);
+        \Modules\Muzibu\App\Models\Album::observe($dataObserver);
+        \Modules\Muzibu\App\Models\Artist::observe($dataObserver);
+        \Modules\Muzibu\App\Models\Playlist::observe($dataObserver);
+        \Modules\Muzibu\App\Models\Radio::observe($dataObserver);
+        \Modules\Muzibu\App\Models\Genre::observe($dataObserver);
+        \Modules\Muzibu\App\Models\Sector::observe($dataObserver);
 
-        \Modules\Muzibu\App\Models\Song::observe($observer);
-        \Modules\Muzibu\App\Models\Album::observe($observer);
-        \Modules\Muzibu\App\Models\Artist::observe($observer);
-        \Modules\Muzibu\App\Models\Playlist::observe($observer);
-        \Modules\Muzibu\App\Models\Radio::observe($observer);
-        \Modules\Muzibu\App\Models\Genre::observe($observer);
-        \Modules\Muzibu\App\Models\Sector::observe($observer);
+        // Cache Count Observers
+        \Modules\Muzibu\App\Models\Song::observe(\Modules\Muzibu\App\Observers\SongObserver::class);
+        \Modules\Muzibu\App\Models\Album::observe(\Modules\Muzibu\App\Observers\AlbumObserver::class);
     }
 
     /**
@@ -155,8 +161,8 @@ class MuzibuServiceProvider extends ServiceProvider
      */
     protected function loadWebRoutes(): void
     {
-        // Tenant 1001 domain'lerini al (dinamik)
-        $domains = \Illuminate\Support\Facades\DB::table('domains')
+        // Tenant 1001 domain'lerini al (CENTRAL DB - domains tablosu central'da)
+        $domains = \Illuminate\Support\Facades\DB::connection('mysql')->table('domains')
             ->where('tenant_id', 1001)
             ->pluck('domain')
             ->toArray();
@@ -174,8 +180,8 @@ class MuzibuServiceProvider extends ServiceProvider
      */
     protected function loadApiRoutes(): void
     {
-        // Tenant 1001 domain'lerini al (dinamik)
-        $domains = \Illuminate\Support\Facades\DB::table('domains')
+        // Tenant 1001 domain'lerini al (CENTRAL DB - domains tablosu central'da)
+        $domains = \Illuminate\Support\Facades\DB::connection('mysql')->table('domains')
             ->where('tenant_id', 1001)
             ->pluck('domain')
             ->toArray();
@@ -246,6 +252,7 @@ class MuzibuServiceProvider extends ServiceProvider
     {
         $this->commands([
             \Modules\Muzibu\App\Console\WarmMuzibuCacheCommand::class,
+            \Modules\Muzibu\App\Console\Commands\RecalculateCountsCommand::class,
         ]);
     }
 

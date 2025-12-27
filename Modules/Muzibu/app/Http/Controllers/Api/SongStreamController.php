@@ -75,45 +75,8 @@ class SongStreamController extends Controller
                 ], 401);
             }
 
-            // 🔐 DEVICE LIMIT CHECK: login_token ile doğrula (kick edilen cihaz stream yapamasın)
-            if ($this->deviceService->shouldRun()) {
-                $cookieToken = request()->cookie('mzb_login_token');
-                $sessionExists = $this->deviceService->sessionExists($user);
-
-                \Log::info('🔐 stream device check', [
-                    'user_id' => $user->id,
-                    'session_id' => substr(session()->getId() ?: 'N/A', 0, 20) . '...',
-                    'cookie_token' => $cookieToken ? substr($cookieToken, 0, 16) . '...' : 'NULL',
-                    'session_exists' => $sessionExists,
-                ]);
-
-                if (!$sessionExists) {
-                    $reason = 'session_missing';
-                    // Kullanıcıyı çıkış yaptır ve mesaj döndür
-                    auth('web')->logout();
-                    if (request()->hasSession()) {
-                        request()->session()->invalidate();
-                        request()->session()->regenerateToken();
-                    }
-
-                    $sessionCookie = config('session.cookie', 'laravel_session');
-
-                    \Log::warning('🔐 stream blocked (session missing)', [
-                        'user_id' => $user->id,
-                        'cookie_token' => $cookieToken ? substr($cookieToken, 0, 16) . '...' : 'NULL',
-                        'reason' => $reason,
-                    ]);
-
-                    return response()->json([
-                        'status' => 'session_terminated',
-                        'reason' => $reason,
-                        'redirect' => '/login',
-                        'message' => $this->getSessionTerminationMessage($user),
-                    ], 401)
-                    ->withCookie(cookie()->forget($sessionCookie))
-                    ->withCookie(cookie()->forget('XSRF-TOKEN'));
-                }
-            }
+            // 🔐 DEVICE LIMIT CHECK - DISABLED (DeviceService kapalı)
+            // Not: DeviceService ve timeout kapatıldı, token bazlı kontrol yapılmıyor
 
             // 🚫 Normal üye (premium veya trial değil) → Subscription sayfasına yönlendir
             // 🔥 FIX: isPremiumOrTrial() helper kullanılıyor
@@ -176,37 +139,16 @@ class SongStreamController extends Controller
             // 🔥 Subscription bilgilerini al
             $subscriptionData = $this->getSubscriptionData($user);
 
-            // HLS already converted - return HLS URL (SIGNED + token-bound)
-            $cookieName = 'mzb_login_token';
-            $loginToken = request()->cookie($cookieName);
-
-            if ($this->deviceService->shouldRun()) {
-                // Cookie yoksa DB'den token bul ve yeniden cookie yaz
-                if (!$loginToken) {
-                    $sessionRow = \Illuminate\Support\Facades\DB::table('user_active_sessions')
-                        ->where('user_id', $user->id)
-                        ->orderByDesc('last_activity')
-                        ->first();
-
-                    if ($sessionRow && $sessionRow->login_token) {
-                        $loginToken = $sessionRow->login_token;
-                        $lifetime = (int) setting('auth_session_lifetime', 525600);
-                        cookie()->queue(cookie($cookieName, $loginToken, $lifetime, '/', null, true, true, false, 'Lax'));
-                    } else {
-                        return response()->json([
-                            'status' => 'session_terminated',
-                            'message' => 'Oturum bulunamadı. Lütfen tekrar giriş yapın.'
-                        ], 401);
-                    }
-                }
-            }
+            // HLS already converted - return HLS URL (SIGNED)
+            // 🔓 DeviceService kapalı - token bazlı kontrol yok, sadece user_id ile imza
 
             // 🔒 TTL: Şarkı süresine göre dinamik imza (uzun parçalarda timeout yaşamamak için)
             $durationSeconds = (int) ($song->duration ?? 0);
-            $bufferSeconds = 300; // 5 dakika tampon (increased from 3)
-            $ttlSeconds = max(1800, min($durationSeconds + $bufferSeconds, 3600)); // min 30 dk, max 60 dk (increased from 8-30)
+            $bufferSeconds = 300; // 5 dakika tampon
+            $ttlSeconds = max(1800, min($durationSeconds + $bufferSeconds, 3600)); // min 30 dk, max 60 dk
 
-            $hlsUrl = $this->signedUrlService->generateHlsUrl($songId, $ttlSeconds, $loginToken);
+            // User ID'yi token olarak kullan (DeviceService kapalı olduğu için)
+            $hlsUrl = $this->signedUrlService->generateHlsUrl($songId, $ttlSeconds, (string) $user->id);
 
             return response()->json(array_merge([
                 'status' => 'ready',
@@ -461,8 +403,8 @@ class SongStreamController extends Controller
         }
 
         try {
-            // 🔐 Token + imza doğrulaması (HLS ile aynı imza)
-            $token = request()->query('token');
+            // 🔐 İmza doğrulaması (DeviceService kapalı - token = user_id)
+            $token = request()->query('token'); // Aslında user_id
             $expires = (int) request()->query('expires');
             $sig = request()->query('sig');
             $signatureBase = "/hls/muzibu/songs/{$songId}";
@@ -472,13 +414,7 @@ class SongStreamController extends Controller
                 return response()->json(['status' => 'session_terminated', 'message' => 'Oturum doğrulanamadı'], 401);
             }
 
-            $sessionRow = DB::table('user_active_sessions')
-                ->where('login_token', $token)
-                ->first();
-
-            if (!$sessionRow) {
-                return response()->json(['status' => 'session_terminated', 'message' => 'Oturum bulunamadı'], 401);
-            }
+            // 🔓 DeviceService kapalı - DB session kontrolü yapılmıyor
 
             // 🚀 Get song from cache
             $song = $this->cacheService->getSong($songId);
@@ -558,35 +494,23 @@ class SongStreamController extends Controller
             ]);
         }
 
-        // 🔐 Token + imza doğrulaması
-        $token = request()->query('token');
+        // 🔐 İmza doğrulaması (DeviceService kapalı - token = user_id)
+        $token = request()->query('token'); // Aslında user_id
         $expires = (int) request()->query('expires');
         $sig = request()->query('sig');
 
         $signatureBase = "/hls/muzibu/songs/{$songId}";
         $expectedSig = hash_hmac('sha256', "{$signatureBase}|{$token}|{$expires}", config('app.key'));
 
-        // 🔍 DEBUG: Detailed validation checks
-        $tokenProvided = !empty($token);
-        $expiresProvided = !empty($expires);
-        $sigProvided = !empty($sig);
-        $signatureMatch = $sig === $expectedSig;
-        $isExpired = $expires ? Carbon::now()->timestamp > $expires : true;
-        $timeToExpire = $expires ? $expires - Carbon::now()->timestamp : null;
-
+        // İmza ve süre kontrolü (token = user_id, boş olamaz)
         if (!$token || !$expires || !$sig || $sig !== $expectedSig || Carbon::now()->timestamp > $expires) {
             Log::warning('🚨 HLS serve denied (validation failed)', [
                 'song_id' => $songId,
                 'file' => $filename,
-                'token_provided' => $tokenProvided,
-                'expires_provided' => $expiresProvided,
-                'sig_provided' => $sigProvided,
-                'signature_match' => $signatureMatch,
-                'is_expired' => $isExpired,
-                'time_to_expire_sec' => $timeToExpire,
-                'token_prefix' => $token ? substr($token, 0, 16) : 'NULL',
+                'token_provided' => !empty($token),
+                'sig_match' => $sig === $expectedSig,
+                'is_expired' => Carbon::now()->timestamp > $expires,
                 'ip' => request()->ip(),
-                'user_agent' => substr(request()->userAgent() ?? '', 0, 80),
             ]);
             return response()->json([
                 'status' => 'session_terminated',
@@ -595,33 +519,8 @@ class SongStreamController extends Controller
             ], 401);
         }
 
-        // 🚀 REDIS CACHE: Token DB'de geçerli mi? (5 dakika cache ile hızlandır)
-        // Cache key: session:{token_hash}
-        $cacheKey = 'session:' . hash('sha256', $token);
-
-        $sessionRow = Cache::remember($cacheKey, 300, function() use ($token) {
-            return DB::table('user_active_sessions')
-                ->where('login_token', $token)
-                ->first();
-        });
-
-        if (!$sessionRow) {
-            Log::warning('🚨 HLS serve denied (token not found in DB)', [
-                'song_id' => $songId,
-                'file' => $filename,
-                'token_prefix' => substr($token, 0, 16),
-                'token_full_length' => strlen($token),
-                'expires_timestamp' => $expires,
-                'time_to_expire_sec' => $expires - Carbon::now()->timestamp,
-                'ip' => request()->ip(),
-                'user_agent' => substr(request()->userAgent() ?? '', 0, 80),
-            ]);
-            return response()->json([
-                'status' => 'session_terminated',
-                'reason' => 'session_missing',
-                'message' => 'Oturum bulunamadı'
-            ], 401);
-        }
+        // 🔓 DeviceService kapalı - DB session kontrolü yapılmıyor
+        // Token aslında user_id, imza doğrulandıysa URL manipüle edilmemiş demektir
 
         try {
             // Security: Only allow specific file types
@@ -665,10 +564,8 @@ class SongStreamController extends Controller
                 Log::info('HLS playlist served', [
                     'song_id' => $songId,
                     'file' => $filename,
-                    'token_prefix' => substr($token, 0, 12),
-                    'session_id' => substr($sessionRow->session_id ?? '', 0, 20),
+                    'user_id' => $token, // token = user_id
                     'ip' => request()->ip(),
-                    'user_agent' => substr(request()->userAgent() ?? '', 0, 80),
                     'expires_in' => $expires - Carbon::now()->timestamp
                 ]);
 
@@ -693,11 +590,8 @@ class SongStreamController extends Controller
             Log::info('HLS segment served', [
                 'song_id' => $songId,
                 'file' => $filename,
-                'token_prefix' => substr($token, 0, 12),
-                'session_id' => substr($sessionRow->session_id ?? '', 0, 20),
+                'user_id' => $token, // token = user_id
                 'ip' => request()->ip(),
-                'user_agent' => substr(request()->userAgent() ?? '', 0, 80),
-                'expires_in' => $expires - Carbon::now()->timestamp
             ]);
 
             return $response;

@@ -89,8 +89,8 @@ class ReissueLetsEncryptCertificate implements ShouldQueue
      */
     protected function getAllDomainAliases(): array
     {
-        // Laravel tenant domains tablosundan al
-        $domains = DB::table('domains')
+        // Laravel tenant domains tablosundan al (CENTRAL DB)
+        $domains = DB::connection('mysql')->table('domains')
             ->whereNotIn('domain', [$this->parentDomain, "www.{$this->parentDomain}"])
             ->pluck('domain')
             ->toArray();

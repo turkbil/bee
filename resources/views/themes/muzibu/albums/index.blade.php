@@ -12,7 +12,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
     {{-- Header - Alternatif 2: Icon + Text (FA Beat-Fade Animation) --}}
     <div class="mb-8 flex items-center gap-5">
         <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
-            <i class="fas fa-record-vinyl text-3xl text-white fa-beat-fade" style="--fa-animation-duration: 2s; --fa-beat-fade-opacity: 0.4; --fa-beat-fade-scale: 1.1;"></i>
+            <i class="fas fa-microphone-lines text-3xl text-white fa-beat-fade" style="--fa-animation-duration: 2s; --fa-beat-fade-opacity: 0.4; --fa-beat-fade-scale: 1.1;"></i>
         </div>
         <div>
             <h1 class="text-5xl font-extrabold text-white mb-1">Albümler</h1>
@@ -38,7 +38,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
         {{-- Empty State --}}
         <div class="text-center py-20">
             <div class="mb-6">
-                <i class="fas fa-compact-disc text-gray-600 text-6xl"></i>
+                <i class="fas fa-microphone-lines text-gray-600 text-6xl"></i>
             </div>
             <h3 class="text-2xl font-bold text-white mb-2">Henüz albüm yok</h3>
             <p class="text-gray-400">Yakında yeni albümler eklenecek</p>

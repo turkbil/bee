@@ -20,7 +20,7 @@
         cover_url: '{{ $song->getCoverUrl(300, 300) ?? '' }}',
         album_id: {{ $song->album_id ?? 'null' }},
         album_slug: '{{ $song->album?->slug ?? '' }}',
-        is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+        is_favorite: {{ is_favorited('song', $song->id) ? 'true' : 'false' }}
     })"
      x-data="{
         touchTimer: null,
@@ -40,7 +40,7 @@
                 cover_url: '{{ $song->getCoverUrl(300, 300) ?? '' }}',
                 album_id: {{ $song->album_id ?? 'null' }},
                 album_slug: '{{ $song->album?->slug ?? '' }}',
-                is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+                is_favorite: {{ is_favorited('song', $song->id) ? 'true' : 'false' }}
             });
         }, 500);
     "
@@ -115,7 +115,7 @@
 
         {{-- Favorite Button --}}
         @php
-            $isFavorited = auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id());
+            $isFavorited = is_favorited('song', $song->id);
         @endphp
 
         <button class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-gray-400 hover:text-muzibu-coral transition-colors hover:scale-110 {{ $isFavorited ? '!opacity-100' : '' }}"
@@ -133,7 +133,7 @@
                     cover_url: '{{ $song->getCoverUrl(300, 300) ?? '' }}',
                     album_id: {{ $song->album_id ?? 'null' }},
                     album_slug: '{{ $song->album?->slug ?? '' }}',
-                    is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+                    is_favorite: {{ is_favorited('song', $song->id) ? 'true' : 'false' }}
                 })"
                 class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
             <i class="fas fa-ellipsis-v text-sm"></i>

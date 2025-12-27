@@ -1,15 +1,15 @@
-@props(['radio', 'preview' => false])
+@props(['radio', 'preview' => false, 'compact' => false])
 
 {{-- Muzibu Radio Card Component --}}
-{{-- Usage: <x-muzibu.radio-card :radio="$radio" :preview="true" /> --}}
+{{-- Usage: <x-muzibu.radio-card :radio="$radio" :compact="true" /> --}}
 {{-- Note: Radios play directly - preview parameter is accepted but not used (for consistency) --}}
 
-<div class="radio-card group bg-muzibu-gray hover:bg-gray-700 rounded-lg px-4 pt-4 transition-all duration-300 cursor-pointer"
+<div class="radio-card group rounded-lg transition-all duration-300 cursor-pointer @if($compact) flex-shrink-0 w-[190px] p-3 bg-transparent hover:bg-white/10 @else bg-muzibu-gray hover:bg-gray-700 px-4 pt-4 @endif"
      @click.stop.prevent="window.playContent('radio', {{ $radio->radio_id }})"
      data-radio-id="{{ $radio->radio_id }}"
      data-genre-id="{{ $radio->genre_id ?? '' }}"
      data-radio-title="{{ $radio->getTranslation('title', app()->getLocale()) }}"
-     data-is-favorite="{{ auth()->check() && $radio->isFavoritedBy(auth()->user()) ? '1' : '0' }}"
+     data-is-favorite="{{ is_favorited('radio', $radio->radio_id) ? '1' : '0' }}"
      x-data="{
          touchTimer: null,
          touchStartPos: { x: 0, y: 0 }
@@ -17,7 +17,7 @@
      x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'radio', {
          id: {{ $radio->radio_id }},
          title: '{{ addslashes($radio->getTranslation('title', app()->getLocale())) }}',
-         is_favorite: {{ auth()->check() && $radio->isFavoritedBy(auth()->user()) ? 'true' : 'false' }}
+         is_favorite: {{ is_favorited('radio', $radio->radio_id) ? 'true' : 'false' }}
      })"
      x-on:touchstart="
          touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
@@ -29,7 +29,7 @@
              }, 'radio', {
                  id: {{ $radio->radio_id }},
                  title: '{{ addslashes($radio->getTranslation('title', app()->getLocale())) }}',
-                 is_favorite: {{ auth()->check() && $radio->isFavoritedBy(auth()->user()) ? 'true' : 'false' }}
+                 is_favorite: {{ is_favorited('radio', $radio->radio_id) ? 'true' : 'false' }}
              });
          }, 500);
      "
@@ -42,7 +42,7 @@
      x-bind:class="$store.player.currentContext?.type === 'radio' && $store.player.currentContext?.id === {{ $radio->radio_id }} ? 'ring-2 ring-muzibu-coral animate-pulse' : ''">
 
     {{-- Radio Logo/Icon --}}
-    <div class="relative mb-4">
+    <div class="relative @if($compact) mb-3 @else mb-4 @endif">
         @if($radio->media_id && $radio->logoMedia)
             <img src="{{ thumb($radio->logoMedia, 300, 300, ['scale' => 1]) }}"
                  alt="{{ $radio->getTranslation('title', app()->getLocale()) }}"
@@ -83,7 +83,7 @@
             <button @click.stop.prevent="$store.contextMenu.openContextMenu($event, 'radio', {
                     id: {{ $radio->radio_id }},
                     title: '{{ addslashes($radio->getTranslation('title', app()->getLocale())) }}',
-                    is_favorite: {{ auth()->check() && $radio->isFavoritedBy(auth()->user()) ? 'true' : 'false' }}
+                    is_favorite: {{ is_favorited('radio', $radio->radio_id) ? 'true' : 'false' }}
                 })"
                     class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
                 <i class="fas fa-ellipsis-v text-sm"></i>

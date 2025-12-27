@@ -238,13 +238,14 @@ class BlogAIContentWriter
                 'tenant_id' => tenant('id'),
             ]);
 
-            DB::commit();
-
-            // Draft'ı güncelle (transaction dışında - foreign key koruması için)
+            // 🔧 FIX: Draft güncellemesini transaction İÇİNDE yap
+            // Bu sayede blog + draft güncellemesi atomic olur, race condition önlenir
             $draft->update([
                 'is_generated' => true,
                 'generated_blog_id' => $blog->blog_id,
             ]);
+
+            DB::commit();
 
             Log::info('Blog AI Content Generated', [
                 'blog_id' => $blog->blog_id,

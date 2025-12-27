@@ -25,13 +25,13 @@
 
 <a @if($preview)
        href="{{ $song->getUrl() }}"
-       @click="if (window.innerWidth >= 1024) { $event.preventDefault(); $store.sidebar.showPreview('song', {{ $songId }}, {
+       @click="if (window.innerWidth >= 768) { $event.preventDefault(); $store.sidebar.showPreview('song', {{ $songId }}, {
            type: 'Song',
            id: {{ $songId }},
            title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
            artist: '{{ $artistName ? addslashes($artistName) : '' }}',
            cover: '{{ $albumCover ?? '' }}',
-           is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+           is_favorite: {{ is_favorited('song', $songId) ? 'true' : 'false' }}
        }); }"
    @else
        href="{{ $song->getUrl() }}"
@@ -44,7 +44,7 @@
        title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
        artist: '{{ $artistName ? addslashes($artistName) : '' }}',
        album_id: {{ $song->album_id ?? 'null' }},
-       is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+       is_favorite: {{ is_favorited('song', $songId) ? 'true' : 'false' }}
    })"
    {{-- Context Menu (Mobile: Long Press) --}}
    x-data="{
@@ -63,7 +63,7 @@
                title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
                artist: '{{ $artistName ? addslashes($artistName) : '' }}',
                album_id: {{ $song->album_id ?? 'null' }},
-               is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+               is_favorite: {{ is_favorited('song', $songId) ? 'true' : 'false' }}
            });
        }, 500);
    "
@@ -118,7 +118,7 @@
                 title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
                 artist: '{{ $artistName ? addslashes($artistName) : '' }}',
                 album_id: {{ $song->album_id ?? 'null' }},
-                is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+                is_favorite: {{ is_favorited('song', $songId) ? 'true' : 'false' }}
             })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
                 <i class="fas fa-ellipsis-v text-sm"></i>
             </button>

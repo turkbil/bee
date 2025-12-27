@@ -13,10 +13,11 @@ use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 use Modules\Favorite\App\Traits\HasFavorites;
+use Modules\Muzibu\App\Traits\HasCachedCounts;
 
 class Genre extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, Searchable, HasFavorites;
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, Searchable, HasFavorites, HasCachedCounts;
 
     protected $table = 'muzibu_genres';
     protected $primaryKey = 'genre_id';
@@ -90,11 +91,31 @@ class Genre extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
-     * Toplam süreyi hesapla
+     * HasCachedCounts configuration
+     * Defines cached count fields and their calculators
      */
-    public function getTotalDuration(): int
+    protected function getCachedCountsConfig(): array
     {
-        return $this->songs->sum('duration');
+        return [
+            'songs_count' => fn() => $this->songs()->where('is_active', true)->count(),
+            'total_duration' => fn() => $this->songs()->where('is_active', true)->sum('duration'),
+        ];
+    }
+
+    /**
+     * Songs count accessor (cached)
+     */
+    public function getSongsCountAttribute(): int
+    {
+        return $this->getCachedCount('songs_count');
+    }
+
+    /**
+     * Total duration accessor (cached)
+     */
+    public function getTotalDurationAttribute(): int
+    {
+        return $this->getCachedCount('total_duration');
     }
 
     /**
@@ -102,7 +123,7 @@ class Genre extends BaseModel implements TranslatableEntity, HasMedia
      */
     public function getFormattedTotalDuration(): string
     {
-        $totalSeconds = $this->getTotalDuration();
+        $totalSeconds = $this->total_duration;
 
         $hours = floor($totalSeconds / 3600);
         $minutes = floor(($totalSeconds % 3600) / 60);

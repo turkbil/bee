@@ -134,6 +134,11 @@ module.exports = {
         'from-green-500/40', 'via-green-500/20',
         'from-blue-500/40', 'via-blue-500/20',
         'from-transparent', 'via-black/30', 'to-[#121212]',
+        // Right sidebar grid columns (dynamic PHP variable - must be safelisted)
+        'lg:grid-cols-[220px_1fr]',
+        'lg:grid-cols-[220px_1fr_280px]',
+        'xl:grid-cols-[220px_1fr_320px]',
+        '2xl:grid-cols-[220px_1fr_360px]',
     ],
 
     plugins: [

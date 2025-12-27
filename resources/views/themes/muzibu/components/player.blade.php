@@ -4,68 +4,73 @@
 <style>
     @media (min-width: 1024px) { .mobile-player-wrapper { display: none !important; } }
     @media (max-width: 1023px) { .desktop-player-wrapper { display: none !important; } }
+
+    /* Gradient Border */
+    .mobile-player-wrapper {
+        background: linear-gradient(#18181b, #18181b) padding-box,
+                    linear-gradient(135deg, #ff8a00, #ff5e62, #ec4899) border-box;
+        border: 2px solid transparent;
+    }
 </style>
-<div class="mobile-player-wrapper row-start-3 col-span-full bg-black px-3 py-2 relative">
+<div class="mobile-player-wrapper row-start-3 col-span-full mx-3 mb-3 px-3 py-2 relative rounded-full shadow-lg">
 
     <div class="flex items-center gap-3">
-        {{-- Ring Progress with Cover --}}
-        <div class="relative w-14 h-14 flex-shrink-0">
-            {{-- Progress Ring --}}
-            <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 56 56">
-                <circle cx="28" cy="28" r="25" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3"/>
-                <circle cx="28" cy="28" r="25" fill="none" stroke="#ff8a00" stroke-width="3"
+        {{-- Cover with Progress Ring --}}
+        <div class="relative w-12 h-12 flex-shrink-0">
+            {{-- Progress Ring (pink) --}}
+            <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 48 48">
+                <circle cx="24" cy="24" r="21" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="3"/>
+                <circle cx="24" cy="24" r="21" fill="none" stroke="#ff8a00" stroke-width="3"
                         stroke-linecap="round"
-                        :stroke-dasharray="157"
-                        :stroke-dashoffset="157 - (157 * progressPercent / 100)"/>
+                        :stroke-dasharray="132"
+                        :stroke-dashoffset="132 - (132 * progressPercent / 100)"/>
             </svg>
-            {{-- Cover Image --}}
-            <div class="absolute inset-1 rounded-full overflow-hidden bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center">
-                <template x-if="currentSong && currentSong.album_cover">
-                    <img :src="getCoverUrl(currentSong.album_cover, 100, 100)"
-                         :alt="currentSong.song_title"
-                         class="w-full h-full object-cover rounded-full">
-                </template>
-                <template x-if="!currentSong || !currentSong.album_cover">
-                    <i class="fas fa-music text-white/80"></i>
-                </template>
+            {{-- Album Cover (simple circle) --}}
+            <div class="absolute inset-[4px] rounded-full overflow-hidden bg-zinc-800 flex items-center justify-center">
+                <img x-ref="mobileCover"
+                     x-effect="const cover = currentSong?.album_cover || currentSong?.cover_url; if(cover && $refs.mobileCover) { $refs.mobileCover.src = (typeof cover === 'string' && cover.startsWith('http')) ? cover : `/thumb/${cover}/100/100`; }"
+                     alt="Cover"
+                     class="absolute inset-0 w-full h-full object-cover">
+                <i x-show="!currentSong?.cover_url && !currentSong?.album_cover" class="fas fa-music text-zinc-600 text-sm"></i>
             </div>
-            {{-- Remaining Time Badge --}}
-            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-black px-1.5 py-0.5 rounded text-[10px] text-orange-400 font-medium whitespace-nowrap"
-                 x-text="'-' + formatTime(duration - currentTime)">
-                -0:00
-            </div>
+            {{-- Time Badge --}}
+            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-zinc-800 text-white text-[10px] px-1.5 py-0.5 rounded-full border border-zinc-700"
+                 x-text="formatTime(currentTime)">0:00</div>
         </div>
 
-        {{-- Song Title Only --}}
+        {{-- Song Info: Title + Artist --}}
         <div class="flex-1 min-w-0">
             <p class="text-white text-sm font-medium truncate"
                x-text="currentSong ? (currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || 'Şarkı') : 'Şarkı Seç'">
                 Şarkı Seç
             </p>
+            <p class="text-zinc-400 text-xs truncate"
+               x-text="currentSong ? (currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || '') : ''">
+            </p>
         </div>
 
         {{-- Controls: Prev, Play/Pause, Next --}}
-        <div class="flex items-center gap-1">
-            <button class="w-10 h-10 text-white/70 flex items-center justify-center active:scale-90 transition-transform"
+        <div class="flex items-center gap-0.5">
+            <button class="w-9 h-9 text-white/80 flex items-center justify-center active:scale-90 transition-transform"
                     @click="previousTrack()">
-                <i class="fas fa-step-backward"></i>
+                <i class="fas fa-backward text-sm"></i>
             </button>
-            <button class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform"
+            <button class="w-10 h-10 text-white flex items-center justify-center active:scale-95 transition-transform"
                     @click="togglePlayPause()">
-                <i x-show="isSongLoading" x-cloak class="fas fa-spinner fa-spin text-black"></i>
-                <i x-show="!isSongLoading && isPlaying" x-cloak class="fas fa-pause text-black text-lg"></i>
-                <i x-show="!isSongLoading && !isPlaying" class="fas fa-play text-black text-lg ml-1"></i>
+                <i x-show="isSongLoading" x-cloak class="fas fa-spinner fa-spin text-lg"></i>
+                <i x-show="!isSongLoading && isPlaying" x-cloak class="fas fa-pause text-xl"></i>
+                <i x-show="!isSongLoading && !isPlaying" class="fas fa-play text-xl ml-0.5"></i>
             </button>
-            <button class="w-10 h-10 text-white/70 flex items-center justify-center active:scale-90 transition-transform"
+            <button class="w-9 h-9 text-white/80 flex items-center justify-center active:scale-90 transition-transform"
                     @click="nextTrack()">
-                <i class="fas fa-step-forward"></i>
+                <i class="fas fa-forward text-sm"></i>
             </button>
         </div>
 
         {{-- Three Dots Menu --}}
-        <button class="w-10 h-10 text-white/70 flex items-center justify-center active:scale-90 transition-transform"
+        <button class="w-8 h-8 text-white/60 flex items-center justify-center active:scale-90 transition-transform"
                 @click="showMobileMenu = !showMobileMenu">
-            <i class="fas fa-ellipsis-v text-lg"></i>
+            <i class="fas fa-ellipsis-v"></i>
         </button>
     </div>
 

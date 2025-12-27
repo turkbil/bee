@@ -109,7 +109,7 @@
                     @endif
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                         @foreach($artists as $artist)
-                            <x-muzibu.artist-card :artist="$artist" :preview="true" />
+                            <x-muzibu.artist-card :artist="$artist" />
                         @endforeach
                     </div>
                 </div>

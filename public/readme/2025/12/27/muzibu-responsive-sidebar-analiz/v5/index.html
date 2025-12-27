@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Header & Left Sidebar - Kapsamli Mockup v5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); }
+        .mockup-frame { background: #121212; }
+        .mockup-card { background: #1a1a1a; }
+        .mockup-sidebar-left { background: #0d0d0d; }
+        .mockup-sidebar-right { background: #181818; }
+        .coral { background: linear-gradient(135deg, #ff7f50, #ff6b6b); }
+        .coral-text { color: #ff7f50; }
+        .overlay-dark { background: rgba(0,0,0,0.6); }
+
+        .slide-preview {
+            animation: slideIn 0.8s ease-out infinite alternate;
+        }
+        @keyframes slideIn {
+            0% { transform: translateX(-100%); opacity: 0.3; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        .fade-preview {
+            animation: fadeIn 1s ease-out infinite alternate;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 bg-purple-500/20 border border-purple-500/50 rounded-full px-4 py-2 mb-4">
+                <span class="text-purple-400 font-semibold">v5 - Header & Left Sidebar Detayli Analiz</span>
+            </div>
+            <h1 class="text-4xl font-bold mb-2">Responsive Header & Sidebar Mockups</h1>
+            <p class="text-slate-400">Acilma Animasyonlari, Alternatifler ve Tum Detaylar</p>
+            <p class="text-slate-500 text-sm mt-2">27 Aralik 2025</p>
+        </header>
+
+        <section class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-400 mb-4">Basit Anlatim (Herkes Icin)</h2>
+            <div class="space-y-4 text-slate-300">
+                <p>
+                    <strong>Ne Yapiyoruz:</strong> Muzibu'nun ust menusunu (header) ve sol yan menusunu (sidebar)
+                    farkli ekran boyutlarinda nasil gorunecegini ve nasil calisacagini planliyoruz.
+                </p>
+                <p>
+                    <strong>Neden Onemli:</strong> Telefondan girdiginde hamburger menuye tiklayinca menu nasil acilacak?
+                    Tablette nasil gorunecek? Masaustunde nasil duracak? Hepsini tasarliyoruz.
+                </p>
+                <div class="grid md:grid-cols-3 gap-4 mt-4">
+                    <div class="bg-red-500/20 rounded-lg p-4">
+                        <div class="text-red-400 font-bold mb-2">Telefon (< 768px)</div>
+                        <p class="text-sm">Hamburger butonu, menu soldan kayarak acilir, arkada karanlik overlay</p>
+                    </div>
+                    <div class="bg-orange-500/20 rounded-lg p-4">
+                        <div class="text-orange-400 font-bold mb-2">Tablet (768-1023px)</div>
+                        <p class="text-sm">Hamburger butonu, menu soldan kayar, overlay hafif</p>
+                    </div>
+                    <div class="bg-cyan-500/20 rounded-lg p-4">
+                        <div class="text-cyan-400 font-bold mb-2">Masaustu (1024px+)</div>
+                        <p class="text-sm">Menu her zaman gorunur, hamburger yok</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-blue-900/20 border border-blue-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-blue-400 mb-4">Teknik Detaylar (Gelistiriciler Icin)</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-semibold text-white mb-3">Breakpoint Yapisi:</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li><code class="bg-slate-800 px-2 py-1 rounded">< 768px</code> - Mobile: Hamburger + Overlay Sidebar</li>
+                        <li><code class="bg-slate-800 px-2 py-1 rounded">768-1023px</code> - Tablet: Hamburger + Overlay Sidebar</li>
+                        <li><code class="bg-slate-800 px-2 py-1 rounded">>= 1024px</code> - Desktop: Static Sidebar</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-white mb-3">Ilgili Dosyalar:</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li><code class="bg-slate-800 px-2 py-1 rounded text-xs">resources/views/themes/muzibu/components/header.blade.php</code></li>
+                        <li><code class="bg-slate-800 px-2 py-1 rounded text-xs">resources/views/themes/muzibu/components/sidebar-left.blade.php</code></li>
+                        <li><code class="bg-slate-800 px-2 py-1 rounded text-xs">public/themes/muzibu/js/muzibu-store.js</code></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- HEADER SECTION -->
+        <section class="mb-16">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-window-maximize text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold">Header Tasarimlari</h2>
+                    <p class="text-slate-400">Her viewport icin header alternatifleri</p>
+                </div>
+            </div>
+
+            <!-- MOBILE HEADER -->
+            <div class="bg-slate-800/50 rounded-xl p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">375px Mobile</span>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="text-orange-400 font-semibold mb-3 flex items-center gap-2">
+                            <span class="bg-orange-500/20 px-2 py-0.5 rounded text-xs">A</span>
+                            Minimal Header (Onerilen)
+                        </div>
+                        <div class="mockup-frame rounded-xl overflow-hidden" style="max-width: 375px;">
+                            <div class="h-14 bg-black/80 flex items-center justify-between px-4">
+                                <div class="flex items-center gap-3">
+                                    <button class="w-10 h-10 flex items-center justify-center text-white/70 hover:text-white">
+                                        <i class="fas fa-bars text-lg"></i>
+                                    </button>
+                                    <span class="coral-text font-bold text-lg">muzibu</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button class="w-10 h-10 flex items-center justify-center text-white/70">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                    <div class="w-8 h-8 coral rounded-full"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="mt-3 text-sm text-slate-400 space-y-1">
+                            <li>+ Hamburger sol, arama ve profil sag</li>
+                            <li>+ Logo merkez hissiyati</li>
+                            <li>+ Temiz, minimal gorunum</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="text-blue-400 font-semibold mb-3 flex items-center gap-2">
+                            <span class="bg-blue-500/20 px-2 py-0.5 rounded text-xs">B</span>
+                            Centered Logo
+                        </div>
+                        <div class="mockup-frame rounded-xl overflow-hidden" style="max-width: 375px;">
+                            <div class="h-14 bg-black/80 flex items-center justify-between px-4">
+                                <button class="w-10 h-10 flex items-center justify-center text-white/70">
+                                    <i class="fas fa-bars text-lg"></i>
+                                </button>
+                                <span class="coral-text font-bold text-xl">muzibu</span>
+                                <div class="flex items-center gap-1">
+                                    <button class="w-9 h-9 flex items-center justify-center text-white/70">
+                                        <i class="fas fa-search text-sm"></i>
+                                    </button>
+                                    <div class="w-8 h-8 coral rounded-full"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="mt-3 text-sm text-slate-400 space-y-1">
+                            <li>+ Logo tam ortada</li>
+                            <li>+ Instagram/TikTok tarzi</li>
+                            <li>- Daha sikisik gorunebilir</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABLET HEADER -->
+            <div class="bg-slate-800/50 rounded-xl p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-bold">768px Tablet</span>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="text-orange-400 font-semibold mb-3 flex items-center gap-2">
+                            <span class="bg-orange-500/20 px-2 py-0.5 rounded text-xs">A</span>
+                            Search Bar Gorunur (Onerilen)
+                        </div>
+                        <div class="mockup-frame rounded-xl overflow-hidden overflow-x-auto">
+                            <div class="h-14 bg-black/80 flex items-center px-4 gap-4" style="min-width: 500px;">
+                                <button class="w-10 h-10 flex items-center justify-center text-white/70">
+                                    <i class="fas fa-bars text-lg"></i>
+                                </button>
+                                <span class="coral-text font-bold text-xl">muzibu</span>
+                                <div class="flex-1 max-w-sm">
+                                    <div class="bg-white/10 rounded-full px-4 py-2 flex items-center gap-2">
+                                        <i class="fas fa-search text-gray-400 text-sm"></i>
+                                        <span class="text-gray-400 text-sm">Ara...</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <button class="text-white/70"><i class="fas fa-bell"></i></button>
+                                    <div class="w-8 h-8 coral rounded-full"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="mt-3 text-sm text-slate-400 space-y-1">
+                            <li>+ Arama kutusu gorunur</li>
+                            <li>+ Hamburger menu sol tarafta</li>
+                            <li>+ Bildirim ikonu eklendi</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="text-blue-400 font-semibold mb-3 flex items-center gap-2">
+                            <span class="bg-blue-500/20 px-2 py-0.5 rounded text-xs">B</span>
+                            Compact Search
+                        </div>
+                        <div class="mockup-frame rounded-xl overflow-hidden overflow-x-auto">
+                            <div class="h-14 bg-black/80 flex items-center px-4 gap-4" style="min-width: 500px;">
+                                <button class="w-10 h-10 flex items-center justify-center text-white/70">
+                                    <i class="fas fa-bars text-lg"></i>
+                                </button>
+                                <span class="coral-text font-bold text-xl flex-1">muzibu</span>
+                                <div class="flex items-center gap-2">
+                                    <button class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-white/70">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                    <button class="w-10 h-10 flex items-center justify-center text-white/70">
+                                        <i class="fas fa-bell"></i>
+                                    </button>
+                                    <div class="w-9 h-9 coral rounded-full"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="mt-3 text-sm text-slate-400 space-y-1">
+                            <li>+ Arama butonu (tiklaninca acilir)</li>
+                            <li>+ Daha fazla bos alan</li>
+                            <li>- Ekstra tikla gerektirir</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DESKTOP HEADER -->
+            <div class="bg-slate-800/50 rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-cyan-500 text-black px-3 py-1 rounded-full text-sm font-bold">1024px+ Desktop</span>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <div class="text-green-400 font-semibold mb-3 flex items-center gap-2">
+                        <span class="bg-green-500/20 px-2 py-0.5 rounded text-xs">FINAL</span>
+                        Full Header (Degisiklik Yok)
+                    </div>
+                    <div class="mockup-frame rounded-xl overflow-hidden overflow-x-auto">
+                        <div class="h-14 bg-black/80 flex items-center px-6 gap-4" style="min-width: 900px;">
+                            <span class="coral-text font-bold text-xl">muzibu</span>
+                            <div class="flex-1 max-w-xl">
+                                <div class="bg-white/10 rounded-full px-4 py-2 flex items-center gap-2">
+                                    <i class="fas fa-search text-gray-400 text-sm"></i>
+                                    <span class="text-gray-400 text-sm">Sarki, sanatci, album ara...</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <button class="text-white/70 hover:text-white"><i class="fas fa-bell"></i></button>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 coral rounded-full"></div>
+                                    <span class="text-white text-sm">Nurullah</span>
+                                    <i class="fas fa-chevron-down text-white/50 text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="mt-3 text-sm text-slate-400 space-y-1">
+                        <li>+ Hamburger yok (sidebar zaten gorunur)</li>
+                        <li>+ Genis arama alani</li>
+                        <li>+ Kullanici adi gorunur</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- LEFT SIDEBAR SECTION -->
+        <section class="mb-16">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-bars-staggered text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold">Left Sidebar Alternatifleri</h2>
+                    <p class="text-slate-400">Acilma sekli, gorunum ve davranis</p>
+                </div>
+            </div>
+
+            <!-- OPENING ANIMATIONS -->
+            <div class="bg-slate-800/50 rounded-xl p-6 mb-6">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-wand-magic-sparkles text-purple-400"></i>
+                    Acilma Animasyonlari
+                </h3>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="text-orange-400 font-semibold mb-3 flex items-center gap-2">
+                            <span class="bg-orange-500/20 px-2 py-0.5 rounded text-xs">1</span>
+                            Slide In (Onerilen)
+                        </div>
+                        <div class="mockup-frame rounded-lg overflow-hidden h-48 relative">
+                            <div class="absolute inset-0 overlay-dark"></div>
+                            <div class="mockup-sidebar-left absolute left-0 top-0 bottom-0 w-56 p-4 slide-preview">
+                                <div class="space-y-2">
+                                    <div class="h-3 bg-white/20 rounded w-3/4"></div>
+                                    <div class="h-3 bg-white/10 rounded w-1/2"></div>
+                                    <div class="h-3 bg-white/10 rounded w-2/3"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-sm text-slate-400">
+                            <code class="bg-slate-800 px-2 py-0.5 rounded text-xs">translateX(-100%) -> translateX(0)</code>
+                            <p class="mt-2">+ En yaygin pattern</p>
+                            <p>+ Performansli (GPU accelerated)</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="text-blue-400 font-semibold mb-3 flex items-center gap-2">
+                            <span class="bg-blue-500/20 px-2 py-0.5 rounded text-xs">2</span>
+                            Fade + Slide
+                        </div>
+                        <div class="mockup-frame rounded-lg overflow-hidden h-48 relative">
+                            <div class="absolute inset-0 overlay-dark fade-preview"></div>
+                            <div class="mockup-sidebar-left absolute left-0 top-0 bottom-0 w-56 p-4 slide-preview">
+                                <div class="space-y-2">
+                                    <div class="h-3 bg-white/20 rounded w-3/4"></div>
+                                    <div class="h-3 bg-white/10 rounded w-1/2"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-sm text-slate-400">
+                            <code class="bg-slate-800 px-2 py-0.5 rounded text-xs">translateX + opacity</code>
+                            <p class="mt-2">+ Daha yumusak gecis</p>
+                            <p>+ Premium his</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="text-green-400 font-semibold mb-3 flex items-center gap-2">
+                            <span class="bg-green-500/20 px-2 py-0.5 rounded text-xs">3</span>
+                            Push Content
+                        </div>
+                        <div class="mockup-frame rounded-lg overflow-hidden h-48 relative">
+                            <div class="mockup-sidebar-left absolute left-0 top-0 bottom-0 w-40 p-4">
+                                <div class="space-y-2">
+                                    <div class="h-3 bg-white/20 rounded w-3/4"></div>
+                                    <div class="h-3 bg-white/10 rounded w-1/2"></div>
+                                </div>
+                            </div>
+                            <div class="ml-40 h-full p-4">
+                                <div class="h-full bg-white/5 rounded flex items-center justify-center text-white/30 text-xs">
+                                    Content (itilir)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-sm text-slate-400">
+                            <code class="bg-slate-800 px-2 py-0.5 rounded text-xs">margin-left transition</code>
+                            <p class="mt-2">+ Icerik gorunur kalir</p>
+                            <p>- Kucuk ekranda sikisik</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CLOSING BEHAVIORS -->
+            <div class="bg-slate-800/50 rounded-xl p-6 mb-6">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-hand-pointer text-blue-400"></i>
+                    Kapanma Davranislari
+                </h3>
+                <div class="grid md:grid-cols-4 gap-4">
+                    <div class="bg-green-900/30 border border-green-800 rounded-lg p-4 text-center">
+                        <i class="fas fa-hand-point-up text-3xl text-green-400 mb-3"></i>
+                        <div class="text-white font-semibold">Overlay'e Tikla</div>
+                        <p class="text-sm text-slate-400 mt-1">Karanlik alana tiklayinca kapat</p>
+                        <span class="inline-block mt-2 bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">Zorunlu</span>
+                    </div>
+                    <div class="bg-green-900/30 border border-green-800 rounded-lg p-4 text-center">
+                        <i class="fas fa-xmark text-3xl text-green-400 mb-3"></i>
+                        <div class="text-white font-semibold">X Butonu</div>
+                        <p class="text-sm text-slate-400 mt-1">Sidebar icinde kapat butonu</p>
+                        <span class="inline-block mt-2 bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">Zorunlu</span>
+                    </div>
+                    <div class="bg-blue-900/30 border border-blue-800 rounded-lg p-4 text-center">
+                        <i class="fas fa-hand-point-left text-3xl text-blue-400 mb-3"></i>
+                        <div class="text-white font-semibold">Swipe Left</div>
+                        <p class="text-sm text-slate-400 mt-1">Sola kaydirarak kapat</p>
+                        <span class="inline-block mt-2 bg-blue-500/20 text-blue-400 text-xs px-2 py-1 rounded">Opsiyonel</span>
+                    </div>
+                    <div class="bg-purple-900/30 border border-purple-800 rounded-lg p-4 text-center">
+                        <i class="fas fa-keyboard text-3xl text-purple-400 mb-3"></i>
+                        <div class="text-white font-semibold">ESC Tusu</div>
+                        <p class="text-sm text-slate-400 mt-1">Klavyeden ESC ile kapat</p>
+                        <span class="inline-block mt-2 bg-purple-500/20 text-purple-400 text-xs px-2 py-1 rounded">Desktop</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DESIGN ALTERNATIVES -->
+            <div class="bg-slate-800/50 rounded-xl p-6 mb-6">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-palette text-pink-400"></i>
+                    Sidebar Tasarim Alternatifleri
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="text-orange-400 font-semibold mb-3 flex items-center gap-2">
+                            <span class="bg-orange-500/20 px-2 py-0.5 rounded text-xs">A</span>
+                            Classic Dark (Mevcut / Onerilen)
+                        </div>
+                        <div class="mockup-sidebar-left rounded-lg p-4 h-80 overflow-hidden">
+                            <div class="flex items-center justify-between mb-6">
+                                <span class="coral-text font-bold text-xl">muzibu</span>
+                                <button class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-white/70">
+                                    <i class="fas fa-xmark"></i>
+                                </button>
+                            </div>
+                            <div class="flex items-center gap-3 mb-6 p-3 bg-white/5 rounded-xl">
+                                <div class="w-10 h-10 coral rounded-full"></div>
+                                <div>
+                                    <div class="text-white text-sm font-medium">Nurullah</div>
+                                    <div class="text-gray-500 text-xs">Premium Uye</div>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <a class="flex items-center gap-3 px-3 py-2.5 coral-text bg-white/5 rounded-lg text-sm">
+                                    <i class="fas fa-home w-5"></i><span>Ana Sayfa</span>
+                                </a>
+                                <a class="flex items-center gap-3 px-3 py-2.5 text-gray-400 rounded-lg text-sm">
+                                    <i class="fas fa-list-music w-5"></i><span>Playlistler</span>
+                                </a>
+                                <a class="flex items-center gap-3 px-3 py-2.5 text-gray-400 rounded-lg text-sm">
+                                    <i class="fas fa-compact-disc w-5"></i><span>Albumler</span>
+                                </a>
+                            </div>
+                        </div>
+                        <ul class="mt-3 text-sm text-slate-400 space-y-1">
+                            <li>+ Mevcut tasarimla uyumlu</li>
+                            <li>+ Koyu tema, goz yormaz</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="text-blue-400 font-semibold mb-3 flex items-center gap-2">
+                            <span class="bg-blue-500/20 px-2 py-0.5 rounded text-xs">B</span>
+                            Glass Effect (Premium His)
+                        </div>
+                        <div class="rounded-lg p-4 h-80 overflow-hidden relative" style="background: rgba(13,13,13,0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1);">
+                            <div class="flex items-center justify-between mb-6">
+                                <span class="coral-text font-bold text-xl">muzibu</span>
+                                <button class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-white/70">
+                                    <i class="fas fa-xmark"></i>
+                                </button>
+                            </div>
+                            <div class="flex items-center gap-3 mb-6 p-3 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-xl border border-white/10">
+                                <div class="w-10 h-10 coral rounded-full"></div>
+                                <div>
+                                    <div class="text-white text-sm font-medium">Nurullah</div>
+                                    <div class="text-orange-300 text-xs">Premium Uye</div>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <a class="flex items-center gap-3 px-3 py-2.5 text-white bg-gradient-to-r from-orange-500/30 to-red-500/30 rounded-lg text-sm border border-orange-500/30">
+                                    <i class="fas fa-home w-5"></i><span>Ana Sayfa</span>
+                                </a>
+                                <a class="flex items-center gap-3 px-3 py-2.5 text-gray-400 rounded-lg text-sm">
+                                    <i class="fas fa-list-music w-5"></i><span>Playlistler</span>
+                                </a>
+                            </div>
+                        </div>
+                        <ul class="mt-3 text-sm text-slate-400 space-y-1">
+                            <li>+ Modern ve premium</li>
+                            <li>- iOS Safari'de sorun olabilir</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MOBILE VS TABLET -->
+            <div class="bg-slate-800/50 rounded-xl p-6">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-mobile-screen text-cyan-400"></i>
+                    Mobile vs Tablet Sidebar Farklari
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-600">
+                                <th class="text-left py-3 px-4 text-slate-400">Ozellik</th>
+                                <th class="text-center py-3 px-4 text-red-400">Mobile (< 768px)</th>
+                                <th class="text-center py-3 px-4 text-orange-400">Tablet (768-1023px)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-slate-700/50">
+                                <td class="py-3 px-4 text-white">Sidebar Genisligi</td>
+                                <td class="text-center py-3 px-4">280px</td>
+                                <td class="text-center py-3 px-4">320px</td>
+                            </tr>
+                            <tr class="border-b border-slate-700/50">
+                                <td class="py-3 px-4 text-white">Overlay Transparanligi</td>
+                                <td class="text-center py-3 px-4">70% siyah</td>
+                                <td class="text-center py-3 px-4">50% siyah</td>
+                            </tr>
+                            <tr class="border-b border-slate-700/50">
+                                <td class="py-3 px-4 text-white">Font Boyutlari</td>
+                                <td class="text-center py-3 px-4">text-sm (14px)</td>
+                                <td class="text-center py-3 px-4">text-base (16px)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 text-white">Swipe Kapama</td>
+                                <td class="text-center py-3 px-4 text-green-400">Aktif</td>
+                                <td class="text-center py-3 px-4 text-yellow-400">Opsiyonel</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- FULL MOCKUPS SECTION -->
+        <section class="mb-16">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-500 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-expand text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold">Tam Ekran Mockuplar</h2>
+                    <p class="text-slate-400">Sidebar acik haliyle tum goruntu</p>
+                </div>
+            </div>
+
+            <!-- MOBILE FULL MOCKUP -->
+            <div class="bg-slate-800/50 rounded-xl p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">375px Mobile</span>
+                    <span class="text-slate-400">Sidebar Acik Hali</span>
+                </div>
+                <div class="mockup-frame rounded-2xl overflow-hidden mx-auto shadow-2xl relative" style="width: 375px; max-width: 100%; height: 600px;">
+                    <div class="absolute inset-0 bg-black/70">
+                        <div class="h-14 bg-black/60 flex items-center justify-between px-4 opacity-30">
+                            <span class="coral-text font-bold">muzibu</span>
+                        </div>
+                    </div>
+                    <div class="absolute left-0 top-0 bottom-0 w-72 mockup-sidebar-left p-5 shadow-2xl">
+                        <div class="flex items-center justify-between mb-6">
+                            <span class="coral-text font-bold text-xl">muzibu</span>
+                            <button class="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center text-white/70">
+                                <i class="fas fa-xmark text-lg"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-3 mb-6 p-3 bg-white/5 rounded-xl">
+                            <div class="w-12 h-12 coral rounded-full"></div>
+                            <div>
+                                <div class="text-white font-medium">Nurullah</div>
+                                <div class="text-gray-500 text-sm">Premium Uye</div>
+                            </div>
+                        </div>
+                        <div class="border-t border-white/10 mb-4"></div>
+                        <div class="space-y-1 mb-6">
+                            <a class="flex items-center gap-3 px-3 py-3 coral-text bg-white/5 rounded-lg">
+                                <i class="fas fa-home w-5"></i><span>Ana Sayfa</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-3 py-3 text-gray-400 rounded-lg">
+                                <i class="fas fa-list-music w-5"></i><span>Playlistler</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-3 py-3 text-gray-400 rounded-lg">
+                                <i class="fas fa-compact-disc w-5"></i><span>Albumler</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-3 py-3 text-gray-400 rounded-lg">
+                                <i class="fas fa-microphone w-5"></i><span>Sanatcilar</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-3 py-3 text-gray-400 rounded-lg">
+                                <i class="fas fa-guitar w-5"></i><span>Turler</span>
+                            </a>
+                        </div>
+                        <div class="border-t border-white/10 mb-4"></div>
+                        <div class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-3">Kutuphanem</div>
+                        <div class="space-y-1">
+                            <a class="flex items-center gap-3 px-3 py-3 text-gray-400 rounded-lg">
+                                <i class="fas fa-heart w-5 text-red-400"></i><span>Favorilerim</span>
+                            </a>
+                            <a class="flex items-center gap-3 px-3 py-3 text-gray-400 rounded-lg">
+                                <i class="fas fa-music w-5 text-purple-400"></i><span>Playlistlerim</span>
+                            </a>
+                        </div>
+                        <div class="absolute bottom-5 left-5 right-5">
+                            <a class="flex items-center gap-3 px-3 py-3 text-gray-500 rounded-lg">
+                                <i class="fas fa-cog w-5"></i><span>Ayarlar</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 flex flex-wrap justify-center gap-2">
+                    <span class="bg-red-500/20 text-red-300 px-3 py-1 rounded text-sm">Sidebar: 280px</span>
+                    <span class="bg-slate-700 text-slate-300 px-3 py-1 rounded text-sm">Overlay: 70%</span>
+                    <span class="bg-blue-500/20 text-blue-300 px-3 py-1 rounded text-sm">Slide-in: 300ms</span>
+                </div>
+            </div>
+
+            <!-- TABLET FULL MOCKUP -->
+            <div class="bg-slate-800/50 rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-bold">768px Tablet</span>
+                    <span class="text-slate-400">Sidebar Acik Hali</span>
+                </div>
+                <div class="mockup-frame rounded-2xl overflow-hidden mx-auto shadow-2xl relative overflow-x-auto" style="width: 768px; max-width: 100%; height: 450px;">
+                    <div class="absolute inset-0 bg-black/50">
+                        <div class="h-14 bg-black/60 flex items-center justify-between px-4 opacity-40">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-bars text-white/70"></i>
+                                <span class="coral-text font-bold">muzibu</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute left-0 top-0 bottom-0 w-80 mockup-sidebar-left p-6 shadow-2xl">
+                        <div class="flex items-center justify-between mb-8">
+                            <span class="coral-text font-bold text-2xl">muzibu</span>
+                            <button class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-white/70">
+                                <i class="fas fa-xmark text-xl"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-4 mb-8 p-4 bg-white/5 rounded-xl">
+                            <div class="w-14 h-14 coral rounded-full"></div>
+                            <div>
+                                <div class="text-white text-lg font-medium">Nurullah</div>
+                                <div class="text-gray-500">Premium Uye</div>
+                                <div class="text-orange-400 text-sm mt-1">12 playlist - 245 favori</div>
+                            </div>
+                        </div>
+                        <div class="space-y-1 mb-8">
+                            <a class="flex items-center gap-4 px-4 py-3 coral-text bg-white/5 rounded-lg text-base">
+                                <i class="fas fa-home w-6 text-lg"></i><span>Ana Sayfa</span>
+                            </a>
+                            <a class="flex items-center gap-4 px-4 py-3 text-gray-400 rounded-lg text-base">
+                                <i class="fas fa-list-music w-6 text-lg"></i><span>Playlistler</span>
+                            </a>
+                            <a class="flex items-center gap-4 px-4 py-3 text-gray-400 rounded-lg text-base">
+                                <i class="fas fa-compact-disc w-6 text-lg"></i><span>Albumler</span>
+                            </a>
+                        </div>
+                        <div class="border-t border-white/10 pt-6">
+                            <div class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-4">Kutuphanem</div>
+                            <div class="space-y-1">
+                                <a class="flex items-center gap-4 px-4 py-3 text-gray-400 rounded-lg">
+                                    <i class="fas fa-heart w-6 text-red-400"></i>
+                                    <span>Favorilerim</span>
+                                    <span class="ml-auto text-gray-600 text-sm">245</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 flex flex-wrap justify-center gap-2">
+                    <span class="bg-orange-500/20 text-orange-300 px-3 py-1 rounded text-sm">Sidebar: 320px</span>
+                    <span class="bg-slate-700 text-slate-300 px-3 py-1 rounded text-sm">Overlay: 50%</span>
+                    <span class="bg-green-500/20 text-green-300 px-3 py-1 rounded text-sm">Istatistik gorunur</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- CSS & JS SPECS -->
+        <section class="mb-16">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-code text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold">CSS & JS Spesifikasyonlari</h2>
+                    <p class="text-slate-400">Teknik uygulama detaylari</p>
+                </div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-xl p-6">
+                    <h3 class="text-lg font-bold text-white mb-4">CSS Degiskenleri</h3>
+                    <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm">
+                        <pre class="text-green-400">:root {
+  --sidebar-width-mobile: 280px;
+  --sidebar-width-tablet: 320px;
+  --sidebar-width-desktop: 220px;
+  --overlay-mobile: rgba(0,0,0,0.7);
+  --overlay-tablet: rgba(0,0,0,0.5);
+  --transition-duration: 300ms;
+}</pre>
+                    </div>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-6">
+                    <h3 class="text-lg font-bold text-white mb-4">Z-Index Hierarchy</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-slate-900 rounded-lg">
+                            <span class="text-white">Header</span>
+                            <span class="text-orange-400 font-mono">z-30</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-slate-900 rounded-lg">
+                            <span class="text-white">Overlay</span>
+                            <span class="text-orange-400 font-mono">z-40</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-slate-900 rounded-lg border border-green-500">
+                            <span class="text-green-400">Left Sidebar (Mobile)</span>
+                            <span class="text-green-400 font-mono">z-50</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-slate-900 rounded-lg">
+                            <span class="text-white">Modals</span>
+                            <span class="text-orange-400 font-mono">z-60</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RECOMMENDATION -->
+        <section class="bg-purple-900/20 border border-purple-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-purple-400 mb-4">Onerilen Yaklasim</h2>
+            <div class="grid md:grid-cols-3 gap-4 mb-6">
+                <div class="bg-green-900/30 border border-green-800 rounded-lg p-4">
+                    <div class="text-green-400 font-bold mb-2">Header</div>
+                    <p class="text-sm text-slate-300">Alternatif A (Minimal). Hamburger sol, logo yaninda, arama sag.</p>
+                </div>
+                <div class="bg-green-900/30 border border-green-800 rounded-lg p-4">
+                    <div class="text-green-400 font-bold mb-2">Sidebar Acilma</div>
+                    <p class="text-sm text-slate-300">Slide-In animasyon. 300ms sure, ease-out easing.</p>
+                </div>
+                <div class="bg-green-900/30 border border-green-800 rounded-lg p-4">
+                    <div class="text-green-400 font-bold mb-2">Sidebar Tasarim</div>
+                    <p class="text-sm text-slate-300">Alternatif A (Classic Dark). Mevcut tema ile uyumlu.</p>
+                </div>
+            </div>
+            <div class="p-4 bg-slate-900 rounded-lg text-center">
+                <p class="text-slate-400 mb-2">Bu tasarimlari onayla veya degisiklik iste:</p>
+                <span class="text-2xl font-bold text-white">"UYGUNDUR"</span>
+            </div>
+        </section>
+
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-800 pt-8">
+            <p>Claude AI tarafindan olusturuldu</p>
+            <p class="mt-1">muzibu.com.tr - 27 Aralik 2025</p>
+        </footer>
+    </div>
+</body>
+</html>

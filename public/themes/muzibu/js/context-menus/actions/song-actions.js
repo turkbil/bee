@@ -73,14 +73,15 @@ const SongActions = {
 
     /**
      * 💿 Albüme git
-     * Desktop: Sidebar preview aç
-     * Mobile: Ana sayfada aç
+     * 768px+: Sidebar preview aç
+     * 768px altı: Ana sayfada aç
      */
     goToAlbum(data) {
-        const isDesktop = window.innerWidth >= 1024;
+        // 🎯 RESPONSIVE: 768px+ sağ sidebar görünür
+        const isDesktop = window.innerWidth >= 768;
 
         if (isDesktop && data.album_id) {
-            // Desktop: Sidebar preview aç
+            // 768px+: Sidebar preview aç
             const sidebar = Alpine.store('sidebar');
             if (sidebar) {
                 sidebar.showPreview('album', data.album_id, {

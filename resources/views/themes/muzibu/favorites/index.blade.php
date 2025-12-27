@@ -8,15 +8,15 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 }
 </script>
 
-<div class="px-6 py-8">
+<div class="px-4 py-6 sm:px-6 sm:py-8">
     {{-- Header - Alternatif 2: Icon + Text (FA Beat-Fade Animation) --}}
-    <div class="mb-6 flex items-center gap-5">
-        <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
-            <i class="fas fa-heart text-3xl text-white fa-beat-fade" style="--fa-animation-duration: 2s; --fa-beat-fade-opacity: 0.4; --fa-beat-fade-scale: 1.1;"></i>
+    <div class="mb-4 sm:mb-6 flex items-center gap-3 sm:gap-4">
+        <div class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white/10 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-heart text-xl sm:text-2xl text-white fa-beat-fade" style="--fa-animation-duration: 2s; --fa-beat-fade-opacity: 0.4; --fa-beat-fade-scale: 1.1;"></i>
         </div>
         <div>
-            <h1 class="text-5xl font-extrabold text-white mb-1">Favorilerim</h1>
-            <p class="text-gray-400 text-lg">Beğendiğin içerikler</p>
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-0.5">Favorilerim</h1>
+            <p class="text-gray-400 text-sm sm:text-base">Beğendiğin içerikler</p>
         </div>
     </div>
 
@@ -103,7 +103,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 
         @elseif($type === 'albums')
             {{-- Albums - Grid --}}
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4">
                 @foreach($favorites as $favorite)
                     @if($favorite->favoritable)
                         <x-muzibu.album-card :album="$favorite->favoritable" :preview="true" />
@@ -113,7 +113,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 
         @elseif($type === 'playlists')
             {{-- Playlists - Grid --}}
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4">
                 @foreach($favorites as $favorite)
                     @if($favorite->favoritable)
                         <x-muzibu.playlist-card :playlist="$favorite->favoritable" :preview="true" />
@@ -123,7 +123,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 
         @elseif($type === 'genres')
             {{-- Genres - Grid --}}
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4">
                 @foreach($favorites as $favorite)
                     @if($favorite->favoritable)
                         <x-muzibu.genre-card :genre="$favorite->favoritable" :preview="true" />
@@ -133,7 +133,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 
         @elseif($type === 'sectors')
             {{-- Sectors - Grid --}}
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4">
                 @foreach($favorites as $favorite)
                     @if($favorite->favoritable)
                         <x-muzibu.sector-card :sector="$favorite->favoritable" :preview="true" />
@@ -143,7 +143,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 
         @elseif($type === 'radios')
             {{-- Radios - Grid --}}
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4">
                 @foreach($favorites as $favorite)
                     @if($favorite->favoritable)
                         <x-muzibu.radio-card :radio="$favorite->favoritable" :preview="true" />

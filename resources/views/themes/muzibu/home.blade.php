@@ -3,12 +3,12 @@
 @section('title', 'Muzibu - Ana Sayfa')
 
 @section('content')
-<div class="px-6 py-8">
+<div class="px-4 py-6 sm:px-6 sm:py-8">
 
 {{-- Quick Access Cards (Spotify Style - 2 rows) --}}
 @if($featuredPlaylists && $featuredPlaylists->count() > 0)
 <div class="mb-6">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
         @foreach($featuredPlaylists->take(8) as $playlist)
         <div class="playlist-card group flex items-center gap-3 bg-white/5 hover:bg-white/10 rounded transition-all cursor-pointer overflow-hidden h-16 relative"
            x-data="{ touchTimer: null, touchStartPos: { x: 0, y: 0 } }"
@@ -75,7 +75,7 @@
     }
 }" x-init="scrollContainer = $refs.scrollContainer">
     <div class="flex items-center justify-between mb-2">
-        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+        <h2 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
             <i class="fas fa-list-music text-muzibu-coral"></i>
             Öne Çıkan Listeler
         </h2>
@@ -179,7 +179,7 @@
     }
 }" x-init="scrollContainer = $refs.scrollContainer">
     <div class="flex items-center justify-between mb-2">
-        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+        <h2 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
             <i class="fas fa-record-vinyl text-muzibu-coral"></i>
             Yeni Çıkanlar
         </h2>
@@ -288,12 +288,12 @@
 @endif
 
 {{-- SONGS GRID - Popüler + Yeni Şarkılar --}}
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6">
     {{-- POPULAR SONGS --}}
     @if($popularSongs && $popularSongs->count() > 0)
     <div>
         <div class="flex items-center justify-between mb-2">
-            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+            <h2 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
                 <i class="fas fa-fire text-muzibu-coral"></i>
                 Popüler Şarkılar
             </h2>
@@ -373,7 +373,7 @@
     @if($popularSongs && $popularSongs->count() > 5)
     <div>
         <div class="flex items-center justify-between mb-2">
-            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+            <h2 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
                 <i class="fas fa-star text-muzibu-coral"></i>
                 Yeni Şarkılar
             </h2>
@@ -465,7 +465,7 @@
     }
 }" x-init="scrollContainer = $refs.scrollContainer">
     <div class="flex items-center justify-between mb-2">
-        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+        <h2 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
             <i class="fas fa-folder text-muzibu-coral"></i>
             Kategoriler
         </h2>
@@ -588,7 +588,7 @@
     }
 }" x-init="scrollContainer = $refs.scrollContainer">
     <div class="flex items-center justify-between mb-2">
-        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+        <h2 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
             <i class="fas fa-broadcast-tower text-muzibu-coral"></i>
             Öne Çıkan Radyolar
         </h2>
@@ -704,7 +704,7 @@
     }
 }" x-init="scrollContainer = $refs.scrollContainer">
     <div class="flex items-center justify-between mb-2">
-        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+        <h2 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
             <i class="fas fa-building text-muzibu-coral"></i>
             Sektörler
         </h2>

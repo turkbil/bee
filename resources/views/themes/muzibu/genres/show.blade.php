@@ -33,9 +33,9 @@
     </div>
 
     {{-- Actions --}}
-    <div class="flex items-center gap-4 mb-8">
-        <button class="w-14 h-14 bg-muzibu-coral hover:bg-opacity-90 rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-all">
-            <i class="fas fa-play text-white text-xl ml-1"></i>
+    <div class="flex items-center justify-center sm:justify-start gap-4 mb-6 sm:mb-8">
+        <button class="w-12 h-12 sm:w-14 sm:h-14 bg-muzibu-coral hover:bg-opacity-90 rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-all">
+            <i class="fas fa-play text-white text-lg sm:text-xl ml-1"></i>
         </button>
 
         <div @click.stop>

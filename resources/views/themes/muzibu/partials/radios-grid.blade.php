@@ -1,5 +1,5 @@
 @if($radios && $radios->count() > 0)
-    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4">
         @foreach($radios as $radio)
             <x-muzibu.radio-card :radio="$radio" />
         @endforeach

@@ -4,17 +4,22 @@
 
 @section('content')
 <div x-data="listeningHistory()">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-20">
+    <div class="px-4 py-6 sm:px-6 sm:py-8">
 
         {{-- Header --}}
-        <div class="flex items-center justify-between mb-8">
-            <div>
-                <h1 class="text-3xl font-bold text-white mb-2">
-                    <i class="fas fa-history mr-3 text-green-400"></i>{{ __('muzibu::front.listening_history.title') }}
-                </h1>
-                <p class="text-gray-400">{{ __('muzibu::front.listening_history.description') }}</p>
+        <div class="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex items-center gap-3 sm:gap-4">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white/10 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-history text-xl sm:text-2xl text-green-400"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-0.5">
+                        {{ __('muzibu::front.listening_history.title') }}
+                    </h1>
+                    <p class="text-gray-400 text-sm sm:text-base">{{ __('muzibu::front.listening_history.description') }}</p>
+                </div>
             </div>
-            <a href="/dashboard" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition" data-spa>
+            <a href="/dashboard" class="inline-flex items-center justify-center px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition" data-spa>
                 <i class="fas fa-arrow-left mr-2"></i>{{ __('muzibu::front.listening_history.back_to_dashboard') }}
             </a>
         </div>

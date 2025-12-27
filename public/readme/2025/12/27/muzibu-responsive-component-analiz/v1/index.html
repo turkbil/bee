@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Responsive Component Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .gradient-text { background: linear-gradient(135deg, #ff6b6b, #e91e63); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+        .device-card { transition: all 0.3s; }
+        .device-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-slate-800 to-slate-900 border-b border-white/10 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-pink-500 to-rose-600 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-mobile-screen text-2xl"></i>
+                </div>
+                <div>
+                    <span class="text-xs text-pink-400 font-medium uppercase tracking-wider">Responsive Analiz</span>
+                    <h1 class="text-2xl font-bold">Muzibu Component Responsive Sistemi</h1>
+                    <p class="text-slate-400 text-sm">Anasayfa + Albümler Sayfası Analizi</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8">
+
+        <!-- Basit Anlatim -->
+        <section class="mb-10 bg-emerald-900/20 border border-emerald-800/50 rounded-2xl p-6">
+            <h2 class="text-xl font-bold text-emerald-400 mb-4 flex items-center gap-3">
+                <i class="fas fa-seedling"></i>
+                Basit Anlatim (Herkes Icin)
+            </h2>
+            <div class="text-slate-300 space-y-3">
+                <p><strong>Ne yapiyoruz?</strong> Muzibu sitesinin farkli ekran boyutlarinda (telefon, tablet, laptop, buyuk monittor) nasil gorunecegini planliyoruz.</p>
+                <p><strong>Neden onemli?</strong> Kullanicilar farkli cihazlardan siteye giriyor. Telefonda kucuk kartlar, buyuk ekranda daha fazla kart gormeli. Yazilar her yerde okunabilir olmali.</p>
+                <p><strong>Sonuc:</strong> Tum cihazlarda guzel, okunabilir, kullanilabilir bir muzik deneyimi.</p>
+            </div>
+        </section>
+
+        <!-- Mevcut Breakpoint Sistemi -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-ruler-combined text-pink-500"></i>
+                Mevcut Tailwind Breakpoint Sistemi
+            </h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <!-- Mobile -->
+                <div class="device-card glass rounded-xl p-4 border border-white/10">
+                    <div class="text-center mb-3">
+                        <i class="fas fa-mobile text-3xl text-blue-400"></i>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xs text-slate-400">Default</div>
+                        <div class="font-bold text-blue-400">Mobile</div>
+                        <div class="text-sm text-slate-300">&lt; 640px</div>
+                    </div>
+                </div>
+
+                <!-- SM -->
+                <div class="device-card glass rounded-xl p-4 border border-white/10">
+                    <div class="text-center mb-3">
+                        <i class="fas fa-mobile-screen text-3xl text-cyan-400"></i>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xs text-slate-400">sm:</div>
+                        <div class="font-bold text-cyan-400">Phablet</div>
+                        <div class="text-sm text-slate-300">640px+</div>
+                    </div>
+                </div>
+
+                <!-- MD -->
+                <div class="device-card glass rounded-xl p-4 border border-white/10">
+                    <div class="text-center mb-3">
+                        <i class="fas fa-tablet text-3xl text-green-400"></i>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xs text-slate-400">md:</div>
+                        <div class="font-bold text-green-400">Tablet</div>
+                        <div class="text-sm text-slate-300">768px+</div>
+                    </div>
+                </div>
+
+                <!-- LG -->
+                <div class="device-card glass rounded-xl p-4 border border-white/10">
+                    <div class="text-center mb-3">
+                        <i class="fas fa-laptop text-3xl text-yellow-400"></i>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xs text-slate-400">lg:</div>
+                        <div class="font-bold text-yellow-400">Laptop</div>
+                        <div class="text-sm text-slate-300">1024px+</div>
+                    </div>
+                </div>
+
+                <!-- XL -->
+                <div class="device-card glass rounded-xl p-4 border border-white/10">
+                    <div class="text-center mb-3">
+                        <i class="fas fa-desktop text-3xl text-orange-400"></i>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xs text-slate-400">xl:</div>
+                        <div class="font-bold text-orange-400">Desktop</div>
+                        <div class="text-sm text-slate-300">1280px+</div>
+                    </div>
+                </div>
+
+                <!-- 2XL -->
+                <div class="device-card glass rounded-xl p-4 border border-white/10">
+                    <div class="text-center mb-3">
+                        <i class="fas fa-tv text-3xl text-pink-400"></i>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xs text-slate-400">2xl:</div>
+                        <div class="font-bold text-pink-400">Large</div>
+                        <div class="text-sm text-slate-300">1536px+</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mevcut Durum Analizi -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-search text-blue-500"></i>
+                Mevcut Durum Analizi
+            </h2>
+
+            <!-- Homepage Quick Access -->
+            <div class="glass rounded-xl border border-white/10 p-6 mb-6">
+                <h3 class="text-lg font-bold text-yellow-400 mb-4">
+                    <i class="fas fa-home mr-2"></i>Anasayfa - Quick Access Cards
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-sm font-semibold text-slate-300 mb-2">Mevcut Grid:</h4>
+                        <code class="text-xs bg-slate-800 px-3 py-2 rounded block">
+                            grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
+                        </code>
+                        <div class="mt-3 text-sm text-slate-400">
+                            <div class="flex items-center gap-2 mb-1"><span class="w-16 text-blue-400">Mobile:</span> 1 kolon</div>
+                            <div class="flex items-center gap-2 mb-1"><span class="w-16 text-cyan-400">sm:</span> 2 kolon</div>
+                            <div class="flex items-center gap-2 mb-1"><span class="w-16 text-yellow-400">lg:</span> 3 kolon</div>
+                            <div class="flex items-center gap-2"><span class="w-16 text-orange-400">xl:</span> 4 kolon</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-red-400 mb-2">Eksikler:</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li><i class="fas fa-exclamation-circle text-red-400 mr-2"></i>md: breakpoint yok (tablet atlanmis)</li>
+                            <li><i class="fas fa-exclamation-circle text-red-400 mr-2"></i>2xl: breakpoint yok (buyuk ekranlar)</li>
+                            <li><i class="fas fa-info-circle text-yellow-400 mr-2"></i>Kart yuksekligi sabit: h-16 (64px)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Playlists Scroll -->
+            <div class="glass rounded-xl border border-white/10 p-6 mb-6">
+                <h3 class="text-lg font-bold text-purple-400 mb-4">
+                    <i class="fas fa-list-music mr-2"></i>Horizontal Scroll Sections (Playlist, Album, vb.)
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-sm font-semibold text-slate-300 mb-2">Mevcut Yaklasim:</h4>
+                        <code class="text-xs bg-slate-800 px-3 py-2 rounded block">
+                            flex-shrink-0 w-[190px]
+                        </code>
+                        <div class="mt-3 text-sm text-slate-400">
+                            <p>Sabit 190px genislik, tum cihazlarda ayni</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-red-400 mb-2">Sorunlar:</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li><i class="fas fa-exclamation-circle text-red-400 mr-2"></i>Mobilde 190px cok buyuk olabilir</li>
+                            <li><i class="fas fa-exclamation-circle text-red-400 mr-2"></i>Buyuk ekranda cok kucuk kaliyor</li>
+                            <li><i class="fas fa-info-circle text-yellow-400 mr-2"></i>Responsive degil, sabit deger</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Albums Page Grid -->
+            <div class="glass rounded-xl border border-white/10 p-6 mb-6">
+                <h3 class="text-lg font-bold text-green-400 mb-4">
+                    <i class="fas fa-compact-disc mr-2"></i>Albumler Sayfasi Grid
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-sm font-semibold text-slate-300 mb-2">Mevcut Grid:</h4>
+                        <code class="text-xs bg-slate-800 px-3 py-2 rounded block">
+                            grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5
+                        </code>
+                        <div class="mt-3 text-sm text-slate-400">
+                            <div class="flex items-center gap-2 mb-1"><span class="w-16 text-blue-400">Mobile:</span> 2 kolon</div>
+                            <div class="flex items-center gap-2 mb-1"><span class="w-16 text-cyan-400">sm:</span> 2 kolon (degismiyor)</div>
+                            <div class="flex items-center gap-2 mb-1"><span class="w-16 text-green-400">md:</span> 3 kolon</div>
+                            <div class="flex items-center gap-2 mb-1"><span class="w-16 text-yellow-400">lg:</span> 4 kolon</div>
+                            <div class="flex items-center gap-2 mb-1"><span class="w-16 text-orange-400">xl:</span> 4 kolon (degismiyor)</div>
+                            <div class="flex items-center gap-2"><span class="w-16 text-pink-400">2xl:</span> 5 kolon</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-emerald-400 mb-2">Olumlu:</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li><i class="fas fa-check-circle text-emerald-400 mr-2"></i>Tum breakpoint'ler kullaniliyor</li>
+                            <li><i class="fas fa-check-circle text-emerald-400 mr-2"></i>Mantikli artis</li>
+                        </ul>
+                        <h4 class="text-sm font-semibold text-yellow-400 mb-2 mt-3">Iyilestirme:</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li><i class="fas fa-info-circle text-yellow-400 mr-2"></i>xl'de 5 kolon olabilir</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Song Rows -->
+            <div class="glass rounded-xl border border-white/10 p-6 mb-6">
+                <h3 class="text-lg font-bold text-orange-400 mb-4">
+                    <i class="fas fa-music mr-2"></i>Sarki Listeleri (Popular/New Songs)
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-sm font-semibold text-slate-300 mb-2">Mevcut Grid:</h4>
+                        <code class="text-xs bg-slate-800 px-3 py-2 rounded block">
+                            grid-cols-1 lg:grid-cols-2
+                        </code>
+                        <div class="mt-3 text-sm text-slate-400">
+                            <p>Sadece 2 breakpoint: mobile ve desktop</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-red-400 mb-2">Sorunlar:</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li><i class="fas fa-exclamation-circle text-red-400 mr-2"></i>Tablet icin md: yok</li>
+                            <li><i class="fas fa-exclamation-circle text-red-400 mr-2"></i>768-1024px arasi tek kolon</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Yazi Boyutlari -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-font text-cyan-500"></i>
+                Yazi Boyutlari Analizi
+            </h2>
+
+            <div class="glass rounded-xl border border-white/10 p-6">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-white/10">
+                                <th class="text-left py-3 px-4 text-slate-400">Element</th>
+                                <th class="text-left py-3 px-4 text-slate-400">Mevcut</th>
+                                <th class="text-left py-3 px-4 text-slate-400">Mobile Oneri</th>
+                                <th class="text-left py-3 px-4 text-slate-400">Tablet Oneri</th>
+                                <th class="text-left py-3 px-4 text-slate-400">Desktop Oneri</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-white/5">
+                                <td class="py-3 px-4">Sayfa Basligi (h1)</td>
+                                <td class="py-3 px-4"><code class="text-pink-400">text-5xl</code> (48px)</td>
+                                <td class="py-3 px-4"><code class="text-blue-400">text-3xl</code> (30px)</td>
+                                <td class="py-3 px-4"><code class="text-green-400">text-4xl</code> (36px)</td>
+                                <td class="py-3 px-4"><code class="text-orange-400">text-5xl</code> (48px)</td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="py-3 px-4">Section Basligi (h2)</td>
+                                <td class="py-3 px-4"><code class="text-pink-400">text-2xl</code> (24px)</td>
+                                <td class="py-3 px-4"><code class="text-blue-400">text-xl</code> (20px)</td>
+                                <td class="py-3 px-4"><code class="text-green-400">text-xl</code> (20px)</td>
+                                <td class="py-3 px-4"><code class="text-orange-400">text-2xl</code> (24px)</td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="py-3 px-4">Kart Basligi</td>
+                                <td class="py-3 px-4"><code class="text-pink-400">text-sm</code> (14px)</td>
+                                <td class="py-3 px-4"><code class="text-blue-400">text-sm</code> (14px)</td>
+                                <td class="py-3 px-4"><code class="text-green-400">text-sm</code> (14px)</td>
+                                <td class="py-3 px-4"><code class="text-orange-400">text-base</code> (16px)</td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="py-3 px-4">Kart Alt Yazi</td>
+                                <td class="py-3 px-4"><code class="text-pink-400">text-xs</code> (12px)</td>
+                                <td class="py-3 px-4"><code class="text-blue-400">text-xs</code> (12px)</td>
+                                <td class="py-3 px-4"><code class="text-green-400">text-xs</code> (12px)</td>
+                                <td class="py-3 px-4"><code class="text-orange-400">text-sm</code> (14px)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4">Sayfa Aciklama</td>
+                                <td class="py-3 px-4"><code class="text-pink-400">text-lg</code> (18px)</td>
+                                <td class="py-3 px-4"><code class="text-blue-400">text-base</code> (16px)</td>
+                                <td class="py-3 px-4"><code class="text-green-400">text-base</code> (16px)</td>
+                                <td class="py-3 px-4"><code class="text-orange-400">text-lg</code> (18px)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Onerilen Responsive Sistem -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-magic text-purple-500"></i>
+                Onerilen Responsive Sistem
+            </h2>
+
+            <!-- Device Mockups -->
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+
+                <!-- Mobile -->
+                <div class="device-card glass rounded-xl border border-blue-500/30 p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-mobile text-blue-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-blue-400">Mobile</h3>
+                            <p class="text-xs text-slate-400">&lt; 640px</p>
+                        </div>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Quick Access</div>
+                            <div class="font-mono text-blue-300">1 kolon, h-14</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Scroll Cards</div>
+                            <div class="font-mono text-blue-300">w-[160px]</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Grid Kartlar</div>
+                            <div class="font-mono text-blue-300">2 kolon</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Sarki Listesi</div>
+                            <div class="font-mono text-blue-300">1 kolon</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Padding</div>
+                            <div class="font-mono text-blue-300">px-4 py-6</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tablet Portrait -->
+                <div class="device-card glass rounded-xl border border-green-500/30 p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-tablet text-green-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-green-400">Tablet</h3>
+                            <p class="text-xs text-slate-400">768px - 1024px</p>
+                        </div>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Quick Access</div>
+                            <div class="font-mono text-green-300">2 kolon, h-16</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Scroll Cards</div>
+                            <div class="font-mono text-green-300">w-[180px]</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Grid Kartlar</div>
+                            <div class="font-mono text-green-300">3 kolon</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Sarki Listesi</div>
+                            <div class="font-mono text-green-300">2 kolon</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Padding</div>
+                            <div class="font-mono text-green-300">px-6 py-8</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Laptop -->
+                <div class="device-card glass rounded-xl border border-yellow-500/30 p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-laptop text-yellow-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-yellow-400">Laptop</h3>
+                            <p class="text-xs text-slate-400">1024px - 1280px</p>
+                        </div>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Quick Access</div>
+                            <div class="font-mono text-yellow-300">3 kolon, h-16</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Scroll Cards</div>
+                            <div class="font-mono text-yellow-300">w-[190px]</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Grid Kartlar</div>
+                            <div class="font-mono text-yellow-300">4 kolon</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Sarki Listesi</div>
+                            <div class="font-mono text-yellow-300">2 kolon</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Padding</div>
+                            <div class="font-mono text-yellow-300">px-6 py-8</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop -->
+                <div class="device-card glass rounded-xl border border-orange-500/30 p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-desktop text-orange-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-orange-400">Desktop</h3>
+                            <p class="text-xs text-slate-400">1280px - 1536px</p>
+                        </div>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Quick Access</div>
+                            <div class="font-mono text-orange-300">4 kolon, h-16</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Scroll Cards</div>
+                            <div class="font-mono text-orange-300">w-[200px]</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Grid Kartlar</div>
+                            <div class="font-mono text-orange-300">5 kolon</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Sarki Listesi</div>
+                            <div class="font-mono text-orange-300">2 kolon</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Padding</div>
+                            <div class="font-mono text-orange-300">px-8 py-8</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Large Desktop -->
+                <div class="device-card glass rounded-xl border border-pink-500/30 p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-pink-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-tv text-pink-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-pink-400">Large Screen</h3>
+                            <p class="text-xs text-slate-400">&gt; 1536px</p>
+                        </div>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Quick Access</div>
+                            <div class="font-mono text-pink-300">4 kolon, h-18</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Scroll Cards</div>
+                            <div class="font-mono text-pink-300">w-[220px]</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Grid Kartlar</div>
+                            <div class="font-mono text-pink-300">6 kolon</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Sarki Listesi</div>
+                            <div class="font-mono text-pink-300">2 kolon</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3">
+                            <div class="text-slate-400 text-xs mb-1">Padding</div>
+                            <div class="font-mono text-pink-300">px-10 py-10</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="device-card glass rounded-xl border border-white/10 p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-list-check text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white">Ozet Tablo</h3>
+                            <p class="text-xs text-slate-400">Tum breakpoint'ler</p>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between py-1 border-b border-white/5">
+                            <span class="text-slate-400">Grid Cols:</span>
+                            <span class="font-mono">2 > 2 > 3 > 4 > 5 > 6</span>
+                        </div>
+                        <div class="flex justify-between py-1 border-b border-white/5">
+                            <span class="text-slate-400">Card Width:</span>
+                            <span class="font-mono">160 > 170 > 180 > 190 > 200 > 220</span>
+                        </div>
+                        <div class="flex justify-between py-1 border-b border-white/5">
+                            <span class="text-slate-400">Text Scale:</span>
+                            <span class="font-mono">0.875x > 1x > 1x > 1.125x</span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="text-slate-400">Padding:</span>
+                            <span class="font-mono">4 > 6 > 6 > 8 > 10</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kod Ornekleri -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-code text-emerald-500"></i>
+                Onerilen Kod Degisiklikleri
+            </h2>
+
+            <!-- Quick Access -->
+            <div class="glass rounded-xl border border-white/10 p-6 mb-6">
+                <h3 class="text-lg font-bold text-yellow-400 mb-4">1. Quick Access Grid (home.blade.php)</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <div class="text-xs text-red-400 mb-2">Mevcut:</div>
+                        <pre class="bg-slate-800 rounded-lg p-4 text-xs overflow-x-auto"><code class="text-red-300">grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4</code></pre>
+                    </div>
+                    <div>
+                        <div class="text-xs text-emerald-400 mb-2">Onerilen:</div>
+                        <pre class="bg-slate-800 rounded-lg p-4 text-xs overflow-x-auto"><code class="text-emerald-300">grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scroll Cards -->
+            <div class="glass rounded-xl border border-white/10 p-6 mb-6">
+                <h3 class="text-lg font-bold text-purple-400 mb-4">2. Horizontal Scroll Card Genisligi</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <div class="text-xs text-red-400 mb-2">Mevcut:</div>
+                        <pre class="bg-slate-800 rounded-lg p-4 text-xs overflow-x-auto"><code class="text-red-300">w-[190px]</code></pre>
+                    </div>
+                    <div>
+                        <div class="text-xs text-emerald-400 mb-2">Onerilen (CSS variable):</div>
+                        <pre class="bg-slate-800 rounded-lg p-4 text-xs overflow-x-auto"><code class="text-emerald-300">w-[var(--scroll-card-w,190px)]
+
+/* tenant-1001.css */
+:root {
+  --scroll-card-w: 160px;
+}
+@media (min-width: 640px) { --scroll-card-w: 170px; }
+@media (min-width: 768px) { --scroll-card-w: 180px; }
+@media (min-width: 1024px) { --scroll-card-w: 190px; }
+@media (min-width: 1280px) { --scroll-card-w: 200px; }
+@media (min-width: 1536px) { --scroll-card-w: 220px; }</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Title -->
+            <div class="glass rounded-xl border border-white/10 p-6 mb-6">
+                <h3 class="text-lg font-bold text-blue-400 mb-4">3. Sayfa Basligi (albums/index.blade.php)</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <div class="text-xs text-red-400 mb-2">Mevcut:</div>
+                        <pre class="bg-slate-800 rounded-lg p-4 text-xs overflow-x-auto"><code class="text-red-300">&lt;h1 class="text-5xl font-extrabold"&gt;</code></pre>
+                    </div>
+                    <div>
+                        <div class="text-xs text-emerald-400 mb-2">Onerilen:</div>
+                        <pre class="bg-slate-800 rounded-lg p-4 text-xs overflow-x-auto"><code class="text-emerald-300">&lt;h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold"&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Container Padding -->
+            <div class="glass rounded-xl border border-white/10 p-6">
+                <h3 class="text-lg font-bold text-green-400 mb-4">4. Container Padding</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <div class="text-xs text-red-400 mb-2">Mevcut:</div>
+                        <pre class="bg-slate-800 rounded-lg p-4 text-xs overflow-x-auto"><code class="text-red-300">&lt;div class="px-6 py-8"&gt;</code></pre>
+                    </div>
+                    <div>
+                        <div class="text-xs text-emerald-400 mb-2">Onerilen:</div>
+                        <pre class="bg-slate-800 rounded-lg p-4 text-xs overflow-x-auto"><code class="text-emerald-300">&lt;div class="px-4 py-6 sm:px-6 sm:py-8 xl:px-8 2xl:px-10"&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Uygulama Plani -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-tasks text-pink-500"></i>
+                Uygulama Plani
+            </h2>
+
+            <div class="space-y-4">
+                <div class="glass rounded-xl border border-white/10 p-5 flex items-start gap-4">
+                    <div class="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="text-blue-400 font-bold">1</span>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-white mb-1">CSS Variables Tanimla</h4>
+                        <p class="text-sm text-slate-400">tenant-1001.css'e responsive card width ve spacing degiskenleri ekle</p>
+                    </div>
+                </div>
+
+                <div class="glass rounded-xl border border-white/10 p-5 flex items-start gap-4">
+                    <div class="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="text-green-400 font-bold">2</span>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-white mb-1">Anasayfa Guncellemesi</h4>
+                        <p class="text-sm text-slate-400">home.blade.php - Quick access, scroll cards, song rows responsive siniflarini ekle</p>
+                    </div>
+                </div>
+
+                <div class="glass rounded-xl border border-white/10 p-5 flex items-start gap-4">
+                    <div class="w-8 h-8 bg-yellow-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="text-yellow-400 font-bold">3</span>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-white mb-1">Albumler Sayfasi</h4>
+                        <p class="text-sm text-slate-400">albums/index.blade.php - Baslik, padding, grid ayarlarini guncelle</p>
+                    </div>
+                </div>
+
+                <div class="glass rounded-xl border border-white/10 p-5 flex items-start gap-4">
+                    <div class="w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="text-orange-400 font-bold">4</span>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-white mb-1">Diger Sayfalara Uygula</h4>
+                        <p class="text-sm text-slate-400">playlists, artists, genres, sectors, radios sayfalarini ayni pattern ile guncelle</p>
+                    </div>
+                </div>
+
+                <div class="glass rounded-xl border border-white/10 p-5 flex items-start gap-4">
+                    <div class="w-8 h-8 bg-pink-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="text-pink-400 font-bold">5</span>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-white mb-1">Test ve Build</h4>
+                        <p class="text-sm text-slate-400">npm run prod, tum breakpoint'lerde test et</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 py-6 mt-10">
+        <div class="max-w-7xl mx-auto px-6 text-center text-sm text-slate-500">
+            <p>27 Aralik 2025 - Claude AI Responsive Analiz Raporu</p>
+        </div>
+    </footer>
+</body>
+</html>

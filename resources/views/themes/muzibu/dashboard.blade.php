@@ -5,27 +5,30 @@
 @section('content')
 {{-- Alpine functions loaded globally in layout.blade.php --}}
 <div x-data="dashboardApp()" x-init="init()">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-20">
+    <div class="px-4 py-6 sm:px-6 sm:py-8">
 
         {{-- Header --}}
-        <div class="mb-8">
-            <div class="flex items-center justify-between">
+        <div class="mb-4 sm:mb-6 flex items-center justify-between">
+            <div class="flex items-center gap-3 sm:gap-4">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white/10 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-th-large text-xl sm:text-2xl text-white"></i>
+                </div>
                 <div>
-                    <h1 class="text-3xl font-bold text-white mb-2">
+                    <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-0.5">
                         {{ __('muzibu::front.dashboard.hello', ['name' => $user->name]) }}
                     </h1>
-                    <p class="text-muzibu-text-gray">{{ __('muzibu::front.dashboard.personal_panel') }}</p>
+                    <p class="text-gray-400 text-sm sm:text-base">{{ __('muzibu::front.dashboard.personal_panel') }}</p>
                 </div>
-                <div class="hidden sm:flex items-center gap-3">
-                    <a href="/" class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white text-sm transition">
-                        <i class="fas fa-compass mr-2"></i>{{ __('muzibu::front.dashboard.discover') }}
-                    </a>
-                </div>
+            </div>
+            <div class="hidden sm:flex items-center gap-3">
+                <a href="/" class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white text-sm transition" data-spa>
+                    <i class="fas fa-compass mr-2"></i>{{ __('muzibu::front.dashboard.discover') }}
+                </a>
             </div>
         </div>
 
         {{-- Stats Grid --}}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 sm:mb-8">
             {{-- Membership Status --}}
             @php
                 $isTrial = $access['is_trial'] ?? false;
@@ -33,7 +36,7 @@
             @endphp
 
             @if($isTrial && !$timeLeft['expired'])
-                <div class="col-span-2 lg:col-span-1 bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-xl p-5">
+                <div class="bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-xl p-5">
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
                             <i class="fas fa-gift text-green-400 text-xl"></i>
@@ -53,7 +56,7 @@
                     </div>
                 </div>
             @elseif($isPremium && !$timeLeft['expired'])
-                <div class="col-span-2 lg:col-span-1 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-xl p-5">
+                <div class="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-xl p-5">
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center">
                             <i class="fas fa-crown text-yellow-400 text-xl"></i>
@@ -73,19 +76,16 @@
                     </div>
                 </div>
             @else
-                <div class="col-span-2 lg:col-span-1 bg-white/5 border border-white/10 rounded-xl p-5">
+                <div class="bg-white/5 border border-white/10 rounded-xl p-5 hover:border-yellow-500/30 transition">
                     <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-gray-500/20 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-user text-gray-400 text-xl"></i>
+                        <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-crown text-yellow-400 text-xl"></i>
                         </div>
-                        <div class="flex-1 min-w-0">
+                        <div>
                             <p class="text-gray-400 text-sm">{{ __('muzibu::front.dashboard.membership') }}</p>
-                            <p class="text-white text-lg font-bold">{{ __('muzibu::front.dashboard.free') }}</p>
+                            <p class="text-white text-2xl font-bold">{{ __('muzibu::front.dashboard.free') }}</p>
                         </div>
                     </div>
-                    <a href="/subscription/plans" class="mt-3 block text-center text-sm text-yellow-400 hover:text-yellow-300">
-                        <i class="fas fa-crown mr-1"></i>{{ __('muzibu::front.dashboard.go_premium') }}
-                    </a>
                 </div>
             @endif
 
@@ -165,7 +165,7 @@
         @endif
 
         {{-- Main Content Grid --}}
-        <div class="grid lg:grid-cols-2 gap-6 mb-8">
+        <div class="grid lg:grid-cols-2 gap-4 md:gap-6 mb-6 sm:mb-8">
             {{-- Recently Played --}}
             <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden">
                 <div class="flex items-center justify-between p-5 border-b border-white/10">
@@ -218,7 +218,7 @@
         </div>
 
         {{-- Playlists --}}
-        <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden mb-8">
+        <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden mb-6 sm:mb-8">
             <div class="flex items-center justify-between p-5 border-b border-white/10">
                 <h2 class="text-lg font-bold text-white flex items-center gap-2">
                     <i class="fas fa-list-music text-purple-400"></i>
@@ -230,80 +230,9 @@
             </div>
             @if($playlists->count() > 0)
                 <div class="p-4">
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                        @foreach($playlists as $playlist)
-                            <div class="group rounded-lg transition-all duration-300 overflow-hidden">
-                                {{-- Playlist Card --}}
-                                <a href="/playlists/{{ $playlist->slug }}"
-                                   class="block px-4 pt-4"
-                                   @click="if (window.innerWidth >= 768) {
-                                       $event.preventDefault();
-                                       $store.sidebar.showPreview('playlist', {{ $playlist->playlist_id }}, {
-                                           type: 'Playlist',
-                                           id: {{ $playlist->playlist_id }},
-                                           title: '{{ addslashes($playlist->title) }}',
-                                           description: '{{ addslashes($playlist->description ?? '') }}',
-                                           cover: '{{ $playlist->coverMedia ? thumb($playlist->coverMedia, 300, 300) : '' }}',
-                                           is_public: {{ $playlist->is_public ? 'true' : 'false' }},
-                                           is_favorite: {{ is_favorited('playlist', $playlist->playlist_id) ? 'true' : 'false' }},
-                                           songs_count: {{ $playlist->songs_count ?? 0 }},
-                                           is_mine: true
-                                       });
-                                   }"
-                                   data-spa>
-
-                                    {{-- Cover Image --}}
-                                    <div class="relative mb-4">
-                                        @if($playlist->media_id && $playlist->coverMedia)
-                                            <img src="{{ thumb($playlist->coverMedia, 300, 300) }}"
-                                                 alt="{{ $playlist->title }}"
-                                                 class="w-full aspect-square object-cover rounded-lg shadow-lg"
-                                                 loading="lazy">
-                                        @else
-                                            <div class="w-full aspect-square bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
-                                                <span class="text-5xl">🎵</span>
-                                            </div>
-                                        @endif
-
-                                        {{-- Play Button --}}
-                                        <button x-on:click.stop.prevent="window.playContent('playlist', {{ $playlist->playlist_id }})"
-                                                class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
-                                            <i class="fas fa-play ml-1"></i>
-                                        </button>
-
-                                        {{-- Favorite + Menu Buttons --}}
-                                        <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent>
-                                            {{-- Favorite Button --}}
-                                            <button x-on:click.stop.prevent="$store.favorites.toggle('playlist', {{ $playlist->playlist_id }})"
-                                                    class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all"
-                                                    x-bind:class="$store.favorites.isFavorite('playlist', {{ $playlist->playlist_id }}) ? 'text-muzibu-coral' : ''">
-                                                <i class="text-sm"
-                                                   x-bind:class="$store.favorites.isFavorite('playlist', {{ $playlist->playlist_id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
-                                            </button>
-
-                                            {{-- 3-Dot Menu Button --}}
-                                            <button x-on:click.stop.prevent="$store.contextMenu.openContextMenu($event, 'my-playlist', {
-                                                id: {{ $playlist->playlist_id }},
-                                                title: '{{ addslashes($playlist->title) }}',
-                                                slug: '{{ $playlist->slug }}',
-                                                is_favorite: {{ is_favorited('playlist', $playlist->playlist_id) ? 'true' : 'false' }}
-                                            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
-                                                <i class="fas fa-ellipsis-v text-sm"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    {{-- Text Area --}}
-                                    <div class="h-12 overflow-hidden pb-4">
-                                        <h3 class="font-semibold text-white text-sm leading-6 line-clamp-1">
-                                            {{ $playlist->title }}
-                                        </h3>
-                                        <p class="text-xs text-gray-400 leading-6 line-clamp-1">
-                                            {{ __('muzibu::front.dashboard.songs_count', ['count' => $playlist->songs_count]) }}
-                                        </p>
-                                    </div>
-                                </a>
-                            </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4">
+                        @foreach($playlists->take(5) as $playlist)
+                            <x-muzibu.my-playlist-card :playlist="$playlist" :preview="true" />
                         @endforeach
                     </div>
                 </div>
@@ -321,7 +250,7 @@
         {{-- Corporate Section (Alt Üye veya Kurumsal Değil) --}}
         @if($corporate && !$corporate['is_owner'])
             {{-- ALT UYE: Sirket bilgisi + Cikis butonu --}}
-            <div class="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-xl overflow-hidden mb-8">
+            <div class="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-xl overflow-hidden mb-6 sm:mb-8">
                 <div class="p-5">
                     <div class="flex flex-col sm:flex-row items-center gap-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -342,7 +271,7 @@
             </div>
         @elseif(!$corporate)
             {{-- KURUMSAL DEGIL - Basit tasarim --}}
-            <div class="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-xl overflow-hidden mb-8" x-data="{ code: '', joining: false }">
+            <div class="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-xl overflow-hidden mb-6 sm:mb-8" x-data="{ code: '', joining: false }">
                 <div class="p-5">
                     <div class="flex flex-col sm:flex-row items-center gap-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -385,7 +314,7 @@
         @endif
 
         {{-- Quick Actions --}}
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
             <a href="/" class="block p-5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-muzibu-coral/50 rounded-xl transition group" data-spa>
                 <i class="fas fa-compass text-2xl text-muzibu-coral mb-3"></i>
                 <h3 class="text-white font-semibold">{{ __('muzibu::front.dashboard.explore') }}</h3>

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="tr" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true', mobileMenu: false, searchOpen: false }" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurumsal v2 - Minimal & Özgün</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            DEFAULT: '#0F172A',
+                            light: '#1E293B'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        [x-cloak] { display: none !important; }
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased">
+
+    <!-- HEADER -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+
+                <!-- Logo -->
+                <a href="#" class="text-xl font-bold tracking-tight">
+                    ATLAS<span class="text-slate-400">.</span>
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden lg:flex items-center gap-10">
+                    <a href="#" class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Kurumsal</a>
+                    <a href="#" class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Faaliyet Alanları</a>
+                    <a href="#" class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Sürdürülebilirlik</a>
+                    <a href="#" class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Medya</a>
+                    <a href="#" class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Kariyer</a>
+                    <a href="#" class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">İletişim</a>
+                </nav>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-2">
+                    <!-- Search -->
+                    <button @click="searchOpen = !searchOpen" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                        <i class="fas fa-search text-sm"></i>
+                    </button>
+
+                    <!-- Dark Mode -->
+                    <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                        <i class="fas fa-sun text-sm" x-show="darkMode"></i>
+                        <i class="fas fa-moon text-sm" x-show="!darkMode"></i>
+                    </button>
+
+                    <!-- Language -->
+                    <div class="hidden md:flex items-center gap-1 text-sm text-slate-500">
+                        <a href="#" class="px-2 py-1 hover:text-slate-900 dark:hover:text-white transition">TR</a>
+                        <span>|</span>
+                        <a href="#" class="px-2 py-1 hover:text-slate-900 dark:hover:text-white transition">EN</a>
+                    </div>
+
+                    <!-- Mobile Menu -->
+                    <button @click="mobileMenu = !mobileMenu" class="lg:hidden w-10 h-10 flex items-center justify-center">
+                        <i class="fas fa-bars" x-show="!mobileMenu"></i>
+                        <i class="fas fa-times" x-show="mobileMenu"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Overlay -->
+        <div x-show="searchOpen" x-cloak x-transition class="absolute top-full left-0 right-0 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-6">
+            <div class="max-w-2xl mx-auto">
+                <input type="text" placeholder="Ne aramak istersiniz?" class="w-full text-2xl bg-transparent border-b-2 border-slate-200 dark:border-slate-700 pb-4 focus:outline-none focus:border-slate-900 dark:focus:border-white transition" autofocus>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div x-show="mobileMenu" x-cloak x-transition class="lg:hidden absolute top-full left-0 right-0 bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">
+            <nav class="flex flex-col p-6 gap-4">
+                <a href="#" class="text-lg font-medium py-2">Kurumsal</a>
+                <a href="#" class="text-lg font-medium py-2">Faaliyet Alanları</a>
+                <a href="#" class="text-lg font-medium py-2">Sürdürülebilirlik</a>
+                <a href="#" class="text-lg font-medium py-2">Medya</a>
+                <a href="#" class="text-lg font-medium py-2">Kariyer</a>
+                <a href="#" class="text-lg font-medium py-2">İletişim</a>
+            </nav>
+        </div>
+    </header>
+
+
+    <!-- HERO -->
+    <section class="min-h-screen flex items-center pt-20 relative overflow-hidden">
+        <!-- Background -->
+        <div class="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920" alt="" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white/70 dark:from-slate-950 dark:via-slate-950/95 dark:to-slate-950/70"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 py-20">
+            <div class="max-w-3xl">
+                <h1 class="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight tracking-tight mb-8">
+                    Geleceği birlikte
+                    <br>
+                    <span class="text-slate-400">inşa ediyoruz.</span>
+                </h1>
+
+                <p class="text-lg lg:text-xl text-slate-600 dark:text-slate-400 leading-relaxed mb-12 max-w-xl">
+                    1987'den bu yana enerji, teknoloji ve altyapı alanlarında Türkiye'nin kalkınmasına katkı sağlıyoruz.
+                </p>
+
+                <div class="flex flex-wrap gap-4">
+                    <a href="#" class="inline-flex items-center gap-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-8 py-4 font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition">
+                        Bizi Tanıyın
+                        <i class="fas fa-arrow-right text-sm"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2">
+            <div class="w-6 h-10 border-2 border-slate-300 dark:border-slate-700 rounded-full flex justify-center pt-2">
+                <div class="w-1 h-2 bg-slate-400 rounded-full animate-bounce"></div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- FAALIYET ALANLARI -->
+    <section class="py-24 lg:py-32">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16">
+                <div>
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-3 tracking-widest uppercase">Faaliyet Alanları</p>
+                    <h2 class="text-3xl lg:text-4xl font-bold tracking-tight">
+                        Üç ana sektörde<br>lider konumdayız.
+                    </h2>
+                </div>
+                <a href="#" class="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition group">
+                    Tüm faaliyet alanları
+                    <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-px bg-slate-200 dark:bg-slate-800">
+                <!-- Alan 1 -->
+                <a href="#" class="group bg-white dark:bg-slate-950 p-10 lg:p-12 hover:bg-slate-50 dark:hover:bg-slate-900 transition">
+                    <div class="flex items-start justify-between mb-16">
+                        <span class="text-6xl font-light text-slate-200 dark:text-slate-800">01</span>
+                        <i class="fas fa-arrow-right text-slate-300 dark:text-slate-700 group-hover:text-slate-900 dark:group-hover:text-white group-hover:translate-x-1 transition-all"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4">Enerji</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Yenilenebilir enerji yatırımları, enerji dağıtımı ve üretim tesisleri ile sürdürülebilir enerji çözümleri sunuyoruz.
+                    </p>
+                </a>
+
+                <!-- Alan 2 -->
+                <a href="#" class="group bg-white dark:bg-slate-950 p-10 lg:p-12 hover:bg-slate-50 dark:hover:bg-slate-900 transition">
+                    <div class="flex items-start justify-between mb-16">
+                        <span class="text-6xl font-light text-slate-200 dark:text-slate-800">02</span>
+                        <i class="fas fa-arrow-right text-slate-300 dark:text-slate-700 group-hover:text-slate-900 dark:group-hover:text-white group-hover:translate-x-1 transition-all"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4">Teknoloji</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Dijital dönüşüm, yazılım geliştirme ve teknoloji danışmanlığı alanlarında yenilikçi çözümler üretiyoruz.
+                    </p>
+                </a>
+
+                <!-- Alan 3 -->
+                <a href="#" class="group bg-white dark:bg-slate-950 p-10 lg:p-12 hover:bg-slate-50 dark:hover:bg-slate-900 transition">
+                    <div class="flex items-start justify-between mb-16">
+                        <span class="text-6xl font-light text-slate-200 dark:text-slate-800">03</span>
+                        <i class="fas fa-arrow-right text-slate-300 dark:text-slate-700 group-hover:text-slate-900 dark:group-hover:text-white group-hover:translate-x-1 transition-all"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4">Altyapı</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Büyük ölçekli altyapı projeleri, inşaat ve mühendislik hizmetleri ile ülke kalkınmasına katkı sağlıyoruz.
+                    </p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- HAKKIMIZDA -->
+    <section class="py-24 lg:py-32 bg-slate-50 dark:bg-slate-900/50">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+
+                <!-- Image -->
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800" alt="" class="w-full aspect-[4/5] object-cover">
+                    <div class="absolute -bottom-8 -right-8 bg-white dark:bg-slate-950 p-8 shadow-2xl hidden lg:block">
+                        <div class="text-5xl font-bold mb-1">1987</div>
+                        <div class="text-sm text-slate-500">Kuruluş</div>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div>
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-4 tracking-widest uppercase">Hakkımızda</p>
+                    <h2 class="text-3xl lg:text-4xl font-bold tracking-tight mb-8">
+                        Türkiye'nin önde gelen sanayi gruplarından biriyiz.
+                    </h2>
+                    <div class="space-y-6 text-slate-600 dark:text-slate-400 leading-relaxed">
+                        <p>
+                            Atlas Holding, 1987 yılında İstanbul'da kurulmuş, enerji, teknoloji ve altyapı sektörlerinde faaliyet gösteren bir sanayi grubudur.
+                        </p>
+                        <p>
+                            Bugün 15 ülkede, 12.000'den fazla çalışanımızla hizmet veriyor; yenilikçi yaklaşımımız ve sürdürülebilirlik odaklı stratejimizle geleceğe yatırım yapıyoruz.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-8 mt-12 pt-12 border-t border-slate-200 dark:border-slate-800">
+                        <div>
+                            <div class="text-3xl lg:text-4xl font-bold mb-1">15</div>
+                            <div class="text-sm text-slate-500">Ülke</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl lg:text-4xl font-bold mb-1">12K+</div>
+                            <div class="text-sm text-slate-500">Çalışan</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl lg:text-4xl font-bold mb-1">$2.4B</div>
+                            <div class="text-sm text-slate-500">Ciro</div>
+                        </div>
+                    </div>
+
+                    <a href="#" class="inline-flex items-center gap-3 mt-12 text-sm font-medium group">
+                        Hikayemizi Keşfedin
+                        <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- HABERLER -->
+    <section class="py-24 lg:py-32">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16">
+                <div>
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-3 tracking-widest uppercase">Gündem</p>
+                    <h2 class="text-3xl lg:text-4xl font-bold tracking-tight">
+                        Son haberler
+                    </h2>
+                </div>
+                <a href="#" class="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition group">
+                    Tüm haberler
+                    <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Haber 1 -->
+                <article class="group">
+                    <a href="#" class="block overflow-hidden mb-6">
+                        <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600" alt="" class="w-full aspect-video object-cover group-hover:scale-105 transition duration-500">
+                    </a>
+                    <div class="flex items-center gap-4 text-sm text-slate-500 mb-3">
+                        <span>Basın Bülteni</span>
+                        <span>•</span>
+                        <time>20 Aralık 2025</time>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition">
+                        <a href="#">Atlas Enerji, Karadeniz'deki yeni rüzgar santrali yatırımını açıkladı</a>
+                    </h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        150 MW kapasiteli proje, 2027 yılında faaliyete geçecek ve 120.000 haneye temiz enerji sağlayacak.
+                    </p>
+                </article>
+
+                <!-- Haber 2 -->
+                <article class="group">
+                    <a href="#" class="block overflow-hidden mb-6">
+                        <img src="https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=600" alt="" class="w-full aspect-video object-cover group-hover:scale-105 transition duration-500">
+                    </a>
+                    <div class="flex items-center gap-4 text-sm text-slate-500 mb-3">
+                        <span>Duyuru</span>
+                        <span>•</span>
+                        <time>18 Aralık 2025</time>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition">
+                        <a href="#">2025 Sürdürülebilirlik Raporumuz yayınlandı</a>
+                    </h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Karbon ayak izimizi %30 azalttık. Detaylı rapor için web sitemizi ziyaret edebilirsiniz.
+                    </p>
+                </article>
+
+                <!-- Haber 3 -->
+                <article class="group">
+                    <a href="#" class="block overflow-hidden mb-6">
+                        <img src="https://images.unsplash.com/photo-1531973576160-7125cd663d86?w=600" alt="" class="w-full aspect-video object-cover group-hover:scale-105 transition duration-500">
+                    </a>
+                    <div class="flex items-center gap-4 text-sm text-slate-500 mb-3">
+                        <span>Kariyer</span>
+                        <span>•</span>
+                        <time>15 Aralık 2025</time>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition">
+                        <a href="#">Genç Yetenek Programı başvuruları başladı</a>
+                    </h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Yeni mezunlar için kapsamlı eğitim ve kariyer fırsatları sunan programımıza başvurular açıldı.
+                    </p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- CTA -->
+    <section class="py-24 lg:py-32 bg-slate-900 dark:bg-slate-950 text-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="max-w-3xl">
+                <h2 class="text-3xl lg:text-5xl font-bold tracking-tight mb-8">
+                    Birlikte çalışmak ister misiniz?
+                </h2>
+                <p class="text-xl text-slate-400 mb-12">
+                    İş birliği fırsatları, kariyer olanakları veya genel sorularınız için bizimle iletişime geçin.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#" class="inline-flex items-center gap-3 bg-white text-slate-900 px-8 py-4 font-medium hover:bg-slate-100 transition">
+                        İletişime Geçin
+                        <i class="fas fa-arrow-right text-sm"></i>
+                    </a>
+                    <a href="#" class="inline-flex items-center gap-3 border border-slate-700 px-8 py-4 font-medium hover:bg-slate-800 transition">
+                        Kariyer Fırsatları
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+
+                <!-- Col 1 -->
+                <div class="lg:col-span-1">
+                    <a href="#" class="text-xl font-bold tracking-tight">ATLAS.</a>
+                    <p class="mt-6 text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Enerji, teknoloji ve altyapı alanlarında Türkiye'nin önde gelen sanayi gruplarından biri.
+                    </p>
+                    <div class="flex gap-4 mt-6">
+                        <a href="#" class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- Col 2 -->
+                <div>
+                    <h4 class="font-semibold mb-6">Kurumsal</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li><a href="#" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Hakkımızda</a></li>
+                        <li><a href="#" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Yönetim</a></li>
+                        <li><a href="#" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Tarihçe</a></li>
+                        <li><a href="#" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Değerlerimiz</a></li>
+                        <li><a href="#" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Sürdürülebilirlik</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3 -->
+                <div>
+                    <h4 class="font-semibold mb-6">Faaliyet Alanları</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li><a href="#" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Enerji</a></li>
+                        <li><a href="#" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Teknoloji</a></li>
+                        <li><a href="#" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Altyapı</a></li>
+                        <li><a href="#" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Yatırımlar</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4 -->
+                <div>
+                    <h4 class="font-semibold mb-6">İletişim</h4>
+                    <ul class="space-y-4 text-sm text-slate-600 dark:text-slate-400">
+                        <li>
+                            Maslak Mah. Büyükdere Cad.<br>
+                            No: 123, Şişli / İstanbul
+                        </li>
+                        <li>
+                            <a href="tel:+902121234567" class="hover:text-slate-900 dark:hover:text-white transition">+90 212 123 45 67</a>
+                        </li>
+                        <li>
+                            <a href="mailto:info@atlas.com.tr" class="hover:text-slate-900 dark:hover:text-white transition">info@atlas.com.tr</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom -->
+        <div class="border-t border-slate-200 dark:border-slate-800">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8 py-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
+                <p>© 2025 Atlas Holding. Tüm hakları saklıdır.</p>
+                <div class="flex flex-wrap gap-6">
+                    <a href="#" class="hover:text-slate-900 dark:hover:text-white transition">Gizlilik Politikası</a>
+                    <a href="#" class="hover:text-slate-900 dark:hover:text-white transition">KVKK</a>
+                    <a href="#" class="hover:text-slate-900 dark:hover:text-white transition">Çerez Politikası</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- FLOATING ELEMENTS -->
+
+    <!-- Back to Top -->
+    <button
+        x-data="{ show: false }"
+        @scroll.window="show = window.scrollY > 500"
+        x-show="show"
+        x-cloak
+        @click="window.scrollTo({ top: 0, behavior: 'smooth' })"
+        class="fixed bottom-6 right-6 w-12 h-12 bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex items-center justify-center transition hover:bg-slate-700 dark:hover:bg-slate-200 z-50">
+        <i class="fas fa-arrow-up text-sm"></i>
+    </button>
+
+    <!-- Cookie Notice -->
+    <div
+        x-data="{ show: !localStorage.getItem('cookieAccepted') }"
+        x-show="show"
+        x-cloak
+        class="fixed bottom-0 left-0 right-0 bg-slate-900 text-white p-4 z-50">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <p class="text-sm text-slate-300">
+                Bu web sitesi deneyiminizi geliştirmek için çerezleri kullanmaktadır.
+                <a href="#" class="underline hover:text-white">Daha fazla bilgi</a>
+            </p>
+            <div class="flex gap-3">
+                <button @click="show = false" class="text-sm text-slate-400 hover:text-white transition px-4 py-2">
+                    Reddet
+                </button>
+                <button @click="localStorage.setItem('cookieAccepted', true); show = false" class="text-sm bg-white text-slate-900 px-6 py-2 font-medium hover:bg-slate-100 transition">
+                    Kabul Et
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

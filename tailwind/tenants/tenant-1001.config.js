@@ -135,10 +135,19 @@ module.exports = {
         'from-blue-500/40', 'via-blue-500/20',
         'from-transparent', 'via-black/30', 'to-[#121212]',
         // Right sidebar grid columns (dynamic PHP variable - must be safelisted)
+        // MD (768px+): Right sidebar visible, left sidebar hidden
+        'md:grid-cols-[1fr_280px]',
+        // LG (1024px+): Both sidebars visible
         'lg:grid-cols-[220px_1fr]',
         'lg:grid-cols-[220px_1fr_280px]',
+        // XL (1280px+): Wider right sidebar
         'xl:grid-cols-[220px_1fr_320px]',
+        // 2XL (1536px+): Even wider right sidebar
         '2xl:grid-cols-[220px_1fr_360px]',
+        // Gap and padding responsive
+        'md:gap-3', 'md:px-3', 'md:pt-3',
+        // Right sidebar visibility
+        'md:block',
     ],
 
     plugins: [

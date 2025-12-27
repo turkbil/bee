@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Responsive Mockups - Detaylı Tasarım</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); }
+        .mockup-frame { background: #121212; }
+        .mockup-card { background: #1a1a1a; }
+        .mockup-sidebar-left { background: #0d0d0d; }
+        .mockup-sidebar-right { background: #181818; }
+        .coral { background: linear-gradient(135deg, #ff7f50, #ff6b6b); }
+        .coral-text { color: #ff7f50; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 bg-green-500/20 border border-green-500/50 rounded-full px-4 py-2 mb-4">
+                <span class="text-green-400 font-semibold">v2 - Detaylı Mockups</span>
+            </div>
+            <h1 class="text-4xl font-bold mb-2">Responsive UI Mockups</h1>
+            <p class="text-slate-400">Başlıklar, Textler ve Tüm Elemanlar Dahil</p>
+            <p class="text-slate-500 text-sm mt-2">27 Aralık 2025</p>
+        </header>
+
+        <!-- ==================== 375px MOBILE ==================== -->
+        <section class="mb-16">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-red-500 text-white px-4 py-2 rounded-full text-lg font-bold">375px</span>
+                <span class="text-slate-400 text-lg">iPhone SE / Mobile</span>
+            </div>
+
+            <div class="mockup-frame rounded-2xl overflow-hidden mx-auto shadow-2xl" style="width: 375px; max-width: 100%;">
+                <!-- Header -->
+                <div class="h-14 bg-black/60 flex items-center justify-between px-4">
+                    <div class="flex items-center gap-3">
+                        <button class="text-white/70"><i class="fas fa-bars text-lg"></i></button>
+                        <span class="coral-text font-bold text-lg">muzibu</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button class="text-white/70"><i class="fas fa-search"></i></button>
+                        <div class="w-8 h-8 coral rounded-full"></div>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="p-4">
+                    <!-- Page Title - MOBILE SIZE -->
+                    <div class="mb-6">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-list-music coral-text text-xl"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-2xl font-bold text-white">Çalma Listeleri</h1>
+                                <p class="text-gray-400 text-xs">Özenle hazırlanmış koleksiyonlar</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2 Column Grid - MOBILE -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <!-- Card 1 -->
+                        <div class="mockup-card rounded-lg p-2.5">
+                            <div class="coral aspect-square rounded-lg mb-2 flex items-center justify-center relative">
+                                <span class="text-3xl">🎵</span>
+                                <button class="absolute bottom-1.5 right-1.5 w-8 h-8 bg-black/60 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-play text-white text-xs ml-0.5"></i>
+                                </button>
+                            </div>
+                            <h3 class="text-white text-xs font-semibold truncate">Sabah Kahvesi</h3>
+                            <p class="text-gray-500 text-[10px]">45 şarkı • 2s 30dk</p>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="mockup-card rounded-lg p-2.5">
+                            <div class="coral aspect-square rounded-lg mb-2 flex items-center justify-center relative">
+                                <span class="text-3xl">🎵</span>
+                            </div>
+                            <h3 class="text-white text-xs font-semibold truncate">Öğle Yemeği</h3>
+                            <p class="text-gray-500 text-[10px]">38 şarkı • 1s 45dk</p>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="mockup-card rounded-lg p-2.5">
+                            <div class="coral aspect-square rounded-lg mb-2 flex items-center justify-center">
+                                <span class="text-3xl">🎵</span>
+                            </div>
+                            <h3 class="text-white text-xs font-semibold truncate">Akşam Keyfi</h3>
+                            <p class="text-gray-500 text-[10px]">52 şarkı • 3s 10dk</p>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div class="mockup-card rounded-lg p-2.5">
+                            <div class="coral aspect-square rounded-lg mb-2 flex items-center justify-center">
+                                <span class="text-3xl">🎵</span>
+                            </div>
+                            <h3 class="text-white text-xs font-semibold truncate">Gece Modu</h3>
+                            <p class="text-gray-500 text-[10px]">30 şarkı • 1s 20dk</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Player - MOBILE -->
+                <div class="bg-black/90 p-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 coral rounded flex-shrink-0"></div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-white text-sm font-medium truncate">Şarkı Adı</p>
+                            <p class="text-gray-400 text-xs truncate">Sanatçı</p>
+                        </div>
+                        <button class="w-10 h-10 coral rounded-full flex items-center justify-center">
+                            <i class="fas fa-play text-black text-sm ml-0.5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 text-center space-y-2">
+                <div class="flex flex-wrap justify-center gap-2">
+                    <span class="bg-blue-500/20 text-blue-300 px-3 py-1 rounded text-sm">2 Kolon Grid</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-3 py-1 rounded text-sm">~160px kart</span>
+                </div>
+                <p class="text-slate-500 text-sm">Header: Hamburger + Logo | Sidebar: Yok | Başlık: 2xl (24px)</p>
+            </div>
+        </section>
+
+        <!-- ==================== 768px TABLET ==================== -->
+        <section class="mb-16">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-orange-500 text-white px-4 py-2 rounded-full text-lg font-bold">768px</span>
+                <span class="text-slate-400 text-lg">iPad Portrait / Tablet</span>
+            </div>
+
+            <div class="mockup-frame rounded-2xl overflow-hidden mx-auto shadow-2xl" style="width: 768px; max-width: 100%;">
+                <!-- Header -->
+                <div class="h-14 bg-black/60 flex items-center justify-between px-4">
+                    <div class="flex items-center gap-3">
+                        <button class="text-white/70"><i class="fas fa-bars text-lg"></i></button>
+                        <span class="coral-text font-bold text-xl">muzibu</span>
+                    </div>
+                    <div class="flex-1 max-w-md mx-6">
+                        <div class="bg-white/10 rounded-full px-4 py-2 flex items-center gap-2">
+                            <i class="fas fa-search text-gray-400 text-sm"></i>
+                            <span class="text-gray-400 text-sm">Şarkı, sanatçı, albüm ara...</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button class="text-white/70"><i class="fas fa-bell"></i></button>
+                        <div class="w-8 h-8 coral rounded-full"></div>
+                    </div>
+                </div>
+
+                <div class="flex">
+                    <!-- Main Content -->
+                    <div class="flex-1 p-4">
+                        <!-- Page Title - TABLET SIZE -->
+                        <div class="mb-6">
+                            <div class="flex items-center gap-4 mb-2">
+                                <div class="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-list-music coral-text text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h1 class="text-3xl font-bold text-white">Çalma Listeleri</h1>
+                                    <p class="text-gray-400 text-sm">Özenle hazırlanmış müzik koleksiyonları</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2 Column Grid - TABLET (dar alan) -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="mockup-card rounded-lg p-3">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center relative group">
+                                    <span class="text-4xl">🎵</span>
+                                    <button class="absolute bottom-2 right-2 w-10 h-10 coral rounded-full flex items-center justify-center shadow-lg">
+                                        <i class="fas fa-play text-black ml-0.5"></i>
+                                    </button>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">Sabah Kahvesi</h3>
+                                <p class="text-gray-500 text-xs">45 şarkı • 2s 30dk</p>
+                            </div>
+                            <div class="mockup-card rounded-lg p-3">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center">
+                                    <span class="text-4xl">🎵</span>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">Öğle Yemeği Mix</h3>
+                                <p class="text-gray-500 text-xs">38 şarkı • 1s 45dk</p>
+                            </div>
+                            <div class="mockup-card rounded-lg p-3">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center">
+                                    <span class="text-4xl">🎵</span>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">Akşam Keyfi</h3>
+                                <p class="text-gray-500 text-xs">52 şarkı • 3s 10dk</p>
+                            </div>
+                            <div class="mockup-card rounded-lg p-3">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center">
+                                    <span class="text-4xl">🎵</span>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">Gece Modu</h3>
+                                <p class="text-gray-500 text-xs">30 şarkı • 1s 20dk</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Sidebar - VISIBLE AT 768px -->
+                    <div class="mockup-sidebar-right rounded-tl-2xl p-4" style="width: 280px;">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-white font-bold text-sm flex items-center gap-2">
+                                <i class="fas fa-star text-green-400"></i>
+                                Yeni Şarkılar
+                            </h3>
+                        </div>
+                        <div class="flex gap-2 mb-4">
+                            <button class="px-3 py-1.5 bg-green-500/20 text-green-400 rounded-full text-xs font-medium">Yeni</button>
+                            <button class="px-3 py-1.5 bg-white/5 text-gray-400 rounded-full text-xs">Popüler</button>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer">
+                                <div class="w-11 h-11 coral rounded-lg flex-shrink-0"></div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-white text-sm font-medium truncate">Go</p>
+                                    <p class="text-gray-400 text-xs truncate">Tarkan</p>
+                                </div>
+                                <span class="text-gray-500 text-xs">3:09</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer">
+                                <div class="w-11 h-11 coral rounded-lg flex-shrink-0"></div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-white text-sm font-medium truncate">Give the P...</p>
+                                    <p class="text-gray-400 text-xs truncate">Tarkan</p>
+                                </div>
+                                <span class="text-gray-500 text-xs">2:11</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer">
+                                <div class="w-11 h-11 coral rounded-lg flex-shrink-0"></div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-white text-sm font-medium truncate">Gestures</p>
+                                    <p class="text-gray-400 text-xs truncate">Tarkan</p>
+                                </div>
+                                <span class="text-gray-500 text-xs">2:59</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Player -->
+                <div class="bg-black/90 p-3 flex items-center gap-4">
+                    <div class="flex items-center gap-3 w-56">
+                        <div class="w-12 h-12 coral rounded flex-shrink-0"></div>
+                        <div class="min-w-0">
+                            <p class="text-white text-sm font-medium truncate">Saksıdaki Çiçekler</p>
+                            <p class="text-gray-400 text-xs truncate">Sanatçı</p>
+                        </div>
+                    </div>
+                    <div class="flex-1 flex items-center justify-center gap-4">
+                        <button class="text-white/60"><i class="fas fa-backward-step"></i></button>
+                        <button class="w-10 h-10 coral rounded-full flex items-center justify-center">
+                            <i class="fas fa-play text-black ml-0.5"></i>
+                        </button>
+                        <button class="text-white/60"><i class="fas fa-forward-step"></i></button>
+                    </div>
+                    <div class="w-32 flex items-center gap-2">
+                        <i class="fas fa-volume-high text-white/60 text-sm"></i>
+                        <div class="flex-1 h-1 bg-white/20 rounded-full">
+                            <div class="w-1/2 h-full coral rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 text-center space-y-2">
+                <div class="flex flex-wrap justify-center gap-2">
+                    <span class="bg-blue-500/20 text-blue-300 px-3 py-1 rounded text-sm">2 Kolon Grid</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-3 py-1 rounded text-sm">~200px kart</span>
+                    <span class="bg-green-500/20 text-green-300 px-3 py-1 rounded text-sm">Sağ Sidebar: 280px</span>
+                </div>
+                <p class="text-slate-500 text-sm">Header: Hamburger + Search Bar | Sol: Hamburger | Sağ: Görünür | Başlık: 3xl (30px)</p>
+            </div>
+        </section>
+
+        <!-- ==================== 1024px SMALL DESKTOP ==================== -->
+        <section class="mb-16">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-yellow-500 text-black px-4 py-2 rounded-full text-lg font-bold">1024px</span>
+                <span class="text-slate-400 text-lg">iPad Landscape / Small Desktop</span>
+            </div>
+
+            <div class="mockup-frame rounded-2xl overflow-hidden mx-auto shadow-2xl overflow-x-auto" style="width: 1024px; max-width: 100%;">
+                <!-- Header -->
+                <div class="h-14 bg-black/60 flex items-center px-4 gap-4">
+                    <span class="coral-text font-bold text-xl">muzibu</span>
+                    <div class="flex-1 max-w-lg">
+                        <div class="bg-white/10 rounded-full px-4 py-2 flex items-center gap-2">
+                            <i class="fas fa-search text-gray-400 text-sm"></i>
+                            <span class="text-gray-400 text-sm">Şarkı, sanatçı, albüm ara...</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button class="text-white/70"><i class="fas fa-bell"></i></button>
+                        <div class="w-8 h-8 coral rounded-full"></div>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 p-3">
+                    <!-- Left Sidebar - VISIBLE AT 1024px -->
+                    <div class="mockup-sidebar-left rounded-xl p-4" style="width: 220px; flex-shrink: 0;">
+                        <div class="mb-4">
+                            <h4 class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-3">Kütüphanem</h4>
+                            <nav class="space-y-1">
+                                <a class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg text-sm">
+                                    <i class="fas fa-album-collection w-5"></i>
+                                    <span>Playlistlerim</span>
+                                </a>
+                                <a class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg text-sm">
+                                    <i class="fas fa-heart w-5"></i>
+                                    <span>Favorilerim</span>
+                                </a>
+                            </nav>
+                        </div>
+                        <div class="border-t border-white/10 pt-4">
+                            <h4 class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-3">Keşfet</h4>
+                            <nav class="space-y-1">
+                                <a class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg text-sm">
+                                    <i class="fas fa-list-music w-5"></i>
+                                    <span>Playlistler</span>
+                                </a>
+                                <a class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg text-sm">
+                                    <i class="fas fa-compact-disc w-5"></i>
+                                    <span>Albümler</span>
+                                </a>
+                                <a class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg text-sm">
+                                    <i class="fas fa-guitar w-5"></i>
+                                    <span>Türler</span>
+                                </a>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="flex-1 bg-black/20 rounded-xl p-4">
+                        <!-- Page Title -->
+                        <div class="mb-6">
+                            <div class="flex items-center gap-5">
+                                <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-list-music coral-text text-3xl"></i>
+                                </div>
+                                <div>
+                                    <h1 class="text-4xl font-extrabold text-white">Çalma Listeleri</h1>
+                                    <p class="text-gray-400">Özenle hazırlanmış müzik koleksiyonları</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3 Column Grid -->
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="mockup-card rounded-lg p-3">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center relative">
+                                    <span class="text-4xl">🎵</span>
+                                    <button class="absolute bottom-2 right-2 w-10 h-10 coral rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100">
+                                        <i class="fas fa-play text-black ml-0.5"></i>
+                                    </button>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">Sabah Kahvesi</h3>
+                                <p class="text-gray-500 text-xs">45 şarkı</p>
+                            </div>
+                            <div class="mockup-card rounded-lg p-3">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center">
+                                    <span class="text-4xl">🎵</span>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">Öğle Yemeği</h3>
+                                <p class="text-gray-500 text-xs">38 şarkı</p>
+                            </div>
+                            <div class="mockup-card rounded-lg p-3">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center">
+                                    <span class="text-4xl">🎵</span>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">Akşam Keyfi</h3>
+                                <p class="text-gray-500 text-xs">52 şarkı</p>
+                            </div>
+                            <div class="mockup-card rounded-lg p-3">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center">
+                                    <span class="text-4xl">🎵</span>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">Gece Modu</h3>
+                                <p class="text-gray-500 text-xs">30 şarkı</p>
+                            </div>
+                            <div class="mockup-card rounded-lg p-3">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center">
+                                    <span class="text-4xl">🎵</span>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">Chill Beats</h3>
+                                <p class="text-gray-500 text-xs">60 şarkı</p>
+                            </div>
+                            <div class="mockup-card rounded-lg p-3">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center">
+                                    <span class="text-4xl">🎵</span>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">Top 50</h3>
+                                <p class="text-gray-500 text-xs">50 şarkı</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Sidebar -->
+                    <div class="mockup-sidebar-right rounded-xl p-4" style="width: 280px; flex-shrink: 0;">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-white font-bold text-sm flex items-center gap-2">
+                                <i class="fas fa-star text-green-400"></i>
+                                Yeni Şarkılar
+                            </h3>
+                        </div>
+                        <div class="flex gap-2 mb-4">
+                            <button class="px-3 py-1.5 bg-green-500/20 text-green-400 rounded-full text-xs font-medium">Yeni</button>
+                            <button class="px-3 py-1.5 bg-white/5 text-gray-400 rounded-full text-xs">Popüler</button>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5">
+                                <div class="w-11 h-11 coral rounded-lg"></div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-white text-sm truncate">Go</p>
+                                    <p class="text-gray-400 text-xs">Tarkan</p>
+                                </div>
+                                <span class="text-gray-500 text-xs">3:09</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5">
+                                <div class="w-11 h-11 coral rounded-lg"></div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-white text-sm truncate">Give the P...</p>
+                                    <p class="text-gray-400 text-xs">Tarkan</p>
+                                </div>
+                                <span class="text-gray-500 text-xs">2:11</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 text-center space-y-2">
+                <div class="flex flex-wrap justify-center gap-2">
+                    <span class="bg-blue-500/20 text-blue-300 px-3 py-1 rounded text-sm">3 Kolon Grid</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-3 py-1 rounded text-sm">~150px kart</span>
+                    <span class="bg-orange-500/20 text-orange-300 px-3 py-1 rounded text-sm">Sol: 220px</span>
+                    <span class="bg-green-500/20 text-green-300 px-3 py-1 rounded text-sm">Sağ: 280px</span>
+                </div>
+                <p class="text-slate-500 text-sm">Header: Logo + Search | Her iki sidebar görünür | Başlık: 4xl (36px)</p>
+            </div>
+        </section>
+
+        <!-- ==================== 1440px DESKTOP ==================== -->
+        <section class="mb-16">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-cyan-500 text-black px-4 py-2 rounded-full text-lg font-bold">1440px</span>
+                <span class="text-slate-400 text-lg">Desktop / Laptop</span>
+            </div>
+
+            <div class="mockup-frame rounded-2xl overflow-hidden mx-auto shadow-2xl overflow-x-auto" style="width: 1440px; max-width: 100%;">
+                <!-- Header -->
+                <div class="h-14 bg-black/60 flex items-center px-4 gap-4">
+                    <span class="coral-text font-bold text-xl">muzibu</span>
+                    <div class="flex-1 max-w-xl">
+                        <div class="bg-white/10 rounded-full px-4 py-2 flex items-center gap-2">
+                            <i class="fas fa-search text-gray-400 text-sm"></i>
+                            <span class="text-gray-400 text-sm">Şarkı, sanatçı, albüm ara...</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button class="text-white/70 hover:text-white"><i class="fas fa-bell"></i></button>
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 coral rounded-full"></div>
+                            <span class="text-white text-sm">Nurullah</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 p-3">
+                    <!-- Left Sidebar -->
+                    <div class="mockup-sidebar-left rounded-xl p-4" style="width: 220px; flex-shrink: 0;">
+                        <div class="mb-4">
+                            <h4 class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-3">Kütüphanem</h4>
+                            <nav class="space-y-1">
+                                <a class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg text-sm">
+                                    <i class="fas fa-album-collection w-5"></i>
+                                    <span>Playlistlerim</span>
+                                </a>
+                                <a class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg text-sm">
+                                    <i class="fas fa-heart w-5"></i>
+                                    <span>Favorilerim</span>
+                                </a>
+                            </nav>
+                        </div>
+                        <div class="border-t border-white/10 pt-4">
+                            <h4 class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-3">Keşfet</h4>
+                            <nav class="space-y-1">
+                                <a class="flex items-center gap-3 px-3 py-2 coral-text bg-white/5 rounded-lg text-sm">
+                                    <i class="fas fa-list-music w-5"></i>
+                                    <span>Playlistler</span>
+                                </a>
+                                <a class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg text-sm">
+                                    <i class="fas fa-compact-disc w-5"></i>
+                                    <span>Albümler</span>
+                                </a>
+                                <a class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg text-sm">
+                                    <i class="fas fa-guitar w-5"></i>
+                                    <span>Türler</span>
+                                </a>
+                                <a class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg text-sm">
+                                    <i class="fas fa-building w-5"></i>
+                                    <span>Sektörler</span>
+                                </a>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="flex-1 bg-black/20 rounded-xl p-6">
+                        <!-- Page Title - DESKTOP -->
+                        <div class="mb-8">
+                            <div class="flex items-center gap-5">
+                                <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-list-music coral-text text-3xl"></i>
+                                </div>
+                                <div>
+                                    <h1 class="text-5xl font-extrabold text-white">Çalma Listeleri</h1>
+                                    <p class="text-gray-400 text-lg">Özenle hazırlanmış müzik koleksiyonları</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 5 Column Grid -->
+                        <div class="grid grid-cols-5 gap-4">
+                            <div class="mockup-card rounded-lg p-4 group">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center relative">
+                                    <span class="text-4xl">🎵</span>
+                                    <button class="absolute bottom-2 right-2 w-12 h-12 coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                                        <i class="fas fa-play text-black ml-0.5"></i>
+                                    </button>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">Sabah Kahvesi</h3>
+                                <p class="text-gray-500 text-xs">45 şarkı • 2s 30dk</p>
+                            </div>
+                            <div class="mockup-card rounded-lg p-4 group">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center relative">
+                                    <span class="text-4xl">🎵</span>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">Öğle Yemeği Mix</h3>
+                                <p class="text-gray-500 text-xs">38 şarkı • 1s 45dk</p>
+                            </div>
+                            <div class="mockup-card rounded-lg p-4 group">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center relative">
+                                    <span class="text-4xl">🎵</span>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">Akşam Keyfi</h3>
+                                <p class="text-gray-500 text-xs">52 şarkı • 3s 10dk</p>
+                            </div>
+                            <div class="mockup-card rounded-lg p-4 group">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center relative">
+                                    <span class="text-4xl">🎵</span>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">Gece Modu</h3>
+                                <p class="text-gray-500 text-xs">30 şarkı • 1s 20dk</p>
+                            </div>
+                            <div class="mockup-card rounded-lg p-4 group">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center relative">
+                                    <span class="text-4xl">🎵</span>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">Chill Beats</h3>
+                                <p class="text-gray-500 text-xs">60 şarkı • 4s 15dk</p>
+                            </div>
+                            <div class="mockup-card rounded-lg p-4 group">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center relative">
+                                    <span class="text-4xl">🎵</span>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">Top 50 Türkiye</h3>
+                                <p class="text-gray-500 text-xs">50 şarkı • 2s 50dk</p>
+                            </div>
+                            <div class="mockup-card rounded-lg p-4 group">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center relative">
+                                    <span class="text-4xl">🎵</span>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">90'lar Hits</h3>
+                                <p class="text-gray-500 text-xs">80 şarkı • 5s 20dk</p>
+                            </div>
+                            <div class="mockup-card rounded-lg p-4 group">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center relative">
+                                    <span class="text-4xl">🎵</span>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">Hafta Sonu</h3>
+                                <p class="text-gray-500 text-xs">55 şarkı • 3s 40dk</p>
+                            </div>
+                            <div class="mockup-card rounded-lg p-4 group">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center relative">
+                                    <span class="text-4xl">🎵</span>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">Workout Mix</h3>
+                                <p class="text-gray-500 text-xs">40 şarkı • 2s 10dk</p>
+                            </div>
+                            <div class="mockup-card rounded-lg p-4 group">
+                                <div class="coral aspect-square rounded-lg mb-3 flex items-center justify-center relative">
+                                    <span class="text-4xl">🎵</span>
+                                </div>
+                                <h3 class="text-white text-sm font-semibold truncate">Romantik</h3>
+                                <p class="text-gray-500 text-xs">35 şarkı • 2s 00dk</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Sidebar -->
+                    <div class="mockup-sidebar-right rounded-xl p-4" style="width: 320px; flex-shrink: 0;">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-white font-bold flex items-center gap-2">
+                                <i class="fas fa-star text-green-400"></i>
+                                Yeni Şarkılar
+                            </h3>
+                        </div>
+                        <div class="flex gap-2 mb-4">
+                            <button class="px-4 py-2 bg-green-500/20 text-green-400 rounded-full text-sm font-medium">Yeni</button>
+                            <button class="px-4 py-2 bg-white/5 text-gray-400 rounded-full text-sm hover:bg-white/10">Popüler</button>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer group">
+                                <div class="w-12 h-12 coral rounded-lg flex-shrink-0 relative">
+                                    <div class="absolute inset-0 bg-black/50 rounded-lg opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                        <i class="fas fa-play text-white text-sm"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-white text-sm font-medium truncate group-hover:text-orange-400">Go</p>
+                                    <p class="text-gray-400 text-xs truncate">Tarkan</p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button class="text-gray-500 hover:text-orange-400 opacity-0 group-hover:opacity-100">
+                                        <i class="far fa-heart text-sm"></i>
+                                    </button>
+                                    <span class="text-gray-500 text-xs">3:09</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer group">
+                                <div class="w-12 h-12 coral rounded-lg flex-shrink-0"></div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-white text-sm font-medium truncate">Give the P...</p>
+                                    <p class="text-gray-400 text-xs truncate">Tarkan</p>
+                                </div>
+                                <span class="text-gray-500 text-xs">2:11</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer group">
+                                <div class="w-12 h-12 coral rounded-lg flex-shrink-0"></div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-white text-sm font-medium truncate">Gestures</p>
+                                    <p class="text-gray-400 text-xs truncate">Tarkan</p>
+                                </div>
+                                <span class="text-gray-500 text-xs">2:59</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer group">
+                                <div class="w-12 h-12 coral rounded-lg flex-shrink-0"></div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-white text-sm font-medium truncate">ASHES & ...</p>
+                                    <p class="text-gray-400 text-xs truncate">Tarkan</p>
+                                </div>
+                                <span class="text-gray-500 text-xs">2:40</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 text-center space-y-2">
+                <div class="flex flex-wrap justify-center gap-2">
+                    <span class="bg-blue-500/20 text-blue-300 px-3 py-1 rounded text-sm">5 Kolon Grid</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-3 py-1 rounded text-sm">~170px kart</span>
+                    <span class="bg-orange-500/20 text-orange-300 px-3 py-1 rounded text-sm">Sol: 220px</span>
+                    <span class="bg-green-500/20 text-green-300 px-3 py-1 rounded text-sm">Sağ: 320px</span>
+                </div>
+                <p class="text-slate-500 text-sm">Header: Logo + Search + User | Her iki sidebar | Başlık: 5xl (48px)</p>
+            </div>
+        </section>
+
+        <!-- TYPOGRAPHY SCALE -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-white mb-6">📝 Typography Scale (Responsive)</h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-600">
+                            <th class="text-left py-3 px-4 text-slate-400">Element</th>
+                            <th class="text-center py-3 px-4 text-red-400">375px</th>
+                            <th class="text-center py-3 px-4 text-orange-400">768px</th>
+                            <th class="text-center py-3 px-4 text-yellow-400">1024px</th>
+                            <th class="text-center py-3 px-4 text-cyan-400">1440px</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-3 px-4 text-white font-medium">Sayfa Başlığı (h1)</td>
+                            <td class="text-center py-3 px-4">text-2xl (24px)</td>
+                            <td class="text-center py-3 px-4">text-3xl (30px)</td>
+                            <td class="text-center py-3 px-4">text-4xl (36px)</td>
+                            <td class="text-center py-3 px-4">text-5xl (48px)</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-3 px-4 text-white font-medium">Alt Başlık</td>
+                            <td class="text-center py-3 px-4">text-xs (12px)</td>
+                            <td class="text-center py-3 px-4">text-sm (14px)</td>
+                            <td class="text-center py-3 px-4">text-base (16px)</td>
+                            <td class="text-center py-3 px-4">text-lg (18px)</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-3 px-4 text-white font-medium">Kart Başlığı</td>
+                            <td class="text-center py-3 px-4">text-xs (12px)</td>
+                            <td class="text-center py-3 px-4">text-sm (14px)</td>
+                            <td class="text-center py-3 px-4">text-sm (14px)</td>
+                            <td class="text-center py-3 px-4">text-sm (14px)</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-3 px-4 text-white font-medium">Kart Alt Metin</td>
+                            <td class="text-center py-3 px-4">text-[10px]</td>
+                            <td class="text-center py-3 px-4">text-xs (12px)</td>
+                            <td class="text-center py-3 px-4">text-xs (12px)</td>
+                            <td class="text-center py-3 px-4">text-xs (12px)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-white font-medium">Başlık İkonu</td>
+                            <td class="text-center py-3 px-4">w-12 h-12</td>
+                            <td class="text-center py-3 px-4">w-14 h-14</td>
+                            <td class="text-center py-3 px-4">w-16 h-16</td>
+                            <td class="text-center py-3 px-4">w-16 h-16</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ONAY -->
+        <section class="bg-purple-900/20 border border-purple-800 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-purple-400 mb-4">📋 Onay Bekliyor</h2>
+            <p class="text-slate-300 mb-4">
+                Mockup'lar ve responsive tasarım uygun mu? "UYGUNDUR" dersen uygulayacağım.
+            </p>
+            <div class="p-4 bg-slate-900 rounded-lg text-center">
+                <span class="text-2xl font-bold text-white">"UYGUNDUR"</span>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-800 pt-8 mt-8">
+            <p>Claude AI tarafından oluşturuldu</p>
+            <p class="mt-1">muzibu.com.tr - 27 Aralık 2025</p>
+        </footer>
+    </div>
+</body>
+</html>

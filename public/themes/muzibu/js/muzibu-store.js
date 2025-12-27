@@ -1445,9 +1445,23 @@ document.addEventListener('alpine:init', () => {
          * @param {Object} info - Item info (title, cover)
          */
         async showPreview(type, id, info) {
-            // ✅ ALWAYS show preview on PC (even from detail pages)
-            // No restriction - preview should work everywhere
+            // 🎯 RESPONSIVE: 768px altında preview değil, detay sayfaya git
+            if (window.innerWidth < 768) {
+                const urlMap = {
+                    playlist: '/playlists/',
+                    album: '/albums/',
+                    genre: '/genres/',
+                    sector: '/sectors/',
+                    radio: '/radios/',
+                    artist: '/artists/'
+                };
+                if (urlMap[type]) {
+                    window.location.href = urlMap[type] + (info?.slug || id);
+                    return;
+                }
+            }
 
+            // ✅ 768px+ show preview in right sidebar
             this.previewMode = true;
             this.previewInfo = info;
 

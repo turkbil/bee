@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNIMAD Madencilik | Madencilik, Mimarlık ve Mühendislik</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'display': ['Space Grotesk', 'sans-serif'],
+                        'body': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'brand': {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .font-display { font-family: 'Space Grotesk', sans-serif; }
+        .font-body { font-family: 'Inter', sans-serif; }
+
+        /* Mega Menu */
+        .mega-menu {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        .menu-trigger:hover .mega-menu,
+        .mega-menu:hover {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Subtle Hover Effects */
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, transparent 100%);
+        }
+        .card-hover:hover .card-line {
+            width: 100%;
+        }
+        .card-line {
+            width: 0;
+            transition: width 0.4s ease;
+        }
+
+        /* Text reveal on hover */
+        .reveal-text {
+            position: relative;
+            overflow: hidden;
+        }
+        .reveal-text::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: currentColor;
+            transition: width 0.3s ease;
+        }
+        .reveal-text:hover::after {
+            width: 100%;
+        }
+
+        /* Diagonal stripe pattern */
+        .stripe-pattern {
+            background-image: repeating-linear-gradient(
+                -45deg,
+                transparent,
+                transparent 2px,
+                rgba(245, 158, 11, 0.03) 2px,
+                rgba(245, 158, 11, 0.03) 4px
+            );
+        }
+
+        /* Number counter animation placeholder */
+        .stat-number {
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Search overlay */
+        .search-overlay {
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="font-body bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 antialiased">
+
+    <!-- Search Overlay -->
+    <div id="searchOverlay" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-zinc-950/90 search-overlay" onclick="toggleSearch()"></div>
+        <div class="relative z-10 max-w-3xl mx-auto pt-32 px-6">
+            <div class="relative">
+                <input type="text" placeholder="Ne aramak istiyorsunuz?"
+                    class="w-full bg-transparent border-b-2 border-zinc-700 focus:border-brand-500 text-3xl md:text-5xl font-display font-bold text-white placeholder-zinc-600 py-4 outline-none">
+                <button onclick="toggleSearch()" class="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6">
+                <a href="#" class="text-zinc-400 hover:text-brand-500 transition-colors">Madencilik Hizmetleri</a>
+                <a href="#" class="text-zinc-400 hover:text-brand-500 transition-colors">Mimarlık Projeleri</a>
+                <a href="#" class="text-zinc-400 hover:text-brand-500 transition-colors">Mühendislik Çözümleri</a>
+                <a href="#" class="text-zinc-400 hover:text-brand-500 transition-colors">Kariyer Fırsatları</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-zinc-950" onclick="toggleMobileMenu()"></div>
+        <div class="relative z-10 h-full overflow-y-auto bg-zinc-950 p-6">
+            <div class="flex items-center justify-between mb-12">
+                <span class="font-display text-2xl font-bold text-white">UNIMAD</span>
+                <button onclick="toggleMobileMenu()" class="text-zinc-400 hover:text-white">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <nav class="space-y-6">
+                <div class="border-b border-zinc-800 pb-6">
+                    <button onclick="toggleMobileSubmenu('kurumsal')" class="flex items-center justify-between w-full text-xl font-display font-semibold text-white">
+                        Kurumsal
+                        <i class="fas fa-chevron-down text-sm transition-transform" id="kurumsal-icon"></i>
+                    </button>
+                    <div id="kurumsal-menu" class="hidden mt-4 space-y-3 pl-4">
+                        <a href="#" class="block text-zinc-400 hover:text-brand-500">Hakkımızda</a>
+                        <a href="#" class="block text-zinc-400 hover:text-brand-500">Vizyon & Misyon</a>
+                        <a href="#" class="block text-zinc-400 hover:text-brand-500">Yönetim Kurulu</a>
+                        <a href="#" class="block text-zinc-400 hover:text-brand-500">Tarihçe</a>
+                    </div>
+                </div>
+
+                <div class="border-b border-zinc-800 pb-6">
+                    <button onclick="toggleMobileSubmenu('faaliyet')" class="flex items-center justify-between w-full text-xl font-display font-semibold text-white">
+                        Faaliyet Alanları
+                        <i class="fas fa-chevron-down text-sm transition-transform" id="faaliyet-icon"></i>
+                    </button>
+                    <div id="faaliyet-menu" class="hidden mt-4 space-y-3 pl-4">
+                        <a href="#" class="block text-zinc-400 hover:text-brand-500">Madencilik</a>
+                        <a href="#" class="block text-zinc-400 hover:text-brand-500">Mimarlık</a>
+                        <a href="#" class="block text-zinc-400 hover:text-brand-500">Mühendislik</a>
+                    </div>
+                </div>
+
+                <a href="#" class="block text-xl font-display font-semibold text-white border-b border-zinc-800 pb-6">Projeler</a>
+                <a href="#" class="block text-xl font-display font-semibold text-white border-b border-zinc-800 pb-6">Medya</a>
+                <a href="#" class="block text-xl font-display font-semibold text-white border-b border-zinc-800 pb-6">Kariyer</a>
+                <a href="#" class="block text-xl font-display font-semibold text-white">İletişim</a>
+            </nav>
+
+            <div class="mt-12 pt-6 border-t border-zinc-800">
+                <div class="flex items-center gap-4 mb-6">
+                    <button onclick="toggleDarkMode()" class="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 hover:text-brand-500 transition-colors">
+                        <i class="fas fa-sun dark:hidden"></i>
+                        <i class="fas fa-moon hidden dark:inline"></i>
+                    </button>
+                    <span class="text-zinc-500 text-sm">Tema Değiştir</span>
+                </div>
+                <a href="tel:+902121234567" class="flex items-center gap-3 text-zinc-400 hover:text-brand-500 transition-colors">
+                    <i class="fas fa-phone"></i>
+                    +90 212 123 45 67
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-40 transition-all duration-300" id="header">
+        <div class="bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800">
+            <!-- Top Bar -->
+            <div class="hidden lg:block border-b border-zinc-100 dark:border-zinc-800/50">
+                <div class="max-w-[1600px] mx-auto px-8 py-2">
+                    <div class="flex items-center justify-between text-sm">
+                        <div class="flex items-center gap-6 text-zinc-500 dark:text-zinc-400">
+                            <a href="tel:+902121234567" class="hover:text-brand-600 dark:hover:text-brand-500 transition-colors flex items-center gap-2">
+                                <i class="fas fa-phone text-xs"></i>
+                                +90 212 123 45 67
+                            </a>
+                            <a href="mailto:info@unimad.com.tr" class="hover:text-brand-600 dark:hover:text-brand-500 transition-colors flex items-center gap-2">
+                                <i class="fas fa-envelope text-xs"></i>
+                                info@unimad.com.tr
+                            </a>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <a href="#" class="text-zinc-400 hover:text-brand-600 dark:hover:text-brand-500 transition-colors"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="text-zinc-400 hover:text-brand-600 dark:hover:text-brand-500 transition-colors"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-zinc-400 hover:text-brand-600 dark:hover:text-brand-500 transition-colors"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Nav -->
+            <div class="max-w-[1600px] mx-auto px-6 lg:px-8">
+                <div class="flex items-center justify-between h-20">
+                    <!-- Logo -->
+                    <a href="#" class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-brand-500 flex items-center justify-center">
+                            <span class="font-display font-bold text-xl text-zinc-900">U</span>
+                        </div>
+                        <div class="font-display">
+                            <span class="text-xl font-bold tracking-tight">UNIMAD</span>
+                            <span class="hidden sm:inline text-zinc-400 dark:text-zinc-500 text-sm ml-2">Madencilik</span>
+                        </div>
+                    </a>
+
+                    <!-- Desktop Navigation -->
+                    <nav class="hidden lg:flex items-center gap-1">
+                        <!-- Kurumsal -->
+                        <div class="menu-trigger relative">
+                            <button class="px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-brand-600 dark:hover:text-brand-500 transition-colors flex items-center gap-1.5">
+                                Kurumsal
+                                <i class="fas fa-chevron-down text-[10px] opacity-50"></i>
+                            </button>
+                            <!-- Mega Menu -->
+                            <div class="mega-menu absolute top-full left-0 pt-4 w-[600px]">
+                                <div class="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 p-6 grid grid-cols-2 gap-6">
+                                    <div>
+                                        <h4 class="text-xs font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-4">Şirket</h4>
+                                        <div class="space-y-1">
+                                            <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors group">
+                                                <div class="w-10 h-10 rounded-lg bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-brand-500">
+                                                    <i class="fas fa-building"></i>
+                                                </div>
+                                                <div>
+                                                    <span class="block font-medium text-zinc-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-500 transition-colors">Hakkımızda</span>
+                                                    <span class="text-sm text-zinc-500">Hikayemiz ve değerlerimiz</span>
+                                                </div>
+                                            </a>
+                                            <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors group">
+                                                <div class="w-10 h-10 rounded-lg bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-brand-500">
+                                                    <i class="fas fa-bullseye"></i>
+                                                </div>
+                                                <div>
+                                                    <span class="block font-medium text-zinc-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-500 transition-colors">Vizyon & Misyon</span>
+                                                    <span class="text-sm text-zinc-500">Hedeflerimiz</span>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xs font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-4">Yönetim</h4>
+                                        <div class="space-y-1">
+                                            <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors group">
+                                                <div class="w-10 h-10 rounded-lg bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-brand-500">
+                                                    <i class="fas fa-users"></i>
+                                                </div>
+                                                <div>
+                                                    <span class="block font-medium text-zinc-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-500 transition-colors">Yönetim Kurulu</span>
+                                                    <span class="text-sm text-zinc-500">Liderlik ekibimiz</span>
+                                                </div>
+                                            </a>
+                                            <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors group">
+                                                <div class="w-10 h-10 rounded-lg bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-brand-500">
+                                                    <i class="fas fa-clock-rotate-left"></i>
+                                                </div>
+                                                <div>
+                                                    <span class="block font-medium text-zinc-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-500 transition-colors">Tarihçe</span>
+                                                    <span class="text-sm text-zinc-500">Kuruluştan bugüne</span>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Faaliyet Alanları -->
+                        <div class="menu-trigger relative">
+                            <button class="px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-brand-600 dark:hover:text-brand-500 transition-colors flex items-center gap-1.5">
+                                Faaliyet Alanları
+                                <i class="fas fa-chevron-down text-[10px] opacity-50"></i>
+                            </button>
+                            <!-- Mega Menu -->
+                            <div class="mega-menu absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[800px]">
+                                <div class="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+                                    <div class="grid grid-cols-3 gap-4">
+                                        <a href="#" class="group p-5 rounded-xl border border-zinc-100 dark:border-zinc-800 hover:border-brand-500/50 dark:hover:border-brand-500/50 transition-all">
+                                            <div class="w-12 h-12 rounded-xl bg-brand-500 flex items-center justify-center text-zinc-900 mb-4">
+                                                <i class="fas fa-mountain text-xl"></i>
+                                            </div>
+                                            <h5 class="font-display font-semibold text-lg text-zinc-900 dark:text-white mb-2">Madencilik</h5>
+                                            <p class="text-sm text-zinc-500 leading-relaxed">Açık ve yeraltı maden işletmeciliği, cevher zenginleştirme</p>
+                                            <span class="inline-flex items-center gap-1 mt-4 text-sm font-medium text-brand-600 dark:text-brand-500">
+                                                Detaylı Bilgi <i class="fas fa-arrow-right text-xs"></i>
+                                            </span>
+                                        </a>
+                                        <a href="#" class="group p-5 rounded-xl border border-zinc-100 dark:border-zinc-800 hover:border-brand-500/50 dark:hover:border-brand-500/50 transition-all">
+                                            <div class="w-12 h-12 rounded-xl bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-zinc-700 dark:text-zinc-300 mb-4">
+                                                <i class="fas fa-compass-drafting text-xl"></i>
+                                            </div>
+                                            <h5 class="font-display font-semibold text-lg text-zinc-900 dark:text-white mb-2">Mimarlık</h5>
+                                            <p class="text-sm text-zinc-500 leading-relaxed">Endüstriyel yapı tasarımı, master planlama, proje yönetimi</p>
+                                            <span class="inline-flex items-center gap-1 mt-4 text-sm font-medium text-brand-600 dark:text-brand-500">
+                                                Detaylı Bilgi <i class="fas fa-arrow-right text-xs"></i>
+                                            </span>
+                                        </a>
+                                        <a href="#" class="group p-5 rounded-xl border border-zinc-100 dark:border-zinc-800 hover:border-brand-500/50 dark:hover:border-brand-500/50 transition-all">
+                                            <div class="w-12 h-12 rounded-xl bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-zinc-700 dark:text-zinc-300 mb-4">
+                                                <i class="fas fa-helmet-safety text-xl"></i>
+                                            </div>
+                                            <h5 class="font-display font-semibold text-lg text-zinc-900 dark:text-white mb-2">Mühendislik</h5>
+                                            <p class="text-sm text-zinc-500 leading-relaxed">Yapısal mühendislik, tesis tasarımı, teknik danışmanlık</p>
+                                            <span class="inline-flex items-center gap-1 mt-4 text-sm font-medium text-brand-600 dark:text-brand-500">
+                                                Detaylı Bilgi <i class="fas fa-arrow-right text-xs"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="#" class="px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-brand-600 dark:hover:text-brand-500 transition-colors">Projeler</a>
+                        <a href="#" class="px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-brand-600 dark:hover:text-brand-500 transition-colors">Medya</a>
+                        <a href="#" class="px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-brand-600 dark:hover:text-brand-500 transition-colors">Kariyer</a>
+                        <a href="#" class="px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-brand-600 dark:hover:text-brand-500 transition-colors">İletişim</a>
+                    </nav>
+
+                    <!-- Actions -->
+                    <div class="flex items-center gap-2">
+                        <button onclick="toggleSearch()" class="w-10 h-10 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-brand-600 dark:hover:text-brand-500 transition-colors">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-brand-600 dark:hover:text-brand-500 transition-colors">
+                            <i class="fas fa-sun dark:hidden"></i>
+                            <i class="fas fa-moon hidden dark:inline"></i>
+                        </button>
+                        <button onclick="toggleMobileMenu()" class="lg:hidden w-10 h-10 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 transition-colors">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <a href="#" class="hidden md:inline-flex items-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-5 py-2.5 rounded-full text-sm font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors ml-2">
+                            Teklif Al
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center pt-32 pb-20 overflow-hidden">
+        <!-- Background -->
+        <div class="absolute inset-0 bg-gradient-to-br from-zinc-100 via-white to-zinc-50 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950"></div>
+        <div class="absolute inset-0 stripe-pattern"></div>
+
+        <!-- Geometric shapes -->
+        <div class="absolute top-1/4 right-0 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-1/4 w-64 h-64 bg-brand-500/5 rounded-full blur-2xl"></div>
+
+        <div class="relative z-10 max-w-[1600px] mx-auto px-6 lg:px-8 w-full">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                <!-- Content -->
+                <div>
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-brand-500/10 rounded-full mb-8">
+                        <span class="w-2 h-2 bg-brand-500 rounded-full animate-pulse"></span>
+                        <span class="text-sm font-medium text-brand-700 dark:text-brand-400">1998'den beri sektörde</span>
+                    </div>
+
+                    <h1 class="font-display text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[0.9] tracking-tight mb-8">
+                        <span class="block text-zinc-900 dark:text-white">Toprağın</span>
+                        <span class="block text-zinc-900 dark:text-white">Altından</span>
+                        <span class="block text-brand-500">Geleceğe</span>
+                    </h1>
+
+                    <p class="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 max-w-xl mb-10 leading-relaxed">
+                        Madencilik operasyonlarından mimari çözümlere, mühendislik projelerinden sürdürülebilir uygulamalara —
+                        <span class="text-zinc-900 dark:text-white font-medium">yapılması gerekeni yapıyoruz.</span>
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#" class="group inline-flex items-center justify-center gap-3 bg-brand-500 text-zinc-900 px-8 py-4 text-lg font-semibold hover:bg-brand-400 transition-colors">
+                            Projelerimizi Keşfedin
+                            <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                        <a href="#" class="inline-flex items-center justify-center gap-3 border-2 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-white px-8 py-4 text-lg font-semibold hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors">
+                            <i class="fas fa-play-circle"></i>
+                            Tanıtım Filmi
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Visual -->
+                <div class="relative">
+                    <div class="relative aspect-[4/5] lg:aspect-square">
+                        <!-- Main image placeholder -->
+                        <div class="absolute inset-0 bg-gradient-to-br from-zinc-300 to-zinc-400 dark:from-zinc-700 dark:to-zinc-800 overflow-hidden">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <i class="fas fa-mountain text-9xl text-zinc-400/50 dark:text-zinc-600/50"></i>
+                            </div>
+                        </div>
+
+                        <!-- Floating stat card -->
+                        <div class="absolute -left-8 bottom-20 bg-white dark:bg-zinc-900 p-6 shadow-2xl border border-zinc-200 dark:border-zinc-800 max-w-[200px]">
+                            <div class="text-4xl font-display font-bold text-brand-500 mb-1">27+</div>
+                            <div class="text-sm text-zinc-500 dark:text-zinc-400">Yıllık deneyim</div>
+                        </div>
+
+                        <!-- Decorative corner -->
+                        <div class="absolute -bottom-4 -right-4 w-32 h-32 border-4 border-brand-500"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scroll indicator -->
+            <div class="hidden lg:flex items-center gap-4 mt-20">
+                <div class="w-px h-16 bg-gradient-to-b from-transparent via-zinc-300 dark:via-zinc-700 to-transparent"></div>
+                <span class="text-sm text-zinc-400 dark:text-zinc-500 font-medium tracking-widest uppercase rotate-90 origin-left translate-x-4">Scroll</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="relative z-10 -mt-8">
+        <div class="max-w-[1400px] mx-auto px-6 lg:px-8">
+            <div class="bg-zinc-900 dark:bg-zinc-800 grid grid-cols-2 lg:grid-cols-4">
+                <div class="p-8 lg:p-10 border-r border-b lg:border-b-0 border-zinc-800 dark:border-zinc-700">
+                    <div class="stat-number font-display text-4xl lg:text-5xl font-bold text-brand-500 mb-2">45+</div>
+                    <div class="text-zinc-400">Tamamlanan Proje</div>
+                </div>
+                <div class="p-8 lg:p-10 border-b lg:border-b-0 lg:border-r border-zinc-800 dark:border-zinc-700">
+                    <div class="stat-number font-display text-4xl lg:text-5xl font-bold text-white mb-2">12M</div>
+                    <div class="text-zinc-400">Ton Üretim Kapasitesi</div>
+                </div>
+                <div class="p-8 lg:p-10 border-r border-zinc-800 dark:border-zinc-700">
+                    <div class="stat-number font-display text-4xl lg:text-5xl font-bold text-white mb-2">850+</div>
+                    <div class="text-zinc-400">Çalışan</div>
+                </div>
+                <div class="p-8 lg:p-10">
+                    <div class="stat-number font-display text-4xl lg:text-5xl font-bold text-white mb-2">6</div>
+                    <div class="text-zinc-400">Aktif Saha</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services / Faaliyet Alanları -->
+    <section class="py-24 lg:py-32 bg-white dark:bg-zinc-950">
+        <div class="max-w-[1600px] mx-auto px-6 lg:px-8">
+            <!-- Section Header -->
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-16">
+                <div>
+                    <span class="inline-block text-brand-600 dark:text-brand-500 font-semibold text-sm uppercase tracking-wider mb-4">Faaliyet Alanları</span>
+                    <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-zinc-900 dark:text-white leading-tight">
+                        Üç Ana Eksende<br>
+                        <span class="text-zinc-400 dark:text-zinc-600">Bütünleşik Çözümler</span>
+                    </h2>
+                </div>
+                <p class="text-lg text-zinc-600 dark:text-zinc-400 max-w-md">
+                    Madencilikten inşaata uzanan değer zincirimizle projelerinize uçtan uca destek sağlıyoruz.
+                </p>
+            </div>
+
+            <!-- Services Grid -->
+            <div class="grid lg:grid-cols-3 gap-1">
+                <!-- Madencilik - Ana Hizmet -->
+                <div class="lg:col-span-2 lg:row-span-2 relative group overflow-hidden bg-zinc-900 dark:bg-zinc-800">
+                    <div class="absolute inset-0 bg-gradient-to-br from-brand-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="relative p-10 lg:p-14 h-full flex flex-col">
+                        <div class="flex items-center gap-4 mb-auto">
+                            <div class="w-16 h-16 bg-brand-500 flex items-center justify-center">
+                                <i class="fas fa-mountain text-2xl text-zinc-900"></i>
+                            </div>
+                            <span class="px-4 py-1.5 bg-brand-500/20 text-brand-400 text-sm font-medium">Ana Faaliyet</span>
+                        </div>
+
+                        <div class="mt-12 lg:mt-20">
+                            <h3 class="font-display text-4xl lg:text-5xl font-bold text-white mb-6">Madencilik</h3>
+                            <p class="text-xl text-zinc-400 leading-relaxed mb-8 max-w-lg">
+                                Açık ve yeraltı maden işletmeciliği, cevher zenginleştirme, maden planlaması ve çevresel yönetim hizmetleri.
+                            </p>
+
+                            <div class="grid grid-cols-2 gap-4 mb-10">
+                                <div class="flex items-center gap-3 text-zinc-300">
+                                    <i class="fas fa-check text-brand-500"></i>
+                                    <span>Açık Ocak İşletme</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-zinc-300">
+                                    <i class="fas fa-check text-brand-500"></i>
+                                    <span>Yeraltı Madenciliği</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-zinc-300">
+                                    <i class="fas fa-check text-brand-500"></i>
+                                    <span>Cevher Zenginleştirme</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-zinc-300">
+                                    <i class="fas fa-check text-brand-500"></i>
+                                    <span>Çevresel Restorasyon</span>
+                                </div>
+                            </div>
+
+                            <a href="#" class="inline-flex items-center gap-3 text-brand-500 font-semibold text-lg group/link">
+                                Detaylı İncele
+                                <i class="fas fa-arrow-right group-hover/link:translate-x-2 transition-transform"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mimarlık -->
+                <div class="relative group card-hover bg-zinc-100 dark:bg-zinc-900">
+                    <div class="p-8 lg:p-10 h-full flex flex-col">
+                        <div class="w-14 h-14 bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center mb-auto">
+                            <i class="fas fa-compass-drafting text-xl text-zinc-600 dark:text-zinc-400"></i>
+                        </div>
+
+                        <div class="mt-16">
+                            <h3 class="font-display text-2xl lg:text-3xl font-bold text-zinc-900 dark:text-white mb-4">Mimarlık</h3>
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-6 leading-relaxed">
+                                Endüstriyel tesis tasarımı, master planlama ve proje koordinasyonu.
+                            </p>
+                            <a href="#" class="inline-flex items-center gap-2 text-brand-600 dark:text-brand-500 font-medium reveal-text">
+                                Keşfet <i class="fas fa-arrow-right text-sm"></i>
+                            </a>
+                        </div>
+
+                        <div class="card-line absolute bottom-0 left-0 h-1 bg-brand-500"></div>
+                    </div>
+                </div>
+
+                <!-- Mühendislik -->
+                <div class="relative group card-hover bg-zinc-100 dark:bg-zinc-900">
+                    <div class="p-8 lg:p-10 h-full flex flex-col">
+                        <div class="w-14 h-14 bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center mb-auto">
+                            <i class="fas fa-helmet-safety text-xl text-zinc-600 dark:text-zinc-400"></i>
+                        </div>
+
+                        <div class="mt-16">
+                            <h3 class="font-display text-2xl lg:text-3xl font-bold text-zinc-900 dark:text-white mb-4">Mühendislik</h3>
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-6 leading-relaxed">
+                                Yapısal analiz, tesis mühendisliği ve teknik danışmanlık hizmetleri.
+                            </p>
+                            <a href="#" class="inline-flex items-center gap-2 text-brand-600 dark:text-brand-500 font-medium reveal-text">
+                                Keşfet <i class="fas fa-arrow-right text-sm"></i>
+                            </a>
+                        </div>
+
+                        <div class="card-line absolute bottom-0 left-0 h-1 bg-brand-500"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Projects -->
+    <section class="py-24 lg:py-32 bg-zinc-50 dark:bg-zinc-900">
+        <div class="max-w-[1600px] mx-auto px-6 lg:px-8">
+            <!-- Section Header -->
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-16">
+                <div>
+                    <span class="inline-block text-brand-600 dark:text-brand-500 font-semibold text-sm uppercase tracking-wider mb-4">Projeler</span>
+                    <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-zinc-900 dark:text-white">
+                        Öne Çıkan<br>Projelerimiz
+                    </h2>
+                </div>
+                <a href="#" class="inline-flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-brand-600 dark:hover:text-brand-500 font-medium transition-colors">
+                    Tüm Projeleri Gör
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Projects Grid - Asymmetric -->
+            <div class="grid lg:grid-cols-12 gap-6">
+                <!-- Large Project -->
+                <div class="lg:col-span-7 group">
+                    <a href="#" class="block relative aspect-[16/10] overflow-hidden bg-zinc-300 dark:bg-zinc-800 mb-6">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i class="fas fa-mountain text-8xl text-zinc-400/30 dark:text-zinc-700/50"></i>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-zinc-900/80 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-8">
+                            <span class="inline-block px-3 py-1 bg-brand-500 text-zinc-900 text-sm font-medium mb-4">Madencilik</span>
+                            <h3 class="font-display text-2xl lg:text-3xl font-bold text-white">Batı Anadolu Bakır Sahası</h3>
+                        </div>
+                        <div class="absolute top-6 right-6 w-12 h-12 bg-white/10 backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <i class="fas fa-arrow-up-right text-white"></i>
+                        </div>
+                    </a>
+                    <div class="flex items-center justify-between text-sm text-zinc-500 dark:text-zinc-400">
+                        <span>Balıkesir, Türkiye</span>
+                        <span>120.000 m² tesis alanı</span>
+                    </div>
+                </div>
+
+                <!-- Small Projects -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="group">
+                        <a href="#" class="block relative aspect-[16/9] overflow-hidden bg-zinc-300 dark:bg-zinc-800 mb-4">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <i class="fas fa-building text-6xl text-zinc-400/30 dark:text-zinc-700/50"></i>
+                            </div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-zinc-900/80 via-transparent to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 right-0 p-6">
+                                <span class="inline-block px-3 py-1 bg-zinc-700 text-white text-xs font-medium mb-3">Mimarlık</span>
+                                <h3 class="font-display text-xl font-bold text-white">Endüstriyel Tesis Kompleksi</h3>
+                            </div>
+                            <div class="absolute top-4 right-4 w-10 h-10 bg-white/10 backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i class="fas fa-arrow-up-right text-white text-sm"></i>
+                            </div>
+                        </a>
+                        <div class="flex items-center justify-between text-sm text-zinc-500 dark:text-zinc-400">
+                            <span>Kocaeli, Türkiye</span>
+                            <span>Mühendislik + İnşaat</span>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <a href="#" class="block relative aspect-[16/9] overflow-hidden bg-zinc-300 dark:bg-zinc-800 mb-4">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <i class="fas fa-industry text-6xl text-zinc-400/30 dark:text-zinc-700/50"></i>
+                            </div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-zinc-900/80 via-transparent to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 right-0 p-6">
+                                <span class="inline-block px-3 py-1 bg-zinc-700 text-white text-xs font-medium mb-3">Mühendislik</span>
+                                <h3 class="font-display text-xl font-bold text-white">Cevher İşleme Tesisi</h3>
+                            </div>
+                            <div class="absolute top-4 right-4 w-10 h-10 bg-white/10 backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i class="fas fa-arrow-up-right text-white text-sm"></i>
+                            </div>
+                        </a>
+                        <div class="flex items-center justify-between text-sm text-zinc-500 dark:text-zinc-400">
+                            <span>Manisa, Türkiye</span>
+                            <span>Kapasite: 500.000 ton/yıl</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us / Differentiators -->
+    <section class="py-24 lg:py-32 bg-zinc-900 dark:bg-zinc-950 relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-5">
+            <div class="absolute top-0 left-0 w-full h-full" style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23ffffff&quot; fill-opacity=&quot;1&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+        </div>
+
+        <div class="relative z-10 max-w-[1600px] mx-auto px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+                <!-- Content -->
+                <div>
+                    <span class="inline-block text-brand-500 font-semibold text-sm uppercase tracking-wider mb-4">Neden UNIMAD?</span>
+                    <h2 class="font-display text-4xl md:text-5xl font-bold text-white leading-tight mb-8">
+                        Sahada Kanıtlanmış<br>
+                        <span class="text-zinc-500">Güvenilir Çözüm Ortağı</span>
+                    </h2>
+                    <p class="text-lg text-zinc-400 leading-relaxed mb-10">
+                        27 yılı aşkın sektör deneyimimiz, entegre hizmet modelimiz ve sürdürülebilirlik odaklı yaklaşımımızla
+                        projelerinizi zamanında ve bütçe dahilinde tamamlıyoruz.
+                    </p>
+
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-brand-500/20 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-shield-halved text-brand-500"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-display font-semibold text-white text-lg mb-1">ISO 45001 & 14001 Sertifikalı</h4>
+                                <p class="text-zinc-400">Uluslararası iş güvenliği ve çevre yönetim standartları</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-brand-500/20 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-handshake text-brand-500"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-display font-semibold text-white text-lg mb-1">Yerli & Milli Üretim</h4>
+                                <p class="text-zinc-400">Tedarik zincirinin %85'i yurt içi kaynaklardan</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-brand-500/20 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-leaf text-brand-500"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-display font-semibold text-white text-lg mb-1">Çevresel Sorumluluk</h4>
+                                <p class="text-zinc-400">Her projede rehabilitasyon ve yeşil dönüşüm planı</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual - Numbers Grid -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-zinc-800/50 backdrop-blur border border-zinc-700/50 p-8">
+                        <div class="font-display text-5xl lg:text-6xl font-bold text-brand-500 mb-2">%98</div>
+                        <div class="text-zinc-300 font-medium mb-1">Zamanında Teslim</div>
+                        <div class="text-sm text-zinc-500">Son 5 yıl ortalaması</div>
+                    </div>
+                    <div class="bg-zinc-800/50 backdrop-blur border border-zinc-700/50 p-8 mt-8">
+                        <div class="font-display text-5xl lg:text-6xl font-bold text-white mb-2">0</div>
+                        <div class="text-zinc-300 font-medium mb-1">İş Kazası</div>
+                        <div class="text-sm text-zinc-500">2024 yılı performansı</div>
+                    </div>
+                    <div class="bg-zinc-800/50 backdrop-blur border border-zinc-700/50 p-8 -mt-8">
+                        <div class="font-display text-5xl lg:text-6xl font-bold text-white mb-2">4.8<span class="text-2xl text-zinc-500">/5</span></div>
+                        <div class="text-zinc-300 font-medium mb-1">Müşteri Memnuniyeti</div>
+                        <div class="text-sm text-zinc-500">Bağımsız değerlendirme</div>
+                    </div>
+                    <div class="bg-brand-500 p-8">
+                        <div class="font-display text-5xl lg:text-6xl font-bold text-zinc-900 mb-2">24/7</div>
+                        <div class="text-zinc-900/80 font-medium mb-1">Operasyonel Destek</div>
+                        <div class="text-sm text-zinc-900/60">Kesintisiz hizmet</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- News / Updates -->
+    <section class="py-24 lg:py-32 bg-white dark:bg-zinc-950">
+        <div class="max-w-[1600px] mx-auto px-6 lg:px-8">
+            <!-- Section Header -->
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-16">
+                <div>
+                    <span class="inline-block text-brand-600 dark:text-brand-500 font-semibold text-sm uppercase tracking-wider mb-4">Haberler</span>
+                    <h2 class="font-display text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white">
+                        Güncel Gelişmeler
+                    </h2>
+                </div>
+                <a href="#" class="inline-flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-brand-600 dark:hover:text-brand-500 font-medium transition-colors">
+                    Tüm Haberler
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- News Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- News 1 -->
+                <article class="group">
+                    <a href="#" class="block">
+                        <div class="relative aspect-[16/10] bg-zinc-200 dark:bg-zinc-800 mb-6 overflow-hidden">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <i class="fas fa-newspaper text-5xl text-zinc-300 dark:text-zinc-700"></i>
+                            </div>
+                            <div class="absolute top-4 left-4">
+                                <span class="px-3 py-1 bg-brand-500 text-zinc-900 text-xs font-semibold">Yatırım</span>
+                            </div>
+                        </div>
+                        <time class="text-sm text-zinc-500 dark:text-zinc-500">24 Aralık 2025</time>
+                        <h3 class="font-display text-xl font-bold text-zinc-900 dark:text-white mt-2 mb-3 group-hover:text-brand-600 dark:group-hover:text-brand-500 transition-colors">
+                            Yeni Zenginleştirme Tesisi İçin Temel Atma Töreni Gerçekleştirildi
+                        </h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                            Manisa'da inşa edilecek yeni tesis, yıllık işleme kapasitemizi %40 artıracak.
+                        </p>
+                    </a>
+                </article>
+
+                <!-- News 2 -->
+                <article class="group">
+                    <a href="#" class="block">
+                        <div class="relative aspect-[16/10] bg-zinc-200 dark:bg-zinc-800 mb-6 overflow-hidden">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <i class="fas fa-award text-5xl text-zinc-300 dark:text-zinc-700"></i>
+                            </div>
+                            <div class="absolute top-4 left-4">
+                                <span class="px-3 py-1 bg-zinc-900 dark:bg-zinc-700 text-white text-xs font-semibold">Ödül</span>
+                            </div>
+                        </div>
+                        <time class="text-sm text-zinc-500 dark:text-zinc-500">18 Aralık 2025</time>
+                        <h3 class="font-display text-xl font-bold text-zinc-900 dark:text-white mt-2 mb-3 group-hover:text-brand-600 dark:group-hover:text-brand-500 transition-colors">
+                            Çevresel Mükemmellik Ödülü UNIMAD'ın
+                        </h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                            Türkiye Madenciler Derneği tarafından verilen ödül, rehabilitasyon çalışmalarımızı tescilledi.
+                        </p>
+                    </a>
+                </article>
+
+                <!-- News 3 -->
+                <article class="group">
+                    <a href="#" class="block">
+                        <div class="relative aspect-[16/10] bg-zinc-200 dark:bg-zinc-800 mb-6 overflow-hidden">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <i class="fas fa-users text-5xl text-zinc-300 dark:text-zinc-700"></i>
+                            </div>
+                            <div class="absolute top-4 left-4">
+                                <span class="px-3 py-1 bg-zinc-900 dark:bg-zinc-700 text-white text-xs font-semibold">Kariyer</span>
+                            </div>
+                        </div>
+                        <time class="text-sm text-zinc-500 dark:text-zinc-500">10 Aralık 2025</time>
+                        <h3 class="font-display text-xl font-bold text-zinc-900 dark:text-white mt-2 mb-3 group-hover:text-brand-600 dark:group-hover:text-brand-500 transition-colors">
+                            2025 Mühendis Alım Programı Başvuruları Açıldı
+                        </h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                            Yeni mezun mühendisler için kapsamlı eğitim ve kariyer fırsatları sunuyoruz.
+                        </p>
+                    </a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 lg:py-32 bg-brand-500 relative overflow-hidden">
+        <!-- Decorative -->
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-brand-400/50 -skew-x-12 translate-x-1/4"></div>
+
+        <div class="relative z-10 max-w-[1200px] mx-auto px-6 lg:px-8 text-center">
+            <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-zinc-900 mb-6">
+                Projenizi Konuşalım
+            </h2>
+            <p class="text-xl text-zinc-800/80 max-w-2xl mx-auto mb-10">
+                Madencilik, mimarlık veya mühendislik alanında bir projeniz mi var?
+                Uzman ekibimiz size özel çözümler sunmak için hazır.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#" class="inline-flex items-center justify-center gap-3 bg-zinc-900 text-white px-8 py-4 text-lg font-semibold hover:bg-zinc-800 transition-colors">
+                    <i class="fas fa-phone"></i>
+                    Hemen Arayın
+                </a>
+                <a href="#" class="inline-flex items-center justify-center gap-3 bg-white text-zinc-900 px-8 py-4 text-lg font-semibold hover:bg-zinc-100 transition-colors">
+                    Teklif Formu
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-zinc-950 pt-20 pb-8">
+        <div class="max-w-[1600px] mx-auto px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 pb-16 border-b border-zinc-800">
+                <!-- Brand -->
+                <div class="lg:col-span-4">
+                    <a href="#" class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 bg-brand-500 flex items-center justify-center">
+                            <span class="font-display font-bold text-xl text-zinc-900">U</span>
+                        </div>
+                        <div class="font-display">
+                            <span class="text-xl font-bold text-white tracking-tight">UNIMAD</span>
+                            <span class="text-zinc-500 text-sm ml-2">Madencilik</span>
+                        </div>
+                    </a>
+                    <p class="text-zinc-400 leading-relaxed mb-6 max-w-sm">
+                        1998'den bu yana madencilik, mimarlık ve mühendislik alanlarında
+                        entegre çözümler sunan güvenilir iş ortağınız.
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <a href="#" class="w-10 h-10 bg-zinc-800 hover:bg-brand-500 flex items-center justify-center text-zinc-400 hover:text-zinc-900 transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-zinc-800 hover:bg-brand-500 flex items-center justify-center text-zinc-400 hover:text-zinc-900 transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-zinc-800 hover:bg-brand-500 flex items-center justify-center text-zinc-400 hover:text-zinc-900 transition-colors">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-zinc-800 hover:bg-brand-500 flex items-center justify-center text-zinc-400 hover:text-zinc-900 transition-colors">
+                            <i class="fab fa-x-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Links -->
+                <div class="lg:col-span-2">
+                    <h4 class="font-display font-semibold text-white mb-6">Kurumsal</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-zinc-400 hover:text-brand-500 transition-colors">Hakkımızda</a></li>
+                        <li><a href="#" class="text-zinc-400 hover:text-brand-500 transition-colors">Vizyon & Misyon</a></li>
+                        <li><a href="#" class="text-zinc-400 hover:text-brand-500 transition-colors">Yönetim Kurulu</a></li>
+                        <li><a href="#" class="text-zinc-400 hover:text-brand-500 transition-colors">Tarihçe</a></li>
+                        <li><a href="#" class="text-zinc-400 hover:text-brand-500 transition-colors">Kariyer</a></li>
+                    </ul>
+                </div>
+
+                <div class="lg:col-span-2">
+                    <h4 class="font-display font-semibold text-white mb-6">Hizmetler</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-zinc-400 hover:text-brand-500 transition-colors">Madencilik</a></li>
+                        <li><a href="#" class="text-zinc-400 hover:text-brand-500 transition-colors">Mimarlık</a></li>
+                        <li><a href="#" class="text-zinc-400 hover:text-brand-500 transition-colors">Mühendislik</a></li>
+                        <li><a href="#" class="text-zinc-400 hover:text-brand-500 transition-colors">Danışmanlık</a></li>
+                    </ul>
+                </div>
+
+                <div class="lg:col-span-2">
+                    <h4 class="font-display font-semibold text-white mb-6">Kaynaklar</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-zinc-400 hover:text-brand-500 transition-colors">Projeler</a></li>
+                        <li><a href="#" class="text-zinc-400 hover:text-brand-500 transition-colors">Haberler</a></li>
+                        <li><a href="#" class="text-zinc-400 hover:text-brand-500 transition-colors">Basın Kiti</a></li>
+                        <li><a href="#" class="text-zinc-400 hover:text-brand-500 transition-colors">Sertifikalar</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div class="lg:col-span-2">
+                    <h4 class="font-display font-semibold text-white mb-6">İletişim</h4>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="tel:+902121234567" class="flex items-center gap-3 text-zinc-400 hover:text-brand-500 transition-colors">
+                                <i class="fas fa-phone text-sm"></i>
+                                +90 212 123 45 67
+                            </a>
+                        </li>
+                        <li>
+                            <a href="mailto:info@unimad.com.tr" class="flex items-center gap-3 text-zinc-400 hover:text-brand-500 transition-colors">
+                                <i class="fas fa-envelope text-sm"></i>
+                                info@unimad.com.tr
+                            </a>
+                        </li>
+                        <li class="flex items-start gap-3 text-zinc-400">
+                            <i class="fas fa-location-dot text-sm mt-1"></i>
+                            <span>Maslak Mah. AOS 55. Sk. No:2<br>Sarıyer / İstanbul</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom -->
+            <div class="pt-8 flex flex-col lg:flex-row items-center justify-between gap-4">
+                <p class="text-zinc-500 text-sm">
+                    © 2025 UNIMAD Madencilik. Tüm hakları saklıdır.
+                </p>
+                <div class="flex items-center gap-6 text-sm">
+                    <a href="#" class="text-zinc-500 hover:text-zinc-300 transition-colors">Gizlilik Politikası</a>
+                    <a href="#" class="text-zinc-500 hover:text-zinc-300 transition-colors">Kullanım Koşulları</a>
+                    <a href="#" class="text-zinc-500 hover:text-zinc-300 transition-colors">Çerez Politikası</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
+        }
+
+        // Check saved preference
+        if (localStorage.getItem('darkMode') === 'true' ||
+            (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+            document.body.classList.toggle('overflow-hidden');
+        }
+
+        // Mobile Submenu Toggle
+        function toggleMobileSubmenu(id) {
+            const menu = document.getElementById(id + '-menu');
+            const icon = document.getElementById(id + '-icon');
+            menu.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+        }
+
+        // Search Toggle
+        function toggleSearch() {
+            const overlay = document.getElementById('searchOverlay');
+            overlay.classList.toggle('hidden');
+            document.body.classList.toggle('overflow-hidden');
+            if (!overlay.classList.contains('hidden')) {
+                overlay.querySelector('input').focus();
+            }
+        }
+
+        // Close search on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const searchOverlay = document.getElementById('searchOverlay');
+                const mobileMenu = document.getElementById('mobileMenu');
+                if (!searchOverlay.classList.contains('hidden')) {
+                    toggleSearch();
+                }
+                if (!mobileMenu.classList.contains('hidden')) {
+                    toggleMobileMenu();
+                }
+            }
+        });
+
+        // Header scroll effect
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            const currentScroll = window.pageYOffset;
+
+            if (currentScroll > 100) {
+                header.classList.add('shadow-lg');
+            } else {
+                header.classList.remove('shadow-lg');
+            }
+
+            lastScroll = currentScroll;
+        });
+    </script>
+</body>
+</html>

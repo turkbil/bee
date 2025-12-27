@@ -1,13 +1,18 @@
-<div class="px-4 sm:px-6 py-6 sm:py-8">
+<div class="px-4 py-6 sm:px-6 sm:py-8">
     {{-- Header --}}
-    <div class="mb-8 sm:mb-10">
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2 sm:mb-3">Playlistlerim</h1>
-        <p class="text-sm sm:text-base text-gray-400">Oluşturduğun müzik koleksiyonları</p>
+    <div class="mb-4 sm:mb-6 flex items-center gap-3 sm:gap-4">
+        <div class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white/10 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-album-collection text-xl sm:text-2xl text-white fa-beat-fade" style="--fa-animation-duration: 2s; --fa-beat-fade-opacity: 0.4; --fa-beat-fade-scale: 1.1;"></i>
+        </div>
+        <div>
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-0.5">Playlistlerim</h1>
+            <p class="text-gray-400 text-sm sm:text-base">Oluşturduğun müzik koleksiyonları</p>
+        </div>
     </div>
 
     {{-- Playlists Grid - Modern Layout --}}
     @if($playlists && $playlists->count() > 0)
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
+        <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4">
             @foreach($playlists as $playlist)
                 <a href="/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}"
                    x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'playlist', {

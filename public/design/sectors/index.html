@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarz & Sektör Örnekleri | Tasarım Modelleri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .font-playfair { font-family: 'Playfair Display', serif; }
+        .font-space { font-family: 'Space Grotesk', sans-serif; }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #10b981;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 9999;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+    </style>
+</head>
+<body class="bg-slate-950 text-white min-h-screen">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span>Kopyalandı!</span>
+    </div>
+
+    <!-- Header -->
+    <header class="border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-6 py-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <a href="/design/templates/" class="text-slate-500 hover:text-white text-sm mb-2 inline-block">
+                        <i class="fas fa-arrow-left mr-1"></i> Hazır Taslaklar
+                    </a>
+                    <h1 class="text-2xl font-bold">Tarz & Sektör Örnekleri</h1>
+                    <p class="text-slate-400 mt-1">Tasarım üretirken kullanabileceğiniz tarz modelleri ve sektör önerileri</p>
+                </div>
+                <div class="text-right hidden sm:block">
+                    <div class="text-xs text-slate-500 bg-slate-900 px-3 py-2 rounded-lg">
+                        <i class="fas fa-info-circle mr-1"></i> Kartlara tıklayarak kopyalayın
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content -->
+    <main class="max-w-7xl mx-auto px-6 py-12">
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- ANA TASARIM TÜRLERİ -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+
+        <section class="mb-20">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-gradient-to-br from-violet-600 to-purple-600 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-star text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold">Ana Tasarım Türleri</h2>
+                    <p class="text-slate-400 text-sm">En sık kullanılan ve her sektöre uyarlanabilir temel tarzlar</p>
+                </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- Minimal -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-violet-800/50 transition group cursor-pointer">
+                    <div class="h-40 bg-white p-4 flex flex-col justify-between">
+                        <div class="flex justify-between items-start">
+                            <div class="w-8 h-1 bg-slate-900"></div>
+                            <div class="flex gap-1">
+                                <div class="w-1 h-1 bg-slate-300 rounded-full"></div>
+                                <div class="w-1 h-1 bg-slate-300 rounded-full"></div>
+                                <div class="w-1 h-1 bg-slate-300 rounded-full"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="w-24 h-2 bg-slate-900"></div>
+                            <div class="w-32 h-1 bg-slate-200"></div>
+                        </div>
+                        <div class="w-12 h-4 border border-slate-900 flex items-center justify-center">
+                            <span class="text-[6px] text-slate-900 font-medium">DETAY</span>
+                        </div>
+                    </div>
+                    <div class="p-5 relative">
+                        <h3 class="font-semibold text-lg mb-2">Minimal</h3>
+                        <p class="text-slate-400 text-sm">Az element, çok boşluk, net tipografi. Sadelik ve zarafet.</p>
+                        <div class="mt-3 text-xs text-slate-500">
+                            <i class="fas fa-check mr-1 text-emerald-500"></i> Holding, Danışmanlık, Finans
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modern -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-violet-800/50 transition group cursor-pointer">
+                    <div class="h-40 bg-gradient-to-br from-slate-100 to-slate-200 p-4 flex flex-col justify-between">
+                        <div class="flex justify-between items-center">
+                            <div class="w-6 h-6 bg-blue-600 rounded-lg"></div>
+                            <div class="flex gap-2">
+                                <div class="w-8 h-1.5 bg-slate-400 rounded"></div>
+                                <div class="w-8 h-1.5 bg-slate-400 rounded"></div>
+                                <div class="w-8 h-1.5 bg-slate-400 rounded"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="w-28 h-3 bg-slate-800 rounded"></div>
+                            <div class="w-36 h-1.5 bg-slate-300 rounded"></div>
+                        </div>
+                        <div class="flex gap-2">
+                            <div class="w-14 h-5 bg-blue-600 rounded-full"></div>
+                            <div class="w-14 h-5 border border-slate-400 rounded-full"></div>
+                        </div>
+                    </div>
+                    <div class="p-5 relative">
+                        <h3 class="font-semibold text-lg mb-2">Modern</h3>
+                        <p class="text-slate-400 text-sm">Güncel trendler, dinamik layout, yuvarlatılmış köşeler.</p>
+                        <div class="mt-3 text-xs text-slate-500">
+                            <i class="fas fa-check mr-1 text-emerald-500"></i> Teknoloji, Startup, Ajans
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kurumsal -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-violet-800/50 transition group cursor-pointer">
+                    <div class="h-40 bg-slate-800 p-4 flex flex-col justify-between">
+                        <div class="flex justify-between items-center">
+                            <div class="text-white text-[8px] font-bold tracking-wider">KURUMSAL</div>
+                            <div class="flex gap-3 text-[7px] text-slate-400">
+                                <span>Hakkımızda</span>
+                                <span>Hizmetler</span>
+                                <span>İletişim</span>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="w-32 h-2.5 bg-white"></div>
+                            <div class="w-40 h-1 bg-slate-600"></div>
+                        </div>
+                        <div class="flex gap-2">
+                            <div class="w-16 h-5 bg-blue-700 flex items-center justify-center">
+                                <span class="text-[6px] text-white">KEŞFET</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-5 relative">
+                        <h3 class="font-semibold text-lg mb-2">Kurumsal (Corporate)</h3>
+                        <p class="text-slate-400 text-sm">Profesyonel, güven veren, dengeli. Klasik iş dünyası estetiği.</p>
+                        <div class="mt-3 text-xs text-slate-500">
+                            <i class="fas fa-check mr-1 text-emerald-500"></i> Her sektör, Genel kullanım
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Klasik -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-violet-800/50 transition group cursor-pointer">
+                    <div class="h-40 bg-amber-50 p-4 flex flex-col justify-between">
+                        <div class="flex justify-between items-center">
+                            <div class="font-playfair text-amber-900 text-[10px] font-semibold">Elegance</div>
+                            <div class="flex gap-3 text-[6px] text-amber-700 font-playfair">
+                                <span>Ana Sayfa</span>
+                                <span>Kurumsal</span>
+                                <span>Galeri</span>
+                            </div>
+                        </div>
+                        <div class="text-center space-y-1">
+                            <div class="w-20 h-[1px] bg-amber-300 mx-auto"></div>
+                            <div class="font-playfair text-amber-900 text-xs">Zamansız Değerler</div>
+                            <div class="w-20 h-[1px] bg-amber-300 mx-auto"></div>
+                        </div>
+                        <div class="flex justify-center">
+                            <div class="w-16 h-4 border border-amber-700 flex items-center justify-center">
+                                <span class="text-[5px] text-amber-700 tracking-widest">DAHA FAZLA</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-5 relative">
+                        <h3 class="font-semibold text-lg mb-2">Klasik / Geleneksel</h3>
+                        <p class="text-slate-400 text-sm">Serif fontlar, simetri, zamansız estetik. Köklü kurumlar için.</p>
+                        <div class="mt-3 text-xs text-slate-500">
+                            <i class="fas fa-check mr-1 text-emerald-500"></i> Hukuk, Vakıf, Köklü Şirket
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lüks / Premium -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-violet-800/50 transition group cursor-pointer">
+                    <div class="h-40 bg-slate-950 p-4 flex flex-col justify-between relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent"></div>
+                        <div class="relative flex justify-between items-center">
+                            <div class="font-playfair text-amber-400 text-[10px] tracking-widest">LUXE</div>
+                            <div class="flex gap-3 text-[6px] text-slate-500">
+                                <span>Collection</span>
+                                <span>Atelier</span>
+                                <span>Contact</span>
+                            </div>
+                        </div>
+                        <div class="relative text-center space-y-2">
+                            <div class="font-playfair text-white text-sm tracking-wide">Exceptional</div>
+                            <div class="w-12 h-[1px] bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto"></div>
+                        </div>
+                        <div class="relative flex justify-center">
+                            <div class="px-4 py-1 border border-amber-500/50 text-[6px] text-amber-400 tracking-widest">
+                                DISCOVER
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-5 relative">
+                        <h3 class="font-semibold text-lg mb-2">Lüks / Premium</h3>
+                        <p class="text-slate-400 text-sm">Altın detaylar, koyu arka plan, rafine tipografi. Yüksek segment.</p>
+                        <div class="mt-3 text-xs text-slate-500">
+                            <i class="fas fa-check mr-1 text-emerald-500"></i> Otel, Mücevher, Moda
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Industrial -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-violet-800/50 transition group cursor-pointer">
+                    <div class="h-40 bg-zinc-800 p-4 flex flex-col justify-between">
+                        <div class="flex justify-between items-center">
+                            <div class="font-space text-orange-500 text-[9px] font-bold">INDUSTRIAL</div>
+                            <div class="flex gap-1">
+                                <div class="w-4 h-4 border border-zinc-600"></div>
+                                <div class="w-4 h-4 border border-zinc-600"></div>
+                                <div class="w-4 h-4 bg-orange-500"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="w-36 h-3 bg-white font-space"></div>
+                            <div class="w-28 h-1.5 bg-zinc-600"></div>
+                        </div>
+                        <div class="flex gap-2">
+                            <div class="w-20 h-5 bg-orange-500 flex items-center justify-center">
+                                <span class="text-[6px] text-white font-bold">ÜRÜNLER</span>
+                            </div>
+                            <div class="w-5 h-5 border border-zinc-500 flex items-center justify-center">
+                                <span class="text-[8px] text-zinc-400">→</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-5 relative">
+                        <h3 class="font-semibold text-lg mb-2">Endüstriyel / Structural</h3>
+                        <p class="text-slate-400 text-sm">Sert çizgiler, güçlü bloklar, teknik güven. Metal/beton hissi.</p>
+                        <div class="mt-3 text-xs text-slate-500">
+                            <i class="fas fa-check mr-1 text-emerald-500"></i> Fabrika, Madencilik, İnşaat
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tech / SaaS -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-violet-800/50 transition group cursor-pointer">
+                    <div class="h-40 bg-gradient-to-br from-indigo-950 to-slate-900 p-4 flex flex-col justify-between relative">
+                        <div class="absolute top-4 right-4 w-16 h-16 bg-indigo-500/20 rounded-full blur-xl"></div>
+                        <div class="relative flex justify-between items-center">
+                            <div class="flex items-center gap-1">
+                                <div class="w-4 h-4 bg-indigo-500 rounded"></div>
+                                <span class="text-white text-[8px] font-semibold">TechFlow</span>
+                            </div>
+                            <div class="flex gap-2 text-[6px] text-slate-400">
+                                <span>Features</span>
+                                <span>Pricing</span>
+                                <span>Docs</span>
+                            </div>
+                        </div>
+                        <div class="relative space-y-2">
+                            <div class="text-white text-[10px] font-semibold">Build faster.</div>
+                            <div class="w-28 h-1 bg-slate-700 rounded"></div>
+                        </div>
+                        <div class="relative flex gap-2">
+                            <div class="px-3 py-1 bg-indigo-500 rounded text-[6px] text-white">Get Started</div>
+                            <div class="px-3 py-1 border border-slate-600 rounded text-[6px] text-slate-400">Demo</div>
+                        </div>
+                    </div>
+                    <div class="p-5 relative">
+                        <h3 class="font-semibold text-lg mb-2">Tech / SaaS</h3>
+                        <p class="text-slate-400 text-sm">Gradientler, blur efektler, modern UI. Yazılım ve teknoloji.</p>
+                        <div class="mt-3 text-xs text-slate-500">
+                            <i class="fas fa-check mr-1 text-emerald-500"></i> Yazılım, SaaS, Startup
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Editorial -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-violet-800/50 transition group cursor-pointer">
+                    <div class="h-40 bg-stone-100 p-4 flex flex-col justify-between">
+                        <div class="flex justify-between items-start">
+                            <div class="font-playfair text-stone-900 text-lg font-bold leading-none">Ed.</div>
+                            <div class="text-[6px] text-stone-500 text-right">
+                                <div>SAYI 47</div>
+                                <div>2024</div>
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="font-playfair text-stone-900 text-[11px] font-semibold leading-tight">Tasarımın<br/>Geleceği</div>
+                            <div class="w-8 h-[1px] bg-stone-900"></div>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <div class="text-[5px] text-stone-500 uppercase tracking-widest">Devamını Oku →</div>
+                            <div class="w-8 h-8 bg-stone-900"></div>
+                        </div>
+                    </div>
+                    <div class="p-5 relative">
+                        <h3 class="font-semibold text-lg mb-2">Editorial / Swiss Grid</h3>
+                        <p class="text-slate-400 text-sm">Tipografi odaklı, dergi estetiği, güçlü grid sistemi.</p>
+                        <div class="mt-3 text-xs text-slate-500">
+                            <i class="fas fa-check mr-1 text-emerald-500"></i> Yayıncılık, Ajans, Kültür
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Warm Service -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-violet-800/50 transition group cursor-pointer">
+                    <div class="h-40 bg-gradient-to-br from-orange-50 to-amber-100 p-4 flex flex-col justify-between">
+                        <div class="flex justify-between items-center">
+                            <div class="text-orange-600 text-[9px] font-semibold">Sıcak Eller</div>
+                            <div class="flex gap-2 text-[6px] text-orange-400">
+                                <span>Hizmetler</span>
+                                <span>Hakkımızda</span>
+                                <span>İletişim</span>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="text-orange-900 text-[11px] font-medium">Sizin için buradayız</div>
+                            <div class="w-24 h-1 bg-orange-200 rounded-full"></div>
+                        </div>
+                        <div class="flex gap-2">
+                            <div class="px-3 py-1.5 bg-orange-500 rounded-full text-[6px] text-white">Randevu Al</div>
+                            <div class="px-3 py-1.5 bg-white/80 rounded-full text-[6px] text-orange-600">Bizi Tanı</div>
+                        </div>
+                    </div>
+                    <div class="p-5 relative">
+                        <h3 class="font-semibold text-lg mb-2">Warm / Samimi</h3>
+                        <p class="text-slate-400 text-sm">Sıcak renkler, yumuşak köşeler, insan odaklı. Güler yüzlü ton.</p>
+                        <div class="mt-3 text-xs text-slate-500">
+                            <i class="fas fa-check mr-1 text-emerald-500"></i> Sağlık, Eğitim, Sosyal Hizmet
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- ALTERNATİF TASARIM TÜRLERİ -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+
+        <section class="mb-20 pt-12 border-t border-slate-800">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-gradient-to-br from-pink-600 to-rose-600 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-wand-magic-sparkles text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold">Alternatif Tasarım Türleri</h2>
+                    <p class="text-slate-400 text-sm">Özel projeler ve farklı yaklaşımlar için stil seçenekleri</p>
+                </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+
+                <!-- Glassmorphism -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-pink-800/50 transition cursor-pointer">
+                    <div class="h-32 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 p-3 flex flex-col justify-between relative">
+                        <div class="absolute inset-2 bg-white/20 backdrop-blur-md rounded-lg border border-white/30"></div>
+                        <div class="relative z-10 flex justify-between items-center px-2 pt-1">
+                            <div class="w-4 h-4 bg-white/30 rounded-full backdrop-blur"></div>
+                            <div class="flex gap-1">
+                                <div class="w-6 h-1 bg-white/40 rounded"></div>
+                                <div class="w-6 h-1 bg-white/40 rounded"></div>
+                            </div>
+                        </div>
+                        <div class="relative z-10 px-2 pb-1">
+                            <div class="w-16 h-2 bg-white/50 rounded mb-1"></div>
+                            <div class="w-12 h-1 bg-white/30 rounded"></div>
+                        </div>
+                    </div>
+                    <div class="p-4 relative">
+                        <h3 class="font-medium mb-1">Glassmorphism</h3>
+                        <p class="text-slate-500 text-xs">Buzlu cam efekti, blur, yarı şeffaf katmanlar.</p>
+                    </div>
+                </div>
+
+                <!-- Neumorphism -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-pink-800/50 transition cursor-pointer">
+                    <div class="h-32 bg-slate-200 p-3 flex items-center justify-center">
+                        <div class="w-20 h-20 bg-slate-200 rounded-2xl flex items-center justify-center" style="box-shadow: 8px 8px 16px #b8b8b8, -8px -8px 16px #ffffff;">
+                            <div class="w-10 h-10 bg-slate-200 rounded-xl" style="box-shadow: inset 4px 4px 8px #b8b8b8, inset -4px -4px 8px #ffffff;"></div>
+                        </div>
+                    </div>
+                    <div class="p-4 relative">
+                        <h3 class="font-medium mb-1">Neumorphism</h3>
+                        <p class="text-slate-500 text-xs">Yumuşak gölgeler, içe/dışa basan efekt, soft UI.</p>
+                    </div>
+                </div>
+
+                <!-- Gradient / Aurora -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-pink-800/50 transition cursor-pointer">
+                    <div class="h-32 bg-slate-950 p-3 flex flex-col justify-between relative overflow-hidden">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br from-violet-500 via-purple-500 to-pink-500 rounded-full blur-2xl opacity-60"></div>
+                        <div class="absolute -bottom-10 -left-10 w-24 h-24 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full blur-2xl opacity-50"></div>
+                        <div class="relative z-10">
+                            <div class="w-12 h-1.5 bg-gradient-to-r from-violet-400 to-pink-400 rounded"></div>
+                        </div>
+                        <div class="relative z-10">
+                            <div class="text-white text-[10px] font-semibold bg-gradient-to-r from-violet-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">Gradient Magic</div>
+                        </div>
+                    </div>
+                    <div class="p-4 relative">
+                        <h3 class="font-medium mb-1">Gradient / Aurora</h3>
+                        <p class="text-slate-500 text-xs">Canlı gradientler, blur glow, kozmik hissi.</p>
+                    </div>
+                </div>
+
+                <!-- Dark Mode -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-pink-800/50 transition cursor-pointer">
+                    <div class="h-32 bg-zinc-950 p-3 flex flex-col justify-between">
+                        <div class="flex justify-between items-center">
+                            <div class="w-6 h-6 border border-zinc-700 rounded-lg flex items-center justify-center">
+                                <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                            </div>
+                            <div class="flex gap-1.5">
+                                <div class="w-8 h-1 bg-zinc-800 rounded"></div>
+                                <div class="w-8 h-1 bg-zinc-800 rounded"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-1.5">
+                            <div class="w-20 h-2 bg-white rounded"></div>
+                            <div class="w-28 h-1 bg-zinc-700 rounded"></div>
+                        </div>
+                        <div class="flex gap-2">
+                            <div class="px-2 py-1 bg-white rounded text-[5px] text-black font-medium">Action</div>
+                            <div class="px-2 py-1 border border-zinc-700 rounded text-[5px] text-zinc-400">More</div>
+                        </div>
+                    </div>
+                    <div class="p-4 relative">
+                        <h3 class="font-medium mb-1">Dark Mode Ağırlıklı</h3>
+                        <p class="text-slate-500 text-xs">Koyu tema dominant, beyaz aksanlar, modern kontrast.</p>
+                    </div>
+                </div>
+
+                <!-- Brutalist -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-pink-800/50 transition cursor-pointer">
+                    <div class="h-32 bg-yellow-300 p-3 flex flex-col justify-between">
+                        <div class="text-black text-[18px] font-black leading-none">BRUT.</div>
+                        <div class="border-2 border-black p-1">
+                            <div class="text-black text-[6px] font-mono">NO BULLSHIT DESIGN</div>
+                        </div>
+                        <div class="flex gap-1">
+                            <div class="px-2 py-1 bg-black text-yellow-300 text-[6px] font-bold">ENTER</div>
+                            <div class="px-2 py-1 border-2 border-black text-[6px] font-bold">INFO</div>
+                        </div>
+                    </div>
+                    <div class="p-4 relative">
+                        <h3 class="font-medium mb-1">Brutalist</h3>
+                        <p class="text-slate-500 text-xs">Ham estetik, sert kontrastlar, anti-tasarım.</p>
+                    </div>
+                </div>
+
+                <!-- Neo-Brutalist -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-pink-800/50 transition cursor-pointer">
+                    <div class="h-32 bg-lime-400 p-3 flex flex-col justify-between">
+                        <div class="flex justify-between">
+                            <div class="w-8 h-8 bg-black rounded-full border-2 border-black shadow-[3px_3px_0_0_#000]"></div>
+                            <div class="flex gap-1">
+                                <div class="px-1.5 py-0.5 bg-white border-2 border-black text-[5px] font-bold shadow-[2px_2px_0_0_#000]">Menu</div>
+                            </div>
+                        </div>
+                        <div class="bg-white border-2 border-black p-2 shadow-[4px_4px_0_0_#000]">
+                            <div class="text-[8px] font-black">BOLD & PLAYFUL</div>
+                        </div>
+                    </div>
+                    <div class="p-4 relative">
+                        <h3 class="font-medium mb-1">Neo-Brutalist</h3>
+                        <p class="text-slate-500 text-xs">Kalın borderlar, offset gölgeler, canlı renkler.</p>
+                    </div>
+                </div>
+
+                <!-- Bento UI -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-pink-800/50 transition cursor-pointer">
+                    <div class="h-32 bg-slate-100 p-2 grid grid-cols-3 grid-rows-2 gap-1">
+                        <div class="col-span-2 bg-slate-800 rounded-lg"></div>
+                        <div class="bg-blue-500 rounded-lg"></div>
+                        <div class="bg-emerald-500 rounded-lg"></div>
+                        <div class="bg-slate-300 rounded-lg"></div>
+                        <div class="bg-orange-400 rounded-lg"></div>
+                    </div>
+                    <div class="p-4 relative">
+                        <h3 class="font-medium mb-1">Bento UI</h3>
+                        <p class="text-slate-500 text-xs">Grid kutular, farklı boyutlar, modüler yapı.</p>
+                    </div>
+                </div>
+
+                <!-- Bold Typography -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-pink-800/50 transition cursor-pointer">
+                    <div class="h-32 bg-white p-3 flex flex-col justify-center">
+                        <div class="text-black text-[22px] font-black leading-none tracking-tighter">BIG</div>
+                        <div class="text-black text-[22px] font-black leading-none tracking-tighter">TYPE.</div>
+                        <div class="w-8 h-0.5 bg-black mt-2"></div>
+                    </div>
+                    <div class="p-4 relative">
+                        <h3 class="font-medium mb-1">Bold Typography</h3>
+                        <p class="text-slate-500 text-xs">Dev başlıklar, tipografi hero, minimal görsel.</p>
+                    </div>
+                </div>
+
+                <!-- Asimetrik -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-pink-800/50 transition cursor-pointer">
+                    <div class="h-32 bg-stone-100 p-3 relative">
+                        <div class="absolute top-2 left-2 w-12 h-8 bg-stone-800"></div>
+                        <div class="absolute top-6 right-4 w-8 h-12 bg-rose-400"></div>
+                        <div class="absolute bottom-3 left-8 w-16 h-6 bg-stone-300"></div>
+                        <div class="absolute bottom-2 right-2 text-[6px] text-stone-500">asymmetry</div>
+                    </div>
+                    <div class="p-4 relative">
+                        <h3 class="font-medium mb-1">Asimetrik</h3>
+                        <p class="text-slate-500 text-xs">Dengesiz ama dengeli, yaratıcı yerleşim, dinamik.</p>
+                    </div>
+                </div>
+
+                <!-- Grid Based -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-pink-800/50 transition cursor-pointer">
+                    <div class="h-32 bg-white p-2 grid grid-cols-4 grid-rows-3 gap-0.5">
+                        <div class="bg-slate-900"></div>
+                        <div class="bg-slate-200"></div>
+                        <div class="bg-slate-900"></div>
+                        <div class="bg-slate-200"></div>
+                        <div class="bg-slate-200"></div>
+                        <div class="bg-slate-900 col-span-2"></div>
+                        <div class="bg-slate-200"></div>
+                        <div class="bg-slate-900"></div>
+                        <div class="bg-slate-200"></div>
+                        <div class="bg-slate-200"></div>
+                        <div class="bg-slate-900"></div>
+                    </div>
+                    <div class="p-4 relative">
+                        <h3 class="font-medium mb-1">Grid Based</h3>
+                        <p class="text-slate-500 text-xs">Katı ızgara sistemi, matematiksel düzen, Swiss style.</p>
+                    </div>
+                </div>
+
+                <!-- Storytelling -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-pink-800/50 transition cursor-pointer">
+                    <div class="h-32 bg-gradient-to-b from-indigo-900 via-purple-900 to-slate-900 p-3 flex flex-col justify-between">
+                        <div class="text-center">
+                            <div class="text-white/60 text-[6px]">Chapter 01</div>
+                            <div class="text-white text-[9px] font-medium">Başlangıç</div>
+                        </div>
+                        <div class="flex justify-center gap-1">
+                            <div class="w-1 h-1 bg-white rounded-full"></div>
+                            <div class="w-1 h-1 bg-white/40 rounded-full"></div>
+                            <div class="w-1 h-1 bg-white/40 rounded-full"></div>
+                        </div>
+                        <div class="text-center text-white/40 text-[5px]">↓ Scroll to explore</div>
+                    </div>
+                    <div class="p-4 relative">
+                        <h3 class="font-medium mb-1">Storytelling / Scrollytelling</h3>
+                        <p class="text-slate-500 text-xs">Hikaye anlatımı, scroll ile deneyim, immersive.</p>
+                    </div>
+                </div>
+
+                <!-- Fotoğraf Ağırlıklı -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-pink-800/50 transition cursor-pointer">
+                    <div class="h-32 bg-gradient-to-br from-slate-700 to-slate-800 p-3 flex flex-col justify-end relative">
+                        <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22100%22%20height%3D%22100%22%3E%3Crect%20fill%3D%22%23555%22%20width%3D%22100%22%20height%3D%22100%22/%3E%3C/svg%3E')] bg-cover opacity-50"></div>
+                        <div class="relative z-10 bg-black/50 backdrop-blur-sm p-2 -mx-3 -mb-3">
+                            <div class="w-16 h-1.5 bg-white rounded mb-1"></div>
+                            <div class="w-24 h-1 bg-white/50 rounded"></div>
+                        </div>
+                    </div>
+                    <div class="p-4 relative">
+                        <h3 class="font-medium mb-1">Fotoğraf Ağırlıklı</h3>
+                        <p class="text-slate-500 text-xs">Büyük görseller, overlay text, visual-first.</p>
+                    </div>
+                </div>
+
+                <!-- İllüstrasyon -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-pink-800/50 transition cursor-pointer">
+                    <div class="h-32 bg-amber-50 p-3 flex flex-col justify-between relative">
+                        <div class="absolute top-4 right-4 w-10 h-10 border-2 border-amber-400 rounded-full"></div>
+                        <div class="absolute bottom-8 right-8 w-6 h-6 bg-rose-300 rounded-full"></div>
+                        <div class="absolute bottom-4 left-4 w-12 h-4 bg-emerald-300 rounded-full"></div>
+                        <div class="relative z-10">
+                            <div class="text-amber-900 text-[8px] font-semibold">Illustrated</div>
+                        </div>
+                        <div class="relative z-10">
+                            <div class="w-12 h-3 bg-amber-900 rounded"></div>
+                        </div>
+                    </div>
+                    <div class="p-4 relative">
+                        <h3 class="font-medium mb-1">İllüstrasyon Ağırlıklı</h3>
+                        <p class="text-slate-500 text-xs">Özel çizimler, karakterler, sanatsal dokunuş.</p>
+                    </div>
+                </div>
+
+                <!-- Retro -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-pink-800/50 transition cursor-pointer">
+                    <div class="h-32 bg-orange-100 p-3 flex flex-col justify-between border-4 border-orange-800">
+                        <div class="text-orange-800 text-[12px] font-bold" style="font-family: serif;">RETRO</div>
+                        <div class="flex gap-1">
+                            <div class="w-4 h-4 bg-orange-600 rounded-full"></div>
+                            <div class="w-4 h-4 bg-teal-600 rounded-full"></div>
+                            <div class="w-4 h-4 bg-amber-500 rounded-full"></div>
+                        </div>
+                        <div class="text-orange-700 text-[6px] tracking-widest">EST. 1975</div>
+                    </div>
+                    <div class="p-4 relative">
+                        <h3 class="font-medium mb-1">Retro / Vintage</h3>
+                        <p class="text-slate-500 text-xs">Nostaljik renkler, eski tipografi, 70s-80s vibes.</p>
+                    </div>
+                </div>
+
+                <!-- Playful -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-pink-800/50 transition cursor-pointer">
+                    <div class="h-32 bg-gradient-to-br from-pink-400 via-purple-400 to-cyan-400 p-3 flex flex-col justify-between">
+                        <div class="flex gap-1">
+                            <div class="w-4 h-4 bg-yellow-300 rounded-full"></div>
+                            <div class="w-4 h-4 bg-white rounded-lg rotate-12"></div>
+                        </div>
+                        <div class="text-white text-[14px] font-black">FUN!</div>
+                        <div class="flex gap-1">
+                            <div class="px-2 py-0.5 bg-white rounded-full text-[6px] font-bold text-purple-600">Play</div>
+                            <div class="px-2 py-0.5 bg-yellow-300 rounded-full text-[6px] font-bold text-purple-600">Start</div>
+                        </div>
+                    </div>
+                    <div class="p-4 relative">
+                        <h3 class="font-medium mb-1">Playful / Eğlenceli</h3>
+                        <p class="text-slate-500 text-xs">Canlı renkler, yuvarlak formlar, enerjik.</p>
+                    </div>
+                </div>
+
+                <!-- Data-viz -->
+                <div class="card-item bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-pink-800/50 transition cursor-pointer">
+                    <div class="h-32 bg-slate-800 p-3 flex flex-col justify-between">
+                        <div class="flex justify-between items-center">
+                            <div class="text-white text-[7px] font-medium">Analytics</div>
+                            <div class="text-emerald-400 text-[6px]">+24%</div>
+                        </div>
+                        <div class="flex items-end gap-0.5 h-10">
+                            <div class="w-2 bg-emerald-500/60 rounded-t" style="height: 30%"></div>
+                            <div class="w-2 bg-emerald-500/60 rounded-t" style="height: 50%"></div>
+                            <div class="w-2 bg-emerald-500/60 rounded-t" style="height: 40%"></div>
+                            <div class="w-2 bg-emerald-500/60 rounded-t" style="height: 70%"></div>
+                            <div class="w-2 bg-emerald-500 rounded-t" style="height: 90%"></div>
+                            <div class="w-2 bg-emerald-500/60 rounded-t" style="height: 60%"></div>
+                        </div>
+                        <div class="flex gap-2">
+                            <div class="w-8 h-4 bg-slate-700 rounded text-[5px] text-slate-400 flex items-center justify-center">Day</div>
+                            <div class="w-8 h-4 bg-slate-700 rounded text-[5px] text-slate-400 flex items-center justify-center">Week</div>
+                        </div>
+                    </div>
+                    <div class="p-4 relative">
+                        <h3 class="font-medium mb-1">Data-viz / Dashboard</h3>
+                        <p class="text-slate-500 text-xs">Grafikler, metrikler, bilgi görselleştirme.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- SEKTÖR ÖRNEKLERİ -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+
+        <section class="pt-12 border-t border-slate-800">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-gradient-to-br from-emerald-600 to-teal-600 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-th-large text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold">Sektör Örnekleri</h2>
+                    <p class="text-slate-400 text-sm">Promptta "sektör: ..." olarak kullanabileceğin alanlar</p>
+                </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+
+                <!-- Sağlık -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">🏥</span>
+                        <h3 class="font-medium">Sağlık</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Hastane, klinik, diş, estetik, laboratuvar, medikal cihaz, eczane, fizyoterapi</p>
+                </div>
+
+                <!-- Eğitim -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">🎓</span>
+                        <h3 class="font-medium">Eğitim</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Kolej, üniversite, kurs, dil okulu, e-öğrenme, kreş, özel okul, sertifika programı</p>
+                </div>
+
+                <!-- Üretim/Sanayi -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">🏭</span>
+                        <h3 class="font-medium">Üretim / Sanayi</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Fabrika, OEM, makine, otomotiv yan sanayi, tekstil, metal, ambalaj, kimya</p>
+                </div>
+
+                <!-- Geri Dönüşüm/Çevre -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">♻️</span>
+                        <h3 class="font-medium">Geri Dönüşüm / Çevre</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Atık yönetimi, geri dönüşüm tesisi, sürdürülebilirlik, çevre danışmanlığı</p>
+                </div>
+
+                <!-- Madencilik/İnşaat -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">⛏️</span>
+                        <h3 class="font-medium">Madencilik / İnşaat</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Maden, taş ocağı, altyapı, müteahhitlik, hazır beton, yapı malzemesi</p>
+                </div>
+
+                <!-- Enerji -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">⚡</span>
+                        <h3 class="font-medium">Enerji</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Güneş, rüzgar, elektrik dağıtım, enerji verimliliği, doğalgaz, petrol</p>
+                </div>
+
+                <!-- Gıda/Restoran -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">🍽️</span>
+                        <h3 class="font-medium">Gıda / Restoran</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Restoran zinciri, kafe, catering, gıda üretim tesisi, içecek, pastane</p>
+                </div>
+
+                <!-- Lojistik/Depolama -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">🚛</span>
+                        <h3 class="font-medium">Lojistik / Depolama</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Nakliye, depolama, fulfilment, soğuk zincir, kargo, antrepo, gümrük</p>
+                </div>
+
+                <!-- Belediyecilik/Kamu -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">🏛️</span>
+                        <h3 class="font-medium">Belediyecilik / Kamu</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Belediye, iştirak, kültür-sanat, sosyal hizmet, valilik, kaymakamlık</p>
+                </div>
+
+                <!-- Finans -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">💰</span>
+                        <h3 class="font-medium">Finans</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Muhasebe, denetim, danışmanlık, fintech, yatırım, banka, portföy yönetimi</p>
+                </div>
+
+                <!-- Sigorta -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">🛡️</span>
+                        <h3 class="font-medium">Sigorta</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Acenta, broker, kurumsal sigorta, bireysel sigorta, hasar yönetimi</p>
+                </div>
+
+                <!-- Gayrimenkul -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">🏠</span>
+                        <h3 class="font-medium">Gayrimenkul</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">İnşaat firması, emlak, proje geliştirme, AVM, residence, arsa satışı</p>
+                </div>
+
+                <!-- Turizm/Otelcilik -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">🏨</span>
+                        <h3 class="font-medium">Turizm / Otelcilik</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Otel, tur operatörü, acenta, kongre merkezi, termal, butik otel</p>
+                </div>
+
+                <!-- Yazılım/IT -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">💻</span>
+                        <h3 class="font-medium">Yazılım / IT</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">SaaS, siber güvenlik, ajans, danışmanlık, mobil uygulama, veri merkezi</p>
+                </div>
+
+                <!-- Pazarlama/Medya -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">📺</span>
+                        <h3 class="font-medium">Pazarlama / Medya</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Ajans, prodüksiyon, yayıncılık, gazete, dergi, podcast, influencer yönetimi</p>
+                </div>
+
+                <!-- Hukuk -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">⚖️</span>
+                        <h3 class="font-medium">Hukuk</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Hukuk bürosu, arabuluculuk, danışmanlık, noter, patent/marka</p>
+                </div>
+
+                <!-- Mühendislik -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">⚙️</span>
+                        <h3 class="font-medium">Mühendislik</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Proje, otomasyon, mekanik/elektrik, AR-GE, mimarlık, iç mimari</p>
+                </div>
+
+                <!-- Tarım/Hayvancılık -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">🌾</span>
+                        <h3 class="font-medium">Tarım / Hayvancılık</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Çiftlik, üretici birlikleri, gıda tedariki, organik, sera, balıkçılık</p>
+                </div>
+
+                <!-- E-ticaret/Perakende -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">🛒</span>
+                        <h3 class="font-medium">E-ticaret / Perakende</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Marka, distribütör, zincir mağaza, kozmetik, giyim, elektronik</p>
+                </div>
+
+                <!-- Sağlık dışı hizmet -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">🔧</span>
+                        <h3 class="font-medium">Sağlık Dışı Hizmet</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Temizlik, güvenlik, insan kaynakları, bakım, organizasyon, danışmanlık</p>
+                </div>
+
+                <!-- STK/Vakıf -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">🤝</span>
+                        <h3 class="font-medium">STK / Vakıf</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Dernek, vakıf, sosyal sorumluluk, hayır kurumu, yardım organizasyonu</p>
+                </div>
+
+                <!-- Spor/Wellness -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">🏋️</span>
+                        <h3 class="font-medium">Spor / Wellness</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Spor salonu, kulüp, fizyoterapi, wellness, spa, yoga, pilates</p>
+                </div>
+
+                <!-- Otomotiv -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">🚗</span>
+                        <h3 class="font-medium">Otomotiv</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Servis, bayi, kiralama, filo, yedek parça, lastik, akaryakıt</p>
+                </div>
+
+                <!-- Kimya/Plastik -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">🧪</span>
+                        <h3 class="font-medium">Kimya / Plastik</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">Kimyasal üretim, ambalaj, polimer, boya, deterjan, kozmetik hammadde</p>
+                </div>
+
+                <!-- İK/Recruitment -->
+                <div class="card-item bg-slate-900/50 border border-slate-800 rounded-lg p-5 hover:border-emerald-800/50 transition cursor-pointer relative">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">👔</span>
+                        <h3 class="font-medium">İK / Recruitment</h3>
+                    </div>
+                    <p class="text-sm text-slate-500">İşe alım, bordro, danışmanlık, headhunting, yetenek yönetimi</p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 mt-16">
+        <div class="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between text-sm text-slate-500">
+            <a href="/design/templates/" class="hover:text-white transition">
+                <i class="fas fa-arrow-left mr-1"></i> Hazır Taslaklar'a Dön
+            </a>
+            <span>tuufi.com</span>
+        </div>
+    </footer>
+
+    <script>
+    // Toast göster
+    function showToast(text) {
+        const toast = document.getElementById('toast');
+        toast.querySelector('span').textContent = `"${text}" kopyalandı!`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    // Kartlara tıklama - başlığı kopyala
+    document.querySelectorAll('.card-item').forEach(card => {
+        card.addEventListener('click', function() {
+            const title = this.querySelector('h3').textContent.trim().toLowerCase();
+            navigator.clipboard.writeText(title).then(() => showToast(title));
+        });
+    });
+    </script>
+
+</body>
+</html>

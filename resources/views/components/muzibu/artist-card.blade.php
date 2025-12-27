@@ -1,22 +1,11 @@
-@props(['artist', 'preview' => false, 'compact' => false])
+@props(['artist', 'compact' => false])
 
 {{-- Muzibu Artist Card Component --}}
 {{-- Usage: <x-muzibu.artist-card :artist="$artist" /> --}}
 {{-- STANDARD PATTERN: Same layout as playlist/album/genre cards --}}
 
-<a @if($preview)
-       href="/artists/{{ $artist->getTranslation('slug', app()->getLocale()) }}"
-       @click="if (window.innerWidth >= 768) { $event.preventDefault(); $store.sidebar.showPreview('artist', {{ $artist->artist_id }}, {
-           type: 'Artist',
-           id: {{ $artist->artist_id }},
-           title: '{{ addslashes($artist->getTranslation('title', app()->getLocale())) }}',
-           slug: '{{ $artist->getTranslation('slug', app()->getLocale()) }}',
-           cover: '{{ $artist->photoMedia ? thumb($artist->photoMedia, 300, 300, ['scale' => 1]) : '' }}',
-           is_favorite: {{ is_favorited('artist', $artist->artist_id) ? 'true' : 'false' }}
-       }); }"
-   @else
-       href="/artists/{{ $artist->getTranslation('slug', app()->getLocale()) }}"
-   @endif
+<a href="/artists/{{ $artist->getTranslation('slug', app()->getLocale()) }}"
+   data-spa
    data-artist-id="{{ $artist->artist_id }}"
    data-context-type="artist"
    x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'artist', {

@@ -52,7 +52,7 @@
     @if($albums && $albums->count() > 0)
         <div class="mb-8">
             <h2 class="text-2xl font-bold text-white mb-4">Albümler</h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4">
                 @foreach($albums as $album)
                     <x-muzibu.album-card :album="$album" :preview="true" />
                 @endforeach

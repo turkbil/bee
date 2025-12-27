@@ -738,6 +738,17 @@
                 closeMobileMenu();
             }
         });
+
+        // Close mobile menu on resize to desktop (fixes overlay stuck bug)
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (window.innerWidth >= 1024) {
+                    closeMobileMenu();
+                }
+            }, 100);
+        });
     </script>
 
     {{-- 🎯 Livewire Navigation Hook - Alpine Re-Init --}}

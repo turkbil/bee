@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Laravel\Facades\Image;
+use Modules\MediaManagement\App\Services\ThumbnailManager;
 
 /**
  * Universal Thumbmaker Controller
@@ -26,6 +27,8 @@ use Intervention\Image\Laravel\Facades\Image;
  * - s: Ölçeklendirme (scale: 0=fit, 1=fill, 2=stretch, varsayılan: 0)
  * - f: Format (format: webp, jpg, png, varsayılan: webp)
  * - c: Cache (cache: 0=hayır, 1=evet, varsayılan: 1)
+ *
+ * v2.0: ThumbnailManager entegrasyonu - cache varsa redirect, yoksa işle
  */
 class ThumbmakerController extends Controller
 {
@@ -55,6 +58,23 @@ class ThumbmakerController extends Controller
             return $this->errorResponse('width (w) veya height (h) parametrelerinden en az biri belirtilmelidir', 400);
         }
 
+        // =====================================================
+        // v2.0: ThumbnailManager ile dene (local dosyalar için)
+        // =====================================================
+        if ($useCache) {
+            $managerUrl = $this->tryThumbnailManager($src, $width, $height, $quality, $scale, $format);
+            if ($managerUrl) {
+                // ThumbnailManager başarılı - static URL'ye redirect
+                return redirect($managerUrl, 302)
+                    ->header('Cache-Control', 'public, max-age=' . $this->cacheDuration)
+                    ->header('X-Thumbmaker-Cache', 'MANAGER-REDIRECT');
+            }
+        }
+
+        // =====================================================
+        // Fallback: Eski yöntem (URL'ler veya Manager başarısız)
+        // =====================================================
+
         // Cache key oluştur
         $cacheKey = 'thumbmaker.' . md5($src . $width . $height . $quality . $alignment . $scale . $format);
         $cacheHash = md5($src . $width . $height . $quality . $alignment . $scale . $format);
@@ -71,13 +91,10 @@ class ThumbmakerController extends Controller
 
         // 1. Fiziksel dosya var mı kontrol et (en hızlı)
         if ($useCache && file_exists($staticAbsolutePath)) {
-            // ⚡ Static file direkt serve et
-            $mimeType = 'image/' . ($format === 'jpg' ? 'jpeg' : $format);
-            return response()->file($staticAbsolutePath, [
-                'Content-Type' => $mimeType,
-                'Cache-Control' => 'public, max-age=' . $this->cacheDuration,
-                'X-Thumbmaker-Cache' => 'STATIC',
-            ]);
+            // ⚡ v2.0: Static URL'ye redirect (browser cache'ler)
+            return redirect($staticUrl, 302)
+                ->header('Cache-Control', 'public, max-age=' . $this->cacheDuration)
+                ->header('X-Thumbmaker-Cache', 'STATIC-REDIRECT');
         }
 
         // 2. Laravel Cache'den kontrol et
@@ -165,6 +182,76 @@ class ThumbmakerController extends Controller
         } catch (\Exception $e) {
             return $this->errorResponse('Görsel işlenemedi: ' . $e->getMessage(), 500);
         }
+    }
+
+    /**
+     * ThumbnailManager ile işlemeyi dene (local dosyalar için)
+     * Başarılı olursa static URL döner, başarısız olursa null
+     */
+    protected function tryThumbnailManager(string $src, ?int $width, ?int $height, int $quality, int $scale, string $format): ?string
+    {
+        try {
+            // URL ise ThumbnailManager kullanamayız, null dön
+            if (filter_var($src, FILTER_VALIDATE_URL)) {
+                // URL'den local path çıkar (kendi domain'imiz mi?)
+                $localPath = $this->urlToLocalPath($src);
+                if (!$localPath) {
+                    return null; // Harici URL, fallback kullan
+                }
+                $src = $localPath;
+            }
+
+            // Fit mode'u ThumbnailManager formatına çevir
+            $fit = match ($scale) {
+                1 => 'crop',     // Fill/Cover
+                2 => 'stretch',  // Stretch
+                default => 'max' // Fit
+            };
+
+            // ThumbnailManager'ı çağır
+            $manager = app(ThumbnailManager::class);
+            $url = $manager->url($src, [
+                'width' => $width,
+                'height' => $height,
+                'quality' => $quality,
+                'format' => $format,
+                'fit' => $fit,
+            ]);
+
+            // URL döndüyse başarılı
+            return $url ?: null;
+
+        } catch (\Exception $e) {
+            // Hata olursa sessizce fallback'e geç
+            \Log::debug('ThumbnailManager fallback', [
+                'src' => $src,
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * URL'yi local path'e çevir (kendi domain'imiz ise)
+     */
+    protected function urlToLocalPath(string $url): ?string
+    {
+        $parsedUrl = parse_url($url);
+        $host = $parsedUrl['host'] ?? '';
+        $path = $parsedUrl['path'] ?? '';
+
+        // Kendi domain'imiz mi?
+        $allowedHosts = $this->getAllowedHosts();
+        if (!in_array($host, $allowedHosts)) {
+            return null;
+        }
+
+        // /storage/ URL'sini local path'e çevir
+        if (preg_match('#^/storage/(?:tenant\d+/)?(.+)$#', $path, $matches)) {
+            return $matches[1]; // thumbmaker-cache/xxx.webp veya 2028/xxx.jpg
+        }
+
+        return null;
     }
 
     /**

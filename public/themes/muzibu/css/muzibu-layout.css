@@ -710,19 +710,80 @@
 .muzibu-bottom-nav-item i { font-size: 20px; }
 .muzibu-bottom-nav-item.active { color: white; }
 
-/* Mobile Menu Overlay */
+/* Mobile Menu Overlay - Works for <1024px */
+/* Header ve Player'ı KAPLAMAZ - sadece main content */
 .muzibu-mobile-overlay {
-    display: none;
     position: fixed;
-    top: 0;
+    top: 56px; /* Mobile header altından başla */
     left: 0;
     right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.8);
+    bottom: 72px; /* Player üstünde bitir */
+    background: rgba(0,0,0,0);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
     z-index: 998;
+    pointer-events: none;
+    transition: background 0.4s ease-out,
+                backdrop-filter 0.4s ease-out,
+                -webkit-backdrop-filter 0.4s ease-out;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.muzibu-mobile-overlay.active { display: block; }
+.muzibu-mobile-overlay.active {
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    pointer-events: auto;
+}
+
+/* Tablet overlay - header 64px */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .muzibu-mobile-overlay {
+        top: 64px;
+    }
+    .muzibu-mobile-overlay.active {
+        background: rgba(0,0,0,0.4);
+    }
+}
+
+/* ==================== HAMBURGER → X ANİMASYONU ==================== */
+.hamburger-icon {
+    width: 24px;
+    height: 18px;
+    position: relative;
+    cursor: pointer;
+}
+
+.hamburger-icon span {
+    display: block;
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    background: white;
+    border-radius: 2px;
+    left: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hamburger-icon span:nth-child(1) { top: 0; }
+.hamburger-icon span:nth-child(2) { top: 8px; }
+.hamburger-icon span:nth-child(3) { top: 16px; }
+
+/* Active state - X shape */
+.hamburger-icon.active span:nth-child(1) {
+    top: 8px;
+    transform: rotate(45deg);
+}
+
+.hamburger-icon.active span:nth-child(2) {
+    opacity: 0;
+    transform: translateX(-10px);
+}
+
+.hamburger-icon.active span:nth-child(3) {
+    top: 8px;
+    transform: rotate(-45deg);
+}
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 12px; }
@@ -732,15 +793,29 @@
 
 /* ==================== RESPONSIVE ==================== */
 
-/* LARGE DESKTOP and below (< 1280px) - Hide right sidebar */
-@media (max-width: 1279px) {
+/* MOBILE (< 768px) - Hide right sidebar */
+@media (max-width: 767px) {
+    .muzibu-right-sidebar {
+        display: none;
+    }
+}
+
+/* TABLET/SMALL DESKTOP (768px - 1279px) - Adjust grid for right sidebar only */
+@media (min-width: 768px) and (max-width: 1279px) {
     .muzibu-app {
-        grid-template-columns: 280px 1fr;
+        grid-template-columns: 1fr 280px;
     }
 
     .muzibu-right-sidebar {
-    border-radius: 0 8px 0 0;
-        display: none;
+        border-radius: 8px 8px 0 0;
+        display: block;
+    }
+}
+
+/* LARGE DESKTOP (1280px+) - Both sidebars visible */
+@media (min-width: 1280px) {
+    .muzibu-app {
+        grid-template-columns: 280px 1fr 280px;
     }
 }
 
@@ -768,8 +843,45 @@
     }
 }
 
-/* MOBILE (< 768px) */
-@media (max-width: 768px) {
+/* MOBILE & TABLET (< 1024px) - Left sidebar as overlay */
+/* Header ALTINDAN başlar, Player ÜSTÜNDE biter */
+@media (max-width: 1023px) {
+    .muzibu-left-sidebar {
+        display: flex !important;
+        flex-direction: column;
+        position: fixed;
+        top: 56px; /* Mobile header altından başla */
+        left: 0;
+        bottom: 72px; /* Player üstünde bitir */
+        width: 280px;
+        background: linear-gradient(180deg, #121212 0%, #0a0a0a 100%);
+        z-index: 999;
+        transform: translateX(-100%);
+        box-shadow: none;
+        border-radius: 0 0 20px 0; /* Sadece sağ alt köşe yuvarlak */
+        will-change: transform;
+        -webkit-transform: translateX(-100%);
+        transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1),
+                    box-shadow 0.4s ease;
+    }
+
+    .muzibu-left-sidebar.active {
+        transform: translateX(0);
+        -webkit-transform: translateX(0);
+        box-shadow: 8px 0 40px rgba(0,0,0,0.8);
+    }
+
+    /* Tablet (768-1023px) - header 64px, wider sidebar */
+    @media (min-width: 768px) {
+        .muzibu-left-sidebar {
+            top: 64px;
+            width: 320px;
+        }
+    }
+}
+
+/* MOBILE ONLY (< 768px) */
+@media (max-width: 767px) {
     .muzibu-app {
         grid-template-rows: 56px 1fr 140px;
         grid-template-columns: 1fr;
@@ -797,23 +909,6 @@
 
     .muzibu-install-btn, .muzibu-notification-btn {
         display: none;
-    }
-
-    .muzibu-left-sidebar {
-    border-radius: 8px 0 0 0;
-    background: #121212;
-        position: fixed;
-        top: 0;
-        left: -280px;
-        bottom: 0;
-        width: 280px;
-        z-index: 999;
-        transition: left 0.3s;
-        box-shadow: 2px 0 8px rgba(0,0,0,0.5);
-    }
-
-    .muzibu-left-sidebar.active {
-        left: 0;
     }
 
     .muzibu-main {

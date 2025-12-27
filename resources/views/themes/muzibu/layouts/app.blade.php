@@ -415,16 +415,20 @@
             'muzibu.my-playlists',
         ]);
 
-        // Grid column classes - sağ sidebar varsa 3 kolon, yoksa 2 kolon
+        // Grid column classes - sağ sidebar varsa dinamik, yoksa 2 kolon
+        // md (768px+): Sağ sidebar görünür (sol gizli)
+        // lg (1024px+): Sol + Sağ sidebar görünür
         $gridCols = $showRightSidebar
-            ? 'xl:grid-cols-[220px_1fr_320px] 2xl:grid-cols-[220px_1fr_360px]'
-            : 'xl:grid-cols-[220px_1fr] 2xl:grid-cols-[220px_1fr]';
+            ? 'md:grid-cols-[1fr_280px] lg:grid-cols-[220px_1fr_280px] xl:grid-cols-[220px_1fr_320px] 2xl:grid-cols-[220px_1fr_360px]'
+            : 'lg:grid-cols-[220px_1fr] xl:grid-cols-[220px_1fr] 2xl:grid-cols-[220px_1fr]';
     @endphp
 
     {{-- Main App Grid - Dynamic columns based on right sidebar visibility --}}
+    {{-- md (768px+): gap ve padding başlar, sağ sidebar görünür --}}
+    {{-- lg (1024px+): sol sidebar da görünür --}}
     <div
         id="main-app-grid"
-        class="grid grid-rows-[56px_1fr_auto] grid-cols-1 lg:grid-cols-[220px_1fr] {{ $gridCols }} h-[100dvh] w-full gap-0 lg:gap-3 px-0 pb-0 pt-0 lg:px-3 lg:pt-3"
+        class="grid grid-rows-[56px_1fr_auto] grid-cols-1 {{ $gridCols }} h-[100dvh] w-full gap-0 md:gap-3 px-0 pb-0 pt-0 md:px-3 md:pt-3"
     >
         @include('themes.muzibu.components.header')
         @include('themes.muzibu.components.sidebar-left')
@@ -434,9 +438,11 @@
 
         @include('themes.muzibu.components.main-content')
 
-        {{-- Right Sidebar - XL+ screens (1280px+), music pages only --}}
+        {{-- Right Sidebar - MD+ screens (768px+), music pages only --}}
+        {{-- 768px-1023px: Sol sidebar gizli, sağ sidebar görünür --}}
+        {{-- 1024px+: Her iki sidebar da görünür --}}
         @if($showRightSidebar)
-            <aside class="muzibu-right-sidebar row-start-2 overflow-y-auto rounded-2xl hidden xl:block">
+            <aside class="muzibu-right-sidebar row-start-2 overflow-y-auto rounded-2xl hidden md:block">
                 @include('themes.muzibu.components.sidebar-right')
             </aside>
         @endif
@@ -683,13 +689,55 @@
             }
         }
 
-        // Mobile Menu Toggle
+        // Mobile Menu Toggle - Enhanced for Mobile & Tablet
         function toggleMobileMenu() {
             const sidebar = document.getElementById('leftSidebar');
             const overlay = document.querySelector('.muzibu-mobile-overlay');
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
+            const hamburger = document.getElementById('hamburgerIcon');
+            const isOpen = sidebar.classList.contains('active');
+
+            if (isOpen) {
+                // Close
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                if (hamburger) hamburger.classList.remove('active');
+                document.body.style.overflow = '';
+            } else {
+                // Open
+                sidebar.classList.add('active');
+                overlay.classList.add('active');
+                if (hamburger) hamburger.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
         }
+
+        function closeMobileMenu() {
+            const sidebar = document.getElementById('leftSidebar');
+            const overlay = document.querySelector('.muzibu-mobile-overlay');
+            const hamburger = document.getElementById('hamburgerIcon');
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            if (hamburger) hamburger.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // ESC key to close mobile menu
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const sidebar = document.getElementById('leftSidebar');
+                if (sidebar && sidebar.classList.contains('active')) {
+                    closeMobileMenu();
+                }
+            }
+        });
+
+        // Close mobile menu when clicking on nav links (SPA friendly)
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest('#leftSidebar a[href]');
+            if (link && window.innerWidth < 1024) {
+                closeMobileMenu();
+            }
+        });
     </script>
 
     {{-- 🎯 Livewire Navigation Hook - Alpine Re-Init --}}

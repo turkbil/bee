@@ -1,11 +1,11 @@
 {{-- LEFT SIDEBAR - Modern & Clean --}}
-{{-- Hidden below 1024px (mobile/tablet uses hamburger menu) --}}
+{{-- Desktop: Static sidebar (lg:flex) | Mobile/Tablet: Slide-in overlay (header altından başlar) --}}
 <aside
     id="leftSidebar"
     class="muzibu-left-sidebar row-start-2 hidden lg:flex lg:flex-col"
 >
     {{-- Scrollable Navigation Area --}}
-    <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+    <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent pt-3">
         {{-- Library Section --}}
         <div class="mb-3">
             <h3 class="px-4 text-xs font-bold text-muzibu-text-gray uppercase tracking-wider mb-2">{{ trans('muzibu::front.sidebar.my_library') }}</h3>
@@ -58,153 +58,165 @@
         </div>
     </div>
 
-    {{-- User Profile Card - Bottom - TEK COMPONENT ILE KALAN SURE --}}
-    {{-- Hidden on mobile (<1024px) - only show on desktop sidebar --}}
-    <div
-        x-show="isLoggedIn"
-        x-cloak
-        x-data="{
-            timeLeft: '',
-            memberType: '',
-            memberIcon: '',
-            hasDate: false,
-            isExpired: false,
-            init() {
-                this.updateMemberStatus();
-                setInterval(() => this.updateMemberStatus(), 60000);
-            },
-            updateMemberStatus() {
-                const lang = window.muzibuPlayerConfig?.frontLang?.sidebar || {};
-
-                // 1. Ucretsiz uye (is_premium = false)
-                if (!this.currentUser?.is_premium) {
-                    this.memberType = lang.free_member || 'Free Member';
-                    this.memberIcon = '';
-                    this.hasDate = false;
-                    return;
-                }
-
-                // 2. Trial mi Premium mi? (is_trial flag'i kullan)
-                const isTrial = this.currentUser?.is_trial === true;
-                const endDate = isTrial
-                    ? this.currentUser?.trial_ends_at
-                    : this.currentUser?.subscription_ends_at;
-
-                if (isTrial) {
-                    this.memberType = lang.trial_member || 'Trial Member';
-                    this.memberIcon = 'fa-gift';
-                } else {
-                    this.memberType = lang.premium_member || 'Premium Member';
-                    this.memberIcon = 'fa-crown';
-                }
-
-                // Tarih yoksa sadece badge goster
-                if (!endDate) {
-                    this.hasDate = false;
-                    return;
-                }
-
-                this.hasDate = true;
-                const now = new Date();
-                const expiry = new Date(endDate);
-                const diff = expiry - now;
-
-                if (diff <= 0) {
-                    this.timeLeft = lang.membership_expired || 'Membership expired';
-                    this.isExpired = true;
-                    return;
-                }
-
-                this.isExpired = false;
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-                if (days > 0) {
-                    this.timeLeft = (lang.days_hours_left || ':days days :hours hours left').replace(':days', days).replace(':hours', hours);
-                } else if (hours > 0) {
-                    this.timeLeft = (lang.hours_minutes_left || ':hours hours :minutes min left').replace(':hours', hours).replace(':minutes', minutes);
-                } else {
-                    this.timeLeft = (lang.minutes_left || ':minutes minutes left').replace(':minutes', minutes);
-                }
-            },
+    {{-- ============================================== --}}
+    {{-- DESKTOP User Profile Card - Bottom (Style C) --}}
+    {{-- ============================================== --}}
+    <div class="hidden lg:block flex-shrink-0 p-3"
+         x-data="{
             get currentUser() {
                 return window.muzibuPlayerConfig?.currentUser || null;
+            },
+            get memberType() {
+                const lang = window.muzibuPlayerConfig?.frontLang?.sidebar || {};
+                if (!this.currentUser?.is_premium) {
+                    return lang.free_member || 'Ücretsiz Üye';
+                }
+                if (this.currentUser?.is_trial) {
+                    return lang.trial_member || 'Deneme Üyesi';
+                }
+                return lang.premium_member || 'Premium Üye';
             }
-        }"
-        class="hidden lg:block mt-4 bg-gradient-to-br from-[#ff6b6b] via-[#ff5252] to-[#e91e63] rounded-2xl p-4 shadow-xl relative overflow-hidden group"
-    >
-        {{-- Animated Background Pattern --}}
-        <div class="absolute inset-0 opacity-10">
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.3),transparent_50%)]"></div>
-        </div>
+         }">
 
-        {{-- Content --}}
-        <div class="relative z-10">
-            {{-- User Info --}}
-            <div class="flex items-center gap-3 mb-3">
-                <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl border-2 border-white/30">
-                    <template x-if="currentUser?.is_premium">
-                        <i class="fas fa-crown text-yellow-300"></i>
-                    </template>
-                    <template x-if="!currentUser?.is_premium">
-                        <i class="fas fa-user text-white/80"></i>
-                    </template>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <h3 class="text-white font-bold text-sm break-words" x-text="currentUser?.name || (window.muzibuPlayerConfig?.frontLang?.user?.user || 'User')"></h3>
-
-                    {{-- Uyelik Tipi ve Kalan Sure (Tek Component) --}}
-                    <div class="text-white/90 text-xs">
-                        <div class="flex items-center gap-1">
-                            <template x-if="memberIcon">
-                                <i class="fas text-yellow-300" :class="memberIcon"></i>
-                            </template>
-                            <span x-text="memberType"></span>
-                        </div>
-                        {{-- Kalan Sure - Her zaman goster (tarih varsa) --}}
-                        <template x-if="hasDate">
-                            <p class="text-[10px] mt-0.5" :class="isExpired ? 'text-red-300 animate-pulse' : 'text-white/70'">
-                                <i class="fas fa-clock mr-1"></i>
-                                <span x-text="timeLeft"></span>
-                            </p>
-                        </template>
-                    </div>
-                </div>
+        {{-- LOGGED IN STATE --}}
+        <div x-show="isLoggedIn" x-cloak class="bg-gradient-to-br from-[#ff6b6b] via-[#ff5252] to-[#e91e63] rounded-xl p-3 relative overflow-hidden">
+            {{-- Background Pattern --}}
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.3),transparent_50%)]"></div>
             </div>
 
-            {{-- Premium'a Gec (Ucretsiz uyeler icin) --}}
-            <template x-if="!currentUser?.is_premium">
-                <a href="/subscription/plans" class="block w-full mb-3 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-white px-4 py-2.5 rounded-lg text-sm font-bold text-center transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02]">
-                    <i class="fas fa-crown mr-2"></i>
-                    {{ trans('muzibu::front.user.go_premium') }}
-                </a>
-            </template>
-
-            {{-- Uyeligini Uzat (Premium/Trial uyeler icin - 30 günden az kaldıysa göster) --}}
-            @auth
-                @php
-                    $subscriptionService = app(\Modules\Subscription\App\Services\SubscriptionService::class);
-                    $access = $subscriptionService->checkUserAccess(auth()->user());
-                    $daysRemaining = $access['days_remaining'] ?? null;
-                    $showExtendButton = $daysRemaining !== null && $daysRemaining <= 30;
-                @endphp
-                @if($showExtendButton && auth()->user()->isPremiumOrTrial())
-                    <a href="/subscription/plans" class="block w-full mb-3 bg-gradient-to-r from-yellow-500/80 to-orange-500/80 hover:from-yellow-400 hover:to-orange-400 text-white px-4 py-2.5 rounded-lg text-sm font-bold text-center transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02]">
-                        <i class="fas fa-sync-alt mr-2"></i>
-                        {{ trans('muzibu::front.sidebar.extend_membership') }}
+            {{-- Content --}}
+            <div class="relative z-10">
+                {{-- User Row --}}
+                <div class="flex items-center gap-2 mb-3">
+                    {{-- Avatar: Premium=Crown, Trial=Gift, Free=Letter --}}
+                    <div class="w-10 h-10 flex-shrink-0 rounded-full bg-white/20 flex items-center justify-center border border-white/30">
+                        <template x-if="currentUser?.is_premium && !currentUser?.is_trial">
+                            <i class="fas fa-crown text-yellow-300 text-base"></i>
+                        </template>
+                        <template x-if="currentUser?.is_trial">
+                            <i class="fas fa-gift text-yellow-300 text-base"></i>
+                        </template>
+                        <template x-if="!currentUser?.is_premium">
+                            <span class="text-white font-bold text-sm" x-text="currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : 'U'"></span>
+                        </template>
+                    </div>
+                    {{-- Info --}}
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white font-semibold text-sm truncate" x-text="currentUser?.name || 'Kullanıcı'"></p>
+                        <p class="text-white/70 text-xs truncate" x-text="memberType"></p>
+                    </div>
+                    {{-- Settings --}}
+                    <a href="/profile" class="w-8 h-8 flex-shrink-0 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/70 hover:text-white transition-all">
+                        <i class="fas fa-cog text-sm"></i>
                     </a>
-                @endif
-            @endauth
+                </div>
 
-            {{-- Logout Button --}}
-            <button
-                @click="logout()"
-                class="w-full bg-black/30 hover:bg-black/50 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 border border-white/20 hover:border-white/40"
-            >
-                <i class="fas fa-sign-out-alt mr-2"></i>
-                {{ trans('muzibu::front.general.logout') }}
-            </button>
+                {{-- Logout Button --}}
+                <button
+                    @click="logout()"
+                    class="w-full bg-black/30 hover:bg-black/50 text-white py-2 rounded-lg text-sm font-medium transition-all border border-white/20 hover:border-white/30"
+                >
+                    <i class="fas fa-sign-out-alt mr-2"></i>
+                    {{ trans('muzibu::front.general.logout') }}
+                </button>
+            </div>
+        </div>
+
+        {{-- LOGGED OUT STATE --}}
+        <div x-show="!isLoggedIn" x-cloak class="bg-gradient-to-br from-[#1a1a2e] to-[#16213e] rounded-xl p-3 border border-white/10">
+            <p class="text-white/60 text-xs text-center mb-3">{{ trans('muzibu::front.auth.login_for_features') }}</p>
+            <div class="flex gap-2">
+                <a href="/login" class="flex-1 bg-gradient-to-r from-[#ff6b6b] to-[#e91e63] text-white py-2 rounded-lg text-sm font-semibold text-center hover:opacity-90 transition-all">
+                    <i class="fas fa-sign-in-alt mr-1"></i>
+                    {{ trans('muzibu::front.general.login') }}
+                </a>
+                <a href="/register" class="flex-1 bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg text-sm font-medium text-center transition-all border border-white/20">
+                    <i class="fas fa-user-plus mr-1"></i>
+                    {{ trans('muzibu::front.general.register') }}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {{-- ============================================== --}}
+    {{-- MOBILE/TABLET Bottom User Card - Style C --}}
+    {{-- ============================================== --}}
+    <div class="lg:hidden flex-shrink-0 p-3 bg-[#0d0d0d]"
+         x-data="{
+            get currentUser() {
+                return window.muzibuPlayerConfig?.currentUser || null;
+            },
+            get memberType() {
+                const lang = window.muzibuPlayerConfig?.frontLang?.sidebar || {};
+                if (!this.currentUser?.is_premium) {
+                    return lang.free_member || 'Ücretsiz Üye';
+                }
+                if (this.currentUser?.is_trial) {
+                    return lang.trial_member || 'Deneme Üyesi';
+                }
+                return lang.premium_member || 'Premium Üye';
+            }
+         }">
+
+        {{-- LOGGED IN STATE --}}
+        <div x-show="isLoggedIn" x-cloak class="bg-gradient-to-br from-[#ff6b6b] via-[#ff5252] to-[#e91e63] rounded-xl p-3 relative overflow-hidden">
+            {{-- Background Pattern --}}
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.3),transparent_50%)]"></div>
+            </div>
+
+            {{-- Content --}}
+            <div class="relative z-10">
+                {{-- User Row --}}
+                <div class="flex items-center gap-3 mb-3">
+                    {{-- Avatar: Premium=Crown, Trial=Gift, Free=Letter --}}
+                    <div class="w-10 h-10 flex-shrink-0 rounded-full bg-white/20 flex items-center justify-center border border-white/30">
+                        <template x-if="currentUser?.is_premium && !currentUser?.is_trial">
+                            <i class="fas fa-crown text-yellow-300 text-base"></i>
+                        </template>
+                        <template x-if="currentUser?.is_trial">
+                            <i class="fas fa-gift text-yellow-300 text-base"></i>
+                        </template>
+                        <template x-if="!currentUser?.is_premium">
+                            <span class="text-white font-bold text-sm" x-text="currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : 'U'"></span>
+                        </template>
+                    </div>
+                    {{-- Info --}}
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white font-semibold text-sm truncate" x-text="currentUser?.name || 'Kullanıcı'"></p>
+                        <p class="text-white/70 text-xs truncate" x-text="memberType"></p>
+                    </div>
+                    {{-- Settings --}}
+                    <a href="/profile" class="w-8 h-8 flex-shrink-0 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/70 hover:text-white transition-all">
+                        <i class="fas fa-cog text-sm"></i>
+                    </a>
+                </div>
+
+                {{-- Logout Button --}}
+                <button
+                    @click="logout(); closeMobileMenu();"
+                    class="w-full bg-black/30 hover:bg-black/50 text-white py-2 rounded-lg text-sm font-medium transition-all border border-white/20 hover:border-white/30"
+                >
+                    <i class="fas fa-sign-out-alt mr-2"></i>
+                    {{ trans('muzibu::front.general.logout') }}
+                </button>
+            </div>
+        </div>
+
+        {{-- LOGGED OUT STATE --}}
+        <div x-show="!isLoggedIn" x-cloak class="bg-gradient-to-br from-[#1a1a2e] to-[#16213e] rounded-xl p-3 border border-white/10">
+            <p class="text-white/60 text-xs text-center mb-3">{{ trans('muzibu::front.auth.login_for_features') }}</p>
+            <div class="flex gap-2">
+                <a href="/login" class="flex-1 bg-gradient-to-r from-[#ff6b6b] to-[#e91e63] text-white py-2 rounded-lg text-sm font-semibold text-center hover:opacity-90 transition-all">
+                    <i class="fas fa-sign-in-alt mr-1"></i>
+                    {{ trans('muzibu::front.general.login') }}
+                </a>
+                <a href="/register" class="flex-1 bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg text-sm font-medium text-center transition-all border border-white/20">
+                    <i class="fas fa-user-plus mr-1"></i>
+                    {{ trans('muzibu::front.general.register') }}
+                </a>
+            </div>
         </div>
     </div>
 </aside>

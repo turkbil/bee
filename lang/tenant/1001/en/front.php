@@ -234,4 +234,11 @@ return [
         'cancel' => 'Cancel',
         'save' => 'Save',
     ],
+
+    // Auth Section
+    'auth' => [
+        'login_required' => 'Please login to listen to music',
+        'premium_required' => 'Premium membership required to listen',
+        'login_for_features' => 'Login to access all features',
+    ],
 ];

@@ -1,11 +1,17 @@
 <header class="row-start-1 bg-black/80 backdrop-blur-md border-b border-white/5 px-4 flex items-center justify-between sticky top-0 z-50" style="grid-column: 1 / -1;">
     <div class="flex items-center gap-4 flex-1">
-        {{-- Mobile Hamburger --}}
+        {{-- Mobile Hamburger with Animation --}}
         <button
+            id="hamburgerBtn"
             onclick="toggleMobileMenu()"
-            class="lg:hidden text-muzibu-text-gray hover:text-white transition-colors"
+            class="lg:hidden p-2 -ml-2 flex items-center justify-center"
+            aria-label="Menu"
         >
-            <i class="fas fa-bars text-xl"></i>
+            <div class="hamburger-icon" id="hamburgerIcon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </button>
 
         {{-- Logo with animation - Settings powered --}}

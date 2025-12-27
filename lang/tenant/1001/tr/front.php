@@ -298,6 +298,7 @@ return [
     'auth' => [
         'login_required' => 'Şarkı dinlemek için giriş yapmalısınız',
         'premium_required' => 'Şarkı dinlemek için premium üyelik gereklidir',
+        'login_for_features' => 'Tüm özelliklere erişmek için giriş yapın',
     ],
 
     'admin' => [

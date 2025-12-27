@@ -5,8 +5,9 @@
     @media (min-width: 1024px) { .mobile-player-wrapper { display: none !important; } }
     @media (max-width: 1023px) { .desktop-player-wrapper { display: none !important; } }
 
-    /* Gradient Border */
-    .mobile-player-wrapper {
+    /* Gradient Border - Mobile & Desktop */
+    .mobile-player-wrapper,
+    .desktop-player-wrapper {
         background: linear-gradient(#18181b, #18181b) padding-box,
                     linear-gradient(135deg, #ff8a00, #ff5e62, #ec4899) border-box;
         border: 2px solid transparent;
@@ -145,91 +146,123 @@
 
 
 {{-- ==================== DESKTOP PLAYER (>= 1024px) ==================== --}}
-<div class="desktop-player-wrapper muzibu-player row-start-3 col-span-full grid grid-cols-[1fr_2fr_1fr] items-center px-3 pt-2 pb-0 gap-3">
+<div class="desktop-player-wrapper row-start-3 col-span-full mx-4 mb-3 px-4 py-2.5 relative rounded-full shadow-lg flex items-center gap-4">
 
-    {{-- Song Info --}}
-    <div class="flex items-center gap-3 min-w-0">
-        {{-- Album Cover --}}
-        <div class="w-14 h-14 bg-gradient-to-br from-pink-500 to-purple-600 rounded flex items-center justify-center text-2xl flex-shrink-0 shadow-lg overflow-hidden relative">
-            <template x-if="currentSong && currentSong.album_cover" x-cloak>
-                <img :src="getCoverUrl(currentSong.album_cover, 120, 120)" :alt="currentSong.song_title" class="w-full h-full object-cover">
-            </template>
-            <template x-if="!currentSong || !currentSong.album_cover">
-                <span>🎵</span>
-            </template>
+    {{-- Cover with Progress Ring --}}
+    <div class="relative w-14 h-14 flex-shrink-0">
+        {{-- Progress Ring (orange) --}}
+        <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 56 56">
+            <circle cx="28" cy="28" r="25" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="3"/>
+            <circle cx="28" cy="28" r="25" fill="none" stroke="#ff8a00" stroke-width="3"
+                    stroke-linecap="round"
+                    :stroke-dasharray="157"
+                    :stroke-dashoffset="157 - (157 * progressPercent / 100)"/>
+        </svg>
+        {{-- Album Cover (simple circle) --}}
+        <div class="absolute inset-[4px] rounded-full overflow-hidden bg-zinc-800 flex items-center justify-center">
+            <img x-ref="desktopCover"
+                 x-effect="const cover = currentSong?.album_cover || currentSong?.cover_url; if(cover && $refs.desktopCover) { $refs.desktopCover.src = (typeof cover === 'string' && cover.startsWith('http')) ? cover : `/thumb/${cover}/120/120`; }"
+                 alt="Cover"
+                 class="absolute inset-0 w-full h-full object-cover">
+            <i x-show="!currentSong?.cover_url && !currentSong?.album_cover" class="fas fa-music text-zinc-600 text-lg"></i>
         </div>
+        {{-- Time Badge --}}
+        <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-zinc-800 text-white text-[10px] px-1.5 py-0.5 rounded-full border border-zinc-700"
+             x-text="formatTime(currentTime)">0:00</div>
+    </div>
 
-        <div class="min-w-0 flex-1">
-            <h4 class="text-sm font-semibold text-white truncate" x-text="currentSong ? (currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')) : (window.muzibuPlayerConfig?.frontLang?.general?.select_song || 'Select Song')">{{ trans('muzibu::front.general.select_song') }}</h4>
-            <p class="text-xs text-muzibu-text-gray truncate" x-text="currentSong ? (currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')) : (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">{{ trans('muzibu::front.general.artist') }}</p>
-        </div>
+    {{-- Song Info: Title + Artist --}}
+    <div class="min-w-0 w-48">
+        <p class="text-white text-sm font-medium truncate"
+           x-text="currentSong ? (currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || 'Şarkı') : 'Şarkı Seç'">
+            Şarkı Seç
+        </p>
+        <p class="text-zinc-400 text-xs truncate"
+           x-text="currentSong ? (currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || '') : ''">
+        </p>
+    </div>
 
-        {{-- Heart Button --}}
-        <button class="text-muzibu-text-gray hover:text-muzibu-coral transition-all" @click="toggleLike()" :class="{ 'text-muzibu-coral': isLiked }">
-            <i :class="isLiked ? 'fas fa-heart' : 'far fa-heart'"></i>
+    {{-- Heart Button --}}
+    <button class="w-9 h-9 text-white/60 hover:text-pink-500 flex items-center justify-center transition-colors"
+            @click="toggleLike()" :class="{ 'text-pink-500': isLiked }">
+        <i :class="isLiked ? 'fas fa-heart' : 'far fa-heart'" class="text-base"></i>
+    </button>
+
+    {{-- Controls: Shuffle, Prev, Play/Pause, Next, Repeat --}}
+    <div class="flex items-center gap-1 flex-1 justify-center">
+        <button class="w-9 h-9 flex items-center justify-center transition-colors"
+                :class="shuffle ? 'text-emerald-400' : 'text-white/60 hover:text-white'"
+                @click="toggleShuffle()">
+            <i class="fas fa-random text-sm"></i>
+        </button>
+        <button class="w-10 h-10 text-white/80 hover:text-white flex items-center justify-center transition-colors"
+                @click="previousTrack()">
+            <i class="fas fa-backward text-base"></i>
+        </button>
+        <button class="w-12 h-12 text-white flex items-center justify-center transition-transform hover:scale-105"
+                @click="togglePlayPause()">
+            <i x-show="isSongLoading" x-cloak class="fas fa-spinner fa-spin text-2xl"></i>
+            <i x-show="!isSongLoading && isPlaying" x-cloak class="fas fa-pause text-2xl"></i>
+            <i x-show="!isSongLoading && !isPlaying" class="fas fa-play text-2xl ml-1"></i>
+        </button>
+        <button class="w-10 h-10 text-white/80 hover:text-white flex items-center justify-center transition-colors"
+                @click="nextTrack()">
+            <i class="fas fa-forward text-base"></i>
+        </button>
+        <button class="w-9 h-9 flex items-center justify-center transition-colors"
+                :class="repeatMode !== 'off' ? 'text-emerald-400' : 'text-white/60 hover:text-white'"
+                @click="cycleRepeat()">
+            <i class="fas fa-redo text-sm"></i>
+            <span x-show="repeatMode === 'one'" class="absolute text-[8px] font-bold">1</span>
         </button>
     </div>
 
-    {{-- Player Controls --}}
-    <div class="flex flex-col gap-2">
-        <div class="flex items-center justify-center gap-6">
-            <button class="hover:text-white transition-all" :class="shuffle ? 'text-emerald-400' : 'text-muzibu-text-gray'" @click="toggleShuffle()">
-                <i class="fas fa-random"></i>
-            </button>
-            <button class="text-muzibu-text-gray hover:text-white transition-all" @click="previousTrack()">
-                <i class="fas fa-step-backward"></i>
-            </button>
-            <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black transition-all shadow-lg hover:shadow-white/50" @click="togglePlayPause()">
-                <i x-show="isSongLoading" x-cloak class="fas fa-spinner fa-spin translate-y-[1px]"></i>
-                <i x-show="!isSongLoading && isPlaying" x-cloak class="fas fa-stop translate-y-[1px]"></i>
-                <i x-show="!isSongLoading && !isPlaying" class="fas fa-play ml-px translate-y-[1px]"></i>
-            </button>
-            <button class="text-muzibu-text-gray hover:text-white transition-all" @click="nextTrack()">
-                <i class="fas fa-step-forward"></i>
-            </button>
-            <button class="hover:text-white transition-all" :class="repeatMode !== 'off' ? 'text-emerald-400' : 'text-muzibu-text-gray'" @click="cycleRepeat()">
-                <i class="fas fa-redo"></i>
-            </button>
-        </div>
-        <div class="flex items-center gap-2 max-w-2xl mx-auto w-full">
-            <span class="text-xs text-muzibu-text-gray w-10 text-right" x-text="formatTime(currentTime)">0:00</span>
-            <div class="flex-1 h-1.5 bg-muzibu-text-gray/30 rounded-full cursor-pointer group" @click="seekTo($event)">
-                <div class="h-full bg-white rounded-full relative group-hover:bg-muzibu-coral transition-colors" :style="`width: ${progressPercent}%`">
-                    <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 shadow-lg"></div>
-                </div>
+    {{-- Progress Bar (Linear) --}}
+    <div class="flex items-center gap-2 w-64">
+        <div class="flex-1 h-1.5 bg-white/20 rounded-full cursor-pointer group" @click="seekTo($event)">
+            <div class="h-full bg-gradient-to-r from-orange-500 to-pink-500 rounded-full relative transition-all"
+                 :style="`width: ${progressPercent}%`">
+                <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 shadow-lg transition-opacity"></div>
             </div>
-            <span class="text-xs text-muzibu-text-gray w-10" x-text="formatTime(duration)">0:00</span>
         </div>
+        <span class="text-xs text-zinc-400 w-10" x-text="formatTime(duration)">0:00</span>
     </div>
 
-    {{-- Volume Controls --}}
-    <div class="flex items-center justify-end gap-2">
-        <button x-show="currentSong && currentSong.lyrics" x-cloak class="text-muzibu-coral hover:text-white transition-all" @click="showLyrics = !showLyrics">
-            <i class="fas fa-microphone"></i>
-        </button>
-        <button class="text-muzibu-text-gray hover:text-white transition-all" @click="showQueue = !showQueue">
-            <i class="fas fa-list"></i>
-        </button>
-        <button class="text-muzibu-text-gray hover:text-white transition-all" @click="toggleMute()">
+    {{-- Volume Control --}}
+    <div class="flex items-center gap-2" x-data="{ showVolumeTooltip: false, tooltipX: 0, isDragging: false }">
+        <button class="w-8 h-8 text-white/60 hover:text-white flex items-center justify-center transition-colors"
+                @click="toggleMute()">
             <i :class="isMuted ? 'fas fa-volume-mute' : (volume > 50 ? 'fas fa-volume-up' : 'fas fa-volume-down')"></i>
         </button>
-        <div class="relative flex items-center gap-1" x-data="{ showVolumeTooltip: false, tooltipX: 0, isDragging: false }">
-            <div class="w-20 py-4 cursor-pointer group"
-                 @mousedown="isDragging = true; setVolume($event); showVolumeTooltip = true"
-                 @mouseenter="showVolumeTooltip = true"
-                 @mousemove="tooltipX = $event.offsetX; if (isDragging) setVolume($event)"
-                 @mouseleave="showVolumeTooltip = false; isDragging = false"
-                 @mouseup="isDragging = false">
-                <div class="h-1.5 bg-muzibu-text-gray/30 rounded-full relative">
-                    <div class="h-full bg-white rounded-full relative group-hover:bg-muzibu-coral transition-colors" :style="`width: ${volume}%`">
-                        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 shadow-lg transition-opacity"></div>
-                    </div>
+        <div class="w-20 py-3 cursor-pointer group relative"
+             @mousedown="isDragging = true; setVolume($event); showVolumeTooltip = true"
+             @mouseenter="showVolumeTooltip = true"
+             @mousemove="tooltipX = $event.offsetX; if (isDragging) setVolume($event)"
+             @mouseleave="showVolumeTooltip = false; isDragging = false"
+             @mouseup="isDragging = false">
+            <div class="h-1.5 bg-white/20 rounded-full relative">
+                <div class="h-full bg-white rounded-full relative group-hover:bg-orange-500 transition-colors"
+                     :style="`width: ${volume}%`">
+                    <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 shadow-lg transition-opacity"></div>
                 </div>
-                <div x-show="showVolumeTooltip" x-transition :style="`left: ${tooltipX}px`"
-                     class="absolute -top-9 transform -translate-x-1/2 bg-black/60 text-white px-1.5 py-0.5 rounded text-xs font-medium pointer-events-none z-30">
-                    <span x-text="volume >= 95 ? 'MAX' : Math.round(volume)"></span>
-                </div>
+            </div>
+            <div x-show="showVolumeTooltip" x-transition :style="`left: ${tooltipX}px`"
+                 class="absolute -top-8 transform -translate-x-1/2 bg-black/80 text-white px-1.5 py-0.5 rounded text-xs font-medium pointer-events-none z-30">
+                <span x-text="volume >= 95 ? 'MAX' : Math.round(volume)"></span>
             </div>
         </div>
     </div>
+
+    {{-- Queue Button --}}
+    <button class="w-9 h-9 text-white/60 hover:text-white flex items-center justify-center transition-colors"
+            @click="showQueue = !showQueue">
+        <i class="fas fa-list-ul"></i>
+    </button>
+
+    {{-- Lyrics Button --}}
+    <button x-show="currentSong && currentSong.lyrics" x-cloak
+            class="w-9 h-9 text-orange-400 hover:text-orange-300 flex items-center justify-center transition-colors"
+            @click="showLyrics = !showLyrics">
+        <i class="fas fa-microphone"></i>
+    </button>
 </div>

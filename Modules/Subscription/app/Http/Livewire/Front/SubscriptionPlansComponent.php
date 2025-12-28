@@ -11,19 +11,38 @@ class SubscriptionPlansComponent extends Component
 {
     public $plans;
     public $userHasUsedTrial = false;
+    public $hasEnoughSubscription = false;
+    public $remainingDays = 0;
+    public $expiresAt = null;
 
     public function mount()
     {
+        // Kullanıcının mevcut abonelik durumunu kontrol et
+        if (auth()->check()) {
+            $user = auth()->user();
+            $expiresAt = $user->subscription_expires_at;
+
+            // 30 günden fazla süresi varsa planları gösterme
+            if ($expiresAt && $expiresAt->isFuture()) {
+                $daysLeft = (int) now()->diffInDays($expiresAt, false);
+                if ($daysLeft > 30) {
+                    $this->hasEnoughSubscription = true;
+                    $this->remainingDays = $daysLeft;
+                    $this->expiresAt = $expiresAt->format('d.m.Y');
+                    $this->plans = collect(); // Boş collection
+                    return;
+                }
+            }
+
+            // Trial kontrolü
+            $this->userHasUsedTrial = \Modules\Subscription\App\Models\Subscription::userHasUsedTrial(auth()->id());
+        }
+
         // Aktif ve public olan planları getir (is_public=false gizli planlar otomatik filtrelenir)
         $this->plans = SubscriptionPlan::where('is_active', true)
             ->where('is_public', true)
             ->orderBy('sort_order')
             ->get();
-
-        // Kullanıcı daha önce trial kullandı mı kontrol et
-        if (auth()->check()) {
-            $this->userHasUsedTrial = \Modules\Subscription\App\Models\Subscription::userHasUsedTrial(auth()->id());
-        }
     }
 
     /**
@@ -169,6 +188,9 @@ class SubscriptionPlansComponent extends Component
         // View her zaman module default (orta kısım fallback)
         return view('subscription::livewire.front.subscription-plans', [
             'plans' => $this->plans,
+            'hasEnoughSubscription' => $this->hasEnoughSubscription,
+            'remainingDays' => $this->remainingDays,
+            'expiresAt' => $this->expiresAt,
         ])->layout($layoutPath);
     }
 }

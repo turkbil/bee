@@ -52,6 +52,7 @@ class CheckPremiumSubscription
 
     /**
      * Check if user has active premium subscription
+     * 🔴 SINGLE SOURCE OF TRUTH: users.subscription_expires_at
      *
      * @param int $userId
      * @return bool
@@ -59,21 +60,16 @@ class CheckPremiumSubscription
     protected function checkPremiumSubscription(int $userId): bool
     {
         try {
-            // Query TENANT database for active subscription
-            // 🔥 FIX: central → tenant DB, ends_at → current_period_end
-            $subscription = DB::table('subscriptions')
-                ->where('user_id', $userId)
-                ->where('status', 'active')
-                ->where('current_period_end', '>', now())
-                ->orderBy('current_period_end', 'desc')
-                ->first();
+            // 🔴 SINGLE SOURCE OF TRUTH: users.subscription_expires_at
+            $user = auth()->user();
+            $expiresAt = $user->subscription_expires_at;
 
-            $hasPremium = $subscription !== null;
+            $hasPremium = $expiresAt && $expiresAt->isFuture();
 
             Log::info('Premium check', [
                 'user_id' => $userId,
                 'has_premium' => $hasPremium,
-                'subscription_id' => $subscription->id ?? null,
+                'expires_at' => $expiresAt?->toIso8601String(),
             ]);
 
             return $hasPremium;

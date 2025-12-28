@@ -343,6 +343,7 @@ class SongStreamController extends Controller
     /**
      * Get subscription data for user (trial, premium, dates)
      * 🔥 Frontend'e subscription bilgileri gönder
+     * 🔴 SINGLE SOURCE OF TRUTH: users.subscription_expires_at
      */
     protected function getSubscriptionData($user): array
     {
@@ -354,16 +355,11 @@ class SongStreamController extends Controller
             ];
         }
 
-        // Aktif subscription var mı?
-        $subscription = $user->subscriptions()
-            ->whereIn('status', ['active', 'trial'])
-            ->where(function($q) {
-                $q->whereNull('current_period_end')
-                  ->orWhere('current_period_end', '>', now());
-            })
-            ->first();
+        // 🔴 SINGLE SOURCE OF TRUTH: users.subscription_expires_at
+        $expiresAt = $user->subscription_expires_at;
+        $hasPremium = $expiresAt && $expiresAt->isFuture();
 
-        if (!$subscription) {
+        if (!$hasPremium) {
             return [
                 'is_premium' => false,
                 'trial_ends_at' => null,
@@ -371,15 +367,19 @@ class SongStreamController extends Controller
             ];
         }
 
-        // Trial mı yoksa premium mı?
-        $isTrial = $subscription->has_trial
-            && $subscription->trial_ends_at
-            && $subscription->trial_ends_at->isFuture();
+        // Trial kontrolü: Aktif trial subscription var mı?
+        $trialSubscription = $user->subscriptions()
+            ->where('status', 'trial')
+            ->whereNotNull('trial_ends_at')
+            ->where('trial_ends_at', '>', now())
+            ->first();
+
+        $isTrial = $trialSubscription !== null;
 
         return [
             'is_premium' => true,
-            'trial_ends_at' => $isTrial ? $subscription->trial_ends_at->toIso8601String() : null,
-            'subscription_ends_at' => $subscription->current_period_end ? $subscription->current_period_end->toIso8601String() : null,
+            'trial_ends_at' => $isTrial ? $trialSubscription->trial_ends_at->toIso8601String() : null,
+            'subscription_ends_at' => $expiresAt->toIso8601String(),
         ];
     }
 

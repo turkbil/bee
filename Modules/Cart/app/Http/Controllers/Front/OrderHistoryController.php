@@ -34,6 +34,17 @@ class OrderHistoryController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
+        // SPA support
+        if ($request->wantsJson() || $request->ajax()) {
+            $html = view('cart::front.partials.my-orders-content', compact('orders'))->render();
+            return response()->json([
+                'html' => $html,
+                'meta' => [
+                    'title' => __('cart::front.my_orders') . ' - Muzibu',
+                ]
+            ]);
+        }
+
         return view('cart::front.my-orders', compact('orders'));
     }
 
@@ -57,8 +68,9 @@ class OrderHistoryController extends Controller
 
     /**
      * Sipariş numarası ile detay göster
+     * SPA router Accept: text/html gönderir ve <main> element'i parse eder
      */
-    public function showByNumber(string $orderNumber)
+    public function showByNumber(Request $request, string $orderNumber)
     {
         $user = Auth::user();
 
@@ -70,6 +82,7 @@ class OrderHistoryController extends Controller
         // Ödeme bilgisi
         $payment = $order->payments()->latest()->first();
 
+        // Her zaman full view döndür - SPA router <main> element'i parse eder
         return view('cart::front.order-detail', compact('order', 'payment'));
     }
 }

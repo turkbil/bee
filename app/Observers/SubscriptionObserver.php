@@ -11,12 +11,15 @@ class SubscriptionObserver
 {
     /**
      * Handle the Subscription "updated" event.
-     * Subscription status değişince (active, cancelled, expired) cache temizle
-     * Plan değişince (downgrade) device limit enforce et
+     * - Status değişince zinciri yeniden hesapla
+     * - Plan değişince device limit enforce et
      */
     public function updated(Subscription $subscription): void
     {
         $this->clearUserPremiumCache($subscription->user_id);
+
+        // 🔗 Zinciri yeniden hesapla (tarihler + subscription_expires_at)
+        $this->rechainAndRecalculate($subscription->user_id);
 
         // 🔐 Plan değişikliği veya iptal durumunda device limit enforce et
         $this->enforceDeviceLimitIfNeeded($subscription);
@@ -24,20 +27,52 @@ class SubscriptionObserver
 
     /**
      * Handle the Subscription "created" event.
-     * Yeni subscription oluşunca cache temizle
+     * Yeni subscription oluşunca zinciri yeniden hesapla
      */
     public function created(Subscription $subscription): void
     {
         $this->clearUserPremiumCache($subscription->user_id);
+
+        // 🔗 Zinciri yeniden hesapla
+        $this->rechainAndRecalculate($subscription->user_id);
     }
 
     /**
      * Handle the Subscription "deleted" event.
-     * Subscription silinince cache temizle
+     * Subscription silinince zinciri yeniden hesapla
      */
     public function deleted(Subscription $subscription): void
     {
         $this->clearUserPremiumCache($subscription->user_id);
+
+        // 🔗 Zinciri yeniden hesapla
+        $this->rechainAndRecalculate($subscription->user_id);
+    }
+
+    /**
+     * 🔗 Zinciri yeniden hesapla + subscription_expires_at güncelle
+     * Tek merkezden tüm hesaplamaları yapar
+     */
+    protected function rechainAndRecalculate(int $userId): void
+    {
+        // Tenant context yoksa çık
+        if (!tenant()) {
+            return;
+        }
+
+        try {
+            // Zinciri yeniden hesapla (bu aynı zamanda subscription_expires_at'ı da günceller)
+            Subscription::rechainUserSubscriptions($userId);
+
+            Log::debug('🔗 SubscriptionObserver: Zincir yeniden hesaplandı', [
+                'user_id' => $userId,
+            ]);
+        } catch (\Exception $e) {
+            Log::warning('🔗 SubscriptionObserver: Zincir hesaplanamadı', [
+                'user_id' => $userId,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**

@@ -128,6 +128,27 @@ document.addEventListener('alpine:init', () => {
         },
 
         /**
+         * 🎵 Play a song by ID - delegates to Alpine component
+         * @param {number} songId - Song ID to play
+         * @param {number|null} albumId - Optional album ID for context
+         * @param {number|null} genreId - Optional genre ID for context
+         */
+        playSong(songId, albumId = null, genreId = null) {
+            // Find the Alpine component (html element has x-data="muzibuApp()")
+            const htmlEl = document.documentElement;
+            if (htmlEl && htmlEl._x_dataStack && htmlEl._x_dataStack[0]) {
+                const app = htmlEl._x_dataStack[0];
+                if (typeof app.playSong === 'function') {
+                    app.playSong(songId);
+                } else {
+                    console.error('❌ playSong method not found on component');
+                }
+            } else {
+                console.error('❌ Alpine component not found on html element');
+            }
+        },
+
+        /**
          * 🎯 Add song to recently played list (exclude mekanizması)
          * @param {number} songId - Song ID to add
          */
@@ -253,6 +274,13 @@ document.addEventListener('alpine:init', () => {
         async refillQueue(currentOffset = 0, limit = 15) {
             const context = this.getPlayContext();
 
+            // 🔍 DEBUG: Context durumu
+            console.log('🎯 refillQueue DEBUG:', {
+                context: context,
+                hasContext: !!context,
+                localStorage_works: (() => { try { localStorage.setItem('test', '1'); localStorage.removeItem('test'); return true; } catch(e) { return false; } })()
+            });
+
             if (!context) {
                 console.warn('⚠️ No play context - cannot refill queue');
                 return [];
@@ -261,6 +289,10 @@ document.addEventListener('alpine:init', () => {
             // 🎯 Son çalınan şarkıları al (exclude için)
             const excludeSongIds = this.getRecentlyPlayed();
 
+            // 🔍 DEBUG: CSRF token kontrolü
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+            console.log('🔐 CSRF Token:', csrfToken ? 'VAR (' + csrfToken.substring(0, 10) + '...)' : 'YOK!');
+
             try {
 
                 const response = await fetch('/api/muzibu/queue/refill', {
@@ -268,7 +300,7 @@ document.addEventListener('alpine:init', () => {
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                        'X-CSRF-TOKEN': csrfToken || '',
                     },
                     body: JSON.stringify({
                         type: context.type,
@@ -281,11 +313,25 @@ document.addEventListener('alpine:init', () => {
                     })
                 });
 
+                // 🔍 DEBUG: Response durumu
+                console.log('📡 API Response:', {
+                    status: response.status,
+                    ok: response.ok,
+                    statusText: response.statusText
+                });
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 const data = await response.json();
+
+                // 🔍 DEBUG: API data
+                console.log('📦 API Data:', {
+                    success: data.success,
+                    songsCount: data.songs?.length || 0,
+                    hasTransition: !!data.transition
+                });
 
                 // 🔄 CONTEXT TRANSITION: Backend suggested transition to Genre (infinite loop)
                 if (data.transition) {

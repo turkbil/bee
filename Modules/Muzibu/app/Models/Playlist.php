@@ -175,6 +175,14 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
+     * Total duration method (Radio model için)
+     */
+    public function getTotalDuration(): int
+    {
+        return $this->total_duration;
+    }
+
+    /**
      * Playlist'e şarkı ekle ve cache count'ları güncelle
      * @param int|Song $song Song ID veya Song instance
      * @param array $pivotData Pivot data (position vb.)

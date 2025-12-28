@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Admin Yeniden Tasarım</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-gray-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="mb-8 border-b border-slate-700 pb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm font-semibold">
+                    <i class="fas fa-pencil-ruler mr-2"></i>Tasarım Taslağı
+                </span>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-2">
+                <i class="fas fa-crown text-yellow-400 mr-3"></i>
+                Subscription Admin - Yeniden Tasarım
+            </h1>
+            <p class="text-gray-400">28 Aralık 2025</p>
+        </header>
+
+        <!-- Tasarım Felsefesi -->
+        <section class="mb-8 bg-purple-900/20 border border-purple-800 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-purple-400 mb-4">
+                <i class="fas fa-lightbulb mr-2"></i>Tasarım Felsefesi
+            </h2>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-red-400 mb-2">❌ Kaldırılanlar</h3>
+                    <ul class="space-y-1 text-gray-400">
+                        <li>• "Bu Üyelik" sütunu (anlamsız)</li>
+                        <li>• Manage linki (gereksiz)</li>
+                        <li>• Cancel butonu (işe yaramıyor)</li>
+                        <li>• Ayrı "Toplam Kalan" sütunu</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-green-400 mb-2">✅ Eklenenler</h3>
+                    <ul class="space-y-1 text-gray-400">
+                        <li>• Tek "Kalan" sütunu (toplam)</li>
+                        <li>• Son ödeme tarihi</li>
+                        <li>• Ödeme detaylarına hızlı erişim</li>
+                        <li>• Modal'da payment geçmişi</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ANA LİSTE TASARIMI -->
+        <section class="mb-8 bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white mb-4">
+                <i class="fas fa-table mr-2 text-blue-400"></i>Ana Liste Tasarımı
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-600 text-left">
+                            <th class="py-3 px-2 text-gray-400 font-medium">Müşteri</th>
+                            <th class="py-3 px-2 text-gray-400 font-medium">Plan</th>
+                            <th class="py-3 px-2 text-gray-400 font-medium">Kalan</th>
+                            <th class="py-3 px-2 text-gray-400 font-medium">Son Ödeme</th>
+                            <th class="py-3 px-2 text-gray-400 font-medium">Toplam</th>
+                            <th class="py-3 px-2 text-gray-400 font-medium">Durum</th>
+                            <th class="py-3 px-2"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Örnek Satır 1 -->
+                        <tr class="border-b border-slate-700/50 hover:bg-slate-700/30">
+                            <td class="py-3 px-2">
+                                <button class="text-left hover:text-blue-400 transition">
+                                    <div class="font-medium">Türk Bilişim</div>
+                                    <div class="text-xs text-gray-500">info@turkbilisim.com.tr</div>
+                                </button>
+                            </td>
+                            <td class="py-3 px-2">
+                                <span class="text-white">Premium Yıllık</span>
+                            </td>
+                            <td class="py-3 px-2">
+                                <div class="text-green-400 font-semibold">712 gün</div>
+                                <div class="text-xs text-gray-500">10.12.2027</div>
+                            </td>
+                            <td class="py-3 px-2">
+                                <div class="text-white">23.12.2025</div>
+                                <div class="text-xs text-gray-500">2.999 ₺</div>
+                            </td>
+                            <td class="py-3 px-2">
+                                <span class="text-yellow-400 font-semibold">8.997 ₺</span>
+                            </td>
+                            <td class="py-3 px-2">
+                                <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs font-medium">
+                                    Aktif
+                                </span>
+                            </td>
+                            <td class="py-3 px-2">
+                                <button class="text-gray-400 hover:text-white">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Örnek Satır 2 - Ödeme Bekliyor -->
+                        <tr class="border-b border-slate-700/50 hover:bg-slate-700/30 bg-orange-900/10">
+                            <td class="py-3 px-2">
+                                <button class="text-left hover:text-blue-400 transition">
+                                    <div class="font-medium">Test Kullanıcı</div>
+                                    <div class="text-xs text-gray-500">test@test.com</div>
+                                </button>
+                            </td>
+                            <td class="py-3 px-2">
+                                <span class="text-white">Premium Aylık</span>
+                            </td>
+                            <td class="py-3 px-2">
+                                <div class="text-gray-400">-</div>
+                            </td>
+                            <td class="py-3 px-2">
+                                <div class="text-gray-500">-</div>
+                            </td>
+                            <td class="py-3 px-2">
+                                <span class="text-gray-500">0 ₺</span>
+                            </td>
+                            <td class="py-3 px-2">
+                                <span class="px-2 py-1 bg-orange-500/20 text-orange-400 rounded text-xs font-medium">
+                                    Ödeme Bekliyor
+                                </span>
+                            </td>
+                            <td class="py-3 px-2">
+                                <button class="text-gray-400 hover:text-white">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 p-3 bg-blue-900/20 border border-blue-800 rounded-lg text-sm">
+                <p class="text-blue-300">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    <strong>Müşteri adına tıkla</strong> → Modal açılır (detaylar + ödeme geçmişi)
+                </p>
+            </div>
+        </section>
+
+        <!-- MODAL TASARIMI -->
+        <section class="mb-8 bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white mb-4">
+                <i class="fas fa-window-maximize mr-2 text-green-400"></i>Modal Tasarımı
+            </h2>
+
+            <!-- Modal Preview -->
+            <div class="bg-slate-900 border border-slate-600 rounded-xl overflow-hidden">
+
+                <!-- Modal Header -->
+                <div class="bg-slate-800 px-6 py-4 border-b border-slate-700">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-blue-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-white">Türk Bilişim</h3>
+                                <p class="text-sm text-gray-400">info@turkbilisim.com.tr</p>
+                            </div>
+                        </div>
+                        <button class="text-gray-400 hover:text-white">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal Stats -->
+                <div class="px-6 py-4 border-b border-slate-700">
+                    <div class="grid grid-cols-4 gap-4">
+                        <div class="text-center p-3 bg-green-900/20 rounded-lg">
+                            <div class="text-2xl font-bold text-green-400">712</div>
+                            <div class="text-xs text-gray-400">Kalan Gün</div>
+                        </div>
+                        <div class="text-center p-3 bg-blue-900/20 rounded-lg">
+                            <div class="text-2xl font-bold text-blue-400">3</div>
+                            <div class="text-xs text-gray-400">Abonelik</div>
+                        </div>
+                        <div class="text-center p-3 bg-yellow-900/20 rounded-lg">
+                            <div class="text-2xl font-bold text-yellow-400">8.997₺</div>
+                            <div class="text-xs text-gray-400">Ödenen</div>
+                        </div>
+                        <div class="text-center p-3 bg-purple-900/20 rounded-lg">
+                            <div class="text-2xl font-bold text-purple-400">3</div>
+                            <div class="text-xs text-gray-400">Ödeme</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="px-6 pt-4 border-b border-slate-700">
+                    <div class="flex gap-4">
+                        <button class="px-4 py-2 text-blue-400 border-b-2 border-blue-400 font-medium">
+                            <i class="fas fa-list mr-2"></i>Abonelikler
+                        </button>
+                        <button class="px-4 py-2 text-gray-400 hover:text-white">
+                            <i class="fas fa-credit-card mr-2"></i>Ödemeler
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Abonelikler Tab -->
+                <div class="px-6 py-4">
+                    <div class="space-y-3">
+
+                        <!-- Abonelik 1 - Aktif -->
+                        <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-green-500">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs font-medium">
+                                        Aktif
+                                    </span>
+                                    <span class="font-medium text-white">Premium Yıllık</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button class="text-gray-400 hover:text-red-400" title="Hemen Sonlandır">
+                                        <i class="fas fa-times-circle"></i>
+                                    </button>
+                                    <button class="text-gray-400 hover:text-red-400" title="Sil">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-3 gap-4 text-sm">
+                                <div>
+                                    <span class="text-gray-500">Dönem:</span>
+                                    <span class="text-white ml-2">10.12.2025 → 10.12.2026</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Kalan:</span>
+                                    <span class="text-green-400 ml-2 font-medium">346 gün</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Tutar:</span>
+                                    <span class="text-yellow-400 ml-2">2.999 ₺</span>
+                                </div>
+                            </div>
+                            <!-- Ödeme Bilgisi -->
+                            <div class="mt-3 pt-3 border-t border-slate-700 flex items-center justify-between text-sm">
+                                <div class="flex items-center gap-2 text-gray-400">
+                                    <i class="fas fa-check-circle text-green-400"></i>
+                                    <span>Manuel onay</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Abonelik 2 - Sırada -->
+                        <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-yellow-500">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs font-medium">
+                                        Sırada
+                                    </span>
+                                    <span class="font-medium text-white">Premium Yıllık</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button class="text-gray-400 hover:text-red-400" title="Sil">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-3 gap-4 text-sm">
+                                <div>
+                                    <span class="text-gray-500">Dönem:</span>
+                                    <span class="text-white ml-2">10.12.2026 → 10.12.2027</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Süre:</span>
+                                    <span class="text-white ml-2">365 gün</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Tutar:</span>
+                                    <span class="text-yellow-400 ml-2">2.999 ₺</span>
+                                </div>
+                            </div>
+                            <!-- Ödeme Bilgisi -->
+                            <div class="mt-3 pt-3 border-t border-slate-700 flex items-center justify-between text-sm">
+                                <div class="flex items-center gap-2 text-gray-400">
+                                    <i class="fas fa-credit-card text-blue-400"></i>
+                                    <span>Kredi Kartı</span>
+                                    <span class="text-gray-500">•</span>
+                                    <span>23.12.2025</span>
+                                </div>
+                                <button class="text-blue-400 hover:text-blue-300 text-xs">
+                                    <i class="fas fa-external-link-alt mr-1"></i>Sipariş #35
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Abonelik 3 - Ödeme Bekliyor -->
+                        <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-orange-500 opacity-60">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-2 py-1 bg-orange-500/20 text-orange-400 rounded text-xs font-medium">
+                                        Ödeme Bekliyor
+                                    </span>
+                                    <span class="font-medium text-white">Premium Aylık</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button class="text-green-400 hover:text-green-300" title="Onayla">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button class="text-gray-400 hover:text-red-400" title="Sil">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-3 gap-4 text-sm">
+                                <div>
+                                    <span class="text-gray-500">Süre:</span>
+                                    <span class="text-white ml-2">30 gün</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Tutar:</span>
+                                    <span class="text-gray-400 ml-2">299 ₺</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Oluşturma:</span>
+                                    <span class="text-gray-400 ml-2">24.12.2025</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Ödemeler Tab (Gizli - gösterim amaçlı) -->
+                <div class="px-6 py-4 border-t border-slate-700 hidden">
+                    <h4 class="font-medium text-white mb-3">Ödeme Geçmişi</h4>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between p-3 bg-slate-800 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-credit-card text-blue-400"></i>
+                                <div>
+                                    <div class="text-white">Sipariş #ORD202512235856CA</div>
+                                    <div class="text-xs text-gray-500">23.12.2025 14:30</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-green-400 font-medium">2.999 ₺</div>
+                                <div class="text-xs text-green-400">Ödendi</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Ödemeler Tab Detay -->
+        <section class="mb-8 bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white mb-4">
+                <i class="fas fa-credit-card mr-2 text-yellow-400"></i>Ödemeler Tab Tasarımı
+            </h2>
+
+            <div class="bg-slate-900 border border-slate-600 rounded-xl p-6">
+                <div class="space-y-3">
+
+                    <!-- Ödeme 1 -->
+                    <div class="flex items-center justify-between p-4 bg-slate-800 rounded-lg hover:bg-slate-700/50 transition cursor-pointer">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check text-green-400"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-white">Premium Yıllık</div>
+                                <div class="text-sm text-gray-400">
+                                    <span>Kredi Kartı</span>
+                                    <span class="mx-2">•</span>
+                                    <span>23.12.2025 14:30</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-lg font-semibold text-green-400">2.999 ₺</div>
+                            <div class="text-xs text-gray-500">Sipariş #35</div>
+                        </div>
+                    </div>
+
+                    <!-- Ödeme 2 -->
+                    <div class="flex items-center justify-between p-4 bg-slate-800 rounded-lg hover:bg-slate-700/50 transition cursor-pointer">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check text-green-400"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-white">Premium Yıllık</div>
+                                <div class="text-sm text-gray-400">
+                                    <span>Kredi Kartı</span>
+                                    <span class="mx-2">•</span>
+                                    <span>23.12.2025 14:35</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-lg font-semibold text-green-400">2.999 ₺</div>
+                            <div class="text-xs text-gray-500">Sipariş #36</div>
+                        </div>
+                    </div>
+
+                    <!-- Manuel Onay -->
+                    <div class="flex items-center justify-between p-4 bg-slate-800 rounded-lg">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-purple-500/20 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user-check text-purple-400"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-white">Premium Yıllık</div>
+                                <div class="text-sm text-gray-400">
+                                    <span>Manuel Onay</span>
+                                    <span class="mx-2">•</span>
+                                    <span>10.12.2025</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-lg font-semibold text-purple-400">2.999 ₺</div>
+                            <div class="text-xs text-gray-500">Admin</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Notlar -->
+        <section class="mb-8 bg-green-900/20 border border-green-800 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-green-400 mb-4">
+                <i class="fas fa-code mr-2"></i>Teknik Notlar
+            </h2>
+            <div class="space-y-3 text-sm text-gray-300">
+                <p><strong>İkon Ayrımı:</strong> Tüm ikonlar <code class="bg-slate-700 px-1 rounded">fa-</code> prefix ile ayrı class olarak</p>
+                <p><strong>Ödeme İlişkisi:</strong> <code class="bg-slate-700 px-1 rounded">metadata['order_id']</code> → Order → payment_status</p>
+                <p><strong>Kalan Gün:</strong> <code class="bg-slate-700 px-1 rounded">users.subscription_expires_at</code> - now()</p>
+                <p><strong>Toplam Ödenen:</strong> Sadece paid status aboneliklerin sum(price_per_cycle)</p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 text-sm pt-6 border-t border-slate-800">
+            <p><i class="fas fa-robot mr-2"></i>Claude AI - Tasarım Taslağı</p>
+        </footer>
+
+    </div>
+</body>
+</html>

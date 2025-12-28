@@ -93,8 +93,8 @@
                             {{-- Duration (hide on hover) --}}
                             <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="track.duration" x-text="track.duration"></div>
 
-                            {{-- Actions (show on hover) - Queue Style --}}
-                            <div class="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+                            {{-- Actions: Mobile always visible, Desktop hover only --}}
+                            <div class="flex sm:opacity-0 sm:group-hover:opacity-100 items-center gap-1 flex-shrink-0 transition-opacity">
                                 {{-- Remove Button --}}
                                 <button
                                     @click.stop="if(confirm('Şarkıyı playlist\'ten çıkar?')) { fetch(`/api/muzibu/playlists/${$store.sidebar.previewInfo.id}/remove-song/${track.id}`, { method: 'DELETE', headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content } }).then(r => r.json()).then(d => { if(d.success) { Alpine.store('toast').show('Şarkı çıkarıldı', 'success'); $store.sidebar.refreshPreview(); } }); }"

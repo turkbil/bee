@@ -58,8 +58,8 @@
     {{-- Custom Styles --}}
     <link rel="stylesheet" href="{{ versioned_asset('themes/muzibu/css/muzibu-layout.css') }}">
     <link rel="stylesheet" href="{{ versioned_asset('themes/muzibu/css/muzibu-custom.css') }}">
-    <script src="{{ asset('themes/muzibu/js/player/core/player-core.js') }}"></script>
-    <script src="{{ asset('themes/muzibu/js/player/features/play-helpers.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/player/core/player-core.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/player/features/play-helpers.js') }}"></script>
 
     <script>
         // 🌍 Global Lang Strings for JS
@@ -611,22 +611,24 @@
             currentUser: @if(auth()->check())
                 @php
                     $user = auth()->user();
-                    $subscription = $user->subscriptions()
-                        ->whereIn('status', ['active', 'trial'])
-                        ->where(function($q) {
-                            $q->whereNull('current_period_end')
-                              ->orWhere('current_period_end', '>', now());
-                        })
+
+                    // 🔴 SINGLE SOURCE OF TRUTH: users.subscription_expires_at
+                    $subscriptionExpiresAt = $user->subscription_expires_at;
+                    $hasActiveSubscription = $subscriptionExpiresAt && $subscriptionExpiresAt->isFuture();
+
+                    // Trial kontrolü: Aktif trial subscription var mı?
+                    $trialSubscription = $user->subscriptions()
+                        ->where('status', 'trial')
+                        ->whereNotNull('trial_ends_at')
+                        ->where('trial_ends_at', '>', now())
                         ->first();
 
-                    $isTrial = $subscription
-                        && $subscription->has_trial
-                        && $subscription->trial_ends_at
-                        && $subscription->trial_ends_at->isFuture();
+                    $isTrial = $trialSubscription !== null;
+                    $trialEndsAt = $isTrial ? $trialSubscription->trial_ends_at->toIso8601String() : null;
 
-                    $trialEndsAt = $isTrial ? $subscription->trial_ends_at->toIso8601String() : null;
-                    $subscriptionEndsAt = $subscription && $subscription->current_period_end
-                        ? $subscription->current_period_end->toIso8601String()
+                    // 🔴 subscription_ends_at = users.subscription_expires_at (TOPLAM SÜRE)
+                    $subscriptionEndsAt = $hasActiveSubscription
+                        ? $subscriptionExpiresAt->toIso8601String()
                         : null;
 
                     // 🔥 Device limit (backend'den al - 3-tier hierarchy)
@@ -639,6 +641,7 @@
                 email: "{{ $user->email }}",
                 is_premium: {{ $user->isPremiumOrTrial() ? 'true' : 'false' }},
                 is_trial: {{ $isTrial ? 'true' : 'false' }},
+                is_root: {{ $user->hasRole('root') ? 'true' : 'false' }},
                 trial_ends_at: {!! $trialEndsAt ? '"' . $trialEndsAt . '"' : 'null' !!},
                 subscription_ends_at: {!! $subscriptionEndsAt ? '"' . $subscriptionEndsAt . '"' : 'null' !!}
             }

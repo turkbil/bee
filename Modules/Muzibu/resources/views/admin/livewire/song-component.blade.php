@@ -340,6 +340,36 @@
                                 </td>
                                 <td class="text-end align-middle">
                                     <div class="d-flex align-items-center gap-3 justify-content-end">
+                                        {{-- Renk Gradienti (sabit genişlik) --}}
+                                        <span style="width: 18px; display: inline-flex; justify-content: center;">
+                                            @if($song->color_hash)
+                                                @php
+                                                    $parts = explode(',', $song->color_hash);
+                                                    // Yeni format: h1,s1,l1,h2,s2,l2,h3,s3,l3 (9 değer)
+                                                    // Eski format: h1,h2,h3 (3 değer)
+                                                    if (count($parts) === 9) {
+                                                        $gradient = "linear-gradient(135deg, hsl({$parts[0]}, {$parts[1]}%, {$parts[2]}%), hsl({$parts[3]}, {$parts[4]}%, {$parts[5]}%), hsl({$parts[6]}, {$parts[7]}%, {$parts[8]}%))";
+                                                    } else {
+                                                        $h1 = $parts[0] ?? 200;
+                                                        $h2 = $parts[1] ?? 220;
+                                                        $h3 = $parts[2] ?? 240;
+                                                        $gradient = "linear-gradient(135deg, hsl({$h1}, 70%, 50%), hsl({$h2}, 70%, 50%), hsl({$h3}, 70%, 50%))";
+                                                    }
+                                                @endphp
+                                                <span class="d-inline-block rounded"
+                                                    style="width: 18px; height: 18px; background: {{ $gradient }};"
+                                                    data-bs-toggle="tooltip"
+                                                    title="Renk"></span>
+                                            @endif
+                                        </span>
+
+                                        {{-- Media İkonu (sabit genişlik) --}}
+                                        <span style="width: 16px; display: inline-flex; justify-content: center;">
+                                            @if($song->media_id || $song->hasMedia('hero'))
+                                                <i class="fas fa-image text-success" data-bs-toggle="tooltip" title="Görsel mevcut"></i>
+                                            @endif
+                                        </span>
+
                                         {{-- Play Button --}}
                                         @if($song->hls_path || $song->file_path)
                                             @php

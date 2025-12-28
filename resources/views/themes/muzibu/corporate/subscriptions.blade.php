@@ -173,73 +173,72 @@
 
                     <div class="p-5">
                         <div class="grid sm:grid-cols-2 gap-4">
-                            @foreach($plans as $index => $plan)
-                                @php
-                                    $cycles = $plan->getSortedCycles();
-                                    $firstCycleKey = array_key_first($cycles);
-                                    $firstCycle = $cycles[$firstCycleKey] ?? null;
-                                    $planId = $plan->subscription_plan_id;
-                                @endphp
+                        @foreach($plans as $index => $plan)
+                            @php
+                                $cycles = $plan->getSortedCycles();
+                                $firstCycleKey = array_key_first($cycles);
+                                $firstCycle = $cycles[$firstCycleKey] ?? null;
+                                $planId = $plan->subscription_plan_id;
+                            @endphp
 
-                                <div @click="selectPlanById({{ $planId }})"
-                                     :class="selectedPlanId == {{ $planId }} ? 'ring-2 ring-purple-500 border-purple-500/50 bg-purple-500/10' : 'border-white/10 hover:border-white/20 bg-slate-900/50'"
-                                     class="relative rounded-xl p-5 cursor-pointer transition-all border group h-[180px]">
+                            <div @click="selectPlanById({{ $planId }})"
+                                 :class="selectedPlanId == {{ $planId }} ? 'ring-2 ring-purple-500 border-purple-500/50 bg-purple-500/5' : 'border-white/10 hover:border-white/20 bg-slate-900/30'"
+                                 class="relative rounded-xl p-4 cursor-pointer transition-all border h-[140px] flex flex-col">
 
-                                    @if($plan->is_featured)
-                                        <div class="absolute -top-2 -right-2 z-10">
-                                            <span class="px-2.5 py-1 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-bold rounded-full shadow-lg">
-                                                POPÜLER
-                                            </span>
+                                {{-- Plan Header --}}
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center gap-3">
+                                        {{-- Radio Style Indicator --}}
+                                        <div :class="selectedPlanId == {{ $planId }} ? 'border-purple-500 bg-purple-500' : 'border-gray-600'"
+                                             class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all">
+                                            <div x-show="selectedPlanId == {{ $planId }}" class="w-2 h-2 bg-white rounded-full"></div>
                                         </div>
-                                    @endif
-
-                                    {{-- Başlık --}}
-                                    <div class="flex items-start justify-between mb-3">
                                         <div>
-                                            <h3 class="text-white font-semibold text-lg">{{ $plan->getTranslated('title') }}</h3>
+                                            <h3 class="text-white font-semibold flex items-center gap-2">
+                                                {{ $plan->getTranslated('title') }}
+                                                @if($plan->is_featured)
+                                                <span class="px-2 py-0.5 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-[10px] font-bold rounded-full">
+                                                    POPULER
+                                                </span>
+                                                @endif
+                                            </h3>
                                             @if($plan->getTranslated('subtitle'))
-                                                <p class="text-gray-500 text-sm mt-0.5">{{ $plan->getTranslated('subtitle') }}</p>
+                                            <p class="text-gray-500 text-sm">{{ $plan->getTranslated('subtitle') }}</p>
                                             @endif
-                                        </div>
-                                        <div :class="selectedPlanId == {{ $planId }} ? 'opacity-100 scale-100' : 'opacity-0 scale-75'"
-                                             class="w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200">
-                                            <i class="fas fa-check text-white text-xs"></i>
-                                        </div>
-                                    </div>
-
-                                    {{-- Fiyat/Dönem Alanı - SABİT YÜKSEKLİK, ABSOLUTE POZİSYON --}}
-                                    <div class="relative h-[80px]">
-                                        {{-- Fiyat (seçili değilken) --}}
-                                        @if($firstCycle)
-                                            <div :class="selectedPlanId == {{ $planId }} ? 'opacity-0 pointer-events-none' : 'opacity-100'"
-                                                 class="absolute inset-0 flex items-center transition-opacity duration-150">
-                                                <div class="flex items-baseline gap-1">
-                                                    <span class="text-2xl font-black text-white">{{ number_format($firstCycle['price'] ?? 0, 0, ',', '.') }}</span>
-                                                    <span class="text-lg text-gray-400">TL</span>
-                                                    <span class="text-gray-500 text-sm ml-1">/ {{ $firstCycle['label']['tr'] ?? $firstCycleKey }}</span>
-                                                </div>
-                                            </div>
-                                        @endif
-
-                                        {{-- Dönem Seçimi (seçiliyken) --}}
-                                        <div :class="selectedPlanId == {{ $planId }} ? 'opacity-100' : 'opacity-0 pointer-events-none'"
-                                             class="absolute inset-0 flex items-start pt-1 transition-opacity duration-150 overflow-hidden">
-                                            <div class="flex flex-wrap gap-2">
-                                                @foreach($cycles as $cycleKey => $cycle)
-                                                    <button type="button"
-                                                            @click.stop="selectedCycleKey = '{{ $cycleKey }}'"
-                                                            :class="selectedCycleKey === '{{ $cycleKey }}'
-                                                                ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white border-transparent'
-                                                                : 'bg-white/5 text-gray-300 border-white/10 hover:bg-white/10'"
-                                                            class="px-3 py-1.5 rounded-lg text-xs font-medium transition border whitespace-nowrap">
-                                                        {{ $cycle['label']['tr'] ?? $cycleKey }} {{ number_format($cycle['price'] ?? 0, 0, ',', '.') }}₺
-                                                    </button>
-                                                @endforeach
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
+
+                                {{-- Fiyat/Dönem Alanı - Sabit Yükseklik --}}
+                                <div class="flex-1 flex items-center">
+                                    {{-- Dönem Seçimi - Seçiliyken --}}
+                                    <div class="flex flex-wrap gap-2" x-show="selectedPlanId == {{ $planId }}">
+                                        @foreach($cycles as $cycleKey => $cycle)
+                                            <button type="button"
+                                                    @click.stop="selectedCycleKey = '{{ $cycleKey }}'"
+                                                    :class="selectedCycleKey === '{{ $cycleKey }}'
+                                                        ? 'bg-purple-500 text-white border-purple-500'
+                                                        : 'bg-white/5 text-gray-300 border-white/10 hover:bg-white/10 hover:border-white/20'"
+                                                    class="px-4 py-2 rounded-lg text-sm font-medium transition border">
+                                                <span class="font-bold">{{ number_format($cycle['price'] ?? 0, 0, ',', '.') }} TL</span>
+                                                <span class="text-xs opacity-75 ml-1">/ {{ $cycle['label']['tr'] ?? $cycleKey }}</span>
+                                            </button>
+                                        @endforeach
+                                    </div>
+
+                                    {{-- Fiyat Özeti - Seçili Değilken --}}
+                                    @if($firstCycle)
+                                    <div x-show="selectedPlanId != {{ $planId }}" class="text-gray-400 text-sm">
+                                        <span class="text-white font-semibold text-xl">{{ number_format($firstCycle['price'] ?? 0, 0, ',', '.') }} TL</span>
+                                        <span class="ml-1">/ {{ $firstCycle['label']['tr'] ?? $firstCycleKey }}</span>
+                                        @if(count($cycles) > 1)
+                                        <span class="text-gray-500 ml-2">· {{ count($cycles) }} dönem</span>
+                                        @endif
+                                    </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
                         </div>
                     </div>
                 </div>

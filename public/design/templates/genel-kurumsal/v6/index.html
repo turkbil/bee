@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vertex Kurumsal | Endüstriyel Çözümler</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- FontAwesome Pro -->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.4.2/css/all.css">
+
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'heading': ['Space Grotesk', 'sans-serif'],
+                        'body': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#fdf8f6',
+                            100: '#f2e8e5',
+                            200: '#eaddd7',
+                            300: '#e0cec7',
+                            400: '#d2bab0',
+                            500: '#bfa094',
+                            600: '#a18072',
+                            700: '#977669',
+                            800: '#846358',
+                            900: '#43302b',
+                        },
+                        carbon: {
+                            50: '#f6f6f6',
+                            100: '#e7e7e7',
+                            200: '#d1d1d1',
+                            300: '#b0b0b0',
+                            400: '#888888',
+                            500: '#6d6d6d',
+                            600: '#5d5d5d',
+                            700: '#4f4f4f',
+                            800: '#454545',
+                            900: '#1a1a1a',
+                            950: '#0d0d0d',
+                        },
+                        copper: {
+                            400: '#d4a574',
+                            500: '#c4956a',
+                            600: '#b8845a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --color-primary: #b8845a;
+            --color-primary-light: #d4a574;
+            --color-primary-dark: #946a48;
+            --color-secondary: #1a1a1a;
+            --color-accent: #c4956a;
+            --color-text: #1a1a1a;
+            --color-text-muted: #6d6d6d;
+            --color-bg: #fafafa;
+            --color-surface: #ffffff;
+            --color-border: #e7e7e7;
+        }
+
+        .dark {
+            --color-primary: #d4a574;
+            --color-primary-light: #e5c4a8;
+            --color-primary-dark: #b8845a;
+            --color-secondary: #f6f6f6;
+            --color-text: #f6f6f6;
+            --color-text-muted: #b0b0b0;
+            --color-bg: #0d0d0d;
+            --color-surface: #1a1a1a;
+            --color-border: #2a2a2a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+        }
+
+        .font-heading {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* Icon hover transition */
+        .icon-hover i {
+            transition: all 0.3s ease;
+        }
+
+        .icon-hover:hover i.fa-light,
+        .icon-hover:hover i.fa-thin {
+            font-weight: 900;
+        }
+
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Split line animation */
+        .split-line {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .split-line::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--color-primary);
+            transform: translateX(-101%);
+            transition: transform 0.4s ease;
+        }
+
+        .split-line:hover::after {
+            transform: translateX(0);
+        }
+
+        /* Structural grid lines */
+        .grid-lines {
+            background-image:
+                linear-gradient(to right, var(--color-border) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--color-border) 1px, transparent 1px);
+            background-size: 80px 80px;
+        }
+
+        /* Organic shape */
+        .organic-shape {
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            animation: morph 8s ease-in-out infinite;
+        }
+
+        @keyframes morph {
+            0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+        }
+
+        /* Mega menu */
+        .mega-menu {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .menu-item:hover .mega-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Card hover */
+        .card-structural {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .card-structural::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 0;
+            background: var(--color-primary);
+            transition: height 0.3s ease;
+        }
+
+        .card-structural:hover::before {
+            height: 100%;
+        }
+
+        /* Timeline */
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 50%;
+            width: 12px;
+            height: 12px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: calc(50% + 12px);
+            width: 2px;
+            height: calc(100% + 20px);
+            background: var(--color-border);
+        }
+
+        .timeline-item:last-child::after {
+            display: none;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--color-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-primary);
+            border-radius: 4px;
+        }
+    </style>
+
+    <script>
+        // Theme initialization - prevent FOUC
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</head>
+<body class="antialiased" x-data="{ mobileMenu: false, searchOpen: false }">
+
+    <!-- Header -->
+    <header class="fixed w-full top-0 z-50 bg-white/90 dark:bg-carbon-950/90 backdrop-blur-md border-b border-carbon-100 dark:border-carbon-800" x-data="{ scrolled: false }" @scroll.window="scrolled = window.scrollY > 50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-copper-500 flex items-center justify-center">
+                        <span class="font-heading font-bold text-white text-xl">V</span>
+                    </div>
+                    <div class="hidden sm:block">
+                        <span class="font-heading font-semibold text-xl text-carbon-900 dark:text-white">VERTEX</span>
+                        <span class="block text-xs text-carbon-500 dark:text-carbon-400 tracking-widest uppercase">Kurumsal</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden lg:flex items-center gap-1">
+                    <a href="#" class="px-4 py-2 text-sm font-medium text-carbon-700 dark:text-carbon-300 hover:text-copper-600 dark:hover:text-copper-400 transition-colors">Ana Sayfa</a>
+
+                    <!-- Kurumsal Mega Menu -->
+                    <div class="menu-item relative">
+                        <button class="px-4 py-2 text-sm font-medium text-carbon-700 dark:text-carbon-300 hover:text-copper-600 dark:hover:text-copper-400 transition-colors flex items-center gap-1">
+                            Kurumsal
+                            <i class="fa-light fa-chevron-down text-xs"></i>
+                        </button>
+                        <div class="mega-menu absolute left-1/2 -translate-x-1/2 top-full pt-4 w-[600px]">
+                            <div class="bg-white dark:bg-carbon-900 border border-carbon-100 dark:border-carbon-800 shadow-xl p-6 grid grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-heading font-semibold text-carbon-900 dark:text-white mb-4">Hakkımızda</h4>
+                                    <ul class="space-y-3">
+                                        <li><a href="#" class="text-sm text-carbon-600 dark:text-carbon-400 hover:text-copper-600 dark:hover:text-copper-400 split-line">Şirket Profili</a></li>
+                                        <li><a href="#" class="text-sm text-carbon-600 dark:text-carbon-400 hover:text-copper-600 dark:hover:text-copper-400 split-line">Misyon & Vizyon</a></li>
+                                        <li><a href="#" class="text-sm text-carbon-600 dark:text-carbon-400 hover:text-copper-600 dark:hover:text-copper-400 split-line">Yönetim Kadrosu</a></li>
+                                        <li><a href="#" class="text-sm text-carbon-600 dark:text-carbon-400 hover:text-copper-600 dark:hover:text-copper-400 split-line">Tarihçemiz</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-heading font-semibold text-carbon-900 dark:text-white mb-4">Kalite & Uyum</h4>
+                                    <ul class="space-y-3">
+                                        <li><a href="#" class="text-sm text-carbon-600 dark:text-carbon-400 hover:text-copper-600 dark:hover:text-copper-400 split-line">ISO Sertifikalarımız</a></li>
+                                        <li><a href="#" class="text-sm text-carbon-600 dark:text-carbon-400 hover:text-copper-600 dark:hover:text-copper-400 split-line">Sürdürülebilirlik</a></li>
+                                        <li><a href="#" class="text-sm text-carbon-600 dark:text-carbon-400 hover:text-copper-600 dark:hover:text-copper-400 split-line">İş Sağlığı & Güvenliği</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hizmetler Mega Menu -->
+                    <div class="menu-item relative">
+                        <button class="px-4 py-2 text-sm font-medium text-carbon-700 dark:text-carbon-300 hover:text-copper-600 dark:hover:text-copper-400 transition-colors flex items-center gap-1">
+                            Hizmetler
+                            <i class="fa-light fa-chevron-down text-xs"></i>
+                        </button>
+                        <div class="mega-menu absolute left-1/2 -translate-x-1/2 top-full pt-4 w-[700px]">
+                            <div class="bg-white dark:bg-carbon-900 border border-carbon-100 dark:border-carbon-800 shadow-xl p-6 grid grid-cols-3 gap-6">
+                                <div class="col-span-2 grid grid-cols-2 gap-6">
+                                    <div>
+                                        <h4 class="font-heading font-semibold text-carbon-900 dark:text-white mb-4">Danışmanlık</h4>
+                                        <ul class="space-y-3">
+                                            <li><a href="#" class="text-sm text-carbon-600 dark:text-carbon-400 hover:text-copper-600 split-line">Stratejik Planlama</a></li>
+                                            <li><a href="#" class="text-sm text-carbon-600 dark:text-carbon-400 hover:text-copper-600 split-line">Süreç Optimizasyonu</a></li>
+                                            <li><a href="#" class="text-sm text-carbon-600 dark:text-carbon-400 hover:text-copper-600 split-line">Dijital Dönüşüm</a></li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-heading font-semibold text-carbon-900 dark:text-white mb-4">Çözümler</h4>
+                                        <ul class="space-y-3">
+                                            <li><a href="#" class="text-sm text-carbon-600 dark:text-carbon-400 hover:text-copper-600 split-line">Kurumsal Yazılım</a></li>
+                                            <li><a href="#" class="text-sm text-carbon-600 dark:text-carbon-400 hover:text-copper-600 split-line">Entegrasyon</a></li>
+                                            <li><a href="#" class="text-sm text-carbon-600 dark:text-carbon-400 hover:text-copper-600 split-line">Teknik Destek</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="bg-carbon-50 dark:bg-carbon-800 p-4 flex flex-col justify-center">
+                                    <span class="text-xs text-copper-600 font-medium uppercase tracking-wider mb-2">Öne Çıkan</span>
+                                    <p class="text-sm font-heading font-semibold text-carbon-900 dark:text-white">2024 Dijital Dönüşüm Raporu</p>
+                                    <a href="#" class="text-xs text-copper-600 hover:text-copper-700 mt-2 inline-flex items-center gap-1">
+                                        İncele <i class="fa-light fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="#" class="px-4 py-2 text-sm font-medium text-carbon-700 dark:text-carbon-300 hover:text-copper-600 dark:hover:text-copper-400 transition-colors">Projeler</a>
+                    <a href="#" class="px-4 py-2 text-sm font-medium text-carbon-700 dark:text-carbon-300 hover:text-copper-600 dark:hover:text-copper-400 transition-colors">Blog</a>
+                    <a href="#" class="px-4 py-2 text-sm font-medium text-carbon-700 dark:text-carbon-300 hover:text-copper-600 dark:hover:text-copper-400 transition-colors">İletişim</a>
+                </nav>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-3">
+                    <!-- Search -->
+                    <button @click="searchOpen = !searchOpen" class="icon-hover w-10 h-10 flex items-center justify-center text-carbon-600 dark:text-carbon-400 hover:text-copper-600 dark:hover:text-copper-400 transition-colors">
+                        <i class="fa-light fa-magnifying-glass"></i>
+                    </button>
+
+                    <!-- Theme Toggle -->
+                    <button
+                        @click="document.documentElement.classList.toggle('dark'); localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'"
+                        class="icon-hover w-10 h-10 flex items-center justify-center text-carbon-600 dark:text-carbon-400 hover:text-copper-600 dark:hover:text-copper-400 transition-colors"
+                    >
+                        <i class="fa-light fa-sun-bright dark:hidden"></i>
+                        <i class="fa-light fa-moon hidden dark:block"></i>
+                    </button>
+
+                    <!-- CTA -->
+                    <a href="#" class="hidden md:inline-flex items-center gap-2 px-5 py-2.5 bg-copper-500 hover:bg-copper-600 text-white text-sm font-medium transition-colors">
+                        Teklif Alın
+                        <i class="fa-light fa-arrow-right"></i>
+                    </a>
+
+                    <!-- Mobile Menu Toggle -->
+                    <button @click="mobileMenu = !mobileMenu" class="lg:hidden w-10 h-10 flex items-center justify-center text-carbon-600 dark:text-carbon-400">
+                        <i class="fa-light fa-bars text-xl" x-show="!mobileMenu"></i>
+                        <i class="fa-light fa-xmark text-xl" x-show="mobileMenu" x-cloak></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Overlay -->
+        <div x-show="searchOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="absolute inset-x-0 top-full bg-white dark:bg-carbon-900 border-b border-carbon-100 dark:border-carbon-800 p-4" x-cloak>
+            <div class="max-w-2xl mx-auto">
+                <div class="relative">
+                    <input type="text" placeholder="Ne aramıştınız?" class="w-full px-4 py-3 pl-12 bg-carbon-50 dark:bg-carbon-800 border-0 text-carbon-900 dark:text-white placeholder-carbon-400 focus:ring-2 focus:ring-copper-500 outline-none">
+                    <i class="fa-light fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-carbon-400"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div x-show="mobileMenu" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="lg:hidden absolute inset-x-0 top-full bg-white dark:bg-carbon-900 border-b border-carbon-100 dark:border-carbon-800 shadow-xl" x-cloak>
+            <nav class="max-w-7xl mx-auto px-4 py-6 space-y-4">
+                <a href="#" class="block py-2 text-carbon-900 dark:text-white font-medium">Ana Sayfa</a>
+                <a href="#" class="block py-2 text-carbon-600 dark:text-carbon-400">Kurumsal</a>
+                <a href="#" class="block py-2 text-carbon-600 dark:text-carbon-400">Hizmetler</a>
+                <a href="#" class="block py-2 text-carbon-600 dark:text-carbon-400">Projeler</a>
+                <a href="#" class="block py-2 text-carbon-600 dark:text-carbon-400">Blog</a>
+                <a href="#" class="block py-2 text-carbon-600 dark:text-carbon-400">İletişim</a>
+                <a href="#" class="inline-flex items-center gap-2 px-5 py-2.5 bg-copper-500 text-white text-sm font-medium mt-4">
+                    Teklif Alın
+                    <i class="fa-light fa-arrow-right"></i>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section - Split Screen -->
+        <section class="min-h-screen pt-20 relative overflow-hidden">
+            <div class="absolute inset-0 grid-lines opacity-30 dark:opacity-10"></div>
+
+            <div class="grid lg:grid-cols-2 min-h-[calc(100vh-5rem)]">
+                <!-- Left - Content -->
+                <div class="flex flex-col justify-center px-6 sm:px-12 lg:px-16 xl:px-24 py-16 lg:py-0 relative z-10">
+                    <div data-aos="fade-right" data-aos-duration="800">
+                        <span class="inline-block px-3 py-1 text-xs font-medium text-copper-600 dark:text-copper-400 bg-copper-100 dark:bg-copper-900/30 mb-6 tracking-wider uppercase">
+                            1994'ten Beri
+                        </span>
+
+                        <h1 class="font-heading text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-carbon-900 dark:text-white leading-[1.1] mb-6">
+                            Endüstriyel
+                            <span class="block gradient-text">Mükemmellik</span>
+                            <span class="block text-carbon-400 dark:text-carbon-500">Standardı</span>
+                        </h1>
+
+                        <p class="text-lg text-carbon-600 dark:text-carbon-400 max-w-md mb-8 leading-relaxed">
+                            30 yılı aşkın tecrübemizle, sektörünüzde fark yaratan kurumsal çözümler sunuyoruz. Yenilikçi yaklaşımımız ve uzman kadromuzla yanınızdayız.
+                        </p>
+
+                        <div class="flex flex-wrap gap-4">
+                            <a href="#" class="inline-flex items-center gap-3 px-6 py-3.5 bg-copper-500 hover:bg-copper-600 text-white font-medium transition-colors group">
+                                <span>Projelerimizi Keşfedin</span>
+                                <i class="fa-light fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                            </a>
+                            <a href="#" class="inline-flex items-center gap-3 px-6 py-3.5 border border-carbon-200 dark:border-carbon-700 text-carbon-700 dark:text-carbon-300 hover:border-copper-500 hover:text-copper-600 dark:hover:text-copper-400 font-medium transition-colors">
+                                <i class="fa-light fa-play-circle"></i>
+                                <span>Tanıtım Filmi</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Stats Strip -->
+                    <div class="grid grid-cols-3 gap-6 mt-16 pt-8 border-t border-carbon-200 dark:border-carbon-800" data-aos="fade-up" data-aos-delay="200">
+                        <div>
+                            <span class="font-heading text-3xl font-bold text-carbon-900 dark:text-white">30+</span>
+                            <p class="text-sm text-carbon-500 dark:text-carbon-400 mt-1">Yıllık Deneyim</p>
+                        </div>
+                        <div>
+                            <span class="font-heading text-3xl font-bold text-carbon-900 dark:text-white">850+</span>
+                            <p class="text-sm text-carbon-500 dark:text-carbon-400 mt-1">Tamamlanan Proje</p>
+                        </div>
+                        <div>
+                            <span class="font-heading text-3xl font-bold text-carbon-900 dark:text-white">12</span>
+                            <p class="text-sm text-carbon-500 dark:text-carbon-400 mt-1">Ülkede Faaliyet</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right - Visual -->
+                <div class="relative bg-carbon-100 dark:bg-carbon-900 overflow-hidden">
+                    <!-- Organic Shape Background -->
+                    <div class="absolute top-1/4 right-1/4 w-96 h-96 bg-copper-500/20 organic-shape blur-3xl"></div>
+
+                    <img
+                        src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&q=80"
+                        alt="Kurumsal Bina"
+                        class="absolute inset-0 w-full h-full object-cover"
+                        data-aos="fade-left"
+                        data-aos-duration="1000"
+                    >
+
+                    <!-- Overlay Pattern -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-carbon-900/60 via-transparent to-transparent"></div>
+
+                    <!-- Floating Card -->
+                    <div class="absolute bottom-8 left-8 right-8 lg:left-12 lg:right-12 bg-white/95 dark:bg-carbon-800/95 backdrop-blur-sm p-6" data-aos="fade-up" data-aos-delay="400">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-copper-500 flex items-center justify-center flex-shrink-0">
+                                <i class="fa-light fa-certificate text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-heading font-semibold text-carbon-900 dark:text-white mb-1">ISO 9001:2015 Sertifikalı</h4>
+                                <p class="text-sm text-carbon-500 dark:text-carbon-400">Uluslararası kalite standartlarında hizmet garantisi</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section - Bold Typography -->
+        <section class="py-24 lg:py-32 bg-carbon-50 dark:bg-carbon-900/50">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <!-- Left - Image Grid -->
+                    <div class="relative" data-aos="fade-right">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-4">
+                                <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80" alt="Ekip Toplantısı" class="w-full aspect-[4/5] object-cover">
+                                <div class="bg-copper-500 p-6 text-center">
+                                    <span class="font-heading text-4xl font-bold text-white">30+</span>
+                                    <p class="text-copper-100 text-sm mt-1">Yıllık Tecrübe</p>
+                                </div>
+                            </div>
+                            <div class="pt-8">
+                                <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?w=600&q=80" alt="Modern Ofis" class="w-full aspect-[4/5] object-cover">
+                            </div>
+                        </div>
+
+                        <!-- Decorative Element -->
+                        <div class="absolute -bottom-6 -right-6 w-24 h-24 border-4 border-copper-500 hidden lg:block"></div>
+                    </div>
+
+                    <!-- Right - Content -->
+                    <div data-aos="fade-left">
+                        <span class="inline-block px-3 py-1 text-xs font-medium text-copper-600 dark:text-copper-400 bg-copper-100 dark:bg-copper-900/30 mb-6 tracking-wider uppercase">
+                            Hakkımızda
+                        </span>
+
+                        <h2 class="font-heading text-4xl lg:text-5xl font-bold text-carbon-900 dark:text-white mb-6 leading-tight">
+                            Değer Yaratan
+                            <span class="gradient-text">Ortaklıklar</span>
+                            Kuruyoruz
+                        </h2>
+
+                        <p class="text-lg text-carbon-600 dark:text-carbon-400 mb-8 leading-relaxed">
+                            1994 yılından bu yana, müşterilerimizin iş süreçlerini optimize ederek rekabet avantajı elde etmelerine yardımcı oluyoruz. Sadece bir tedarikçi değil, stratejik iş ortağınız olmayı hedefliyoruz.
+                        </p>
+
+                        <div class="space-y-4 mb-8">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 bg-copper-100 dark:bg-copper-900/30 flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-light fa-check text-copper-600 dark:text-copper-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-heading font-semibold text-carbon-900 dark:text-white mb-1">Müşteri Odaklı Yaklaşım</h4>
+                                    <p class="text-sm text-carbon-500 dark:text-carbon-400">Her projeyi benzersiz ihtiyaçlarınıza göre özelleştiriyoruz.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 bg-copper-100 dark:bg-copper-900/30 flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-light fa-check text-copper-600 dark:text-copper-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-heading font-semibold text-carbon-900 dark:text-white mb-1">Sürdürülebilir Çözümler</h4>
+                                    <p class="text-sm text-carbon-500 dark:text-carbon-400">Uzun vadeli değer yaratan, çevre dostu projeler geliştiriyoruz.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 bg-copper-100 dark:bg-copper-900/30 flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-light fa-check text-copper-600 dark:text-copper-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-heading font-semibold text-carbon-900 dark:text-white mb-1">Uzman Kadro</h4>
+                                    <p class="text-sm text-carbon-500 dark:text-carbon-400">Alanında lider 200+ profesyonel ekip üyemiz.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="#" class="inline-flex items-center gap-2 text-copper-600 dark:text-copper-400 font-medium hover:gap-3 transition-all split-line">
+                            Hikayemizi Okuyun
+                            <i class="fa-light fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section - Structural Grid -->
+        <section class="py-24 lg:py-32 relative overflow-hidden">
+            <div class="absolute inset-0 grid-lines opacity-20 dark:opacity-5"></div>
+
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
+                <!-- Section Header -->
+                <div class="max-w-2xl mb-16" data-aos="fade-up">
+                    <span class="inline-block px-3 py-1 text-xs font-medium text-copper-600 dark:text-copper-400 bg-copper-100 dark:bg-copper-900/30 mb-6 tracking-wider uppercase">
+                        Hizmetlerimiz
+                    </span>
+                    <h2 class="font-heading text-4xl lg:text-5xl font-bold text-carbon-900 dark:text-white mb-6">
+                        Uçtan Uca <span class="gradient-text">Çözümler</span>
+                    </h2>
+                    <p class="text-lg text-carbon-600 dark:text-carbon-400">
+                        İhtiyaçlarınıza özel, entegre hizmet portföyümüzle işinizi bir adım öteye taşıyın.
+                    </p>
+                </div>
+
+                <!-- Services Grid -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Service 1 -->
+                    <div class="card-structural group bg-white dark:bg-carbon-800 p-8 border border-carbon-100 dark:border-carbon-700" data-aos="fade-up" data-aos-delay="100">
+                        <div class="icon-hover w-14 h-14 bg-carbon-50 dark:bg-carbon-700 flex items-center justify-center mb-6 group-hover:bg-copper-100 dark:group-hover:bg-copper-900/30 transition-colors">
+                            <i class="fa-light fa-lightbulb-on text-2xl text-carbon-600 dark:text-carbon-400 group-hover:text-copper-600 dark:group-hover:text-copper-400 transition-colors"></i>
+                        </div>
+                        <h3 class="font-heading text-xl font-semibold text-carbon-900 dark:text-white mb-3">Stratejik Danışmanlık</h3>
+                        <p class="text-carbon-500 dark:text-carbon-400 mb-6 leading-relaxed">
+                            İş stratejinizi geleceğe hazırlayın. Pazar analizi, rekabet değerlendirmesi ve büyüme planlaması.
+                        </p>
+                        <a href="#" class="inline-flex items-center gap-2 text-sm font-medium text-copper-600 dark:text-copper-400 hover:gap-3 transition-all">
+                            Detaylı İncele <i class="fa-light fa-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- Service 2 -->
+                    <div class="card-structural group bg-white dark:bg-carbon-800 p-8 border border-carbon-100 dark:border-carbon-700" data-aos="fade-up" data-aos-delay="200">
+                        <div class="icon-hover w-14 h-14 bg-carbon-50 dark:bg-carbon-700 flex items-center justify-center mb-6 group-hover:bg-copper-100 dark:group-hover:bg-copper-900/30 transition-colors">
+                            <i class="fa-light fa-cogs text-2xl text-carbon-600 dark:text-carbon-400 group-hover:text-copper-600 dark:group-hover:text-copper-400 transition-colors"></i>
+                        </div>
+                        <h3 class="font-heading text-xl font-semibold text-carbon-900 dark:text-white mb-3">Süreç Optimizasyonu</h3>
+                        <p class="text-carbon-500 dark:text-carbon-400 mb-6 leading-relaxed">
+                            Operasyonel verimliliği maksimize edin. İş akışı analizi, otomasyon ve performans iyileştirme.
+                        </p>
+                        <a href="#" class="inline-flex items-center gap-2 text-sm font-medium text-copper-600 dark:text-copper-400 hover:gap-3 transition-all">
+                            Detaylı İncele <i class="fa-light fa-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- Service 3 -->
+                    <div class="card-structural group bg-white dark:bg-carbon-800 p-8 border border-carbon-100 dark:border-carbon-700" data-aos="fade-up" data-aos-delay="300">
+                        <div class="icon-hover w-14 h-14 bg-carbon-50 dark:bg-carbon-700 flex items-center justify-center mb-6 group-hover:bg-copper-100 dark:group-hover:bg-copper-900/30 transition-colors">
+                            <i class="fa-light fa-rocket-launch text-2xl text-carbon-600 dark:text-carbon-400 group-hover:text-copper-600 dark:group-hover:text-copper-400 transition-colors"></i>
+                        </div>
+                        <h3 class="font-heading text-xl font-semibold text-carbon-900 dark:text-white mb-3">Dijital Dönüşüm</h3>
+                        <p class="text-carbon-500 dark:text-carbon-400 mb-6 leading-relaxed">
+                            Teknoloji ile rekabette öne geçin. Dijital altyapı, bulut çözümleri ve akıllı sistemler.
+                        </p>
+                        <a href="#" class="inline-flex items-center gap-2 text-sm font-medium text-copper-600 dark:text-copper-400 hover:gap-3 transition-all">
+                            Detaylı İncele <i class="fa-light fa-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- Service 4 -->
+                    <div class="card-structural group bg-white dark:bg-carbon-800 p-8 border border-carbon-100 dark:border-carbon-700" data-aos="fade-up" data-aos-delay="400">
+                        <div class="icon-hover w-14 h-14 bg-carbon-50 dark:bg-carbon-700 flex items-center justify-center mb-6 group-hover:bg-copper-100 dark:group-hover:bg-copper-900/30 transition-colors">
+                            <i class="fa-light fa-shield-check text-2xl text-carbon-600 dark:text-carbon-400 group-hover:text-copper-600 dark:group-hover:text-copper-400 transition-colors"></i>
+                        </div>
+                        <h3 class="font-heading text-xl font-semibold text-carbon-900 dark:text-white mb-3">Risk Yönetimi</h3>
+                        <p class="text-carbon-500 dark:text-carbon-400 mb-6 leading-relaxed">
+                            İş sürekliliğinizi güvence altına alın. Risk analizi, kriz planlaması ve uyum danışmanlığı.
+                        </p>
+                        <a href="#" class="inline-flex items-center gap-2 text-sm font-medium text-copper-600 dark:text-copper-400 hover:gap-3 transition-all">
+                            Detaylı İncele <i class="fa-light fa-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- Service 5 -->
+                    <div class="card-structural group bg-white dark:bg-carbon-800 p-8 border border-carbon-100 dark:border-carbon-700" data-aos="fade-up" data-aos-delay="500">
+                        <div class="icon-hover w-14 h-14 bg-carbon-50 dark:bg-carbon-700 flex items-center justify-center mb-6 group-hover:bg-copper-100 dark:group-hover:bg-copper-900/30 transition-colors">
+                            <i class="fa-light fa-users-gear text-2xl text-carbon-600 dark:text-carbon-400 group-hover:text-copper-600 dark:group-hover:text-copper-400 transition-colors"></i>
+                        </div>
+                        <h3 class="font-heading text-xl font-semibold text-carbon-900 dark:text-white mb-3">İnsan Kaynakları</h3>
+                        <p class="text-carbon-500 dark:text-carbon-400 mb-6 leading-relaxed">
+                            Yeteneği keşfedin ve geliştirin. İşe alım, eğitim programları ve performans yönetimi.
+                        </p>
+                        <a href="#" class="inline-flex items-center gap-2 text-sm font-medium text-copper-600 dark:text-copper-400 hover:gap-3 transition-all">
+                            Detaylı İncele <i class="fa-light fa-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- Service 6 -->
+                    <div class="card-structural group bg-white dark:bg-carbon-800 p-8 border border-carbon-100 dark:border-carbon-700" data-aos="fade-up" data-aos-delay="600">
+                        <div class="icon-hover w-14 h-14 bg-carbon-50 dark:bg-carbon-700 flex items-center justify-center mb-6 group-hover:bg-copper-100 dark:group-hover:bg-copper-900/30 transition-colors">
+                            <i class="fa-light fa-chart-mixed text-2xl text-carbon-600 dark:text-carbon-400 group-hover:text-copper-600 dark:group-hover:text-copper-400 transition-colors"></i>
+                        </div>
+                        <h3 class="font-heading text-xl font-semibold text-carbon-900 dark:text-white mb-3">Veri Analitiği</h3>
+                        <p class="text-carbon-500 dark:text-carbon-400 mb-6 leading-relaxed">
+                            Veriden değer çıkarın. İş zekası, tahmine dayalı analitik ve raporlama çözümleri.
+                        </p>
+                        <a href="#" class="inline-flex items-center gap-2 text-sm font-medium text-copper-600 dark:text-copper-400 hover:gap-3 transition-all">
+                            Detaylı İncele <i class="fa-light fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Process Section - Signature Block (Timeline) -->
+        <section class="py-24 lg:py-32 bg-carbon-900 dark:bg-carbon-950 text-white relative overflow-hidden">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0 opacity-5">
+                <div class="absolute top-0 left-0 w-full h-full" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
+                <!-- Section Header -->
+                <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                    <span class="inline-block px-3 py-1 text-xs font-medium text-copper-400 bg-copper-900/50 mb-6 tracking-wider uppercase">
+                        Çalışma Metodolojimiz
+                    </span>
+                    <h2 class="font-heading text-4xl lg:text-5xl font-bold mb-6">
+                        Sonuç Odaklı <span class="text-copper-400">Süreç</span>
+                    </h2>
+                    <p class="text-lg text-carbon-400">
+                        Her projede sistematik yaklaşımımızla başarıyı garanti altına alıyoruz.
+                    </p>
+                </div>
+
+                <!-- Timeline -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Step 1 -->
+                    <div class="relative pl-8 border-l-2 border-copper-500/30 lg:border-l-0 lg:pl-0 lg:border-t-2 lg:pt-8" data-aos="fade-up" data-aos-delay="100">
+                        <div class="absolute left-0 top-0 w-4 h-4 bg-copper-500 rounded-full -translate-x-[9px] lg:translate-x-0 lg:-translate-y-[9px]"></div>
+                        <span class="font-heading text-5xl font-bold text-copper-500/20 block mb-4">01</span>
+                        <h3 class="font-heading text-xl font-semibold text-white mb-3">Keşif & Analiz</h3>
+                        <p class="text-carbon-400 leading-relaxed">
+                            Mevcut durumu derinlemesine analiz eder, ihtiyaçları ve fırsatları belirleriz. Stakeholder görüşmeleri ve veri analizi ile başlarız.
+                        </p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="relative pl-8 border-l-2 border-copper-500/30 lg:border-l-0 lg:pl-0 lg:border-t-2 lg:pt-8" data-aos="fade-up" data-aos-delay="200">
+                        <div class="absolute left-0 top-0 w-4 h-4 bg-copper-500 rounded-full -translate-x-[9px] lg:translate-x-0 lg:-translate-y-[9px]"></div>
+                        <span class="font-heading text-5xl font-bold text-copper-500/20 block mb-4">02</span>
+                        <h3 class="font-heading text-xl font-semibold text-white mb-3">Strateji & Planlama</h3>
+                        <p class="text-carbon-400 leading-relaxed">
+                            Hedeflerinize uygun yol haritası çizeriz. Kaynak planlaması, risk değerlendirmesi ve milestone belirleme bu aşamada gerçekleşir.
+                        </p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="relative pl-8 border-l-2 border-copper-500/30 lg:border-l-0 lg:pl-0 lg:border-t-2 lg:pt-8" data-aos="fade-up" data-aos-delay="300">
+                        <div class="absolute left-0 top-0 w-4 h-4 bg-copper-500 rounded-full -translate-x-[9px] lg:translate-x-0 lg:-translate-y-[9px]"></div>
+                        <span class="font-heading text-5xl font-bold text-copper-500/20 block mb-4">03</span>
+                        <h3 class="font-heading text-xl font-semibold text-white mb-3">Uygulama & Test</h3>
+                        <p class="text-carbon-400 leading-relaxed">
+                            Planı hayata geçirir, sürekli test ve iyileştirme döngüsüyle kaliteyi garanti altına alırız. Şeffaf iletişim ile ilerlemeyi paylaşırız.
+                        </p>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="relative pl-8 border-l-2 border-copper-500/30 lg:border-l-0 lg:pl-0 lg:border-t-2 lg:pt-8" data-aos="fade-up" data-aos-delay="400">
+                        <div class="absolute left-0 top-0 w-4 h-4 bg-copper-500 rounded-full -translate-x-[9px] lg:translate-x-0 lg:-translate-y-[9px]"></div>
+                        <span class="font-heading text-5xl font-bold text-copper-500/20 block mb-4">04</span>
+                        <h3 class="font-heading text-xl font-semibold text-white mb-3">Teslim & Destek</h3>
+                        <p class="text-carbon-400 leading-relaxed">
+                            Projeyi başarıyla teslim eder, eğitim ve dokümantasyon sağlarız. Sürekli destek ile uzun vadeli başarıyı güvence altına alırız.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- CTA -->
+                <div class="text-center mt-16" data-aos="fade-up">
+                    <a href="#" class="inline-flex items-center gap-3 px-8 py-4 bg-copper-500 hover:bg-copper-600 text-white font-medium transition-colors group">
+                        <span>Projenizi Başlatalım</span>
+                        <i class="fa-light fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Standards & Compliance Section -->
+        <section class="py-24 lg:py-32 bg-carbon-50 dark:bg-carbon-900/50">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <!-- Left - Content -->
+                    <div data-aos="fade-right">
+                        <span class="inline-block px-3 py-1 text-xs font-medium text-copper-600 dark:text-copper-400 bg-copper-100 dark:bg-copper-900/30 mb-6 tracking-wider uppercase">
+                            Kalite & Uyum
+                        </span>
+                        <h2 class="font-heading text-4xl lg:text-5xl font-bold text-carbon-900 dark:text-white mb-6 leading-tight">
+                            Uluslararası Standartlarda
+                            <span class="gradient-text">Güvence</span>
+                        </h2>
+                        <p class="text-lg text-carbon-600 dark:text-carbon-400 mb-10 leading-relaxed">
+                            Tüm süreçlerimiz uluslararası standartlara uygun şekilde yürütülmektedir. Kalite, güvenlik ve sürdürülebilirlik alanındaki sertifikalarımız, sunduğumuz hizmetin güvencesidir.
+                        </p>
+
+                        <!-- Certifications Grid -->
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="bg-white dark:bg-carbon-800 p-5 border border-carbon-100 dark:border-carbon-700">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 bg-copper-100 dark:bg-copper-900/30 flex items-center justify-center">
+                                        <i class="fa-light fa-award text-copper-600 dark:text-copper-400"></i>
+                                    </div>
+                                    <span class="font-heading font-semibold text-carbon-900 dark:text-white">ISO 9001</span>
+                                </div>
+                                <p class="text-sm text-carbon-500 dark:text-carbon-400">Kalite Yönetim Sistemi</p>
+                            </div>
+
+                            <div class="bg-white dark:bg-carbon-800 p-5 border border-carbon-100 dark:border-carbon-700">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 bg-copper-100 dark:bg-copper-900/30 flex items-center justify-center">
+                                        <i class="fa-light fa-leaf text-copper-600 dark:text-copper-400"></i>
+                                    </div>
+                                    <span class="font-heading font-semibold text-carbon-900 dark:text-white">ISO 14001</span>
+                                </div>
+                                <p class="text-sm text-carbon-500 dark:text-carbon-400">Çevre Yönetim Sistemi</p>
+                            </div>
+
+                            <div class="bg-white dark:bg-carbon-800 p-5 border border-carbon-100 dark:border-carbon-700">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 bg-copper-100 dark:bg-copper-900/30 flex items-center justify-center">
+                                        <i class="fa-light fa-shield-halved text-copper-600 dark:text-copper-400"></i>
+                                    </div>
+                                    <span class="font-heading font-semibold text-carbon-900 dark:text-white">ISO 27001</span>
+                                </div>
+                                <p class="text-sm text-carbon-500 dark:text-carbon-400">Bilgi Güvenliği Yönetimi</p>
+                            </div>
+
+                            <div class="bg-white dark:bg-carbon-800 p-5 border border-carbon-100 dark:border-carbon-700">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 bg-copper-100 dark:bg-copper-900/30 flex items-center justify-center">
+                                        <i class="fa-light fa-hard-hat text-copper-600 dark:text-copper-400"></i>
+                                    </div>
+                                    <span class="font-heading font-semibold text-carbon-900 dark:text-white">ISO 45001</span>
+                                </div>
+                                <p class="text-sm text-carbon-500 dark:text-carbon-400">İş Sağlığı & Güvenliği</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right - Visual -->
+                    <div class="relative" data-aos="fade-left">
+                        <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80" alt="Kalite Denetimi" class="w-full aspect-[4/3] object-cover">
+
+                        <!-- Floating Stats -->
+                        <div class="absolute -bottom-8 -left-8 bg-copper-500 p-6 text-white" data-aos="fade-up" data-aos-delay="200">
+                            <div class="flex items-center gap-4">
+                                <i class="fa-light fa-chart-line-up text-4xl opacity-80"></i>
+                                <div>
+                                    <span class="font-heading text-3xl font-bold block">%99.7</span>
+                                    <span class="text-copper-100 text-sm">Müşteri Memnuniyeti</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog/News Section -->
+        <section class="py-24 lg:py-32">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+                <!-- Section Header -->
+                <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12" data-aos="fade-up">
+                    <div>
+                        <span class="inline-block px-3 py-1 text-xs font-medium text-copper-600 dark:text-copper-400 bg-copper-100 dark:bg-copper-900/30 mb-6 tracking-wider uppercase">
+                            Güncel
+                        </span>
+                        <h2 class="font-heading text-4xl lg:text-5xl font-bold text-carbon-900 dark:text-white">
+                            Haberler & <span class="gradient-text">Görüşler</span>
+                        </h2>
+                    </div>
+                    <a href="#" class="inline-flex items-center gap-2 text-copper-600 dark:text-copper-400 font-medium hover:gap-3 transition-all">
+                        Tüm Yazılar <i class="fa-light fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Blog Grid -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Blog 1 -->
+                    <article class="group" data-aos="fade-up" data-aos-delay="100">
+                        <div class="relative overflow-hidden mb-6">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80" alt="Dijital Dönüşüm" class="w-full aspect-[16/10] object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-4 left-4">
+                                <span class="px-3 py-1 text-xs font-medium text-white bg-copper-500">Sektör Analizi</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 text-sm text-carbon-500 dark:text-carbon-400 mb-3">
+                            <span>15 Aralık 2024</span>
+                            <span>•</span>
+                            <span>8 dk okuma</span>
+                        </div>
+                        <h3 class="font-heading text-xl font-semibold text-carbon-900 dark:text-white mb-3 group-hover:text-copper-600 dark:group-hover:text-copper-400 transition-colors">
+                            <a href="#">2025 Dijital Dönüşüm Trendleri: Şirketler İçin Yol Haritası</a>
+                        </h3>
+                        <p class="text-carbon-500 dark:text-carbon-400 leading-relaxed">
+                            Yapay zeka, otomasyon ve bulut teknolojilerinin iş dünyasını nasıl şekillendireceğini analiz ettik.
+                        </p>
+                    </article>
+
+                    <!-- Blog 2 -->
+                    <article class="group" data-aos="fade-up" data-aos-delay="200">
+                        <div class="relative overflow-hidden mb-6">
+                            <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&q=80" alt="Liderlik" class="w-full aspect-[16/10] object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-4 left-4">
+                                <span class="px-3 py-1 text-xs font-medium text-white bg-copper-500">Liderlik</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 text-sm text-carbon-500 dark:text-carbon-400 mb-3">
+                            <span>10 Aralık 2024</span>
+                            <span>•</span>
+                            <span>6 dk okuma</span>
+                        </div>
+                        <h3 class="font-heading text-xl font-semibold text-carbon-900 dark:text-white mb-3 group-hover:text-copper-600 dark:group-hover:text-copper-400 transition-colors">
+                            <a href="#">Değişim Yönetimi: Organizasyonel Dönüşümün Anahtarları</a>
+                        </h3>
+                        <p class="text-carbon-500 dark:text-carbon-400 leading-relaxed">
+                            Başarılı değişim projelerinin arkasındaki stratejiler ve liderlik yaklaşımları.
+                        </p>
+                    </article>
+
+                    <!-- Blog 3 -->
+                    <article class="group" data-aos="fade-up" data-aos-delay="300">
+                        <div class="relative overflow-hidden mb-6">
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80" alt="Veri Analitiği" class="w-full aspect-[16/10] object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-4 left-4">
+                                <span class="px-3 py-1 text-xs font-medium text-white bg-copper-500">Teknoloji</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 text-sm text-carbon-500 dark:text-carbon-400 mb-3">
+                            <span>5 Aralık 2024</span>
+                            <span>•</span>
+                            <span>10 dk okuma</span>
+                        </div>
+                        <h3 class="font-heading text-xl font-semibold text-carbon-900 dark:text-white mb-3 group-hover:text-copper-600 dark:group-hover:text-copper-400 transition-colors">
+                            <a href="#">Veri Odaklı Karar Alma: İş Zekası Uygulamaları</a>
+                        </h3>
+                        <p class="text-carbon-500 dark:text-carbon-400 leading-relaxed">
+                            Veriden değer çıkarma ve stratejik kararları destekleyen analitik yaklaşımlar.
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-24 lg:py-32 bg-gradient-to-br from-carbon-900 via-carbon-800 to-carbon-900 dark:from-carbon-950 dark:via-carbon-900 dark:to-carbon-950 relative overflow-hidden">
+            <!-- Organic Shapes -->
+            <div class="absolute top-0 right-0 w-96 h-96 bg-copper-500/10 organic-shape blur-3xl"></div>
+            <div class="absolute bottom-0 left-0 w-80 h-80 bg-copper-500/10 organic-shape blur-3xl" style="animation-delay: -4s;"></div>
+
+            <div class="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 text-center relative z-10">
+                <span class="inline-block px-3 py-1 text-xs font-medium text-copper-400 bg-copper-900/50 mb-6 tracking-wider uppercase" data-aos="fade-up">
+                    Birlikte Çalışalım
+                </span>
+                <h2 class="font-heading text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6 leading-tight" data-aos="fade-up" data-aos-delay="100">
+                    Projeniz İçin<br>
+                    <span class="text-copper-400">Çözüm Ortağınız</span> Olmaya Hazırız
+                </h2>
+                <p class="text-xl text-carbon-300 mb-10 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+                    İhtiyaçlarınızı dinlemek ve size özel çözümler sunmak için sabırsızlanıyoruz. İlk adımı birlikte atalım.
+                </p>
+                <div class="flex flex-wrap justify-center gap-4" data-aos="fade-up" data-aos-delay="300">
+                    <a href="#" class="inline-flex items-center gap-3 px-8 py-4 bg-copper-500 hover:bg-copper-600 text-white font-medium transition-colors group">
+                        <i class="fa-light fa-phone"></i>
+                        <span>Bizi Arayın</span>
+                    </a>
+                    <a href="#" class="inline-flex items-center gap-3 px-8 py-4 border border-white/30 hover:border-white text-white font-medium transition-colors">
+                        <i class="fa-light fa-envelope"></i>
+                        <span>E-posta Gönderin</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-carbon-950 text-white pt-20 pb-8">
+        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+            <!-- Footer Top -->
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12 pb-12 border-b border-carbon-800">
+                <!-- Brand -->
+                <div class="col-span-2 md:col-span-4 lg:col-span-1">
+                    <a href="#" class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 bg-copper-500 flex items-center justify-center">
+                            <span class="font-heading font-bold text-white text-xl">V</span>
+                        </div>
+                        <div>
+                            <span class="font-heading font-semibold text-xl text-white">VERTEX</span>
+                            <span class="block text-xs text-carbon-400 tracking-widest uppercase">Kurumsal</span>
+                        </div>
+                    </a>
+                    <p class="text-carbon-400 text-sm mb-6 leading-relaxed">
+                        30 yılı aşkın tecrübemizle işinizi geleceğe taşıyoruz. Stratejik ortaklıklar için doğru adres.
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <a href="#" class="icon-hover w-10 h-10 bg-carbon-800 hover:bg-copper-500 flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-linkedin-in text-white"></i>
+                        </a>
+                        <a href="#" class="icon-hover w-10 h-10 bg-carbon-800 hover:bg-copper-500 flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-twitter text-white"></i>
+                        </a>
+                        <a href="#" class="icon-hover w-10 h-10 bg-carbon-800 hover:bg-copper-500 flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-instagram text-white"></i>
+                        </a>
+                        <a href="#" class="icon-hover w-10 h-10 bg-carbon-800 hover:bg-copper-500 flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-youtube text-white"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Kurumsal -->
+                <div>
+                    <h4 class="font-heading font-semibold text-white mb-6">Kurumsal</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-carbon-400 hover:text-copper-400 text-sm transition-colors">Hakkımızda</a></li>
+                        <li><a href="#" class="text-carbon-400 hover:text-copper-400 text-sm transition-colors">Yönetim Kurulu</a></li>
+                        <li><a href="#" class="text-carbon-400 hover:text-copper-400 text-sm transition-colors">Tarihçemiz</a></li>
+                        <li><a href="#" class="text-carbon-400 hover:text-copper-400 text-sm transition-colors">Kariyer</a></li>
+                        <li><a href="#" class="text-carbon-400 hover:text-copper-400 text-sm transition-colors">Basın Odası</a></li>
+                    </ul>
+                </div>
+
+                <!-- Hizmetler -->
+                <div>
+                    <h4 class="font-heading font-semibold text-white mb-6">Hizmetler</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-carbon-400 hover:text-copper-400 text-sm transition-colors">Stratejik Danışmanlık</a></li>
+                        <li><a href="#" class="text-carbon-400 hover:text-copper-400 text-sm transition-colors">Dijital Dönüşüm</a></li>
+                        <li><a href="#" class="text-carbon-400 hover:text-copper-400 text-sm transition-colors">Süreç Optimizasyonu</a></li>
+                        <li><a href="#" class="text-carbon-400 hover:text-copper-400 text-sm transition-colors">Risk Yönetimi</a></li>
+                        <li><a href="#" class="text-carbon-400 hover:text-copper-400 text-sm transition-colors">Veri Analitiği</a></li>
+                    </ul>
+                </div>
+
+                <!-- Kaynaklar -->
+                <div>
+                    <h4 class="font-heading font-semibold text-white mb-6">Kaynaklar</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-carbon-400 hover:text-copper-400 text-sm transition-colors">Blog</a></li>
+                        <li><a href="#" class="text-carbon-400 hover:text-copper-400 text-sm transition-colors">Vaka Çalışmaları</a></li>
+                        <li><a href="#" class="text-carbon-400 hover:text-copper-400 text-sm transition-colors">E-Kitaplar</a></li>
+                        <li><a href="#" class="text-carbon-400 hover:text-copper-400 text-sm transition-colors">Webinarlar</a></li>
+                        <li><a href="#" class="text-carbon-400 hover:text-copper-400 text-sm transition-colors">SSS</a></li>
+                    </ul>
+                </div>
+
+                <!-- İletişim -->
+                <div>
+                    <h4 class="font-heading font-semibold text-white mb-6">İletişim</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-light fa-location-dot text-copper-400 mt-1"></i>
+                            <span class="text-carbon-400 text-sm">Levent Mah. Büyükdere Cad. No:123 Beşiktaş, İstanbul</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-light fa-phone text-copper-400"></i>
+                            <a href="tel:+902121234567" class="text-carbon-400 hover:text-copper-400 text-sm transition-colors">+90 212 123 45 67</a>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-light fa-envelope text-copper-400"></i>
+                            <a href="mailto:info@vertex.com.tr" class="text-carbon-400 hover:text-copper-400 text-sm transition-colors">info@vertex.com.tr</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-carbon-500 text-sm">
+                    © 2024 Vertex Kurumsal. Tüm hakları saklıdır.
+                </p>
+                <div class="flex items-center gap-6">
+                    <a href="#" class="text-carbon-500 hover:text-copper-400 text-sm transition-colors">Gizlilik Politikası</a>
+                    <a href="#" class="text-carbon-500 hover:text-copper-400 text-sm transition-colors">Kullanım Koşulları</a>
+                    <a href="#" class="text-carbon-500 hover:text-copper-400 text-sm transition-colors">Çerez Politikası</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top -->
+    <button
+        x-data="{ show: false }"
+        @scroll.window="show = window.scrollY > 500"
+        x-show="show"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 translate-y-4"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 translate-y-4"
+        @click="window.scrollTo({ top: 0, behavior: 'smooth' })"
+        class="fixed bottom-8 right-8 w-12 h-12 bg-copper-500 hover:bg-copper-600 text-white flex items-center justify-center shadow-lg transition-colors z-50"
+        x-cloak
+    >
+        <i class="fa-light fa-arrow-up"></i>
+    </button>
+
+    <!-- Fixed Contact Button (Mobile) -->
+    <div class="fixed bottom-8 left-8 lg:hidden z-50">
+        <a href="tel:+902121234567" class="w-12 h-12 bg-copper-500 hover:bg-copper-600 text-white flex items-center justify-center shadow-lg transition-colors">
+            <i class="fa-light fa-phone"></i>
+        </a>
+    </div>
+
+    <!-- AOS Init -->
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+    </script>
+</body>
+</html>

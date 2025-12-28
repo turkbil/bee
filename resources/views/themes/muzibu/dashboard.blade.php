@@ -313,6 +313,29 @@
             </div>
         @endif
 
+        {{-- Ödeme Bekleyen (Varsa) --}}
+        @if(!empty($subscriptionInfo['pending_payment']))
+        <div class="bg-orange-500/10 border border-orange-500/30 rounded-xl overflow-hidden mb-6 sm:mb-8">
+            <div class="p-4">
+                <p class="text-orange-400 text-sm mb-3 flex items-center gap-2">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Ödeme Bekleyen
+                </p>
+                @foreach($subscriptionInfo['pending_payment'] as $pp)
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="text-white font-medium">{{ $pp['plan_name'] }}</span>
+                        <span class="text-gray-400 text-sm ml-1">({{ $pp['cycle_label'] ?? '' }})</span>
+                    </div>
+                    <a href="/subscription/checkout/{{ $pp['id'] }}" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition">
+                        Ödeme Yap
+                    </a>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
         {{-- Quick Actions --}}
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
             <a href="/" class="block p-5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-muzibu-coral/50 rounded-xl transition group" data-spa>
@@ -325,10 +348,10 @@
                 <h3 class="text-white font-semibold">{{ __('muzibu::front.dashboard.profile') }}</h3>
                 <p class="text-gray-400 text-sm">{{ __('muzibu::front.dashboard.account_settings') }}</p>
             </a>
-            <a href="/subscription/plans" class="block p-5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-yellow-500/50 rounded-xl transition group" data-spa>
+            <a href="/my-subscriptions" class="block p-5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-yellow-500/50 rounded-xl transition group" data-spa>
                 <i class="fas fa-crown text-2xl text-yellow-400 mb-3"></i>
-                <h3 class="text-white font-semibold">{{ __('muzibu::front.dashboard.premium') }}</h3>
-                <p class="text-gray-400 text-sm">{{ __('muzibu::front.dashboard.membership_plans') }}</p>
+                <h3 class="text-white font-semibold">Aboneliklerim</h3>
+                <p class="text-gray-400 text-sm">Geçmiş & Ödemeler</p>
             </a>
             <a href="/genres" class="block p-5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-green-500/50 rounded-xl transition group" data-spa>
                 <i class="fas fa-music text-2xl text-green-400 mb-3"></i>

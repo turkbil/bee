@@ -341,67 +341,120 @@ class Subscription extends BaseModel
     {
         return \DB::transaction(function () {
             $userId = $this->user_id;
-            $deletedStart = $this->current_period_start;
-            $deletedEnd = $this->current_period_end;
-
-            // Silinen subscription'ın süresini hesapla
-            $deletedDuration = $deletedStart && $deletedEnd
-                ? $deletedEnd->diffInDays($deletedStart)
-                : 0;
-
-            // Silinen subscription'dan SONRA başlayan tüm subscription'ları bul
-            $laterSubscriptions = self::where('user_id', $userId)
-                ->where('subscription_id', '!=', $this->subscription_id)
-                ->where('current_period_start', '>=', $deletedStart)
-                ->whereIn('status', ['active', 'pending'])
-                ->orderBy('current_period_start', 'asc')
-                ->get();
-
-            // Tarihleri geriye kaydır
-            foreach ($laterSubscriptions as $sub) {
-                $newStart = $sub->current_period_start->subDays($deletedDuration);
-                $newEnd = $sub->current_period_end->subDays($deletedDuration);
-
-                // Eğer yeni başlangıç tarihi şu anki zamandan önceyse ve pending ise active yap
-                $newStatus = $sub->status;
-                if ($newStatus === 'pending' && $newStart->isPast()) {
-                    $newStatus = 'active';
-                }
-
-                $sub->update([
-                    'current_period_start' => $newStart,
-                    'current_period_end' => $newEnd,
-                    'next_billing_date' => $newEnd,
-                    'status' => $newStatus,
-                ]);
-
-                \Log::info('📅 Subscription tarihleri kaydırıldı', [
-                    'subscription_id' => $sub->subscription_id,
-                    'old_start' => $sub->getOriginal('current_period_start'),
-                    'new_start' => $newStart->toDateTimeString(),
-                    'old_end' => $sub->getOriginal('current_period_end'),
-                    'new_end' => $newEnd->toDateTimeString(),
-                    'days_shifted' => $deletedDuration,
-                ]);
-            }
+            $deletedId = $this->subscription_id;
 
             // Subscription'ı sil
             $this->delete();
 
+            // Zinciri yeniden hesapla
+            self::rechainUserSubscriptions($userId);
+
             \Log::info('🗑️ Subscription silindi ve zincir yeniden düzenlendi', [
-                'deleted_subscription_id' => $this->subscription_id,
+                'deleted_subscription_id' => $deletedId,
                 'user_id' => $userId,
-                'duration_days' => $deletedDuration,
-                'affected_subscriptions' => $laterSubscriptions->count(),
             ]);
 
-            // Kullanıcının subscription_expires_at değerini yeniden hesapla
+            return true;
+        });
+    }
+
+    /**
+     * Kullanıcının tüm abonelik zincirini yeniden hesapla
+     * - Aktif aboneliğin bitiş tarihinden başla
+     * - Pending abonelikleri sırayla zincirle
+     * - subscription_expires_at güncelle
+     *
+     * @param int $userId
+     * @return void
+     */
+    public static function rechainUserSubscriptions(int $userId): void
+    {
+        // Tenant context yoksa çık
+        if (!tenant()) {
+            return;
+        }
+
+        \DB::transaction(function () use ($userId) {
+            // Aktif aboneliği bul
+            $active = self::where('user_id', $userId)
+                ->where('status', 'active')
+                ->orderBy('current_period_end', 'desc')
+                ->first();
+
+            if (!$active) {
+                // Aktif abonelik yok, sadece subscription_expires_at güncelle
+                $user = User::find($userId);
+                if ($user) {
+                    $user->recalculateSubscriptionExpiry();
+                }
+                return;
+            }
+
+            // Tüm pending abonelikleri bul (oluşturma sırasına göre)
+            $pendings = self::where('user_id', $userId)
+                ->where('status', 'pending')
+                ->orderBy('subscription_id', 'asc')
+                ->get();
+
+            if ($pendings->isEmpty()) {
+                // Pending yok, sadece subscription_expires_at güncelle
+                $user = User::find($userId);
+                if ($user) {
+                    $user->recalculateSubscriptionExpiry();
+                }
+                return;
+            }
+
+            // Zinciri hesapla
+            $chainEnd = $active->current_period_end;
+            $updated = 0;
+
+            foreach ($pendings as $pending) {
+                // Bu aboneliğin süresi (gün cinsinden)
+                $duration = 365; // Default 1 yıl
+
+                // Mevcut süreden hesapla (eğer tarihler varsa)
+                if ($pending->current_period_start && $pending->current_period_end) {
+                    $duration = $pending->current_period_start->diffInDays($pending->current_period_end);
+                }
+
+                $newStart = $chainEnd->copy();
+                $newEnd = $chainEnd->copy()->addDays($duration);
+
+                // Tarihler farklıysa güncelle
+                if ($pending->current_period_start->format('Y-m-d') !== $newStart->format('Y-m-d')
+                    || $pending->current_period_end->format('Y-m-d') !== $newEnd->format('Y-m-d')) {
+
+                    $pending->updateQuietly([
+                        'current_period_start' => $newStart,
+                        'current_period_end' => $newEnd,
+                        'next_billing_date' => $newEnd,
+                    ]);
+                    $updated++;
+
+                    \Log::info('📅 Subscription zinciri güncellendi', [
+                        'subscription_id' => $pending->subscription_id,
+                        'new_start' => $newStart->toDateTimeString(),
+                        'new_end' => $newEnd->toDateTimeString(),
+                    ]);
+                }
+
+                // Zinciri ilerlet
+                $chainEnd = $newEnd;
+            }
+
+            // subscription_expires_at güncelle
             $user = User::find($userId);
             if ($user) {
                 $user->recalculateSubscriptionExpiry();
             }
 
-            return true;
+            if ($updated > 0) {
+                \Log::info('🔗 Kullanıcı abonelik zinciri yeniden hesaplandı', [
+                    'user_id' => $userId,
+                    'updated_subscriptions' => $updated,
+                ]);
+            }
         });
     }
 

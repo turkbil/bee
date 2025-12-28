@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobil Player Fix'leri - 28 Aralık 2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-200 min-h-screen">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-amber-500/20 text-amber-400 text-xs font-bold rounded-full">
+                    <i class="fas fa-mobile-alt mr-1"></i> MOBİL FIX
+                </span>
+                <span class="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-bold rounded-full">
+                    <i class="fas fa-music mr-1"></i> PLAYER
+                </span>
+                <span class="px-3 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full">
+                    <i class="fab fa-safari mr-1"></i> SAFARI
+                </span>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-2">Mobil iOS Player Fix'leri</h1>
+            <p class="text-slate-400">28 Aralık 2025 - muzibu.com.tr</p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <section class="mb-8 bg-green-900/20 border border-green-800 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-green-400 mb-4">
+                <i class="fas fa-user mr-2"></i> Basit Anlatım (Herkes İçin)
+            </h2>
+            <div class="space-y-3 text-slate-300">
+                <p><strong>Sorun:</strong> Mobil iOS (Safari) cihazlarda şarkı bittiğinde bir sonraki şarkıya geçmiyordu. Queue (sıra) sadece 1 şarkı gösteriyordu.</p>
+                <p><strong>Neden:</strong> Mobil Safari farklı çalışıyor. Şarkı bilgileri iki farklı yerde tutuluyordu ve birbirleriyle konuşmuyordu - sanki iki ayrı not defteri gibi.</p>
+                <p><strong>Çözüm:</strong> Artık şarkı bilgileri tek bir yerde tutulup her iki sisteme de bildiriliyor. Böylece şarkı bitince sistem "sıradaki şarkı hangisi?" sorusuna cevap verebiliyor.</p>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="mb-8 bg-blue-900/20 border border-blue-800 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-blue-400 mb-4">
+                <i class="fas fa-code mr-2"></i> Teknik Detaylar (Geliştiriciler İçin)
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Fix 1 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-white mb-2">
+                        <span class="text-green-400">1.</span> Context Sync Sorunu (Ana Fix)
+                    </h3>
+                    <p class="text-slate-400 text-sm mb-3">
+                        <code>muzibuApp()</code> component ile <code>Alpine.store('player')</code> farklı objeler.
+                        setPlayContext sadece component'i güncelliyordu, refillQueue ise store'a bakıyordu.
+                    </p>
+                    <div class="text-xs text-slate-500">
+                        <i class="fas fa-file-code mr-1"></i> player-core.js:1774-1839
+                    </div>
+                    <div class="mt-2 text-sm text-green-400">
+                        <i class="fas fa-check mr-1"></i> Artık hem component hem Alpine.store güncelleniyor
+                    </div>
+                </div>
+
+                <!-- Fix 2 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-white mb-2">
+                        <span class="text-green-400">2.</span> Queue Initialization Bug
+                    </h3>
+                    <p class="text-slate-400 text-sm mb-3">
+                        refillQueue başarısız olduğunda queue hiç set edilmiyordu. Şimdi her durumda en az current song ile set ediliyor.
+                    </p>
+                    <div class="text-xs text-slate-500">
+                        <i class="fas fa-file-code mr-1"></i> player-core.js:2202-2227
+                    </div>
+                </div>
+
+                <!-- Fix 3 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-white mb-2">
+                        <span class="text-green-400">3.</span> Context Fallback (API + Param)
+                    </h3>
+                    <p class="text-slate-400 text-sm mb-3">
+                        album_id/genre_id hem API response'dan hem de song parametresinden alınıyor (fallback).
+                    </p>
+                    <div class="text-xs text-slate-500">
+                        <i class="fas fa-file-code mr-1"></i> player-core.js:2140-2143
+                    </div>
+                </div>
+
+                <!-- Fix 4 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-white mb-2">
+                        <span class="text-green-400">4.</span> Safari Track End Fallback
+                    </h3>
+                    <p class="text-slate-400 text-sm mb-3">
+                        Safari'de <code>onended</code> event güvenilmez. Şimdi şarkı bitimine 0.3 saniye kala otomatik geçiş tetikleniyor.
+                    </p>
+                    <div class="text-xs text-slate-500">
+                        <i class="fas fa-file-code mr-1"></i> player-core.js:3278-3289
+                    </div>
+                </div>
+
+                <!-- Fix 5 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-white mb-2">
+                        <span class="text-green-400">5.</span> Safari SeekTo Desteği
+                    </h3>
+                    <p class="text-slate-400 text-sm mb-3">
+                        seekTo() fonksiyonu sadece Howler.js ve HLS.js'i destekliyordu. Safari native HLS için 3. branch eklendi.
+                    </p>
+                    <div class="text-xs text-slate-500">
+                        <i class="fas fa-file-code mr-1"></i> player-core.js:1619-1626
+                    </div>
+                </div>
+
+                <!-- Fix 6 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-white mb-2">
+                        <span class="text-green-400">6.</span> nextTrack Auto-Refill
+                    </h3>
+                    <p class="text-slate-400 text-sm mb-3">
+                        Queue bittiğinde otomatik olarak yeni şarkılar çekiliyor. Context varsa API'den refill yapılıyor.
+                    </p>
+                    <div class="text-xs text-slate-500">
+                        <i class="fas fa-file-code mr-1"></i> player-core.js:1015-1064
+                    </div>
+                </div>
+
+                <!-- Fix 7 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-white mb-2">
+                        <span class="text-green-400">7.</span> Mobil Seek Bar (3-dots Menu)
+                    </h3>
+                    <p class="text-slate-400 text-sm mb-3">
+                        Mobil 3-dots menüsüne progress/seek bar eklendi. Touch events ile çalışıyor.
+                    </p>
+                    <div class="text-xs text-slate-500">
+                        <i class="fas fa-file-code mr-1"></i> player.blade.php:136-176
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Değişen Dosyalar -->
+        <section class="mb-8 bg-slate-800/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white mb-4">
+                <i class="fas fa-folder-open mr-2 text-yellow-400"></i> Değişen Dosyalar
+            </h2>
+            <ul class="space-y-2 text-sm font-mono">
+                <li class="flex items-center gap-2">
+                    <i class="fas fa-file-code text-blue-400"></i>
+                    <span class="text-slate-300">public/themes/muzibu/js/player/core/player-core.js</span>
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fas fa-file-code text-blue-400"></i>
+                    <span class="text-slate-300">public/themes/muzibu/js/muzibu-store.js</span>
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fas fa-file-code text-purple-400"></i>
+                    <span class="text-slate-300">resources/views/themes/muzibu/components/player.blade.php</span>
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fas fa-file-code text-purple-400"></i>
+                    <span class="text-slate-300">resources/views/themes/muzibu/layouts/app.blade.php</span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Debug Toast'ları -->
+        <section class="mb-8 bg-orange-900/20 border border-orange-800 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-orange-400 mb-4">
+                <i class="fas fa-bug mr-2"></i> Debug Toast'ları (Root User)
+            </h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-start gap-2">
+                    <span class="text-blue-400 font-mono">🔍</span>
+                    <span class="text-slate-300"><code>store:OK album:X genre:Y ctx:var/yok</code> - Şarkı başlarken context durumu</span>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400 font-mono">🎵</span>
+                    <span class="text-slate-300"><code>Queue: X şarkı geldi</code> - refillQueue sonucu</span>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-yellow-400 font-mono">🔄</span>
+                    <span class="text-slate-300"><code>Queue bitti, refill deneniyor...</code> - nextTrack auto-refill</span>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-red-400 font-mono">⚠️</span>
+                    <span class="text-slate-300"><code>Context yok, refill yapılamıyor</code> - Context set edilmemiş</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test Adımları -->
+        <section class="mb-8 bg-purple-900/20 border border-purple-800 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-purple-400 mb-4">
+                <i class="fas fa-vial mr-2"></i> Test Adımları
+            </h2>
+            <ol class="space-y-3 text-slate-300">
+                <li class="flex items-start gap-3">
+                    <span class="flex-shrink-0 w-6 h-6 bg-purple-500/30 rounded-full flex items-center justify-center text-xs">1</span>
+                    <span>Sayfayı hard refresh yap (pull down)</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="flex-shrink-0 w-6 h-6 bg-purple-500/30 rounded-full flex items-center justify-center text-xs">2</span>
+                    <span>Root user olarak giriş yap</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="flex-shrink-0 w-6 h-6 bg-purple-500/30 rounded-full flex items-center justify-center text-xs">3</span>
+                    <span>Bir şarkıya tıkla - Debug toast'larını gözle</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="flex-shrink-0 w-6 h-6 bg-purple-500/30 rounded-full flex items-center justify-center text-xs">4</span>
+                    <span>Şarkı bitsin - Sonraki şarkıya otomatik geçmeli</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="flex-shrink-0 w-6 h-6 bg-purple-500/30 rounded-full flex items-center justify-center text-xs">5</span>
+                    <span>3-dots menu > Seek bar'ı test et</span>
+                </li>
+            </ol>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+            <p><i class="fas fa-robot mr-1"></i> Claude AI - 28 Aralık 2025</p>
+            <p class="mt-1">Tenant: muzibu.com.tr (1001)</p>
+        </footer>
+    </div>
+</body>
+</html>

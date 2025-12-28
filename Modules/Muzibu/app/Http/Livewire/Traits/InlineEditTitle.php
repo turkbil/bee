@@ -23,8 +23,7 @@ trait InlineEditTitle
         }
 
         $modelClass = $this->getModelClass();
-        $model = $modelClass::where('muzibu_id', $this->editingTitleId)
-            ->first();
+        $model = $modelClass::find($this->editingTitleId);
 
         if ($model) {
             $validator = Validator::make(
@@ -54,12 +53,14 @@ trait InlineEditTitle
                 return;
             }
 
-            // JSON title güncelle
+            // JSON title güncelle (sadece title field, slug tetiklenmez)
             $titles = is_array($model->title) ? $model->title : [];
             $oldTitle = $titles[$currentSiteLocale] ?? '';
             $titles[$currentSiteLocale] = Str::limit($this->newTitle, 191, '');
-            $model->title = $titles;
-            $model->save();
+
+            // Query builder ile sadece title güncelle (Sluggable trait tetiklenmez)
+            $modelClass::where($model->getKeyName(), $model->getKey())
+                ->update(['title' => $titles]);
 
             log_activity(
                 $model,

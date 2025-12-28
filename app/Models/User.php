@@ -455,11 +455,33 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
             return;
         }
 
-        $lastSubscription = $this->subscriptions()
+        // Sadece ÖDENMİŞ veya MANUEL abonelikleri dahil et
+        // - active/pending status
+        // - order varsa: payment_status = paid/completed
+        // - order yoksa: manuel oluşturulmuş (admin onaylı)
+        $validSubscriptions = $this->subscriptions()
             ->whereIn('status', ['active', 'pending'])
-            ->orderBy('current_period_end', 'desc')
-            ->first();
+            ->get()
+            ->filter(function ($sub) {
+                $orderId = $sub->metadata['order_id'] ?? null;
 
+                // Order yoksa = manuel oluşturulmuş, dahil et
+                if (!$orderId) {
+                    return true;
+                }
+
+                // Order varsa ödeme durumunu kontrol et
+                if (class_exists(\Modules\Cart\App\Models\Order::class)) {
+                    $order = \Modules\Cart\App\Models\Order::find($orderId);
+                    if ($order && in_array($order->payment_status, ['paid', 'completed'])) {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+
+        $lastSubscription = $validSubscriptions->sortByDesc('current_period_end')->first();
         $expiresAt = $lastSubscription?->current_period_end;
 
         // Sadece Tenant DB güncelle

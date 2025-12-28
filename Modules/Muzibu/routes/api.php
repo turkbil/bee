@@ -29,6 +29,22 @@ use Modules\Muzibu\app\Http\Controllers\Front\SearchController;
 
 Route::prefix('muzibu')->group(function () {
 
+    // 🔍 DEBUG LOG ENDPOINT - Player debug bilgilerini server'a gönder
+    Route::post('/debug-log', function (\Illuminate\Http\Request $request) {
+        $data = $request->all();
+        $userId = auth('sanctum')->id() ?? auth('web')->id() ?? 'guest';
+
+        \Illuminate\Support\Facades\Log::channel('single')->info('🎵 PLAYER DEBUG', [
+            'user_id' => $userId,
+            'action' => $data['action'] ?? 'unknown',
+            'data' => $data,
+            'ip' => $request->ip(),
+            'user_agent' => substr($request->userAgent(), 0, 100)
+        ]);
+
+        return response()->json(['logged' => true]);
+    })->name('api.muzibu.debug-log');
+
     // Search - Meilisearch powered
     Route::get('/search', [SearchController::class, 'search'])
         ->name('api.muzibu.search')

@@ -584,6 +584,7 @@ class DeviceService
 
     /**
      * Device limit al (3-tier: User > Plan > Setting)
+     * 🔴 SINGLE SOURCE OF TRUTH: users.subscription_expires_at
      */
     public function getDeviceLimit(User $user): int
     {
@@ -596,18 +597,21 @@ class DeviceService
             return $user->device_limit;
         }
 
-        // 2. Subscription Plan
-        $subscription = $user->subscriptions()
-            ->whereIn('status', ['active', 'trial'])
-            ->where(function($q) {
-                $q->whereNull('current_period_end')
-                  ->orWhere('current_period_end', '>', now());
-            })
-            ->with('plan')
-            ->first();
+        // 2. Subscription Plan - önce users.subscription_expires_at kontrol et
+        $expiresAt = $user->subscription_expires_at;
+        $hasPremium = $expiresAt && $expiresAt->isFuture();
 
-        if ($subscription && $subscription->plan && $subscription->plan->device_limit) {
-            return (int) $subscription->plan->device_limit;
+        if ($hasPremium) {
+            // Plan'dan device_limit al (en son aktif subscription)
+            $subscription = $user->subscriptions()
+                ->whereIn('status', ['active', 'trial'])
+                ->with('plan')
+                ->orderByDesc('created_at')
+                ->first();
+
+            if ($subscription && $subscription->plan && $subscription->plan->device_limit) {
+                return (int) $subscription->plan->device_limit;
+            }
         }
 
         // 3. Tenant setting fallback

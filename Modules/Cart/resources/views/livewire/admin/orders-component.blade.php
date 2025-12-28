@@ -253,6 +253,66 @@
                                     </div>
                                 </div>
 
+                                <!-- Fatura Bilgileri -->
+                                <div class="card mb-3">
+                                    <div class="card-header">
+                                        <h3 class="card-title"><i class="fas fa-file-invoice me-2"></i>Fatura Bilgileri</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        @php
+                                            $billing = $selectedOrder->billing_address ?? [];
+                                            $billingName = $billing['full_name'] ?? $selectedOrder->customer_name ?? '-';
+                                            $billingPhone = $billing['phone'] ?? $selectedOrder->customer_phone ?? '-';
+                                            $billingEmail = $billing['email'] ?? $selectedOrder->customer_email ?? '-';
+                                            $hasAddress = !empty($billing['address_line_1']) || !empty($billing['city']);
+                                        @endphp
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-2">
+                                                    <strong>Ad Soyad:</strong> {{ $billingName }}
+                                                </div>
+                                                <div class="mb-2">
+                                                    <strong>Telefon:</strong> {{ $billingPhone }}
+                                                </div>
+                                                <div class="mb-2">
+                                                    <strong>E-posta:</strong> {{ $billingEmail }}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                @if($selectedOrder->customer_company || !empty($billing['company_name']))
+                                                    <div class="mb-2">
+                                                        <strong>Şirket:</strong> {{ $selectedOrder->customer_company ?: $billing['company_name'] }}
+                                                    </div>
+                                                @endif
+                                                @if($selectedOrder->customer_tax_office || !empty($billing['tax_office']))
+                                                    <div class="mb-2">
+                                                        <strong>Vergi Dairesi:</strong> {{ $selectedOrder->customer_tax_office ?: $billing['tax_office'] }}
+                                                    </div>
+                                                @endif
+                                                @if($selectedOrder->customer_tax_number || !empty($billing['tax_number']))
+                                                    <div class="mb-2">
+                                                        <strong>VKN/TCKN:</strong> <code>{{ $selectedOrder->customer_tax_number ?: $billing['tax_number'] }}</code>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        @if($hasAddress)
+                                            <hr class="my-2">
+                                            <div>
+                                                <strong>Adres:</strong>
+                                                {{ $billing['address_line_1'] ?? '' }}
+                                                {{ $billing['neighborhood'] ?? '' }}
+                                                {{ $billing['district'] ?? '' }}
+                                                @if(!empty($billing['city'])) / {{ $billing['city'] }} @endif
+                                                {{ $billing['postal_code'] ?? '' }}
+                                            </div>
+                                        @else
+                                            <hr class="my-2">
+                                            <div class="text-muted"><strong>Adres:</strong> <em>Girilmemiş</em></div>
+                                        @endif
+                                    </div>
+                                </div>
+
                                 <!-- Teslimat Adresi -->
                                 @if($selectedOrder->shipping_address)
                                     <div class="card mb-3">
@@ -294,20 +354,41 @@
                                                 </thead>
                                                 <tbody>
                                                     @foreach($selectedOrder->items as $item)
+                                                        @php
+                                                            $metadata = $item->metadata ?? [];
+                                                            $isCorporate = ($metadata['type'] ?? null) === 'corporate_bulk';
+                                                            $targetUserIds = $metadata['target_user_ids'] ?? [];
+                                                            $cycleLabel = $metadata['cycle_label'][app()->getLocale()] ?? $metadata['cycle_label']['tr'] ?? null;
+                                                        @endphp
                                                         <tr>
                                                             <td>
                                                                 <div class="d-flex align-items-center">
                                                                     @if($item->item_image)
                                                                         <img src="{{ $item->item_image }}" alt="" class="avatar avatar-sm me-2">
                                                                     @else
-                                                                        <div class="avatar avatar-sm me-2 bg-secondary-lt">
-                                                                            <i class="fas fa-box"></i>
+                                                                        <div class="avatar avatar-sm me-2 {{ $isCorporate ? 'bg-orange-lt' : 'bg-secondary-lt' }}">
+                                                                            <i class="fas {{ $isCorporate ? 'fa-building' : 'fa-box' }}"></i>
                                                                         </div>
                                                                     @endif
                                                                     <div>
                                                                         <strong>{{ $item->product_name ?: $item->item_title }}</strong>
+                                                                        @if($cycleLabel)
+                                                                            <span class="badge bg-blue-lt ms-1">{{ $cycleLabel }}</span>
+                                                                        @endif
+                                                                        @if($isCorporate)
+                                                                            <span class="badge bg-orange-lt ms-1">Kurumsal</span>
+                                                                        @endif
                                                                         @if($item->item_sku)
                                                                             <br><small class="text-muted">SKU: {{ $item->item_sku }}</small>
+                                                                        @endif
+                                                                        @if($isCorporate && count($targetUserIds) > 0)
+                                                                            @php
+                                                                                $targetUsers = \App\Models\User::whereIn('id', $targetUserIds)->pluck('name', 'id');
+                                                                            @endphp
+                                                                            <br><small class="text-muted">
+                                                                                <i class="fas fa-users me-1"></i>{{ count($targetUserIds) }} kullanıcı:
+                                                                                {{ $targetUsers->values()->implode(', ') }}
+                                                                            </small>
                                                                         @endif
                                                                     </div>
                                                                 </div>

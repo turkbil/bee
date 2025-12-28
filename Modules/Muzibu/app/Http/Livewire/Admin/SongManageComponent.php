@@ -22,7 +22,13 @@ class SongManageComponent extends Component implements AIContentGeneratable
 
     public $inputs = [
         'is_active' => true,
+        'color_hash' => null,
     ];
+
+    // Renk seçici için ayrı değişkenler (HEX formatında)
+    public $colorPicker1 = '#3498db';
+    public $colorPicker2 = '#9b59b6';
+    public $colorPicker3 = '#e74c3c';
 
     public $audioFile;
 
@@ -358,7 +364,12 @@ class SongManageComponent extends Component implements AIContentGeneratable
         $this->tabCompletionStatus = $formData['tabCompletion'] ?? [];
 
         if ($song) {
-            $this->inputs = $song->only(['is_active', 'is_featured', 'album_id', 'genre_id', 'duration', 'file_path']);
+            $this->inputs = $song->only(['is_active', 'is_featured', 'album_id', 'genre_id', 'duration', 'file_path', 'color_hash']);
+
+            // Color hash'i color picker'lara dönüştür
+            if (!empty($this->inputs['color_hash'])) {
+                $this->loadColorPickersFromHash($this->inputs['color_hash']);
+            }
 
             foreach ($this->availableLanguages as $lang) {
                 $this->multiLangInputs[$lang] = [
@@ -368,6 +379,121 @@ class SongManageComponent extends Component implements AIContentGeneratable
                 ];
             }
         }
+    }
+
+    /**
+     * Color hash'i color picker HEX değerlerine dönüştür
+     */
+    protected function loadColorPickersFromHash(string $colorHash): void
+    {
+        $parts = explode(',', $colorHash);
+
+        if (count($parts) === 9) {
+            // Yeni format: h1,s1,l1,h2,s2,l2,h3,s3,l3
+            $this->colorPicker1 = $this->hslToHex((int)$parts[0], (int)$parts[1], (int)$parts[2]);
+            $this->colorPicker2 = $this->hslToHex((int)$parts[3], (int)$parts[4], (int)$parts[5]);
+            $this->colorPicker3 = $this->hslToHex((int)$parts[6], (int)$parts[7], (int)$parts[8]);
+        } elseif (count($parts) === 3) {
+            // Eski format: h1,h2,h3
+            $this->colorPicker1 = $this->hslToHex((int)$parts[0], 70, 50);
+            $this->colorPicker2 = $this->hslToHex((int)$parts[1], 70, 50);
+            $this->colorPicker3 = $this->hslToHex((int)$parts[2], 70, 50);
+        }
+    }
+
+    /**
+     * Title'dan yeni renk hash'i oluştur
+     */
+    public function regenerateColorHash(): void
+    {
+        $defaultLocale = \get_tenant_default_locale();
+        $title = $this->multiLangInputs[$defaultLocale]['title'] ?? 'Untitled';
+
+        $this->inputs['color_hash'] = Song::generateColorHash($title);
+        $this->loadColorPickersFromHash($this->inputs['color_hash']);
+
+        $this->dispatch('toast', [
+            'title' => 'Başarılı',
+            'message' => 'Yeni renk paleti oluşturuldu',
+            'type' => 'success'
+        ]);
+    }
+
+    /**
+     * Color picker'lardan renk hash'i güncelle
+     */
+    public function updateColorsFromPickers(): void
+    {
+        $hsl1 = $this->hexToHsl($this->colorPicker1);
+        $hsl2 = $this->hexToHsl($this->colorPicker2);
+        $hsl3 = $this->hexToHsl($this->colorPicker3);
+
+        $this->inputs['color_hash'] = sprintf(
+            '%d,%d,%d,%d,%d,%d,%d,%d,%d',
+            $hsl1['h'], $hsl1['s'], $hsl1['l'],
+            $hsl2['h'], $hsl2['s'], $hsl2['l'],
+            $hsl3['h'], $hsl3['s'], $hsl3['l']
+        );
+    }
+
+    /**
+     * HSL to HEX conversion
+     */
+    protected function hslToHex(int $h, int $s, int $l): string
+    {
+        $s = $s / 100;
+        $l = $l / 100;
+
+        $c = (1 - abs(2 * $l - 1)) * $s;
+        $x = $c * (1 - abs(fmod($h / 60, 2) - 1));
+        $m = $l - $c / 2;
+
+        if ($h < 60) { $r = $c; $g = $x; $b = 0; }
+        elseif ($h < 120) { $r = $x; $g = $c; $b = 0; }
+        elseif ($h < 180) { $r = 0; $g = $c; $b = $x; }
+        elseif ($h < 240) { $r = 0; $g = $x; $b = $c; }
+        elseif ($h < 300) { $r = $x; $g = 0; $b = $c; }
+        else { $r = $c; $g = 0; $b = $x; }
+
+        $r = round(($r + $m) * 255);
+        $g = round(($g + $m) * 255);
+        $b = round(($b + $m) * 255);
+
+        return sprintf('#%02x%02x%02x', $r, $g, $b);
+    }
+
+    /**
+     * HEX to HSL conversion
+     */
+    protected function hexToHsl(string $hex): array
+    {
+        $hex = ltrim($hex, '#');
+        $r = hexdec(substr($hex, 0, 2)) / 255;
+        $g = hexdec(substr($hex, 2, 2)) / 255;
+        $b = hexdec(substr($hex, 4, 2)) / 255;
+
+        $max = max($r, $g, $b);
+        $min = min($r, $g, $b);
+        $l = ($max + $min) / 2;
+
+        if ($max == $min) {
+            $h = $s = 0;
+        } else {
+            $d = $max - $min;
+            $s = $l > 0.5 ? $d / (2 - $max - $min) : $d / ($max + $min);
+
+            switch ($max) {
+                case $r: $h = (($g - $b) / $d + ($g < $b ? 6 : 0)) / 6; break;
+                case $g: $h = (($b - $r) / $d + 2) / 6; break;
+                case $b: $h = (($r - $g) / $d + 4) / 6; break;
+            }
+        }
+
+        return [
+            'h' => (int) round($h * 360),
+            's' => (int) round($s * 100),
+            'l' => (int) round($l * 100)
+        ];
     }
 
     protected function initializeEmptyInputs()
@@ -548,6 +674,12 @@ class SongManageComponent extends Component implements AIContentGeneratable
 
         if ($this->songId) {
             $song = Song::query()->findOrFail($this->songId);
+
+            // 🎨 color_hash boşsa ve şarkıda da yoksa otomatik üret
+            if (empty($data['color_hash']) && empty($song->color_hash) && !empty($data['title'])) {
+                $data['color_hash'] = Song::generateColorHash($data['title']);
+            }
+
             $currentData = collect($song->toArray())->only(array_keys($data))->all();
 
             // Dosya değişti mi kontrol et
@@ -576,6 +708,11 @@ class SongManageComponent extends Component implements AIContentGeneratable
                 ];
             }
         } else {
+            // 🎨 color_hash boşsa otomatik üret
+            if (empty($data['color_hash']) && !empty($data['title'])) {
+                $data['color_hash'] = Song::generateColorHash($data['title']);
+            }
+
             $song = Song::query()->create($data);
             $this->songId = $song->song_id;
             log_activity($song, 'eklendi');

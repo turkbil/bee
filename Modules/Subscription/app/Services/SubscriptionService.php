@@ -281,6 +281,7 @@ class SubscriptionService
     /**
      * Check user access (with request-level cache)
      * 🚀 OPTIMIZED: Same user's access is cached per request (3 queries → 1 query)
+     * 🔴 CRITICAL: users.subscription_expires_at is the SINGLE SOURCE OF TRUTH
      * @param User $user
      * @return array
      */
@@ -293,23 +294,33 @@ class SubscriptionService
             return self::$accessCache[$cacheKey];
         }
 
-        // 1. Subscription kontrolü
-        $sub = Subscription::where('user_id', $user->id)
-            ->where('status', 'active')
-            ->where('current_period_end', '>', now())
-            ->first();
+        // 🔴 SINGLE SOURCE OF TRUTH: users.subscription_expires_at
+        // Bu alan tüm subscription süresinin toplamını tutar
+        $expiresAt = $user->subscription_expires_at;
 
-        if ($sub) {
+        if ($expiresAt && $expiresAt->isFuture()) {
+            $daysRemaining = (int) now()->diffInDays($expiresAt, false);
+
+            // Trial kontrolü: Subscription tablosundan aktif trial var mı?
+            $isTrial = Subscription::where('user_id', $user->id)
+                ->where('status', 'trial')
+                ->whereNotNull('trial_ends_at')
+                ->where('trial_ends_at', '>', now())
+                ->exists();
+
             $result = [
                 'status' => 'unlimited',
-                'is_trial' => $sub->plan->is_trial ?? false,
-                'expires_at' => $sub->current_period_end,
+                'is_trial' => $isTrial,
+                'expires_at' => $expiresAt,
+                'days_remaining' => max(0, $daysRemaining),
             ];
         } else {
-            // 2. Abonelik yok/bitti - subscription gerekli
+            // Abonelik yok/bitti - subscription gerekli
             $result = [
                 'status' => 'subscription_required',
                 'message' => 'Müzik dinlemek için premium üyelik gereklidir',
+                'expires_at' => null,
+                'days_remaining' => 0,
             ];
         }
 

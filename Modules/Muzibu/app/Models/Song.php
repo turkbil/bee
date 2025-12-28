@@ -678,35 +678,54 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
 
     /**
      * Generate color hash from song title
-     * Returns 3 HSL hue values for gradient (format: "hue1,hue2,hue3")
+     * Returns HSL values for gradient (format: "h1,s1,l1,h2,s2,l2,h3,s3,l3")
+     * 3 independent colors with minimum 60° separation for variety
      *
      * @param string $title Song title
-     * @return string Color hash (e.g., "45,85,125")
+     * @return string Color hash (e.g., "45,85,55,165,70,50,285,80,45")
      */
     public static function generateColorHash(string $title): string
     {
-        // Remove whitespace and convert to lowercase for consistency
         $normalizedTitle = mb_strtolower(trim($title));
+        $md5 = md5($normalizedTitle);
 
-        // Calculate hash from string
-        $hash = 0;
-        $length = mb_strlen($normalizedTitle);
+        // 3 bağımsız hue seç, ama aralarında minimum 60° fark olsun
+        $hues = [];
+        $minDistance = 60;
 
-        for ($i = 0; $i < $length; $i++) {
-            $char = mb_ord(mb_substr($normalizedTitle, $i, 1));
-            $hash = (($hash << 5) - $hash) + $char;
-            $hash = $hash & 0xFFFFFFFF; // Convert to 32bit integer
+        for ($i = 0; $i < 3; $i++) {
+            $attempts = 0;
+            do {
+                // Her deneme için farklı hash bölümü kullan
+                $h = hexdec(substr($md5, ($i * 4 + $attempts) % 28, 4)) % 360;
+                $tooClose = false;
+
+                foreach ($hues as $existingHue) {
+                    $diff = abs($h - $existingHue);
+                    $diff = min($diff, 360 - $diff); // Circular distance
+                    if ($diff < $minDistance) {
+                        $tooClose = true;
+                        break;
+                    }
+                }
+                $attempts++;
+            } while ($tooClose && $attempts < 10);
+
+            $hues[] = $h;
         }
 
-        // Make sure hash is positive
-        $hash = abs($hash);
+        // Her renk için farklı saturation ve lightness
+        $colors = [];
+        for ($i = 0; $i < 3; $i++) {
+            $h = $hues[$i];
+            // Saturation: 60-95%
+            $s = 60 + (hexdec(substr($md5, 12 + $i, 1)) % 36);
+            // Lightness: 40-65%
+            $l = 40 + (hexdec(substr($md5, 16 + $i, 1)) % 26);
+            $colors[] = "{$h},{$s},{$l}";
+        }
 
-        // Generate 3 hue values for gradient (0-359 degrees)
-        $hue1 = $hash % 360;
-        $hue2 = ($hue1 + 40) % 360;  // +40 degrees
-        $hue3 = ($hue1 + 80) % 360;  // +80 degrees
-
-        return "{$hue1},{$hue2},{$hue3}";
+        return implode(',', $colors);
     }
 
     /**

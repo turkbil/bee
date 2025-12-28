@@ -285,10 +285,12 @@ class CorporateFrontController extends Controller
 
     /**
      * Tek üye için istatistik hesapla (DEPRECATED - use buildMemberStats instead)
+     * 🔴 FIXED: users.subscription_expires_at kullanıyor (subscriptions tablosu değil)
      */
     private function getMemberStats(MuzibuCorporateAccount $account, bool $isOwner = false): array
     {
         $userId = $account->user_id;
+        $user = $account->owner;
 
         // Son dinlenen şarkı
         $lastPlay = SongPlay::where('user_id', $userId)
@@ -309,36 +311,30 @@ class CorporateFrontController extends Controller
             ->join('muzibu_songs', 'muzibu_song_plays.song_id', '=', 'muzibu_songs.song_id')
             ->sum('muzibu_songs.duration');
 
-        // Üyelik durumu (tenant db'den - subscriptions tenant'a ait)
-        // 🔥 FIX: expires_at yerine current_period_end kullan (expires_at NULL olabiliyor)
-        $subscription = DB::table('subscriptions')
-            ->where('user_id', $userId)
-            ->where('status', 'active')
-            ->where('current_period_end', '>', now())
-            ->orderBy('current_period_end', 'desc')
-            ->first();
+        // 🔴 SINGLE SOURCE OF TRUTH: users.subscription_expires_at
+        $expiresAt = $user->subscription_expires_at;
 
         $subscriptionInfo = null;
-        if ($subscription) {
-            $expiresAt = \Carbon\Carbon::parse($subscription->current_period_end);
-            // 🔥 FIX: diffInDays negatif olabilir, max(0) ile sınırla
+        if ($expiresAt && $expiresAt->isFuture()) {
             $daysLeft = (int) now()->diffInDays($expiresAt, false);
             $subscriptionInfo = [
                 'is_active' => true,
                 'days_left' => max(0, $daysLeft),
                 'ends_at' => $expiresAt->format('d.m.Y'),
+                'status' => ($daysLeft >= 0 && $daysLeft <= 7) ? 'expiring' : 'active',
             ];
         } else {
             $subscriptionInfo = [
                 'is_active' => false,
                 'days_left' => 0,
                 'ends_at' => null,
+                'status' => 'expired',
             ];
         }
 
         return [
             'account' => $account,
-            'user' => $account->owner,
+            'user' => $user,
             'is_owner' => $isOwner,
             'last_play' => $lastPlay,
             'last_play_time' => $lastPlay ? $lastPlay->created_at->diffForHumans() : null,
@@ -352,17 +348,21 @@ class CorporateFrontController extends Controller
 
     /**
      * Optimized: Batch data ile member stats oluştur
+     * 🔴 FIXED: users.subscription_expires_at kullanıyor (subscriptions tablosu değil)
+     * Note: $subscription parametresi artık kullanılmıyor ama backward compat için tutuldu
      */
     private function buildMemberStats(
         MuzibuCorporateAccount $account,
         bool $isOwner,
         $userPlays,
         $lastPlay,
-        $subscription,
+        $subscription, // DEPRECATED - artık kullanılmıyor
         $songDurations,
         $weekStart,
         $weekEnd
     ): array {
+        $user = $account->owner;
+
         // Toplam dinleme
         $totalPlays = $userPlays->count();
 
@@ -375,28 +375,30 @@ class CorporateFrontController extends Controller
             $totalSeconds += $songDurations->get($play->song_id, 210); // Default 3.5dk = 210sn
         }
 
-        // Subscription bilgisi
+        // 🔴 SINGLE SOURCE OF TRUTH: users.subscription_expires_at
+        $expiresAt = $user->subscription_expires_at;
+
         $subscriptionInfo = null;
-        if ($subscription) {
-            $expiresAt = \Carbon\Carbon::parse($subscription->current_period_end);
-            // 🔥 FIX: diffInDays negatif olabilir, max(0) ile sınırla
+        if ($expiresAt && $expiresAt->isFuture()) {
             $daysLeft = (int) now()->diffInDays($expiresAt, false);
             $subscriptionInfo = [
                 'is_active' => true,
                 'days_left' => max(0, $daysLeft),
                 'ends_at' => $expiresAt->format('d.m.Y'),
+                'status' => ($daysLeft >= 0 && $daysLeft <= 7) ? 'expiring' : 'active',
             ];
         } else {
             $subscriptionInfo = [
                 'is_active' => false,
                 'days_left' => 0,
                 'ends_at' => null,
+                'status' => 'expired',
             ];
         }
 
         return [
             'account' => $account,
-            'user' => $account->owner,
+            'user' => $user,
             'is_owner' => $isOwner,
             'last_play' => $lastPlay,
             'last_play_time' => $lastPlay ? $lastPlay->created_at->diffForHumans() : null,
@@ -962,30 +964,24 @@ class CorporateFrontController extends Controller
 
     /**
      * Tek üyenin subscription bilgisi
+     * users.subscription_expires_at kullanır (toplam kalan süre)
      */
     private function getMemberSubscriptionInfo(MuzibuCorporateAccount $account, bool $isOwner): array
     {
         $userId = $account->user_id;
         $user = $account->owner;
 
-        // 🔥 FIX: expires_at yerine current_period_end kullan (expires_at NULL olabiliyor)
-        $subscription = DB::table('subscriptions')
-            ->where('user_id', $userId)
-            ->where('status', 'active')
-            ->where('current_period_end', '>', now())
-            ->orderBy('current_period_end', 'desc')
-            ->first();
+        // users.subscription_expires_at'dan toplam kalan süreyi al
+        $expiresAt = $user->subscription_expires_at;
 
         $subscriptionInfo = null;
-        if ($subscription) {
-            $expiresAt = \Carbon\Carbon::parse($subscription->current_period_end);
-            // 🔥 FIX: diffInDays negatif olabilir, max(0) ile sınırla
+        if ($expiresAt && $expiresAt->isFuture()) {
             $daysLeft = (int) now()->diffInDays($expiresAt, false);
             $subscriptionInfo = [
                 'is_active' => true,
                 'days_left' => max(0, $daysLeft),
                 'ends_at' => $expiresAt->format('d.m.Y'),
-                'status' => ($daysLeft >= 0 && $daysLeft <= 7) ? 'expiring' : 'active', // 7 gün kala uyarı
+                'status' => ($daysLeft >= 0 && $daysLeft <= 7) ? 'expiring' : 'active',
             ];
         } else {
             $subscriptionInfo = [

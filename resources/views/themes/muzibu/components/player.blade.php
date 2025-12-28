@@ -78,7 +78,7 @@
         </div>
 
         {{-- Song Info: Title + Artist --}}
-        <div class="flex-1 min-w-0">
+        <div class="flex-1 min-w-0 max-w-[140px]">
             <p class="text-white text-sm font-medium truncate"
                x-text="currentSong ? (currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || 'Şarkı') : 'Şarkı Seç'">
                 Şarkı Seç
@@ -218,7 +218,7 @@
     </button>
 
     {{-- Song Info: Title + Artist --}}
-    <div class="min-w-0 w-44">
+    <div class="min-w-[176px] max-w-[176px]">
         <p class="text-white text-sm font-medium truncate"
            x-text="currentSong ? (currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || 'Şarkı') : 'Şarkı Seç'">
             Şarkı Seç

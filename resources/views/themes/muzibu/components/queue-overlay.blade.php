@@ -104,13 +104,6 @@
         </div>
         <div class="flex items-center gap-1">
             <button
-                @click="clearQueue()"
-                class="p-2 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all"
-                title="{{ trans('muzibu::front.player.clear_queue') }}"
-            >
-                <i class="fas fa-trash-alt text-sm"></i>
-            </button>
-            <button
                 @click="showQueue = false"
                 class="p-2 text-zinc-500 hover:text-white hover:bg-white/10 rounded-lg transition-all"
             >
@@ -265,11 +258,11 @@
                     {{-- Duration (hide on hover on desktop) --}}
                     <div class="text-xs text-gray-600 flex-shrink-0 sm:group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)"></div>
 
-                    {{-- Remove button (desktop hover only) --}}
+                    {{-- Remove button: Mobile always visible, Desktop hover only --}}
                     <button
                         x-show="queue.length > 1"
                         @click.stop="removeFromQueue(index)"
-                        class="hidden sm:group-hover:flex w-6 h-6 items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all flex-shrink-0"
+                        class="flex sm:opacity-0 sm:group-hover:opacity-100 w-6 h-6 items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all flex-shrink-0"
                         title="{{ trans('muzibu::front.player.remove_from_queue') }}"
                     >
                         <i class="fas fa-times text-xs"></i>

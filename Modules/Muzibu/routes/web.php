@@ -68,6 +68,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/muzibu/listening-history', [DashboardController::class, 'history'])->name('muzibu.listening-history');
     Route::get('/api/muzibu/listening-history', [DashboardController::class, 'apiHistory'])->name('muzibu.listening-history.api');
 
+    // My Subscriptions (Abonelik Geçmişi)
+    Route::get('/my-subscriptions', [DashboardController::class, 'subscriptions'])->name('muzibu.my-subscriptions');
+    Route::get('/api/my-subscriptions', [DashboardController::class, 'apiSubscriptions'])->name('muzibu.my-subscriptions.api');
+
     // Corporate Routes (Frontend - Auth Required)
     Route::prefix('corporate')->name('muzibu.corporate.')->group(function () {
         Route::get('/dashboard', [CorporateFrontController::class, 'dashboard'])->name('dashboard');

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Muzibu\App\Models\{Song, SongPlay, Playlist, MuzibuCorporateAccount};
 use Modules\Favorite\App\Models\Favorite;
 use Modules\Subscription\App\Services\SubscriptionService;
+use Modules\Subscription\App\Models\Subscription;
 
 class DashboardController extends Controller
 {
@@ -40,6 +41,9 @@ class DashboardController extends Controller
         // Kalan süre hesaplama (users.subscription_expires_at'dan)
         $timeLeft = $this->calculateTimeLeft($user->subscription_expires_at);
 
+        // Abonelik bilgileri
+        $subscriptionInfo = $this->getSubscriptionInfo($user->id);
+
         return view('themes.muzibu.dashboard', compact(
             'user',
             'access',
@@ -48,7 +52,8 @@ class DashboardController extends Controller
             'favorites',
             'playlists',
             'corporate',
-            'timeLeft'
+            'timeLeft',
+            'subscriptionInfo'
         ));
     }
 
@@ -67,6 +72,7 @@ class DashboardController extends Controller
         $playlists = $this->getUserPlaylists($user->id, 6);
         $corporate = $this->getCorporateInfo($user->id);
         $timeLeft = $this->calculateTimeLeft($user->subscription_expires_at);
+        $subscriptionInfo = $this->getSubscriptionInfo($user->id);
 
         $html = view('themes.muzibu.partials.dashboard-content', compact(
             'user',
@@ -76,7 +82,8 @@ class DashboardController extends Controller
             'favorites',
             'playlists',
             'corporate',
-            'timeLeft'
+            'timeLeft',
+            'subscriptionInfo'
         ))->render();
 
         return response()->json([
@@ -124,6 +131,103 @@ class DashboardController extends Controller
                 'description' => 'Tüm dinleme geçmişiniz'
             ]
         ]);
+    }
+
+    /**
+     * Abonelik geçmişi sayfası
+     */
+    public function subscriptions(Request $request)
+    {
+        $user = auth()->user();
+        $subscriptionInfo = $this->getSubscriptionInfo($user->id);
+        $timeLeft = $this->calculateTimeLeft($user->subscription_expires_at);
+        $allPayments = $this->getPaymentHistory($user->id);
+
+        return view('themes.muzibu.my-subscriptions', compact(
+            'user',
+            'subscriptionInfo',
+            'timeLeft',
+            'allPayments'
+        ));
+    }
+
+    /**
+     * Abonelik geçmişi API
+     */
+    public function apiSubscriptions(Request $request)
+    {
+        $user = auth()->user();
+        $subscriptionInfo = $this->getSubscriptionInfo($user->id);
+        $timeLeft = $this->calculateTimeLeft($user->subscription_expires_at);
+        $allPayments = $this->getPaymentHistory($user->id);
+
+        $html = view('themes.muzibu.partials.my-subscriptions-content', compact(
+            'user',
+            'subscriptionInfo',
+            'timeLeft',
+            'allPayments'
+        ))->render();
+
+        return response()->json([
+            'html' => $html,
+            'meta' => [
+                'title' => 'Aboneliklerim - Muzibu',
+                'description' => 'Abonelik ve ödeme geçmişiniz'
+            ]
+        ]);
+    }
+
+    /**
+     * Ödeme geçmişi - onaylanan ödemeler + manuel abonelikler
+     */
+    private function getPaymentHistory(int $userId): array
+    {
+        $payments = collect();
+
+        // 1. Gerçek ödemeler (paid/completed orders)
+        if (class_exists(\Modules\Cart\App\Models\Order::class)) {
+            $orders = \Modules\Cart\App\Models\Order::where('user_id', $userId)
+                ->whereIn('payment_status', ['paid', 'completed'])
+                ->orderBy('created_at', 'desc')
+                ->get()
+                ->map(function ($order) {
+                    return [
+                        'type' => 'order',
+                        'order_number' => $order->order_number,
+                        'total' => $order->total_amount,
+                        'currency' => $order->currency ?? 'TRY',
+                        'payment_method' => $order->metadata['payment_method'] ?? 'Kredi Kartı',
+                        'created_at' => $order->created_at,
+                    ];
+                });
+            $payments = $payments->merge($orders);
+        }
+
+        // 2. Manuel abonelikler (order_id yok, active/pending durumda)
+        $manualSubs = Subscription::where('user_id', $userId)
+            ->whereIn('status', ['active', 'pending'])
+            ->where(function($q) {
+                $q->whereNull('metadata->order_id')
+                  ->orWhere('metadata->order_id', '');
+            })
+            ->with('plan')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($sub) {
+                return [
+                    'type' => 'manual',
+                    'order_number' => $sub->subscription_number,
+                    'total' => $sub->price_per_cycle,
+                    'currency' => $sub->currency ?? 'TRY',
+                    'payment_method' => 'Manuel Onay',
+                    'created_at' => $sub->created_at,
+                    'plan_name' => $sub->plan?->title_text ?? 'Premium',
+                ];
+            });
+        $payments = $payments->merge($manualSubs);
+
+        // Tarihe göre sırala
+        return $payments->sortByDesc('created_at')->values()->toArray();
     }
 
     /**
@@ -250,6 +354,57 @@ class DashboardController extends Controller
             'hours' => (int) floor(($diffInSeconds % 86400) / 3600),
             'minutes' => (int) floor(($diffInSeconds % 3600) / 60),
             'expired' => false,
+        ];
+    }
+
+    /**
+     * Abonelik bilgileri - users.subscription_expires_at + ödemeler
+     */
+    private function getSubscriptionInfo(int $userId): array
+    {
+        $user = \App\Models\User::find($userId);
+
+        // Ödeme bekleyen abonelikler (bunlar önemli - ödeme butonu gösterilecek)
+        $pendingPaymentSubscriptions = Subscription::where('user_id', $userId)
+            ->where('status', 'pending_payment')
+            ->with('plan')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Ödeme geçmişi - kullanıcının tüm ödemeleri
+        $paymentHistory = [];
+        if (class_exists(\Modules\Cart\App\Models\Order::class)) {
+            $paymentHistory = \Modules\Cart\App\Models\Order::where('user_id', $userId)
+                ->whereIn('payment_status', ['paid', 'completed'])
+                ->orderBy('created_at', 'desc')
+                ->limit(10)
+                ->get()
+                ->map(function ($order) {
+                    return [
+                        'order_number' => $order->order_number,
+                        'total' => $order->total_amount,
+                        'currency' => $order->currency ?? 'TRY',
+                        'payment_status' => $order->payment_status,
+                        'payment_method' => $order->metadata['payment_method'] ?? null,
+                        'created_at' => $order->created_at,
+                    ];
+                })
+                ->toArray();
+        }
+
+        return [
+            'pending_payment' => $pendingPaymentSubscriptions->map(function ($sub) {
+                return [
+                    'id' => $sub->subscription_id,
+                    'plan_name' => $sub->plan?->title_text ?? 'Premium',
+                    'cycle_label' => $sub->getCycleLabel() ?? $sub->billing_cycle,
+                    'price' => $sub->price_per_cycle,
+                    'currency' => $sub->currency ?? 'TRY',
+                    'created_at' => $sub->created_at,
+                ];
+            })->toArray(),
+            'payments' => $paymentHistory,
+            'has_subscription' => $user && $user->subscription_expires_at && $user->subscription_expires_at->isFuture(),
         ];
     }
 }

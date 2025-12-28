@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizon Holding - Geleceği Birlikte İnşa Ediyoruz</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS v4 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- FontAwesome Pro -->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.4.2/css/all.css">
+
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Roboto', 'sans-serif'],
+                        display: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --color-primary: #0ea5e9;
+            --color-primary-dark: #0284c7;
+            --color-secondary: #64748b;
+            --color-accent: #38bdf8;
+        }
+
+        /* Smooth theme transition */
+        * {
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.2s ease;
+        }
+
+        /* Glass effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Hover icon transition */
+        .icon-hover .fa-light,
+        .icon-hover .fa-thin {
+            transition: opacity 0.3s ease;
+        }
+
+        .icon-hover .fa-solid {
+            position: absolute;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .icon-hover:hover .fa-light,
+        .icon-hover:hover .fa-thin {
+            opacity: 0;
+        }
+
+        .icon-hover:hover .fa-solid {
+            opacity: 1;
+        }
+
+        /* Mega menu - Centered on parent link */
+        .mega-menu-trigger {
+            position: relative;
+        }
+
+        .mega-menu {
+            z-index: 50;
+        }
+
+        /* Arrow indicator pointing to link */
+        .mega-menu > div::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg);
+            width: 12px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            border-left: 1px solid rgba(148, 163, 184, 0.3);
+            border-top: 1px solid rgba(148, 163, 184, 0.3);
+            z-index: 1;
+        }
+
+        .dark .mega-menu > div::before {
+            background: rgba(15, 23, 42, 0.9);
+            border-color: rgba(71, 85, 105, 0.5);
+        }
+
+        /* Underline animation */
+        .underline-animation {
+            position: relative;
+        }
+
+        .underline-animation::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--color-primary);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .underline-animation:hover::after {
+            width: 100%;
+        }
+
+        /* Card hover effect */
+        .card-hover {
+            transition: all 0.4s ease;
+        }
+
+        .card-hover:hover {
+            border-color: var(--color-primary);
+        }
+
+        .card-hover:hover .card-icon {
+            color: var(--color-primary);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-primary);
+        }
+    </style>
+
+    <!-- Theme initialization (prevent FOUC) -->
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</head>
+<body class="font-sans antialiased bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100" x-data="{ mobileMenu: false, searchOpen: false }">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass border-b border-slate-200/50 dark:border-slate-700/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-lg shadow-primary-500/20">
+                        <i class="fa-solid fa-h text-white text-lg"></i>
+                    </div>
+                    <div class="hidden sm:block">
+                        <span class="text-xl font-semibold text-slate-900 dark:text-white">Horizon</span>
+                        <span class="text-xl font-light text-primary-600 dark:text-primary-400"> Holding</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden lg:flex items-center gap-1">
+                    <!-- Kurumsal - Mega Menu -->
+                    <div class="mega-menu-trigger relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                        <a href="#" class="px-4 py-2 text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium flex items-center gap-1.5 underline-animation">
+                            Kurumsal
+                            <i class="fa-light fa-chevron-down text-xs"></i>
+                        </a>
+                        <div class="mega-menu absolute left-1/2 -translate-x-1/2 top-full pt-4 w-[600px]" x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-2">
+                            <div class="glass rounded-2xl shadow-xl shadow-slate-900/5 dark:shadow-slate-900/30 border border-slate-200/50 dark:border-slate-700/50 p-6">
+                                <div class="grid grid-cols-2 gap-6">
+                                    <div>
+                                        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4">Hakkımızda</h3>
+                                        <div class="space-y-3">
+                                            <a href="#" class="flex items-start gap-3 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/50 group">
+                                                <div class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0 group-hover:bg-primary-100 dark:group-hover:bg-primary-900/50">
+                                                    <i class="fa-light fa-building text-primary-600 dark:text-primary-400"></i>
+                                                </div>
+                                                <div>
+                                                    <span class="block text-sm font-medium text-slate-900 dark:text-white">Şirket Profili</span>
+                                                    <span class="text-xs text-slate-500">Vizyonumuz ve misyonumuz</span>
+                                                </div>
+                                            </a>
+                                            <a href="#" class="flex items-start gap-3 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/50 group">
+                                                <div class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0 group-hover:bg-primary-100 dark:group-hover:bg-primary-900/50">
+                                                    <i class="fa-light fa-timeline text-primary-600 dark:text-primary-400"></i>
+                                                </div>
+                                                <div>
+                                                    <span class="block text-sm font-medium text-slate-900 dark:text-white">Tarihçe</span>
+                                                    <span class="text-xs text-slate-500">1985'ten bugüne yolculuğumuz</span>
+                                                </div>
+                                            </a>
+                                            <a href="#" class="flex items-start gap-3 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/50 group">
+                                                <div class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0 group-hover:bg-primary-100 dark:group-hover:bg-primary-900/50">
+                                                    <i class="fa-light fa-users text-primary-600 dark:text-primary-400"></i>
+                                                </div>
+                                                <div>
+                                                    <span class="block text-sm font-medium text-slate-900 dark:text-white">Yönetim Kurulu</span>
+                                                    <span class="text-xs text-slate-500">Liderlik ekibimiz</span>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4">Değerlerimiz</h3>
+                                        <div class="space-y-3">
+                                            <a href="#" class="flex items-start gap-3 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/50 group">
+                                                <div class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0 group-hover:bg-primary-100 dark:group-hover:bg-primary-900/50">
+                                                    <i class="fa-light fa-leaf text-primary-600 dark:text-primary-400"></i>
+                                                </div>
+                                                <div>
+                                                    <span class="block text-sm font-medium text-slate-900 dark:text-white">Sürdürülebilirlik</span>
+                                                    <span class="text-xs text-slate-500">Çevre ve toplum politikalarımız</span>
+                                                </div>
+                                            </a>
+                                            <a href="#" class="flex items-start gap-3 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/50 group">
+                                                <div class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0 group-hover:bg-primary-100 dark:group-hover:bg-primary-900/50">
+                                                    <i class="fa-light fa-award text-primary-600 dark:text-primary-400"></i>
+                                                </div>
+                                                <div>
+                                                    <span class="block text-sm font-medium text-slate-900 dark:text-white">Kalite Politikası</span>
+                                                    <span class="text-xs text-slate-500">Sertifikalar ve standartlar</span>
+                                                </div>
+                                            </a>
+                                            <a href="#" class="flex items-start gap-3 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/50 group">
+                                                <div class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0 group-hover:bg-primary-100 dark:group-hover:bg-primary-900/50">
+                                                    <i class="fa-light fa-handshake text-primary-600 dark:text-primary-400"></i>
+                                                </div>
+                                                <div>
+                                                    <span class="block text-sm font-medium text-slate-900 dark:text-white">İş Ortaklıkları</span>
+                                                    <span class="text-xs text-slate-500">Stratejik işbirliklerimiz</span>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Şirketlerimiz - Mega Menu -->
+                    <div class="mega-menu-trigger relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                        <a href="#" class="px-4 py-2 text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium flex items-center gap-1.5 underline-animation">
+                            Şirketlerimiz
+                            <i class="fa-light fa-chevron-down text-xs"></i>
+                        </a>
+                        <div class="mega-menu absolute left-1/2 -translate-x-1/2 top-full pt-4 w-[700px]" x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-2">
+                            <div class="glass rounded-2xl shadow-xl shadow-slate-900/5 dark:shadow-slate-900/30 border border-slate-200/50 dark:border-slate-700/50 p-6">
+                                <div class="grid grid-cols-3 gap-4">
+                                    <a href="#" class="p-4 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/50 group text-center">
+                                        <div class="w-14 h-14 mx-auto mb-3 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                                            <i class="fa-light fa-industry text-white text-xl"></i>
+                                        </div>
+                                        <span class="block text-sm font-semibold text-slate-900 dark:text-white">Horizon Sanayi</span>
+                                        <span class="text-xs text-slate-500">Üretim & Endüstri</span>
+                                    </a>
+                                    <a href="#" class="p-4 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/50 group text-center">
+                                        <div class="w-14 h-14 mx-auto mb-3 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                                            <i class="fa-light fa-seedling text-white text-xl"></i>
+                                        </div>
+                                        <span class="block text-sm font-semibold text-slate-900 dark:text-white">Horizon Tarım</span>
+                                        <span class="text-xs text-slate-500">Tarım & Gıda</span>
+                                    </a>
+                                    <a href="#" class="p-4 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/50 group text-center">
+                                        <div class="w-14 h-14 mx-auto mb-3 rounded-xl bg-gradient-to-br from-violet-500 to-violet-600 flex items-center justify-center shadow-lg shadow-violet-500/20">
+                                            <i class="fa-light fa-microchip text-white text-xl"></i>
+                                        </div>
+                                        <span class="block text-sm font-semibold text-slate-900 dark:text-white">Horizon Tech</span>
+                                        <span class="text-xs text-slate-500">Teknoloji & Yazılım</span>
+                                    </a>
+                                    <a href="#" class="p-4 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/50 group text-center">
+                                        <div class="w-14 h-14 mx-auto mb-3 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
+                                            <i class="fa-light fa-building-columns text-white text-xl"></i>
+                                        </div>
+                                        <span class="block text-sm font-semibold text-slate-900 dark:text-white">Horizon Finans</span>
+                                        <span class="text-xs text-slate-500">Finans & Yatırım</span>
+                                    </a>
+                                    <a href="#" class="p-4 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/50 group text-center">
+                                        <div class="w-14 h-14 mx-auto mb-3 rounded-xl bg-gradient-to-br from-rose-500 to-rose-600 flex items-center justify-center shadow-lg shadow-rose-500/20">
+                                            <i class="fa-light fa-truck-container text-white text-xl"></i>
+                                        </div>
+                                        <span class="block text-sm font-semibold text-slate-900 dark:text-white">Horizon Lojistik</span>
+                                        <span class="text-xs text-slate-500">Taşımacılık & Depolama</span>
+                                    </a>
+                                    <a href="#" class="p-4 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/50 group text-center">
+                                        <div class="w-14 h-14 mx-auto mb-3 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                                            <i class="fa-light fa-solar-panel text-white text-xl"></i>
+                                        </div>
+                                        <span class="block text-sm font-semibold text-slate-900 dark:text-white">Horizon Enerji</span>
+                                        <span class="text-xs text-slate-500">Yenilenebilir Enerji</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="#" class="px-4 py-2 text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium underline-animation">
+                        Yatırımcı İlişkileri
+                    </a>
+
+                    <a href="#" class="px-4 py-2 text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium underline-animation">
+                        Kariyer
+                    </a>
+
+                    <a href="#" class="px-4 py-2 text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium underline-animation">
+                        İletişim
+                    </a>
+                </nav>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-2">
+                    <!-- Search -->
+                    <button @click="searchOpen = !searchOpen" class="w-10 h-10 rounded-lg flex items-center justify-center text-slate-500 hover:text-primary-600 hover:bg-slate-100 dark:hover:bg-slate-800 relative icon-hover">
+                        <i class="fa-light fa-magnifying-glass"></i>
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+
+                    <!-- Theme Toggle -->
+                    <button
+                        @click="
+                            document.documentElement.classList.toggle('dark');
+                            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+                        "
+                        class="w-10 h-10 rounded-lg flex items-center justify-center text-slate-500 hover:text-primary-600 hover:bg-slate-100 dark:hover:bg-slate-800 relative icon-hover"
+                    >
+                        <i class="fa-light fa-sun-bright dark:hidden"></i>
+                        <i class="fa-solid fa-sun-bright dark:hidden"></i>
+                        <i class="fa-light fa-moon hidden dark:block"></i>
+                        <i class="fa-solid fa-moon hidden dark:block absolute"></i>
+                    </button>
+
+                    <!-- Language -->
+                    <div class="hidden sm:block relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="h-10 px-3 rounded-lg flex items-center gap-2 text-slate-500 hover:text-primary-600 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium">
+                            <span>TR</span>
+                            <i class="fa-light fa-chevron-down text-xs"></i>
+                        </button>
+                        <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 top-full mt-2 w-32 glass rounded-xl shadow-xl border border-slate-200/50 dark:border-slate-700/50 py-2">
+                            <a href="#" class="block px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Türkçe</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">English</a>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <button @click="mobileMenu = !mobileMenu" class="lg:hidden w-10 h-10 rounded-lg flex items-center justify-center text-slate-500 hover:text-primary-600 hover:bg-slate-100 dark:hover:bg-slate-800">
+                        <i class="fa-light fa-bars text-lg" x-show="!mobileMenu"></i>
+                        <i class="fa-light fa-xmark text-lg" x-show="mobileMenu"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Overlay -->
+        <div x-show="searchOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="absolute top-full left-0 right-0 glass border-b border-slate-200/50 dark:border-slate-700/50">
+            <div class="max-w-3xl mx-auto px-4 py-6">
+                <div class="relative">
+                    <input type="text" placeholder="Ne aramak istersiniz?" class="w-full h-14 pl-14 pr-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-lg">
+                    <i class="fa-light fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div x-show="mobileMenu" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-4" class="lg:hidden absolute top-full left-0 right-0 glass border-b border-slate-200/50 dark:border-slate-700/50">
+            <nav class="max-w-7xl mx-auto px-4 py-6 space-y-2">
+                <a href="#" class="block px-4 py-3 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium">Kurumsal</a>
+                <a href="#" class="block px-4 py-3 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium">Şirketlerimiz</a>
+                <a href="#" class="block px-4 py-3 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium">Yatırımcı İlişkileri</a>
+                <a href="#" class="block px-4 py-3 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium">Kariyer</a>
+                <a href="#" class="block px-4 py-3 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium">İletişim</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section - Split Layout -->
+        <section class="min-h-screen pt-20 flex items-center relative overflow-hidden">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0 opacity-30 dark:opacity-20">
+                <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-bl from-primary-100 to-transparent dark:from-primary-900/30"></div>
+                <div class="absolute bottom-0 left-0 w-96 h-96 bg-primary-200 dark:bg-primary-800/20 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2"></div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-0 relative z-10">
+                <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                    <!-- Content -->
+                    <div data-aos="fade-right" data-aos-duration="800">
+                        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-medium mb-6">
+                            <i class="fa-light fa-sparkles"></i>
+                            39 Yıllık Tecrübe
+                        </span>
+
+                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-display font-semibold text-slate-900 dark:text-white leading-tight mb-6">
+                            Geleceği
+                            <span class="gradient-text"> Birlikte</span>
+                            <br>İnşa Ediyoruz
+                        </h1>
+
+                        <p class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-8 max-w-xl">
+                            1985'ten bu yana sanayi, teknoloji, enerji ve finans sektörlerinde Türkiye'nin kalkınmasına katkı sağlıyoruz. Sürdürülebilir büyüme ve yenilikçi çözümlerle yarınlara hazırlanıyoruz.
+                        </p>
+
+                        <div class="flex flex-wrap gap-4 mb-12">
+                            <a href="#" class="inline-flex items-center gap-2 px-6 py-3.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-medium shadow-lg shadow-primary-600/25 hover:shadow-primary-600/40 transition-all">
+                                Bizi Tanıyın
+                                <i class="fa-light fa-arrow-right"></i>
+                            </a>
+                            <a href="#" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-medium border border-slate-200 dark:border-slate-700 transition-all">
+                                <i class="fa-light fa-play-circle text-primary-600"></i>
+                                Tanıtım Filmi
+                            </a>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="grid grid-cols-3 gap-6">
+                            <div>
+                                <div class="text-3xl font-bold text-slate-900 dark:text-white mb-1">6</div>
+                                <div class="text-sm text-slate-500">Sektör</div>
+                            </div>
+                            <div>
+                                <div class="text-3xl font-bold text-slate-900 dark:text-white mb-1">12K+</div>
+                                <div class="text-sm text-slate-500">Çalışan</div>
+                            </div>
+                            <div>
+                                <div class="text-3xl font-bold text-slate-900 dark:text-white mb-1">28</div>
+                                <div class="text-sm text-slate-500">Ülke</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Image -->
+                    <div class="relative" data-aos="fade-left" data-aos-duration="800" data-aos-delay="200">
+                        <div class="relative z-10">
+                            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=1000&fit=crop" alt="Modern Ofis Binası" class="w-full h-[500px] lg:h-[600px] object-cover rounded-3xl shadow-2xl">
+
+                            <!-- Floating Card -->
+                            <div class="absolute -bottom-6 -left-6 glass rounded-2xl p-5 shadow-xl border border-slate-200/50 dark:border-slate-700/50" data-aos="fade-up" data-aos-delay="600">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                                        <i class="fa-light fa-chart-line-up text-xl text-emerald-500"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-2xl font-bold text-slate-900 dark:text-white">₺4.2B</div>
+                                        <div class="text-sm text-slate-500">2024 Konsolide Ciro</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Decorative Elements -->
+                        <div class="absolute -top-4 -right-4 w-24 h-24 bg-primary-200 dark:bg-primary-800/30 rounded-2xl -z-10"></div>
+                        <div class="absolute -bottom-8 right-12 w-32 h-32 bg-primary-100 dark:bg-primary-900/20 rounded-full -z-10"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="py-24 bg-white dark:bg-slate-800/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <!-- Images -->
+                    <div class="relative" data-aos="fade-right">
+                        <div class="grid grid-cols-2 gap-4">
+                            <img src="https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=400&h=500&fit=crop" alt="Üretim Tesisi" class="w-full h-64 object-cover rounded-2xl">
+                            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=500&fit=crop" alt="Ofis" class="w-full h-64 object-cover rounded-2xl mt-8">
+                            <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400&h=300&fit=crop" alt="Ekip" class="w-full h-48 object-cover rounded-2xl col-span-2">
+                        </div>
+
+                        <!-- Experience Badge -->
+                        <div class="absolute -top-4 -right-4 w-28 h-28 bg-primary-600 rounded-2xl flex flex-col items-center justify-center text-white shadow-xl">
+                            <span class="text-3xl font-bold">39</span>
+                            <span class="text-xs uppercase tracking-wider">Yıllık</span>
+                            <span class="text-xs uppercase tracking-wider">Tecrübe</span>
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div data-aos="fade-left">
+                        <span class="inline-block px-3 py-1 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-medium mb-4">
+                            Bizi Tanıyın
+                        </span>
+
+                        <h2 class="text-3xl sm:text-4xl font-display font-semibold text-slate-900 dark:text-white mb-6">
+                            Türkiye'nin Öncü
+                            <span class="gradient-text"> Holding Grubu</span>
+                        </h2>
+
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+                            Horizon Holding, 1985 yılında İstanbul'da küçük bir üretim tesisi olarak kurulmuş, bugün 6 farklı sektörde faaliyet gösteren, 12.000'den fazla çalışanı ve 28 ülkedeki operasyonlarıyla Türkiye'nin önde gelen holding gruplarından biri haline gelmiştir.
+                        </p>
+
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-8">
+                            Sürdürülebilirlik odaklı büyüme stratejimiz, yenilikçi yaklaşımımız ve insan kaynağına verdiğimiz değerle geleceğe güvenle bakıyoruz.
+                        </p>
+
+                        <!-- Features -->
+                        <div class="grid sm:grid-cols-2 gap-4 mb-8">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center">
+                                    <i class="fa-light fa-check text-primary-600"></i>
+                                </div>
+                                <span class="text-slate-700 dark:text-slate-300">ISO 9001:2015 Sertifikalı</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center">
+                                    <i class="fa-light fa-check text-primary-600"></i>
+                                </div>
+                                <span class="text-slate-700 dark:text-slate-300">Karbon Nötr Hedefi 2030</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center">
+                                    <i class="fa-light fa-check text-primary-600"></i>
+                                </div>
+                                <span class="text-slate-700 dark:text-slate-300">BIST 100 Endeksinde</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center">
+                                    <i class="fa-light fa-check text-primary-600"></i>
+                                </div>
+                                <span class="text-slate-700 dark:text-slate-300">A+ Kredi Notu</span>
+                            </div>
+                        </div>
+
+                        <a href="#" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-medium hover:gap-3 transition-all">
+                            Kurumsal profili inceleyin
+                            <i class="fa-light fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Companies Section -->
+        <section class="py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16" data-aos="fade-up">
+                    <span class="inline-block px-3 py-1 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-medium mb-4">
+                        Şirketlerimiz
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-display font-semibold text-slate-900 dark:text-white mb-4">
+                        6 Sektörde <span class="gradient-text">Güçlü Varlık</span>
+                    </h2>
+                    <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                        Her biri kendi alanında lider konumda olan şirketlerimizle ekonomiye değer katıyoruz.
+                    </p>
+                </div>
+
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Company Card 1 -->
+                    <a href="#" class="group p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 card-hover" data-aos="fade-up" data-aos-delay="0">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-5 shadow-lg shadow-blue-500/20">
+                            <i class="fa-light fa-industry text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">Horizon Sanayi</h3>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">
+                            Otomotiv, makine ve metal sektörlerinde üretim yapan, Türkiye'nin en büyük sanayi kuruluşlarından biri.
+                        </p>
+                        <div class="flex items-center gap-2 text-primary-600 dark:text-primary-400 text-sm font-medium">
+                            <span>Detaylı incele</span>
+                            <i class="fa-light fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </a>
+
+                    <!-- Company Card 2 -->
+                    <a href="#" class="group p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 card-hover" data-aos="fade-up" data-aos-delay="100">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mb-5 shadow-lg shadow-emerald-500/20">
+                            <i class="fa-light fa-seedling text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">Horizon Tarım</h3>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">
+                            Sürdürülebilir tarım uygulamalarıyla tohum, gübre ve gıda işleme alanlarında faaliyet gösteriyor.
+                        </p>
+                        <div class="flex items-center gap-2 text-primary-600 dark:text-primary-400 text-sm font-medium">
+                            <span>Detaylı incele</span>
+                            <i class="fa-light fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </a>
+
+                    <!-- Company Card 3 -->
+                    <a href="#" class="group p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 card-hover" data-aos="fade-up" data-aos-delay="200">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-violet-500 to-violet-600 flex items-center justify-center mb-5 shadow-lg shadow-violet-500/20">
+                            <i class="fa-light fa-microchip text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">Horizon Tech</h3>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">
+                            Yapay zeka, bulut bilişim ve siber güvenlik çözümleriyle dijital dönüşümün öncüsü.
+                        </p>
+                        <div class="flex items-center gap-2 text-primary-600 dark:text-primary-400 text-sm font-medium">
+                            <span>Detaylı incele</span>
+                            <i class="fa-light fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </a>
+
+                    <!-- Company Card 4 -->
+                    <a href="#" class="group p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 card-hover" data-aos="fade-up" data-aos-delay="300">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center mb-5 shadow-lg shadow-amber-500/20">
+                            <i class="fa-light fa-building-columns text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">Horizon Finans</h3>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">
+                            Yatırım danışmanlığı, varlık yönetimi ve kurumsal finansman hizmetleri sunan güçlü finans kolu.
+                        </p>
+                        <div class="flex items-center gap-2 text-primary-600 dark:text-primary-400 text-sm font-medium">
+                            <span>Detaylı incele</span>
+                            <i class="fa-light fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </a>
+
+                    <!-- Company Card 5 -->
+                    <a href="#" class="group p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 card-hover" data-aos="fade-up" data-aos-delay="400">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-rose-500 to-rose-600 flex items-center justify-center mb-5 shadow-lg shadow-rose-500/20">
+                            <i class="fa-light fa-truck-container text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">Horizon Lojistik</h3>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">
+                            Kara, deniz ve hava taşımacılığı ile entegre depolama çözümleri sunan lojistik devi.
+                        </p>
+                        <div class="flex items-center gap-2 text-primary-600 dark:text-primary-400 text-sm font-medium">
+                            <span>Detaylı incele</span>
+                            <i class="fa-light fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </a>
+
+                    <!-- Company Card 6 -->
+                    <a href="#" class="group p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 card-hover" data-aos="fade-up" data-aos-delay="500">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center mb-5 shadow-lg shadow-cyan-500/20">
+                            <i class="fa-light fa-solar-panel text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">Horizon Enerji</h3>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">
+                            Güneş, rüzgar ve hidroelektrik santralleriyle yenilenebilir enerji üretiminde lider.
+                        </p>
+                        <div class="flex items-center gap-2 text-primary-600 dark:text-primary-400 text-sm font-medium">
+                            <span>Detaylı incele</span>
+                            <i class="fa-light fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Strategy Manifesto Section (Signature Section) -->
+        <section class="py-24 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-0 left-0 w-96 h-96 bg-primary-500 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-0 right-0 w-96 h-96 bg-primary-600 rounded-full blur-3xl"></div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center mb-16" data-aos="fade-up">
+                    <span class="inline-block px-3 py-1 rounded-full bg-primary-500/20 text-primary-300 text-sm font-medium mb-4">
+                        2025–2030 Stratejik Yol Haritası
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-display font-semibold text-white mb-4">
+                        Geleceği Şekillendiren <span class="text-primary-400">Dört Sütun</span>
+                    </h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Pillar 1 -->
+                    <div class="relative p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-all" data-aos="fade-up" data-aos-delay="0">
+                        <div class="absolute -top-3 -left-3 w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center text-white font-bold text-sm">
+                            01
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-primary-500/20 flex items-center justify-center mb-4 mt-2">
+                            <i class="fa-light fa-leaf text-primary-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Sürdürülebilir Büyüme</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            2030'a kadar tüm operasyonlarda karbon nötr olmayı, yenilenebilir enerji kullanımını %100'e çıkarmayı hedefliyoruz.
+                        </p>
+                    </div>
+
+                    <!-- Pillar 2 -->
+                    <div class="relative p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-all" data-aos="fade-up" data-aos-delay="100">
+                        <div class="absolute -top-3 -left-3 w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center text-white font-bold text-sm">
+                            02
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-primary-500/20 flex items-center justify-center mb-4 mt-2">
+                            <i class="fa-light fa-rocket text-primary-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Dijital Dönüşüm</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Yapay zeka ve otomasyon yatırımlarıyla tüm iş süreçlerinde verimliliği artırıyor, dijital altyapıyı güçlendiriyoruz.
+                        </p>
+                    </div>
+
+                    <!-- Pillar 3 -->
+                    <div class="relative p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-all" data-aos="fade-up" data-aos-delay="200">
+                        <div class="absolute -top-3 -left-3 w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center text-white font-bold text-sm">
+                            03
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-primary-500/20 flex items-center justify-center mb-4 mt-2">
+                            <i class="fa-light fa-globe text-primary-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Global Genişleme</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Avrupa, Orta Doğu ve Afrika'daki varlığımızı güçlendirerek 2030'da 40 ülkede faaliyet göstermeyi planlıyoruz.
+                        </p>
+                    </div>
+
+                    <!-- Pillar 4 -->
+                    <div class="relative p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-all" data-aos="fade-up" data-aos-delay="300">
+                        <div class="absolute -top-3 -left-3 w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center text-white font-bold text-sm">
+                            04
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-primary-500/20 flex items-center justify-center mb-4 mt-2">
+                            <i class="fa-light fa-users text-primary-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">İnsan Odaklılık</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Yetenekleri çeken, geliştiren ve tutan bir kültür oluşturarak çalışan bağlılığını en üst seviyede tutuyoruz.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- CTA -->
+                <div class="text-center mt-12" data-aos="fade-up" data-aos-delay="400">
+                    <a href="#" class="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium border border-white/20 transition-all">
+                        <i class="fa-light fa-file-pdf"></i>
+                        Stratejik Planı İndirin
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Investor Relations Section -->
+        <section class="py-24 bg-white dark:bg-slate-800/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-5 gap-12">
+                    <!-- Content -->
+                    <div class="lg:col-span-2" data-aos="fade-right">
+                        <span class="inline-block px-3 py-1 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-medium mb-4">
+                            Yatırımcı İlişkileri
+                        </span>
+                        <h2 class="text-3xl sm:text-4xl font-display font-semibold text-slate-900 dark:text-white mb-6">
+                            Şeffaf ve Güvenilir
+                            <span class="gradient-text"> Yönetim</span>
+                        </h2>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-8">
+                            BIST 100 endeksinde yer alan Horizon Holding, kurumsal yönetim ilkelerine bağlılığı ve şeffaf raporlama anlayışıyla yatırımcılarına güven veriyor.
+                        </p>
+
+                        <div class="space-y-4 mb-8">
+                            <a href="#" class="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 group transition-all">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-light fa-file-chart-column text-primary-600 text-lg"></i>
+                                    <span class="text-slate-700 dark:text-slate-200 font-medium">2024 Faaliyet Raporu</span>
+                                </div>
+                                <i class="fa-light fa-download text-slate-400 group-hover:text-primary-600 transition-colors"></i>
+                            </a>
+                            <a href="#" class="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 group transition-all">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-light fa-presentation-screen text-primary-600 text-lg"></i>
+                                    <span class="text-slate-700 dark:text-slate-200 font-medium">Yatırımcı Sunumu Q3 2024</span>
+                                </div>
+                                <i class="fa-light fa-download text-slate-400 group-hover:text-primary-600 transition-colors"></i>
+                            </a>
+                            <a href="#" class="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 group transition-all">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-light fa-leaf text-primary-600 text-lg"></i>
+                                    <span class="text-slate-700 dark:text-slate-200 font-medium">Sürdürülebilirlik Raporu 2024</span>
+                                </div>
+                                <i class="fa-light fa-download text-slate-400 group-hover:text-primary-600 transition-colors"></i>
+                            </a>
+                        </div>
+
+                        <a href="#" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-medium hover:gap-3 transition-all">
+                            Tüm raporları görüntüle
+                            <i class="fa-light fa-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- Stock Info -->
+                    <div class="lg:col-span-3" data-aos="fade-left">
+                        <div class="grid sm:grid-cols-2 gap-6">
+                            <!-- Stock Card -->
+                            <div class="p-6 rounded-2xl bg-gradient-to-br from-primary-600 to-primary-700 text-white">
+                                <div class="flex items-center justify-between mb-6">
+                                    <span class="text-primary-100 text-sm font-medium">BIST: HRZN</span>
+                                    <span class="px-2 py-1 rounded bg-white/20 text-xs font-medium">Canlı</span>
+                                </div>
+                                <div class="text-4xl font-bold mb-2">₺124.50</div>
+                                <div class="flex items-center gap-2 text-sm">
+                                    <span class="px-2 py-0.5 rounded bg-emerald-500/30 text-emerald-200">
+                                        <i class="fa-solid fa-caret-up mr-1"></i>+2.34%
+                                    </span>
+                                    <span class="text-primary-200">Günlük Değişim</span>
+                                </div>
+                            </div>
+
+                            <!-- Market Cap -->
+                            <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-700">
+                                <div class="text-slate-500 dark:text-slate-400 text-sm mb-2">Piyasa Değeri</div>
+                                <div class="text-3xl font-bold text-slate-900 dark:text-white mb-1">₺18.6B</div>
+                                <div class="text-sm text-slate-500">Türkiye'nin en değerli 50 şirketi arasında</div>
+                            </div>
+
+                            <!-- Dividend -->
+                            <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-700">
+                                <div class="text-slate-500 dark:text-slate-400 text-sm mb-2">Temettü Verimi</div>
+                                <div class="text-3xl font-bold text-slate-900 dark:text-white mb-1">4.2%</div>
+                                <div class="text-sm text-slate-500">Son 5 yıl kesintisiz temettü</div>
+                            </div>
+
+                            <!-- Rating -->
+                            <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-700">
+                                <div class="text-slate-500 dark:text-slate-400 text-sm mb-2">Kredi Notu</div>
+                                <div class="text-3xl font-bold text-slate-900 dark:text-white mb-1">A+</div>
+                                <div class="text-sm text-slate-500">Fitch Ratings - Stabil Görünüm</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- News & Announcements -->
+        <section class="py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12">
+                    <div data-aos="fade-right">
+                        <span class="inline-block px-3 py-1 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-medium mb-4">
+                            Güncel
+                        </span>
+                        <h2 class="text-3xl sm:text-4xl font-display font-semibold text-slate-900 dark:text-white">
+                            Haberler & <span class="gradient-text">Duyurular</span>
+                        </h2>
+                    </div>
+                    <a href="#" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-medium hover:gap-3 transition-all" data-aos="fade-left">
+                        Tüm haberler
+                        <i class="fa-light fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- News Card 1 -->
+                    <article class="group rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden card-hover" data-aos="fade-up" data-aos-delay="0">
+                        <div class="relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600&h=400&fit=crop" alt="Enerji Yatırımı" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 text-xs font-medium text-primary-600 dark:text-primary-400">
+                                Basın Bülteni
+                            </span>
+                        </div>
+                        <div class="p-6">
+                            <time class="text-sm text-slate-500">15 Aralık 2024</time>
+                            <h3 class="text-lg font-semibold text-slate-900 dark:text-white mt-2 mb-3 line-clamp-2">
+                                Horizon Enerji, 500 MW'lık Güneş Santrali Yatırımı için İmza Attı
+                            </h3>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm line-clamp-2 mb-4">
+                                Konya'da kurulacak santral, Türkiye'nin en büyük güneş enerji santralleri arasında yer alacak.
+                            </p>
+                            <a href="#" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 text-sm font-medium">
+                                Devamını oku
+                                <i class="fa-light fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- News Card 2 -->
+                    <article class="group rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden card-hover" data-aos="fade-up" data-aos-delay="100">
+                        <div class="relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&h=400&fit=crop" alt="Teknoloji" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 text-xs font-medium text-primary-600 dark:text-primary-400">
+                                Kurumsal Haber
+                            </span>
+                        </div>
+                        <div class="p-6">
+                            <time class="text-sm text-slate-500">10 Aralık 2024</time>
+                            <h3 class="text-lg font-semibold text-slate-900 dark:text-white mt-2 mb-3 line-clamp-2">
+                                Horizon Tech, Yapay Zeka Startupı TechMind'ı Satın Aldı
+                            </h3>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm line-clamp-2 mb-4">
+                                50 milyon dolarlık satın alma ile yapay zeka kapasitemizi önemli ölçüde güçlendiriyoruz.
+                            </p>
+                            <a href="#" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 text-sm font-medium">
+                                Devamını oku
+                                <i class="fa-light fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- News Card 3 -->
+                    <article class="group rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden card-hover" data-aos="fade-up" data-aos-delay="200">
+                        <div class="relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=600&h=400&fit=crop" alt="Sürdürülebilirlik" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 text-xs font-medium text-primary-600 dark:text-primary-400">
+                                Ödül
+                            </span>
+                        </div>
+                        <div class="p-6">
+                            <time class="text-sm text-slate-500">5 Aralık 2024</time>
+                            <h3 class="text-lg font-semibold text-slate-900 dark:text-white mt-2 mb-3 line-clamp-2">
+                                CDP Türkiye'den A- Sürdürülebilirlik Derecesi
+                            </h3>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm line-clamp-2 mb-4">
+                                Çevresel performansımız ve şeffaf raporlama anlayışımızla en yüksek dereceyi aldık.
+                            </p>
+                            <a href="#" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 text-sm font-medium">
+                                Devamını oku
+                                <i class="fa-light fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Career CTA Section -->
+        <section class="py-24 bg-white dark:bg-slate-800/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="relative rounded-3xl overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1400&h=500&fit=crop" alt="Kariyer" class="w-full h-[400px] object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/70 to-transparent"></div>
+
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="max-w-xl px-8 sm:px-12" data-aos="fade-right">
+                            <span class="inline-block px-3 py-1 rounded-full bg-white/10 text-white text-sm font-medium mb-4">
+                                Kariyer Fırsatları
+                            </span>
+                            <h2 class="text-3xl sm:text-4xl font-display font-semibold text-white mb-4">
+                                Geleceği Birlikte İnşa Edin
+                            </h2>
+                            <p class="text-slate-300 leading-relaxed mb-8">
+                                12.000'den fazla yetenekli çalışanımızla büyüyen ailemize katılın. Kariyer gelişiminizi destekleyen, yenilikçi ve dinamik bir çalışma ortamı sunuyoruz.
+                            </p>
+                            <div class="flex flex-wrap gap-4">
+                                <a href="#" class="inline-flex items-center gap-2 px-6 py-3 bg-white hover:bg-slate-100 text-slate-900 rounded-xl font-medium transition-all">
+                                    <i class="fa-light fa-briefcase"></i>
+                                    Açık Pozisyonlar
+                                </a>
+                                <a href="#" class="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium border border-white/20 transition-all">
+                                    Staj Programları
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-12">
+                    <!-- Contact Info -->
+                    <div data-aos="fade-right">
+                        <span class="inline-block px-3 py-1 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-medium mb-4">
+                            İletişim
+                        </span>
+                        <h2 class="text-3xl sm:text-4xl font-display font-semibold text-slate-900 dark:text-white mb-6">
+                            Bizimle <span class="gradient-text">İletişime Geçin</span>
+                        </h2>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-8">
+                            Sorularınız, işbirliği teklifleriniz veya detaylı bilgi almak için bize ulaşın. Ekibimiz size en kısa sürede dönüş yapacaktır.
+                        </p>
+
+                        <div class="space-y-6">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-light fa-location-dot text-primary-600 dark:text-primary-400 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-slate-900 dark:text-white mb-1">Genel Merkez</h4>
+                                    <p class="text-slate-500 dark:text-slate-400 text-sm">
+                                        Maslak Mah. Büyükdere Cad. No: 123<br>
+                                        Horizon Plaza, Sarıyer / İstanbul
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-light fa-phone text-primary-600 dark:text-primary-400 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-slate-900 dark:text-white mb-1">Telefon</h4>
+                                    <p class="text-slate-500 dark:text-slate-400 text-sm">
+                                        +90 212 123 45 67<br>
+                                        Pzt - Cum: 09:00 - 18:00
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-light fa-envelope text-primary-600 dark:text-primary-400 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-slate-900 dark:text-white mb-1">E-posta</h4>
+                                    <p class="text-slate-500 dark:text-slate-400 text-sm">
+                                        info@horizonholding.com<br>
+                                        investor@horizonholding.com
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div data-aos="fade-left">
+                        <form class="p-8 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xl shadow-slate-900/5">
+                            <div class="grid sm:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Ad Soyad</label>
+                                    <input type="text" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-slate-900 dark:text-white" placeholder="Adınız Soyadınız">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">E-posta</label>
+                                    <input type="email" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-slate-900 dark:text-white" placeholder="ornek@email.com">
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Konu</label>
+                                <select class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-slate-900 dark:text-white">
+                                    <option value="">Konu seçiniz</option>
+                                    <option value="general">Genel Bilgi</option>
+                                    <option value="investor">Yatırımcı İlişkileri</option>
+                                    <option value="career">Kariyer</option>
+                                    <option value="press">Basın & Medya</option>
+                                    <option value="partnership">İş Ortaklığı</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Mesajınız</label>
+                                <textarea rows="4" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-slate-900 dark:text-white resize-none" placeholder="Mesajınızı yazın..."></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full h-12 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-medium shadow-lg shadow-primary-600/25 hover:shadow-primary-600/40 transition-all">
+                                Gönder
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 dark:bg-slate-950 text-white pt-20 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Main Footer -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-800">
+                <!-- Brand -->
+                <div class="lg:col-span-2">
+                    <a href="#" class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center">
+                            <i class="fa-solid fa-h text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <span class="text-xl font-semibold text-white">Horizon</span>
+                            <span class="text-xl font-light text-primary-400"> Holding</span>
+                        </div>
+                    </a>
+                    <p class="text-slate-400 leading-relaxed mb-6 max-w-sm">
+                        1985'ten bu yana sanayi, teknoloji, enerji ve finans sektörlerinde Türkiye'nin kalkınmasına katkı sağlıyoruz.
+                    </p>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-10 h-10 rounded-lg bg-slate-800 hover:bg-primary-600 flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-lg bg-slate-800 hover:bg-primary-600 flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-x-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-lg bg-slate-800 hover:bg-primary-600 flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-lg bg-slate-800 hover:bg-primary-600 flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Kurumsal -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Kurumsal</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 text-sm transition-colors">Hakkımızda</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 text-sm transition-colors">Tarihçe</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 text-sm transition-colors">Yönetim Kurulu</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 text-sm transition-colors">Sürdürülebilirlik</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 text-sm transition-colors">Kalite Politikası</a></li>
+                    </ul>
+                </div>
+
+                <!-- Şirketlerimiz -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Şirketlerimiz</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 text-sm transition-colors">Horizon Sanayi</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 text-sm transition-colors">Horizon Tarım</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 text-sm transition-colors">Horizon Tech</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 text-sm transition-colors">Horizon Finans</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 text-sm transition-colors">Horizon Lojistik</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 text-sm transition-colors">Horizon Enerji</a></li>
+                    </ul>
+                </div>
+
+                <!-- Hızlı Erişim -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Hızlı Erişim</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 text-sm transition-colors">Yatırımcı İlişkileri</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 text-sm transition-colors">Faaliyet Raporları</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 text-sm transition-colors">Kariyer Fırsatları</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 text-sm transition-colors">Basın Odası</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 text-sm transition-colors">İletişim</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Certifications -->
+            <div class="py-8 border-b border-slate-800">
+                <div class="flex flex-wrap items-center justify-center gap-8">
+                    <div class="flex items-center gap-2 text-slate-500 text-sm">
+                        <i class="fa-light fa-award"></i>
+                        <span>ISO 9001:2015</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-slate-500 text-sm">
+                        <i class="fa-light fa-award"></i>
+                        <span>ISO 14001:2015</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-slate-500 text-sm">
+                        <i class="fa-light fa-award"></i>
+                        <span>ISO 45001:2018</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-slate-500 text-sm">
+                        <i class="fa-light fa-leaf"></i>
+                        <span>CDP A-</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-slate-500 text-sm">
+                        <i class="fa-light fa-building-columns"></i>
+                        <span>BIST 100</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Footer -->
+            <div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-slate-500 text-sm">
+                    © 2024 Horizon Holding. Tüm hakları saklıdır.
+                </p>
+                <div class="flex flex-wrap items-center gap-6">
+                    <a href="#" class="text-slate-500 hover:text-primary-400 text-sm transition-colors">Gizlilik Politikası</a>
+                    <a href="#" class="text-slate-500 hover:text-primary-400 text-sm transition-colors">Kullanım Koşulları</a>
+                    <a href="#" class="text-slate-500 hover:text-primary-400 text-sm transition-colors">Çerez Politikası</a>
+                    <a href="#" class="text-slate-500 hover:text-primary-400 text-sm transition-colors">KVKK</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top -->
+    <button
+        x-data="{ show: false }"
+        x-init="window.addEventListener('scroll', () => { show = window.scrollY > 500 })"
+        x-show="show"
+        x-transition
+        @click="window.scrollTo({ top: 0, behavior: 'smooth' })"
+        class="fixed bottom-6 right-6 w-12 h-12 rounded-xl bg-primary-600 hover:bg-primary-700 text-white flex items-center justify-center shadow-lg shadow-primary-600/25 z-50"
+    >
+        <i class="fa-light fa-chevron-up"></i>
+    </button>
+
+    <!-- AOS Init -->
+    <script>
+        AOS.init({
+            once: true,
+            duration: 600,
+            easing: 'ease-out-cubic'
+        });
+    </script>
+</body>
+</html>

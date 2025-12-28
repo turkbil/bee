@@ -186,6 +186,50 @@
             </p>
         </div>
 
+        {{-- 30+ Gün Aboneliği Var - Engelleme Mesajı --}}
+        @if($hasEnoughSubscription)
+        <div class="max-w-2xl mx-auto">
+            <div class="glass-card rounded-3xl p-8 sm:p-12 text-center">
+                {{-- Crown Icon --}}
+                <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-r from-yellow-500/20 to-orange-500/20 flex items-center justify-center">
+                    <i class="fas fa-crown text-5xl text-yellow-400"></i>
+                </div>
+
+                {{-- Title --}}
+                <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">
+                    Premium Üyeliğiniz Aktif
+                </h2>
+
+                {{-- Description --}}
+                <p class="text-gray-400 text-lg mb-6 leading-relaxed">
+                    Zaten <span class="text-white font-semibold">{{ $remainingDays }} gün</span> süreli aktif aboneliğiniz bulunuyor.
+                    <br class="hidden sm:inline">
+                    Yeni paket satın almak için mevcut sürenizin bitmesine yakın tekrar ziyaret edin.
+                </p>
+
+                {{-- Expiry Date --}}
+                <div class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-xl mb-8">
+                    <i class="fas fa-calendar-check text-yellow-400"></i>
+                    <span class="text-white">
+                        Bitiş Tarihi: <span class="font-semibold text-yellow-400">{{ $expiresAt }}</span>
+                    </span>
+                </div>
+
+                {{-- Actions --}}
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="/dashboard" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl transition" data-spa>
+                        <i class="fas fa-home"></i>
+                        Dashboard'a Dön
+                    </a>
+                    <a href="/my-subscriptions" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 hover:opacity-90 text-white font-semibold rounded-xl transition shadow-lg shadow-yellow-500/25" data-spa>
+                        <i class="fas fa-receipt"></i>
+                        Aboneliklerim
+                    </a>
+                </div>
+            </div>
+        </div>
+        @else
+
         {{-- Plans Grid --}}
         @if($plans->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-{{ min($plans->count(), 3) }} gap-6 lg:gap-8 max-w-5xl mx-auto">
@@ -418,6 +462,7 @@
             </p>
         </div>
         @endif
+        @endif {{-- hasEnoughSubscription --}}
 
     </div>
 </div>

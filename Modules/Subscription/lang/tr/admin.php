@@ -71,6 +71,16 @@ return [
     'cancelled' => 'İptal Edildi',
     'paused' => 'Duraklatıldı',
     'pending_payment' => 'Ödeme Bekliyor',
+    'pending' => 'Sırada',
+
+    // Status Labels (for status_label attribute)
+    'status_active' => 'Aktif',
+    'status_trial' => 'Deneme',
+    'status_pending' => 'Sırada',
+    'status_expired' => 'Süresi Doldu',
+    'status_cancelled' => 'İptal',
+    'status_paused' => 'Duraklatıldı',
+    'status_pending_payment' => 'Ödeme Bekliyor',
 
     // Billing cycles
     'daily' => 'Günlük',

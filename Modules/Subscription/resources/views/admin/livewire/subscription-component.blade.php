@@ -1,13 +1,13 @@
 @php
     View::share('pretitle', __('subscription::admin.subscriptions'));
 
-    // Status labels ve renkler
     $statusLabels = [
         'active' => 'Aktif',
         'trial' => 'Deneme',
         'expired' => 'Süresi Doldu',
-        'cancelled' => 'İptal Edildi',
-        'paused' => 'Duraklatıldı',
+        'cancelled' => 'İptal',
+        'paused' => 'Durduruldu',
+        'pending' => 'Sırada',
         'pending_payment' => 'Ödeme Bekliyor',
     ];
 
@@ -17,73 +17,37 @@
         'expired' => 'danger',
         'cancelled' => 'secondary',
         'paused' => 'warning',
-        'pending_payment' => 'warning',
+        'pending' => 'warning',
+        'pending_payment' => 'orange',
     ];
-
-    // Gerçek durumu belirle (trial mı premium mı)
-    function getEffectiveStatus($subscription) {
-        // Trial kontrolü: has_trial=true VE trial_ends_at gelecekte
-        if ($subscription->has_trial && $subscription->trial_ends_at && $subscription->trial_ends_at->isFuture()) {
-            return 'trial';
-        }
-
-        // Period sona erdiyse expired
-        if ($subscription->current_period_end && $subscription->current_period_end->isPast()) {
-            return 'expired';
-        }
-
-        return $subscription->status;
-    }
 @endphp
 
 <div wire:key="subscription-component">
     @include('subscription::admin.helper')
     @include('admin.partials.error_message')
 
-    {{-- Navigation --}}
-    <div class="card mb-3">
-        <div class="card-body py-2">
-            <div class="d-flex gap-2">
-                <a href="{{ route('admin.subscription.stats') }}" class="btn btn-outline-secondary btn-sm">
-                    <i class="fas fa-chart-bar me-1"></i>İstatistikler
-                </a>
-                <a href="{{ route('admin.subscription.index') }}" class="btn btn-primary btn-sm">
-                    <i class="fas fa-list me-1"></i>Abonelik Listesi
-                </a>
-            </div>
-        </div>
-    </div>
-
     {{-- Filters --}}
     <div class="card mb-3">
-        <div class="card-header">
-            <h3 class="card-title"><i class="fas fa-filter me-2"></i>Filtreler</h3>
-            <div class="card-actions">
-                <button class="btn btn-sm btn-outline-secondary" wire:click="clearFilters">
-                    <i class="fas fa-undo me-1"></i>Temizle
-                </button>
-            </div>
-        </div>
-        <div class="card-body">
-            {{-- Temel Filtreler --}}
-            <div class="row g-3 mb-3">
-                <div class="col-md-3">
-                    <label class="form-label small text-muted">Arama</label>
-                    <input type="text" class="form-control" placeholder="Müşteri ara..." wire:model.live.debounce.300ms="search">
+        <div class="card-body py-3">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <div class="input-icon">
+                        <span class="input-icon-addon">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" wire:model.live.debounce.300ms="search" class="form-control" placeholder="Müşteri ara...">
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <label class="form-label small text-muted">Durum</label>
+                <div class="col-md-2">
                     <select class="form-select" wire:model.live="filterStatus">
                         <option value="">Tüm Durumlar</option>
                         <option value="active">Aktif</option>
-                        <option value="trial">Deneme</option>
+                        <option value="pending">Sırada</option>
+                        <option value="pending_payment">Ödeme Bekliyor</option>
                         <option value="expired">Süresi Doldu</option>
-                        <option value="cancelled">İptal Edildi</option>
-                        <option value="paused">Duraklatıldı</option>
                     </select>
                 </div>
-                <div class="col-md-3">
-                    <label class="form-label small text-muted">Plan</label>
+                <div class="col-md-2">
                     <select class="form-select" wire:model.live="filterPlan">
                         <option value="">Tüm Planlar</option>
                         @foreach($plans as $plan)
@@ -91,199 +55,44 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-3">
-                    <label class="form-label small text-muted">Dönem</label>
-                    <select class="form-select" wire:model.live="filterCycle">
-                        <option value="">Tüm Dönemler</option>
-                        <option value="monthly">Aylık</option>
-                        <option value="yearly">Yıllık</option>
+                <div class="col-md-2">
+                    <select wire:model.live="perPage" class="form-select">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
                     </select>
                 </div>
-            </div>
-
-            {{-- Gelişmiş Filtreler --}}
-            <div class="border-top pt-3">
-                <h4 class="text-muted small mb-3">
-                    <i class="fas fa-bolt text-warning me-1"></i>Gelişmiş Filtreler
-                </h4>
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label small text-muted">
-                            <i class="fas fa-clock me-1"></i>Kalan Süre
-                        </label>
-                        <select class="form-select" wire:model.live="filterRemainingDays">
-                            <option value="">Tümü</option>
-                            <option value="critical">🔴 24 Saat Altı (KRİTİK)</option>
-                            <option value="warning">🟠 7 Gün Altı</option>
-                            <option value="month">🟡 30 Gün Altı</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label small text-muted">
-                            <i class="fas fa-calendar me-1"></i>Bitiş Tarihi
-                        </label>
-                        <select class="form-select" wire:model.live="filterExpiryRange">
-                            <option value="">Tümü</option>
-                            <option value="today">Bugün Bitenler</option>
-                            <option value="this_week">Bu Hafta Bitenler</option>
-                            <option value="this_month">Bu Ay Bitenler</option>
-                            <option value="next_3_months">Önümüzdeki 3 Ay</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label small text-muted">
-                            <i class="fas fa-rotate-left me-1"></i>Otomatik Yenileme
-                        </label>
-                        <select class="form-select" wire:model.live="filterAutoRenew">
-                            <option value="">Tümü</option>
-                            <option value="1">✅ Açık</option>
-                            <option value="0">❌ Kapalı</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label small text-muted">
-                            <i class="fas fa-gift me-1"></i>Deneme Durumu
-                        </label>
-                        <select class="form-select" wire:model.live="filterTrialStatus">
-                            <option value="">Tümü</option>
-                            <option value="active_trial">Aktif Deneme</option>
-                            <option value="trial_to_premium">Deneme → Premium</option>
-                            <option value="trial_to_cancel">Deneme → İptal</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Hızlı Filtre Butonları --}}
-            <div class="border-top pt-3 mt-3">
-                <p class="text-muted small mb-2">
-                    <i class="fas fa-bolt text-warning me-1"></i>Hızlı Filtreler (Tek Tıkla)
-                </p>
-                <div class="d-flex flex-wrap gap-2">
-                    <button class="btn btn-sm btn-outline-danger" wire:click="quickFilterCritical">
-                        <i class="fas fa-exclamation-triangle me-1"></i>Kritik (24s altı)
-                    </button>
-                    <button class="btn btn-sm btn-outline-warning" wire:click="quickFilterWarning">
-                        <i class="fas fa-clock me-1"></i>Az Kalan (7g altı)
-                    </button>
-                    <button class="btn btn-sm btn-outline-pink" wire:click="quickFilterToday">
-                        <i class="fas fa-calendar-day me-1"></i>Bugün Bitenler
-                    </button>
-                    <button class="btn btn-sm btn-outline-warning" wire:click="quickFilterAutoRenewOff">
-                        <i class="fas fa-rotate-left me-1"></i>Yenileme Kapalı
-                    </button>
-                    <button class="btn btn-sm btn-outline-info" wire:click="quickFilterActiveTrial">
-                        <i class="fas fa-gift me-1"></i>Aktif Denemeler
+                <div class="col-md-2 text-end">
+                    <button class="btn btn-outline-secondary" wire:click="clearFilters">
+                        <i class="fas fa-undo me-1"></i>Temizle
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- Subscriptions List --}}
+    {{-- Main Table --}}
     <div class="card">
-        <div class="card-body p-0">
-            <!-- Header Bölümü (Portfolio Pattern) -->
-            <div class="row mx-2 my-3">
-                <!-- Arama Kutusu -->
-                <div class="col">
-                    <div class="input-icon">
-                        <span class="input-icon-addon">
-                            <i class="fas fa-search"></i>
-                        </span>
-                        <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
-                            placeholder="Müşteri ara...">
-                    </div>
-                </div>
-                <!-- Ortadaki Loading -->
-                <div class="col position-relative">
-                    <div wire:loading
-                        wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, filterStatus, filterPlan, filterCycle, filterExpiryRange, filterRemainingDays, filterAutoRenew, filterTrialStatus"
-                        class="position-absolute top-50 start-50 translate-middle text-center"
-                        style="width: 100%; max-width: 250px;">
-                        <div class="small text-muted mb-2">{{ __('admin.updating') }}</div>
-                        <div class="progress mb-1">
-                            <div class="progress-bar progress-bar-indeterminate"></div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Sağ Taraf (Toggle + PerPage Select) -->
-                <div class="col">
-                    <div class="d-flex align-items-center justify-content-end gap-3">
-                        <!-- Toggle: Tümünü Göster / Sadece Aktifler -->
-                        <div class="btn-group" role="group">
-                            <button type="button"
-                                    wire:click="showActiveOnly"
-                                    class="btn btn-sm {{ $filterStatus === 'active' ? 'btn-primary' : 'btn-outline-secondary' }}"
-                                    data-bs-toggle="tooltip"
-                                    title="Sadece aktif abonelikleri göster">
-                                <i class="fas fa-check-circle me-1"></i>Aktifler
-                            </button>
-                            <button type="button"
-                                    wire:click="showAllSubscriptions"
-                                    class="btn btn-sm {{ $filterStatus === '' ? 'btn-primary' : 'btn-outline-secondary' }}"
-                                    data-bs-toggle="tooltip"
-                                    title="Tüm abonelikleri göster (süresi bitmiş dahil)">
-                                <i class="fas fa-list me-1"></i>Tümü
-                            </button>
-                        </div>
-                        <!-- Sayfa Adeti Seçimi -->
-                        <div style="width: 80px; min-width: 80px">
-                            <select wire:model.live="perPage" class="form-control listing-filter-select">
-                                <option value="10">10</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                                <option value="500">500</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="table-responsive">
-            <table class="table table-vcenter card-table table-hover text-nowrap datatable">
+            <table class="table table-vcenter card-table table-hover">
                 <thead>
                     <tr>
-                        <th style="width: 120px">
-                            <button
-                                class="table-sort {{ $sortField === 'subscription_id' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
-                                wire:click="sortBy('subscription_id')">
-                                Abonelik No
-                            </button>
-                        </th>
                         <th>
-                            <button
-                                class="table-sort {{ $sortField === 'user_id' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
-                                wire:click="sortBy('user_id')">
+                            <button class="table-sort {{ $sortField === 'user_id' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}" wire:click="sortBy('user_id')">
                                 Müşteri
                             </button>
                         </th>
+                        <th>Plan</th>
                         <th>
-                            <button
-                                class="table-sort {{ $sortField === 'subscription_plan_id' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
-                                wire:click="sortBy('subscription_plan_id')">
-                                Plan
+                            <button class="table-sort {{ $sortField === 'current_period_end' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}" wire:click="sortBy('current_period_end')">
+                                Kalan
                             </button>
                         </th>
+                        <th>Son Ödeme</th>
+                        <th>Toplam</th>
                         <th>
-                            <button
-                                class="table-sort {{ $sortField === 'billing_cycle' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
-                                wire:click="sortBy('billing_cycle')">
-                                Dönem
-                            </button>
-                        </th>
-                        <th>
-                            <button
-                                class="table-sort {{ $sortField === 'current_period_end' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
-                                wire:click="sortBy('current_period_end')">
-                                Bitiş Tarihi
-                            </button>
-                        </th>
-                        <th>
-                            <button
-                                class="table-sort {{ $sortField === 'status' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
-                                wire:click="sortBy('status')">
+                            <button class="table-sort {{ $sortField === 'status' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}" wire:click="sortBy('status')">
                                 Durum
                             </button>
                         </th>
@@ -293,126 +102,90 @@
                 <tbody>
                     @forelse($subscriptions as $subscription)
                     @php
-                        $effectiveStatus = getEffectiveStatus($subscription);
-                        $statusLabel = $statusLabels[$effectiveStatus] ?? $effectiveStatus;
-                        $statusColor = $statusColors[$effectiveStatus] ?? 'secondary';
+                        // Status hesaplama
+                        $effectiveStatus = $subscription->status;
+                        if ($subscription->has_trial && $subscription->trial_ends_at && $subscription->trial_ends_at->isFuture()) {
+                            $effectiveStatus = 'trial';
+                        } elseif ($subscription->current_period_end && $subscription->current_period_end->isPast()) {
+                            $effectiveStatus = 'expired';
+                        }
 
-                        // Dönem label
-                        $cycleLabels = [
-                            'daily' => 'Günlük',
-                            'weekly' => 'Haftalık',
-                            'monthly' => 'Aylık',
-                            'quarterly' => '3 Aylık',
-                            'yearly' => 'Yıllık',
-                        ];
-                        $cycleLabel = $cycleLabels[$subscription->billing_cycle] ?? ($subscription->getCycleLabel() ?? $subscription->cycle_key ?? '-');
+                        // Toplam kalan gün (users.subscription_expires_at)
+                        $userExpiry = $subscription->customer?->subscription_expires_at;
+                        $totalDaysLeft = $userExpiry && $userExpiry->isFuture()
+                            ? (int) now()->diffInDays($userExpiry, false)
+                            : 0;
+
+                        // Son ödeme bilgisi
+                        $lastOrder = null;
+                        if ($subscription->customer) {
+                            $lastOrder = \Modules\Cart\App\Models\Order::where('user_id', $subscription->customer->id)
+                                ->whereIn('payment_status', ['paid', 'completed'])
+                                ->orderBy('created_at', 'desc')
+                                ->first();
+                        }
+
+                        // Toplam ödenen
+                        $totalPaid = \Modules\Subscription\App\Models\Subscription::where('user_id', $subscription->user_id)
+                            ->whereIn('status', ['active', 'pending', 'cancelled', 'expired'])
+                            ->sum('price_per_cycle');
                     @endphp
-                    <tr wire:key="subscription-{{ $subscription->subscription_id }}">
-                        <td>
-                            <a href="{{ route('admin.subscription.manage', $subscription->subscription_id) }}"
-                               class="text-reset text-decoration-none fw-medium link-primary">
-                                {{ $subscription->subscription_number }}
-                            </a>
-                            @if($subscription->has_trial && $effectiveStatus === 'trial')
-                                <div><small class="text-info"><i class="fas fa-gift me-1"></i>Deneme</small></div>
-                            @endif
-                        </td>
+                    <tr wire:key="subscription-{{ $subscription->subscription_id }}" class="{{ $effectiveStatus === 'pending_payment' ? 'bg-orange-lt' : '' }}">
                         <td>
                             @if($subscription->customer)
-                            <a href="{{ route('admin.usermanagement.manage', $subscription->customer->id) }}"
-                               class="text-reset text-decoration-none d-block">
+                            <button type="button" wire:click="openUserModal({{ $subscription->customer->id }})" class="btn btn-link text-reset text-decoration-none p-0 text-start">
                                 <div class="fw-medium">
+                                    <span class="badge bg-secondary-lt me-1">#{{ $subscription->customer->id }}</span>
                                     {{ $subscription->customer->name }}
-                                    @if($subscription->metadata['corporate'] ?? false)
-                                        <span class="badge bg-purple-lt text-purple ms-1" title="Kurumsal abonelik">
-                                            <i class="fas fa-building"></i>
-                                        </span>
-                                    @endif
+                                    <i class="fas fa-external-link-alt text-muted ms-1" style="font-size: 10px;"></i>
                                 </div>
                                 <div class="text-muted small">{{ $subscription->customer->email }}</div>
-                            </a>
+                            </button>
                             @else
                             <span class="text-muted">-</span>
                             @endif
                         </td>
                         <td>
-                            @if($subscription->plan)
-                            <a href="{{ route('admin.subscription.plans.manage', $subscription->plan->subscription_plan_id) }}"
-                               class="text-reset text-decoration-none">
-                                {{ $subscription->plan->title_text }}
-                            </a>
+                            <span class="fw-medium">{{ $subscription->plan?->title_text ?? '-' }}</span>
+                        </td>
+                        <td>
+                            @if($totalDaysLeft > 0)
+                                <div class="text-success fw-semibold">{{ $totalDaysLeft }} gün</div>
+                                <div class="text-muted small">{{ $userExpiry?->format('d.m.Y') }}</div>
+                            @elseif($effectiveStatus === 'pending_payment')
+                                <span class="text-muted">-</span>
                             @else
-                            <span class="text-muted">-</span>
+                                <span class="text-danger">Bitti</span>
                             @endif
                         </td>
-                        <td>{{ $cycleLabel }}</td>
                         <td>
-                            @if($effectiveStatus === 'trial' && $subscription->trial_ends_at)
-                                <span class="text-info">{{ $subscription->trial_ends_at->format('d.m.Y H:i') }}</span>
-                                <div class="text-muted small countdown-timer"
-                                     data-end-time="{{ $subscription->trial_ends_at->timestamp }}"
-                                     data-subscription-id="{{ $subscription->subscription_id }}">
-                                    @php
-                                        $totalSeconds = now()->diffInSeconds($subscription->trial_ends_at, false);
-                                        $daysLeft = (int) floor($totalSeconds / 86400);
-                                        $hoursLeft = (int) floor(($totalSeconds % 86400) / 3600);
-                                        $minutesLeft = (int) floor(($totalSeconds % 3600) / 60);
-                                        $secondsLeft = (int) ($totalSeconds % 60);
-                                    @endphp
-                                    @if($totalSeconds <= 0)
-                                        <span class="text-danger fw-bold">Süresi doldu!</span>
-                                    @elseif($totalSeconds <= 60)
-                                        <span class="text-danger fw-bold countdown-text">{{ $secondsLeft }} saniye kaldı</span>
-                                    @elseif($totalSeconds <= 3600)
-                                        <span class="text-warning fw-bold countdown-text">{{ $minutesLeft }} dakika {{ $secondsLeft }} saniye kaldı</span>
-                                    @elseif($daysLeft < 1)
-                                        <span class="countdown-text">{{ $hoursLeft }} saat {{ $minutesLeft }} dakika kaldı</span>
-                                    @else
-                                        <span class="countdown-text">{{ $daysLeft }} gün {{ $hoursLeft }} saat kaldı</span>
-                                    @endif
-                                </div>
-                            @elseif($subscription->current_period_end)
-                                {{ $subscription->current_period_end->format('d.m.Y') }}
-                                <div class="text-muted small countdown-timer"
-                                     data-end-time="{{ $subscription->current_period_end->timestamp }}"
-                                     data-subscription-id="{{ $subscription->subscription_id }}">
-                                    @php
-                                        $totalSeconds = now()->diffInSeconds($subscription->current_period_end, false);
-                                        $daysLeft = (int) floor($totalSeconds / 86400);
-                                        $hoursLeft = (int) floor(($totalSeconds % 86400) / 3600);
-                                        $minutesLeft = (int) floor(($totalSeconds % 3600) / 60);
-                                        $secondsLeft = (int) ($totalSeconds % 60);
-                                    @endphp
-                                    @if($totalSeconds <= 0)
-                                        <span class="text-danger fw-bold">Süresi doldu!</span>
-                                    @elseif($totalSeconds <= 60)
-                                        <span class="text-danger fw-bold countdown-text">{{ $secondsLeft }} saniye kaldı</span>
-                                    @elseif($totalSeconds <= 3600)
-                                        <span class="text-warning fw-bold countdown-text">{{ $minutesLeft }} dakika {{ $secondsLeft }} saniye kaldı</span>
-                                    @elseif($daysLeft < 1)
-                                        <span class="countdown-text">{{ $hoursLeft }} saat {{ $minutesLeft }} dakika kaldı</span>
-                                    @else
-                                        <span class="countdown-text">{{ $daysLeft }} gün {{ $hoursLeft }} saat kaldı</span>
-                                    @endif
-                                </div>
+                            @if($lastOrder)
+                                <div>{{ $lastOrder->created_at->format('d.m.Y') }}</div>
+                                <div class="text-muted small">{{ number_format($lastOrder->total_amount, 0, ',', '.') }} ₺</div>
                             @else
                                 <span class="text-muted">-</span>
                             @endif
                         </td>
                         <td>
-                            <span class="badge bg-{{ $statusColor }}">
-                                {{ $statusLabel }}
+                            <span class="fw-semibold text-warning">{{ number_format($totalPaid, 0, ',', '.') }} ₺</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-{{ $statusColors[$effectiveStatus] ?? 'secondary' }}">
+                                {{ $statusLabels[$effectiveStatus] ?? $effectiveStatus }}
                             </span>
                         </td>
                         <td>
                             <div class="dropdown">
                                 <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown">
-                                    <i class="fa-solid fa-bars-sort fa-flip-horizontal fa-lg"></i>
+                                    <i class="fas fa-ellipsis-v"></i>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end">
+                                    <button class="dropdown-item" wire:click="openUserModal({{ $subscription->customer?->id ?? 0 }})">
+                                        <i class="fas fa-eye me-2"></i>Detay
+                                    </button>
                                     @if(in_array($effectiveStatus, ['active', 'trial']))
-                                    <button class="dropdown-item text-danger" wire:click="cancel({{ $subscription->subscription_id }})" wire:confirm="Bu aboneliği iptal etmek istediğinize emin misiniz?">
-                                        <i class="fas fa-ban me-2"></i>İptal Et
+                                    <button class="dropdown-item text-danger" wire:click="terminateNow({{ $subscription->subscription_id }})" wire:confirm="Bu aboneliği HEMEN sonlandırmak istediğinize emin misiniz?">
+                                        <i class="fas fa-times-circle me-2"></i>Sonlandır
                                     </button>
                                     @endif
                                 </div>
@@ -422,11 +195,9 @@
                     @empty
                     <tr>
                         <td colspan="7" class="text-center py-4">
-                            <div class="empty">
-                                <div class="empty-img">
-                                    <i class="fas fa-users fa-4x text-muted"></i>
-                                </div>
-                                <p class="empty-title mt-2">Henüz abonelik yok</p>
+                            <div class="text-muted">
+                                <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                                Abonelik bulunamadı
                             </div>
                         </td>
                     </tr>
@@ -440,78 +211,226 @@
         </div>
         @endif
     </div>
+
+    {{-- User Detail Modal --}}
+    @if($showUserModal && $selectedUserData)
+    <div class="modal modal-blur fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.6);">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                {{-- Header --}}
+                <div class="modal-header">
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="avatar avatar-md bg-primary-lt">
+                            <i class="fas fa-user text-primary"></i>
+                        </span>
+                        <div>
+                            <h5 class="modal-title mb-0">
+                                <span class="badge bg-secondary me-1">#{{ $selectedUserData['user']['id'] }}</span>
+                                {{ $selectedUserData['user']['name'] }}
+                            </h5>
+                            <small class="text-muted">{{ $selectedUserData['user']['email'] }}</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" wire:click="closeUserModal"></button>
+                </div>
+
+                <div class="modal-body">
+                    {{-- Stats --}}
+                    <div class="row g-3 mb-4">
+                        <div class="col-6 col-md-3">
+                            <div class="card card-sm bg-green-lt">
+                                <div class="card-body text-center py-3">
+                                    <div class="h2 mb-0 text-green">{{ $selectedUserData['user']['total_days_left'] }}</div>
+                                    <div class="text-muted small">Kalan Gün</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="card card-sm bg-blue-lt">
+                                <div class="card-body text-center py-3">
+                                    <div class="h2 mb-0 text-blue">{{ $selectedUserData['stats']['total_subscriptions'] }}</div>
+                                    <div class="text-muted small">Abonelik</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="card card-sm bg-yellow-lt">
+                                <div class="card-body text-center py-3">
+                                    <div class="h2 mb-0 text-yellow">{{ number_format((float) ($selectedUserData['stats']['total_paid'] ?? 0), 0, ',', '.') }}₺</div>
+                                    <div class="text-muted small">Ödenen</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="card card-sm bg-purple-lt">
+                                <div class="card-body text-center py-3">
+                                    <div class="h2 mb-0 text-purple">{{ count($selectedUserData['orders']) }}</div>
+                                    <div class="text-muted small">Ödeme</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Tabs --}}
+                    <ul class="nav nav-tabs mb-3" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#tab-subscriptions">
+                                <i class="fas fa-list me-2"></i>Abonelikler
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab-payments">
+                                <i class="fas fa-credit-card me-2"></i>Ödemeler
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        {{-- Abonelikler Tab --}}
+                        <div class="tab-pane active show" id="tab-subscriptions">
+                            @php
+                                $subStatusColors = ['active' => 'green', 'pending' => 'yellow', 'pending_payment' => 'orange', 'trial' => 'cyan', 'cancelled' => 'secondary', 'expired' => 'red'];
+                                $subStatusLabels = ['active' => 'Aktif', 'pending' => 'Sırada', 'pending_payment' => 'Ödeme Bekliyor', 'trial' => 'Deneme', 'cancelled' => 'İptal', 'expired' => 'Bitti'];
+                            @endphp
+
+                            <div class="space-y-3">
+                                @forelse($selectedUserData['subscriptions'] as $sub)
+                                <div class="card border-start border-4 border-{{ $subStatusColors[$sub['status']] ?? 'secondary' }} mb-2">
+                                    <div class="card-body py-3">
+                                        {{-- Header --}}
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="badge bg-{{ $subStatusColors[$sub['status']] ?? 'secondary' }}-lt text-{{ $subStatusColors[$sub['status']] ?? 'secondary' }}">
+                                                    {{ $subStatusLabels[$sub['status']] ?? $sub['status'] }}
+                                                </span>
+                                                <span class="fw-semibold">{{ $sub['plan_title'] }}</span>
+                                                <span class="text-muted">{{ $sub['cycle_label'] }}</span>
+                                            </div>
+                                            <div class="d-flex gap-1">
+                                                @if($sub['can_activate'])
+                                                <button class="btn btn-sm btn-ghost-success" wire:click="activateSubscription({{ $sub['id'] }})" wire:confirm="Aktif etmek istediğinize emin misiniz?" title="Aktif Et">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                                @endif
+                                                @if($sub['can_delete'])
+                                                <button class="btn btn-sm btn-ghost-danger" wire:click="deleteSubscription({{ $sub['id'] }})" wire:confirm="Silmek istediğinize emin misiniz?" title="Sil">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        {{-- Details --}}
+                                        <div class="row text-sm">
+                                            <div class="col-4">
+                                                <span class="text-muted">Dönem:</span>
+                                                <span class="ms-1">{{ $sub['current_period_start'] ?? '-' }} → {{ $sub['current_period_end'] ?? '-' }}</span>
+                                            </div>
+                                            <div class="col-4">
+                                                <span class="text-muted">Kalan:</span>
+                                                @if($sub['days_left'] > 0)
+                                                <span class="ms-1 text-success fw-medium">{{ $sub['days_left'] }} gün</span>
+                                                @else
+                                                <span class="ms-1 text-muted">-</span>
+                                                @endif
+                                            </div>
+                                            <div class="col-4">
+                                                <span class="text-muted">Tutar:</span>
+                                                <span class="ms-1 text-warning fw-medium">{{ $sub['price'] }}</span>
+                                            </div>
+                                        </div>
+
+                                        {{-- Payment Info --}}
+                                        <div class="border-top mt-2 pt-2 d-flex justify-content-between align-items-center text-sm">
+                                            <div class="d-flex align-items-center gap-2">
+                                                @if($sub['payment_status'] === 'manual')
+                                                    <i class="fas fa-user-check text-purple"></i>
+                                                    <span class="text-muted">Manuel Onay</span>
+                                                @elseif($sub['payment_status'] === 'paid' || $sub['payment_status'] === 'completed')
+                                                    <i class="fas fa-check-circle text-success"></i>
+                                                    <span class="text-muted">Ödendi</span>
+                                                    @if($sub['payment_method'])
+                                                    <span class="text-muted">•</span>
+                                                    <span class="text-muted">{{ $sub['payment_method'] }}</span>
+                                                    @endif
+                                                @elseif($sub['status'] === 'pending_payment')
+                                                    <i class="fas fa-clock text-orange"></i>
+                                                    <span class="text-orange">Ödeme Bekleniyor</span>
+                                                @else
+                                                    <i class="fas fa-question-circle text-muted"></i>
+                                                    <span class="text-muted">{{ $sub['payment_label'] }}</span>
+                                                @endif
+                                            </div>
+                                            @if($sub['order_number'])
+                                            <a href="{{ route('admin.orders.index') }}?search={{ $sub['order_number'] }}" class="text-primary small" target="_blank">
+                                                <i class="fas fa-external-link-alt me-1"></i>{{ $sub['order_number'] }}
+                                            </a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                @empty
+                                <div class="text-center text-muted py-4">
+                                    <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                                    Abonelik bulunamadı
+                                </div>
+                                @endforelse
+                            </div>
+                        </div>
+
+                        {{-- Ödemeler Tab --}}
+                        <div class="tab-pane" id="tab-payments">
+                            @if(count($selectedUserData['orders']) > 0)
+                            <div class="list-group list-group-flush">
+                                @foreach($selectedUserData['orders'] as $order)
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="avatar bg-{{ $order['payment_status'] === 'paid' ? 'success' : 'warning' }}-lt">
+                                            <i class="fas fa-{{ $order['payment_status'] === 'paid' ? 'check' : 'clock' }} text-{{ $order['payment_status'] === 'paid' ? 'success' : 'warning' }}"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-medium">{{ $order['plan_title'] ?? 'Abonelik' }}</div>
+                                            <div class="text-muted small">
+                                                <span>{{ $order['payment_method'] ?? 'Kredi Kartı' }}</span>
+                                                <span class="mx-1">•</span>
+                                                <span>{{ $order['date'] }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="fw-semibold text-{{ $order['payment_status'] === 'paid' ? 'success' : 'warning' }}">{{ $order['total'] }}</div>
+                                        <a href="{{ route('admin.orders.index') }}?search={{ $order['number'] }}" class="text-muted small" target="_blank">
+                                            {{ $order['number'] }}
+                                        </a>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                            @else
+                            <div class="text-center text-muted py-4">
+                                <i class="fas fa-credit-card fa-2x mb-2 d-block"></i>
+                                Ödeme kaydı bulunamadı
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" wire:click="closeUserModal">
+                        Kapat
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <style>
+    .space-y-3 > * + * { margin-top: 0.75rem; }
+    .btn-ghost-success { color: var(--tblr-success); background: transparent; }
+    .btn-ghost-success:hover { background: var(--tblr-success-lt); }
+    .btn-ghost-danger { color: var(--tblr-danger); background: transparent; }
+    .btn-ghost-danger:hover { background: var(--tblr-danger-lt); }
+    </style>
 </div>
-
-@push('scripts')
-<script>
-(function() {
-    'use strict';
-
-    // Countdown timer güncelleme fonksiyonu
-    function updateCountdowns() {
-        const timers = document.querySelectorAll('.countdown-timer');
-        const now = Math.floor(Date.now() / 1000);
-
-        timers.forEach(timer => {
-            const endTime = parseInt(timer.dataset.endTime);
-            const countdownText = timer.querySelector('.countdown-text');
-
-            if (!countdownText || !endTime) return;
-
-            const totalSeconds = endTime - now;
-
-            if (totalSeconds <= 0) {
-                // Süresi doldu
-                countdownText.className = 'text-danger fw-bold';
-                countdownText.textContent = 'Süresi doldu!';
-                return;
-            }
-
-            const days = Math.floor(totalSeconds / 86400);
-            const hours = Math.floor((totalSeconds % 86400) / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = totalSeconds % 60;
-
-            let text = '';
-            let className = '';
-
-            if (totalSeconds <= 60) {
-                // Son 1 dakika - SANİYE göster (KIRMIZI)
-                text = `${seconds} saniye kaldı`;
-                className = 'text-danger fw-bold';
-            } else if (totalSeconds <= 3600) {
-                // Son 1 saat - DAKİKA + SANİYE göster (TURUNCU)
-                text = `${minutes} dakika ${seconds} saniye kaldı`;
-                className = 'text-warning fw-bold';
-            } else if (days < 1) {
-                // Son gün - SAAT + DAKİKA göster
-                text = `${hours} saat ${minutes} dakika kaldı`;
-                className = '';
-            } else {
-                // Gün kaldı - GÜN + SAAT göster
-                text = `${days} gün ${hours} saat kaldı`;
-                className = '';
-            }
-
-            countdownText.textContent = text;
-            countdownText.className = className || 'countdown-text';
-        });
-    }
-
-    // İlk yüklemede çalıştır
-    updateCountdowns();
-
-    // Her saniye güncelle
-    setInterval(updateCountdowns, 1000);
-
-    // Livewire component yenilendiğinde timer'ları yeniden başlat
-    document.addEventListener('livewire:navigated', updateCountdowns);
-    document.addEventListener('livewire:load', updateCountdowns);
-
-    // Livewire component update sonrası
-    Livewire.hook('message.processed', () => {
-        setTimeout(updateCountdowns, 100);
-    });
-})();
-</script>
-@endpush

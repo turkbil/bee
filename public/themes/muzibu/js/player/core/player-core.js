@@ -167,8 +167,9 @@ function muzibuApp() {
         showDeviceLimitModal: false, // 🔐 Show device limit exceeded modal
 
         // Crossfade settings (using Howler.js + HLS.js)
-        // 🍎 Mobile Safari'de crossfade çalışmıyor - devre dışı
-        crossfadeEnabled: !(/iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream), // Desktop: true, Mobile Safari: false
+        // 🚫 TEMPORARILY DISABLED: Crossfade causes bufferAppendError and playback stops
+        // TODO: Re-implement with gapless playback (like Spotify/Apple Music)
+        crossfadeEnabled: false, // 🔴 DISABLED - causing fatal HLS errors
         crossfadeDuration: window.muzibuPlayerConfig?.crossfadeDuration || 5000, // Config'den al, varsayılan 5 saniye
         fadeOutDuration: 0, // 🚀 INSTANT: No fade, immediate volume changes
         isCrossfading: false,
@@ -413,13 +414,16 @@ function muzibuApp() {
             // 🚀 INSTANT QUEUE: Sayfa açılır açılmaz queue yükle (no delay!)
             this.loadInitialQueue();
 
+            // 🔴 DEVICE LIMIT: TAMAMEN DEVRE DIŞI (2025-12-29)
+            // Session polling, device limit warning, device selection modal - HEPSİ KAPALI
+            // Tekrar aktif etmek için bu bloğu uncomment et
+            /*
             // 🔐 SESSION POLLING: Device limit kontrolü (sadece login olunca başlar)
             if (this.isLoggedIn) {
                 this.startSessionPolling();
             }
 
             // 🔐 DEVICE LIMIT WARNING: Check localStorage flag after logout
-            // Bu flag sadece başka cihazdan çıkarıldığında (session polling) set edilir
             try {
                 const deviceLimitWarning = localStorage.getItem('device_limit_warning');
                 if (deviceLimitWarning === 'true') {
@@ -430,37 +434,26 @@ function muzibuApp() {
                 console.warn('localStorage not available:', e.message);
             }
 
-            // 🔐 DEVICE LIMIT: Check meta tag for session flash (login sonrası limit aşıldıysa)
-            // Bu durumda SELECTION MODAL göster (kullanıcı seçim yapsın)
+            // 🔐 DEVICE LIMIT: Check meta tag for session flash
             const deviceLimitMeta = document.querySelector('meta[name="device-limit-exceeded"]');
             if (deviceLimitMeta && deviceLimitMeta.content === 'true') {
-
-                // 🔧 FIX: Selection modal göster, warning modal DEĞİL!
-                // Önce cihaz listesini çek (device limit de API'den gelir - 3-tier hierarchy)
-                // Backend: 1) User->device_limit 2) SubscriptionPlan->device_limit 3) Setting('auth_device_limit')
                 this.fetchActiveDevices().then(() => {
-                    // 🔥 FIX: Sadece başka cihaz varsa modal göster
-                    // Eğer sadece mevcut cihaz varsa (is_current=true), modal göstermenin anlamı yok
                     const terminableDevices = this.activeDevices.filter(d => !d.is_current);
-
                     if (terminableDevices.length > 0) {
                         this.showDeviceSelectionModal = true;
                     } else {
-                        // Device limit exceeded ama çıkış yapılacak başka cihaz yok
-                        // Bu durumda LIFO zaten en eski session'ı silmiş olmalı
-                        this.deviceLimitExceeded = false; // Flag'i temizle
+                        this.deviceLimitExceeded = false;
                     }
                 });
             }
 
-            // 🔐 DEVICE LIMIT: Her sayfa yüklemesinde kontrol et (login olmuş kullanıcılar için)
-            // Meta tag yoksa bile, API'den cihaz sayısı ve limiti al, limit aşılmışsa modal göster
-            // ⏱️ DELAYED: 600ms sonra kontrol et (avoid rate limiting)
+            // 🔐 DEVICE LIMIT: Her sayfa yüklemesinde kontrol et
             if (this.isLoggedIn && !deviceLimitMeta) {
                 setTimeout(() => {
                     this.checkDeviceLimitOnPageLoad();
                 }, 600);
             }
+            */
 
             // 🚀 SPA NAVIGATION: Initialize MuzibuSpaRouter (with prefetch!)
             if (this.initSpaNavigation) {
@@ -1148,15 +1141,20 @@ function muzibuApp() {
             }
         },
 
-        async nextTrack() {
+        async nextTrack(fromNaturalEnd = false) {
             // 🚨 INSTANT PLAY: Cancel crossfade (manual track change)
             this.isCrossfading = false;
 
-            // ⚡ INSTANT STOP: Stop current track immediately before loading next
-            await this.stopCurrentPlayback();
+            // ⚡ GAPLESS: Şarkı doğal olarak bittiyse (ended event), stopCurrentPlayback gereksiz!
+            // Sadece manuel skip (next butonu) için durdur
+            if (!fromNaturalEnd) {
+                await this.stopCurrentPlayback();
+            }
 
             // 🔍 SERVER LOG
             serverLog('nextTrack', {
+                fromNaturalEnd: fromNaturalEnd,
+                gapless: fromNaturalEnd, // true = gapless transition
                 queueIndex: this.queueIndex,
                 queueLength: this.queue?.length,
                 hasNext: this.queueIndex < this.queue.length - 1,
@@ -1626,14 +1624,14 @@ function muzibuApp() {
                 }, this.crossfadeDuration);
 
             } catch (error) {
-                // Silent: Crossfade failed (browser power save, background tab, etc.)
-                // Smart Crossfade: Just cleanup next player, let current song finish naturally
+                // 🔧 FIX: Crossfade failed - skip to next song directly (no fade)
+                // This prevents playback from stopping completely
 
                 // Cleanup crossfade state
                 this.isCrossfading = false;
                 this.crossfadeNextIndex = -1;
 
-                // Cleanup failed next player ONLY (don't touch current player!)
+                // Cleanup failed next player
                 if (this.hlsNext) {
                     try { this.hlsNext.destroy(); } catch (e) {}
                     this.hlsNext = null;
@@ -1652,8 +1650,18 @@ function muzibuApp() {
                     } catch (e) {}
                 }
 
-                // DON'T stop current player - let it finish naturally!
-                // The onended event will trigger playNextSong() when current song ends
+                // 🚀 AUTO-SKIP: Crossfade failed, play next song directly (without fade)
+                // This ensures continuous playback even when crossfade fails
+                const failedNextIndex = nextIndex;
+                if (failedNextIndex >= 0 && failedNextIndex < this.queue.length) {
+                    // Small delay to allow cleanup to complete
+                    setTimeout(async () => {
+                        // Double check we're still supposed to be playing
+                        if (this.isPlaying || this.queue.length > 0) {
+                            await this.playSongFromQueue(failedNextIndex);
+                        }
+                    }, 100);
+                }
             }
         },
 
@@ -1754,20 +1762,49 @@ function muzibuApp() {
 
                         // 🔧 FIX: Non-fatal 401/403 - URL yenile
                         if (!data.fatal && (respCode === 401 || respCode === 403)) {
-                            console.warn('🔄 Crossfade 401/403 - URL yenileniyor...');
                             await self.refreshHlsUrlForCurrentSong(false);
                             return; // Retry devam etsin
                         }
 
                         if (data.fatal) {
-                            // 🔧 FIX: Fatal 401/403 - MP3 fallback dene
-                            if (respCode === 401 || respCode === 403) {
-                                console.warn('🔒 Crossfade HLS denied, skipping crossfade');
-                                reject(new Error('HLS_AUTH_ERROR'));
-                                return;
+                            // 🚀 FIX: Fatal error - abort crossfade and skip to next song directly
+                            // This handles bufferAppendError, mediaError, and other fatal issues
+
+                            // Cancel crossfade timeout if running
+                            if (self.crossfadeTimeoutId) {
+                                clearTimeout(self.crossfadeTimeoutId);
+                                self.crossfadeTimeoutId = null;
                             }
-                            console.error('HLS crossfade fatal error:', data);
-                            reject(data);
+
+                            // Cleanup crossfade state
+                            self.isCrossfading = false;
+                            self.crossfadeNextIndex = -1;
+
+                            // Destroy failed hlsNext
+                            if (self.hlsNext) {
+                                try { self.hlsNext.destroy(); } catch (e) {}
+                                self.hlsNext = null;
+                            }
+
+                            // Cleanup next audio element
+                            const failedAudio = document.getElementById(self.nextHlsAudioId);
+                            if (failedAudio) {
+                                try {
+                                    failedAudio.pause();
+                                    failedAudio.src = '';
+                                } catch (e) {}
+                            }
+
+                            // 🎯 AUTO-RECOVER: Play next song directly (skip crossfade)
+                            const nextIdx = self.getNextSongIndex();
+                            if (nextIdx >= 0) {
+                                setTimeout(() => {
+                                    self.playSongFromQueue(nextIdx);
+                                }, 100);
+                            }
+
+                            // Reject promise (if not already resolved)
+                            reject(new Error('HLS_FATAL_ERROR'));
                         }
                     });
                 } else if (nextAudio.canPlayType('application/vnd.apple.mpegurl')) {
@@ -2018,7 +2055,8 @@ function muzibuApp() {
                     }
                 }
             } else {
-                this.nextTrack();
+                // ⚡ GAPLESS: fromNaturalEnd=true ile çağır - stopCurrentPlayback atlanır
+                this.nextTrack(true);
             }
         },
 
@@ -2704,13 +2742,16 @@ function muzibuApp() {
                 const preloadedAudio = document.getElementById(preloadedAudioId);
 
                 if (preloadedAudio) {
-                    // Mevcut playback'i durdur (eski HLS/Howler) - preloaded audio'ya dokunma!
+                    // 🧹 RAM CLEANUP: Eski HLS/Howler ve audio buffer'ı temizle
                     if (this.hls && this.hls !== preloadedHls) {
                         try {
                             const oldAudioId = this.activeHlsAudioId || 'hlsAudio';
                             const oldAudio = document.getElementById(oldAudioId);
                             if (oldAudio) {
                                 oldAudio.pause();
+                                // 🧹 RAM: Audio buffer'ı temizle
+                                oldAudio.src = '';
+                                oldAudio.load(); // MediaSource buffer'ı serbest bırak
                             }
                             this.hls.destroy();
                         } catch (e) {}
@@ -3118,10 +3159,15 @@ function muzibuApp() {
             // Stop HLS if playing (check both audio elements)
             if (this.hls) {
                 const audio = this.getActiveHlsAudio();
-                if (audio && !audio.paused) {
-                    wasStopped = true;
+                if (audio) {
+                    if (!audio.paused) {
+                        wasStopped = true;
+                    }
                     // 🚀 INSTANT STOP: No fade, immediate pause
                     audio.pause();
+                    // 🧹 RAM CLEANUP: Audio buffer'ı temizle
+                    audio.src = '';
+                    audio.load(); // MediaSource buffer'ı serbest bırak
                 }
                 // 🔧 FIX: Clear instance ID BEFORE destroy to ignore pending error events
                 this._currentHlsInstanceId = null;
@@ -3143,6 +3189,7 @@ function muzibuApp() {
             if (nextAudio && !(this._preloadedNext && this._preloadedNext.audioId === 'hlsAudioNext')) {
                 nextAudio.pause();
                 nextAudio.src = '';
+                nextAudio.load(); // 🧹 RAM CLEANUP: MediaSource buffer'ı serbest bırak
             }
 
             // Reset active HLS audio to default
@@ -5017,6 +5064,12 @@ onplay: function() {
                     preview_duration: data.preview_duration,
                     cached_at: Date.now()
                 });
+
+                // 🧹 RAM CLEANUP: Cache boyutunu sınırla (max 10 şarkı)
+                if (this.streamUrlCache.size > 10) {
+                    const firstKey = this.streamUrlCache.keys().next().value;
+                    this.streamUrlCache.delete(firstKey);
+                }
 
                 // 2️⃣ HLS ise gerçek preload yap (ilk segment)
                 if (data.stream_type === 'hls' && data.stream_url && typeof Hls !== 'undefined' && Hls.isSupported()) {

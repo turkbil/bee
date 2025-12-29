@@ -130,6 +130,7 @@ function muzibuApp() {
         // Loading & UI states - ⚡ PERFORMANCE: Start with false (no initial loading overlay)
         isLoading: false, // Only show when actually loading (SPA navigation)
         isSongLoading: false, // Şarkı yüklenirken spinner
+        isSeeking: false, // Seek sırasında buffer yüklenirken
         contentLoaded: true, // Content ready by default
         searchQuery: '',
         searchResults: [],
@@ -1859,9 +1860,13 @@ function muzibuApp() {
                 return;
             }
 
+            // ⏳ Seek başlıyor - loading göster
+            this.isSeeking = true;
+
             // 1️⃣ Howler.js (MP3)
             if (this.howl && this.duration) {
                 this.howl.seek(newTime);
+                this.isSeeking = false; // Howler instant seek
             }
 
             // 2️⃣ HLS.js (PC)
@@ -1869,6 +1874,7 @@ function muzibuApp() {
                 const audio = this.getActiveHlsAudio();
                 if (audio && this.duration) {
                     audio.currentTime = newTime;
+                    // isSeeking, audio 'seeked' event'inde false olacak
                 }
             }
 
@@ -1877,6 +1883,7 @@ function muzibuApp() {
                 const audio = this.getActiveHlsAudio();
                 if (audio && this.duration) {
                     audio.currentTime = newTime;
+                    // isSeeking, audio 'seeked' event'inde false olacak
                 }
             }
 
@@ -3625,6 +3632,11 @@ onplay: function() {
                     }
                 };
 
+                // ⏳ Seek tamamlandı - loading kapat
+                audio.onseeked = function() {
+                    self.isSeeking = false;
+                };
+
                 // Get duration when available
                 // 🎯 DURATION FIX: DB/HLS duration'ı öncelikli kullan, audio.duration güvenilmez olabilir
                 audio.onloadedmetadata = function() {
@@ -3755,6 +3767,11 @@ onplay: function() {
                             self.onTrackEnded();
                         }
                     }
+                };
+
+                // ⏳ Seek tamamlandı - loading kapat (Safari)
+                audio.onseeked = function() {
+                    self.isSeeking = false;
                 };
 
                 audio.play().then(() => {

@@ -499,7 +499,7 @@
     {{-- 3. Player Features (modular - player-core bunları spread eder) --}}
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/favorites.js') }}"></script>
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/auth.js') }}"></script>
-    <script src="{{ versioned_asset('themes/muzibu/js/player/features/keyboard.js') }}"></script>
+    {{-- ❌ REMOVED: keyboard.js (klavye kısayolları kaldırıldı) --}}
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/api.js') }}"></script>
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/session.js') }}"></script>
     <script src="{{ asset('themes/muzibu/js/player/features/spa-router.js') }}?v={{ filemtime(public_path('themes/muzibu/js/player/features/spa-router.js')) }}"></script>

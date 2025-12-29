@@ -84,13 +84,11 @@
                                         'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
                                     }
                                 });
-                                console.log('✅ AI conversation deleted from DB (ID:', conversationId, ')');
                             }
                         }
 
                         // ✅ 2. localStorage'dan da temizle
                         localStorage.removeItem('tenant1001_ai_session');
-                        console.log('✅ AI conversation cleared from localStorage');
                     } catch (e) {
                         console.warn('⚠️ AI conversation clear failed:', e);
                     }
@@ -105,7 +103,6 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-                        console.log('✅ Cache cleared:', data);
                         // Sayfa yenile (AI conversation da temizlenmiş olacak)
                         window.location.reload();
                     })
@@ -620,8 +617,6 @@
                         ? 'PHP login ama JS logout - muhtemelen HLS 401 sonrası yanlış logout'
                         : 'JS login ama PHP logout - session expired'
                 });
-            } else {
-                console.log('✅ Auth Tutarlı:', { isLoggedIn: jsAuth, currentUser: currentUser?.name || null });
             }
         "></div>
 

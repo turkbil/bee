@@ -72,9 +72,9 @@
                      class="absolute inset-0 w-full h-full object-cover">
                 <i x-show="!currentSong?.cover_url && !currentSong?.album_cover" class="fas fa-music text-white/80 text-sm"></i>
             </div>
-            {{-- Time Badge --}}
+            {{-- Time Badge - Kalan süre --}}
             <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-zinc-800 text-white text-[10px] px-1.5 py-0.5 rounded-full border border-zinc-700"
-                 x-text="formatTime(currentTime)">0:00</div>
+                 x-text="duration > 0 ? formatTime(Math.max(0, duration - currentTime)) : '0:00'">0:00</div>
         </div>
 
         {{-- Song Info: Title + Artist --}}
@@ -113,7 +113,7 @@
         </button>
     </div>
 
-    {{-- Mobile Context Menu --}}
+    {{-- Mobile Context Menu with Swipe-to-Dismiss --}}
     <div x-show="showMobileMenu"
          x-cloak
          x-transition:enter="transition ease-out duration-200"
@@ -123,14 +123,55 @@
          x-transition:leave-start="opacity-100 translate-y-0"
          x-transition:leave-end="opacity-0 translate-y-2"
          @click.outside="showMobileMenu = false"
-         class="absolute bottom-full left-0 right-0 mb-2 mx-3 bg-zinc-900 rounded-xl border border-zinc-700 shadow-2xl overflow-hidden z-[60]">
+         class="absolute bottom-full left-0 right-0 mb-2 mx-3 bg-zinc-900 rounded-xl border border-zinc-700 shadow-2xl overflow-hidden z-[60]"
+         x-data="{ startY: 0, currentY: 0, isDragging: false }"
+         :style="isDragging && currentY > 0 ? `transform: translateY(${currentY}px); opacity: ${1 - currentY/150}` : ''">
 
-        {{-- Menu Header --}}
-        <div class="px-4 py-3 border-b border-zinc-700 bg-zinc-800">
+        {{-- Handle Bar --}}
+        <div class="flex justify-center pt-2 pb-1">
+            <div class="w-10 h-1 bg-zinc-600 rounded-full"></div>
+        </div>
+
+        {{-- Menu Header - Swipe Area --}}
+        <div class="px-4 py-2 border-b border-zinc-700 bg-zinc-800 touch-none"
+             @touchstart="startY = $event.touches[0].clientY; isDragging = true; currentY = 0"
+             @touchmove.prevent="if(isDragging) { currentY = Math.max(0, $event.touches[0].clientY - startY); }"
+             @touchend="if(currentY > 60) { showMobileMenu = false; } isDragging = false; currentY = 0;">
             <p class="text-white font-medium text-sm truncate"
                x-text="currentSong ? (currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title) : ''"></p>
             <p class="text-zinc-400 text-xs truncate"
                x-text="currentSong ? (currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title) : ''"></p>
+        </div>
+
+        {{-- Mobile Progress Bar (Touch Draggable) - Geniş Touch Area --}}
+        <div class="px-4 py-4 border-b border-zinc-700" x-data="{ isDragging: false, seekTime: 0, touchUsed: false }">
+            <div class="flex items-center">
+                {{-- Current Time --}}
+                <span class="text-xs text-zinc-400 w-10 text-right tabular-nums shrink-0" x-text="formatTime(isDragging ? seekTime : currentTime)">0:00</span>
+
+                {{-- Progress Bar Container - Büyük touch area için padding --}}
+                <div class="flex-1 mx-3 py-3 -my-3 cursor-pointer touch-none"
+                     @click="if(!touchUsed && duration > 0) { const bar = $el.querySelector('.progress-track'); const rect = bar.getBoundingClientRect(); const percent = Math.max(0, Math.min(1, ($event.clientX - rect.left) / rect.width)); seekTo(duration * percent); }"
+                     @touchstart.prevent="isDragging = true; touchUsed = true; seekTime = currentTime"
+                     @touchmove.prevent="if(isDragging && duration > 0) { const touch = $event.touches[0]; const bar = $el.querySelector('.progress-track'); const rect = bar.getBoundingClientRect(); const percent = Math.max(0, Math.min(1, (touch.clientX - rect.left) / rect.width)); seekTime = duration * percent; }"
+                     @touchend.prevent="if(isDragging && duration > 0) { seekTo(seekTime); } isDragging = false; setTimeout(() => touchUsed = false, 300);">
+                    {{-- Visible Progress Track --}}
+                    <div class="progress-track h-2.5 bg-zinc-700 rounded-full relative">
+                        {{-- Progress Fill with Gradient --}}
+                        <div class="h-full rounded-full transition-all pointer-events-none"
+                             :style="`width: ${isDragging ? (seekTime / duration * 100) : progressPercent}%; background: linear-gradient(90deg, hsl(${currentSong?.color_hues?.[0] || 30}, 80%, 55%), hsl(${currentSong?.color_hues?.[1] || 350}, 80%, 55%), hsl(${currentSong?.color_hues?.[2] || 320}, 80%, 55%))`">
+                        </div>
+                        {{-- Drag Handle - Daha büyük --}}
+                        <div class="absolute top-1/2 -translate-y-1/2 w-5 h-5 bg-white rounded-full shadow-lg pointer-events-none border-2 border-zinc-300"
+                             :class="isDragging ? 'scale-125' : ''"
+                             :style="`left: calc(${isDragging ? (seekTime / duration * 100) : progressPercent}% - 10px)`"></div>
+                    </div>
+                </div>
+
+                {{-- Duration --}}
+                <span class="text-xs text-zinc-400 w-10 tabular-nums shrink-0" x-text="formatTime(duration)">0:00</span>
+            </div>
+
         </div>
 
         {{-- Menu Items --}}
@@ -162,14 +203,6 @@
                 <span x-text="repeatMode === 'off' ? 'Tekrar: Kapalı' : (repeatMode === 'all' ? 'Tekrar: Tümü' : 'Tekrar: Tek')"></span>
             </button>
             --}}
-            <div class="h-px bg-zinc-700 mx-4 my-1"></div>
-            {{-- Albüme Git - her zaman görünür (slug yoksa disabled) --}}
-            <button class="w-full px-4 py-3 flex items-center gap-3 text-sm active:bg-zinc-700"
-                    :class="currentSong?.album_slug ? 'text-white' : 'text-zinc-500 pointer-events-none'"
-                    @click="if(currentSong?.album_slug) { window.location.href = '/albums/' + currentSong.album_slug; } showMobileMenu = false">
-                <i class="fas fa-compact-disc text-cyan-400 w-5 text-center"></i>
-                <span>Albüme Git</span>
-            </button>
         </div>
     </div>
 </div>
@@ -206,9 +239,9 @@
                  class="absolute inset-0 w-full h-full object-cover">
             <i x-show="!currentSong?.cover_url && !currentSong?.album_cover" class="fas fa-music text-white/80 text-lg"></i>
         </div>
-        {{-- Time Badge --}}
+        {{-- Time Badge - Kalan süre --}}
         <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-zinc-800 text-white text-[10px] px-1.5 py-0.5 rounded-full border border-zinc-700"
-             x-text="formatTime(currentTime)">0:00</div>
+             x-text="duration > 0 ? formatTime(Math.max(0, duration - currentTime)) : '0:00'">0:00</div>
     </div>
 
     {{-- Heart Button (önce) --}}

@@ -5,24 +5,39 @@
      @open-create-playlist.window="openModal()"
      @open-create-playlist-modal.window="openModal()"
      @keydown.escape.window="closeModal()"
-     class="fixed inset-0 z-50 flex items-center justify-center p-4">
+     class="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4">
 
     {{-- Backdrop --}}
     <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" @click="closeModal()"></div>
 
-    {{-- Modal --}}
-    <div class="relative w-full max-w-md bg-slate-900 border border-white/10 rounded-2xl shadow-2xl"
+    {{-- Modal - Bottom sheet on mobile, centered on desktop --}}
+    <div class="relative w-full sm:max-w-md bg-slate-900 border-t sm:border border-white/10 rounded-t-3xl sm:rounded-2xl shadow-2xl"
+         x-data="{ startY: 0, currentY: 0, isDragging: false }"
+         :style="isDragging && currentY > 0 ? `transform: translateY(${currentY}px); opacity: ${Math.max(0.5, 1 - currentY/200)}` : ''"
          x-show="open"
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0 scale-95"
-         x-transition:enter-end="opacity-100 scale-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100 scale-100"
-         x-transition:leave-end="opacity-0 scale-95"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-full sm:translate-y-0 sm:scale-95"
+         x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+         x-transition:leave-end="opacity-0 translate-y-full sm:translate-y-0 sm:scale-95"
          @click.stop>
 
+        {{-- Mobile Handle Bar --}}
+        <div class="sm:hidden flex justify-center pt-3 pb-2 touch-none"
+             style="overscroll-behavior: contain;"
+             @touchstart="startY = $event.touches[0].clientY; isDragging = true; currentY = 0"
+             @touchmove.prevent="if(isDragging) { currentY = Math.max(0, $event.touches[0].clientY - startY); }"
+             @touchend="if(currentY > 80) { closeModal(); } isDragging = false; currentY = 0;">
+            <div class="w-12 h-1.5 bg-zinc-600 rounded-full"></div>
+        </div>
+
         {{-- Header --}}
-        <div class="flex items-center justify-between p-6 border-b border-white/10">
+        <div class="flex items-center justify-between px-6 py-4 sm:p-6 border-b border-white/10 touch-none sm:touch-auto"
+             style="overscroll-behavior: contain;"
+             @touchstart="startY = $event.touches[0].clientY; isDragging = true; currentY = 0"
+             @touchmove.prevent="if(isDragging) { currentY = Math.max(0, $event.touches[0].clientY - startY); }"
+             @touchend="if(currentY > 80) { closeModal(); } isDragging = false; currentY = 0;">
             <h3 class="text-xl font-bold text-white">
                 <i class="fas fa-plus mr-2 text-green-400"></i>
                 {{ __('muzibu::front.sidebar.create_playlist') }}

@@ -289,6 +289,7 @@ return [
     'auth' => [
         'login_required' => 'You must log in to listen to music',
         'premium_required' => 'Premium membership is required to listen to music',
+        'login_for_features' => 'Log in to access all features',
     ],
 
     'admin' => [

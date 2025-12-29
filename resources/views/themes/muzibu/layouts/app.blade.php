@@ -344,8 +344,6 @@
                 }
             };
         };
-
-        console.log('✅ Alpine global functions loaded (muzibuApp, dashboardApp, corporatePanel, corporateDashboard)');
     </script>
 
     @yield('styles')
@@ -837,7 +835,6 @@
                 });
 
                 window.Alpine.store('player', playerProxy);
-                console.log('✅ Player store = Proxy to root (auto-forward all properties/methods)');
             }, 100); // Small delay to ensure Alpine root is ready
         });
 
@@ -850,8 +847,6 @@
             // Player store da kontrol et
             if (!window.Alpine.store('player')) {
                 console.error('❌ Player Store not found!');
-            } else {
-                console.log('✅ Player store verified');
             }
         });
     </script>

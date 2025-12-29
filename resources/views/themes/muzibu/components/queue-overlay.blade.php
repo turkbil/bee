@@ -79,7 +79,7 @@
     style="display: none;"
 ></div>
 
-{{-- Panel --}}
+{{-- Panel with Swipe-to-Dismiss --}}
 <aside
     x-show="showQueue"
     x-transition:enter="transition ease-out duration-300"
@@ -90,9 +90,19 @@
     x-transition:leave-end="transform translate-x-full"
     style="display: none;"
     class="fixed top-0 right-0 bottom-0 w-full sm:w-96 bg-gradient-to-b from-zinc-900 via-zinc-900 to-black border-l border-white/5 shadow-2xl z-50 flex flex-col"
+    x-data="{ startX: 0, currentX: 0, isDragging: false }"
+    :style="isDragging && currentX > 0 ? `transform: translateX(${currentX}px)` : ''"
 >
-    {{-- Header --}}
-    <div class="flex items-center justify-between px-5 py-4 border-b border-white/5">
+    {{-- Mobile Handle Bar --}}
+    <div class="sm:hidden flex justify-center py-2">
+        <div class="w-12 h-1.5 bg-zinc-600 rounded-full"></div>
+    </div>
+
+    {{-- Header - Swipe Area --}}
+    <div class="flex items-center justify-between px-5 py-4 border-b border-white/5 touch-none sm:touch-auto"
+         @touchstart="startX = $event.touches[0].clientX; isDragging = true; currentX = 0"
+         @touchmove.prevent="if(isDragging) { currentX = Math.max(0, $event.touches[0].clientX - startX); }"
+         @touchend="if(currentX > 100) { showQueue = false; } isDragging = false; currentX = 0;">
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 bg-muzibu-coral/20 rounded-lg flex items-center justify-center">
                 <i class="fas fa-stream text-muzibu-coral text-sm"></i>

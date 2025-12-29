@@ -147,7 +147,7 @@
             </div>
         </div>
 
-        {{-- Mobile: Bottom Sheet --}}
+        {{-- Mobile: Bottom Sheet with Swipe-to-Dismiss --}}
         <div class="md:hidden absolute inset-x-0 bottom-0"
              x-show="$store.playlistModal.open"
              x-transition:enter="transition ease-out duration-300"
@@ -156,38 +156,47 @@
              x-transition:leave="transition ease-in duration-200"
              x-transition:leave-start="translate-y-0"
              x-transition:leave-end="translate-y-full"
-             @click.stop>
+             @click.stop
+             x-data="{ startY: 0, currentY: 0, isDragging: false }"
+             :style="isDragging && currentY > 0 ? `transform: translateY(${currentY}px)` : ''">
 
             <div class="bg-zinc-900 rounded-t-3xl border-t border-white/10 max-h-[85vh] flex flex-col">
-                {{-- Handle & Close Button --}}
-                <div class="flex items-center justify-between px-4 py-3 flex-shrink-0">
-                    <div class="w-8"></div> {{-- Spacer for centering --}}
-                    <div class="w-10 h-1 bg-zinc-700 rounded-full"></div>
-                    <button @click="$store.playlistModal.hide()"
-                            class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-white rounded-full active:bg-white/10 transition">
-                        <i class="fas fa-times text-lg"></i>
-                    </button>
-                </div>
+                {{-- Swipe Area - Handle + Header --}}
+                <div class="flex-shrink-0 touch-none"
+                     @touchstart="startY = $event.touches[0].clientY; isDragging = true; currentY = 0"
+                     @touchmove.prevent="if(isDragging) { currentY = Math.max(0, $event.touches[0].clientY - startY); }"
+                     @touchend="if(currentY > 80) { $store.playlistModal.hide(); } isDragging = false; currentY = 0;">
 
-                {{-- Content Info --}}
-                <div class="px-4 pb-3 flex items-center gap-3 flex-shrink-0">
-                    <div class="w-14 h-14 rounded-xl flex-shrink-0 overflow-hidden"
-                         :class="$store.playlistModal.contentData?.cover_url ? '' : 'bg-gradient-to-br from-pink-500 to-purple-600'">
-                        <template x-if="$store.playlistModal.contentData?.cover_url">
-                            <img :src="$store.playlistModal.contentData.cover_url" class="w-full h-full object-cover">
-                        </template>
-                        <template x-if="!$store.playlistModal.contentData?.cover_url">
-                            <div class="w-full h-full flex items-center justify-center">
-                                <i :class="$store.playlistModal.contentType === 'album' ? 'fas fa-record-vinyl' : 'fas fa-music'" class="text-white/60 text-xl"></i>
-                            </div>
-                        </template>
+                    {{-- Handle Bar --}}
+                    <div class="flex items-center justify-between px-4 py-3">
+                        <div class="w-8"></div>
+                        <div class="w-12 h-1.5 bg-zinc-600 rounded-full"></div>
+                        <button @click.stop="$store.playlistModal.hide()"
+                                class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-white rounded-full active:bg-white/10 transition">
+                            <i class="fas fa-times text-lg"></i>
+                        </button>
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="font-semibold text-white truncate" x-text="$store.playlistModal.contentData?.title || ($store.playlistModal.contentType === 'album' ? 'Albüm' : 'Şarkı')"></p>
-                        <p class="text-sm text-zinc-400 truncate" x-text="$store.playlistModal.contentData?.artist || ''"></p>
-                        <p x-show="$store.playlistModal.contentType === 'album'" class="text-xs text-orange-400 mt-0.5">
-                            <i class="fas fa-info-circle mr-1"></i>Tüm şarkılar eklenecek
-                        </p>
+
+                    {{-- Content Info (also swipeable) --}}
+                    <div class="px-4 pb-3 flex items-center gap-3">
+                        <div class="w-14 h-14 rounded-xl flex-shrink-0 overflow-hidden"
+                             :class="$store.playlistModal.contentData?.cover_url ? '' : 'bg-gradient-to-br from-pink-500 to-purple-600'">
+                            <template x-if="$store.playlistModal.contentData?.cover_url">
+                                <img :src="$store.playlistModal.contentData.cover_url" class="w-full h-full object-cover">
+                            </template>
+                            <template x-if="!$store.playlistModal.contentData?.cover_url">
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <i :class="$store.playlistModal.contentType === 'album' ? 'fas fa-record-vinyl' : 'fas fa-music'" class="text-white/60 text-xl"></i>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-semibold text-white truncate" x-text="$store.playlistModal.contentData?.title || ($store.playlistModal.contentType === 'album' ? 'Albüm' : 'Şarkı')"></p>
+                            <p class="text-sm text-zinc-400 truncate" x-text="$store.playlistModal.contentData?.artist || ''"></p>
+                            <p x-show="$store.playlistModal.contentType === 'album'" class="text-xs text-orange-400 mt-0.5">
+                                <i class="fas fa-info-circle mr-1"></i>Tüm şarkılar eklenecek
+                            </p>
+                        </div>
                     </div>
                 </div>
 
@@ -288,4 +297,7 @@
 
 /* Safe area for mobile bottom */
 .safe-area-bottom { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+
+/* Prevent pull-to-refresh on modal */
+.overscroll-contain { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
 </style>

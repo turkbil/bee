@@ -127,12 +127,12 @@
         {{-- LOGGED OUT STATE --}}
         <div x-show="!isLoggedIn" x-cloak class="bg-gradient-to-br from-[#1a1a2e] to-[#16213e] rounded-xl p-3 border border-white/10">
             <p class="text-white/60 text-xs text-center mb-3">{{ trans('muzibu::front.auth.login_for_features') }}</p>
-            <div class="flex gap-2">
-                <a href="/login" class="flex-1 bg-gradient-to-r from-[#ff6b6b] to-[#e91e63] text-white py-2 rounded-lg text-sm font-semibold text-center hover:opacity-90 transition-all">
+            <div class="flex flex-col gap-2">
+                <a href="/login" class="bg-gradient-to-r from-[#ff6b6b] to-[#e91e63] text-white py-2.5 rounded-lg text-sm font-semibold text-center hover:opacity-90 transition-all">
                     <i class="fas fa-sign-in-alt mr-1"></i>
                     {{ trans('muzibu::front.general.login') }}
                 </a>
-                <a href="/register" class="flex-1 bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg text-sm font-medium text-center transition-all border border-white/20">
+                <a href="/register" class="bg-white/10 hover:bg-white/20 text-white py-2.5 rounded-lg text-sm font-medium text-center transition-all border border-white/20">
                     <i class="fas fa-user-plus mr-1"></i>
                     {{ trans('muzibu::front.general.register') }}
                 </a>
@@ -209,12 +209,12 @@
         {{-- LOGGED OUT STATE --}}
         <div x-show="!isLoggedIn" x-cloak class="bg-gradient-to-br from-[#1a1a2e] to-[#16213e] rounded-xl p-3 border border-white/10">
             <p class="text-white/60 text-xs text-center mb-3">{{ trans('muzibu::front.auth.login_for_features') }}</p>
-            <div class="flex gap-2">
-                <a href="/login" class="flex-1 bg-gradient-to-r from-[#ff6b6b] to-[#e91e63] text-white py-2 rounded-lg text-sm font-semibold text-center hover:opacity-90 transition-all">
+            <div class="flex flex-col gap-2">
+                <a href="/login" class="bg-gradient-to-r from-[#ff6b6b] to-[#e91e63] text-white py-2.5 rounded-lg text-sm font-semibold text-center hover:opacity-90 transition-all">
                     <i class="fas fa-sign-in-alt mr-1"></i>
                     {{ trans('muzibu::front.general.login') }}
                 </a>
-                <a href="/register" class="flex-1 bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg text-sm font-medium text-center transition-all border border-white/20">
+                <a href="/register" class="bg-white/10 hover:bg-white/20 text-white py-2.5 rounded-lg text-sm font-medium text-center transition-all border border-white/20">
                     <i class="fas fa-user-plus mr-1"></i>
                     {{ trans('muzibu::front.general.register') }}
                 </a>

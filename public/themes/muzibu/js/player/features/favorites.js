@@ -162,7 +162,6 @@ document.addEventListener('alpine:init', () => {
          * Load favorites from server (called on init)
          */
         async loadFavorites() {
-            console.log('[Favorites] 🔄 Loading favorites from server...');
             try {
                 const response = await fetch('/api/favorites/list', {
                     headers: {
@@ -171,17 +170,11 @@ document.addEventListener('alpine:init', () => {
                     }
                 });
 
-                console.log('[Favorites] Response status:', response.status);
-
                 if (response.ok) {
                     const data = await response.json();
-                    console.log('[Favorites] Response data:', data);
                     if (data.success && Array.isArray(data.data)) {
                         this.favorites = data.data;
-                        console.log('[Favorites] ✅ Loaded', this.favorites.length, 'favorites:', this.favorites);
                     }
-                } else {
-                    console.warn('[Favorites] ⚠️ Response not OK:', response.status);
                 }
             } catch (error) {
                 console.error('[Favorites] ❌ Failed to load favorites:', error);
@@ -227,7 +220,6 @@ document.addEventListener('alpine:initialized', () => {
 
     // Only load if user is authenticated
     if (window.muzibuPlayerConfig?.isLoggedIn) {
-        console.log('🎵 Loading user favorites...');
         favoritesStore.loadFavorites();
     }
 });

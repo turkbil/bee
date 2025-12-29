@@ -248,7 +248,7 @@ document.addEventListener('alpine:init', () => {
         updatePlayContext(updates) {
             const currentContext = this.getPlayContext();
             if (!currentContext) {
-                console.warn('⚠️ No context to update');
+                // Sessizce çık - context yokken update çağrılması normal bir durum
                 return;
             }
 
@@ -274,13 +274,6 @@ document.addEventListener('alpine:init', () => {
         async refillQueue(currentOffset = 0, limit = 15) {
             const context = this.getPlayContext();
 
-            // 🔍 DEBUG: Context durumu
-            console.log('🎯 refillQueue DEBUG:', {
-                context: context,
-                hasContext: !!context,
-                localStorage_works: (() => { try { localStorage.setItem('test', '1'); localStorage.removeItem('test'); return true; } catch(e) { return false; } })()
-            });
-
             if (!context) {
                 console.warn('⚠️ No play context - cannot refill queue');
                 return [];
@@ -289,9 +282,7 @@ document.addEventListener('alpine:init', () => {
             // 🎯 Son çalınan şarkıları al (exclude için)
             const excludeSongIds = this.getRecentlyPlayed();
 
-            // 🔍 DEBUG: CSRF token kontrolü
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-            console.log('🔐 CSRF Token:', csrfToken ? 'VAR (' + csrfToken.substring(0, 10) + '...)' : 'YOK!');
 
             try {
 
@@ -313,25 +304,11 @@ document.addEventListener('alpine:init', () => {
                     })
                 });
 
-                // 🔍 DEBUG: Response durumu
-                console.log('📡 API Response:', {
-                    status: response.status,
-                    ok: response.ok,
-                    statusText: response.statusText
-                });
-
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 const data = await response.json();
-
-                // 🔍 DEBUG: API data
-                console.log('📦 API Data:', {
-                    success: data.success,
-                    songsCount: data.songs?.length || 0,
-                    hasTransition: !!data.transition
-                });
 
                 // 🔄 CONTEXT TRANSITION: Backend suggested transition to Genre (infinite loop)
                 if (data.transition) {
@@ -719,7 +696,6 @@ document.addEventListener('alpine:init', () => {
                     return res.json();
                 })
                 .then(data => {
-                    console.log('[Playlists] API response:', data);
                     const rawPlaylists = data.data || data || [];
 
                     // Get current locale from HTML lang attribute
@@ -748,8 +724,6 @@ document.addEventListener('alpine:init', () => {
                             title: parsedTitle
                         };
                     });
-
-                    console.log('[Playlists] Loaded', this.userPlaylists.length, 'playlists');
 
                     // If we have a song ID, check which playlists contain it
                     if (songId && this.type === 'song') {
@@ -1253,11 +1227,6 @@ document.addEventListener('alpine:init', () => {
          * Şarkıyı seçili playlistlere ekle
          */
         async addSongToPlaylists() {
-            console.log('[PlaylistModal] Adding song to playlists:', {
-                song_id: this.contentId,
-                playlist_ids: this.selectedPlaylists
-            });
-
             const promises = this.selectedPlaylists.map(playlistId =>
                 fetch(`/api/muzibu/playlists/${playlistId}/add-song`, {
                     method: 'POST',
@@ -1278,7 +1247,6 @@ document.addEventListener('alpine:init', () => {
                         });
                         return { success: false, error: data.message || res.statusText };
                     }
-                    console.log(`[PlaylistModal] Song added successfully to playlist ${playlistId}`);
                     return data;
                 })
             );

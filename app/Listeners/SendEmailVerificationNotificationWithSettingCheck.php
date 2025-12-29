@@ -16,21 +16,27 @@ class SendEmailVerificationNotificationWithSettingCheck
      */
     public function handle(Registered $event): void
     {
+        \Log::info('📧 LISTENER START', ['user_id' => $event->user->id ?? 'N/A']);
+
         // Kullanıcı email doğrulama interface'ini implement etmiş mi kontrol et
         if (! $event->user instanceof MustVerifyEmail) {
+            \Log::info('📧 LISTENER: Not MustVerifyEmail, skipping');
             return;
         }
 
         // Email zaten doğrulanmışsa gönderme
         if ($event->user->hasVerifiedEmail()) {
+            \Log::info('📧 LISTENER: Already verified, skipping');
             return;
         }
 
         // Settings'den auth_registration_email_verify ayarını kontrol et
         // Ayar yoksa veya 0 ise email gönderme
         $emailVerificationEnabled = setting('auth_registration_email_verify', 0);
+        \Log::info('📧 LISTENER: Setting check', ['enabled' => $emailVerificationEnabled]);
 
         if ($emailVerificationEnabled != 1) {
+            \Log::info('📧 LISTENER: Email verify disabled, skipping');
             return;
         }
 
@@ -38,7 +44,14 @@ class SendEmailVerificationNotificationWithSettingCheck
         $this->configureMailFromSettings();
 
         // Tüm kontroller geçti, email doğrulama notification'ını gönder
+        \Log::info('📧 VERIFY EMAIL: Sending notification to queue', [
+            'user_id' => $event->user->id,
+            'email' => $event->user->email,
+        ]);
+
         $event->user->sendEmailVerificationNotification();
+
+        \Log::info('📧 VERIFY EMAIL: Notification dispatched');
     }
 
     /**

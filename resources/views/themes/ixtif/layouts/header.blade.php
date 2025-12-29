@@ -5,13 +5,13 @@
 @endphp
 <html lang="{{ $currentLocale }}"
       dir="{{ $isRtl }}"
-      style="background-color:#ffffff"
       x-data="{
         darkMode: localStorage.getItem('darkMode') || 'auto',
         get effectiveMode() {
             if (this.darkMode === 'auto') {
+                // Saate göre: 18:00-07:00 arası dark, gündüz light
                 const hour = new Date().getHours();
-                return (hour >= 6 && hour < 18) ? 'light' : 'dark';
+                return (hour >= 18 || hour < 7) ? 'dark' : 'light';
             }
             return this.darkMode;
         }
@@ -44,8 +44,9 @@
         if (mode === 'dark') {
             isDark = true;
         } else if (mode === 'auto') {
+            // Saate göre: 18:00-07:00 arası dark
             const hour = new Date().getHours();
-            isDark = (hour < 6 || hour >= 18);
+            isDark = (hour >= 18 || hour < 7);
         }
 
         // Apply dark class and inline background color INSTANTLY

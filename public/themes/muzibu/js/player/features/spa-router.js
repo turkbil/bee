@@ -35,11 +35,7 @@ const MuzibuSpaRouter = {
      */
     isClickProtected() {
         const elapsed = Date.now() - this.lastNavigationTime;
-        const isProtected = elapsed < this.clickProtectionMs;
-        if (isProtected) {
-            console.log(`🛡️ Click protected: ${elapsed}ms since navigation (protection: ${this.clickProtectionMs}ms)`);
-        }
-        return isProtected;
+        return elapsed < this.clickProtectionMs;
     },
 
     // 🛡️ SINGLETON: Prevent multiple initializations
@@ -72,7 +68,6 @@ const MuzibuSpaRouter = {
 
             // 🎯 PREVIEW MODE: If event already prevented (by Alpine @click for XL+ preview), skip SPA navigation
             if (e.defaultPrevented) {
-                console.log('⏭️ Event already prevented (preview mode), skipping SPA navigation');
                 return;
             }
 
@@ -101,12 +96,10 @@ const MuzibuSpaRouter = {
             // AUTH PAGES BYPASS: Bu sayfalar farklı layout kullanıyor
             const urlPath = href.startsWith('http') ? new URL(href).pathname : href.split('?')[0];
             if (this.isAuthPath(urlPath)) {
-                console.log('🔐 Auth page detected, bypassing SPA:', href);
                 return; // Full page navigation for auth pages
             }
 
             // Internal link - use SPA navigation
-            console.log('🚀 SPA Navigation:', href);
             e.preventDefault();
             // 🔧 FIX: Call loadPage directly (spread operator loses 'this' context)
             MuzibuSpaRouter.navigateTo.call(this, href);
@@ -117,8 +110,6 @@ const MuzibuSpaRouter = {
 
         // ⚡ HOVER PREFETCH: DISABLED (kullanıcı isteği)
         // this.initHoverPrefetch();
-
-        console.log('🚀 SPA Router initialized (Prefetch Disabled)');
     },
 
     /**
@@ -249,7 +240,6 @@ const MuzibuSpaRouter = {
         if (cached) {
             const age = Date.now() - cached.timestamp;
             if (age < this.cacheTimeout) {
-                console.log(`✅ Already cached (${source}):`, url);
                 return;
             }
             // Cache expired, remove it
@@ -262,7 +252,6 @@ const MuzibuSpaRouter = {
         }
 
         this.prefetchQueue.add(url);
-        console.log(`⚡ Prefetching (${source}):`, url);
 
         try {
             const response = await fetch(url, {
@@ -280,14 +269,12 @@ const MuzibuSpaRouter = {
                 if (this.prefetchCache.size >= this.maxCacheSize) {
                     const oldestKey = this.prefetchCache.keys().next().value;
                     this.prefetchCache.delete(oldestKey);
-                    console.log(`🗑️ LRU eviction: Removed oldest cache entry (${oldestKey})`);
                 }
 
                 this.prefetchCache.set(url, {
                     html: html,
                     timestamp: Date.now()
                 });
-                console.log(`✅ Prefetched (${source}):`, url);
             }
         } catch (error) {
             console.warn(`⚠️ Prefetch failed (${source}):`, url, error);
@@ -328,18 +315,12 @@ const MuzibuSpaRouter = {
                 // Invalid URL, skip
             }
         }
-        if (cleared > 0) {
-            console.log(`🧹 Cleared ${cleared} dynamic page(s) from SPA cache`);
-        }
     },
 
     /**
      * Navigate to URL using SPA
      */
     async navigateTo(url) {
-        // ⚡ SMART LOADING: Only show overlay if loading takes > 200ms
-        console.log('🔄 navigateTo() called');
-
         history.pushState({ url: url }, '', url);
         // 🔧 FIX: Use MuzibuSpaRouter.loadPage with correct context
         await MuzibuSpaRouter.loadPage.call(this, url, true);
@@ -367,7 +348,6 @@ const MuzibuSpaRouter = {
      * Load page content via AJAX (uses cache if available)
      */
     async loadPage(url, addToHistory = true) {
-        console.log('🔵 loadPage() START:', url);
         const loadStartTime = Date.now();
         const minLoadingTime = 0; // ⚡ PERFORMANCE: No minimum delay (instant loading!)
         const maxLoadingTime = 10000; // ⏱️ 10 second timeout
@@ -379,8 +359,6 @@ const MuzibuSpaRouter = {
         }, loadingThreshold);
 
         try {
-            console.log('🔵 loadPage() TRY block entered');
-
             let html;
             let fetchPromise;
 
@@ -390,7 +368,6 @@ const MuzibuSpaRouter = {
             const isDynamic = this.isDynamicPath(urlPath);
 
             if (isDynamic) {
-                console.log('🔴 Dynamic page detected, fetching fresh:', url);
                 // Remove from cache if exists (stale data)
                 this.prefetchCache.delete(url);
                 fetchPromise = this.fetchPage(url);
@@ -400,7 +377,6 @@ const MuzibuSpaRouter = {
                 if (cached) {
                     const age = Date.now() - cached.timestamp;
                     if (age < this.cacheTimeout) {
-                        console.log('⚡ Using cached page (instant!):', url);
                         // ⚡ INSTANT: Cancel loading timeout immediately (no overlay needed!)
                         clearTimeout(loadingTimeout);
                         this.isLoading = false; // Cache hit - loading gösterme!
@@ -425,15 +401,11 @@ const MuzibuSpaRouter = {
             html = await Promise.race([fetchPromise, timeoutPromise]);
 
             // Parse HTML and extract main content
-            console.log('🔵 loadPage() Parsing HTML...');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             const newContent = doc.querySelector('main');
 
-            console.log('🔵 loadPage() Main element found:', !!newContent);
-
             if (newContent) {
-                console.log('🔵 loadPage() Entering main content update...');
                 const currentMain = document.querySelector('main');
                 if (currentMain) {
                     // 🔥 FIX: Destroy Alpine.js components before replacing DOM (prevent $nextTick redefine error)
@@ -444,7 +416,6 @@ const MuzibuSpaRouter = {
                             currentMain.querySelectorAll('[x-data]').forEach(el => {
                                 window.Alpine.destroyTree(el);
                             });
-                            console.log('✅ Alpine.js components destroyed before DOM replace');
                         } catch (e) {
                             console.warn('⚠️ Alpine.js cleanup failed:', e.message);
                         }
@@ -478,8 +449,6 @@ const MuzibuSpaRouter = {
                     const currentAside = document.querySelector('aside.muzibu-right-sidebar');
                     const mainGrid = document.querySelector('#main-app-grid');
 
-                    console.log('🔍 SPA: Sidebar check - New:', !!newAside, 'Current:', !!currentAside);
-
                     if (newAside) {
                         // New page HAS sidebar
                         const clonedAside = newAside.cloneNode(true);
@@ -492,18 +461,15 @@ const MuzibuSpaRouter = {
                                     currentAside.querySelectorAll('[x-data]').forEach(el => {
                                         window.Alpine.destroyTree(el);
                                     });
-                                    console.log('✅ Sidebar Alpine.js components destroyed');
                                 } catch (e) {
                                     console.warn('⚠️ Sidebar Alpine.js cleanup failed:', e.message);
                                 }
                             }
 
                             // Replace existing sidebar
-                            console.log('✅ SPA: Replacing existing sidebar');
                             currentAside.replaceWith(clonedAside);
                         } else {
                             // Insert new sidebar (before player)
-                            console.log('➕ SPA: Adding new sidebar');
                             const player = document.querySelector('.muzibu-player');
                             if (player && mainGrid) {
                                 mainGrid.insertBefore(clonedAside, player);
@@ -520,16 +486,12 @@ const MuzibuSpaRouter = {
                                     currentAside.querySelectorAll('[x-data]').forEach(el => {
                                         window.Alpine.destroyTree(el);
                                     });
-                                    console.log('✅ Sidebar Alpine.js components destroyed (before remove)');
                                 } catch (e) {
                                     console.warn('⚠️ Sidebar Alpine.js cleanup failed:', e.message);
                                 }
                             }
 
-                            console.log('🗑️ SPA: Removing sidebar');
                             currentAside.remove();
-                        } else {
-                            console.log('ℹ️ SPA: No sidebar to remove');
                         }
                     }
 
@@ -538,19 +500,12 @@ const MuzibuSpaRouter = {
                     if (newGrid && mainGrid) {
                         // Extract grid-cols classes from new page
                         const newClasses = newGrid.className;
-                        const currentClasses = mainGrid.className;
-
-                        console.log('🔍 SPA: Grid classes - Old:', currentClasses);
-                        console.log('🔍 SPA: Grid classes - New:', newClasses);
 
                         // Copy all classes from new grid
                         mainGrid.className = newClasses;
-
-                        console.log('✅ SPA: Grid classes updated');
                     }
 
                     this.currentPath = url;
-                    console.log('✅ Page loaded:', url);
 
                     // 🏠 HOMEPAGE NAVIGATION: Reset sidebar to default state
                     const urlPath = new URL(url, window.location.origin).pathname;
@@ -558,14 +513,12 @@ const MuzibuSpaRouter = {
                         // Anasayfaya dönüldü → Sidebar preview mode'dan çık
                         if (window.Alpine?.store('sidebar')) {
                             window.Alpine.store('sidebar').reset();
-                            console.log('🏠 Homepage detected → Sidebar reset to default');
                         }
                     }
 
                     // 🚀 UPDATE RIGHT SIDEBAR VISIBILITY: Dynamic based on route
                     if (window.Alpine?.store('sidebar')) {
                         window.Alpine.store('sidebar').updateRightSidebarVisibility();
-                        console.log('🔄 Right sidebar visibility updated for:', urlPath);
                     }
 
                     // 🔥 RE-OBSERVE NEW LINKS: DISABLED (viewport prefetch kapatıldı)
@@ -580,13 +533,9 @@ const MuzibuSpaRouter = {
                 return;
             }
 
-            console.log('✅ loadPage complete, setting isLoading = false');
-
             // ⚡ Cancel loading timeout if still pending
             clearTimeout(loadingTimeout);
             this.isLoading = false;
-
-            console.log('🔍 Final isLoading state:', this.isLoading);
         } catch (error) {
             // ⚡ Cancel loading timeout on error
             clearTimeout(loadingTimeout);

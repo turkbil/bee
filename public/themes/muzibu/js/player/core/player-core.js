@@ -1890,6 +1890,14 @@ function muzibuApp() {
             this.currentTime = newTime;
             // 🔥 FIX: percent sadece click event'de tanımlı, duration'dan hesapla
             this.progressPercent = this.duration > 0 ? (newTime / this.duration) * 100 : 0;
+
+            // ⏳ FALLBACK: 3 saniye sonra hala seeking ise zorla kapat
+            const self = this;
+            setTimeout(() => {
+                if (self.isSeeking) {
+                    self.isSeeking = false;
+                }
+            }, 3000);
         },
 
         setVolume(e) {
@@ -2753,6 +2761,11 @@ function muzibuApp() {
                                     self.onTrackEnded();
                                 }
                             }
+                        };
+
+                        // ⏳ Seek tamamlandı - loading kapat (preloaded path)
+                        preloadedAudio.onseeked = function() {
+                            self.isSeeking = false;
                         };
                     }
 

@@ -285,12 +285,25 @@ class SongStreamController extends Controller
             }
 
             // 30+ saniye dinlendi, kayıt ekle (Analytics için)
+            // 🔥 FIX: jenssegers/agent ile browser/platform tespiti (DeviceService pattern)
+            $agent = new \Jenssegers\Agent\Agent();
+            $agent->setUserAgent($request->userAgent());
+
+            $deviceType = 'desktop';
+            if ($agent->isMobile()) {
+                $deviceType = 'mobile';
+            } elseif ($agent->isTablet()) {
+                $deviceType = 'tablet';
+            }
+
             \DB::table('muzibu_song_plays')->insert([
                 'song_id' => $songId,
                 'user_id' => $userId,
                 'ip_address' => $request->ip(),
                 'user_agent' => $request->userAgent(),
-                'device_type' => $this->detectDevice($request),
+                'device_type' => $deviceType,
+                'browser' => $agent->browser() ?: 'Unknown',
+                'platform' => $agent->platform() ?: 'Unknown',
                 'created_at' => now(),
                 'updated_at' => now()
             ]);

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abuse Timeline Chart Karşılaştırma</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+    <!-- vis-timeline -->
+    <script src="https://unpkg.com/vis-timeline@7.7.3/standalone/umd/vis-timeline-graph2d.min.js"></script>
+    <link href="https://unpkg.com/vis-timeline@7.7.3/styles/vis-timeline-graph2d.min.css" rel="stylesheet">
+
+    <!-- Frappe Gantt -->
+    <script src="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.umd.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.css">
+
+    <style>
+        body { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .chart-card { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(71, 85, 105, 0.5); }
+
+        /* vis-timeline dark theme */
+        .vis-timeline { border: none !important; background: transparent !important; }
+        .vis-item { background: #3b82f6; border-color: #60a5fa; color: white; border-radius: 4px; }
+        .vis-item.mobile { background: #10b981; border-color: #34d399; }
+        .vis-item.overlap { background: #ef4444 !important; border-color: #f87171 !important; }
+        .vis-item.vis-selected { box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
+        .vis-label { color: #94a3b8 !important; }
+        .vis-time-axis .vis-text { color: #64748b !important; fill: #64748b !important; }
+        .vis-time-axis .vis-grid { border-color: rgba(71, 85, 105, 0.3) !important; }
+        .vis-panel.vis-background { background: rgba(15, 23, 42, 0.5) !important; }
+        .vis-panel.vis-center { border-color: rgba(71, 85, 105, 0.3) !important; }
+
+        /* Frappe Gantt dark theme */
+        .gantt .grid-background { fill: rgba(15, 23, 42, 0.5); }
+        .gantt .grid-header { fill: rgba(30, 41, 59, 0.8); stroke: rgba(71, 85, 105, 0.3); }
+        .gantt .grid-row { fill: transparent; }
+        .gantt .grid-row:nth-child(even) { fill: rgba(51, 65, 85, 0.2); }
+        .gantt .row-line { stroke: rgba(71, 85, 105, 0.3); }
+        .gantt .tick { stroke: rgba(71, 85, 105, 0.3); }
+        .gantt .tick text { fill: #64748b; }
+        .gantt .bar { fill: #3b82f6; stroke: #60a5fa; rx: 4; ry: 4; }
+        .gantt .bar-label { fill: white; }
+        .gantt .bar.mobile { fill: #10b981; stroke: #34d399; }
+        .gantt .bar.overlap { fill: #ef4444; stroke: #f87171; }
+    </style>
+</head>
+<body class="min-h-screen text-white p-6">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold mb-2">Abuse Timeline Chart Karşılaştırma</h1>
+            <p class="text-slate-400">4 farklı chart library ile aynı verinin görselleştirilmesi</p>
+        </div>
+
+        <!-- Sample Data Info -->
+        <div class="chart-card rounded-lg p-4 mb-6">
+            <h3 class="text-lg font-semibold mb-2"><i class="fas fa-database mr-2"></i>Örnek Veri</h3>
+            <p class="text-slate-400 text-sm">
+                2 cihaz (Desktop Chrome, Mobile Safari), 6 şarkı dinleme, 2 çakışma tespit edilmiş
+            </p>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- 1. ApexCharts -->
+            <div class="chart-card rounded-lg p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-blue-400">1. ApexCharts (Timeline)</h3>
+                    <span class="text-xs text-slate-500">apexcharts.com</span>
+                </div>
+                <div id="apexChart" style="min-height: 200px;"></div>
+                <div class="mt-3 text-xs text-slate-500">
+                    <strong>Artılar:</strong> Modern görünüm, tooltip, zoom, responsive<br>
+                    <strong>Eksiler:</strong> Timeline için fazla generic
+                </div>
+            </div>
+
+            <!-- 2. Chart.js -->
+            <div class="chart-card rounded-lg p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-green-400">2. Chart.js (Horizontal Bar)</h3>
+                    <span class="text-xs text-slate-500">chartjs.org</span>
+                </div>
+                <canvas id="chartJs" style="min-height: 200px;"></canvas>
+                <div class="mt-3 text-xs text-slate-500">
+                    <strong>Artılar:</strong> Hafif, popüler, geniş ekosistem<br>
+                    <strong>Eksiler:</strong> Native timeline desteği yok, workaround gerekli
+                </div>
+            </div>
+
+            <!-- 3. vis-timeline -->
+            <div class="chart-card rounded-lg p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-purple-400">3. vis-timeline</h3>
+                    <span class="text-xs text-slate-500">visjs.org</span>
+                </div>
+                <div id="visTimeline" style="min-height: 250px;"></div>
+                <div class="mt-3 text-xs text-slate-500">
+                    <strong>Artılar:</strong> Timeline için özel tasarlanmış, drag-drop, zoom, gruplar<br>
+                    <strong>Eksiler:</strong> Büyük dosya boyutu (~500KB)
+                </div>
+            </div>
+
+            <!-- 4. Frappe Gantt -->
+            <div class="chart-card rounded-lg p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-orange-400">4. Frappe Gantt</h3>
+                    <span class="text-xs text-slate-500">frappe.io/gantt</span>
+                </div>
+                <div id="frappeGantt" style="min-height: 250px; overflow-x: auto;"></div>
+                <div class="mt-3 text-xs text-slate-500">
+                    <strong>Artılar:</strong> Basit API, güzel görünüm, SVG tabanlı<br>
+                    <strong>Eksiler:</strong> Gün bazlı (saat bazlı değil), proje yönetimi için tasarlanmış
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="chart-card rounded-lg p-4 mt-6">
+            <h3 class="text-lg font-semibold mb-4">Karşılaştırma Tablosu</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-slate-400 border-b border-slate-700">
+                            <th class="text-left py-2">Özellik</th>
+                            <th class="text-center py-2">ApexCharts</th>
+                            <th class="text-center py-2">Chart.js</th>
+                            <th class="text-center py-2">vis-timeline</th>
+                            <th class="text-center py-2">Frappe</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2">Timeline Desteği</td>
+                            <td class="text-center text-yellow-400">Orta</td>
+                            <td class="text-center text-red-400">Zayıf</td>
+                            <td class="text-center text-green-400">Mükemmel</td>
+                            <td class="text-center text-yellow-400">İyi</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2">Saat Bazlı Görünüm</td>
+                            <td class="text-center text-green-400">✓</td>
+                            <td class="text-center text-green-400">✓</td>
+                            <td class="text-center text-green-400">✓</td>
+                            <td class="text-center text-red-400">✗ (Gün bazlı)</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2">Zoom/Pan</td>
+                            <td class="text-center text-green-400">✓</td>
+                            <td class="text-center text-yellow-400">Plugin</td>
+                            <td class="text-center text-green-400">✓</td>
+                            <td class="text-center text-green-400">✓</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2">Gruplar (Cihaz bazlı)</td>
+                            <td class="text-center text-yellow-400">Manuel</td>
+                            <td class="text-center text-yellow-400">Manuel</td>
+                            <td class="text-center text-green-400">Native</td>
+                            <td class="text-center text-red-400">✗</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2">Overlap Gösterimi</td>
+                            <td class="text-center text-yellow-400">Manuel</td>
+                            <td class="text-center text-yellow-400">Manuel</td>
+                            <td class="text-center text-green-400">Kolay</td>
+                            <td class="text-center text-yellow-400">Manuel</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2">Dosya Boyutu</td>
+                            <td class="text-center">~450KB</td>
+                            <td class="text-center text-green-400">~200KB</td>
+                            <td class="text-center">~500KB</td>
+                            <td class="text-center text-green-400">~50KB</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 font-bold">Öneri</td>
+                            <td class="text-center">Genel amaçlı</td>
+                            <td class="text-center">Basit bar chart</td>
+                            <td class="text-center text-green-400 font-bold">EN UYGUN</td>
+                            <td class="text-center">Proje yönetimi</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recommendation -->
+        <div class="chart-card rounded-lg p-4 mt-6 border-l-4 border-green-500">
+            <h3 class="text-lg font-semibold text-green-400 mb-2">Öneri: vis-timeline</h3>
+            <p class="text-slate-300">
+                Abuse detection için <strong>vis-timeline</strong> en uygun seçenek:
+            </p>
+            <ul class="list-disc list-inside text-slate-400 mt-2 text-sm">
+                <li>Cihaz grupları native olarak destekleniyor</li>
+                <li>Saat/dakika bazlı hassas timeline</li>
+                <li>Overlap'leri farklı renkte göstermek kolay</li>
+                <li>Zoom ile detaya inme imkanı</li>
+                <li>Hover tooltip'leri hazır</li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-8 text-slate-500 text-sm">
+            <p>Claude AI - Abuse Detection Chart Comparison Draft</p>
+            <p>29 Aralık 2025</p>
+        </div>
+    </div>
+
+    <script>
+    // Sample data - simulating abuse detection plays
+    const sampleData = {
+        plays: [
+            { id: 1, device: 'desktop', browser: 'Chrome', platform: 'macOS', song: 'Şarkı A', start: '2025-12-29 14:00:00', end: '2025-12-29 14:03:30', overlap: false },
+            { id: 2, device: 'desktop', browser: 'Chrome', platform: 'macOS', song: 'Şarkı B', start: '2025-12-29 14:05:00', end: '2025-12-29 14:08:00', overlap: true },
+            { id: 3, device: 'mobile', browser: 'Safari', platform: 'iOS', song: 'Şarkı C', start: '2025-12-29 14:06:00', end: '2025-12-29 14:09:30', overlap: true },
+            { id: 4, device: 'desktop', browser: 'Chrome', platform: 'macOS', song: 'Şarkı D', start: '2025-12-29 14:12:00', end: '2025-12-29 14:15:00', overlap: false },
+            { id: 5, device: 'mobile', browser: 'Safari', platform: 'iOS', song: 'Şarkı E', start: '2025-12-29 14:14:00', end: '2025-12-29 14:17:30', overlap: true },
+            { id: 6, device: 'desktop', browser: 'Chrome', platform: 'macOS', song: 'Şarkı F', start: '2025-12-29 14:14:30', end: '2025-12-29 14:18:00', overlap: true },
+        ]
+    };
+
+    // 1. ApexCharts
+    const apexOptions = {
+        series: [
+            {
+                name: 'Desktop (Chrome/macOS)',
+                data: sampleData.plays.filter(p => p.device === 'desktop').map(p => ({
+                    x: p.song,
+                    y: [new Date(p.start).getTime(), new Date(p.end).getTime()],
+                    fillColor: p.overlap ? '#ef4444' : '#3b82f6'
+                }))
+            },
+            {
+                name: 'Mobile (Safari/iOS)',
+                data: sampleData.plays.filter(p => p.device === 'mobile').map(p => ({
+                    x: p.song,
+                    y: [new Date(p.start).getTime(), new Date(p.end).getTime()],
+                    fillColor: p.overlap ? '#ef4444' : '#10b981'
+                }))
+            }
+        ],
+        chart: {
+            type: 'rangeBar',
+            height: 200,
+            background: 'transparent',
+            toolbar: { show: true, tools: { zoom: true, pan: true } },
+            animations: { enabled: true }
+        },
+        plotOptions: {
+            bar: { horizontal: true, barHeight: '60%', rangeBarGroupRows: true }
+        },
+        xaxis: {
+            type: 'datetime',
+            labels: {
+                style: { colors: '#94a3b8' },
+                datetimeFormatter: { hour: 'HH:mm' }
+            }
+        },
+        yaxis: {
+            labels: { style: { colors: '#94a3b8' } }
+        },
+        legend: {
+            position: 'top',
+            labels: { colors: '#e2e8f0' }
+        },
+        tooltip: {
+            theme: 'dark',
+            x: { format: 'HH:mm:ss' }
+        },
+        grid: {
+            borderColor: 'rgba(71, 85, 105, 0.3)'
+        },
+        theme: { mode: 'dark' }
+    };
+    new ApexCharts(document.querySelector("#apexChart"), apexOptions).render();
+
+    // 2. Chart.js
+    const chartJsCtx = document.getElementById('chartJs').getContext('2d');
+    new Chart(chartJsCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Desktop (Chrome)', 'Mobile (Safari)'],
+            datasets: sampleData.plays.map(p => ({
+                label: p.song,
+                data: [{
+                    x: [p.start, p.end],
+                    y: p.device === 'desktop' ? 'Desktop (Chrome)' : 'Mobile (Safari)'
+                }],
+                backgroundColor: p.overlap ? 'rgba(239, 68, 68, 0.8)' : (p.device === 'desktop' ? 'rgba(59, 130, 246, 0.8)' : 'rgba(16, 185, 129, 0.8)'),
+                borderColor: p.overlap ? '#f87171' : (p.device === 'desktop' ? '#60a5fa' : '#34d399'),
+                borderWidth: 1,
+                borderRadius: 4,
+                barPercentage: 0.6
+            }))
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    type: 'time',
+                    time: { unit: 'minute', displayFormats: { minute: 'HH:mm' } },
+                    grid: { color: 'rgba(71, 85, 105, 0.3)' },
+                    ticks: { color: '#94a3b8' }
+                },
+                y: {
+                    grid: { color: 'rgba(71, 85, 105, 0.3)' },
+                    ticks: { color: '#94a3b8' }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                    titleColor: '#e2e8f0',
+                    bodyColor: '#94a3b8'
+                }
+            }
+        }
+    });
+
+    // 3. vis-timeline
+    const visContainer = document.getElementById('visTimeline');
+    const visGroups = new vis.DataSet([
+        { id: 'desktop', content: '<i class="fas fa-desktop"></i> Desktop (Chrome/macOS)', style: 'color: #60a5fa;' },
+        { id: 'mobile', content: '<i class="fas fa-mobile-alt"></i> Mobile (Safari/iOS)', style: 'color: #34d399;' }
+    ]);
+    const visItems = new vis.DataSet(sampleData.plays.map(p => ({
+        id: p.id,
+        group: p.device,
+        content: p.song,
+        start: new Date(p.start),
+        end: new Date(p.end),
+        className: p.device + (p.overlap ? ' overlap' : ''),
+        title: `${p.song}<br>${p.start.split(' ')[1]} - ${p.end.split(' ')[1]}<br>${p.browser}/${p.platform}${p.overlap ? '<br><strong style="color:#ef4444">ÇAKIŞMA!</strong>' : ''}`
+    })));
+    const visOptions = {
+        stack: false,
+        showMajorLabels: true,
+        showMinorLabels: true,
+        zoomMin: 1000 * 60 * 5, // 5 minutes
+        zoomMax: 1000 * 60 * 60, // 1 hour
+        orientation: 'top',
+        margin: { item: 5 },
+        tooltip: { followMouse: true, overflowMethod: 'cap' }
+    };
+    new vis.Timeline(visContainer, visItems, visGroups, visOptions);
+
+    // 4. Frappe Gantt (Note: Frappe is day-based, not ideal for hour-based timeline)
+    // Converting to task format with start/end dates
+    const frappeContainer = document.getElementById('frappeGantt');
+    const frappeTasks = sampleData.plays.map(p => ({
+        id: 'task-' + p.id,
+        name: `${p.song} (${p.device})`,
+        start: '2025-12-29',
+        end: '2025-12-29',
+        progress: 100,
+        custom_class: p.device + (p.overlap ? ' overlap' : '')
+    }));
+
+    try {
+        new Gantt(frappeContainer, frappeTasks, {
+            view_mode: 'Day',
+            date_format: 'YYYY-MM-DD',
+            custom_popup_html: function(task) {
+                return `<div class="p-2 bg-slate-800 text-white rounded text-xs">${task.name}</div>`;
+            }
+        });
+    } catch(e) {
+        frappeContainer.innerHTML = '<div class="text-center text-yellow-400 py-8"><i class="fas fa-exclamation-triangle mr-2"></i>Frappe Gantt saat bazlı timeline için uygun değil (gün bazlı çalışıyor)</div>';
+    }
+    </script>
+
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</body>
+</html>

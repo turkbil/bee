@@ -80,6 +80,14 @@
         </a>
         @endhasmoduleaccess
 
+        {{-- Suistimal Raporları --}}
+        @hasmoduleaccess('muzibu', 'view')
+        <a href="{{ route('admin.muzibu.abuse.index') }}" class="btn btn-ghost-primary">
+            <i class="fas fa-shield-alt me-1"></i>
+            Suistimal
+        </a>
+        @endhasmoduleaccess
+
         {{-- Toplu HLS Dönüştür --}}
         @hasmoduleaccess('muzibu', 'create')
         <a href="{{ route('admin.muzibu.song.bulk-convert') }}" class="btn btn-ghost-primary">
@@ -181,6 +189,9 @@
                 @hasmoduleaccess('muzibu', 'view')
                 <a class="dropdown-item" href="{{ route('admin.muzibu.corporate.index') }}">
                     <i class="fas fa-building me-2 text-blue"></i>Kurumsal Hesaplar
+                </a>
+                <a class="dropdown-item" href="{{ route('admin.muzibu.abuse.index') }}">
+                    <i class="fas fa-shield-alt me-2 text-danger"></i>Suistimal Raporları
                 </a>
                 @endhasmoduleaccess
 

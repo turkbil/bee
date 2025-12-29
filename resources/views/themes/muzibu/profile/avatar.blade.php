@@ -211,7 +211,7 @@
                                  alt="{{ $user->name }}"
                                  class="w-full h-full object-cover">
                         </div>
-                        <div x-show="!avatarUrl" class="w-full h-full bg-gradient-to-br from-muzibu-coral to-muzibu-coral-light flex items-center justify-center text-white font-bold text-2xl">
+                        <div x-show="!avatarUrl" class="w-full h-full bg-gradient-to-br from-muzibu-coral to-[#ff9966] flex items-center justify-center text-white font-bold text-2xl">
                             {{ strtoupper(substr($user->name, 0, 1)) }}
                         </div>
                     </div>
@@ -270,7 +270,7 @@
                 {{-- Upload Text --}}
                 <div class="space-y-2">
                     <p class="text-sm text-muzibu-text-gray">
-                        <button @click="$refs.fileInput.click()" class="font-semibold text-muzibu-coral hover:text-muzibu-coral-light">Dosya seçin</button>
+                        <button @click="$refs.fileInput.click()" class="font-semibold text-muzibu-coral hover:text-[#ff9966]">Dosya seçin</button>
                         veya buraya sürükleyip bırakın
                     </p>
                     <p class="text-xs text-muzibu-text-gray">PNG, JPG, WebP (Maksimum 2MB)</p>
@@ -300,7 +300,7 @@
             <button @click="uploadAvatar()"
                     :disabled="!selectedFile || isLoading"
                     x-show="selectedFile && !isUploading"
-                    class="w-full bg-muzibu-coral hover:bg-muzibu-coral-light disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
+                    class="w-full bg-gradient-to-r from-muzibu-coral to-[#ff9966] hover:opacity-90 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
                 <i class="fas fa-upload"></i>
                 <span>Avatar Yükle</span>
             </button>

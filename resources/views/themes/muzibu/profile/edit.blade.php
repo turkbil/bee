@@ -150,7 +150,7 @@
             <div class="flex justify-end">
                 <button
                     type="submit"
-                    class="px-6 py-3 bg-gradient-to-r from-muzibu-coral to-muzibu-coral-light hover:from-muzibu-coral-light hover:to-muzibu-coral rounded-lg text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-muzibu-coral/30"
+                    class="px-6 py-3 bg-gradient-to-r from-muzibu-coral to-[#ff9966] hover:from-[#ff9966] hover:to-muzibu-coral rounded-lg text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-muzibu-coral/30"
                 >
                     <i class="fa-solid fa-check mr-2"></i>
                     Profil Bilgilerini Kaydet

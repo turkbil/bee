@@ -218,7 +218,8 @@ return [
         'muzibu-supervisor' => [
             'connection' => 'redis',
             'queue' => [
-                'muzibu_my_playlist',      // Playlist cover generation (Leonardo AI)
+                'muzibu-abuse-scan',        // Abuse detection scanning
+                'muzibu_my_playlist',       // Playlist cover generation (Leonardo AI)
                 'muzibu_isolated',          // Bulk operations, translations
                 'muzibu_hls',               // HLS conversion (generic)
                 'muzibu_tenant_1001_hls',   // Tenant 1001 HLS conversion

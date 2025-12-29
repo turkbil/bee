@@ -211,7 +211,7 @@
                     <div class="p-8 text-center text-gray-400">
                         <i class="fas fa-heart text-4xl mb-3 opacity-50"></i>
                         <p>{{ __('muzibu::front.dashboard.no_favorites_yet') }}</p>
-                        <a href="/" class="text-red-400 hover:underline text-sm mt-2 inline-block">{{ __('muzibu::front.dashboard.discover_songs') }}</a>
+                        <a href="/" class="text-muzibu-coral hover:underline text-sm mt-2 inline-block">{{ __('muzibu::front.dashboard.discover_songs') }}</a>
                     </div>
                 @endif
             </div>

@@ -125,17 +125,15 @@
         </div>
 
         {{-- LOGGED OUT STATE --}}
-        <div x-show="!isLoggedIn" x-cloak class="bg-gradient-to-br from-[#1a1a2e] to-[#16213e] rounded-xl p-3 border border-white/10">
-            <div class="flex flex-col gap-2">
-                <a href="/login" class="bg-gradient-to-r from-muzibu-coral to-[#ff9966] text-white py-2.5 rounded-lg text-sm font-semibold text-center hover:opacity-90 transition-all">
-                    <i class="fas fa-sign-in-alt mr-1"></i>
-                    {{ trans('muzibu::front.general.login') }}
-                </a>
-                <a href="/register" class="border border-muzibu-coral/60 hover:border-muzibu-coral hover:bg-muzibu-coral/10 text-muzibu-coral py-2.5 rounded-lg text-sm font-medium text-center transition-all">
-                    <i class="fas fa-user-plus mr-1"></i>
-                    {{ trans('muzibu::front.general.register') }}
-                </a>
-            </div>
+        <div x-show="!isLoggedIn" x-cloak class="flex flex-col gap-2">
+            <a href="/login" class="bg-gradient-to-r from-muzibu-coral to-[#ff9966] text-white py-2.5 rounded-lg text-sm font-semibold text-center hover:opacity-90 transition-all">
+                <i class="fas fa-sign-in-alt mr-1"></i>
+                {{ trans('muzibu::front.general.login') }}
+            </a>
+            <a href="/register" class="border border-muzibu-coral/60 hover:border-muzibu-coral hover:bg-muzibu-coral/10 text-muzibu-coral py-2.5 rounded-lg text-sm font-medium text-center transition-all">
+                <i class="fas fa-user-plus mr-1"></i>
+                {{ trans('muzibu::front.general.register') }}
+            </a>
         </div>
     </div>
 
@@ -206,17 +204,15 @@
         </div>
 
         {{-- LOGGED OUT STATE --}}
-        <div x-show="!isLoggedIn" x-cloak class="bg-gradient-to-br from-[#1a1a2e] to-[#16213e] rounded-xl p-3 border border-white/10">
-            <div class="flex flex-col gap-2">
-                <a href="/login" class="bg-gradient-to-r from-muzibu-coral to-[#ff9966] text-white py-2.5 rounded-lg text-sm font-semibold text-center hover:opacity-90 transition-all">
-                    <i class="fas fa-sign-in-alt mr-1"></i>
-                    {{ trans('muzibu::front.general.login') }}
-                </a>
-                <a href="/register" class="border border-muzibu-coral/60 hover:border-muzibu-coral hover:bg-muzibu-coral/10 text-muzibu-coral py-2.5 rounded-lg text-sm font-medium text-center transition-all">
-                    <i class="fas fa-user-plus mr-1"></i>
-                    {{ trans('muzibu::front.general.register') }}
-                </a>
-            </div>
+        <div x-show="!isLoggedIn" x-cloak class="flex flex-col gap-2">
+            <a href="/login" class="bg-gradient-to-r from-muzibu-coral to-[#ff9966] text-white py-2.5 rounded-lg text-sm font-semibold text-center hover:opacity-90 transition-all">
+                <i class="fas fa-sign-in-alt mr-1"></i>
+                {{ trans('muzibu::front.general.login') }}
+            </a>
+            <a href="/register" class="border border-muzibu-coral/60 hover:border-muzibu-coral hover:bg-muzibu-coral/10 text-muzibu-coral py-2.5 rounded-lg text-sm font-medium text-center transition-all">
+                <i class="fas fa-user-plus mr-1"></i>
+                {{ trans('muzibu::front.general.register') }}
+            </a>
         </div>
     </div>
 </aside>

@@ -165,5 +165,48 @@ Route::middleware(['admin', 'tenant'])
                             ->middleware('module.permission:muzibu,create')
                             ->name('manage');
                     });
+
+                // Abuse Reports - Suistimal Raporları
+                Route::prefix('abuse-reports')
+                    ->name('abuse.')
+                    ->group(function () {
+                        // API endpoints - ÖNCELİKLİ (/{id} route'undan önce tanımlanmalı!)
+                        Route::get('/api/list', [\Modules\Muzibu\App\Http\Controllers\Admin\AbuseReportController::class, 'apiList'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('api.list');
+
+                        Route::get('/api/stats', [\Modules\Muzibu\App\Http\Controllers\Admin\AbuseReportController::class, 'apiStats'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('api.stats');
+
+                        Route::get('/api/timeline/{userId}', [\Modules\Muzibu\App\Http\Controllers\Admin\AbuseReportController::class, 'apiTimeline'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('api.timeline');
+
+                        // Liste sayfası
+                        Route::get('/', [\Modules\Muzibu\App\Http\Controllers\Admin\AbuseReportController::class, 'index'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('index');
+
+                        // Toplu tarama başlat
+                        Route::post('/scan', [\Modules\Muzibu\App\Http\Controllers\Admin\AbuseReportController::class, 'startScan'])
+                            ->middleware('module.permission:muzibu,create')
+                            ->name('scan');
+
+                        // Tek kullanıcı tara
+                        Route::post('/scan-user/{userId}', [\Modules\Muzibu\App\Http\Controllers\Admin\AbuseReportController::class, 'scanUser'])
+                            ->middleware('module.permission:muzibu,create')
+                            ->name('scan-user');
+
+                        // Raporu incele/aksiyon al
+                        Route::post('/{id}/review', [\Modules\Muzibu\App\Http\Controllers\Admin\AbuseReportController::class, 'review'])
+                            ->middleware('module.permission:muzibu,update')
+                            ->name('review');
+
+                        // Detay sayfası (Timeline ile) - EN SONA! (wildcard {id} route)
+                        Route::get('/{id}', [\Modules\Muzibu\App\Http\Controllers\Admin\AbuseReportController::class, 'show'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('show');
+                    });
             });
     });

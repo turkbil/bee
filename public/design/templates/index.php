@@ -361,27 +361,39 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
                              data-hasprompt="<?= $design['hasPrompt'] ? 'true' : 'false' ?>">
 
                             <!-- Header -->
-                            <div class="p-4">
-                                <div class="flex items-start justify-between gap-2 mb-2">
-                                    <span class="text-xs font-medium text-violet-400 bg-violet-500/20 px-2 py-0.5 rounded inline-block">
+                            <div class="p-4 pb-3">
+                                <div class="flex items-center justify-between gap-2 mb-2">
+                                    <span class="text-xs font-medium text-violet-400 bg-violet-500/20 px-2 py-0.5 rounded">
                                         <?= htmlspecialchars($design['categoryDisplay']) ?>
                                     </span>
-                                    <div class="flex items-center gap-2">
+                                    <div class="flex items-center gap-1.5">
                                         <div class="star-rating" data-id="<?= htmlspecialchars($design['id']) ?>">
                                             <?php for($i = 1; $i <= 5; $i++): ?>
                                                 <i class="fas fa-star text-slate-700 text-xs hover:text-yellow-400 transition-colors" onclick="event.stopPropagation(); setRating('<?= htmlspecialchars($design['id']) ?>', <?= $i ?>)"></i>
                                             <?php endfor; ?>
                                         </div>
-                                        <button onclick="toggleFavorite('<?= htmlspecialchars($design['id']) ?>')" class="fav-icon text-slate-600 hover:text-amber-400 transition text-sm">
+                                        <button onclick="event.stopPropagation(); toggleFavorite('<?= htmlspecialchars($design['id']) ?>')" class="fav-icon text-slate-600 hover:text-amber-400 transition text-sm" title="Favori">
                                             <i class="fas fa-heart"></i>
                                         </button>
                                     </div>
                                 </div>
-                                <a href="<?= $design['url'] ?>" target="_blank" class="block group">
-                                    <h3 class="text-base font-semibold text-white leading-snug line-clamp-2 group-hover:text-violet-400 transition-colors" title="<?= htmlspecialchars($design['title']) ?>">
+                                <a href="<?= $design['url'] ?>" target="_blank" class="block">
+                                    <h3 class="text-sm font-semibold text-white leading-snug line-clamp-2 hover:text-violet-400 transition-colors" title="<?= htmlspecialchars($design['title']) ?>">
                                         <?= htmlspecialchars($design['title']) ?>
                                     </h3>
                                 </a>
+                            </div>
+
+                            <!-- Hover Actions (sağ alt) -->
+                            <div class="absolute bottom-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <?php if ($design['hasPrompt']): ?>
+                                <a href="<?= $design['promptUrl'] ?>" target="_blank" onclick="event.stopPropagation()" class="w-6 h-6 flex items-center justify-center rounded bg-violet-600 hover:bg-violet-500 text-white text-xs" title="Prompt">
+                                    <i class="fas fa-terminal"></i>
+                                </a>
+                                <?php endif; ?>
+                                <button onclick="event.stopPropagation(); confirmDelete('<?= htmlspecialchars($design['id']) ?>', '<?= htmlspecialchars($design['title']) ?>')" class="w-6 h-6 flex items-center justify-center rounded bg-slate-700 hover:bg-red-600 text-slate-400 hover:text-white text-xs" title="Sil">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
                             </div>
 
                             <!-- Details (Hidden) -->
@@ -415,17 +427,6 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
                                 </div>
                             </div>
 
-                            <!-- Hover Actions -->
-                            <div class="card-actions absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <?php if ($design['hasPrompt']): ?>
-                                <a href="<?= $design['promptUrl'] ?>" target="_blank" onclick="event.stopPropagation()" class="w-6 h-6 flex items-center justify-center rounded bg-slate-800/90 hover:bg-violet-600 text-violet-400 hover:text-white text-xs" title="Prompt">
-                                    <i class="fas fa-terminal"></i>
-                                </a>
-                                <?php endif; ?>
-                                <button onclick="event.stopPropagation(); confirmDelete('<?= htmlspecialchars($design['id']) ?>', '<?= htmlspecialchars($design['title']) ?>')" class="w-6 h-6 flex items-center justify-center rounded bg-slate-800/90 hover:bg-red-600 text-slate-500 hover:text-white text-xs" title="Sil">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
                         </div>
                     <?php endforeach; ?>
                 <?php endforeach; ?>

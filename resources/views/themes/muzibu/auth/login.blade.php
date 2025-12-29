@@ -34,14 +34,14 @@
              class="w-full max-w-lg bg-dark-800 border border-dark-600 rounded-2xl shadow-2xl overflow-hidden">
 
             {{-- Modal Header --}}
-            <div class="p-6 border-b border-dark-600 bg-orange-500/5">
+            <div class="p-6 border-b border-dark-600 bg-mz-500/5">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-exclamation-triangle text-orange-400 text-xl"></i>
+                    <div class="w-12 h-12 bg-mz-500/20 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-exclamation-triangle text-mz-400 text-xl"></i>
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-white">Cihaz Limiti Aşıldı</h3>
-                        <p class="text-dark-200 text-sm">Aynı anda en fazla <span x-text="deviceLimit" class="font-medium text-orange-400"></span> cihazda oturum açabilirsiniz</p>
+                        <p class="text-dark-200 text-sm">Aynı anda en fazla <span x-text="deviceLimit" class="font-medium text-mz-400"></span> cihazda oturum açabilirsiniz</p>
                     </div>
                 </div>
             </div>
@@ -197,8 +197,8 @@
         @endphp
 
         @if ($logoutReason)
-            <div class="mb-6 p-4 bg-orange-500/10 border border-orange-500/20 rounded-xl">
-                <div class="flex items-center gap-3 text-orange-400 text-sm">
+            <div class="mb-6 p-4 bg-mz-500/10 border border-mz-500/20 rounded-xl">
+                <div class="flex items-center gap-3 text-mz-400 text-sm">
                     <i class="fas fa-exclamation-triangle"></i>
                     <span>
                         @switch($logoutReason)

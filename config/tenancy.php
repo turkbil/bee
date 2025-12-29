@@ -29,7 +29,8 @@ return [
         \App\Tenancy\RedisTenancyBootstrapper::class,
         \App\Tenancy\StorageTenancyBootstrapper::class,
         Stancl\Tenancy\Bootstrappers\FilesystemTenancyBootstrapper::class,
-        \App\Tenancy\QueueTenancyBootstrapper::class,
+        Stancl\Tenancy\Bootstrappers\QueueTenancyBootstrapper::class, // ✅ Vendor bootstrapper - job'larda tenant init için
+        \App\Tenancy\QueueTenancyBootstrapper::class, // Custom queue config
         \App\Tenancy\SessionTenancyBootstrapper::class,
         \App\Tenancy\MailConfigBootstrapper::class, // ✅ Mail config'i Settings'ten yükle
     ],

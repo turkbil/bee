@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migration Reorganization Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen p-8">
+    <div class="max-w-6xl mx-auto">
+
+        <!-- Header -->
+        <header class="mb-8">
+            <span class="inline-block px-3 py-1 bg-blue-600 rounded-full text-sm mb-4">📋 Planlama</span>
+            <h1 class="text-3xl font-bold mb-2">Migration Klasör Reorganizasyonu</h1>
+            <p class="text-slate-400">29 Aralık 2025 - Multi-tenant Migration Yapısı Düzenleme</p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">📝 Basit Anlatım (Herkes İçin)</h2>
+            <p class="mb-4">Migration dosyaları veritabanı tablolarını oluşturan kodlardır. Şu anda bazı dosyalar yanlış yerlerde:</p>
+            <ul class="space-y-2">
+                <li>✅ <strong>Ana klasör (migrations/):</strong> Central DB için - tuufi.com ana veritabanı</li>
+                <li>✅ <strong>Tenant klasörü (migrations/tenant/):</strong> Alt siteler için - ixtif.com, muzibu.com</li>
+                <li>✅ <strong>Modül klasörleri:</strong> Her modül kendi migration'larını tutmalı</li>
+            </ul>
+            <p class="mt-4 text-yellow-400">⚠️ Central de bir tenant olduğu için tenant'taki her şey central'da da olmalı!</p>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">🔧 Teknik Detaylar</h2>
+
+            <h3 class="font-semibold text-lg mb-2">Mevcut Yapı:</h3>
+            <pre class="bg-slate-800 p-4 rounded text-sm mb-4 overflow-x-auto">
+database/
+├── migrations/           → Central DB (tuufi_4ekim) - 85 dosya
+├── migrations/tenant/    → Tenant DB'ler - 55 dosya
+└── ...
+
+Modules/
+├── Muzibu/database/migrations/       → 18 dosya + tenant/ alt klasör
+├── Shop/database/migrations/         → ? dosya
+└── ...</pre>
+
+            <h3 class="font-semibold text-lg mb-2">Sorunlar:</h3>
+            <ul class="space-y-1 text-red-400">
+                <li>❌ Modül-specific migration'lar ana klasörde (örn: muzibu_*, shop_*)</li>
+                <li>❌ Bazı dosyalar duplicate (farklı timestamp, aynı tablo)</li>
+                <li>❌ tenant/ ve migrations/ arasında tutarsızlık</li>
+            </ul>
+        </div>
+
+        <!-- ADIM 1 -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
+                Tenant'ta Olup Migrations'da Olmayanları Bul
+            </h2>
+            <div class="bg-green-900/30 p-4 rounded mb-4">
+                <p class="text-green-400 font-semibold">✅ SONUÇ: Eksik dosya YOK!</p>
+                <p class="text-slate-300">Tüm tenant dosyaları zaten migrations/ klasöründe mevcut.</p>
+            </div>
+        </div>
+
+        <!-- ADIM 2 -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
+                Modül Migration'larını Taşı
+            </h2>
+
+            <p class="mb-4">Aşağıdaki dosyalar kendi modül klasörlerine taşınmalı:</p>
+
+            <!-- MUZIBU -->
+            <div class="mb-6">
+                <h3 class="font-semibold text-orange-400 mb-2">🎵 MUZIBU MODÜLÜ (10 dosya)</h3>
+                <p class="text-sm text-slate-400 mb-2">Hedef: <code>Modules/Muzibu/database/migrations/</code></p>
+                <div class="bg-slate-700 p-3 rounded text-sm space-y-1">
+                    <div>• 2025_11_10_223740_add_description_to_muzibu_sectors_table.php</div>
+                    <div>• 2025_11_11_050254_add_hls_fields_to_muzibu_songs_table.php</div>
+                    <div>• 2025_11_12_001526_add_search_indexes_to_muzibu_tables.php</div>
+                    <div>• 2025_11_24_000001_create_muzibu_corporate_accounts_table.php</div>
+                    <div>• 2025_11_29_040130_add_encryption_to_songs.php</div>
+                    <div>• 2025_12_05_201240_add_last_played_song_to_users_table.php <span class="text-yellow-400">(users tablosu - dikkat!)</span></div>
+                    <div>• 2025_12_06_042550_drop_metadata_from_muzibu_songs_table.php</div>
+                    <div>• 2025_12_06_044035_drop_redundant_fields_from_muzibu_songs.php</div>
+                    <div>• 2025_12_06_044715_drop_virtual_search_columns_from_muzibu_tables.php</div>
+                    <div>• 2025_12_29_203727_add_browser_platform_to_song_plays.php</div>
+                </div>
+            </div>
+
+            <!-- SHOP -->
+            <div class="mb-6">
+                <h3 class="font-semibold text-blue-400 mb-2">🛒 SHOP MODÜLÜ (12 dosya)</h3>
+                <p class="text-sm text-slate-400 mb-2">Hedef: <code>Modules/Shop/database/migrations/</code></p>
+                <div class="bg-slate-700 p-3 rounded text-sm space-y-1">
+                    <div>• 2025_10_14_000000_create_shop_product_chat_placeholders_table.php</div>
+                    <div>• 2025_10_30_142400_add_soft_deletes_to_shop_carts_table.php</div>
+                    <div>• 2025_10_30_144439_create_shop_currencies_table.php</div>
+                    <div>• 2025_10_30_144543_add_currency_id_to_shop_tables.php</div>
+                    <div>• 2025_10_30_185655_rename_currency_to_currency_code_in_shop_carts_table.php</div>
+                    <div>• 2025_10_30_200601_add_is_auto_update_to_shop_currencies_table.php</div>
+                    <div>• 2025_10_30_211814_add_last_updated_at_to_shop_currencies_table.php</div>
+                    <div>• 2025_11_14_060949_add_display_and_currency_fields_to_cart_items.php</div>
+                    <div>• 2025_11_14_062634_add_address_fields_to_carts.php</div>
+                    <div>• 2025_11_23_000001_rename_shop_tables_to_universal.php</div>
+                    <div>• 2025_11_30_000258_add_performance_indexes_to_shop_products_and_blogs.php</div>
+                    <div>• 2025_12_12_041443_add_indexes_for_slow_queries_cart_addresses.php</div>
+                </div>
+            </div>
+
+            <!-- SUBSCRIPTION -->
+            <div class="mb-6">
+                <h3 class="font-semibold text-green-400 mb-2">💳 SUBSCRIPTION MODÜLÜ (3 dosya)</h3>
+                <p class="text-sm text-slate-400 mb-2">Hedef: <code>Modules/Subscription/database/migrations/</code></p>
+                <div class="bg-slate-700 p-3 rounded text-sm space-y-1">
+                    <div>• 2025_12_23_050000_add_subscription_expires_at_to_users_table.php</div>
+                    <div>• 2025_12_23_050001_update_subscriptions_status_column.php</div>
+                    <div>• 2025_12_23_060000_add_subscription_expires_at_to_tenant_users_table.php</div>
+                </div>
+            </div>
+
+            <!-- SEO -->
+            <div class="mb-6">
+                <h3 class="font-semibold text-pink-400 mb-2">🔍 SEO MODÜLÜ (3 dosya)</h3>
+                <p class="text-sm text-slate-400 mb-2">Hedef: <code>Modules/Seo/database/migrations/</code></p>
+                <div class="bg-slate-700 p-3 rounded text-sm space-y-1">
+                    <div>• 2025_07_19_000001_create_seo_settings_table.php</div>
+                    <div>• 2025_07_19_000002_create_tenant_seo_settings_table.php</div>
+                    <div>• 2025_11_15_163014_add_author_fields_to_seo_settings_table.php</div>
+                </div>
+            </div>
+
+            <!-- WIDGET -->
+            <div class="mb-6">
+                <h3 class="font-semibold text-cyan-400 mb-2">📦 WIDGET MODÜLÜ (2 dosya)</h3>
+                <p class="text-sm text-slate-400 mb-2">Hedef: <code>Modules/Widget/database/migrations/</code></p>
+                <div class="bg-slate-700 p-3 rounded text-sm space-y-1">
+                    <div>• 2025_12_04_024730_add_position_and_indexes_to_tenant_widgets_table.php</div>
+                    <div>• 2025_12_04_024805_add_indexes_to_widget_items_table.php</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADIM 3 -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">3</span>
+                Duplicate Dosyaları Temizle
+            </h2>
+
+            <div class="space-y-4">
+                <div class="bg-yellow-900/30 p-4 rounded">
+                    <h4 class="font-semibold text-yellow-400">media_table (2 adet)</h4>
+                    <div class="text-sm mt-2">
+                        <div>• 2025_02_15_192501_create_media_table.php (eski)</div>
+                        <div>• 2025_02_15_192502_create_media_table.php (yeni kopyalanan)</div>
+                        <p class="text-slate-400 mt-1">→ İçerikleri karşılaştır, uygun olanı tut</p>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-900/30 p-4 rounded">
+                    <h4 class="font-semibold text-yellow-400">activity_log (2 adet)</h4>
+                    <div class="text-sm mt-2">
+                        <div>• 2024_11_27_203421_create_activity_log_table.php</div>
+                        <div>• 2024_11_27_203421_tenant_create_activity_log_table.php</div>
+                        <p class="text-slate-400 mt-1">→ tenant_ prefix'li olan tenant/ klasöründe kalmalı</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CENTRAL-ONLY Liste -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <span class="bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">!</span>
+                Central-Only Dosyalar (Taşınmayacak)
+            </h2>
+            <p class="mb-4 text-slate-400">Bu dosyalar SADECE migrations/ klasöründe kalmalı:</p>
+            <div class="bg-slate-700 p-3 rounded text-sm grid grid-cols-1 md:grid-cols-2 gap-1">
+                <div>• create_tenants_table.php</div>
+                <div>• create_domains_table.php</div>
+                <div>• add_is_premium_to_tenants_table.php</div>
+                <div>• add_is_primary_to_domains_table.php</div>
+                <div>• add_theme_settings_to_tenants_table.php</div>
+                <div>• create_themes_table.php</div>
+                <div>• add_available_for_tenants_to_themes_table.php</div>
+                <div>• create_telescope_entries_table.php</div>
+                <div>• create_pulse_tables.php</div>
+                <div>• create_geozone_*.php</div>
+                <div>• create_a_i_credit_packages_table.php</div>
+            </div>
+        </div>
+
+        <!-- Özet -->
+        <div class="bg-purple-900/30 border border-purple-700 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">📊 İşlem Özeti</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div class="bg-slate-800 p-4 rounded">
+                    <div class="text-3xl font-bold text-orange-400">10</div>
+                    <div class="text-sm text-slate-400">Muzibu</div>
+                </div>
+                <div class="bg-slate-800 p-4 rounded">
+                    <div class="text-3xl font-bold text-blue-400">12</div>
+                    <div class="text-sm text-slate-400">Shop</div>
+                </div>
+                <div class="bg-slate-800 p-4 rounded">
+                    <div class="text-3xl font-bold text-green-400">3</div>
+                    <div class="text-sm text-slate-400">Subscription</div>
+                </div>
+                <div class="bg-slate-800 p-4 rounded">
+                    <div class="text-3xl font-bold text-pink-400">5</div>
+                    <div class="text-sm text-slate-400">SEO + Widget</div>
+                </div>
+            </div>
+            <p class="mt-4 text-center text-slate-400">Toplam ~30 dosya modül klasörlerine taşınacak</p>
+        </div>
+
+        <!-- Onay -->
+        <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-6">
+            <h2 class="text-xl font-semibold mb-4">⚠️ Onay Bekliyor</h2>
+            <p class="mb-4">Bu plan uygulanmadan önce onayınız gerekiyor:</p>
+            <ul class="space-y-2">
+                <li>1️⃣ Modül-specific dosyalar taşınsın mı?</li>
+                <li>2️⃣ Duplicate dosyalar temizlensin mi?</li>
+                <li>3️⃣ Hangi modüller öncelikli?</li>
+            </ul>
+            <p class="mt-4 text-yellow-400">💬 "UYGUNDUR" veya değişiklik isteğinizi belirtin.</p>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-8 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından hazırlandı</p>
+        </footer>
+    </div>
+</body>
+</html>

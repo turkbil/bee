@@ -235,7 +235,7 @@
                             @endforeach
                         </div>
                         <div class="flex gap-2">
-                            <button @click="playAllFavorites()" class="flex-1 bg-muzibu-coral hover:bg-red-600 text-white text-sm py-2.5 rounded-lg transition">
+                            <button @click="playAllFavorites()" class="flex-1 bg-gradient-to-r from-muzibu-coral to-[#ff9966] hover:opacity-90 text-white text-sm py-2.5 rounded-lg transition">
                                 <i class="fas fa-play mr-2"></i>{{ __('muzibu::front.dashboard.play_all') }}
                             </button>
                             <button @click="shuffleFavorites()" class="flex-1 bg-white/10 hover:bg-white/20 text-white text-sm py-2.5 rounded-lg transition">
@@ -247,7 +247,7 @@
                     <div class="p-8 text-center text-gray-400">
                         <i class="fas fa-heart text-4xl mb-3 opacity-50"></i>
                         <p>{{ __('muzibu::front.dashboard.no_favorites_yet') }}</p>
-                        <a href="/" class="text-red-400 hover:underline text-sm mt-2 inline-block" data-spa>{{ __('muzibu::front.dashboard.discover_songs') }}</a>
+                        <a href="/" class="text-muzibu-coral hover:underline text-sm mt-2 inline-block" data-spa>{{ __('muzibu::front.dashboard.discover_songs') }}</a>
                     </div>
                 @endif
             </div>

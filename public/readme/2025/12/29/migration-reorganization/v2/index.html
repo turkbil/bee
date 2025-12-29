@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migration Senkronizasyon Raporu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen p-8">
+    <div class="max-w-5xl mx-auto">
+
+        <!-- Header -->
+        <header class="mb-8">
+            <span class="inline-block px-3 py-1 bg-green-600 rounded-full text-sm mb-4">✅ Analiz Tamamlandı</span>
+            <h1 class="text-3xl font-bold mb-2">Migration Senkronizasyon Raporu</h1>
+            <p class="text-slate-400">29 Aralık 2025 - v2</p>
+        </header>
+
+        <!-- Özet Kartları -->
+        <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-6 text-center">
+                <div class="text-4xl font-bold text-blue-400">81</div>
+                <div class="text-slate-400">migrations/</div>
+            </div>
+            <div class="bg-purple-900/30 border border-purple-700 rounded-lg p-6 text-center">
+                <div class="text-4xl font-bold text-purple-400">54</div>
+                <div class="text-slate-400">tenant/</div>
+            </div>
+            <div class="bg-orange-900/30 border border-orange-700 rounded-lg p-6 text-center">
+                <div class="text-4xl font-bold text-orange-400">27</div>
+                <div class="text-slate-400">Central-only</div>
+            </div>
+        </div>
+
+        <!-- Ana Sonuç -->
+        <div class="bg-green-900/30 border border-green-700 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <span class="text-green-400">✅</span> Senkronizasyon Durumu
+            </h2>
+            <p class="text-lg mb-4">
+                <strong class="text-green-400">tenant/ klasöründeki TÜM 54 dosya</strong> → migrations/ klasöründe <strong class="text-green-400">MEVCUT</strong>
+            </p>
+            <div class="bg-slate-800 p-4 rounded">
+                <div class="flex justify-between items-center">
+                    <span>Eksik dosya sayısı:</span>
+                    <span class="text-2xl font-bold text-green-400">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tenant Dosyaları -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">📁 tenant/ Klasöründeki 54 Dosya</h2>
+            <p class="text-slate-400 mb-4">Tümü migrations/ klasöründe de mevcut ✅</p>
+
+            <div class="grid grid-cols-1 gap-1 text-sm font-mono bg-slate-900 p-4 rounded max-h-96 overflow-y-auto">
+                <div class="text-cyan-400">── Core ──</div>
+                <div>✅ 0001_01_01_000000_create_users_table.php</div>
+                <div>✅ 0001_01_01_000001_create_cache_table.php</div>
+                <div>✅ 0001_01_01_000002_create_jobs_table.php</div>
+                <div>✅ 2025_02_14_132615_create_sessions_table.php</div>
+
+                <div class="text-cyan-400 mt-3">── AI ──</div>
+                <div>✅ 2024_11_04_120000_create_tenant_conversation_flows_table.php</div>
+                <div>✅ 2024_11_04_200000_create_ai_workflow_nodes_table.php</div>
+                <div>✅ 2025_10_14_072549_create_ai_tables_in_tenant.php</div>
+                <div>✅ 2025_10_29_045823_add_ai_credit_usage_and_debug_tables_to_tenant.php</div>
+                <div>✅ 2025_11_06_051900_create_tenant_flow_metrics_table.php</div>
+                <div>✅ 2025_11_06_053000_create_ai_flows_table.php</div>
+
+                <div class="text-cyan-400 mt-3">── Tenant Settings ──</div>
+                <div>✅ 2024_11_27_203421_tenant_create_activity_log_table.php</div>
+                <div>✅ 2025_06_12_000001_create_module_tenant_settings_table.php</div>
+                <div>✅ 2025_08_23_000001_create_tenant_usage_logs_table.php</div>
+                <div>✅ 2025_10_14_183724_create_tenant_knowledge_base_table.php</div>
+
+                <div class="text-cyan-400 mt-3">── Media ──</div>
+                <div>✅ 2025_02_15_192502_create_media_table.php</div>
+                <div>✅ 2025_10_18_200441_fix_media_table_id_auto_increment.php</div>
+                <div>✅ 2025_11_15_004152_add_ai_generation_fields_to_media_library_items_table.php</div>
+
+                <div class="text-cyan-400 mt-3">── SEO ──</div>
+                <div>✅ 2025_07_19_000001_create_seo_settings_table.php</div>
+                <div>✅ 2025_11_15_163014_add_author_fields_to_seo_settings_table.php</div>
+
+                <div class="text-cyan-400 mt-3">── Search ──</div>
+                <div>✅ 2025_10_18_210135_create_search_queries_table.php</div>
+                <div>✅ 2025_10_18_215152_add_is_visible_to_search_queries.php</div>
+                <div>✅ 2025_10_22_035611_add_popular_and_hidden_columns_to_search_queries_table.php</div>
+                <div>✅ 2025_10_22_041315_add_indexes_to_search_queries_new_columns.php</div>
+                <div>✅ 2025_10_29_031319_add_slug_to_search_queries_table.php</div>
+
+                <div class="text-cyan-400 mt-3">── Tags ──</div>
+                <div>✅ 2025_10_20_100000_create_tags_tables.php</div>
+
+                <div class="text-cyan-400 mt-3">── Shop/Cart ──</div>
+                <div>✅ 2025_10_14_000000_create_shop_product_chat_placeholders_table.php</div>
+                <div>✅ 2025_10_30_142400_add_soft_deletes_to_shop_carts_table.php</div>
+                <div>✅ 2025_10_30_144439_create_shop_currencies_table.php</div>
+                <div>✅ 2025_10_30_144543_add_currency_id_to_shop_tables.php</div>
+                <div>✅ 2025_10_30_185655_rename_currency_to_currency_code_in_shop_carts_table.php</div>
+                <div>✅ 2025_10_30_200601_add_is_auto_update_to_shop_currencies_table.php</div>
+                <div>✅ 2025_10_30_211814_add_last_updated_at_to_shop_currencies_table.php</div>
+                <div>✅ 2025_11_14_060949_add_display_and_currency_fields_to_cart_items.php</div>
+                <div>✅ 2025_11_14_062634_add_address_fields_to_carts.php</div>
+                <div>✅ 2025_11_23_000001_rename_shop_tables_to_universal.php</div>
+                <div>✅ 2025_11_30_000258_add_performance_indexes_to_shop_products_and_blogs.php</div>
+                <div>✅ 2025_12_12_041443_add_indexes_for_slow_queries_cart_addresses.php</div>
+
+                <div class="text-cyan-400 mt-3">── Muzibu ──</div>
+                <div>✅ 2025_11_10_223740_add_description_to_muzibu_sectors_table.php</div>
+                <div>✅ 2025_11_11_050254_add_hls_fields_to_muzibu_songs_table.php</div>
+                <div>✅ 2025_11_12_001526_add_search_indexes_to_muzibu_tables.php</div>
+                <div>✅ 2025_11_24_000001_create_muzibu_corporate_accounts_table.php</div>
+                <div>✅ 2025_11_29_040130_add_encryption_to_songs.php</div>
+                <div>✅ 2025_12_06_042550_drop_metadata_from_muzibu_songs_table.php</div>
+                <div>✅ 2025_12_06_044035_drop_redundant_fields_from_muzibu_songs.php</div>
+                <div>✅ 2025_12_06_044715_drop_virtual_search_columns_from_muzibu_tables.php</div>
+                <div>✅ 2025_12_29_203727_add_browser_platform_to_song_plays.php</div>
+
+                <div class="text-cyan-400 mt-3">── Blog ──</div>
+                <div>✅ 2025_11_14_050744_create_blog_ai_drafts_table.php</div>
+
+                <div class="text-cyan-400 mt-3">── Widget ──</div>
+                <div>✅ 2025_12_04_024730_add_position_and_indexes_to_tenant_widgets_table.php</div>
+                <div>✅ 2025_12_04_024805_add_indexes_to_widget_items_table.php</div>
+
+                <div class="text-cyan-400 mt-3">── Settings/Other ──</div>
+                <div>✅ 2025_11_24_061210_add_display_order_to_mail_templates_table.php</div>
+                <div>✅ 2025_12_07_182016_create_user_active_sessions_table.php</div>
+                <div>✅ 2025_12_12_041449_add_indexes_for_slow_queries_settings_values.php</div>
+
+                <div class="text-cyan-400 mt-3">── Subscription ──</div>
+                <div>✅ 2025_12_23_050001_update_subscriptions_status_column.php</div>
+                <div>✅ 2025_12_23_060000_add_subscription_expires_at_to_tenant_users_table.php</div>
+            </div>
+        </div>
+
+        <!-- Central-Only Dosyaları -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">🔒 Central-Only 27 Dosya</h2>
+            <p class="text-slate-400 mb-4">Bu dosyalar SADECE migrations/ klasöründe (tenant/'da yok)</p>
+
+            <div class="space-y-4">
+                <!-- Tenant Yönetimi -->
+                <div class="bg-red-900/20 border border-red-800 rounded p-4">
+                    <h3 class="font-semibold text-red-400 mb-2">🏢 Tenant/Domain Yönetimi (Central-only doğru)</h3>
+                    <div class="text-sm font-mono space-y-1">
+                        <div>• 2019_09_15_000010_create_tenants_table.php</div>
+                        <div>• 2019_09_15_000020_create_domains_table.php</div>
+                        <div>• 2025_10_14_054829_add_is_premium_to_tenants_table.php</div>
+                        <div>• 2025_10_21_145115_add_is_primary_to_domains_table.php</div>
+                        <div>• 2025_11_24_021642_add_theme_settings_to_tenants_table.php</div>
+                    </div>
+                </div>
+
+                <!-- Themes -->
+                <div class="bg-red-900/20 border border-red-800 rounded p-4">
+                    <h3 class="font-semibold text-red-400 mb-2">🎨 Themes (Central-only doğru)</h3>
+                    <div class="text-sm font-mono space-y-1">
+                        <div>• 2018_04_06_000001_create_themes_table.php</div>
+                        <div>• 2025_11_24_035011_add_available_for_tenants_to_themes_table.php</div>
+                    </div>
+                </div>
+
+                <!-- Monitoring -->
+                <div class="bg-red-900/20 border border-red-800 rounded p-4">
+                    <h3 class="font-semibold text-red-400 mb-2">📊 Monitoring (Central-only doğru)</h3>
+                    <div class="text-sm font-mono space-y-1">
+                        <div>• 2025_02_15_190824_create_telescope_entries_table.php</div>
+                        <div>• 2025_08_26_140624_create_pulse_tables.php</div>
+                    </div>
+                </div>
+
+                <!-- Geozone -->
+                <div class="bg-red-900/20 border border-red-800 rounded p-4">
+                    <h3 class="font-semibold text-red-400 mb-2">🌍 Geozone (Central-only doğru)</h3>
+                    <div class="text-sm font-mono space-y-1">
+                        <div>• 2019_08_16_170011_create_geozone_cities_table.php</div>
+                        <div>• 2023_03_02_151311_create_geozone_counties_table.php</div>
+                        <div>• 2025_10_31_030000_add_city_id_to_districts.php</div>
+                    </div>
+                </div>
+
+                <!-- AI Central -->
+                <div class="bg-yellow-900/20 border border-yellow-800 rounded p-4">
+                    <h3 class="font-semibold text-yellow-400 mb-2">🤖 AI Central (Sorgulanabilir)</h3>
+                    <div class="text-sm font-mono space-y-1">
+                        <div>• 2024_11_04_120001_create_ai_tenant_directives_table.php</div>
+                        <div>• 2024_11_04_120002_create_ai_conversations_table.php</div>
+                        <div>• 2025_09_17_025000_create_ai_content_jobs_table.php</div>
+                        <div>• 2025_11_05_023229_create_ai_conversation_messages_table.php</div>
+                        <div>• 2025_11_08_231042_create_ai_workflows_table.php</div>
+                        <div>• 2025_11_08_231127_create_ai_workflow_runs_table.php</div>
+                        <div>• 2025_07_20_180713_create_a_i_credit_packages_table.php</div>
+                    </div>
+                </div>
+
+                <!-- Diğer -->
+                <div class="bg-yellow-900/20 border border-yellow-800 rounded p-4">
+                    <h3 class="font-semibold text-yellow-400 mb-2">📦 Diğer (Tenant'ta farklı versiyon var)</h3>
+                    <div class="text-sm font-mono space-y-1">
+                        <div>• 2024_11_27_203421_create_activity_log_table.php <span class="text-slate-400">(tenant: tenant_create_...)</span></div>
+                        <div>• 2025_02_15_192501_create_media_table.php <span class="text-slate-400">(tenant: 192502)</span></div>
+                        <div>• 2025_07_11_214031_create_personal_access_tokens_table.php</div>
+                        <div>• 2025_07_19_000002_create_tenant_seo_settings_table.php <span class="text-slate-400">(tenant: 000001)</span></div>
+                        <div>• 2025_11_23_230151_create_trusted_devices_table.php</div>
+                        <div>• 2025_12_05_201240_add_last_played_song_to_users_table.php</div>
+                        <div>• 2025_12_12_041445_add_indexes_for_slow_queries_activity_log.php</div>
+                        <div>• 2025_12_23_050000_add_subscription_expires_at_to_users_table.php</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sonuç -->
+        <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-6">
+            <h2 class="text-xl font-semibold mb-4">📋 Sonuç</h2>
+            <div class="space-y-3">
+                <div class="flex items-center gap-3">
+                    <span class="text-green-400 text-xl">✅</span>
+                    <span>Tenant → Central senkronizasyonu <strong>TAMAM</strong> (54/54)</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-green-400 text-xl">✅</span>
+                    <span>Central-only dosyalar tenant/'da <strong>YOK</strong> (doğru)</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-yellow-400 text-xl">⚠️</span>
+                    <span>27 dosya Central-only (çoğu doğru, bazıları sorgulanabilir)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-8 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından hazırlandı</p>
+        </footer>
+    </div>
+</body>
+</html>

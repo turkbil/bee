@@ -507,4 +507,104 @@ return [
     'uploading' => 'Yükleniyor...',
     'upload_success' => 'Görsel başarıyla yüklendi',
 ],
+
+// Abuse Detection - Suistimal Tespiti
+'abuse' => [
+    'title' => 'Suistimal Tespiti',
+    'reports' => 'Suistimal Raporları',
+    'report' => 'Suistimal Raporu',
+    'scan' => 'Tarama',
+    'start_scan' => 'Tarama Başlat',
+    'scanning' => 'Taranıyor...',
+    'scan_started' => 'Tarama başlatıldı',
+    'scan_completed' => 'Tarama tamamlandı',
+
+    // Durumlar
+    'status' => 'Durum',
+    'clean' => 'Temiz',
+    'suspicious' => 'Şüpheli',
+    'abuse' => 'Suistimal',
+
+    // İstatistikler
+    'total_scanned' => 'Taranan',
+    'total_plays' => 'Toplam Dinleme',
+    'overlap_count' => 'Çakışma Sayısı',
+    'abuse_score' => 'Suistimal Puanı',
+    'period' => 'Dönem',
+
+    // Cihazlar
+    'device' => 'Cihaz',
+    'desktop' => 'Masaüstü',
+    'mobile' => 'Mobil',
+    'tablet' => 'Tablet',
+    'tv' => 'TV',
+    'smart_tv' => 'Akıllı TV',
+    'other_device' => 'Diğer',
+
+    // Tarayıcılar
+    'browser' => 'Tarayıcı',
+    'chrome' => 'Chrome',
+    'firefox' => 'Firefox',
+    'safari' => 'Safari',
+    'edge' => 'Edge',
+    'opera' => 'Opera',
+    'ie' => 'Internet Explorer',
+    'other_browser' => 'Diğer',
+
+    // Timeline
+    'timeline' => 'Zaman Çizelgesi',
+    'listening_timeline' => 'Dinleme Zaman Çizelgesi',
+    'overlap' => 'Çakışma',
+    'overlaps' => 'Çakışmalar',
+    'overlap_detected' => 'Çakışma Tespit Edildi',
+    'no_overlaps' => 'Çakışma Yok',
+
+    // Tarih/Zaman
+    'scan_date' => 'Tarama Tarihi',
+    'period_start' => 'Dönem Başlangıcı',
+    'period_end' => 'Dönem Sonu',
+    'daily_summary' => 'Günlük Özet',
+    'last_scan' => 'Son Tarama',
+
+    // İnceleme
+    'review' => 'İnceleme',
+    'admin_review' => 'Admin İncelemesi',
+    'reviewed' => 'İncelendi',
+    'not_reviewed' => 'Bekliyor',
+    'action' => 'Aksiyon',
+    'action_none' => 'İşlem Yapılmadı',
+    'action_warned' => 'Uyarı Gönderildi',
+    'action_suspended' => 'Hesap Askıya Alındı',
+    'notes' => 'Notlar',
+    'save' => 'Kaydet',
+    'saving' => 'Kaydediliyor...',
+    'saved' => 'Kaydedildi',
+
+    // Tarama Seçenekleri
+    'scan_type' => 'Tarama Tipi',
+    'preset_period' => 'Hazır Periyot',
+    'custom_period' => 'Tarih Aralığı',
+    'select_period' => 'Periyot Seç',
+    'last_3_days' => 'Son 3 Gün',
+    'last_7_days' => 'Son 7 Gün',
+    'last_14_days' => 'Son 14 Gün',
+    'last_30_days' => 'Son 30 Gün',
+    'last_60_days' => 'Son 60 Gün',
+    'last_90_days' => 'Son 90 Gün',
+    'start_date' => 'Başlangıç',
+    'end_date' => 'Bitiş',
+
+    // Bilgi Mesajları
+    'smart_scan_info' => 'Akıllı Tarama: Sadece seçilen dönemde şarkı dinleyen ve aktif aboneliği olan kullanıcılar taranır.',
+    'no_reports' => 'Henüz rapor bulunmuyor. Tarama başlatın.',
+    'no_plays_in_period' => 'Bu dönemde dinleme kaydı yok.',
+    'users_scanned' => 'kullanıcı için tarama başlatıldı',
+
+    // Rapor Bilgileri
+    'report_info' => 'Rapor Bilgileri',
+    'report_id' => 'Rapor ID',
+    'user_id' => 'Kullanıcı ID',
+    'created_at' => 'Oluşturulma',
+    'back' => 'Geri',
+],
 ];

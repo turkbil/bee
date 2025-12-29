@@ -97,16 +97,6 @@ return [
         'remove_from_queue' => 'Sıradan Çıkar',
         'drag' => 'Sürükle',
 
-        // Shuffle & Repeat
-        'shuffle' => 'Karıştır',
-        'shuffle_on' => 'Karışık çalma aktif',
-        'shuffle_off' => 'Karışık çalma kapalı',
-        'enable_shuffle' => 'Karıştırmayı aç',
-        'disable_shuffle' => 'Karıştırmayı kapat',
-        'repeat' => 'Tekrarla',
-        'enable_repeat' => 'Tekrarlamayı aç',
-        'repeat_mode' => 'Tekrarlama modu',
-
         // Favorites
         'add_to_favorites' => 'Favorilere ekle',
         'remove_from_favorites' => 'Favorilerden çıkar',
@@ -132,7 +122,6 @@ return [
         'unmute' => 'Sesi aç',
         'volume' => 'Ses seviyesi',
         'max_volume' => 'Ses 100%',
-        'show_keyboard_shortcuts' => 'Klavye kısayollarını göster',
 
         // Info
         'duration' => 'Süre',

@@ -97,16 +97,6 @@ return [
         'remove_from_queue' => 'Remove from Queue',
         'drag' => 'Drag',
 
-        // Shuffle & Repeat
-        'shuffle' => 'Shuffle',
-        'shuffle_on' => 'Shuffle On',
-        'shuffle_off' => 'Shuffle Off',
-        'enable_shuffle' => 'Enable Shuffle',
-        'disable_shuffle' => 'Disable Shuffle',
-        'repeat' => 'Repeat',
-        'enable_repeat' => 'Enable Repeat',
-        'repeat_mode' => 'Repeat Mode',
-
         // Favorites
         'add_to_favorites' => 'Add to Favorites',
         'remove_from_favorites' => 'Remove from Favorites',
@@ -132,7 +122,6 @@ return [
         'unmute' => 'Unmute',
         'volume' => 'Volume',
         'max_volume' => 'Max volume',
-        'show_keyboard_shortcuts' => 'Show keyboard shortcuts',
 
         // Info
         'duration' => 'Duration',

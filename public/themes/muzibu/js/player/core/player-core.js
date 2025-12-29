@@ -6,7 +6,6 @@
  * - safeStorage (from core/safe-storage.js)
  * - muzibuFavorites (from features/favorites.js)
  * - muzibuAuth (from features/auth.js)
- * - muzibuKeyboard (from features/keyboard.js)
  * - MuzibuApi (from features/api.js)
  * - MuzibuSession (from features/session.js)
  * - MuzibuSpaRouter (from features/spa-router.js)
@@ -31,10 +30,9 @@ function serverLog(action, data = {}) {
 document.addEventListener('DOMContentLoaded', function() {
     const isMobileSafari = /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
     serverLog('scriptLoaded', {
-        version: 'v28dec-0455',
+        version: 'v29dec-cleanup',
         userAgent: navigator.userAgent.substring(0, 100),
-        isMobileSafari: isMobileSafari,
-        crossfadeDisabled: isMobileSafari // true = crossfade off
+        isMobileSafari: isMobileSafari
     });
 });
 
@@ -46,7 +44,6 @@ function muzibuApp() {
         // 🎯 Modular features (spread from separate files)
         ...muzibuFavorites(),
         ...muzibuAuth(),
-        ...muzibuKeyboard(),
         ...(window.MuzibuApi || {}),
         ...(window.MuzibuSession || {}),
         ...(window.MuzibuSpaRouter || {}),
@@ -63,7 +60,6 @@ function muzibuApp() {
         showQueue: false,
         showLyrics: false,
         showMobileMenu: false, // 📱 Mobile 3-dots context menu
-        showKeyboardHelp: false, // 🎹 Keyboard shortcuts overlay
         progressPercent: 0,
         authLoading: false,
         authError: '',
@@ -143,8 +139,6 @@ function muzibuApp() {
         // Player states
         isPlaying: false,
         isToggling: false, // 🚫 Debounce flag for togglePlayPause
-        shuffle: false,
-        repeatMode: 'off',
         currentTime: 0,
         duration: 240,
         volume: parseInt(safeStorage.getItem('volume')) || 100, // Load from localStorage, default 100
@@ -166,24 +160,13 @@ function muzibuApp() {
         sessionPollInterval: null, // 🔐 Device limit polling interval
         showDeviceLimitModal: false, // 🔐 Show device limit exceeded modal
 
-        // Crossfade settings (using Howler.js + HLS.js)
-        // 🚫 TEMPORARILY DISABLED: Crossfade causes bufferAppendError and playback stops
-        // TODO: Re-implement with gapless playback (like Spotify/Apple Music)
-        crossfadeEnabled: false, // 🔴 DISABLED - causing fatal HLS errors
-        crossfadeDuration: window.muzibuPlayerConfig?.crossfadeDuration || 5000, // Config'den al, varsayılan 5 saniye
-        fadeOutDuration: 0, // 🚀 INSTANT: No fade, immediate volume changes
-        isCrossfading: false,
-        crossfadeTimeoutId: null, // 🔧 Crossfade completion timeout (iptal edilebilir)
-        crossfadeNextIndex: -1, // 🔧 Crossfade sırasında yeni şarkının index'i
+        // Audio instances
         howl: null, // Current Howler instance (for MP3)
-        howlNext: null, // Next song Howler instance for crossfade
         hls: null, // Current HLS.js instance
-        hlsNext: null, // Next HLS.js instance for crossfade
         isHlsStream: false, // Whether current stream is HLS
         lastFallbackReason: null, // 🧪 TEST: Why MP3 fallback was triggered
-        activeHlsAudioId: 'hlsAudio', // Which HLS audio element is active ('hlsAudio' or 'hlsAudioNext')
+        activeHlsAudioId: 'hlsAudio', // Which HLS audio element is active
         progressInterval: null, // Interval for updating progress
-        _fadeAnimation: null, // For requestAnimationFrame fade
 
         // 🚀 PRELOAD NEXT SONG: HLS instance ile gerçek preload
         _preloadedNext: null, // { songId, hls, audioId, ready } - Preloaded next song info
@@ -874,8 +857,6 @@ function muzibuApp() {
                     queueIndex: adjustedQueueIndex,
                     currentSong: this.currentSong,
                     currentTime: this.currentTime,
-                    shuffle: this.shuffle,
-                    repeatMode: this.repeatMode,
                     volume: this.volume,
                     isPlaying: this.isPlaying,
                     playContext: muzibuStore?.getPlayContext() || null
@@ -920,8 +901,6 @@ function muzibuApp() {
                 this.queue = state.queue || [];
                 this.queueIndex = state.queueIndex || 0;
                 this.currentSong = state.currentSong || null;
-                this.shuffle = state.shuffle || false;
-                this.repeatMode = state.repeatMode || 'off';
                 this.volume = state.volume || 1.0;
 
                 // ✅ Restore play context (Alpine store check)
@@ -1158,7 +1137,6 @@ function muzibuApp() {
                 queueIndex: this.queueIndex,
                 queueLength: this.queue?.length,
                 hasNext: this.queueIndex < this.queue.length - 1,
-                repeatMode: this.repeatMode,
                 currentSongId: this.currentSong?.song_id,
                 currentSongAlbumId: this.currentSong?.album_id,
                 currentSongGenreId: this.currentSong?.genre_id
@@ -1170,12 +1148,10 @@ function muzibuApp() {
 
                 // 🎯 Preload first song in queue (after track change)
                 this.preloadFirstInQueue();
-            } else if (this.repeatMode === 'all' || this.b2bMode) {
+            } else if (this.b2bMode) {
                 // 💾 B2B mode: infinite loop (auto-restart)
                 this.queueIndex = 0;
                 await this.playSongFromQueue(this.queueIndex);
-                if (this.b2bMode) {
-                }
             } else {
                 // 🔄 AUTO-REFILL: Queue bitti, yeni şarkılar çekmeyi dene
                 if (this.currentUser?.is_root) {
@@ -1327,63 +1303,6 @@ function muzibuApp() {
             }
         },
 
-        // Fisher-Yates Shuffle Algorithm
-        shuffleArray(array) {
-            const arr = [...array]; // Create a copy
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap
-            }
-            return arr;
-        },
-
-        toggleShuffle() {
-            this.shuffle = !this.shuffle;
-
-            if (this.shuffle) {
-                // Shuffle the queue
-                if (this.queue.length > 0) {
-                    // Save current song
-                    const currentSong = this.queue[this.queueIndex];
-
-                    // Remove current song from queue
-                    const remainingSongs = this.queue.filter((_, index) => index !== this.queueIndex);
-
-                    // Shuffle remaining songs
-                    const shuffled = this.shuffleArray(remainingSongs);
-
-                    // Rebuild queue: current song first, then shuffled
-                    this.queue = [currentSong, ...shuffled];
-                    this.queueIndex = 0;
-
-                    this.showToast(this.frontLang?.player?.shuffle_on || 'Shuffle on', 'success');
-                }
-            } else {
-                this.showToast(this.frontLang?.player?.shuffle_off || 'Shuffle off', 'info');
-                // Note: We don't restore original order since we don't track it
-                // Shuffle off just means next songs will play in current order
-            }
-        },
-
-        cycleRepeat() {
-            const modes = ['off', 'all', 'one'];
-            const idx = modes.indexOf(this.repeatMode);
-            this.repeatMode = modes[(idx + 1) % modes.length];
-
-            // 🔔 Toast notification
-            const messages = {
-                'off': this.frontLang?.player?.repeat_off || 'Tekrarlama kapalı',
-                'all': this.frontLang?.player?.repeat_all || 'Tümünü tekrarla',
-                'one': this.frontLang?.player?.repeat_one || 'Tek şarkıyı tekrarla'
-            };
-            const types = {
-                'off': 'info',
-                'all': 'success',
-                'one': 'success'
-            };
-            this.showToast(messages[this.repeatMode], types[this.repeatMode]);
-        },
-
         async toggleLike(songId = null) {
             // Eğer songId verilmemişse, mevcut şarkı için çalış (player bar için)
             if (!songId) {
@@ -1465,16 +1384,12 @@ function muzibuApp() {
 
         // Progress tracking is handled by Howler.js in loadAndPlaySong()
 
-        // Get index of next song (considering repeat and shuffle)
+        // Get index of next song
         getNextSongIndex() {
-            if (this.repeatMode === 'one') {
-                return this.queueIndex; // Same song
-            }
-
             if (this.queueIndex < this.queue.length - 1) {
                 return this.queueIndex + 1;
-            } else if (this.repeatMode === 'all') {
-                return 0; // Loop back
+            } else if (this.b2bMode) {
+                return 0; // B2B mode: Loop back
             }
 
             return -1; // No next song
@@ -2028,36 +1943,13 @@ function muzibuApp() {
 
             // 🔍 SERVER LOG
             serverLog('onTrackEnded', {
-                repeatMode: this.repeatMode,
                 currentSongId: this.currentSong?.song_id,
                 queueLength: this.queue?.length,
                 queueIndex: this.queueIndex
             });
 
-            if (this.repeatMode === 'one') {
-                // Repeat current song
-                if (this.howl) {
-                    this.howl.seek(0);
-                    this.howl.play();
-                } else if (this.hls) {
-                    // HLS.js (PC)
-                    const audio = this.getActiveHlsAudio();
-                    if (audio) {
-                        audio.currentTime = 0;
-                        audio.play();
-                    }
-                } else {
-                    // Safari Native HLS (Mobile)
-                    const audio = this.getActiveHlsAudio();
-                    if (audio) {
-                        audio.currentTime = 0;
-                        audio.play();
-                    }
-                }
-            } else {
-                // ⚡ GAPLESS: fromNaturalEnd=true ile çağır - stopCurrentPlayback atlanır
-                this.nextTrack(true);
-            }
+            // ⚡ GAPLESS: fromNaturalEnd=true ile çağır - stopCurrentPlayback atlanır
+            this.nextTrack(true);
         },
 
         formatTime(sec) {
@@ -5550,16 +5442,6 @@ onplay: function() {
 
                 // localStorage'a kaydet
                 safeStorage.setItem('volume', Math.round(newVolume));
-            });
-
-            // Shuffle değiştiğinde kaydet
-            this.$watch('shuffle', () => {
-                this.saveQueueState();
-            });
-
-            // Repeat mode değiştiğinde kaydet
-            this.$watch('repeatMode', () => {
-                this.saveQueueState();
             });
 
             // 🕒 Her 5 saniyede bir currentTime'ı kaydet (progress tracking)

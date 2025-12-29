@@ -191,18 +191,6 @@
                 <i class="fas fa-plus text-green-400 w-5 text-center"></i>
                 <span>Playlist'e Ekle</span>
             </button>
-            {{-- DISABLED: Shuffle & Repeat - şimdilik gizli
-            <button class="w-full px-4 py-3 flex items-center gap-3 text-sm text-white active:bg-zinc-700"
-                    @click="toggleShuffle(); showMobileMenu = false">
-                <i class="fas fa-random w-5 text-center" :class="shuffle ? 'text-emerald-400' : 'text-zinc-400'"></i>
-                <span x-text="shuffle ? 'Karışık: Açık' : 'Karışık: Kapalı'"></span>
-            </button>
-            <button class="w-full px-4 py-3 flex items-center gap-3 text-sm text-white active:bg-zinc-700"
-                    @click="cycleRepeat(); showMobileMenu = false">
-                <i class="fas fa-redo w-5 text-center" :class="repeatMode !== 'off' ? 'text-emerald-400' : 'text-zinc-400'"></i>
-                <span x-text="repeatMode === 'off' ? 'Tekrar: Kapalı' : (repeatMode === 'all' ? 'Tekrar: Tümü' : 'Tekrar: Tek')"></span>
-            </button>
-            --}}
         </div>
     </div>
 </div>
@@ -261,15 +249,8 @@
         </p>
     </div>
 
-    {{-- Controls: Prev, Play/Pause, Next (Shuffle & Repeat disabled) --}}
+    {{-- Controls: Prev, Play/Pause, Next --}}
     <div class="flex items-center gap-1 flex-1 justify-center">
-        {{-- DISABLED: Shuffle - şimdilik gizli
-        <button class="w-9 h-9 flex items-center justify-center transition-colors"
-                :class="shuffle ? 'text-emerald-400' : 'text-white/60 hover:text-white'"
-                @click="toggleShuffle()">
-            <i class="fas fa-random text-sm"></i>
-        </button>
-        --}}
         <button class="w-10 h-10 text-white/80 hover:text-white flex items-center justify-center transition-colors"
                 @click="previousTrack()">
             <i class="fas fa-backward text-base"></i>
@@ -284,14 +265,6 @@
                 @click="nextTrack()">
             <i class="fas fa-forward text-base"></i>
         </button>
-        {{-- DISABLED: Repeat - şimdilik gizli
-        <button class="w-9 h-9 flex items-center justify-center transition-colors"
-                :class="repeatMode !== 'off' ? 'text-emerald-400' : 'text-white/60 hover:text-white'"
-                @click="cycleRepeat()">
-            <i class="fas fa-redo text-sm"></i>
-            <span x-show="repeatMode === 'one'" class="absolute text-[8px] font-bold">1</span>
-        </button>
-        --}}
     </div>
 
     {{-- Progress Bar (Linear - Dynamic Gradient) --}}

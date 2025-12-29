@@ -96,9 +96,9 @@
             </button>
             <button class="w-10 h-10 text-white flex items-center justify-center active:scale-95 transition-transform"
                     @click="togglePlayPause()">
-                <i x-show="isSongLoading || isSeeking" x-cloak class="fas fa-spinner fa-spin text-lg"></i>
-                <i x-show="!isSongLoading && !isSeeking && isPlaying" x-cloak class="fas fa-pause text-xl"></i>
-                <i x-show="!isSongLoading && !isSeeking && !isPlaying" class="fas fa-play text-xl ml-0.5"></i>
+                <i x-show="isSongLoading" x-cloak class="fas fa-spinner fa-spin text-lg"></i>
+                <i x-show="!isSongLoading && isPlaying" x-cloak class="fas fa-pause text-xl"></i>
+                <i x-show="!isSongLoading && !isPlaying" class="fas fa-play text-xl ml-0.5"></i>
             </button>
             <button class="w-9 h-9 text-white/80 flex items-center justify-center active:scale-90 transition-transform"
                     @click="nextTrack()">
@@ -257,9 +257,9 @@
         </button>
         <button class="w-12 h-12 text-white flex items-center justify-center transition-transform hover:scale-105"
                 @click="togglePlayPause()">
-            <i x-show="isSongLoading || isSeeking" x-cloak class="fas fa-spinner fa-spin text-2xl"></i>
-            <i x-show="!isSongLoading && !isSeeking && isPlaying" x-cloak class="fas fa-pause text-2xl"></i>
-            <i x-show="!isSongLoading && !isSeeking && !isPlaying" class="fas fa-play text-2xl ml-1"></i>
+            <i x-show="isSongLoading" x-cloak class="fas fa-spinner fa-spin text-2xl"></i>
+            <i x-show="!isSongLoading && isPlaying" x-cloak class="fas fa-pause text-2xl"></i>
+            <i x-show="!isSongLoading && !isPlaying" class="fas fa-play text-2xl ml-1"></i>
         </button>
         <button class="w-10 h-10 text-white/80 hover:text-white flex items-center justify-center transition-colors"
                 @click="nextTrack()">

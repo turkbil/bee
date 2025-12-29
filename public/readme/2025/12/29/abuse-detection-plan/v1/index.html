@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Kötüye Kullanım Tespit Sistemi - Planlama</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-border { background: linear-gradient(135deg, #ef4444 0%, #f97316 50%, #eab308 100%); }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="gradient-border">
+        <div class="bg-slate-900 m-1 py-8 px-6">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-sm font-medium">Planlama</span>
+                    <span class="bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-sm font-medium">Guvenlik</span>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold mb-2">Kötüye Kullanim Tespit Sistemi</h1>
+                <p class="text-slate-400">Muzibu - Hesap Paylasimi ve Coklu Kullanim Tespiti</p>
+                <p class="text-slate-500 text-sm mt-2">29 Aralik 2025</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-10 space-y-10">
+
+        <!-- BÖLÜM 1: Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-700 rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <span class="text-3xl">💡</span> Basit Anlatim (Herkes Icin)
+            </h2>
+
+            <div class="space-y-4 text-slate-300">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">Ne Yapmak Istiyoruz?</h3>
+                    <p>Muzibu'da bir hesap sadece <strong class="text-yellow-400">bir kisi</strong> tarafindan kullanilmali.
+                    Eger bir kullanici hesabini arkadas/aile ile paylasir ve ayni anda birden fazla yerden muzik dinlenirse,
+                    bunu tespit edip kullaniciyi uyaracagiz.</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">Nasil Anlayacagiz?</h3>
+                    <p><strong class="text-orange-400">Ornek:</strong> Ahmet hesabiyla Istanbul'dan muzik dinliyor.
+                    Ayni anda Ankara'dan da Ahmet hesabiyla baska bir sarki dinleniyorsa → bu supheli!</p>
+
+                    <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="bg-red-900/30 border border-red-800 rounded p-3">
+                            <span class="text-red-400 font-medium">Supheli Durum:</span>
+                            <ul class="text-sm mt-1 space-y-1">
+                                <li>• Ayni anda farkli IP'lerden dinleme</li>
+                                <li>• Bir sarki bitmeden baska sarki baslamasi</li>
+                                <li>• Farkli sehir/cihazlardan es zamanli erisim</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-900/30 border border-green-800 rounded p-3">
+                            <span class="text-green-400 font-medium">Normal Durum:</span>
+                            <ul class="text-sm mt-1 space-y-1">
+                                <li>• Sabah evden, aksam isten dinleme</li>
+                                <li>• Farkli zamanlarda farkli cihaz kullanimi</li>
+                                <li>• Tek seferde tek sarki dinleme</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">Ne Olacak?</h3>
+                    <ol class="list-decimal list-inside space-y-2">
+                        <li>Sistem supheli aktiviteleri tespit edecek</li>
+                        <li>Admin panelinde "Supheli Kullanicilar" listesi gorunecek</li>
+                        <li>Supheli kullaniciya siteye girdiginde uyari cikacak</li>
+                        <li>Kullanici kurallari okuyup "Anladim" diyecek</li>
+                        <li>Devam ederse kisitlama uygulanabilir</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 2: Problem Tanımı -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white mb-4">🎯 Problem Tanimi</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-red-900/30 border border-red-700 rounded-lg p-4">
+                    <h3 class="font-semibold text-red-400 mb-2">Sifre Paylasimi</h3>
+                    <p class="text-sm text-slate-400">Kullanici hesap bilgilerini baskasina verir, birden fazla kisi ayni hesabi kullanir.</p>
+                </div>
+                <div class="bg-orange-900/30 border border-orange-700 rounded-lg p-4">
+                    <h3 class="font-semibold text-orange-400 mb-2">Es Zamanli Dinleme</h3>
+                    <p class="text-sm text-slate-400">Ayni hesapla ayni anda birden fazla sarki stream edilir.</p>
+                </div>
+                <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-4">
+                    <h3 class="font-semibold text-yellow-400 mb-2">Uyelik Paylasimi</h3>
+                    <p class="text-sm text-slate-400">Premium uyelik birden fazla kisi tarafindan kullanilir.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 3: Tespit Algoritması -->
+        <section class="bg-blue-900/20 border border-blue-700 rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                <span class="text-3xl">🔧</span> Teknik Detaylar - Tespit Algoritmasi
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Algoritma 1: Çakışan Dinlemeler -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-white mb-3 flex items-center gap-2">
+                        <span class="bg-blue-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">1</span>
+                        Cakisan Dinleme Tespiti
+                    </h3>
+
+                    <div class="text-slate-300 space-y-3">
+                        <p><strong>Mantik:</strong> Bir kullanicinin sarki dinleme kayitlarina bakariz. Eger iki farkli sarki kaydi birbirine cok yakinsa (ornegin 30 saniye icinde) ve farkli IP/cihazlardan geliyorsa → supheli.</p>
+
+                        <div class="bg-slate-900 rounded p-4 text-sm font-mono">
+                            <p class="text-slate-500">-- Pseudo SQL</p>
+                            <p class="text-green-400">SELECT user_id, COUNT(*) as overlap_count</p>
+                            <p class="text-blue-400">FROM muzibu_song_plays p1</p>
+                            <p class="text-blue-400">JOIN muzibu_song_plays p2</p>
+                            <p class="text-yellow-400">WHERE p1.user_id = p2.user_id</p>
+                            <p class="text-yellow-400">  AND p1.id != p2.id</p>
+                            <p class="text-orange-400">  AND ABS(TIMESTAMPDIFF(SECOND, p1.created_at, p2.created_at)) < 60</p>
+                            <p class="text-red-400">  AND p1.ip_address != p2.ip_address</p>
+                        </div>
+
+                        <div class="bg-yellow-900/20 border border-yellow-700 rounded p-3 text-sm">
+                            <strong class="text-yellow-400">Parametre Onerileri:</strong>
+                            <ul class="mt-1 space-y-1">
+                                <li>• <strong>Zaman Esligi:</strong> 60 saniye (ayarlanabilir)</li>
+                                <li>• <strong>Minimum Cakisma:</strong> 3+ kez (tek seferlik hata olabilir)</li>
+                                <li>• <strong>Farkli IP Zorunlu:</strong> Evet (ayni IP'den birden fazla tab normal olabilir)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Algoritma 2: IP Çeşitliliği -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-white mb-3 flex items-center gap-2">
+                        <span class="bg-blue-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">2</span>
+                        Asiri IP Cesitliligi
+                    </h3>
+
+                    <div class="text-slate-300 space-y-3">
+                        <p><strong>Mantik:</strong> Bir kullanici kisa surede cok fazla farkli IP'den baglaniyorsa supheli.</p>
+
+                        <div class="bg-slate-900 rounded p-4 text-sm font-mono">
+                            <p class="text-green-400">SELECT user_id, COUNT(DISTINCT ip_address) as unique_ips</p>
+                            <p class="text-blue-400">FROM muzibu_song_plays</p>
+                            <p class="text-yellow-400">WHERE created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)</p>
+                            <p class="text-orange-400">GROUP BY user_id</p>
+                            <p class="text-red-400">HAVING unique_ips > 5</p>
+                        </div>
+
+                        <div class="bg-yellow-900/20 border border-yellow-700 rounded p-3 text-sm">
+                            <strong class="text-yellow-400">Esik Degerleri:</strong>
+                            <ul class="mt-1 space-y-1">
+                                <li>• <strong>Normal:</strong> 1-3 IP/gun (ev, is, mobil)</li>
+                                <li>• <strong>Dikkat:</strong> 4-6 IP/gun (uyari)</li>
+                                <li>• <strong>Supheli:</strong> 7+ IP/gun (aksiyona alinir)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Algoritma 3: Coğrafi Tutarsızlık -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-white mb-3 flex items-center gap-2">
+                        <span class="bg-blue-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">3</span>
+                        Cografi Tutarsizlik (Opsiyonel - Gelecek)
+                    </h3>
+
+                    <div class="text-slate-300 space-y-3">
+                        <p><strong>Mantik:</strong> IP'den konum bilgisi alinir. Kisa surede fiziksel olarak imkansiz mesafeler (ornegin 1 saatte Istanbul'dan Ankara'ya) supheli.</p>
+
+                        <div class="bg-purple-900/20 border border-purple-700 rounded p-3 text-sm">
+                            <strong class="text-purple-400">Not:</strong> Bu ozellik IP geolocation servisi gerektirir. Ilk etapta sadece IP/cihaz bazli kontrol yeterli olabilir.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 4: Veritabanı Yapısı -->
+        <section class="bg-purple-900/20 border border-purple-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-purple-400 mb-4">🗄️ Veritabani Yapisi</h2>
+
+            <div class="space-y-4">
+                <!-- Tablo 1: Abuse Reports -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-white mb-3">Tablo: <code class="text-yellow-400">muzibu_abuse_reports</code></h3>
+                    <p class="text-slate-400 text-sm mb-3">Sistem tarafindan tespit edilen supheli aktiviteler</p>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-700">
+                                <tr>
+                                    <th class="text-left p-2 rounded-tl">Alan</th>
+                                    <th class="text-left p-2">Tip</th>
+                                    <th class="text-left p-2 rounded-tr">Aciklama</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-slate-300">
+                                <tr class="border-t border-slate-700">
+                                    <td class="p-2 font-mono text-blue-400">id</td>
+                                    <td class="p-2">bigint</td>
+                                    <td class="p-2">Primary key</td>
+                                </tr>
+                                <tr class="border-t border-slate-700">
+                                    <td class="p-2 font-mono text-blue-400">user_id</td>
+                                    <td class="p-2">bigint FK</td>
+                                    <td class="p-2">Supheli kullanici</td>
+                                </tr>
+                                <tr class="border-t border-slate-700">
+                                    <td class="p-2 font-mono text-blue-400">abuse_type</td>
+                                    <td class="p-2">enum</td>
+                                    <td class="p-2">'concurrent_streaming', 'ip_diversity', 'geo_impossible'</td>
+                                </tr>
+                                <tr class="border-t border-slate-700">
+                                    <td class="p-2 font-mono text-blue-400">severity</td>
+                                    <td class="p-2">enum</td>
+                                    <td class="p-2">'low', 'medium', 'high', 'critical'</td>
+                                </tr>
+                                <tr class="border-t border-slate-700">
+                                    <td class="p-2 font-mono text-blue-400">evidence</td>
+                                    <td class="p-2">json</td>
+                                    <td class="p-2">Detayli kanit (IP'ler, zamanlar, cihazlar)</td>
+                                </tr>
+                                <tr class="border-t border-slate-700">
+                                    <td class="p-2 font-mono text-blue-400">analysis_period</td>
+                                    <td class="p-2">json</td>
+                                    <td class="p-2">{start_date, end_date}</td>
+                                </tr>
+                                <tr class="border-t border-slate-700">
+                                    <td class="p-2 font-mono text-blue-400">overlap_count</td>
+                                    <td class="p-2">int</td>
+                                    <td class="p-2">Toplam cakisma sayisi</td>
+                                </tr>
+                                <tr class="border-t border-slate-700">
+                                    <td class="p-2 font-mono text-blue-400">status</td>
+                                    <td class="p-2">enum</td>
+                                    <td class="p-2">'pending', 'warning_sent', 'acknowledged', 'restricted', 'resolved'</td>
+                                </tr>
+                                <tr class="border-t border-slate-700">
+                                    <td class="p-2 font-mono text-blue-400">created_at</td>
+                                    <td class="p-2">timestamp</td>
+                                    <td class="p-2">Tespit zamani</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tablo 2: User Acknowledgments -->
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-white mb-3">Tablo: <code class="text-yellow-400">muzibu_abuse_acknowledgments</code></h3>
+                    <p class="text-slate-400 text-sm mb-3">Kullanicilarin "Anladim" beyanlar</p>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-700">
+                                <tr>
+                                    <th class="text-left p-2 rounded-tl">Alan</th>
+                                    <th class="text-left p-2">Tip</th>
+                                    <th class="text-left p-2 rounded-tr">Aciklama</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-slate-300">
+                                <tr class="border-t border-slate-700">
+                                    <td class="p-2 font-mono text-blue-400">id</td>
+                                    <td class="p-2">bigint</td>
+                                    <td class="p-2">Primary key</td>
+                                </tr>
+                                <tr class="border-t border-slate-700">
+                                    <td class="p-2 font-mono text-blue-400">abuse_report_id</td>
+                                    <td class="p-2">bigint FK</td>
+                                    <td class="p-2">Ilgili rapor</td>
+                                </tr>
+                                <tr class="border-t border-slate-700">
+                                    <td class="p-2 font-mono text-blue-400">user_id</td>
+                                    <td class="p-2">bigint FK</td>
+                                    <td class="p-2">Kullanici</td>
+                                </tr>
+                                <tr class="border-t border-slate-700">
+                                    <td class="p-2 font-mono text-blue-400">full_name</td>
+                                    <td class="p-2">varchar(255)</td>
+                                    <td class="p-2">Kullanicinin yazdigi isim soyisim</td>
+                                </tr>
+                                <tr class="border-t border-slate-700">
+                                    <td class="p-2 font-mono text-blue-400">confirmation_text</td>
+                                    <td class="p-2">varchar(255)</td>
+                                    <td class="p-2">"Anladim kabul ediyorum" metni</td>
+                                </tr>
+                                <tr class="border-t border-slate-700">
+                                    <td class="p-2 font-mono text-blue-400">ip_address</td>
+                                    <td class="p-2">varchar(45)</td>
+                                    <td class="p-2">Onay anindaki IP</td>
+                                </tr>
+                                <tr class="border-t border-slate-700">
+                                    <td class="p-2 font-mono text-blue-400">user_agent</td>
+                                    <td class="p-2">text</td>
+                                    <td class="p-2">Tarayici bilgisi</td>
+                                </tr>
+                                <tr class="border-t border-slate-700">
+                                    <td class="p-2 font-mono text-blue-400">acknowledged_at</td>
+                                    <td class="p-2">timestamp</td>
+                                    <td class="p-2">Onay zamani</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 5: Admin Paneli -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white mb-4">🖥️ Admin Paneli Akisi</h2>
+
+            <div class="space-y-4">
+                <!-- Adım 1 -->
+                <div class="flex gap-4 items-start">
+                    <div class="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold">1</div>
+                    <div class="flex-1 bg-slate-700/50 rounded-lg p-4">
+                        <h3 class="font-semibold text-white mb-2">Analiz Baslat Butonu</h3>
+                        <p class="text-slate-400 text-sm">Admin <code class="text-yellow-400">/admin/muzibu</code> sayfasinda "Kotuye Kullanim Analizi" butonuna tiklar.</p>
+                        <div class="mt-3 bg-slate-800 rounded p-3">
+                            <p class="text-sm text-slate-300">Secenekler:</p>
+                            <ul class="text-sm text-slate-400 mt-1 space-y-1">
+                                <li>• Son X gun (dropdown: 7, 10, 14, 30)</li>
+                                <li>• Tarih araligi sec (date picker)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adım 2 -->
+                <div class="flex gap-4 items-start">
+                    <div class="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold">2</div>
+                    <div class="flex-1 bg-slate-700/50 rounded-lg p-4">
+                        <h3 class="font-semibold text-white mb-2">Analiz Calistir</h3>
+                        <p class="text-slate-400 text-sm">Sistem <code class="text-yellow-400">muzibu_song_plays</code> tablosunu tarar ve supheli pattern'leri bulur.</p>
+                        <div class="mt-3 bg-slate-800 rounded p-3">
+                            <p class="text-sm text-slate-300">Cikti:</p>
+                            <ul class="text-sm text-slate-400 mt-1 space-y-1">
+                                <li>• Supheli kullanici listesi</li>
+                                <li>• Her biri icin: cakisma sayisi, farkli IP sayisi, ciddiyet skoru</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adım 3 -->
+                <div class="flex gap-4 items-start">
+                    <div class="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold">3</div>
+                    <div class="flex-1 bg-slate-700/50 rounded-lg p-4">
+                        <h3 class="font-semibold text-white mb-2">Sonuc Tablosu</h3>
+                        <p class="text-slate-400 text-sm">Admin her kullanici icin detaylari gorebilir ve aksiyon alabilir.</p>
+                        <div class="mt-3 overflow-x-auto">
+                            <table class="w-full text-sm bg-slate-800 rounded">
+                                <thead>
+                                    <tr class="text-left text-slate-400">
+                                        <th class="p-2">Kullanici</th>
+                                        <th class="p-2">Cakisma</th>
+                                        <th class="p-2">IP Sayisi</th>
+                                        <th class="p-2">Ciddiyet</th>
+                                        <th class="p-2">Aksiyon</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-slate-300">
+                                    <tr class="border-t border-slate-700">
+                                        <td class="p-2">ahmet@email.com</td>
+                                        <td class="p-2 text-red-400">12</td>
+                                        <td class="p-2 text-orange-400">8</td>
+                                        <td class="p-2"><span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs">Yuksek</span></td>
+                                        <td class="p-2">
+                                            <span class="text-blue-400 cursor-pointer">Uyari Gonder</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adım 4 -->
+                <div class="flex gap-4 items-start">
+                    <div class="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold">4</div>
+                    <div class="flex-1 bg-slate-700/50 rounded-lg p-4">
+                        <h3 class="font-semibold text-white mb-2">Uyari Gonderme</h3>
+                        <p class="text-slate-400 text-sm">Admin "Uyari Gonder" dediginde kullanicinin durumu <code class="text-yellow-400">warning_sent</code> olur.</p>
+                        <p class="text-slate-400 text-sm mt-2">Kullanici bir sonraki girisinde uyari ekranini gorecek.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 6: Frontend Uyarı Akışı -->
+        <section class="bg-orange-900/20 border border-orange-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-orange-400 mb-4">⚠️ Frontend Uyari Akisi</h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-white mb-3">Uyari Ekrani Icerigi</h3>
+
+                    <div class="bg-slate-900 border border-red-700 rounded-lg p-6">
+                        <div class="text-center mb-4">
+                            <span class="text-5xl">⚠️</span>
+                            <h4 class="text-xl font-bold text-red-400 mt-2">Hesabinizda Supheli Aktivite Tespit Edildi</h4>
+                        </div>
+
+                        <div class="bg-slate-800 rounded p-4 mb-4">
+                            <p class="text-slate-300 mb-3">Sistemimiz hesabinizin birden fazla lokasyon veya cihazdan es zamanli olarak kullanildigini tespit etmistir.</p>
+
+                            <p class="text-slate-300 mb-3">Muzibu kullanim kosullarina gore:</p>
+                            <ul class="text-slate-400 text-sm space-y-1 list-disc list-inside">
+                                <li>Her hesap sadece bir kisi tarafindan kullanilabilir</li>
+                                <li>Hesap paylasimi yasaktir</li>
+                                <li>Ayni anda birden fazla cihazdan muzik dinlemek yasaktir</li>
+                            </ul>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-slate-400 text-sm block mb-1">Isim Soyisim</label>
+                                <input type="text" placeholder="Adinizi ve soyadinizi yazin" class="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white">
+                            </div>
+                            <div>
+                                <label class="text-slate-400 text-sm block mb-1">Onay Metni</label>
+                                <input type="text" placeholder='Yazin: "Anladim ve kabul ediyorum"' class="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white">
+                            </div>
+                            <button class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 rounded transition">
+                                Onayla ve Devam Et
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-white mb-3">Teknik Uygulama</h3>
+                    <ul class="text-slate-400 text-sm space-y-2">
+                        <li>• Middleware kontrolu: Her sayfa yuklemesinde kullanicinin pending uyarisi var mi kontrol edilir</li>
+                        <li>• Modal veya tam sayfa redirect: Kullanici onaylayana kadar siteyi kullanamaz</li>
+                        <li>• Form validation: Isim bos olamaz, onay metni tam eslesmeli ("Anladim ve kabul ediyorum")</li>
+                        <li>• IP ve zaman kaydedilir: Hukuki gecerlilik icin</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 7: Kısıtlama Alternatifleri -->
+        <section class="bg-red-900/20 border border-red-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-red-400 mb-4">🚫 Kisitlama Alternatifleri</h2>
+
+            <p class="text-slate-400 mb-4">Kullanici uyariyi kabul ettikten sonra ihlale devam ederse ne yapilacak?</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Seviye 1 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="bg-yellow-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">1</span>
+                        <h3 class="font-semibold text-yellow-400">Birinci Uyari</h3>
+                    </div>
+                    <ul class="text-slate-400 text-sm space-y-1">
+                        <li>• Modal uyari goster</li>
+                        <li>• Isim + onay al</li>
+                        <li>• Normal kullanima devam</li>
+                    </ul>
+                </div>
+
+                <!-- Seviye 2 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="bg-orange-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">2</span>
+                        <h3 class="font-semibold text-orange-400">Ikinci Uyari</h3>
+                    </div>
+                    <ul class="text-slate-400 text-sm space-y-1">
+                        <li>• Ses kalitesi dusurme (128kbps)</li>
+                        <li>• Reklam gosterme (varsa)</li>
+                        <li>• Gunluk dinleme limiti (2 saat)</li>
+                    </ul>
+                </div>
+
+                <!-- Seviye 3 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">3</span>
+                        <h3 class="font-semibold text-red-400">Ucuncu Uyari</h3>
+                    </div>
+                    <ul class="text-slate-400 text-sm space-y-1">
+                        <li>• Gecici hesap askiya alma (24-72 saat)</li>
+                        <li>• Sadece 1 cihaz izni (diger cihazlar otomatik cikis)</li>
+                        <li>• Admin incelemesi zorunlu</li>
+                    </ul>
+                </div>
+
+                <!-- Seviye 4 -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="bg-red-700 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">4</span>
+                        <h3 class="font-semibold text-red-500">Kalici Ban</h3>
+                    </div>
+                    <ul class="text-slate-400 text-sm space-y-1">
+                        <li>• Hesap kalici olarak askiya alinir</li>
+                        <li>• Premium uyelik iptal (iade yok)</li>
+                        <li>• Ayni IP/cihazdan yeni kayit engeli</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-4 mt-4">
+                <h4 class="font-semibold text-yellow-400 mb-2">Oneri: Kademeli Yaklasim</h4>
+                <p class="text-slate-400 text-sm">Ilk etapta sadece Seviye 1 (uyari + onay) uygulayalim. Sistemin nasil calistigi ve kullanici tepkisi goruldukten sonra diger seviyeleri aktif edebiliriz.</p>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 8: Uygulama Adımları -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white mb-4">📋 Uygulama Adimlari</h2>
+
+            <div class="space-y-3">
+                <div class="flex items-start gap-3 p-3 bg-slate-700/50 rounded-lg">
+                    <input type="checkbox" class="mt-1" disabled>
+                    <div>
+                        <strong class="text-white">1. Database Migration</strong>
+                        <p class="text-slate-400 text-sm">muzibu_abuse_reports ve muzibu_abuse_acknowledgments tablolarini olustur</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 p-3 bg-slate-700/50 rounded-lg">
+                    <input type="checkbox" class="mt-1" disabled>
+                    <div>
+                        <strong class="text-white">2. AbuseDetectionService</strong>
+                        <p class="text-slate-400 text-sm">Analiz algoritmalarini iceren servis sinifi</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 p-3 bg-slate-700/50 rounded-lg">
+                    <input type="checkbox" class="mt-1" disabled>
+                    <div>
+                        <strong class="text-white">3. Admin Livewire Component</strong>
+                        <p class="text-slate-400 text-sm">Analiz baslat, sonuc goster, aksiyon al UI</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 p-3 bg-slate-700/50 rounded-lg">
+                    <input type="checkbox" class="mt-1" disabled>
+                    <div>
+                        <strong class="text-white">4. Frontend Uyari Modal/Sayfa</strong>
+                        <p class="text-slate-400 text-sm">Kullanici uyari ekrani ve onay formu</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 p-3 bg-slate-700/50 rounded-lg">
+                    <input type="checkbox" class="mt-1" disabled>
+                    <div>
+                        <strong class="text-white">5. Middleware</strong>
+                        <p class="text-slate-400 text-sm">Her sayfa yuklemesinde abuse status kontrolu</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 p-3 bg-slate-700/50 rounded-lg">
+                    <input type="checkbox" class="mt-1" disabled>
+                    <div>
+                        <strong class="text-white">6. Test & Fine-tuning</strong>
+                        <p class="text-slate-400 text-sm">Esik degerlerini gercek verilerle test et ve ayarla</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 9: Sorular -->
+        <section class="bg-cyan-900/20 border border-cyan-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-cyan-400 mb-4">❓ Karar Verilmesi Gereken Noktalar</h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">1. Esik Degerleri</h3>
+                    <ul class="text-slate-400 text-sm space-y-1">
+                        <li>• Kac saniye icinde cakisma "supheli" sayilsin? (30s? 60s? 120s?)</li>
+                        <li>• Minimum kac cakisma gereksin? (3? 5? 10?)</li>
+                        <li>• Gunde kac farkli IP "normal"? (3? 5?)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">2. Uyari Metni</h3>
+                    <p class="text-slate-400 text-sm">Kullaniciya gosterilecek uyari mesajinin tam metni ne olsun?</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">3. Onay Sonrasi Sifirlanma</h3>
+                    <p class="text-slate-400 text-sm">Kullanici "Anladim" dedikten sonra supheli sayac sifirlansin mi? Yoksa birikimli mi olsun?</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-white mb-2">4. Otomatik vs Manuel</h3>
+                    <p class="text-slate-400 text-sm">Analiz otomatik calissin mi (cron)? Yoksa sadece admin baslatsin mi?</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 mt-10 py-6">
+        <div class="max-w-6xl mx-auto px-6 text-center text-slate-500 text-sm">
+            <p>Claude AI tarafindan olusturuldu • 29 Aralik 2025</p>
+            <p class="mt-1">Muzibu Kotuye Kullanim Tespit Sistemi - Planlama Dokumani v1</p>
+        </div>
+    </footer>
+
+</body>
+</html>

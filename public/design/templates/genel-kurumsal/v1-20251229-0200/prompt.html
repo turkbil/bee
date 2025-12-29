@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Dokümanı - Genel Kurumsal v1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Space Grotesk', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen p-8">
+    <div class="max-w-5xl mx-auto">
+
+        <!-- Header -->
+        <div class="mb-12">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-violet-500/20 text-violet-400 rounded-full text-sm font-medium mb-4">
+                <span class="w-2 h-2 bg-violet-400 rounded-full"></span>
+                Prompt Dokümanı
+            </div>
+            <h1 class="text-4xl font-bold mb-2">Genel Kurumsal Site</h1>
+            <p class="text-slate-400">Versiyon: v1-20251229-0200 | Oluşturma: 29 Aralık 2025</p>
+        </div>
+
+        <!-- Grid Layout -->
+        <div class="grid lg:grid-cols-2 gap-8 mb-12">
+
+            <!-- Genel Bilgiler -->
+            <div class="bg-slate-800 rounded-xl p-6">
+                <h2 class="text-lg font-semibold mb-4 text-violet-400 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Genel Bilgiler
+                </h2>
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between py-2 border-b border-slate-700">
+                        <span class="text-slate-400">Sektör:</span>
+                        <span class="font-medium">Genel Kurumsal</span>
+                    </div>
+                    <div class="flex justify-between py-2 border-b border-slate-700">
+                        <span class="text-slate-400">Tasarım Yaklaşımı:</span>
+                        <span class="font-medium">Minimal + Retro/Vintage</span>
+                    </div>
+                    <div class="flex justify-between py-2 border-b border-slate-700">
+                        <span class="text-slate-400">Varsayılan Tema:</span>
+                        <span class="font-medium">Light Mode (Sistem tercihine göre)</span>
+                    </div>
+                    <div class="flex justify-between py-2">
+                        <span class="text-slate-400">Responsive:</span>
+                        <span class="text-emerald-400 font-medium">Evet</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stil Detayları -->
+            <div class="bg-slate-800 rounded-xl p-6">
+                <h2 class="text-lg font-semibold mb-4 text-emerald-400 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                    </svg>
+                    Stil Detayları
+                </h2>
+                <div class="space-y-3 text-sm">
+                    <div class="py-2 border-b border-slate-700">
+                        <span class="text-slate-400">Font:</span>
+                        <span class="font-medium ml-2">Space Grotesk (Google Fonts)</span>
+                    </div>
+                    <div class="py-2 border-b border-slate-700">
+                        <span class="text-slate-400 block mb-2">Renk Paleti:</span>
+                        <div class="flex flex-wrap gap-2">
+                            <div class="flex items-center gap-2 bg-slate-700 px-3 py-1 rounded">
+                                <span class="w-4 h-4 rounded" style="background: #faf8f5"></span>
+                                <span>Cream #faf8f5</span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-slate-700 px-3 py-1 rounded">
+                                <span class="w-4 h-4 rounded" style="background: #c4704b"></span>
+                                <span>Terracotta #c4704b</span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-slate-700 px-3 py-1 rounded">
+                                <span class="w-4 h-4 rounded" style="background: #7d8471"></span>
+                                <span>Sage #7d8471</span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-slate-700 px-3 py-1 rounded">
+                                <span class="w-4 h-4 rounded" style="background: #d4a03c"></span>
+                                <span>Mustard #d4a03c</span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-slate-700 px-3 py-1 rounded">
+                                <span class="w-4 h-4 rounded" style="background: #2d2d2d"></span>
+                                <span>Vintage Dark #2d2d2d</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="py-2">
+                        <span class="text-slate-400">Özel Efektler:</span>
+                        <span class="font-medium ml-2">Vintage noise texture, Retro underline</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Layout Seçimleri -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-lg font-semibold mb-4 text-blue-400 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path>
+                </svg>
+                Layout Seçimleri (Prompt Listesinden)
+            </h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                <div class="bg-slate-700/50 p-4 rounded-lg border-l-4 border-violet-500">
+                    <div class="text-slate-400 text-xs uppercase tracking-wider mb-1">Header</div>
+                    <div class="font-semibold">#1 - Logo left + Nav center + CTA right</div>
+                    <div class="text-slate-500 text-xs mt-1">+ Bottom Navigation (Tarz'dan)</div>
+                </div>
+                <div class="bg-slate-700/50 p-4 rounded-lg border-l-4 border-emerald-500">
+                    <div class="text-slate-400 text-xs uppercase tracking-wider mb-1">Hero</div>
+                    <div class="font-semibold">#21 - Sol %60 metin + Sağ %40 image</div>
+                    <div class="text-slate-500 text-xs mt-1">Tarz'dan: Split Hero</div>
+                </div>
+                <div class="bg-slate-700/50 p-4 rounded-lg border-l-4 border-blue-500">
+                    <div class="text-slate-400 text-xs uppercase tracking-wider mb-1">About</div>
+                    <div class="font-semibold">#106 - Founder Story</div>
+                    <div class="text-slate-500 text-xs mt-1">Timeline mini + Quote overlay</div>
+                </div>
+                <div class="bg-slate-700/50 p-4 rounded-lg border-l-4 border-amber-500">
+                    <div class="text-slate-400 text-xs uppercase tracking-wider mb-1">Services</div>
+                    <div class="font-semibold">#61 - Feature Cards Grid (3x2)</div>
+                    <div class="text-slate-500 text-xs mt-1">Tarz'dan: Özellik Kartı</div>
+                </div>
+                <div class="bg-slate-700/50 p-4 rounded-lg border-l-4 border-rose-500">
+                    <div class="text-slate-400 text-xs uppercase tracking-wider mb-1">Values</div>
+                    <div class="font-semibold">#87 - Mission Statement</div>
+                    <div class="text-slate-500 text-xs mt-1">Large quote + Value cards grid</div>
+                </div>
+                <div class="bg-slate-700/50 p-4 rounded-lg border-l-4 border-cyan-500">
+                    <div class="text-slate-400 text-xs uppercase tracking-wider mb-1">Contact</div>
+                    <div class="font-semibold">#56 - Business Card Style</div>
+                    <div class="text-slate-500 text-xs mt-1">Minimal info + Contact form</div>
+                </div>
+                <div class="bg-slate-700/50 p-4 rounded-lg border-l-4 border-pink-500">
+                    <div class="text-slate-400 text-xs uppercase tracking-wider mb-1">Footer</div>
+                    <div class="font-semibold">#26 - Single line footer</div>
+                    <div class="text-slate-500 text-xs mt-1">Logo + Copyright + Links</div>
+                </div>
+                <div class="bg-slate-700/50 p-4 rounded-lg border-l-4 border-orange-500">
+                    <div class="text-slate-400 text-xs uppercase tracking-wider mb-1">Navigation</div>
+                    <div class="font-semibold">#94 - Bottom sheet menu (Fixed)</div>
+                    <div class="text-slate-500 text-xs mt-1">Tarz'dan: Bottom Navigation</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Sırası -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-lg font-semibold mb-4 text-pink-400 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                </svg>
+                Section Sırası
+            </h2>
+            <div class="flex flex-wrap gap-3 text-sm">
+                <span class="bg-slate-700 px-4 py-2 rounded-full flex items-center gap-2">
+                    <span class="w-6 h-6 bg-violet-500/30 text-violet-400 rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                    Hero
+                </span>
+                <span class="text-slate-600">→</span>
+                <span class="bg-slate-700 px-4 py-2 rounded-full flex items-center gap-2">
+                    <span class="w-6 h-6 bg-emerald-500/30 text-emerald-400 rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                    About
+                </span>
+                <span class="text-slate-600">→</span>
+                <span class="bg-slate-700 px-4 py-2 rounded-full flex items-center gap-2">
+                    <span class="w-6 h-6 bg-blue-500/30 text-blue-400 rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                    Services
+                </span>
+                <span class="text-slate-600">→</span>
+                <span class="bg-slate-700 px-4 py-2 rounded-full flex items-center gap-2">
+                    <span class="w-6 h-6 bg-amber-500/30 text-amber-400 rounded-full flex items-center justify-center text-xs font-bold">4</span>
+                    Values
+                </span>
+                <span class="text-slate-600">→</span>
+                <span class="bg-slate-700 px-4 py-2 rounded-full flex items-center gap-2">
+                    <span class="w-6 h-6 bg-rose-500/30 text-rose-400 rounded-full flex items-center justify-center text-xs font-bold">5</span>
+                    Contact
+                </span>
+                <span class="text-slate-600">→</span>
+                <span class="bg-slate-700 px-4 py-2 rounded-full flex items-center gap-2">
+                    <span class="w-6 h-6 bg-cyan-500/30 text-cyan-400 rounded-full flex items-center justify-center text-xs font-bold">6</span>
+                    Footer
+                </span>
+            </div>
+            <p class="text-slate-500 text-sm mt-4">
+                <strong>Yaklaşım:</strong> Hikaye odaklı (Story-driven) - Hero'dan başlayıp şirket hikayesi, ardından hizmetler ve değerlerle güven inşa edip iletişimle sonlandırılıyor.
+            </p>
+        </div>
+
+        <!-- Leonardo.ai Görsel Promptları -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-lg font-semibold mb-4 text-amber-400 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                Leonardo.ai Görsel Promptları
+            </h2>
+
+            <div class="space-y-6">
+
+                <!-- Hero Portrait -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-700/30 p-4 rounded-r-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="font-semibold text-amber-300">hero-portrait.jpg</div>
+                        <div class="text-xs bg-slate-600 px-2 py-1 rounded">800x1200</div>
+                    </div>
+                    <div class="text-slate-300 text-sm mb-3 leading-relaxed">
+                        <strong class="text-amber-400">Prompt:</strong>
+                        "Vintage style professional business portrait, elegant elderly businessman in classic suit, warm sepia tones, film grain texture, soft natural window light, Kodak Portra 400 aesthetic, slight vignette, timeless corporate photography, 8k quality"
+                    </div>
+                    <div class="flex flex-wrap gap-4 text-xs text-slate-500">
+                        <span><strong>Model:</strong> Leonardo Phoenix</span>
+                        <span><strong>Style:</strong> Photoreal</span>
+                        <span><strong>Negative:</strong> blurry, low quality, watermark, text, modern clothing</span>
+                    </div>
+                </div>
+
+                <!-- About Office -->
+                <div class="border-l-4 border-emerald-500 pl-4 bg-slate-700/30 p-4 rounded-r-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="font-semibold text-emerald-300">about-office.jpg</div>
+                        <div class="text-xs bg-slate-600 px-2 py-1 rounded">800x600</div>
+                    </div>
+                    <div class="text-slate-300 text-sm mb-3 leading-relaxed">
+                        <strong class="text-emerald-400">Prompt:</strong>
+                        "Vintage office interior 1980s style, wooden desk with papers, typewriter, warm tungsten lighting, dust particles in sunlight, nostalgic corporate atmosphere, Fuji Velvia film stock, slight lens flare, documentary photography style"
+                    </div>
+                    <div class="flex flex-wrap gap-4 text-xs text-slate-500">
+                        <span><strong>Model:</strong> Leonardo Phoenix</span>
+                        <span><strong>Style:</strong> Cinematic</span>
+                        <span><strong>Negative:</strong> modern technology, computer, blurry, low quality</span>
+                    </div>
+                </div>
+
+                <!-- Optional: Service Icons -->
+                <div class="border-l-4 border-blue-500 pl-4 bg-slate-700/30 p-4 rounded-r-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="font-semibold text-blue-300">service-icons/ (İsteğe Bağlı)</div>
+                        <div class="text-xs bg-slate-600 px-2 py-1 rounded">512x512 each</div>
+                    </div>
+                    <div class="text-slate-300 text-sm mb-3 leading-relaxed">
+                        <strong class="text-blue-400">Prompt (Örnek):</strong>
+                        "Minimal line art icon, vintage style, single color terracotta on cream background, [icon subject], art deco influence, simple elegant design, vector style illustration"
+                    </div>
+                    <div class="text-slate-500 text-xs">
+                        <strong>Not:</strong> Mevcut tasarımda FontAwesome ikonları kullanılmıştır. Leonardo.ai ile custom ikonlar üretilip değiştirilebilir.
+                    </div>
+                </div>
+
+                <!-- Background Texture -->
+                <div class="border-l-4 border-violet-500 pl-4 bg-slate-700/30 p-4 rounded-r-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="font-semibold text-violet-300">texture-vintage.png (İsteğe Bağlı)</div>
+                        <div class="text-xs bg-slate-600 px-2 py-1 rounded">1000x1000 seamless</div>
+                    </div>
+                    <div class="text-slate-300 text-sm mb-3 leading-relaxed">
+                        <strong class="text-violet-400">Prompt:</strong>
+                        "Subtle paper grain texture, vintage aged paper effect, cream beige color, seamless pattern, noise grain overlay, old document feel, high resolution texture map"
+                    </div>
+                    <div class="text-slate-500 text-xs">
+                        <strong>Not:</strong> Mevcut tasarımda CSS SVG noise texture kullanılmıştır. Daha zengin bir vintage his için Leonardo.ai ile texture üretilebilir.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Tarz Sayfasından Seçimler -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-lg font-semibold mb-4 text-rose-400 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Tarz Sayfasından Seçimler (Öncelikli)
+            </h2>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div class="bg-rose-500/10 border border-rose-500/30 p-4 rounded-lg">
+                    <div class="font-semibold text-rose-400 mb-2">Ana Tasarım Türü</div>
+                    <p class="text-slate-300">Minimal tasarım yaklaşımı: Sade, temiz, gereksiz öğelerden arındırılmış. Beyaz alan bolca kullanılıyor, odak içerikte.</p>
+                </div>
+                <div class="bg-rose-500/10 border border-rose-500/30 p-4 rounded-lg">
+                    <div class="font-semibold text-rose-400 mb-2">Alternatif Tarz</div>
+                    <p class="text-slate-300">Retro / Vintage: Sepia tonları, film grain efekti, nostaljik his. Minimal ile harmanlayarak modern-vintage hibrit oluşturuldu.</p>
+                </div>
+                <div class="bg-rose-500/10 border border-rose-500/30 p-4 rounded-lg">
+                    <div class="font-semibold text-rose-400 mb-2">Tipografi</div>
+                    <p class="text-slate-300">Space Grotesk (Google Fonts) - Fütüristik, teknoloji ve AI projeleri için ideal. Minimal estetiğe uygun geometrik yapı.</p>
+                </div>
+                <div class="bg-rose-500/10 border border-rose-500/30 p-4 rounded-lg">
+                    <div class="font-semibold text-rose-400 mb-2">Navigasyon</div>
+                    <p class="text-slate-300">Bottom Navigation: Mobil-öncelikli, sabit alt bar. Tüm cihazlarda kolay erişim, modern UX.</p>
+                </div>
+                <div class="bg-rose-500/10 border border-rose-500/30 p-4 rounded-lg">
+                    <div class="font-semibold text-rose-400 mb-2">Hero Tarzı</div>
+                    <p class="text-slate-300">Split Hero: Sol %60 metin, sağ %40 görsel. Klasik kurumsal sunum, güçlü görsel hiyerarşi.</p>
+                </div>
+                <div class="bg-rose-500/10 border border-rose-500/30 p-4 rounded-lg">
+                    <div class="font-semibold text-rose-400 mb-2">Kart Tasarımı</div>
+                    <p class="text-slate-300">Özellik Kartı: Hizmetler için ikon + başlık + açıklama + CTA yapısı. Hover efektleri ile interaktif.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Özel Notlar -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-lg font-semibold mb-4 text-cyan-400 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+                Özel Notlar
+            </h2>
+            <ul class="space-y-3 text-sm text-slate-300">
+                <li class="flex items-start gap-3">
+                    <span class="text-emerald-400 mt-1">✓</span>
+                    <span><strong>Dark/Light Mode:</strong> Sistem tercihine göre varsayılan, toggle butonu header'da. localStorage ile tercih kaydediliyor.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-emerald-400 mt-1">✓</span>
+                    <span><strong>Vintage Texture:</strong> CSS SVG ile oluşturulan subtle noise efekti, vintage his katıyor.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-emerald-400 mt-1">✓</span>
+                    <span><strong>AOS Animasyonları:</strong> Scroll-triggered fade-up/fade-right/fade-left animasyonları.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-emerald-400 mt-1">✓</span>
+                    <span><strong>Retro Underline:</strong> Başlıklarda terracotta renkli accent underline.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-emerald-400 mt-1">✓</span>
+                    <span><strong>Grayscale Effect:</strong> Hero görselinde grayscale, hover'da renkli geçiş.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-emerald-400 mt-1">✓</span>
+                    <span><strong>Bottom Nav Active State:</strong> Scroll spy ile aktif section'ı vurgulama.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-amber-400 mt-1">⚡</span>
+                    <span><strong>Fallback Görseller:</strong> Unsplash placeholder kullanılıyor. Leonardo.ai ile üretilen görseller images/ klasörüne eklenmeli.</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Kullanılan Teknolojiler -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-lg font-semibold mb-4 text-green-400 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                </svg>
+                Kullanılan Teknolojiler
+            </h2>
+            <div class="flex flex-wrap gap-3">
+                <span class="bg-slate-700 px-4 py-2 rounded-full text-sm">Tailwind CSS v4 (CDN)</span>
+                <span class="bg-slate-700 px-4 py-2 rounded-full text-sm">Space Grotesk Font</span>
+                <span class="bg-slate-700 px-4 py-2 rounded-full text-sm">FontAwesome 6.5</span>
+                <span class="bg-slate-700 px-4 py-2 rounded-full text-sm">AOS (Animate On Scroll)</span>
+                <span class="bg-slate-700 px-4 py-2 rounded-full text-sm">Vanilla JavaScript</span>
+                <span class="bg-slate-700 px-4 py-2 rounded-full text-sm">CSS Custom Properties</span>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-slate-500 text-sm py-8 border-t border-slate-700">
+            <p>Bu doküman site ile birlikte Claude AI tarafından üretilmiştir.</p>
+            <p class="mt-2">29 Aralık 2025 | Versiyon: v1-20251229-0200</p>
+        </div>
+
+        <!-- Back Button -->
+        <div class="fixed bottom-8 right-8">
+            <a href="index.html" class="inline-flex items-center gap-2 px-6 py-3 bg-violet-600 hover:bg-violet-700 text-white rounded-full shadow-lg transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Siteye Dön
+            </a>
+        </div>
+
+    </div>
+</body>
+</html>

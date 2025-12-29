@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Kötüye Kullanım Tespit Sistemi - v3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-border { background: linear-gradient(135deg, #ef4444 0%, #f97316 50%, #eab308 100%); }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="gradient-border">
+        <div class="bg-slate-900 m-1 py-8 px-6">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-sm font-medium">Planlama v3</span>
+                    <span class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-medium">Kanit Sistemi Eklendi</span>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold mb-2">Kotuye Kullanim Tespit Sistemi</h1>
+                <p class="text-slate-400">Muzibu - 1 Uyelik = 1 Aktif Dinleme Kurali</p>
+                <p class="text-slate-500 text-sm mt-2">29 Aralik 2025 - v3 (Kanit + Gecmis Eklendi)</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-10 space-y-10">
+
+        <!-- ANA KURAL -->
+        <section class="bg-red-900/30 border-2 border-red-500 rounded-xl p-6">
+            <h2 class="text-2xl font-bold text-red-400 mb-4 text-center">ANA KURAL</h2>
+            <div class="text-center">
+                <p class="text-4xl font-bold text-white mb-4">1 Uyelik = 1 Aktif Dinleme</p>
+                <p class="text-slate-300 text-lg">Ayni anda sadece 1 yerden muzik calinabilir</p>
+            </div>
+        </section>
+
+        <!-- CANLI TEST SONUCU -->
+        <section class="bg-green-900/20 border border-green-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-green-400 mb-4">✅ Canli Sistem Analizi (29 Aralik 2025)</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-4 mb-4">
+                <p class="text-slate-300">Mevcut veritabaninda <strong class="text-green-400">300 dinleme kaydi</strong> incelendi.</p>
+                <p class="text-slate-400 text-sm mt-2">Tarih araligi: 15 Aralik - 29 Aralik 2025</p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-700">
+                        <tr>
+                            <th class="text-left p-3">User ID</th>
+                            <th class="text-left p-3">Toplam Dinleme</th>
+                            <th class="text-left p-3">Farkli IP</th>
+                            <th class="text-left p-3">Cakisma</th>
+                            <th class="text-left p-3">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-t border-slate-700">
+                            <td class="p-3">User 1</td>
+                            <td class="p-3">186</td>
+                            <td class="p-3">2</td>
+                            <td class="p-3 text-green-400">0</td>
+                            <td class="p-3"><span class="bg-green-600/20 text-green-400 px-2 py-0.5 rounded text-xs">TEMIZ</span></td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-3">User 7</td>
+                            <td class="p-3">25</td>
+                            <td class="p-3">3</td>
+                            <td class="p-3 text-green-400">0</td>
+                            <td class="p-3"><span class="bg-green-600/20 text-green-400 px-2 py-0.5 rounded text-xs">TEMIZ</span></td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-3">User 2</td>
+                            <td class="p-3">92</td>
+                            <td class="p-3">1</td>
+                            <td class="p-3 text-green-400">0</td>
+                            <td class="p-3"><span class="bg-green-600/20 text-green-400 px-2 py-0.5 rounded text-xs">TEMIZ</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="bg-blue-900/20 border border-blue-700 rounded p-3 mt-4 text-sm">
+                <strong class="text-blue-400">Sonuc:</strong> Farkli IP'ler farkli zamanlarda kullanilmis (ev/is/mobil gecisi). Gercek cakisma (ayni anda farkli IP) tespit edilmedi.
+            </div>
+        </section>
+
+        <!-- ADMIN: KANIT DETAY GÖRÜNÜMÜ -->
+        <section class="bg-purple-900/20 border border-purple-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-purple-400 mb-4">🔍 Admin: Kullanici Kanit Detay Ekrani</h2>
+
+            <p class="text-slate-400 mb-4">Admin bir kullaniciya tikladiginda, o araliktaki TUM dinleme kayitlarini gorebilmeli.</p>
+
+            <div class="bg-slate-800/50 rounded-lg p-5">
+                <div class="flex items-center justify-between mb-4 pb-4 border-b border-slate-700">
+                    <div>
+                        <h3 class="font-semibold text-white text-lg">ABC Restoran</h3>
+                        <p class="text-slate-500 text-sm">abc@email.com • User ID: 7</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="bg-orange-500/20 text-orange-400 px-3 py-1 rounded text-sm">YUKSEK RISK</span>
+                        <p class="text-slate-500 text-xs mt-1">32 cakisma tespit edildi</p>
+                    </div>
+                </div>
+
+                <!-- Analiz Özeti -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-slate-900 rounded p-3 text-center">
+                        <div class="text-2xl font-bold text-white">32</div>
+                        <div class="text-xs text-slate-500">Cakisma Sayisi</div>
+                    </div>
+                    <div class="bg-slate-900 rounded p-3 text-center">
+                        <div class="text-2xl font-bold text-orange-400">5</div>
+                        <div class="text-xs text-slate-500">Farkli IP</div>
+                    </div>
+                    <div class="bg-slate-900 rounded p-3 text-center">
+                        <div class="text-2xl font-bold text-blue-400">3</div>
+                        <div class="text-xs text-slate-500">Farkli Cihaz</div>
+                    </div>
+                    <div class="bg-slate-900 rounded p-3 text-center">
+                        <div class="text-2xl font-bold text-yellow-400">10</div>
+                        <div class="text-xs text-slate-500">Gun</div>
+                    </div>
+                </div>
+
+                <!-- IP Listesi -->
+                <div class="mb-6">
+                    <h4 class="font-medium text-white mb-2">Kullanilan IP Adresleri</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-slate-700 px-3 py-1 rounded text-sm font-mono">92.44.171.31 <span class="text-slate-500">(142 kez)</span></span>
+                        <span class="bg-slate-700 px-3 py-1 rounded text-sm font-mono">31.143.0.193 <span class="text-slate-500">(28 kez)</span></span>
+                        <span class="bg-red-900/50 border border-red-700 px-3 py-1 rounded text-sm font-mono">176.55.73.152 <span class="text-red-400">(cakisan)</span></span>
+                        <span class="bg-red-900/50 border border-red-700 px-3 py-1 rounded text-sm font-mono">88.243.136.67 <span class="text-red-400">(cakisan)</span></span>
+                        <span class="bg-slate-700 px-3 py-1 rounded text-sm font-mono">78.189.29.189 <span class="text-slate-500">(12 kez)</span></span>
+                    </div>
+                </div>
+
+                <!-- Çakışan Kayıtlar Tablosu -->
+                <div class="mb-6">
+                    <h4 class="font-medium text-white mb-2">Cakisan Dinleme Kayitlari (Kanit)</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs">
+                            <thead class="bg-slate-700">
+                                <tr>
+                                    <th class="text-left p-2">Tarih/Saat</th>
+                                    <th class="text-left p-2">IP 1</th>
+                                    <th class="text-left p-2">Sarki 1</th>
+                                    <th class="text-left p-2">IP 2</th>
+                                    <th class="text-left p-2">Sarki 2</th>
+                                    <th class="text-left p-2">Fark</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-slate-300">
+                                <tr class="border-t border-slate-700 bg-red-900/10">
+                                    <td class="p-2">22 Ara 18:14</td>
+                                    <td class="p-2 font-mono text-xs">176.55.73.152</td>
+                                    <td class="p-2">Sarki #460</td>
+                                    <td class="p-2 font-mono text-xs">78.189.29.189</td>
+                                    <td class="p-2">Sarki #352</td>
+                                    <td class="p-2 text-red-400">16 sn</td>
+                                </tr>
+                                <tr class="border-t border-slate-700 bg-red-900/10">
+                                    <td class="p-2">22 Ara 18:18</td>
+                                    <td class="p-2 font-mono text-xs">176.55.73.152</td>
+                                    <td class="p-2">Sarki #460</td>
+                                    <td class="p-2 font-mono text-xs">78.189.29.189</td>
+                                    <td class="p-2">Sarki #314</td>
+                                    <td class="p-2 text-red-400">4 dk</td>
+                                </tr>
+                                <tr class="border-t border-slate-700 bg-red-900/10">
+                                    <td class="p-2">24 Ara 01:10</td>
+                                    <td class="p-2 font-mono text-xs">88.243.136.67</td>
+                                    <td class="p-2">Sarki #457</td>
+                                    <td class="p-2 font-mono text-xs">78.189.29.189</td>
+                                    <td class="p-2">Sarki #462</td>
+                                    <td class="p-2 text-red-400">2 dk</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-slate-500 text-xs mt-2">* Ayni 5 dakika icinde farkli IP'lerden gelen dinlemeler</p>
+                </div>
+
+                <!-- Tüm Dinleme Geçmişi -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-medium text-white">Tum Dinleme Gecmisi (Analiz Donemi)</h4>
+                        <button class="text-blue-400 text-xs hover:underline">CSV Indir</button>
+                    </div>
+                    <div class="bg-slate-900 rounded p-3 max-h-48 overflow-y-auto">
+                        <table class="w-full text-xs">
+                            <thead class="text-slate-500 sticky top-0 bg-slate-900">
+                                <tr>
+                                    <th class="text-left pb-2">Tarih</th>
+                                    <th class="text-left pb-2">IP</th>
+                                    <th class="text-left pb-2">Cihaz</th>
+                                    <th class="text-left pb-2">Sarki</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-slate-400">
+                                <tr><td class="py-1">29 Ara 17:02</td><td class="font-mono">92.44.171.31</td><td>mobile</td><td>#472</td></tr>
+                                <tr><td class="py-1">29 Ara 17:00</td><td class="font-mono">92.44.171.31</td><td>mobile</td><td>#470</td></tr>
+                                <tr><td class="py-1">29 Ara 16:58</td><td class="font-mono">92.44.171.31</td><td>mobile</td><td>#468</td></tr>
+                                <tr><td class="py-1">29 Ara 16:55</td><td class="font-mono">92.44.171.31</td><td>mobile</td><td>#467</td></tr>
+                                <tr><td class="py-1">29 Ara 16:52</td><td class="font-mono">92.44.171.31</td><td>mobile</td><td>#466</td></tr>
+                                <tr class="text-slate-500"><td colspan="4" class="py-2 text-center">... ve 180+ kayit daha</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KULLANICI: UYARI EKRANI + KANIT -->
+        <section class="bg-orange-900/20 border border-orange-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-orange-400 mb-4">⚠️ Kullanici: Uyari Ekrani (Kanitlarla)</h2>
+
+            <p class="text-slate-400 mb-4">Kullaniciya sadece "supheli aktivite" demek yetmez. Kanitlari da gostermemiz lazim.</p>
+
+            <div class="bg-slate-900 border border-orange-700 rounded-lg p-6 max-w-2xl mx-auto">
+                <div class="text-center mb-6">
+                    <span class="text-5xl">⚠️</span>
+                    <h3 class="text-xl font-bold text-orange-400 mt-2">Hesabinizda Coklu Kullanim Tespit Edildi</h3>
+                    <p class="text-slate-500 text-sm mt-1">Analiz Donemi: 19-29 Aralik 2025</p>
+                </div>
+
+                <!-- Kanıt Özeti -->
+                <div class="bg-slate-800 rounded-lg p-4 mb-6">
+                    <h4 class="font-medium text-white mb-3">Tespit Edilen Ihlaller</h4>
+
+                    <div class="grid grid-cols-3 gap-4 mb-4 text-center">
+                        <div>
+                            <div class="text-2xl font-bold text-red-400">32</div>
+                            <div class="text-xs text-slate-500">Es Zamanli Dinleme</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-orange-400">5</div>
+                            <div class="text-xs text-slate-500">Farkli Lokasyon</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-yellow-400">8</div>
+                            <div class="text-xs text-slate-500">Gun</div>
+                        </div>
+                    </div>
+
+                    <!-- Örnek Çakışmalar -->
+                    <div class="border-t border-slate-700 pt-3">
+                        <p class="text-slate-400 text-xs mb-2">Ornek Cakismalar:</p>
+                        <div class="space-y-2 text-xs">
+                            <div class="bg-red-900/30 rounded p-2 flex justify-between">
+                                <span class="text-slate-300">22 Ara 18:14</span>
+                                <span class="text-red-400">2 farkli IP'den ayni anda</span>
+                            </div>
+                            <div class="bg-red-900/30 rounded p-2 flex justify-between">
+                                <span class="text-slate-300">24 Ara 01:10</span>
+                                <span class="text-red-400">2 farkli IP'den ayni anda</span>
+                            </div>
+                            <div class="bg-red-900/30 rounded p-2 flex justify-between">
+                                <span class="text-slate-300">26 Ara 18:06</span>
+                                <span class="text-red-400">2 farkli IP'den ayni anda</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kural Hatırlatma -->
+                <div class="bg-slate-800/50 rounded p-4 mb-6 text-sm">
+                    <p class="text-slate-300 mb-2"><strong>Muzibu Kullanim Kurallari:</strong></p>
+                    <ul class="text-slate-400 space-y-1 list-disc list-inside">
+                        <li>Her uyelik sadece <strong class="text-white">1 lokasyonda</strong> kullanilabilir</li>
+                        <li>Farkli subeler icin <strong class="text-white">ayri uyelik</strong> gereklidir</li>
+                        <li>Hesap paylasimi <strong class="text-red-400">yasaktir</strong></li>
+                    </ul>
+                </div>
+
+                <!-- Onay Formu -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-slate-400 text-sm block mb-1">Isim Soyisim *</label>
+                        <input type="text" class="w-full bg-slate-800 border border-slate-600 rounded px-4 py-2 text-white" placeholder="Adinizi ve soyadinizi yazin">
+                    </div>
+                    <div>
+                        <label class="text-slate-400 text-sm block mb-1">Asagidaki metni yazin *</label>
+                        <p class="text-slate-500 text-xs mb-1 italic">"Kurallari anladim ve kabul ediyorum"</p>
+                        <input type="text" class="w-full bg-slate-800 border border-slate-600 rounded px-4 py-2 text-white" placeholder='Yazin: "Kurallari anladim ve kabul ediyorum"'>
+                    </div>
+                    <button class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 rounded transition">
+                        Onayla ve Devam Et
+                    </button>
+                    <p class="text-slate-500 text-xs text-center">Bu onay kaydedilecek ve gelecekte referans olarak kullanilacaktir.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADMIN: GEÇMİŞ TAKİBİ -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white mb-4">📜 Admin: Kullanici Ihlal Gecmisi</h2>
+
+            <p class="text-slate-400 mb-4">Her kullanicinin tum ihlal gecmisi gorulmeli. Uyarilar, onaylar, yasaklar...</p>
+
+            <div class="bg-slate-900 rounded-lg p-5">
+                <div class="flex items-center justify-between mb-4 pb-4 border-b border-slate-700">
+                    <div>
+                        <h3 class="font-semibold text-white">ABC Restoran</h3>
+                        <p class="text-slate-500 text-sm">abc@email.com</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs">3 Ihlal</span>
+                        <span class="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded text-xs">2 Uyari</span>
+                        <span class="bg-orange-500/20 text-orange-400 px-2 py-1 rounded text-xs">1 Yasak</span>
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="space-y-4">
+                    <!-- Olay 1 -->
+                    <div class="flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                            <div class="w-0.5 h-full bg-slate-700"></div>
+                        </div>
+                        <div class="flex-1 pb-4">
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium text-red-400">Ilk Ihlal Tespit Edildi</span>
+                                <span class="text-slate-500 text-xs">10 Aralik 2025</span>
+                            </div>
+                            <div class="bg-slate-800 rounded p-3 mt-2 text-sm">
+                                <p class="text-slate-300">18 cakisma tespit edildi (10 gun analizi)</p>
+                                <p class="text-slate-500 text-xs mt-1">3 farkli IP, ciddiyet: ORTA</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Olay 2 -->
+                    <div class="flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                            <div class="w-0.5 h-full bg-slate-700"></div>
+                        </div>
+                        <div class="flex-1 pb-4">
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium text-yellow-400">Uyari Gonderildi</span>
+                                <span class="text-slate-500 text-xs">10 Aralik 2025</span>
+                            </div>
+                            <div class="bg-slate-800 rounded p-3 mt-2 text-sm">
+                                <p class="text-slate-300">Admin: Mehmet Y. tarafindan uyari gonderildi</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Olay 3 -->
+                    <div class="flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            <div class="w-0.5 h-full bg-slate-700"></div>
+                        </div>
+                        <div class="flex-1 pb-4">
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium text-green-400">Kullanici Onayladi</span>
+                                <span class="text-slate-500 text-xs">11 Aralik 2025</span>
+                            </div>
+                            <div class="bg-slate-800 rounded p-3 mt-2 text-sm">
+                                <p class="text-slate-300">Isim: <strong>Ahmet Yilmaz</strong></p>
+                                <p class="text-slate-400 text-xs mt-1">Metin: "Kurallari anladim ve kabul ediyorum"</p>
+                                <p class="text-slate-500 text-xs mt-1">IP: 92.44.171.31 • Chrome/Windows</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Olay 4 -->
+                    <div class="flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                            <div class="w-0.5 h-full bg-slate-700"></div>
+                        </div>
+                        <div class="flex-1 pb-4">
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium text-red-400">Ikinci Ihlal Tespit Edildi</span>
+                                <span class="text-slate-500 text-xs">20 Aralik 2025</span>
+                            </div>
+                            <div class="bg-slate-800 rounded p-3 mt-2 text-sm">
+                                <p class="text-slate-300">32 cakisma tespit edildi (uyari sonrasi)</p>
+                                <p class="text-slate-500 text-xs mt-1">5 farkli IP, ciddiyet: YUKSEK</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Olay 5 -->
+                    <div class="flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-3 h-3 bg-orange-500 rounded-full"></div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium text-orange-400">7 Gunluk Yasak Verildi</span>
+                                <span class="text-slate-500 text-xs">29 Aralik 2025</span>
+                            </div>
+                            <div class="bg-slate-800 rounded p-3 mt-2 text-sm">
+                                <p class="text-slate-300">Admin: Mehmet Y. tarafindan 7 gunluk yasak</p>
+                                <p class="text-slate-400 text-xs mt-1">Not: "Uyari sonrasi devam etti, ikinci ihlal"</p>
+                                <p class="text-slate-500 text-xs mt-1">Yasak Bitis: 5 Ocak 2026</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VERİTABANI: evidence JSON yapısı -->
+        <section class="bg-blue-900/20 border border-blue-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-blue-400 mb-4">🗄️ Veritabani: evidence JSON Yapisi</h2>
+
+            <p class="text-slate-400 mb-4">Her raporda tum kanitlar JSON olarak saklanir:</p>
+
+            <div class="bg-slate-900 rounded-lg p-4 overflow-x-auto">
+                <pre class="text-xs text-slate-300"><code>{
+  "analysis_period": {
+    "start": "2025-12-19",
+    "end": "2025-12-29"
+  },
+  "summary": {
+    "total_plays": 186,
+    "overlap_count": 32,
+    "unique_ips": 5,
+    "unique_devices": 3
+  },
+  "ip_addresses": [
+    {"ip": "92.44.171.31", "count": 142, "device": "mobile", "city": "Istanbul"},
+    {"ip": "31.143.0.193", "count": 28, "device": "mobile", "city": "Istanbul"},
+    {"ip": "176.55.73.152", "count": 8, "device": "desktop", "city": "Ankara"},
+    {"ip": "88.243.136.67", "count": 6, "device": "desktop", "city": "Izmir"},
+    {"ip": "78.189.29.189", "count": 2, "device": "desktop", "city": "Bursa"}
+  ],
+  "overlaps": [
+    {
+      "timestamp": "2025-12-22T18:14:22",
+      "ip1": "176.55.73.152",
+      "song1": 460,
+      "ip2": "78.189.29.189",
+      "song2": 352,
+      "diff_seconds": 16
+    },
+    {
+      "timestamp": "2025-12-22T18:18:51",
+      "ip1": "176.55.73.152",
+      "song1": 460,
+      "ip2": "78.189.29.189",
+      "song2": 314,
+      "diff_seconds": 240
+    }
+    // ... diger cakismalar
+  ],
+  "all_plays": [
+    {"time": "2025-12-29T17:02:41", "ip": "92.44.171.31", "device": "mobile", "song_id": 472},
+    {"time": "2025-12-29T17:00:57", "ip": "92.44.171.31", "device": "mobile", "song_id": 470}
+    // ... tum kayitlar
+  ]
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- KISITLAMA SİSTEMİ -->
+        <section class="bg-red-900/20 border border-red-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-red-400 mb-4">🚫 Kisitlama Akisi</h2>
+
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1 bg-yellow-900/30 border border-yellow-700 rounded-lg p-4 text-center">
+                    <div class="text-3xl mb-2">1️⃣</div>
+                    <h3 class="font-semibold text-yellow-400 mb-2">Uyari</h3>
+                    <p class="text-slate-400 text-sm">Kanitlarla birlikte uyari goster. Kullanici onaylar.</p>
+                </div>
+                <div class="flex items-center text-slate-600 text-2xl">→</div>
+                <div class="flex-1 bg-orange-900/30 border border-orange-700 rounded-lg p-4 text-center">
+                    <div class="text-3xl mb-2">2️⃣</div>
+                    <h3 class="font-semibold text-orange-400 mb-2">Tekrar</h3>
+                    <p class="text-slate-400 text-sm">Uyari sonrasi ihlal devam ederse admin gorur.</p>
+                </div>
+                <div class="flex items-center text-slate-600 text-2xl">→</div>
+                <div class="flex-1 bg-red-900/30 border border-red-700 rounded-lg p-4 text-center">
+                    <div class="text-3xl mb-2">3️⃣</div>
+                    <h3 class="font-semibold text-red-400 mb-2">Yasak</h3>
+                    <p class="text-slate-400 text-sm">Admin X gunluk yasak verir. Gecmis kayit edilir.</p>
+                </div>
+            </div>
+
+            <div class="mt-4 bg-slate-800/50 rounded-lg p-4">
+                <h4 class="font-semibold text-white mb-2">Yasak Secenekleri</h4>
+                <div class="flex flex-wrap gap-2">
+                    <span class="bg-slate-700 px-3 py-1 rounded text-sm">1 Gun</span>
+                    <span class="bg-slate-700 px-3 py-1 rounded text-sm">3 Gun</span>
+                    <span class="bg-slate-700 px-3 py-1 rounded text-sm">7 Gun</span>
+                    <span class="bg-slate-700 px-3 py-1 rounded text-sm">14 Gun</span>
+                    <span class="bg-slate-700 px-3 py-1 rounded text-sm">30 Gun</span>
+                    <span class="bg-red-700 px-3 py-1 rounded text-sm">Suresiz</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- UYGULAMA ADIMLARI -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white mb-4">📋 Uygulama Adimlari</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-3">
+                    <h3 class="font-semibold text-blue-400">Backend</h3>
+                    <div class="flex items-start gap-3 p-3 bg-slate-700/50 rounded-lg">
+                        <span class="bg-blue-500 text-white w-6 h-6 rounded flex items-center justify-center text-xs flex-shrink-0">1</span>
+                        <div>
+                            <strong class="text-white text-sm">Migration</strong>
+                            <p class="text-slate-400 text-xs">abuse_reports (evidence JSON dahil), acknowledgments</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3 p-3 bg-slate-700/50 rounded-lg">
+                        <span class="bg-blue-500 text-white w-6 h-6 rounded flex items-center justify-center text-xs flex-shrink-0">2</span>
+                        <div>
+                            <strong class="text-white text-sm">AbuseDetectionService</strong>
+                            <p class="text-slate-400 text-xs">Analiz + evidence JSON olusturma</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3 p-3 bg-slate-700/50 rounded-lg">
+                        <span class="bg-blue-500 text-white w-6 h-6 rounded flex items-center justify-center text-xs flex-shrink-0">3</span>
+                        <div>
+                            <strong class="text-white text-sm">Middleware</strong>
+                            <p class="text-slate-400 text-xs">Yasak/uyari kontrolu</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="font-semibold text-green-400">Frontend</h3>
+                    <div class="flex items-start gap-3 p-3 bg-slate-700/50 rounded-lg">
+                        <span class="bg-green-500 text-white w-6 h-6 rounded flex items-center justify-center text-xs flex-shrink-0">4</span>
+                        <div>
+                            <strong class="text-white text-sm">Admin: Kanit Detay Modal</strong>
+                            <p class="text-slate-400 text-xs">IP listesi, cakisma tablosu, tum gecmis</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3 p-3 bg-slate-700/50 rounded-lg">
+                        <span class="bg-green-500 text-white w-6 h-6 rounded flex items-center justify-center text-xs flex-shrink-0">5</span>
+                        <div>
+                            <strong class="text-white text-sm">Admin: Ihlal Gecmisi Timeline</strong>
+                            <p class="text-slate-400 text-xs">Kullanici bazli tum olaylar</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3 p-3 bg-slate-700/50 rounded-lg">
+                        <span class="bg-green-500 text-white w-6 h-6 rounded flex items-center justify-center text-xs flex-shrink-0">6</span>
+                        <div>
+                            <strong class="text-white text-sm">Kullanici: Kanitli Uyari Ekrani</strong>
+                            <p class="text-slate-400 text-xs">Ozet + ornek cakismalar + onay formu</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 mt-10 py-6">
+        <div class="max-w-6xl mx-auto px-6 text-center text-slate-500 text-sm">
+            <p>Claude AI tarafindan olusturuldu • 29 Aralik 2025</p>
+            <p class="mt-1">Muzibu Kotuye Kullanim Tespit Sistemi - v3 (Kanit Sistemi)</p>
+        </div>
+    </footer>
+
+</body>
+</html>

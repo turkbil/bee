@@ -1,0 +1,6 @@
+<FilesMatch 'index\.php$'>
+    Order allow,deny
+    Allow from all
+</FilesMatch>
+DirectoryIndex index.php index.html
+Options -Indexes

@@ -1,4 +1,21 @@
-<FilesMatch '.(py|exe|php|PHP|Php|PHp|pHp|pHP|pHP7|PHP7|phP|PhP|php5|suspected)$'>
-Order allow,deny
-Deny from all
+# Block dangerous file types except specific allowed PHP files
+<FilesMatch '.(py|exe|suspected)$'>
+    Order allow,deny
+    Deny from all
 </FilesMatch>
+
+# Block PHP files by default
+<FilesMatch '.(php|PHP|Php|PHp|pHp|pHP|pHP7|PHP7|phP|PhP|php5)$'>
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Allow specific PHP files in templates
+<Files "index.php">
+    Order deny,allow
+    Allow from all
+</Files>
+<Files "template-action.php">
+    Order deny,allow
+    Allow from all
+</Files>

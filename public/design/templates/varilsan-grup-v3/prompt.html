@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varilsan Group - Prompt Dökümanı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-white min-h-screen p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 bg-emerald-600/20 text-emerald-400 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                <i class="fa-solid fa-code"></i>
+                Prompt Dökümanı
+            </div>
+            <h1 class="text-4xl font-bold mb-4">Varilsan Group</h1>
+            <p class="text-slate-400">Kurumsal Web Sitesi Tasarım Dökümanı</p>
+            <p class="text-slate-500 text-sm mt-2">Oluşturulma: 29 Aralık 2025 - 02:48</p>
+        </div>
+
+        <!-- Grid Layout -->
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <!-- Genel Bilgiler -->
+            <div class="bg-slate-800 rounded-xl p-6">
+                <h2 class="text-lg font-semibold mb-4 text-emerald-400 flex items-center gap-2">
+                    <i class="fa-solid fa-info-circle"></i>
+                    Genel Bilgiler
+                </h2>
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">Sektör:</span>
+                        <span>Endüstriyel Ambalaj / Varil Üretimi</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">Şirket Sayısı:</span>
+                        <span>3 (Varilsan Plastik, Ambalaj, Polimer)</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">Slogan:</span>
+                        <span class="text-emerald-400">"Kalite Tesadüf Değildir"</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">Tema:</span>
+                        <span>Light/Dark Mode Toggle</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stil Detayları -->
+            <div class="bg-slate-800 rounded-xl p-6">
+                <h2 class="text-lg font-semibold mb-4 text-blue-400 flex items-center gap-2">
+                    <i class="fa-solid fa-palette"></i>
+                    Stil Detayları
+                </h2>
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Ana Renk:</span>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 rounded bg-emerald-600"></div>
+                            <span>Emerald (#059669)</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">İkincil Renk:</span>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 rounded bg-teal-600"></div>
+                            <span>Teal (#0d9488)</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">Font Başlık:</span>
+                        <span>Montserrat</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">Font Gövde:</span>
+                        <span>Open Sans</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Layout Seçimleri -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-lg font-semibold mb-4 text-violet-400 flex items-center gap-2">
+                <i class="fa-solid fa-layer-group"></i>
+                Layout Seçimleri (Prompt Listesinden)
+            </h2>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div class="bg-slate-700/50 rounded-lg p-4">
+                    <div class="text-slate-400 mb-1">Header / Navigation</div>
+                    <div class="font-medium">#4 - Logo left + Mega menu</div>
+                </div>
+                <div class="bg-slate-700/50 rounded-lg p-4">
+                    <div class="text-slate-400 mb-1">Hero Section</div>
+                    <div class="font-medium">#5 - Full-screen image slider (3 slide) + dot navigation</div>
+                </div>
+                <div class="bg-slate-700/50 rounded-lg p-4">
+                    <div class="text-slate-400 mb-1">Şirketler (Companies)</div>
+                    <div class="font-medium">#7 - Bento box layout (mixed sizes)</div>
+                </div>
+                <div class="bg-slate-700/50 rounded-lg p-4">
+                    <div class="text-slate-400 mb-1">Ürünler (Products)</div>
+                    <div class="font-medium">#1 - 3-column equal cards (Klasik ürün kartı)</div>
+                </div>
+                <div class="bg-slate-700/50 rounded-lg p-4">
+                    <div class="text-slate-400 mb-1">Hakkımızda (About)</div>
+                    <div class="font-medium">#21 - Sol metin + Sağ image grid collage</div>
+                </div>
+                <div class="bg-slate-700/50 rounded-lg p-4">
+                    <div class="text-slate-400 mb-1">Sürdürülebilirlik (Values)</div>
+                    <div class="font-medium">#51 - Tree/branch metaphor + circular icons</div>
+                </div>
+                <div class="bg-slate-700/50 rounded-lg p-4">
+                    <div class="text-slate-400 mb-1">İletişim (Contact)</div>
+                    <div class="font-medium">#20 - Multiple locations + Form</div>
+                </div>
+                <div class="bg-slate-700/50 rounded-lg p-4">
+                    <div class="text-slate-400 mb-1">Footer</div>
+                    <div class="font-medium">#1 - 4-column classic (Geniş footer)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Sırası -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-lg font-semibold mb-4 text-pink-400 flex items-center gap-2">
+                <i class="fa-solid fa-list-ol"></i>
+                Section Sırası
+            </h2>
+            <div class="flex flex-wrap gap-3 text-sm">
+                <span class="bg-slate-700 px-4 py-2 rounded-lg">1. Hero Slider</span>
+                <span class="bg-slate-700 px-4 py-2 rounded-lg">2. Stats Bar</span>
+                <span class="bg-slate-700 px-4 py-2 rounded-lg">3. Şirketlerimiz</span>
+                <span class="bg-slate-700 px-4 py-2 rounded-lg">4. Ürünler</span>
+                <span class="bg-slate-700 px-4 py-2 rounded-lg">5. Hakkımızda</span>
+                <span class="bg-slate-700 px-4 py-2 rounded-lg">6. Sürdürülebilirlik</span>
+                <span class="bg-slate-700 px-4 py-2 rounded-lg">7. Sertifikalar</span>
+                <span class="bg-slate-700 px-4 py-2 rounded-lg">8. İletişim</span>
+                <span class="bg-slate-700 px-4 py-2 rounded-lg">9. Footer</span>
+            </div>
+        </div>
+
+        <!-- Görsel Kaynakları -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-lg font-semibold mb-4 text-amber-400 flex items-center gap-2">
+                <i class="fa-solid fa-image"></i>
+                Görsel Kaynakları (Unsplash Placeholder)
+            </h2>
+            <p class="text-slate-400 text-sm mb-6">
+                Bu tasarımda Unsplash'tan placeholder görseller kullanılmıştır.
+                Gerçek projede Leonardo.ai veya özel çekimler ile değiştirilmelidir.
+            </p>
+            <div class="space-y-4 text-sm">
+                <!-- Hero Slides -->
+                <div class="border-l-2 border-amber-500 pl-4">
+                    <div class="font-medium mb-1">Hero Slide 1 - Endüstriyel Depo</div>
+                    <div class="text-slate-400">https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d</div>
+                    <div class="text-slate-500 text-xs mt-1">Anahtar: warehouse, industrial, storage</div>
+                </div>
+                <div class="border-l-2 border-amber-500 pl-4">
+                    <div class="font-medium mb-1">Hero Slide 2 - Geri Dönüşüm</div>
+                    <div class="text-slate-400">https://images.unsplash.com/photo-1532996122724-e3c354a0b15b</div>
+                    <div class="text-slate-500 text-xs mt-1">Anahtar: recycling, sustainability, environment</div>
+                </div>
+                <div class="border-l-2 border-amber-500 pl-4">
+                    <div class="font-medium mb-1">Hero Slide 3 - Üretim/Kalite</div>
+                    <div class="text-slate-400">https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122</div>
+                    <div class="text-slate-500 text-xs mt-1">Anahtar: manufacturing, quality, industrial</div>
+                </div>
+
+                <!-- Company Cards -->
+                <div class="border-l-2 border-emerald-500 pl-4">
+                    <div class="font-medium mb-1">Varilsan Plastik Kartı</div>
+                    <div class="text-slate-400">https://images.unsplash.com/photo-1553062407-98eeb64c6a62</div>
+                    <div class="text-slate-500 text-xs mt-1">Anahtar: plastic drums, industrial containers</div>
+                </div>
+                <div class="border-l-2 border-blue-500 pl-4">
+                    <div class="font-medium mb-1">Varilsan Ambalaj Kartı</div>
+                    <div class="text-slate-400">https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d</div>
+                    <div class="text-slate-500 text-xs mt-1">Anahtar: industrial packaging, warehouse</div>
+                </div>
+                <div class="border-l-2 border-teal-500 pl-4">
+                    <div class="font-medium mb-1">Varilsan Polimer Kartı</div>
+                    <div class="text-slate-400">https://images.unsplash.com/photo-1532996122724-e3c354a0b15b</div>
+                    <div class="text-slate-500 text-xs mt-1">Anahtar: recycling, polymer, granules</div>
+                </div>
+
+                <!-- About Section -->
+                <div class="border-l-2 border-violet-500 pl-4">
+                    <div class="font-medium mb-1">Hakkımızda - Ekip</div>
+                    <div class="text-slate-400">https://images.unsplash.com/photo-1556761175-4b46a572b786</div>
+                    <div class="text-slate-500 text-xs mt-1">Anahtar: corporate team, office meeting</div>
+                </div>
+                <div class="border-l-2 border-violet-500 pl-4">
+                    <div class="font-medium mb-1">Hakkımızda - Kalite Kontrol</div>
+                    <div class="text-slate-400">https://images.unsplash.com/photo-1581092160562-40aa08e78837</div>
+                    <div class="text-slate-500 text-xs mt-1">Anahtar: quality control, testing, laboratory</div>
+                </div>
+                <div class="border-l-2 border-violet-500 pl-4">
+                    <div class="font-medium mb-1">Hakkımızda - Lojistik</div>
+                    <div class="text-slate-400">https://images.unsplash.com/photo-1601584115197-04ecc0da31d7</div>
+                    <div class="text-slate-500 text-xs mt-1">Anahtar: logistics, shipping, transportation</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teknolojiler -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-lg font-semibold mb-4 text-cyan-400 flex items-center gap-2">
+                <i class="fa-solid fa-microchip"></i>
+                Kullanılan Teknolojiler
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div class="bg-slate-700/50 rounded-lg p-3 text-center">
+                    <i class="fa-brands fa-css3-alt text-2xl text-blue-400 mb-2"></i>
+                    <div>Tailwind CSS v4</div>
+                </div>
+                <div class="bg-slate-700/50 rounded-lg p-3 text-center">
+                    <i class="fa-brands fa-js text-2xl text-yellow-400 mb-2"></i>
+                    <div>Alpine.js</div>
+                </div>
+                <div class="bg-slate-700/50 rounded-lg p-3 text-center">
+                    <i class="fa-solid fa-sliders text-2xl text-purple-400 mb-2"></i>
+                    <div>Swiper.js</div>
+                </div>
+                <div class="bg-slate-700/50 rounded-lg p-3 text-center">
+                    <i class="fa-solid fa-wand-magic-sparkles text-2xl text-pink-400 mb-2"></i>
+                    <div>AOS Animations</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Özellikler -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-lg font-semibold mb-4 text-green-400 flex items-center gap-2">
+                <i class="fa-solid fa-check-double"></i>
+                Tasarım Özellikleri
+            </h2>
+            <ul class="grid md:grid-cols-2 gap-3 text-sm">
+                <li class="flex items-center gap-2">
+                    <i class="fa-solid fa-check text-green-500"></i>
+                    Responsive (Mobile-first) tasarım
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fa-solid fa-check text-green-500"></i>
+                    Dark/Light mode toggle
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fa-solid fa-check text-green-500"></i>
+                    Slider/Carousel hero section
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fa-solid fa-check text-green-500"></i>
+                    Grid modüler layout
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fa-solid fa-check text-green-500"></i>
+                    Smooth scroll animasyonları
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fa-solid fa-check text-green-500"></i>
+                    Sticky header with scroll effect
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fa-solid fa-check text-green-500"></i>
+                    Mega menu dropdown
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fa-solid fa-check text-green-500"></i>
+                    Hamburger mobile menu
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fa-solid fa-check text-green-500"></i>
+                    3 lokasyonlu iletişim bölümü
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fa-solid fa-check text-green-500"></i>
+                    Geniş 4-sütunlu footer
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fa-solid fa-check text-green-500"></i>
+                    AOS scroll animasyonları
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fa-solid fa-check text-green-500"></i>
+                    Sürdürülebilirlik vurgusu
+                </li>
+            </ul>
+        </div>
+
+        <!-- Şirket Bilgileri -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-lg font-semibold mb-4 text-orange-400 flex items-center gap-2">
+                <i class="fa-solid fa-building"></i>
+                Birleştirilen Şirketler
+            </h2>
+            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                <div class="bg-emerald-900/30 border border-emerald-800 rounded-lg p-4">
+                    <div class="font-bold text-emerald-400 mb-2">Varilsan Plastik</div>
+                    <div class="text-slate-400">varilsan.com</div>
+                    <div class="text-slate-500 text-xs mt-2">İzmir, Kemalpaşa</div>
+                    <div class="text-slate-500 text-xs">Plastik varil, IBC tank, Metal varil</div>
+                </div>
+                <div class="bg-blue-900/30 border border-blue-800 rounded-lg p-4">
+                    <div class="font-bold text-blue-400 mb-2">Varilsan Ambalaj</div>
+                    <div class="text-slate-400">varilsan.com.tr</div>
+                    <div class="text-slate-500 text-xs mt-2">Kocaeli, Çayırova</div>
+                    <div class="text-slate-500 text-xs">Endüstriyel ambalaj, Kimya/Tekstil</div>
+                </div>
+                <div class="bg-teal-900/30 border border-teal-800 rounded-lg p-4">
+                    <div class="font-bold text-teal-400 mb-2">Varilsan Polimer</div>
+                    <div class="text-slate-400">varilsanpolimer.com</div>
+                    <div class="text-slate-500 text-xs mt-2">Kocaeli, Gebze</div>
+                    <div class="text-slate-500 text-xs">Geri dönüşüm, HDPE granül üretimi</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-slate-500 text-sm pt-8 border-t border-slate-800">
+            <p>Bu döküman Varilsan Group web sitesi tasarımı için oluşturulmuştur.</p>
+            <p class="mt-2">Tasarım: AI tarafından otomatik üretilmiştir.</p>
+            <a href="index.html" class="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 mt-4">
+                <i class="fa-solid fa-arrow-left"></i>
+                Siteye Dön
+            </a>
+        </div>
+    </div>
+</body>
+</html>

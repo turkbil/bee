@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurumsal Şirket | Profesyonel Çözümler</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS v4 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'grotesk': ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        'cream': '#faf8f5',
+                        'cream-dark': '#f5f2ed',
+                        'terracotta': '#c4704b',
+                        'sage': '#7d8471',
+                        'mustard': '#d4a03c',
+                        'vintage-dark': '#2d2d2d',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* Vintage texture overlay */
+        .vintage-texture {
+            position: relative;
+        }
+        .vintage-texture::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        /* Retro underline */
+        .retro-underline {
+            position: relative;
+            display: inline-block;
+        }
+        .retro-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #c4704b;
+        }
+
+        /* Bottom nav space */
+        body {
+            padding-bottom: 80px;
+        }
+
+        /* Smooth transitions */
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-cream dark:bg-slate-900 text-vintage-dark dark:text-gray-100 font-grotesk">
+
+    <!-- Header (Minimal Top Bar) -->
+    <header class="fixed top-0 left-0 right-0 z-40 bg-cream/90 dark:bg-slate-900/90 backdrop-blur-sm border-b border-vintage-dark/5 dark:border-white/5">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="text-2xl font-bold tracking-tight">
+                <span class="text-terracotta">K</span>urumsal
+            </a>
+
+            <!-- Desktop Nav (Hidden - Bottom nav is primary) -->
+            <nav class="hidden lg:flex items-center gap-8">
+                <a href="#hakkimizda" class="text-sm font-medium hover:text-terracotta">Hakkımızda</a>
+                <a href="#hizmetler" class="text-sm font-medium hover:text-terracotta">Hizmetler</a>
+                <a href="#degerler" class="text-sm font-medium hover:text-terracotta">Değerler</a>
+                <a href="#iletisim" class="text-sm font-medium hover:text-terracotta">İletişim</a>
+            </nav>
+
+            <!-- Theme Toggle -->
+            <button id="themeToggle" class="w-10 h-10 rounded-full bg-vintage-dark/5 dark:bg-white/10 flex items-center justify-center hover:bg-vintage-dark/10 dark:hover:bg-white/20">
+                <i class="fas fa-sun text-mustard dark:hidden"></i>
+                <i class="fas fa-moon text-mustard hidden dark:block"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section - Split Layout #21 -->
+    <section id="hero" class="min-h-screen pt-20 vintage-texture">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-5 gap-12 items-center min-h-[calc(100vh-5rem)]">
+
+                <!-- Left Content (60%) -->
+                <div class="lg:col-span-3 space-y-8" data-aos="fade-right" data-aos-duration="800">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-terracotta/10 dark:bg-terracotta/20 rounded-full text-terracotta text-sm font-medium">
+                        <span class="w-2 h-2 bg-terracotta rounded-full animate-pulse"></span>
+                        1985'ten Beri Güvenilir
+                    </div>
+
+                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
+                        <span class="retro-underline">Geleceği</span><br>
+                        Birlikte<br>
+                        <span class="text-terracotta">İnşa Ediyoruz</span>
+                    </h1>
+
+                    <p class="text-lg text-vintage-dark/70 dark:text-gray-400 max-w-xl leading-relaxed">
+                        Dört on yıllık deneyimimizle, işletmelere sürdürülebilir büyüme ve yenilikçi çözümler sunuyoruz. Geleneksel değerler, modern yaklaşım.
+                    </p>
+
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#hizmetler" class="inline-flex items-center gap-3 px-8 py-4 bg-vintage-dark dark:bg-white text-cream dark:text-slate-900 font-semibold rounded-none hover:bg-terracotta dark:hover:bg-terracotta dark:hover:text-white transition-colors">
+                            Hizmetlerimiz
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                        <a href="#iletisim" class="inline-flex items-center gap-3 px-8 py-4 border-2 border-vintage-dark dark:border-white font-semibold rounded-none hover:bg-vintage-dark hover:text-cream dark:hover:bg-white dark:hover:text-slate-900 transition-colors">
+                            Bize Ulaşın
+                        </a>
+                    </div>
+
+                    <!-- Stats Bar -->
+                    <div class="grid grid-cols-3 gap-8 pt-8 border-t border-vintage-dark/10 dark:border-white/10">
+                        <div>
+                            <div class="text-3xl font-bold text-terracotta">40+</div>
+                            <div class="text-sm text-vintage-dark/60 dark:text-gray-500">Yıllık Tecrübe</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold text-sage">2.500+</div>
+                            <div class="text-sm text-vintage-dark/60 dark:text-gray-500">Tamamlanan Proje</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold text-mustard">98%</div>
+                            <div class="text-sm text-vintage-dark/60 dark:text-gray-500">Müşteri Memnuniyeti</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Image (40%) -->
+                <div class="lg:col-span-2 relative" data-aos="fade-left" data-aos-duration="800" data-aos-delay="200">
+                    <!-- LEONARDO.AI:
+                         Prompt: "Vintage style professional business portrait, elegant elderly businessman in classic suit, warm sepia tones, film grain texture, soft natural window light, Kodak Portra 400 aesthetic, slight vignette, timeless corporate photography, 8k quality"
+                         Size: 800x1200 | Model: Leonardo Phoenix | Style: Photoreal
+                    -->
+                    <div class="relative">
+                        <div class="absolute -inset-4 bg-terracotta/20 dark:bg-terracotta/10 -z-10"></div>
+                        <img src="images/hero-portrait.jpg" alt="Kurumsal Vizyon" class="w-full h-[600px] object-cover grayscale hover:grayscale-0 transition-all duration-700" onerror="this.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&h=1200&fit=crop'">
+
+                        <!-- Floating Badge -->
+                        <div class="absolute -bottom-6 -left-6 bg-cream dark:bg-slate-800 p-6 shadow-xl">
+                            <div class="text-4xl font-bold text-terracotta">1985</div>
+                            <div class="text-sm text-vintage-dark/60 dark:text-gray-400">Kuruluş Yılı</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce hidden lg:block">
+            <a href="#hakkimizda" class="w-10 h-16 border-2 border-vintage-dark/20 dark:border-white/20 rounded-full flex items-start justify-center pt-2">
+                <div class="w-1.5 h-3 bg-terracotta rounded-full animate-pulse"></div>
+            </a>
+        </div>
+    </section>
+
+    <!-- About Section - Founder Story Style #106 -->
+    <section id="hakkimizda" class="py-24 bg-cream-dark dark:bg-slate-950 vintage-texture">
+        <div class="max-w-7xl mx-auto px-6">
+
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+                <!-- Image Side -->
+                <div class="relative" data-aos="fade-up" data-aos-duration="600">
+                    <!-- LEONARDO.AI:
+                         Prompt: "Vintage office interior 1980s style, wooden desk with papers, typewriter, warm tungsten lighting, dust particles in sunlight, nostalgic corporate atmosphere, Fuji Velvia film stock, slight lens flare, documentary photography style"
+                         Size: 800x600 | Model: Leonardo Phoenix | Style: Cinematic
+                    -->
+                    <div class="relative">
+                        <img src="images/about-office.jpg" alt="Tarihçemiz" class="w-full h-[500px] object-cover" onerror="this.src='https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop'">
+
+                        <!-- Overlay Card -->
+                        <div class="absolute bottom-0 right-0 bg-terracotta text-cream p-8 max-w-xs">
+                            <i class="fas fa-quote-left text-3xl opacity-50 mb-4"></i>
+                            <p class="italic leading-relaxed">
+                                "Kalite, hiçbir zaman tesadüf değildir. Daima akıllı çabanın sonucudur."
+                            </p>
+                            <div class="mt-4 text-sm opacity-80">— Kurucu Ortak</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Side -->
+                <div class="space-y-8" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
+                    <div class="inline-block px-4 py-2 border border-sage text-sage text-sm font-medium tracking-wider uppercase">
+                        Hikayemiz
+                    </div>
+
+                    <h2 class="text-4xl md:text-5xl font-bold leading-tight">
+                        Dört Nesil<br>
+                        <span class="text-terracotta">Bir Vizyon</span>
+                    </h2>
+
+                    <!-- Simple Explanation -->
+                    <div class="bg-sage/10 dark:bg-sage/5 border-l-4 border-sage p-6">
+                        <h3 class="font-semibold mb-2 text-sage">Basitçe Anlatmak Gerekirse</h3>
+                        <p class="text-vintage-dark/70 dark:text-gray-400 leading-relaxed">
+                            1985'te küçük bir aile girişimi olarak başladık. Bugün, Türkiye'nin dört bir yanında 500'den fazla çalışanımızla, binlerce işletmeye hizmet veriyoruz. Değişen tek şey boyutumuz; kalite anlayışımız aynı.
+                        </p>
+                    </div>
+
+                    <!-- Timeline Mini -->
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-terracotta/10 dark:bg-terracotta/20 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-terracotta font-bold">85</span>
+                            </div>
+                            <div>
+                                <div class="font-semibold">Kuruluş</div>
+                                <p class="text-sm text-vintage-dark/60 dark:text-gray-500">İstanbul'da mütevazı bir ofiste ilk adımlar</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-sage/10 dark:bg-sage/20 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-sage font-bold">00</span>
+                            </div>
+                            <div>
+                                <div class="font-semibold">Dijital Dönüşüm</div>
+                                <p class="text-sm text-vintage-dark/60 dark:text-gray-500">Teknoloji yatırımları ve modern altyapı</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-mustard/10 dark:bg-mustard/20 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-mustard font-bold">24</span>
+                            </div>
+                            <div>
+                                <div class="font-semibold">Bugün</div>
+                                <p class="text-sm text-vintage-dark/60 dark:text-gray-500">Sektör lideri, sürdürülebilir büyüme</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section - Feature Cards #61 -->
+    <section id="hizmetler" class="py-24 bg-cream dark:bg-slate-900 vintage-texture">
+        <div class="max-w-7xl mx-auto px-6">
+
+            <!-- Section Header -->
+            <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
+                <div class="inline-block px-4 py-2 border border-terracotta text-terracotta text-sm font-medium tracking-wider uppercase mb-6">
+                    Hizmetlerimiz
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    Kapsamlı<br>
+                    <span class="text-terracotta">Çözümler</span>
+                </h2>
+                <p class="text-vintage-dark/70 dark:text-gray-400">
+                    İşletmenizin her aşamasında yanınızdayız. Geleneksel güvenilirlik, modern yaklaşım.
+                </p>
+            </div>
+
+            <!-- Feature Cards Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Card 1 -->
+                <div class="group bg-cream-dark dark:bg-slate-800 p-8 hover:bg-vintage-dark dark:hover:bg-terracotta transition-all duration-500" data-aos="fade-up" data-aos-delay="0">
+                    <div class="w-16 h-16 bg-terracotta/10 dark:bg-terracotta/20 group-hover:bg-cream/20 rounded-none flex items-center justify-center mb-6 transition-colors">
+                        <i class="fas fa-chart-line text-2xl text-terracotta group-hover:text-cream transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 group-hover:text-cream transition-colors">Stratejik Danışmanlık</h3>
+                    <p class="text-vintage-dark/70 dark:text-gray-400 group-hover:text-cream/80 transition-colors leading-relaxed">
+                        İş stratejinizi güçlendirin. Pazar analizi, rekabet değerlendirmesi ve büyüme planlaması.
+                    </p>
+                    <div class="mt-6 pt-6 border-t border-vintage-dark/10 dark:border-white/10 group-hover:border-cream/20">
+                        <a href="#" class="inline-flex items-center gap-2 text-terracotta group-hover:text-cream font-medium text-sm transition-colors">
+                            Detaylı Bilgi <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="group bg-cream-dark dark:bg-slate-800 p-8 hover:bg-vintage-dark dark:hover:bg-terracotta transition-all duration-500" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-16 h-16 bg-sage/10 dark:bg-sage/20 group-hover:bg-cream/20 rounded-none flex items-center justify-center mb-6 transition-colors">
+                        <i class="fas fa-cogs text-2xl text-sage group-hover:text-cream transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 group-hover:text-cream transition-colors">Operasyonel Verimlilik</h3>
+                    <p class="text-vintage-dark/70 dark:text-gray-400 group-hover:text-cream/80 transition-colors leading-relaxed">
+                        Süreçlerinizi optimize edin. Maliyet düşürme, verimlilik artırma ve kalite yönetimi.
+                    </p>
+                    <div class="mt-6 pt-6 border-t border-vintage-dark/10 dark:border-white/10 group-hover:border-cream/20">
+                        <a href="#" class="inline-flex items-center gap-2 text-sage group-hover:text-cream font-medium text-sm transition-colors">
+                            Detaylı Bilgi <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="group bg-cream-dark dark:bg-slate-800 p-8 hover:bg-vintage-dark dark:hover:bg-terracotta transition-all duration-500" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-16 h-16 bg-mustard/10 dark:bg-mustard/20 group-hover:bg-cream/20 rounded-none flex items-center justify-center mb-6 transition-colors">
+                        <i class="fas fa-users text-2xl text-mustard group-hover:text-cream transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 group-hover:text-cream transition-colors">İnsan Kaynakları</h3>
+                    <p class="text-vintage-dark/70 dark:text-gray-400 group-hover:text-cream/80 transition-colors leading-relaxed">
+                        Ekibinizi güçlendirin. Yetenek yönetimi, eğitim programları ve organizasyon geliştirme.
+                    </p>
+                    <div class="mt-6 pt-6 border-t border-vintage-dark/10 dark:border-white/10 group-hover:border-cream/20">
+                        <a href="#" class="inline-flex items-center gap-2 text-mustard group-hover:text-cream font-medium text-sm transition-colors">
+                            Detaylı Bilgi <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="group bg-cream-dark dark:bg-slate-800 p-8 hover:bg-vintage-dark dark:hover:bg-terracotta transition-all duration-500" data-aos="fade-up" data-aos-delay="0">
+                    <div class="w-16 h-16 bg-terracotta/10 dark:bg-terracotta/20 group-hover:bg-cream/20 rounded-none flex items-center justify-center mb-6 transition-colors">
+                        <i class="fas fa-laptop-code text-2xl text-terracotta group-hover:text-cream transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 group-hover:text-cream transition-colors">Dijital Çözümler</h3>
+                    <p class="text-vintage-dark/70 dark:text-gray-400 group-hover:text-cream/80 transition-colors leading-relaxed">
+                        Dijital dönüşümünüzü hızlandırın. Yazılım, otomasyon ve veri analitiği çözümleri.
+                    </p>
+                    <div class="mt-6 pt-6 border-t border-vintage-dark/10 dark:border-white/10 group-hover:border-cream/20">
+                        <a href="#" class="inline-flex items-center gap-2 text-terracotta group-hover:text-cream font-medium text-sm transition-colors">
+                            Detaylı Bilgi <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="group bg-cream-dark dark:bg-slate-800 p-8 hover:bg-vintage-dark dark:hover:bg-terracotta transition-all duration-500" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-16 h-16 bg-sage/10 dark:bg-sage/20 group-hover:bg-cream/20 rounded-none flex items-center justify-center mb-6 transition-colors">
+                        <i class="fas fa-handshake text-2xl text-sage group-hover:text-cream transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 group-hover:text-cream transition-colors">İş Ortaklıkları</h3>
+                    <p class="text-vintage-dark/70 dark:text-gray-400 group-hover:text-cream/80 transition-colors leading-relaxed">
+                        Güçlü bağlantılar kurun. Tedarikçi yönetimi, ortaklık geliştirme ve network oluşturma.
+                    </p>
+                    <div class="mt-6 pt-6 border-t border-vintage-dark/10 dark:border-white/10 group-hover:border-cream/20">
+                        <a href="#" class="inline-flex items-center gap-2 text-sage group-hover:text-cream font-medium text-sm transition-colors">
+                            Detaylı Bilgi <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="group bg-cream-dark dark:bg-slate-800 p-8 hover:bg-vintage-dark dark:hover:bg-terracotta transition-all duration-500" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-16 h-16 bg-mustard/10 dark:bg-mustard/20 group-hover:bg-cream/20 rounded-none flex items-center justify-center mb-6 transition-colors">
+                        <i class="fas fa-leaf text-2xl text-mustard group-hover:text-cream transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 group-hover:text-cream transition-colors">Sürdürülebilirlik</h3>
+                    <p class="text-vintage-dark/70 dark:text-gray-400 group-hover:text-cream/80 transition-colors leading-relaxed">
+                        Geleceğe yatırım yapın. Çevre politikaları, ESG raporlaması ve yeşil dönüşüm.
+                    </p>
+                    <div class="mt-6 pt-6 border-t border-vintage-dark/10 dark:border-white/10 group-hover:border-cream/20">
+                        <a href="#" class="inline-flex items-center gap-2 text-mustard group-hover:text-cream font-medium text-sm transition-colors">
+                            Detaylı Bilgi <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section - Mission Statement #87 -->
+    <section id="degerler" class="py-24 bg-vintage-dark dark:bg-slate-950 text-cream vintage-texture">
+        <div class="max-w-7xl mx-auto px-6">
+
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+                <!-- Mission Statement -->
+                <div class="space-y-8" data-aos="fade-right">
+                    <div class="inline-block px-4 py-2 border border-terracotta text-terracotta text-sm font-medium tracking-wider uppercase">
+                        Değerlerimiz
+                    </div>
+
+                    <h2 class="text-4xl md:text-5xl font-bold leading-tight">
+                        Temel İlkelerimiz,<br>
+                        <span class="text-terracotta">Değişmez Değerlerimiz</span>
+                    </h2>
+
+                    <blockquote class="text-2xl md:text-3xl font-light italic border-l-4 border-terracotta pl-6 leading-relaxed">
+                        "Başarı, doğru değerler üzerine inşa edilen sürekli bir yolculuktur."
+                    </blockquote>
+
+                    <p class="text-cream/70 leading-relaxed">
+                        Kırk yılı aşkın geçmişimizde, bu değerler rehberimiz oldu. Bugün de yarın da aynı ilkelerle ilerlemeye devam edeceğiz.
+                    </p>
+                </div>
+
+                <!-- Values Cards -->
+                <div class="grid grid-cols-2 gap-6" data-aos="fade-left">
+
+                    <div class="bg-cream/5 backdrop-blur-sm p-6 border border-cream/10 hover:border-terracotta/50 transition-colors">
+                        <div class="w-12 h-12 bg-terracotta/20 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-shield-halved text-terracotta"></i>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2">Güvenilirlik</h3>
+                        <p class="text-cream/60 text-sm">Verdiğimiz sözlerin arkasındayız.</p>
+                    </div>
+
+                    <div class="bg-cream/5 backdrop-blur-sm p-6 border border-cream/10 hover:border-sage/50 transition-colors">
+                        <div class="w-12 h-12 bg-sage/20 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-gem text-sage"></i>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2">Kalite</h3>
+                        <p class="text-cream/60 text-sm">Her detayda mükemmellik arayışı.</p>
+                    </div>
+
+                    <div class="bg-cream/5 backdrop-blur-sm p-6 border border-cream/10 hover:border-mustard/50 transition-colors">
+                        <div class="w-12 h-12 bg-mustard/20 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-lightbulb text-mustard"></i>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2">Yenilikçilik</h3>
+                        <p class="text-cream/60 text-sm">Geleneksel değerler, modern çözümler.</p>
+                    </div>
+
+                    <div class="bg-cream/5 backdrop-blur-sm p-6 border border-cream/10 hover:border-terracotta/50 transition-colors">
+                        <div class="w-12 h-12 bg-terracotta/20 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-heart text-terracotta"></i>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2">Saygı</h3>
+                        <p class="text-cream/60 text-sm">İnsan odaklı yaklaşım.</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section - Business Card Style #56 -->
+    <section id="iletisim" class="py-24 bg-cream dark:bg-slate-900 vintage-texture">
+        <div class="max-w-7xl mx-auto px-6">
+
+            <div class="grid lg:grid-cols-2 gap-16 items-start">
+
+                <!-- Contact Info - Business Card Style -->
+                <div class="space-y-8" data-aos="fade-right">
+                    <div class="inline-block px-4 py-2 border border-terracotta text-terracotta text-sm font-medium tracking-wider uppercase">
+                        İletişim
+                    </div>
+
+                    <h2 class="text-4xl md:text-5xl font-bold leading-tight">
+                        Bir Kahve İçin<br>
+                        <span class="text-terracotta">Buluşalım mı?</span>
+                    </h2>
+
+                    <p class="text-vintage-dark/70 dark:text-gray-400 leading-relaxed">
+                        Projelerinizi konuşmak, sorularınızı yanıtlamak veya sadece tanışmak için bize ulaşın.
+                    </p>
+
+                    <!-- Business Card -->
+                    <div class="bg-vintage-dark dark:bg-slate-800 text-cream p-8 relative overflow-hidden">
+                        <!-- Decorative -->
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-terracotta/20 -mr-16 -mt-16 rotate-45"></div>
+
+                        <div class="relative space-y-6">
+                            <div>
+                                <div class="text-2xl font-bold">Kurumsal A.Ş.</div>
+                                <div class="text-cream/60 text-sm">Est. 1985</div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div class="flex items-start gap-4">
+                                    <i class="fas fa-map-marker-alt text-terracotta mt-1"></i>
+                                    <div>
+                                        <div class="font-medium">Adres</div>
+                                        <div class="text-cream/70 text-sm">Levent, Büyükdere Cad. No:185<br>34394 Şişli, İstanbul</div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start gap-4">
+                                    <i class="fas fa-phone text-sage mt-1"></i>
+                                    <div>
+                                        <div class="font-medium">Telefon</div>
+                                        <a href="tel:+902121234567" class="text-cream/70 text-sm hover:text-terracotta">+90 (212) 123 45 67</a>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start gap-4">
+                                    <i class="fas fa-envelope text-mustard mt-1"></i>
+                                    <div>
+                                        <div class="font-medium">E-posta</div>
+                                        <a href="mailto:info@kurumsal.com" class="text-cream/70 text-sm hover:text-terracotta">info@kurumsal.com</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Social -->
+                            <div class="flex gap-4 pt-4 border-t border-cream/10">
+                                <a href="#" class="w-10 h-10 bg-cream/10 hover:bg-terracotta flex items-center justify-center transition-colors">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-cream/10 hover:bg-terracotta flex items-center justify-center transition-colors">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-cream/10 hover:bg-terracotta flex items-center justify-center transition-colors">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="bg-cream-dark dark:bg-slate-800 p-8 lg:p-12" data-aos="fade-left">
+                    <h3 class="text-2xl font-bold mb-6">Bize Yazın</h3>
+
+                    <form class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Ad Soyad</label>
+                                <input type="text" class="w-full px-4 py-3 bg-cream dark:bg-slate-900 border border-vintage-dark/10 dark:border-white/10 focus:border-terracotta focus:outline-none transition-colors" placeholder="Adınız">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Telefon</label>
+                                <input type="tel" class="w-full px-4 py-3 bg-cream dark:bg-slate-900 border border-vintage-dark/10 dark:border-white/10 focus:border-terracotta focus:outline-none transition-colors" placeholder="+90 (5XX) XXX XX XX">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-2">E-posta</label>
+                            <input type="email" class="w-full px-4 py-3 bg-cream dark:bg-slate-900 border border-vintage-dark/10 dark:border-white/10 focus:border-terracotta focus:outline-none transition-colors" placeholder="ornek@email.com">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Konu</label>
+                            <select class="w-full px-4 py-3 bg-cream dark:bg-slate-900 border border-vintage-dark/10 dark:border-white/10 focus:border-terracotta focus:outline-none transition-colors">
+                                <option value="">Konu Seçin</option>
+                                <option>Genel Bilgi</option>
+                                <option>Teklif Talebi</option>
+                                <option>İş Ortaklığı</option>
+                                <option>Kariyer</option>
+                                <option>Diğer</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Mesajınız</label>
+                            <textarea rows="4" class="w-full px-4 py-3 bg-cream dark:bg-slate-900 border border-vintage-dark/10 dark:border-white/10 focus:border-terracotta focus:outline-none transition-colors resize-none" placeholder="Mesajınızı buraya yazın..."></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-4 bg-terracotta hover:bg-vintage-dark dark:hover:bg-white text-cream dark:hover:text-slate-900 font-semibold transition-colors flex items-center justify-center gap-3">
+                            Gönder
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer - Single Line Minimal #26 -->
+    <footer class="py-8 bg-vintage-dark dark:bg-slate-950 text-cream border-t border-cream/10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+
+                <!-- Logo & Copyright -->
+                <div class="flex items-center gap-4">
+                    <span class="text-xl font-bold"><span class="text-terracotta">K</span>urumsal</span>
+                    <span class="text-cream/40">|</span>
+                    <span class="text-cream/60 text-sm">&copy; 2024 Tüm hakları saklıdır.</span>
+                </div>
+
+                <!-- Links -->
+                <div class="flex items-center gap-6 text-sm">
+                    <a href="#" class="text-cream/60 hover:text-terracotta transition-colors">Gizlilik</a>
+                    <a href="#" class="text-cream/60 hover:text-terracotta transition-colors">Şartlar</a>
+                    <a href="#" class="text-cream/60 hover:text-terracotta transition-colors">KVKK</a>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bottom Navigation - Fixed -->
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-cream dark:bg-slate-900 border-t border-vintage-dark/10 dark:border-white/10 shadow-lg">
+        <div class="max-w-lg mx-auto px-4">
+            <div class="flex items-center justify-around py-3">
+
+                <a href="#hero" class="flex flex-col items-center gap-1 text-vintage-dark/60 dark:text-gray-400 hover:text-terracotta dark:hover:text-terracotta transition-colors group">
+                    <i class="fas fa-home text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-medium">Ana Sayfa</span>
+                </a>
+
+                <a href="#hakkimizda" class="flex flex-col items-center gap-1 text-vintage-dark/60 dark:text-gray-400 hover:text-terracotta dark:hover:text-terracotta transition-colors group">
+                    <i class="fas fa-building text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-medium">Hakkımızda</span>
+                </a>
+
+                <a href="#hizmetler" class="flex flex-col items-center gap-1 text-vintage-dark/60 dark:text-gray-400 hover:text-terracotta dark:hover:text-terracotta transition-colors group">
+                    <i class="fas fa-briefcase text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-medium">Hizmetler</span>
+                </a>
+
+                <a href="#degerler" class="flex flex-col items-center gap-1 text-vintage-dark/60 dark:text-gray-400 hover:text-terracotta dark:hover:text-terracotta transition-colors group">
+                    <i class="fas fa-star text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-medium">Değerler</span>
+                </a>
+
+                <a href="#iletisim" class="flex flex-col items-center gap-1 text-vintage-dark/60 dark:text-gray-400 hover:text-terracotta dark:hover:text-terracotta transition-colors group">
+                    <i class="fas fa-envelope text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-medium">İletişim</span>
+                </a>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- Prompt Modal Button -->
+    <button id="promptModalBtn" class="fixed bottom-24 right-6 z-40 w-12 h-12 bg-terracotta text-cream rounded-full shadow-lg hover:bg-vintage-dark transition-colors flex items-center justify-center">
+        <i class="fas fa-code"></i>
+    </button>
+
+    <!-- Prompt Modal -->
+    <div id="promptModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div class="bg-cream dark:bg-slate-800 max-w-md w-full mx-4 p-8 relative">
+            <button id="closeModal" class="absolute top-4 right-4 text-vintage-dark/60 dark:text-gray-400 hover:text-terracotta">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <h3 class="text-xl font-bold mb-4">Prompt Dokümanı</h3>
+            <p class="text-vintage-dark/70 dark:text-gray-400 mb-6">
+                Bu tasarımda kullanılan tüm seçimler, layout numaraları ve Leonardo.ai görsel promptları için:
+            </p>
+            <a href="prompt.html" class="inline-flex items-center gap-2 px-6 py-3 bg-terracotta text-cream hover:bg-vintage-dark transition-colors">
+                <i class="fas fa-file-code"></i>
+                prompt.html
+            </a>
+        </div>
+    </div>
+
+    <!-- AOS Animation -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        // Initialize AOS
+        AOS.init({
+            once: true,
+            offset: 50
+        });
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // Check saved theme or system preference
+        if (localStorage.getItem('theme') === 'dark' ||
+            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+        });
+
+        // Prompt Modal
+        const promptModalBtn = document.getElementById('promptModalBtn');
+        const promptModal = document.getElementById('promptModal');
+        const closeModal = document.getElementById('closeModal');
+
+        promptModalBtn.addEventListener('click', () => {
+            promptModal.classList.remove('hidden');
+            promptModal.classList.add('flex');
+        });
+
+        closeModal.addEventListener('click', () => {
+            promptModal.classList.add('hidden');
+            promptModal.classList.remove('flex');
+        });
+
+        promptModal.addEventListener('click', (e) => {
+            if (e.target === promptModal) {
+                promptModal.classList.add('hidden');
+                promptModal.classList.remove('flex');
+            }
+        });
+
+        // Smooth scroll for bottom nav
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Active state for bottom nav
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('nav a[href^="#"]');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('text-terracotta');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('text-terracotta');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,580 @@
+## KAYIT BILGILERI
+
+Dosya yapisi:
+```
+public/design/templates/{kategori-adi}/{versiyon}/
+├── index.html      ← Ana site
+├── prompt.html     ← Prompt ve gorsel dokumani
+└── images/         ← Otomatik uretilen gorseller (generate-images.php)
+```
+
+Ornek:
+- public/design/templates/saglik-klinigi/v1/index.html
+- public/design/templates/saglik-klinigi/v1/prompt.html
+
+Kurallar:
+- Kategori: sektor veya proje adi (kucuk harf, tire ile)
+- Dosya adi: index.html (site) + prompt.html (dokuman)
+
+### VERSIYON ISIMLENDIRME
+
+**FORMAT:** Sadece `v{numara}` - Ekstra suffix EKLEME!
+
+**KURALLAR:**
+1. Yeni sektor/kategori icin: v1 ile basla
+2. Ayni sektore yeni tasarim: Siradaki numara (v2, v3, v4...)
+3. Revize/duzeltme: Ayni klasorun USTUNE YAZ (ayni v numarasi)
+4. ASLA timestamp, rastgele ID veya aciklama EKLEME!
+
+**DOGRU:** v1, v2, v3, v10
+**YANLIS:** v1-20251229, v1-x7k9m, v2-minimal, v5-revize
+
+### REVIZE KURALLARI
+
+Kullanici "duzelt", "degistir", "guncelle", "iyilestir" derse:
+- AYNI v numarasinda kal
+- AYNI dosyalari guncelle
+- YENI klasor ACMA!
+
+"Yeni tasarim", "alternatif", "farkli yaklaşım" derse:
+- Siradaki v numarasini kullan (v6, v7...)
+
+---
+
+## ANA HEDEF
+
+Profesyonel, OZGUN ve sektore uygun kurumsal web sitesi.
+Her tasarim BENZERSIZ olmali - template fabrikasi degil, boutique tasarim studyosu gibi calis!
+
+**TEKNOLOJILER:**
+- Tailwind CSS v4 (CDN)
+- Alpine.js (interaktivite)
+- Gerektiginde: Swiper, GSAP, AOS, Lottie (CDN ile)
+
+---
+
+## OZGUNLUK SISTEMI (EN ONEMLI BOLUM!)
+
+### ALTIN KURAL: HER TASARIM FARKLI OLMALI!
+
+Ayni layoutu, rengi, fontu tekrar kullanma. Her seferinde FARKLI kombinasyon sec.
+
+### SEKTOR ANALIZI (KENDIN YARAT!)
+
+**Sen sektoru analiz et ve su kurallari kendin belirle:**
+
+1. **Renk Paleti** → Sektore uygun psikoloji ile sec
+2. **Font Cifti** → Sektore uygun karakter ile sec
+3. **His/Atmosfer** → Sektore uygun duygu ile sec
+4. **Layout Tercihi** → Sektore uygun yapilar sec
+
+Her sektor icin FARKLI dusun. Hazir kalip kullanma!
+Kendi yaraticiligini kullan, sektoru analiz et, uygun karar ver.
+
+### FONT CIFTI ONERILERI (Baslik + Govde)
+
+1. Playfair Display + Inter (Klasik + Modern)
+2. Space Grotesk + DM Sans (Tech + Clean)
+3. Cormorant Garamond + Lato (Elegant + Readable)
+4. Bebas Neue + Open Sans (Bold + Friendly)
+5. Outfit + Source Sans Pro (Modern + Professional)
+6. Sora + Nunito (Fresh + Warm)
+7. Marcellus + Raleway (Luxury + Refined)
+8. Oswald + Roboto (Strong + Neutral)
+9. Quicksand + Work Sans (Friendly + Clean)
+10. Italiana + Montserrat (Elegant + Contemporary)
+
+### OZGUNLUK KONTROL LISTESI
+
+Tasarimi bitirmeden once kontrol et:
+[ ] Bu layout kombinasyonunu daha once kullandim mi? → FARKLI SEC!
+[ ] Bu renk paleti cok genel mi? → SEKTORE OZEL AYARLA!
+[ ] Font cifti siradanmi? → BEKLENMEDIK ESLESTIRME DENE!
+[ ] Section sirasi her zamanki gibi mi? → FARKLI SIRALAMA DENE!
+[ ] Animasyon/efekt var mi? → MICRO-INTERACTION EKLE!
+[ ] Tasarim "template" gibi mi gorunuyor? → DAHA CESUR OL!
+
+---
+
+## ONCELIK KURALI
+
+Kullanici Tarz sayfasindan secim yaptiysa:
+1. TARZ SECIMI ONCELIKLIDIR - Listelerden ustundur
+2. Cakisma varsa → Tarz secimi kazanir
+3. Tarz secimi olmayan section'lar icin → Listeden sec
+
+---
+
+## LAYOUT LISTELERI
+
+Asagidaki listelerden RASTGELE sec. Ayni numarayi tekrar kullanma!
+
+### HERO SECTION (150 Secenek)
+
+**FULL-SCREEN (1-20)**
+1. Full-screen video background + ortalanmis metin + gradient overlay
+2. Full-screen image + sol alt kose metin + koyu overlay
+3. Full-screen parallax image + ortali baslik + scroll indicator
+4. Full-screen gradient mesh + dev tipografi
+5. Full-screen image slider (3-5 slide) + dot navigation
+6. Full-screen video + sag dikey metin + sol ust logo
+7. Full-screen image + cam efektli kart icinde metin
+8. Full-screen abstract SVG animation + minimal metin
+9. Full-screen particle.js + gradient text
+10. Full-screen ken burns efektli image + fade-in metin
+11. Full-screen cinematic video loop + alt bar headline
+12. Full-screen image + metin horizontal bar icinde
+13. Full-screen radial gradient + 3D transform text
+14. Full-screen image + floating glass cardlar
+15. Full-screen lottie animation + centered content
+16. Full-screen image mozaik (4 kare) + orta overlay
+17. Full-screen noise texture + bold tipografi + accent line
+18. Full-screen image + diagonal split overlay
+19. Full-screen canvas waves + floating elements
+20. Full-screen image + text maskeleme efekti
+
+**SPLIT LAYOUT (21-45)**
+21. Sol %60 metin + Sag %40 image
+22. Sol %40 image + Sag %60 metin
+23. Sol %50 + Sag %50 esit, ortada dikey cizgi
+24. Sol metin + Sag overlapping 2 image
+25. Sol image + Sag metin + Alt tam genislik stat bar
+26. Sol gradient + Sag image + Floating badgeler
+27. Sol video + Sag metin kartlari (3 adet)
+28. Sol metin + Sag diagonal kesimli image
+29. Sol %70 metin + Sag %30 dikey image strip
+30. Sol image + Sag icerik + Ortada overlapping element
+31. Sol metin + Sag hexagonal image crop
+32. Sol content + Sag slider (tek image, ok ile gecis)
+33. Sol dikey scroll text + Sag sabit image
+34. Sol metin + Sag masonry 4 image grid
+35. Sol full-height image + Sag centered content kart
+36. Sol gradient metin + Sag cutout sekilli image
+37. Sol content + Sag rounded corner buyuk image
+38. Sol split (metin/small image) + Sag buyuk image
+39. Sol timeline + Sag hero image
+40. Sol metin + Sag 3D perspective image
+41. Sol stacked cards + Sag feature image
+42. Sol quote + metin + Sag portrait image
+43. Sol numbered list + Sag lifestyle image
+44. Sol metin + Sag image with floating stats
+45. Sol animated text + Sag static image
+
+**ASYMMETRIC/OVERLAPPING (46-65)**
+46. Asymmetric grid (buyuk sol, kucuk sag ust/alt)
+47. Overlapping cards (3 kart, kayik)
+48. Z-pattern layout (zig-zag flow)
+49. Broken grid (kasitli hizasiz)
+50. Floating islands (content adalari)
+51. Diagonal composition (capraz akan)
+52. Staggered columns (farkli yukseklik)
+53. Offset boxes (kaymis kutular)
+54. Layered planes (z-index oyunu)
+55. Scattered elements (organized chaos)
+56. Perspective grid (3D derinlik)
+57. Modular blocks (farkli boyut)
+58. Cascading layout (sarmal akan)
+59. Split diagonal (capraz bolunmus)
+60. Irregular shapes (duzenli olmayan)
+61. Circular composition (dairesel)
+62. Radial burst (merkezden yayilan)
+63. Spiral flow (spiral akan)
+64. Mosaic pattern (mozaik)
+65. Fragmented hero (parcalanmis)
+
+**TYPOGRAPHY-FOCUSED (66-80)**
+66. Giant headline (ekranin %80'i tek kelime)
+67. Kinetic typography (hareketli harfler)
+68. Vertical text hero (dikey baslik)
+69. Outlined text (sadece kontur)
+70. Gradient text fill + minimal background
+71. Text-only hero (gorsel yok)
+72. Mixed font sizes (dev + kucuk)
+73. Animated text reveal (scroll ile)
+74. Stacked words (ustuste kelimeler)
+75. Rotating words (degisen animasyon)
+76. Split text colors (yari/yari)
+77. Text behind image
+78. Masked text (image ile)
+79. Neon glow text + dark bg
+80. Handwritten accent
+
+**INTERACTIVE/ANIMATED (81-105)**
+81. Mouse follower effect
+82. Scroll-triggered animations
+83. Hover reveal
+84. Parallax depth (cok katman)
+85. Magnetic buttons
+86. Liquid distortion
+87. Glitch effect
+88. Morph shapes (SVG)
+89. 3D card tilt
+90. Text scramble
+91. Typewriter effect
+92. Split screen reveal
+93. Curtain effect
+94. Page flip
+95. Smoke/fog effect
+96. Aurora borealis
+97. Geometric patterns animation
+98. Wave animation
+99. Bubble float
+100. Matrix rain (profesyonel)
+101. Gradient animation
+102. Constellation effect
+103. Lightning effect (subtle)
+104. Ripple effect
+105. Shimmer effect
+
+**EVRENSEL PREMIUM STILLER (106-150)**
+106. Premium Minimal - Cok beyaz alan, tek focal point
+107. Bold & Strong - Kalin cizgiler, koyu tonlar
+108. Trust Blue - Mavi tonlar, kurumsal
+109. Clean Fresh - Beyaz/yesil, temiz
+110. Gradient Modern - Mor/mavi gradient
+111. Natural Green - Dogal, yaprak motifleri
+112. Dark Luxury - Siyah/altin, premium
+113. Warm Orange - Turuncu accent, enerjik
+114. Formal Navy - Koyu mavi/bordo, resmi
+115. Friendly Colors - Renkli, eglenceli
+116. Warm Earth - Toprak renkleri, samimi
+117. Dynamic Flow - Hareket hissi, oklar
+118. Appetizing Warm - Sicak isik, taze
+119. Stable Green - Koyu yesil, guvenilir
+120. Industrial Metal - Metal doku, saglam
+121. Smart Clean - Minimalist, akilli
+122. Vibrant Pop - Canli, dikkat cekici
+123. Welcoming Soft - Davetkar, yumusak
+124. Organic Earth - Organik, dogal
+125. Power Red - Dinamik, kirmizi vurgular
+126. Speed Lines - Hiz hissi
+127. Soft Texture - Yumusak, zarif gecis
+128. Precise White - Bilimsel, net
+129. Solid Stone - Kaya tonlari, guclu
+130. Ocean Blue - Deniz mavisi, ferah
+131. Sky Open - Gokyuzu, ozgurluk
+132. Connected Lines - Network cizgileri
+133. Creative Burst - Yaratici, renkli patlama
+134. Active Energy - Spor hissi
+135. Elegant Soft - Sofistike, pastel
+136. Sleek Curves - Aerodinamik, akici
+137. Cozy Comfort - Sicak, evsel
+138. Shield Strong - Koruma, guvenlik
+139. Digital Grid - Dijital estetik
+140. Clinical White - Steril, bilimsel
+141. Warm Heart - Insani, duygusal
+142. Official Seal - Resmi, kurumsal
+143. Fresh Start - Taze, yenilikci
+144. Solid Foundation - Buyuk, kurumsal
+145. Creative Edge - Siradisi acilar
+146. Shop Ready - Urun odakli
+147. Product Focus - Ozellik vurgulari
+148. Platform Style - Cok tarafli
+149. Community Feel - Topluluk, sicak
+150. Expert Touch - Uzmanlik vurgusu
+
+### ABOUT/HAKKIMIZDA SECTION (150 Secenek)
+
+**TIMELINE (1-20)**
+1-20: Horizontal, vertical, curved, interactive, minimal dot, road style, tree branch, metro line, circular, stacked cards, accordion, filmstrip, book chapter, dial clock, growth plant, river flow, milestone gradient, polaroid, building blocks, DNA helix
+
+**STATISTICS-FIRST (21-40)**
+21-40: Giant counters, circular progress, card grid, icon backgrounds, bar charts, floating stats, glass morphism, before/after, speedometer, fill bars, hexagonal, ticker tape, 3D blocks, gradient numbers, dashboard widgets, scattered, vertical bars, icon+number+label, sliding carousel, pie/donut
+
+**IMAGE GALLERY (41-60)**
+41-60: Masonry overlay, horizontal scroll, lightbox grid, before/after slider, polaroid scattered, magazine spread, pinterest columns, film roll, 3D rotating, stacked photos, comparison slider, mosaic tile, collage, photo book, wall of frames, floating, parallax, carousel thumbnails, grid to fullscreen, circular arranged
+
+**CARD-BASED (61-80)**
+61-80: Team member grid, value proposition, feature highlight, flip cards, expandable, stacked deck, ribbon labels, gradient border, neumorphic, hover lift, icon headers, image backgrounds, progress indicators, testimonial style, number badges, bento grid, slide-up details, side accent bars, circular arrangement, animated backgrounds
+
+**STORYTELLING (81-105)**
+81-105: Scroll-reveal story, chapter-based, narrative illustrations, journey path, book metaphor, documentary, interview Q&A, case study, behind scenes, day in life, origin story, letter format, scrapbook, diary journal, news article, feature story, comic strip, infographic, audio/podcast visual, video documentary, parallax storytelling, interactive branches, photo essay, quote-driven, data-driven
+
+**EVRENSEL ABOUT (106-150)**
+106. Founder Story, 107. Heritage Timeline, 108. Mission Statement, 109. Team Mosaic, 110. Culture Showcase, 111. Numbers That Matter, 112. Global Presence, 113. Awards Wall, 114. Client Logos, 115. Expertise Areas, 116. Process Flow, 117. Philosophy Statement, 118. Sustainability, 119. Innovation Lab, 120. Quality Standards, 121. Community Impact, 122. Industry Leadership, 123. Technology Stack, 124. Facility Tour, 125. Supply Chain, 126. R&D, 127. Partnership Network, 128. Training, 129. Safety Standards, 130. Environmental Policy, 131. Customer Testimonials, 132. Before/After, 133. Case Study Snippets, 134. Industry Recognition, 135. Competitive Advantage, 136. Future Vision, 137. Local Roots, 138. Export Markets, 139. Production Capacity, 140. Service Coverage, 141. Experience Counter, 142. Project Counter, 143. Happy Clients, 144. Square Meters, 145. Certifications Grid, 146. Management Team, 147. Advisory Board, 148. Company Values, 149. Brand Story, 150. Milestone Achievements
+
+### HIZMETLER SECTION (105 Secenek)
+
+**CARD GRID (1-25):** 3-column, 4-column, 2-column wide, 6-column mini, 2-1-2 pattern, featured+smaller, bento box, masonry, circular, image headers, icon circles, gradient tops, hover overlays, flip animation, slide-up, ribbon corners, outlined, number badges, progress bars, rating stars, CTA buttons, testimonials, expandable, side images, background patterns
+
+**TAB/ACCORDION (26-45):** Horizontal tabs, vertical sidebar, pill-style, underline animated, icon tabs, classic accordion, icons, images, nested, FAQ style, timeline, numbered, sidebar nav, mega accordion, with progress, tabbed hybrid, step wizard, category filter, searchable, scrollspy
+
+**CAROUSEL/SLIDER (46-65):** Full-width, multi-item, card, testimonial, logo, timeline, vertical, infinite scroll, fade transition, 3D, coverflow, thumbnail nav, autoplay, draggable, parallax, split, centered, variable width, dots/arrows, text overlay
+
+**INTERACTIVE (66-85):** Map markers, clickable floor plan, zoomable image, org chart, process flow, comparison tool, calculator, quiz reveal, filterable portfolio, sortable grid, live filter search, category dropdown, tag cloud, range slider, checkbox filter, interactive timeline, hover panels, click expand, drag drop, infographic
+
+**LIST/TABLE (86-105):** Bullet list, numbered, icon list, checklist, comparison table, pricing, specification, striped data, card table, collapsible rows, sortable, horizontal scroll, definition list, timeline list, alternating bg, indented hierarchy, link arrows, image list, avatar list, status indicators
+
+### STRATEJI/DEGERLER SECTION (105 Secenek)
+
+**PILLAR/COLUMN (1-25):** 4 pillars icons, 3 pillars numbers, 5 pillars gradient bars, top icons, side numbers, hover expand, connecting lines, progress fills, staggered height, outlined, gradient bg, image bg, badges, quotes, floating icons, accent borders, shadow depth, minimal lines, bold typography, circular icons, square icons, hexagon, diamond, ribbon style, flag banner
+
+**PROCESS/STEP (26-50):** Numbered horizontal, vertical, circular numbered, arrow connected, line connected, dot connected, road path, stairs, pyramid, funnel, pipeline, flowchart, branching, loop cycle, milestone, checklist, progress bar, animated reveal, hover expand, accordion steps, tab steps, card flip, slider, timeline, roadmap
+
+**VISUAL METAPHOR (51-75):** Tree branch, building blocks, puzzle pieces, gears machinery, ecosystem circle, mountain climb, bridge, compass direction, foundation layers, chain links, DNA helix, solar system, network web, iceberg, lighthouse, arrow target, rocket launch, seeds growing, river flow, map journey, telescope vision, handshake, shield protection, key lock, anchor stability
+
+**QUOTE/HIGHLIGHT (76-105):** Large quote + text, quote carousel, author image, pull quote, blockquote border, speech bubble, quote over image, with icon, multi-quote grid, quote slider, with rating, mission highlight, vision box, core value badges, principle cards, belief panels, promise boxes, motto highlight, philosophy section, creed manifesto, declaration, oath pledge, standards list, guidelines panels, ethics statement, culture highlights, team values, customer promise, quality commitment, innovation pledge
+
+### ILETISIM SECTION (105 Secenek)
+
+**SPLIT FORM (1-25):** Sol info + Sag form, Sag info + Sol form, Ust info + Alt form, Form ortada + Info yanlarda, Full form + Floating card, Tabbed info + Form, Accordion info + Form, Timeline info + Form, Card info + Card form, Glass info + Form, Image bg + Overlay form, Gradient split + Form, Icon info + Form, Map mini + Form, Office photos + Form, Team contact cards + Form, FAQ + Form, Social links + Form, Business hours + Form, Multiple locations + Form, Quick + Full tabs, Chat bubble + Form, Phone/email buttons + Form, Video intro + Form, Testimonial + Form
+
+**MAP-INTEGRATED (26-45):** Full-width map + Floating card, Map bg + Centered form, Split map + Form, Interactive markers, Multiple locations, Mini map + Large form, Map modal, Info overlay, Satellite view, Styled dark map, With directions, Street view, Cluster markers, Animated path, Custom icons, Zoom to location, With search, With filters, Location cards, Fullscreen toggle
+
+**MINIMAL (46-65):** Single centered card, One-field email, Contact buttons only, QR code, vCard download, Click to call, WhatsApp direct, Social only, Email with copy, Minimal info list, Business card style, Sticky bar, Floating button, Slide-out panel, Modal form, Popover, Tooltip info, Inline form, Collapsible, Progressive show more
+
+**MULTI-STEP (66-85):** Step wizard, Progress bar, Numbered steps, Tab steps, Accordion steps, Card flip steps, Slide transition, Conversation style, Quiz-like, Conditional, Branch logic, Summary end, Review before submit, Save progress, Back/next nav, Step indicators, Percentage complete, Time estimate, Skip optional, Jump to step
+
+**CREATIVE (86-105):** Chat interface, Messenger style, Voice message, Video call booking, Calendar integration, Meeting scheduler, Appointment picker, Time slot selector, Department selector, Product inquiry, Quote request, Callback request, Live chat widget, Chatbot, AI assistant, Interactive FAQ + Form, Troubleshooter + Contact, Ticket system, Priority selector, File upload form
+
+### FOOTER SECTION (105 Secenek)
+
+**MULTI-COLUMN (1-25):** 4-column classic, 5-column logo, 3-column centered, 6-column compact, 2-column split, asymmetric, featured + links, newsletter + links, map + links, contact + links, social + links, logo prominent, mega 8+ columns, grouped sections, expandable mobile, scrolling long, icon-headed, numbered, bordered, card-style, gradient dividers, image-topped, CTA + links, app download, awards + links
+
+**MINIMAL (26-45):** Single line, centered minimal, logo + copyright only, links row + copyright, social only, split minimal, sticky, transparent, ghost outline, dark bar, light bar, borderless, floating, fixed bottom, collapsible, hide on scroll, parallax, gradient bar, icon-only, logo watermark
+
+**CTA-FOCUSED (46-65):** Newsletter CTA, Demo request, Contact prominent, Download app, Free trial, Quote request, Book meeting, Subscribe, Follow social, Join community, Dual CTA, Form embedded, Chat launcher, Callback, Shop now, Learn more, Get started, Pricing, Careers, Partners
+
+**CREATIVE (66-85):** Magazine style, Dashboard style, App-like, Card grid, Timeline, Story, Stats, Testimonial, Award showcase, Partner logos, Certification, Press mentions, Recent posts, Instagram feed, Twitter feed, Events, Locations, Team mini, FAQ mini, Search
+
+**MEGA/RICH (86-105):** Full sitemap, Categorized mega, Tabbed sections, Accordion mobile, Multi-level, Portal-style, Directory, Encyclopedia, Resources hub, Knowledge base, Documentation, Support hub, Community, Marketplace, Platform, SaaS, Enterprise, Corporate mega, Publisher, News organization
+
+### HEADER/NAVIGATION (105 Secenek)
+
+**CLASSIC (1-25):** Logo left + Nav center + CTA right, Logo left + Nav right, Logo center + Nav split, Logo + Mega menu, Dropdown menus, Hamburger always, Search prominent, Language selector, Top bar + Main nav, Utility + Main nav, Dual logo light/dark, Animated logo, Logo tagline, Full-width bar, Contained bar, Transparent, Solid color, Gradient, Glass morphism, Shadow, Bordered, Underline hover, Background hover, Icon + text, Icon only
+
+**STICKY/TRANSFORM (26-50):** Sticky shrink, Sticky color change, Sticky shadow appear, Hide scroll down, Show scroll up, Sticky mini, Sticky logo only, Floating bar, Sidebar nav, Bottom nav mobile, Transform to hamburger, Transform to mini, Color on section, Transparent to solid, Centered to left, Progress bar, Reading progress, Section indicator, Breadcrumb, Dynamic title, Scroll spy, Animated, Parallax, Reveal, Slide
+
+**MEGA MENU (51-75):** Full-width mega, Centered mega, Multi-column, With images, With icons, With featured, With categories, With tabs, With search, With CTA, With recent, With popular, Animated reveal, Slide mega, Fade mega, Dropdown hybrid, Sidebar mega, Off-canvas, Full-screen, Modal, Tab-style, Accordion, Card-based, List-based, Grid-based
+
+**MOBILE/HAMBURGER (76-105):** Slide from left, Slide from right, Slide from top, Slide from bottom, Full-screen overlay, Half-screen, Modal menu, Drawer, Off-canvas push, Off-canvas reveal, Accordion mobile, Tab mobile, Card mobile, List mobile, Icon grid, Circular menu, Radial menu, Floating action, Bottom sheet, Split menu, Animated hamburger, X close animation, Rotate animation, Morph animation, Spring animation, Stagger reveal, Slide reveal, Fade reveal, Scale reveal, Flip reveal
+
+---
+
+## SECTION SIRALAMASI
+
+Standart siralama yerine FARKLI dene:
+
+1. Hero > Services > About > Contact (servis odakli)
+2. Hero > About > Team > Services > Contact (insan odakli)
+3. Hero > Stats > Services > Testimonials > Contact (guven odakli)
+4. Hero > Portfolio > Services > About > Contact (sonuc odakli)
+5. Hero > Video > Services > FAQ > Contact (gorsel odakli)
+6. Hero > Products > Features > Pricing > Contact (urun odakli)
+7. Hero > Story > Values > Team > Contact (hikaye odakli)
+8. Hero > Process > Results > Testimonials > Contact (surec odakli)
+9. Hero > Mission > Services > Partners > Contact (misyon odakli)
+10. Hero > News > Events > Services > Contact (guncellik odakli)
+
+Bazi sectionlar atlanabilir - her sitede hepsi olmasina gerek yok!
+
+---
+
+## GORSEL SISTEMI (NETLESTIRILMIS!)
+
+### IS AKISI (COK ONEMLI - ANLA!)
+
+```
+1. SEN (AI) → Placeholder kullan (picsum.photos)
+              + prompt.html'e gorsel promptlarini yaz
+
+2. generate-images.php → prompt.html'i okur
+                        → Leonardo.ai'den gorselleri uretir
+                        → images/ klasorune kaydeder
+
+3. SONUC → Otomatik uretilmis gorseller hazir!
+```
+
+### ADIM 1: PLACEHOLDER KULLAN (index.html icin)
+
+```html
+<!-- Hero -->
+<img src="https://picsum.photos/1920/1080" alt="Hero">
+
+<!-- Kart -->
+<img src="https://picsum.photos/800/600" alt="About">
+
+<!-- Koyu/Grayscale -->
+<img src="https://picsum.photos/1920/1080?grayscale" alt="Dark">
+
+<!-- Bulanik -->
+<img src="https://picsum.photos/1920/1080?blur=2" alt="Blurred">
+```
+
+### ADIM 2: PROMPT.HTML'E GORSEL PROMPTLARI YAZ
+
+prompt.html icinde su formatta dokumante et:
+
+```html
+<!-- Leonardo.ai Gorsel Promptlari -->
+<div class="mt-8 bg-slate-800 rounded-xl p-6">
+    <h2 class="text-lg font-semibold mb-4 text-amber-400">
+        <i class="fas fa-image mr-2"></i>
+        Leonardo.ai Gorsel Promptlari
+    </h2>
+
+    <div class="space-y-6">
+        <!-- Her gorsel icin bir kart -->
+        <div class="border-l-4 border-amber-500 pl-4 bg-slate-700/30 rounded-r-lg p-4">
+            <div class="flex items-center justify-between mb-2">
+                <span class="font-medium text-white">hero-bg.jpg</span>
+                <span class="text-xs text-slate-400">1472x832</span>
+            </div>
+            <p class="text-slate-300 text-sm mb-3">
+                Editorial photograph of modern corporate office lobby,
+                floor-to-ceiling windows with city view, morning sunlight,
+                professional atmosphere, Canon R5 85mm f/1.4, shallow depth,
+                Kodak Portra 400 film look, subtle lens dust, 8k quality
+            </p>
+            <div class="flex flex-wrap gap-2 text-xs">
+                <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Cinematic</span>
+            </div>
+        </div>
+
+        <!-- Diger gorseller ayni formatta... -->
+    </div>
+</div>
+```
+
+**KRITIK FORMAT (generate-images.php bunu okur!):**
+- Dosya adi: `<span class="font-medium text-white">dosya.jpg</span>`
+- Boyut: `<span class="text-xs text-slate-400">1472x832</span>`
+- Prompt: `<p class="text-slate-300 text-sm mb-3">...</p>`
+
+### GORSEL PROMPT YAZMA KURALLARI
+
+**GERCEKCI FOTOGRAF ICIN (11 Kural):**
+1. Photo Type: "Editorial photograph", "Documentary shot"
+2. Subject + Action: Ne/kim + ne yapiyor
+3. Environment + Time: Mekan + zaman (morning, winter, etc.)
+4. Camera Angle: Cekim acisi (low angle, eye-level)
+5. Composition: Kompozisyon (rule of thirds, golden ratio)
+6. Lighting: Isik (golden hour, natural window light)
+7. Camera + Lens: Ekipman (Canon R5 85mm f/1.4)
+8. Film Stock: Film look (Kodak Portra 400, Fuji Velvia)
+9. Imperfections: Kusurlar (lens dust, grain, vignette) - ONEMLI!
+10. Mood: Atmosfer (professional, warm, confident)
+11. Post-Processing: Color grade (teal-orange, lifted blacks)
+
+**BOYUT SINIRLARI:**
+- Minimum: 512x512
+- Maximum: 1536x1536
+- Hero: 1472x832
+- Kart: 800x600
+- Kare: 600x600
+
+### BACKGROUND KURALLARI
+
+**YAPMA:**
+- AI ile sacma abstract/pattern background uretme
+- "digital mesh", "futuristic waves" gibi anlamsiz seyler
+- Random gradient'ler
+
+**YAP:**
+- Tailwind gradient: `bg-gradient-to-br from-slate-900 to-slate-800`
+- Solid renkler: `bg-slate-950`, `bg-white`
+- Overlay: `bg-black/50`
+- Gercek foto icin: picsum placeholder + prompt.html'e prompt yaz
+
+---
+
+## DARK/LIGHT MODE (ZORUNLU!)
+
+Her sitede dark/light mode toggle MUTLAKA olmali!
+- Varsayilan: Sistem tercihine gore (prefers-color-scheme)
+- Toggle butonu header'da gorunur
+- localStorage ile tercih hatirlanmali
+
+### RENK KURALLARI
+
+**DARK MODE:**
+- ✅ Koyu bg: slate-900, slate-950, gray-900, black
+- ✅ Acik text: white, gray-100
+- ❌ ASLA acik bg kullanma!
+
+**LIGHT MODE:**
+- ✅ Acik bg: white, gray-50, slate-50
+- ✅ Koyu text: gray-900, slate-800
+- ❌ ASLA koyu bg kullanma!
+
+```html
+<div class="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">
+```
+
+---
+
+## KONTRAST (WCAG AA)
+
+Minimum kontrast orani: 4.5:1
+
+- Acik bg = Koyu text (text-gray-900)
+- Koyu bg = Acik text (text-white)
+- ASLA: Acik uzerine acik
+- ASLA: Koyu uzerine koyu
+
+OKUNAKLILIK = ONCELIK!
+
+---
+
+## TEKNIK GEREKSINIMLER
+
+- Responsive (mobil oncelikli)
+- Mobil hamburger menu
+- Mega menu veya dropdown
+- Hover efektleri (subtle)
+- AOS scroll animasyonlari
+- Lazy loading gorseller
+- FontAwesome ikonlar (fa-solid, fa-regular, fa-light)
+
+**PROMPT MODAL (ZORUNLU):**
+Sayfanin altina kucuk "Prompt" butonu ekle.
+Tiklayinca modal acilsin, prompt.html linkini goster.
+
+---
+
+## CIKTI DOSYALARI
+
+2 dosya olustur:
+
+### 1. index.html
+- Tam site (tek sayfa)
+- Placeholder gorseller (picsum)
+- Dark/light mode toggle
+- Responsive
+- Prompt modal butonu
+
+### 2. prompt.html
+- Kullanilan sektor ve tarz
+- Secilen layoutlar (numara + isim)
+- Renk paleti
+- Font cifti
+- Section sirasi
+- Leonardo.ai gorsel promptlari (zorunlu format!)
+- Ozel notlar
+
+---
+
+## SON KONTROL
+
+Tasarimi bitirmeden once:
+[ ] Layout'lar listeden secildi mi? (numara belirt)
+[ ] Farkli kombinasyon mu? (tekrar degil)
+[ ] Section sirasi standart olmayan mi?
+[ ] Dark/light mode calisiyor mu?
+[ ] Prompt.html'de gorsel promptlari var mi?
+[ ] Ozgun ve yaratici mi?
+
+---
+
+## PROJE BILGILERI
+
+Asagidaki bilgiler kullanicidan geliyor. BUNLARA GORE TASARLA:
+
+sektor: genel kurumsal
+tarz: profesyonel ve dengeli
+ek_bilgiler: (kullanici tarafindan doldurulacak)
+
+**EK BILGILER COK ONEMLI!**
+Kullanici ne yazarsa analiz et, anla ve uygun tasarim yap.
+Sen yeterince zekisin - ek aciklama/ornek gerekmiyor.

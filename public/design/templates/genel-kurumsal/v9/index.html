@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vertex Holding | Kurumsal Mükemmellik</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'monospace'],
+                        'serif': ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        gold: {
+                            50: '#fefce8',
+                            100: '#fef9c3',
+                            200: '#fef08a',
+                            300: '#fde047',
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04',
+                            700: '#a16207',
+                            800: '#854d0e',
+                            900: '#713f12',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ca8a04;
+            border-radius: 4px;
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .float-1 { animation: float 6s ease-in-out infinite; }
+        .float-2 { animation: float 8s ease-in-out infinite 1s; }
+        .float-3 { animation: float 7s ease-in-out infinite 2s; }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #ca8a04 0%, #fef08a 50%, #ca8a04 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Glass Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dark .glass {
+            background: rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-white transition-colors duration-300"
+      x-data="{ darkMode: localStorage.getItem('darkMode') === 'true', mobileMenu: false }"
+      x-init="$watch('darkMode', val => { localStorage.setItem('darkMode', val); document.documentElement.classList.toggle('dark', val) }); if(darkMode) document.documentElement.classList.add('dark')"
+      :class="{ 'dark': darkMode }">
+
+    <!-- HEADER - #3 Logo center + Nav split sides -->
+    <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+            x-data="{ scrolled: false }"
+            @scroll.window="scrolled = window.scrollY > 50"
+            :class="scrolled ? 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg shadow-lg' : 'bg-transparent'">
+        <nav class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Left Nav -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#about" class="text-sm font-medium hover:text-gold-600 dark:hover:text-gold-400 transition-colors">Hakkımızda</a>
+                    <a href="#services" class="text-sm font-medium hover:text-gold-600 dark:hover:text-gold-400 transition-colors">Hizmetler</a>
+                </div>
+
+                <!-- Logo Center -->
+                <div class="flex-shrink-0">
+                    <a href="#" class="flex items-center space-x-2">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-500 to-gold-700 flex items-center justify-center">
+                            <span class="text-white font-bold text-lg font-serif">V</span>
+                        </div>
+                        <span class="text-xl font-serif font-bold">Vertex</span>
+                    </a>
+                </div>
+
+                <!-- Right Nav -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#values" class="text-sm font-medium hover:text-gold-600 dark:hover:text-gold-400 transition-colors">Değerler</a>
+                    <a href="#contact" class="text-sm font-medium hover:text-gold-600 dark:hover:text-gold-400 transition-colors">İletişim</a>
+
+                    <!-- Dark Mode Toggle -->
+                    <button @click="darkMode = !darkMode"
+                            class="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <i class="fas fa-sun text-gold-500" x-show="darkMode"></i>
+                        <i class="fas fa-moon text-slate-600" x-show="!darkMode"></i>
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button @click="mobileMenu = !mobileMenu" class="md:hidden p-2">
+                    <i class="fas fa-bars text-xl" x-show="!mobileMenu"></i>
+                    <i class="fas fa-times text-xl" x-show="mobileMenu"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div x-show="mobileMenu"
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 -translate-y-4"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 class="md:hidden mt-4 py-4 border-t border-slate-200 dark:border-slate-800">
+                <div class="flex flex-col space-y-4">
+                    <a href="#about" @click="mobileMenu = false" class="text-sm font-medium hover:text-gold-600">Hakkımızda</a>
+                    <a href="#services" @click="mobileMenu = false" class="text-sm font-medium hover:text-gold-600">Hizmetler</a>
+                    <a href="#values" @click="mobileMenu = false" class="text-sm font-medium hover:text-gold-600">Değerler</a>
+                    <a href="#contact" @click="mobileMenu = false" class="text-sm font-medium hover:text-gold-600">İletişim</a>
+                    <button @click="darkMode = !darkMode" class="flex items-center space-x-2 text-sm">
+                        <i class="fas" :class="darkMode ? 'fa-sun text-gold-500' : 'fa-moon text-slate-600'"></i>
+                        <span x-text="darkMode ? 'Aydınlık Mod' : 'Karanlık Mod'"></span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- HERO - #55 Floating Islands -->
+    <section class="min-h-screen relative overflow-hidden pt-20">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-5 dark:opacity-10">
+            <div class="absolute top-20 left-10 w-72 h-72 bg-gold-500 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-20 right-10 w-96 h-96 bg-gold-600 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 py-20 relative">
+            <!-- Floating Islands Layout -->
+            <div class="grid grid-cols-12 gap-6 min-h-[80vh] items-center">
+
+                <!-- Main Content Island -->
+                <div class="col-span-12 lg:col-span-5 lg:col-start-1 float-1" data-aos="fade-up">
+                    <div class="glass rounded-3xl p-8 lg:p-12">
+                        <span class="inline-block px-4 py-2 bg-gold-500/10 text-gold-600 dark:text-gold-400 rounded-xl text-xs font-medium mb-6">
+                            EST. 1998
+                        </span>
+                        <h1 class="text-4xl lg:text-6xl font-serif font-bold leading-tight mb-6">
+                            Kurumsal<br>
+                            <span class="gradient-text">Mükemmellik</span><br>
+                            Vizyonu
+                        </h1>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-8">
+                            Yirmi beş yılı aşkın deneyimimizle, işletmelerin dijital dönüşümünü
+                            ve sürdürülebilir büyümesini destekliyoruz. Her projede mükemmelliği hedefliyoruz.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="#contact" class="px-8 py-4 bg-gradient-to-r from-gold-600 to-gold-500 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-gold-500/25 transition-all">
+                                İletişime Geçin
+                            </a>
+                            <a href="#about" class="px-8 py-4 border border-slate-300 dark:border-slate-700 rounded-xl font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+                                Keşfedin
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Island -->
+                <div class="col-span-6 lg:col-span-3 lg:col-start-7 lg:row-start-1 float-2" data-aos="fade-up" data-aos-delay="100">
+                    <div class="glass rounded-3xl p-6 text-center">
+                        <div class="text-4xl lg:text-5xl font-serif font-bold gradient-text mb-2">25+</div>
+                        <div class="text-xs text-slate-500 dark:text-slate-400">Yıllık Deneyim</div>
+                    </div>
+                </div>
+
+                <!-- Projects Island -->
+                <div class="col-span-6 lg:col-span-3 lg:col-start-10 lg:row-start-1 float-3" data-aos="fade-up" data-aos-delay="200">
+                    <div class="glass rounded-3xl p-6 text-center">
+                        <div class="text-4xl lg:text-5xl font-serif font-bold gradient-text mb-2">500+</div>
+                        <div class="text-xs text-slate-500 dark:text-slate-400">Başarılı Proje</div>
+                    </div>
+                </div>
+
+                <!-- Team Island -->
+                <div class="col-span-12 sm:col-span-6 lg:col-span-4 lg:col-start-7 float-1" data-aos="fade-up" data-aos-delay="300">
+                    <div class="glass rounded-3xl p-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex -space-x-3">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-white font-bold border-2 border-white dark:border-slate-900">A</div>
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-400 to-slate-600 flex items-center justify-center text-white font-bold border-2 border-white dark:border-slate-900">B</div>
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-gold-500 to-gold-700 flex items-center justify-center text-white font-bold border-2 border-white dark:border-slate-900">C</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-serif font-bold">120+</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400">Uzman Kadro</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Award Island -->
+                <div class="col-span-12 sm:col-span-6 lg:col-span-3 lg:col-start-7 float-2" data-aos="fade-up" data-aos-delay="400">
+                    <div class="glass rounded-3xl p-6 flex items-center space-x-4">
+                        <div class="w-14 h-14 rounded-xl bg-gold-500/10 flex items-center justify-center">
+                            <i class="fas fa-trophy text-2xl text-gold-500"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-serif font-bold">35+</div>
+                            <div class="text-xs text-slate-500 dark:text-slate-400">Ödül & Sertifika</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Illustration Island -->
+                <div class="hidden lg:block col-span-3 col-start-10 row-span-2 float-3" data-aos="fade-left" data-aos-delay="500">
+                    <div class="h-full rounded-3xl bg-gradient-to-br from-gold-500/20 to-transparent p-8 flex items-center justify-center">
+                        <div class="relative w-full h-64">
+                            <div class="absolute top-0 left-1/4 w-20 h-20 rounded-2xl bg-gradient-to-br from-gold-400 to-gold-600 opacity-80 rotate-12 float-1"></div>
+                            <div class="absolute top-1/3 right-1/4 w-16 h-16 rounded-full bg-gradient-to-br from-gold-500 to-gold-700 opacity-60 float-2"></div>
+                            <div class="absolute bottom-1/4 left-1/3 w-24 h-24 rounded-3xl bg-gradient-to-br from-gold-300 to-gold-500 opacity-40 -rotate-6 float-3"></div>
+                            <div class="absolute bottom-0 right-1/3 w-12 h-12 rounded-xl bg-gradient-to-br from-gold-600 to-gold-800 opacity-70 rotate-45 float-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+            <a href="#about" class="flex flex-col items-center text-slate-400 hover:text-gold-500 transition-colors">
+                <span class="text-xs mb-2">Keşfet</span>
+                <i class="fas fa-chevron-down"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- ABOUT - #107 Founder Story -->
+    <section id="about" class="py-24 bg-white dark:bg-slate-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+                <!-- Image Side -->
+                <div class="relative" data-aos="fade-right">
+                    <div class="aspect-[4/5] rounded-3xl bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 overflow-hidden">
+                        <div class="w-full h-full flex items-center justify-center">
+                            <div class="text-center p-8">
+                                <div class="w-32 h-32 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center">
+                                    <i class="fas fa-user-tie text-5xl text-white"></i>
+                                </div>
+                                <span class="text-sm text-slate-500 dark:text-slate-400">Kurucu CEO</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Floating Quote Card -->
+                    <div class="absolute -bottom-8 -right-8 lg:right-auto lg:-left-8 glass rounded-2xl p-6 max-w-xs" data-aos="fade-up" data-aos-delay="200">
+                        <i class="fas fa-quote-left text-gold-500 text-2xl mb-3"></i>
+                        <p class="text-sm italic text-slate-600 dark:text-slate-400">
+                            "Başarı, doğru insanlarla doğru zamanda doğru işi yapmaktır."
+                        </p>
+                        <div class="mt-4 flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-xl bg-gold-500 flex items-center justify-center text-white font-bold">A</div>
+                            <div>
+                                <div class="font-medium text-sm">Ahmet Yılmaz</div>
+                                <div class="text-xs text-slate-500">Kurucu & CEO</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Side -->
+                <div data-aos="fade-left">
+                    <span class="inline-block px-4 py-2 bg-gold-500/10 text-gold-600 dark:text-gold-400 rounded-xl text-xs font-medium mb-6">
+                        KURULUŞ HİKAYEMİZ
+                    </span>
+
+                    <h2 class="text-3xl lg:text-5xl font-serif font-bold mb-6">
+                        Vizyondan<br>
+                        <span class="gradient-text">Gerçeğe</span>
+                    </h2>
+
+                    <div class="space-y-6 text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        <p>
+                            1998 yılında, küçük bir ofiste büyük hayallerle yola çıktık. Kurucumuz Ahmet Yılmaz'ın
+                            vizyonu net ve kararlıydı: Türkiye'nin en güvenilir iş ortağı olmak.
+                        </p>
+                        <p>
+                            İlk yıllarımızda karşılaştığımız zorluklar bizi yıldırmadı, aksine güçlendirdi.
+                            Her engeli bir öğrenme fırsatına, her başarısızlığı bir sıçrama tahtasına dönüştürdük.
+                        </p>
+                        <p>
+                            Bugün, 120'den fazla uzman kadromuzla, 500'ü aşkın başarılı projeyle ve 35'ten fazla
+                            ödülle, sektörün lider kurumlarından biri olmanın gururunu yaşıyoruz.
+                        </p>
+                    </div>
+
+                    <!-- Timeline -->
+                    <div class="mt-10 grid grid-cols-3 gap-4">
+                        <div class="text-center p-4 rounded-2xl bg-slate-100 dark:bg-slate-800">
+                            <div class="text-2xl font-serif font-bold text-gold-600">1998</div>
+                            <div class="text-xs text-slate-500 mt-1">Kuruluş</div>
+                        </div>
+                        <div class="text-center p-4 rounded-2xl bg-slate-100 dark:bg-slate-800">
+                            <div class="text-2xl font-serif font-bold text-gold-600">2010</div>
+                            <div class="text-xs text-slate-500 mt-1">Büyüme</div>
+                        </div>
+                        <div class="text-center p-4 rounded-2xl bg-slate-100 dark:bg-slate-800">
+                            <div class="text-2xl font-serif font-bold text-gold-600">2024</div>
+                            <div class="text-xs text-slate-500 mt-1">Liderlik</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES - #7 Bento Box Layout -->
+    <section id="services" class="py-24 bg-slate-100 dark:bg-slate-950">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="inline-block px-4 py-2 bg-gold-500/10 text-gold-600 dark:text-gold-400 rounded-xl text-xs font-medium mb-6">
+                    HİZMETLERİMİZ
+                </span>
+                <h2 class="text-3xl lg:text-5xl font-serif font-bold mb-4">
+                    Kapsamlı <span class="gradient-text">Çözümler</span>
+                </h2>
+                <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-sm">
+                    İşletmenizin ihtiyaçlarına özel, entegre hizmet portföyümüzle yanınızdayız.
+                </p>
+            </div>
+
+            <!-- Bento Grid -->
+            <div class="grid grid-cols-12 gap-6">
+
+                <!-- Large Card - Strategy -->
+                <div class="col-span-12 lg:col-span-8 glass rounded-3xl p-8 lg:p-10 group hover:bg-gold-500/5 transition-all duration-500" data-aos="fade-up">
+                    <div class="flex flex-col lg:flex-row lg:items-center gap-8">
+                        <div class="flex-shrink-0">
+                            <div class="w-24 h-24 lg:w-32 lg:h-32 rounded-3xl bg-gradient-to-br from-gold-500/20 to-gold-600/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                                <i class="fas fa-chess-king text-4xl lg:text-5xl text-gold-500"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-serif font-bold mb-3 group-hover:text-gold-600 dark:group-hover:text-gold-400 transition-colors">
+                                Stratejik Danışmanlık
+                            </h3>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
+                                İş stratejilerinizi analiz eder, pazar konumlandırmanızı güçlendirir ve sürdürülebilir
+                                büyüme için kapsamlı yol haritaları oluştururuz. Veri odaklı yaklaşımımızla
+                                rekabet avantajınızı maksimize ederiz.
+                            </p>
+                            <a href="#contact" class="inline-flex items-center text-gold-600 dark:text-gold-400 text-sm font-medium group-hover:underline">
+                                Detayları İncele <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Small Card - Digital -->
+                <div class="col-span-12 sm:col-span-6 lg:col-span-4 glass rounded-3xl p-8 group hover:bg-gold-500/5 transition-all duration-500" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold-500/20 to-gold-600/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                        <i class="fas fa-laptop-code text-2xl text-gold-500"></i>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold mb-3 group-hover:text-gold-600 dark:group-hover:text-gold-400 transition-colors">
+                        Dijital Dönüşüm
+                    </h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        İş süreçlerinizi dijitalleştirerek verimlilik ve inovasyonu artırıyoruz.
+                    </p>
+                </div>
+
+                <!-- Small Card - Finance -->
+                <div class="col-span-12 sm:col-span-6 lg:col-span-4 glass rounded-3xl p-8 group hover:bg-gold-500/5 transition-all duration-500" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold-500/20 to-gold-600/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                        <i class="fas fa-chart-pie text-2xl text-gold-500"></i>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold mb-3 group-hover:text-gold-600 dark:group-hover:text-gold-400 transition-colors">
+                        Finansal Danışmanlık
+                    </h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Mali yapınızı optimize eder, yatırım fırsatlarını değerlendiririz.
+                    </p>
+                </div>
+
+                <!-- Medium Card - Operations -->
+                <div class="col-span-12 sm:col-span-6 lg:col-span-4 glass rounded-3xl p-8 group hover:bg-gold-500/5 transition-all duration-500" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold-500/20 to-gold-600/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                        <i class="fas fa-cogs text-2xl text-gold-500"></i>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold mb-3 group-hover:text-gold-600 dark:group-hover:text-gold-400 transition-colors">
+                        Operasyonel Verimlilik
+                    </h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Süreçlerinizi analiz eder, israfı azaltır ve üretkenliği artırırız.
+                    </p>
+                </div>
+
+                <!-- Medium Card - HR -->
+                <div class="col-span-12 sm:col-span-6 lg:col-span-4 glass rounded-3xl p-8 group hover:bg-gold-500/5 transition-all duration-500" data-aos="fade-up" data-aos-delay="400">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold-500/20 to-gold-600/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                        <i class="fas fa-users text-2xl text-gold-500"></i>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold mb-3 group-hover:text-gold-600 dark:group-hover:text-gold-400 transition-colors">
+                        İnsan Kaynakları
+                    </h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Yetenek yönetimi ve organizasyonel gelişim stratejileri oluştururuz.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- VALUES/STRATEGY - #51 Tree/Branch Metaphor -->
+    <section id="values" class="py-24 bg-white dark:bg-slate-900 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="inline-block px-4 py-2 bg-gold-500/10 text-gold-600 dark:text-gold-400 rounded-xl text-xs font-medium mb-6">
+                    DEĞERLERİMİZ
+                </span>
+                <h2 class="text-3xl lg:text-5xl font-serif font-bold mb-4">
+                    Köklerimizden <span class="gradient-text">Dallarımıza</span>
+                </h2>
+                <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-sm">
+                    Değerlerimiz, başarımızın temelini oluşturan köklü ilkelerimizdir.
+                </p>
+            </div>
+
+            <!-- Tree Structure -->
+            <div class="relative">
+                <!-- Central Trunk Line -->
+                <div class="hidden lg:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-gold-500 via-gold-400 to-transparent -translate-x-1/2"></div>
+
+                <!-- Root (Core Value) -->
+                <div class="relative z-10 flex justify-center mb-16" data-aos="zoom-in">
+                    <div class="glass rounded-3xl p-8 text-center max-w-md">
+                        <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-gold-500 to-gold-700 flex items-center justify-center mb-4">
+                            <i class="fas fa-seedling text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-serif font-bold mb-2">Temel Değer</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm">
+                            Dürüstlük ve şeffaflık, tüm ilişkilerimizin temelidir.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Branches -->
+                <div class="grid lg:grid-cols-2 gap-8 lg:gap-16">
+
+                    <!-- Left Branch 1 -->
+                    <div class="lg:text-right" data-aos="fade-right">
+                        <div class="glass rounded-3xl p-6 inline-block lg:ml-auto relative">
+                            <div class="hidden lg:block absolute right-0 top-1/2 w-8 h-0.5 bg-gold-400 translate-x-full"></div>
+                            <div class="flex items-center lg:flex-row-reverse gap-4">
+                                <div class="w-14 h-14 rounded-2xl bg-gold-500/10 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-gem text-xl text-gold-500"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-serif font-bold text-lg">Kalite</h4>
+                                    <p class="text-slate-600 dark:text-slate-400 text-xs mt-1">
+                                        Her işte en yüksek standartları hedefleriz.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Branch 1 -->
+                    <div data-aos="fade-left">
+                        <div class="glass rounded-3xl p-6 inline-block relative">
+                            <div class="hidden lg:block absolute left-0 top-1/2 w-8 h-0.5 bg-gold-400 -translate-x-full"></div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 rounded-2xl bg-gold-500/10 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-lightbulb text-xl text-gold-500"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-serif font-bold text-lg">İnovasyon</h4>
+                                    <p class="text-slate-600 dark:text-slate-400 text-xs mt-1">
+                                        Sürekli gelişim ve yaratıcılık ruhuyla hareket ederiz.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Left Branch 2 -->
+                    <div class="lg:text-right" data-aos="fade-right" data-aos-delay="100">
+                        <div class="glass rounded-3xl p-6 inline-block lg:ml-auto relative">
+                            <div class="hidden lg:block absolute right-0 top-1/2 w-8 h-0.5 bg-gold-400 translate-x-full"></div>
+                            <div class="flex items-center lg:flex-row-reverse gap-4">
+                                <div class="w-14 h-14 rounded-2xl bg-gold-500/10 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-handshake text-xl text-gold-500"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-serif font-bold text-lg">Güven</h4>
+                                    <p class="text-slate-600 dark:text-slate-400 text-xs mt-1">
+                                        Sözümüz, en değerli varlığımızdır.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Branch 2 -->
+                    <div data-aos="fade-left" data-aos-delay="100">
+                        <div class="glass rounded-3xl p-6 inline-block relative">
+                            <div class="hidden lg:block absolute left-0 top-1/2 w-8 h-0.5 bg-gold-400 -translate-x-full"></div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 rounded-2xl bg-gold-500/10 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-leaf text-xl text-gold-500"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-serif font-bold text-lg">Sürdürülebilirlik</h4>
+                                    <p class="text-slate-600 dark:text-slate-400 text-xs mt-1">
+                                        Geleceği düşünerek bugünü şekillendiririz.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Left Branch 3 -->
+                    <div class="lg:text-right" data-aos="fade-right" data-aos-delay="200">
+                        <div class="glass rounded-3xl p-6 inline-block lg:ml-auto relative">
+                            <div class="hidden lg:block absolute right-0 top-1/2 w-8 h-0.5 bg-gold-400 translate-x-full"></div>
+                            <div class="flex items-center lg:flex-row-reverse gap-4">
+                                <div class="w-14 h-14 rounded-2xl bg-gold-500/10 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-users-cog text-xl text-gold-500"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-serif font-bold text-lg">Takım Ruhu</h4>
+                                    <p class="text-slate-600 dark:text-slate-400 text-xs mt-1">
+                                        Birlikte daha güçlüyüz, birlikte başarıyoruz.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Branch 3 -->
+                    <div data-aos="fade-left" data-aos-delay="200">
+                        <div class="glass rounded-3xl p-6 inline-block relative">
+                            <div class="hidden lg:block absolute left-0 top-1/2 w-8 h-0.5 bg-gold-400 -translate-x-full"></div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 rounded-2xl bg-gold-500/10 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-heart text-xl text-gold-500"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-serif font-bold text-lg">Müşteri Odaklılık</h4>
+                                    <p class="text-slate-600 dark:text-slate-400 text-xs mt-1">
+                                        Müşterilerimizin başarısı, bizim başarımızdır.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT - #46 Single Centered Form Card -->
+    <section id="contact" class="py-24 bg-slate-100 dark:bg-slate-950 relative overflow-hidden">
+        <!-- Background Elements -->
+        <div class="absolute inset-0 opacity-5">
+            <div class="absolute top-20 right-20 w-72 h-72 bg-gold-500 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-20 left-20 w-96 h-96 bg-gold-600 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 relative">
+            <div class="text-center mb-12" data-aos="fade-up">
+                <span class="inline-block px-4 py-2 bg-gold-500/10 text-gold-600 dark:text-gold-400 rounded-xl text-xs font-medium mb-6">
+                    İLETİŞİM
+                </span>
+                <h2 class="text-3xl lg:text-5xl font-serif font-bold mb-4">
+                    Birlikte <span class="gradient-text">Başlayalım</span>
+                </h2>
+                <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-sm">
+                    Projelerinizi hayata geçirmek için buradayız. Formu doldurun, size en kısa sürede ulaşalım.
+                </p>
+            </div>
+
+            <!-- Centered Form Card -->
+            <div class="max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+                <div class="glass rounded-3xl p-8 lg:p-12">
+                    <form class="space-y-6">
+                        <div class="grid sm:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-medium mb-2 text-slate-700 dark:text-slate-300">Ad Soyad</label>
+                                <input type="text"
+                                       class="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm"
+                                       placeholder="Adınız Soyadınız">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium mb-2 text-slate-700 dark:text-slate-300">E-posta</label>
+                                <input type="email"
+                                       class="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm"
+                                       placeholder="ornek@sirket.com">
+                            </div>
+                        </div>
+
+                        <div class="grid sm:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-medium mb-2 text-slate-700 dark:text-slate-300">Telefon</label>
+                                <input type="tel"
+                                       class="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm"
+                                       placeholder="+90 5XX XXX XX XX">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium mb-2 text-slate-700 dark:text-slate-300">Konu</label>
+                                <select class="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm">
+                                    <option value="">Seçiniz</option>
+                                    <option value="consulting">Danışmanlık</option>
+                                    <option value="partnership">İş Ortaklığı</option>
+                                    <option value="career">Kariyer</option>
+                                    <option value="other">Diğer</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium mb-2 text-slate-700 dark:text-slate-300">Mesajınız</label>
+                            <textarea rows="4"
+                                      class="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm resize-none"
+                                      placeholder="Projeniz hakkında bize bilgi verin..."></textarea>
+                        </div>
+
+                        <button type="submit"
+                                class="w-full py-4 bg-gradient-to-r from-gold-600 to-gold-500 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-gold-500/25 transition-all">
+                            Gönder <i class="fas fa-paper-plane ml-2"></i>
+                        </button>
+                    </form>
+
+                    <!-- Contact Info -->
+                    <div class="mt-10 pt-8 border-t border-slate-200 dark:border-slate-800">
+                        <div class="grid sm:grid-cols-3 gap-6 text-center">
+                            <div>
+                                <div class="w-10 h-10 mx-auto rounded-xl bg-gold-500/10 flex items-center justify-center mb-2">
+                                    <i class="fas fa-phone text-gold-500"></i>
+                                </div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400">+90 212 XXX XX XX</div>
+                            </div>
+                            <div>
+                                <div class="w-10 h-10 mx-auto rounded-xl bg-gold-500/10 flex items-center justify-center mb-2">
+                                    <i class="fas fa-envelope text-gold-500"></i>
+                                </div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400">info@vertex.com.tr</div>
+                            </div>
+                            <div>
+                                <div class="w-10 h-10 mx-auto rounded-xl bg-gold-500/10 flex items-center justify-center mb-2">
+                                    <i class="fas fa-map-marker-alt text-gold-500"></i>
+                                </div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400">İstanbul, Türkiye</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER - Minimal -->
+    <footer class="py-8 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-gold-500 to-gold-700 flex items-center justify-center">
+                        <span class="text-white font-bold text-sm font-serif">V</span>
+                    </div>
+                    <span class="text-sm font-serif font-bold">Vertex Holding</span>
+                </div>
+
+                <!-- Copyright -->
+                <div class="text-xs text-slate-500 dark:text-slate-400">
+                    © 2024 Vertex Holding. Tüm hakları saklıdır.
+                </div>
+
+                <!-- Social -->
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-gold-500 hover:text-white transition-all">
+                        <i class="fab fa-linkedin-in text-sm"></i>
+                    </a>
+                    <a href="#" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-gold-500 hover:text-white transition-all">
+                        <i class="fab fa-twitter text-sm"></i>
+                    </a>
+                    <a href="#" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-gold-500 hover:text-white transition-all">
+                        <i class="fab fa-instagram text-sm"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prompt Modal Button -->
+    <div class="fixed bottom-4 right-4 z-50" x-data="{ open: false }">
+        <button @click="open = true"
+                class="px-4 py-2 bg-slate-800 dark:bg-slate-700 text-white text-xs rounded-xl hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors shadow-lg">
+            <i class="fas fa-code mr-2"></i>Prompt
+        </button>
+
+        <!-- Modal -->
+        <div x-show="open"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+             @click.self="open = false">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-serif font-bold text-lg">Prompt Dokümanı</h3>
+                    <button @click="open = false" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                    Bu site için kullanılan tüm tasarım seçimleri ve Leonardo.ai görsel prompt'ları aşağıdaki dokümanda yer almaktadır.
+                </p>
+                <a href="prompt.html"
+                   target="_blank"
+                   class="block w-full py-3 bg-gradient-to-r from-gold-600 to-gold-500 text-white text-center rounded-xl font-medium hover:shadow-lg transition-all">
+                    Prompt'u Görüntüle <i class="fas fa-external-link-alt ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- AOS Init -->
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+    </script>
+</body>
+</html>

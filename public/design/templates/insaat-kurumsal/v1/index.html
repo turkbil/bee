@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YapıTek İnşaat | Güvenilir İnşaat Çözümleri</title>
+
+    <!-- Tailwind CSS v4 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            200: '#bae0fd',
+                            300: '#7cc8fb',
+                            400: '#36aaf5',
+                            500: '#0c8ee6',
+                            600: '#0070c4',
+                            700: '#01599f',
+                            800: '#064b83',
+                            900: '#0b3f6d',
+                            950: '#072849'
+                        },
+                        accent: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706'
+                        },
+                        construction: {
+                            steel: '#71717a',
+                            concrete: '#a1a1aa',
+                            safety: '#f59e0b'
+                        }
+                    },
+                    fontFamily: {
+                        'heading': ['Oswald', 'sans-serif'],
+                        'body': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-heading {
+            font-family: 'Oswald', sans-serif;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #f59e0b; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d97706; }
+
+        /* Hero Pattern */
+        .hero-pattern {
+            background-image:
+                linear-gradient(135deg, rgba(7, 40, 73, 0.95) 0%, rgba(11, 63, 109, 0.85) 100%),
+                url('https://picsum.photos/1920/1080?random=1');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Diagonal Section */
+        .diagonal-top {
+            clip-path: polygon(0 5%, 100% 0, 100% 100%, 0 100%);
+        }
+
+        .diagonal-bottom {
+            clip-path: polygon(0 0, 100% 0, 100% 95%, 0 100%);
+        }
+
+        /* Counter Animation */
+        .counter-value {
+            display: inline-block;
+        }
+
+        /* Card Hover */
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        /* Building Blocks Animation */
+        .building-block {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .building-block:hover {
+            transform: translateY(-10px);
+        }
+
+        /* Progress Bar */
+        .progress-fill {
+            animation: fillProgress 2s ease-out forwards;
+        }
+        @keyframes fillProgress {
+            from { width: 0; }
+        }
+
+        /* Floating Elements */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Safety Stripe Pattern */
+        .safety-stripe {
+            background: repeating-linear-gradient(
+                45deg,
+                #f59e0b,
+                #f59e0b 10px,
+                #1e293b 10px,
+                #1e293b 20px
+            );
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-slate-950 text-gray-900 dark:text-white transition-colors duration-300" x-data="{ mobileMenu: false, darkMode: localStorage.getItem('darkMode') === 'true' }" x-init="$watch('darkMode', val => { localStorage.setItem('darkMode', val); document.documentElement.classList.toggle('dark', val) }); if(darkMode || (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) { document.documentElement.classList.add('dark'); darkMode = true; }">
+
+    <!-- ===== HEADER ===== -->
+    <header class="fixed w-full top-0 z-50 transition-all duration-300"
+            x-data="{ scrolled: false }"
+            @scroll.window="scrolled = window.scrollY > 50"
+            :class="scrolled ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-lg py-2' : 'bg-transparent py-4'">
+
+        <!-- Top Bar -->
+        <div class="hidden lg:block border-b border-gray-200/10" :class="scrolled ? 'hidden' : ''">
+            <div class="max-w-7xl mx-auto px-6 py-2">
+                <div class="flex justify-between items-center text-sm">
+                    <div class="flex items-center gap-6 text-gray-600 dark:text-gray-400">
+                        <a href="tel:+902121234567" class="flex items-center gap-2 hover:text-accent-500 transition">
+                            <i class="fas fa-phone text-accent-500"></i>
+                            +90 212 123 45 67
+                        </a>
+                        <a href="mailto:info@yapitek.com" class="flex items-center gap-2 hover:text-accent-500 transition">
+                            <i class="fas fa-envelope text-accent-500"></i>
+                            info@yapitek.com
+                        </a>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-accent-500 transition"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-accent-500 transition"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-accent-500 transition"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-accent-500 transition"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Navigation -->
+        <nav class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-12 h-12 bg-gradient-to-br from-primary-600 to-primary-800 rounded-lg flex items-center justify-center transform group-hover:scale-105 transition shadow-lg">
+                        <i class="fas fa-hard-hat text-accent-500 text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-heading text-2xl font-bold tracking-wide" :class="scrolled ? 'text-primary-800 dark:text-white' : 'text-white'">YapıTek</span>
+                        <span class="block text-xs tracking-widest uppercase" :class="scrolled ? 'text-gray-500' : 'text-gray-300'">İnşaat</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex items-center gap-8">
+                    <a href="#hero" class="font-medium transition hover:text-accent-500" :class="scrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'">Ana Sayfa</a>
+
+                    <!-- Mega Menu - Hizmetler -->
+                    <div class="relative group" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                        <button class="font-medium transition hover:text-accent-500 flex items-center gap-1" :class="scrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'">
+                            Hizmetler
+                            <i class="fas fa-chevron-down text-xs transition-transform" :class="open ? 'rotate-180' : ''"></i>
+                        </button>
+                        <div x-show="open"
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 translate-y-2"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             class="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[600px]">
+                            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl p-6 grid grid-cols-2 gap-6 border border-gray-100 dark:border-slate-700">
+                                <a href="#services" class="flex items-start gap-4 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition group">
+                                    <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/50 rounded-lg flex items-center justify-center text-primary-600 dark:text-primary-400 group-hover:scale-110 transition">
+                                        <i class="fas fa-building text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-semibold text-gray-900 dark:text-white block">Konut Projeleri</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Modern yaşam alanları</span>
+                                    </div>
+                                </a>
+                                <a href="#services" class="flex items-start gap-4 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition group">
+                                    <div class="w-12 h-12 bg-accent-100 dark:bg-accent-900/50 rounded-lg flex items-center justify-center text-accent-600 dark:text-accent-400 group-hover:scale-110 transition">
+                                        <i class="fas fa-industry text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-semibold text-gray-900 dark:text-white block">Endüstriyel Yapılar</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Fabrika ve depo inşaatı</span>
+                                    </div>
+                                </a>
+                                <a href="#services" class="flex items-start gap-4 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition group">
+                                    <div class="w-12 h-12 bg-green-100 dark:bg-green-900/50 rounded-lg flex items-center justify-center text-green-600 dark:text-green-400 group-hover:scale-110 transition">
+                                        <i class="fas fa-road text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-semibold text-gray-900 dark:text-white block">Altyapı Projeleri</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Yol, köprü, tünel</span>
+                                    </div>
+                                </a>
+                                <a href="#services" class="flex items-start gap-4 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition group">
+                                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/50 rounded-lg flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition">
+                                        <i class="fas fa-pencil-ruler text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-semibold text-gray-900 dark:text-white block">Restorasyon</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Tarihi yapı restorasyonu</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="#projects" class="font-medium transition hover:text-accent-500" :class="scrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'">Projeler</a>
+                    <a href="#about" class="font-medium transition hover:text-accent-500" :class="scrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'">Hakkımızda</a>
+                    <a href="#contact" class="font-medium transition hover:text-accent-500" :class="scrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'">İletişim</a>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-4">
+                    <!-- Dark Mode Toggle -->
+                    <button @click="darkMode = !darkMode"
+                            class="w-10 h-10 rounded-full flex items-center justify-center transition hover:bg-gray-100 dark:hover:bg-slate-800"
+                            :class="scrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'">
+                        <i class="fas fa-sun text-lg" x-show="darkMode"></i>
+                        <i class="fas fa-moon text-lg" x-show="!darkMode"></i>
+                    </button>
+
+                    <!-- CTA Button -->
+                    <a href="#contact" class="hidden md:inline-flex items-center gap-2 bg-accent-500 hover:bg-accent-600 text-white px-6 py-3 rounded-lg font-semibold transition shadow-lg shadow-accent-500/25 hover:shadow-accent-500/40 hover:-translate-y-0.5">
+                        <i class="fas fa-phone-alt"></i>
+                        Teklif Al
+                    </a>
+
+                    <!-- Mobile Menu Button -->
+                    <button @click="mobileMenu = !mobileMenu" class="lg:hidden w-10 h-10 rounded-lg flex items-center justify-center" :class="scrolled ? 'text-gray-700 dark:text-white' : 'text-white'">
+                        <i class="fas fa-bars text-xl" x-show="!mobileMenu"></i>
+                        <i class="fas fa-times text-xl" x-show="mobileMenu"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div x-show="mobileMenu"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 -translate-y-4"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             class="lg:hidden bg-white dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800 mt-4">
+            <div class="max-w-7xl mx-auto px-6 py-6 space-y-4">
+                <a href="#hero" @click="mobileMenu = false" class="block py-3 text-gray-700 dark:text-gray-200 font-medium hover:text-accent-500 border-b border-gray-100 dark:border-slate-800">Ana Sayfa</a>
+                <a href="#services" @click="mobileMenu = false" class="block py-3 text-gray-700 dark:text-gray-200 font-medium hover:text-accent-500 border-b border-gray-100 dark:border-slate-800">Hizmetler</a>
+                <a href="#projects" @click="mobileMenu = false" class="block py-3 text-gray-700 dark:text-gray-200 font-medium hover:text-accent-500 border-b border-gray-100 dark:border-slate-800">Projeler</a>
+                <a href="#about" @click="mobileMenu = false" class="block py-3 text-gray-700 dark:text-gray-200 font-medium hover:text-accent-500 border-b border-gray-100 dark:border-slate-800">Hakkımızda</a>
+                <a href="#contact" @click="mobileMenu = false" class="block py-3 text-gray-700 dark:text-gray-200 font-medium hover:text-accent-500">İletişim</a>
+                <a href="#contact" class="block w-full text-center bg-accent-500 text-white py-3 rounded-lg font-semibold mt-4">
+                    <i class="fas fa-phone-alt mr-2"></i>Teklif Al
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== HERO SECTION ===== -->
+    <!-- Layout #144: Solid Foundation - Büyük, kurumsal -->
+    <section id="hero" class="relative min-h-screen flex items-center hero-pattern">
+        <!-- Floating Elements -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute top-20 right-10 w-20 h-20 border-2 border-accent-500/30 rounded-lg floating" style="animation-delay: 0s;"></div>
+            <div class="absolute bottom-40 left-20 w-16 h-16 border-2 border-white/20 rounded-full floating" style="animation-delay: 2s;"></div>
+            <div class="absolute top-1/3 right-1/4 w-4 h-4 bg-accent-500/50 rounded-full floating" style="animation-delay: 1s;"></div>
+        </div>
+
+        <!-- Safety Stripe Accent -->
+        <div class="absolute bottom-0 left-0 right-0 h-2 safety-stripe"></div>
+
+        <div class="max-w-7xl mx-auto px-6 py-32 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Left Content -->
+                <div data-aos="fade-right" data-aos-duration="1000">
+                    <div class="inline-flex items-center gap-2 bg-accent-500/20 text-accent-400 px-4 py-2 rounded-full text-sm font-medium mb-6">
+                        <i class="fas fa-award"></i>
+                        35+ Yıllık Deneyim
+                    </div>
+
+                    <h1 class="font-heading text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">
+                        Geleceği
+                        <span class="text-accent-500 block">İnşa Ediyoruz</span>
+                    </h1>
+
+                    <p class="text-xl text-gray-300 mb-8 max-w-lg leading-relaxed">
+                        Türkiye'nin en güvenilir inşaat şirketlerinden biri olarak, kalite ve güvenliği ön planda tutarak projelerinizi hayata geçiriyoruz.
+                    </p>
+
+                    <div class="flex flex-wrap gap-4 mb-12">
+                        <a href="#contact" class="inline-flex items-center gap-3 bg-accent-500 hover:bg-accent-600 text-white px-8 py-4 rounded-lg font-semibold transition shadow-xl shadow-accent-500/30 hover:shadow-accent-500/50 hover:-translate-y-1">
+                            <i class="fas fa-hard-hat"></i>
+                            Projenizi Başlatın
+                        </a>
+                        <a href="#projects" class="inline-flex items-center gap-3 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-lg font-semibold transition border border-white/20 backdrop-blur-sm">
+                            <i class="fas fa-play-circle"></i>
+                            Projelerimizi İnceleyin
+                        </a>
+                    </div>
+
+                    <!-- Trust Badges -->
+                    <div class="flex flex-wrap items-center gap-8">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-shield-alt text-accent-500 text-xl"></i>
+                            </div>
+                            <div>
+                                <span class="block text-white font-semibold">ISO 9001</span>
+                                <span class="text-sm text-gray-400">Sertifikalı</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-leaf text-green-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <span class="block text-white font-semibold">Yeşil Bina</span>
+                                <span class="text-sm text-gray-400">LEED Sertifikalı</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right - Image Composition -->
+                <div class="relative hidden lg:block" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
+                    <!-- Main Image -->
+                    <div class="relative">
+                        <img src="https://picsum.photos/600/700?random=2" alt="İnşaat Projesi" class="rounded-2xl shadow-2xl w-full object-cover" loading="lazy">
+
+                        <!-- Floating Stats Card -->
+                        <div class="absolute -bottom-8 -left-8 bg-white dark:bg-slate-800 rounded-xl p-6 shadow-2xl" data-aos="fade-up" data-aos-delay="400">
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 bg-accent-500 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-building text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <span class="block text-3xl font-heading font-bold text-gray-900 dark:text-white">500+</span>
+                                    <span class="text-gray-500 dark:text-gray-400">Tamamlanan Proje</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Floating Badge -->
+                        <div class="absolute -top-4 -right-4 bg-primary-600 text-white px-4 py-2 rounded-lg shadow-lg">
+                            <span class="font-heading font-bold">A+ Kalite</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-white animate-bounce">
+            <a href="#stats" class="flex flex-col items-center gap-2 opacity-70 hover:opacity-100 transition">
+                <span class="text-sm">Keşfet</span>
+                <i class="fas fa-chevron-down"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- ===== STATISTICS SECTION ===== -->
+    <!-- Layout #23: Statistics card grid -->
+    <section id="stats" class="relative bg-primary-900 dark:bg-slate-900 py-20 -mt-1">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8" x-data="{ shown: false }" x-intersect="shown = true">
+                <!-- Stat 1 -->
+                <div class="text-center" data-aos="fade-up" data-aos-delay="0">
+                    <div class="w-16 h-16 bg-accent-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-calendar-alt text-accent-500 text-2xl"></i>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-heading font-bold text-white mb-2"
+                         x-text="shown ? '35+' : '0'">0</div>
+                    <div class="text-gray-400">Yıllık Deneyim</div>
+                </div>
+
+                <!-- Stat 2 -->
+                <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-16 h-16 bg-accent-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-building text-accent-500 text-2xl"></i>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-heading font-bold text-white mb-2"
+                         x-text="shown ? '500+' : '0'">0</div>
+                    <div class="text-gray-400">Tamamlanan Proje</div>
+                </div>
+
+                <!-- Stat 3 -->
+                <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-16 h-16 bg-accent-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-users text-accent-500 text-2xl"></i>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-heading font-bold text-white mb-2"
+                         x-text="shown ? '1200+' : '0'">0</div>
+                    <div class="text-gray-400">Uzman Çalışan</div>
+                </div>
+
+                <!-- Stat 4 -->
+                <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-16 h-16 bg-accent-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-ruler-combined text-accent-500 text-2xl"></i>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-heading font-bold text-white mb-2"
+                         x-text="shown ? '2M+' : '0'">0</div>
+                    <div class="text-gray-400">m² İnşaat Alanı</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SERVICES SECTION ===== -->
+    <!-- Layout #12: Card grid with icon circles -->
+    <section id="services" class="py-24 bg-gray-50 dark:bg-slate-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <span class="inline-block bg-accent-500/10 text-accent-600 dark:text-accent-400 px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wider mb-4">
+                    Hizmetlerimiz
+                </span>
+                <h2 class="font-heading text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                    Kapsamlı İnşaat Çözümleri
+                </h2>
+                <p class="text-xl text-gray-600 dark:text-gray-400">
+                    Her ölçekte projeleriniz için anahtar teslim çözümler sunuyoruz
+                </p>
+            </div>
+
+            <!-- Services Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="service-card bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group" data-aos="fade-up" data-aos-delay="0">
+                    <div class="service-icon w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300 shadow-lg shadow-primary-500/30">
+                        <i class="fas fa-city text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold text-gray-900 dark:text-white mb-4">Konut Projeleri</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                        Modern mimari anlayışla tasarlanan, depreme dayanıklı, enerji verimli konut projeleri inşa ediyoruz.
+                    </p>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check-circle text-accent-500"></i>
+                            Rezidans & Siteler
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check-circle text-accent-500"></i>
+                            Villa Projeleri
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check-circle text-accent-500"></i>
+                            Toplu Konutlar
+                        </li>
+                    </ul>
+                    <a href="#contact" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold hover:gap-3 transition-all">
+                        Detaylı Bilgi
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="service-card bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-icon w-20 h-20 bg-gradient-to-br from-accent-500 to-accent-600 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300 shadow-lg shadow-accent-500/30">
+                        <i class="fas fa-industry text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold text-gray-900 dark:text-white mb-4">Endüstriyel Yapılar</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                        Fabrika, depo, lojistik merkezi ve üretim tesisleri için modern endüstriyel yapılar inşa ediyoruz.
+                    </p>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check-circle text-accent-500"></i>
+                            Çelik Konstrüksiyon
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check-circle text-accent-500"></i>
+                            Prefabrik Sistemler
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check-circle text-accent-500"></i>
+                            Depo & Antrepolar
+                        </li>
+                    </ul>
+                    <a href="#contact" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold hover:gap-3 transition-all">
+                        Detaylı Bilgi
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="service-card bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-icon w-20 h-20 bg-gradient-to-br from-green-500 to-green-700 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300 shadow-lg shadow-green-500/30">
+                        <i class="fas fa-road text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold text-gray-900 dark:text-white mb-4">Altyapı Projeleri</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                        Karayolu, köprü, tünel ve altyapı projeleriyle şehirlerin gelişimine katkıda bulunuyoruz.
+                    </p>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check-circle text-accent-500"></i>
+                            Karayolu İnşaatı
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check-circle text-accent-500"></i>
+                            Köprü & Viyadük
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check-circle text-accent-500"></i>
+                            Tünel Yapımı
+                        </li>
+                    </ul>
+                    <a href="#contact" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold hover:gap-3 transition-all">
+                        Detaylı Bilgi
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="service-card bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group" data-aos="fade-up" data-aos-delay="0">
+                    <div class="service-icon w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300 shadow-lg shadow-purple-500/30">
+                        <i class="fas fa-store text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold text-gray-900 dark:text-white mb-4">Ticari Yapılar</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                        AVM, plaza, otel ve ofis binaları için modern ve fonksiyonel ticari yapılar tasarlıyoruz.
+                    </p>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check-circle text-accent-500"></i>
+                            Alışveriş Merkezleri
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check-circle text-accent-500"></i>
+                            İş Merkezleri
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check-circle text-accent-500"></i>
+                            Otel & Konaklama
+                        </li>
+                    </ul>
+                    <a href="#contact" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold hover:gap-3 transition-all">
+                        Detaylı Bilgi
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="service-card bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-icon w-20 h-20 bg-gradient-to-br from-rose-500 to-rose-700 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300 shadow-lg shadow-rose-500/30">
+                        <i class="fas fa-landmark text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold text-gray-900 dark:text-white mb-4">Restorasyon</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                        Tarihi yapıların özgün dokusunu koruyarak modern standartlara uygun restorasyonlar gerçekleştiriyoruz.
+                    </p>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check-circle text-accent-500"></i>
+                            Tarihi Eser Restorasyonu
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check-circle text-accent-500"></i>
+                            Cephe Yenileme
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check-circle text-accent-500"></i>
+                            Güçlendirme
+                        </li>
+                    </ul>
+                    <a href="#contact" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold hover:gap-3 transition-all">
+                        Detaylı Bilgi
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Service 6 -->
+                <div class="service-card bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-icon w-20 h-20 bg-gradient-to-br from-cyan-500 to-cyan-700 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300 shadow-lg shadow-cyan-500/30">
+                        <i class="fas fa-drafting-compass text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold text-gray-900 dark:text-white mb-4">Proje Danışmanlığı</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                        Projenizin başlangıcından sonuna kadar uzman kadromuzla danışmanlık hizmeti veriyoruz.
+                    </p>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check-circle text-accent-500"></i>
+                            Mimari Tasarım
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check-circle text-accent-500"></i>
+                            Mühendislik Hizmetleri
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check-circle text-accent-500"></i>
+                            Proje Yönetimi
+                        </li>
+                    </ul>
+                    <a href="#contact" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold hover:gap-3 transition-all">
+                        Detaylı Bilgi
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PROJECTS SECTION ===== -->
+    <section id="projects" class="py-24 bg-white dark:bg-slate-950">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Section Header -->
+            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
+                <div data-aos="fade-right">
+                    <span class="inline-block bg-accent-500/10 text-accent-600 dark:text-accent-400 px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wider mb-4">
+                        Referanslarımız
+                    </span>
+                    <h2 class="font-heading text-4xl md:text-5xl font-bold text-gray-900 dark:text-white">
+                        Tamamlanan Projeler
+                    </h2>
+                </div>
+                <a href="#" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold hover:gap-3 transition-all" data-aos="fade-left">
+                    Tüm Projeleri Görüntüle
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Projects Grid - Masonry Style -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Project 1 - Large -->
+                <div class="md:col-span-2 lg:col-span-2 group relative overflow-hidden rounded-2xl" data-aos="fade-up">
+                    <img src="https://picsum.photos/1200/600?random=10" alt="Merkez Plaza" class="w-full h-[400px] object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-8">
+                        <span class="inline-block bg-accent-500 text-white text-sm px-3 py-1 rounded-full mb-3">Ticari Yapı</span>
+                        <h3 class="font-heading text-2xl font-bold text-white mb-2">Merkez Plaza İş Merkezi</h3>
+                        <p class="text-gray-300 mb-4">İstanbul, Maslak - 45.000 m²</p>
+                        <a href="#" class="inline-flex items-center gap-2 text-accent-400 font-semibold hover:gap-3 transition-all">
+                            Projeyi İncele
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="group relative overflow-hidden rounded-2xl" data-aos="fade-up" data-aos-delay="100">
+                    <img src="https://picsum.photos/600/600?random=11" alt="Green Park Residence" class="w-full h-[400px] object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6">
+                        <span class="inline-block bg-green-500 text-white text-sm px-3 py-1 rounded-full mb-3">Konut</span>
+                        <h3 class="font-heading text-xl font-bold text-white mb-2">Green Park Residence</h3>
+                        <p class="text-gray-300 text-sm">Ankara - 280 Daire</p>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="group relative overflow-hidden rounded-2xl" data-aos="fade-up" data-aos-delay="0">
+                    <img src="https://picsum.photos/600/600?random=12" alt="Metro Hattı" class="w-full h-[400px] object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6">
+                        <span class="inline-block bg-purple-500 text-white text-sm px-3 py-1 rounded-full mb-3">Altyapı</span>
+                        <h3 class="font-heading text-xl font-bold text-white mb-2">Metro Hattı M7</h3>
+                        <p class="text-gray-300 text-sm">İstanbul - 8.5 km</p>
+                    </div>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="group relative overflow-hidden rounded-2xl" data-aos="fade-up" data-aos-delay="100">
+                    <img src="https://picsum.photos/600/600?random=13" alt="Lojistik Merkezi" class="w-full h-[400px] object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6">
+                        <span class="inline-block bg-orange-500 text-white text-sm px-3 py-1 rounded-full mb-3">Endüstriyel</span>
+                        <h3 class="font-heading text-xl font-bold text-white mb-2">Atlas Lojistik Merkezi</h3>
+                        <p class="text-gray-300 text-sm">Gebze - 120.000 m²</p>
+                    </div>
+                </div>
+
+                <!-- Project 5 -->
+                <div class="group relative overflow-hidden rounded-2xl" data-aos="fade-up" data-aos-delay="200">
+                    <img src="https://picsum.photos/600/600?random=14" alt="Tarihi Restorasyon" class="w-full h-[400px] object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6">
+                        <span class="inline-block bg-rose-500 text-white text-sm px-3 py-1 rounded-full mb-3">Restorasyon</span>
+                        <h3 class="font-heading text-xl font-bold text-white mb-2">Tarihi Han Restorasyonu</h3>
+                        <p class="text-gray-300 text-sm">Bursa - 3.500 m²</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== ABOUT SECTION ===== -->
+    <section id="about" class="py-24 bg-gray-50 dark:bg-slate-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <!-- Left - Image Composition -->
+                <div class="relative" data-aos="fade-right">
+                    <div class="relative z-10">
+                        <img src="https://picsum.photos/600/500?random=20" alt="Şantiye" class="rounded-2xl shadow-2xl" loading="lazy">
+                    </div>
+                    <!-- Overlapping Image -->
+                    <div class="absolute -bottom-8 -right-8 w-2/3 z-20">
+                        <img src="https://picsum.photos/400/300?random=21" alt="Ekip" class="rounded-2xl shadow-2xl border-4 border-white dark:border-slate-800" loading="lazy">
+                    </div>
+                    <!-- Experience Badge -->
+                    <div class="absolute top-8 -left-4 bg-accent-500 text-white p-6 rounded-2xl shadow-xl z-30">
+                        <span class="block text-4xl font-heading font-bold">35+</span>
+                        <span class="text-sm">Yıllık Tecrübe</span>
+                    </div>
+                </div>
+
+                <!-- Right - Content -->
+                <div data-aos="fade-left">
+                    <span class="inline-block bg-accent-500/10 text-accent-600 dark:text-accent-400 px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wider mb-4">
+                        Hakkımızda
+                    </span>
+                    <h2 class="font-heading text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                        Güvenin ve Kalitenin Adresi
+                    </h2>
+                    <p class="text-lg text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                        1989 yılından bu yana inşaat sektöründe faaliyet gösteren YapıTek İnşaat, Türkiye'nin en saygın ve güvenilir inşaat şirketlerinden biri olarak projelerinizi hayata geçirmektedir.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+                        ISO 9001 kalite yönetim sistemi, OHSAS 18001 iş sağlığı ve güvenliği standartlarına sahip şirketimiz, LEED sertifikalı yeşil bina uygulamalarıyla çevreye duyarlı projeler üretmektedir.
+                    </p>
+
+                    <!-- Features -->
+                    <div class="grid sm:grid-cols-2 gap-6 mb-8">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-shield-alt text-primary-600 dark:text-primary-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Güvenlik Önceliği</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Sıfır iş kazası hedefi</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-leaf text-green-600 dark:text-green-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Sürdürülebilirlik</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Çevre dostu yapılar</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-accent-100 dark:bg-accent-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-clock text-accent-600 dark:text-accent-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Zamanında Teslim</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">%98 zamanında teslim oranı</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-medal text-purple-600 dark:text-purple-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Ödüllü Projeler</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">25+ ulusal ödül</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="#contact" class="inline-flex items-center gap-3 bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-lg font-semibold transition shadow-lg shadow-primary-600/30 hover:shadow-primary-600/50 hover:-translate-y-1">
+                        <i class="fas fa-building"></i>
+                        Daha Fazla Bilgi
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== VALUES SECTION ===== -->
+    <!-- Layout #51: Building blocks visual metaphor -->
+    <section class="py-24 bg-primary-900 dark:bg-slate-950 relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 left-0 w-96 h-96 bg-accent-500 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 right-0 w-96 h-96 bg-primary-400 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <span class="inline-block bg-accent-500/20 text-accent-400 px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wider mb-4">
+                    Değerlerimiz
+                </span>
+                <h2 class="font-heading text-4xl md:text-5xl font-bold text-white mb-6">
+                    Başarımızın Yapı Taşları
+                </h2>
+                <p class="text-xl text-gray-300">
+                    Her projemizde bu değerleri temel alarak çalışıyoruz
+                </p>
+            </div>
+
+            <!-- Building Blocks Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Block 1 - Foundation -->
+                <div class="building-block bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-accent-500/50 transition-all duration-500" data-aos="fade-up" data-aos-delay="0">
+                    <div class="w-16 h-16 bg-accent-500 rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-accent-500/30">
+                        <i class="fas fa-handshake text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold text-white mb-3">Güvenilirlik</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        Verdiğimiz sözlerin arkasında durur, taahhütlerimizi eksiksiz yerine getiririz.
+                    </p>
+                </div>
+
+                <!-- Block 2 -->
+                <div class="building-block bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-accent-500/50 transition-all duration-500 lg:mt-8" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-16 h-16 bg-primary-500 rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-primary-500/30">
+                        <i class="fas fa-gem text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold text-white mb-3">Kalite</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        En yüksek kalite standartlarında malzeme ve işçilik kullanarak projelerimizi tamamlıyoruz.
+                    </p>
+                </div>
+
+                <!-- Block 3 -->
+                <div class="building-block bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-accent-500/50 transition-all duration-500" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-16 h-16 bg-green-500 rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-green-500/30">
+                        <i class="fas fa-hard-hat text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold text-white mb-3">İş Güvenliği</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        Çalışanlarımızın güvenliği en öncelikli konumuz. Sıfır kaza hedefimizdir.
+                    </p>
+                </div>
+
+                <!-- Block 4 -->
+                <div class="building-block bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-accent-500/50 transition-all duration-500 lg:mt-8" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-16 h-16 bg-purple-500 rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-purple-500/30">
+                        <i class="fas fa-lightbulb text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold text-white mb-3">Yenilikçilik</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        En son teknolojileri ve yenilikçi yöntemleri projelerimizde uyguluyoruz.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PROCESS SECTION ===== -->
+    <section class="py-24 bg-white dark:bg-slate-950">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <span class="inline-block bg-accent-500/10 text-accent-600 dark:text-accent-400 px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wider mb-4">
+                    Çalışma Sürecimiz
+                </span>
+                <h2 class="font-heading text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                    Projenizi Nasıl Hayata Geçiriyoruz?
+                </h2>
+            </div>
+
+            <!-- Process Steps -->
+            <div class="relative">
+                <!-- Connection Line -->
+                <div class="hidden lg:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-primary-200 via-accent-300 to-green-200 dark:from-primary-800 dark:via-accent-700 dark:to-green-800 -translate-y-1/2"></div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Step 1 -->
+                    <div class="relative" data-aos="fade-up" data-aos-delay="0">
+                        <div class="bg-gray-50 dark:bg-slate-800 rounded-2xl p-8 text-center relative z-10">
+                            <div class="w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-primary-500/30">
+                                <span class="font-heading text-3xl font-bold text-white">01</span>
+                            </div>
+                            <h3 class="font-heading text-xl font-bold text-gray-900 dark:text-white mb-3">Keşif & Analiz</h3>
+                            <p class="text-gray-600 dark:text-gray-400">
+                                İhtiyaçlarınızı dinler, arazinizi inceler ve fizibilite çalışması yaparız.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="relative" data-aos="fade-up" data-aos-delay="100">
+                        <div class="bg-gray-50 dark:bg-slate-800 rounded-2xl p-8 text-center relative z-10">
+                            <div class="w-20 h-20 bg-gradient-to-br from-accent-500 to-accent-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-accent-500/30">
+                                <span class="font-heading text-3xl font-bold text-white">02</span>
+                            </div>
+                            <h3 class="font-heading text-xl font-bold text-gray-900 dark:text-white mb-3">Tasarım & Planlama</h3>
+                            <p class="text-gray-600 dark:text-gray-400">
+                                Mimari tasarım, mühendislik projeleri ve detaylı iş planı hazırlarız.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="relative" data-aos="fade-up" data-aos-delay="200">
+                        <div class="bg-gray-50 dark:bg-slate-800 rounded-2xl p-8 text-center relative z-10">
+                            <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-purple-500/30">
+                                <span class="font-heading text-3xl font-bold text-white">03</span>
+                            </div>
+                            <h3 class="font-heading text-xl font-bold text-gray-900 dark:text-white mb-3">İnşaat Süreci</h3>
+                            <p class="text-gray-600 dark:text-gray-400">
+                                Deneyimli ekibimizle kaliteli ve güvenli inşaat sürecini yönetiriz.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="relative" data-aos="fade-up" data-aos-delay="300">
+                        <div class="bg-gray-50 dark:bg-slate-800 rounded-2xl p-8 text-center relative z-10">
+                            <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-green-500/30">
+                                <span class="font-heading text-3xl font-bold text-white">04</span>
+                            </div>
+                            <h3 class="font-heading text-xl font-bold text-gray-900 dark:text-white mb-3">Teslim & Destek</h3>
+                            <p class="text-gray-600 dark:text-gray-400">
+                                Anahtar teslim projeyi sunar, satış sonrası destek sağlarız.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TESTIMONIALS SECTION ===== -->
+    <section class="py-24 bg-gray-50 dark:bg-slate-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <span class="inline-block bg-accent-500/10 text-accent-600 dark:text-accent-400 px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wider mb-4">
+                    Müşteri Görüşleri
+                </span>
+                <h2 class="font-heading text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                    Müşterilerimiz Ne Diyor?
+                </h2>
+            </div>
+
+            <!-- Testimonials Grid -->
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg" data-aos="fade-up" data-aos-delay="0">
+                    <div class="flex items-center gap-1 text-accent-500 mb-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                        "YapıTek ile çalışmak büyük bir ayrıcalıktı. Fabrikamızı zamanında ve bütçe dahilinde teslim ettiler. Profesyonel yaklaşımları ve çözüm odaklı tutumları için teşekkür ederiz."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <img src="https://picsum.photos/60/60?random=30" alt="Müşteri" class="w-14 h-14 rounded-full object-cover" loading="lazy">
+                        <div>
+                            <span class="block font-semibold text-gray-900 dark:text-white">Mehmet Yılmaz</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">Atlas Holding CEO</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center gap-1 text-accent-500 mb-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                        "Site projemizde yaşadığımız tüm süreç boyunca YapıTek her zaman yanımızdaydı. Kalite standartları ve müşteri memnuniyetine verdikleri önem takdire şayan."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <img src="https://picsum.photos/60/60?random=31" alt="Müşteri" class="w-14 h-14 rounded-full object-cover" loading="lazy">
+                        <div>
+                            <span class="block font-semibold text-gray-900 dark:text-white">Ayşe Demir</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">Konut Yatırımcısı</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-center gap-1 text-accent-500 mb-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                        "Altyapı projemizde YapıTek'in teknik bilgisi ve deneyimi çok değerliydi. Zorlu arazi koşullarına rağmen projeyi başarıyla tamamladılar."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <img src="https://picsum.photos/60/60?random=32" alt="Müşteri" class="w-14 h-14 rounded-full object-cover" loading="lazy">
+                        <div>
+                            <span class="block font-semibold text-gray-900 dark:text-white">Ahmet Kaya</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">Belediye Başkanı</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA SECTION ===== -->
+    <section class="py-24 bg-gradient-to-br from-primary-700 via-primary-800 to-primary-900 relative overflow-hidden">
+        <!-- Background Elements -->
+        <div class="absolute inset-0 opacity-20">
+            <img src="https://picsum.photos/1920/600?random=40&grayscale" alt="" class="w-full h-full object-cover" loading="lazy">
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-r from-primary-900/90 to-primary-800/80"></div>
+
+        <!-- Safety Stripes -->
+        <div class="absolute top-0 left-0 right-0 h-2 safety-stripe"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-2 safety-stripe"></div>
+
+        <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+            <div data-aos="fade-up">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-accent-500 rounded-full mb-8 shadow-xl shadow-accent-500/30">
+                    <i class="fas fa-hard-hat text-white text-3xl"></i>
+                </div>
+                <h2 class="font-heading text-4xl md:text-5xl font-bold text-white mb-6">
+                    Projenizi Konuşalım
+                </h2>
+                <p class="text-xl text-gray-200 mb-10 max-w-2xl mx-auto">
+                    Hayalinizdeki yapıyı birlikte inşa edelim. Ücretsiz keşif ve fizibilite için hemen iletişime geçin.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="#contact" class="inline-flex items-center gap-3 bg-accent-500 hover:bg-accent-600 text-white px-10 py-5 rounded-lg font-semibold text-lg transition shadow-xl shadow-accent-500/30 hover:shadow-accent-500/50 hover:-translate-y-1">
+                        <i class="fas fa-phone-alt"></i>
+                        Ücretsiz Teklif Alın
+                    </a>
+                    <a href="tel:+902121234567" class="inline-flex items-center gap-3 bg-white/10 hover:bg-white/20 text-white px-10 py-5 rounded-lg font-semibold text-lg transition border border-white/20">
+                        <i class="fas fa-headset"></i>
+                        +90 212 123 45 67
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CONTACT SECTION ===== -->
+    <!-- Layout #27: Map background + Centered form -->
+    <section id="contact" class="py-24 bg-white dark:bg-slate-950 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16">
+                <!-- Left - Contact Info -->
+                <div data-aos="fade-right">
+                    <span class="inline-block bg-accent-500/10 text-accent-600 dark:text-accent-400 px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wider mb-4">
+                        İletişim
+                    </span>
+                    <h2 class="font-heading text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                        Bizimle İletişime Geçin
+                    </h2>
+                    <p class="text-lg text-gray-600 dark:text-gray-400 mb-10">
+                        Sorularınız için 7/24 hizmetinizdeyiz. Projelerinizi konuşmak için bize ulaşın.
+                    </p>
+
+                    <!-- Contact Cards -->
+                    <div class="space-y-6">
+                        <!-- Address -->
+                        <div class="flex items-start gap-4 bg-gray-50 dark:bg-slate-800 rounded-xl p-6">
+                            <div class="w-14 h-14 bg-primary-100 dark:bg-primary-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-map-marker-alt text-primary-600 dark:text-primary-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Merkez Ofis</h4>
+                                <p class="text-gray-600 dark:text-gray-400">
+                                    Maslak Mah. Büyükdere Cad. No:123<br>
+                                    34398 Sarıyer / İstanbul
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="flex items-start gap-4 bg-gray-50 dark:bg-slate-800 rounded-xl p-6">
+                            <div class="w-14 h-14 bg-accent-100 dark:bg-accent-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-phone-alt text-accent-600 dark:text-accent-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Telefon</h4>
+                                <a href="tel:+902121234567" class="text-gray-600 dark:text-gray-400 hover:text-accent-500 transition block">+90 212 123 45 67</a>
+                                <a href="tel:+902121234568" class="text-gray-600 dark:text-gray-400 hover:text-accent-500 transition block">+90 212 123 45 68</a>
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="flex items-start gap-4 bg-gray-50 dark:bg-slate-800 rounded-xl p-6">
+                            <div class="w-14 h-14 bg-green-100 dark:bg-green-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-envelope text-green-600 dark:text-green-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1">E-posta</h4>
+                                <a href="mailto:info@yapitek.com" class="text-gray-600 dark:text-gray-400 hover:text-accent-500 transition block">info@yapitek.com</a>
+                                <a href="mailto:projeler@yapitek.com" class="text-gray-600 dark:text-gray-400 hover:text-accent-500 transition block">projeler@yapitek.com</a>
+                            </div>
+                        </div>
+
+                        <!-- Working Hours -->
+                        <div class="flex items-start gap-4 bg-gray-50 dark:bg-slate-800 rounded-xl p-6">
+                            <div class="w-14 h-14 bg-purple-100 dark:bg-purple-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-clock text-purple-600 dark:text-purple-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Çalışma Saatleri</h4>
+                                <p class="text-gray-600 dark:text-gray-400">
+                                    Pazartesi - Cuma: 09:00 - 18:00<br>
+                                    Cumartesi: 09:00 - 13:00
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right - Contact Form -->
+                <div data-aos="fade-left">
+                    <div class="bg-gray-50 dark:bg-slate-800 rounded-2xl p-8 md:p-10 shadow-xl">
+                        <h3 class="font-heading text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                            Teklif Formu
+                        </h3>
+                        <form class="space-y-6">
+                            <div class="grid sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ad Soyad *</label>
+                                    <input type="text" required class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-500 focus:border-transparent transition">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Telefon *</label>
+                                    <input type="tel" required class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-500 focus:border-transparent transition">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">E-posta *</label>
+                                <input type="email" required class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-500 focus:border-transparent transition">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Proje Türü</label>
+                                <select class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-500 focus:border-transparent transition">
+                                    <option value="">Seçiniz...</option>
+                                    <option value="konut">Konut Projesi</option>
+                                    <option value="ticari">Ticari Yapı</option>
+                                    <option value="endustriyel">Endüstriyel Yapı</option>
+                                    <option value="altyapi">Altyapı Projesi</option>
+                                    <option value="restorasyon">Restorasyon</option>
+                                    <option value="diger">Diğer</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Projenizi Anlatın</label>
+                                <textarea rows="4" class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-500 focus:border-transparent transition resize-none" placeholder="Projeniz hakkında kısaca bilgi verin..."></textarea>
+                            </div>
+
+                            <div class="flex items-start gap-3">
+                                <input type="checkbox" id="privacy" class="mt-1 rounded border-gray-300 text-accent-500 focus:ring-accent-500">
+                                <label for="privacy" class="text-sm text-gray-600 dark:text-gray-400">
+                                    <a href="#" class="text-accent-500 hover:underline">Gizlilik Politikası</a>'nı okudum ve kabul ediyorum.
+                                </label>
+                            </div>
+
+                            <button type="submit" class="w-full bg-accent-500 hover:bg-accent-600 text-white py-4 rounded-lg font-semibold transition shadow-lg shadow-accent-500/30 hover:shadow-accent-500/50 flex items-center justify-center gap-2">
+                                <i class="fas fa-paper-plane"></i>
+                                Teklif Talebi Gönder
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map -->
+            <div class="mt-16 rounded-2xl overflow-hidden shadow-2xl" data-aos="fade-up">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3007.5012345678!2d29.0123456!3d41.1123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDHCsDA2JzQ0LjQiTiAyOcKwMDAnNDQuNCJF!5e0!3m2!1str!2str!4v1234567890"
+                    width="100%"
+                    height="400"
+                    style="border:0;"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                    class="grayscale hover:grayscale-0 transition-all duration-500">
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <!-- Layout #4: 5-column with logo -->
+    <footer class="bg-slate-900 dark:bg-slate-950 pt-20 pb-8">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
+                <!-- Logo & About -->
+                <div class="lg:col-span-2">
+                    <a href="#" class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-primary-600 to-primary-800 rounded-lg flex items-center justify-center shadow-lg">
+                            <i class="fas fa-hard-hat text-accent-500 text-xl"></i>
+                        </div>
+                        <div>
+                            <span class="font-heading text-2xl font-bold text-white">YapıTek</span>
+                            <span class="block text-xs tracking-widest uppercase text-gray-500">İnşaat</span>
+                        </div>
+                    </a>
+                    <p class="text-gray-400 mb-6 leading-relaxed">
+                        35 yılı aşkın tecrübemizle Türkiye'nin en güvenilir inşaat şirketlerinden biri olarak, kalite ve güvenliği ön planda tutarak projelerinizi hayata geçiriyoruz.
+                    </p>
+                    <!-- Social Links -->
+                    <div class="flex items-center gap-4">
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-accent-500 rounded-lg flex items-center justify-center text-gray-400 hover:text-white transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-accent-500 rounded-lg flex items-center justify-center text-gray-400 hover:text-white transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-accent-500 rounded-lg flex items-center justify-center text-gray-400 hover:text-white transition">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-accent-500 rounded-lg flex items-center justify-center text-gray-400 hover:text-white transition">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="font-heading text-lg font-bold text-white mb-6">Hızlı Erişim</h4>
+                    <ul class="space-y-4">
+                        <li><a href="#about" class="text-gray-400 hover:text-accent-500 transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs text-accent-500"></i> Hakkımızda</a></li>
+                        <li><a href="#services" class="text-gray-400 hover:text-accent-500 transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs text-accent-500"></i> Hizmetler</a></li>
+                        <li><a href="#projects" class="text-gray-400 hover:text-accent-500 transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs text-accent-500"></i> Projeler</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-accent-500 transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs text-accent-500"></i> Kariyer</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-accent-500 transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs text-accent-500"></i> İletişim</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services -->
+                <div>
+                    <h4 class="font-heading text-lg font-bold text-white mb-6">Hizmetlerimiz</h4>
+                    <ul class="space-y-4">
+                        <li><a href="#services" class="text-gray-400 hover:text-accent-500 transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs text-accent-500"></i> Konut Projeleri</a></li>
+                        <li><a href="#services" class="text-gray-400 hover:text-accent-500 transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs text-accent-500"></i> Ticari Yapılar</a></li>
+                        <li><a href="#services" class="text-gray-400 hover:text-accent-500 transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs text-accent-500"></i> Endüstriyel</a></li>
+                        <li><a href="#services" class="text-gray-400 hover:text-accent-500 transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs text-accent-500"></i> Altyapı</a></li>
+                        <li><a href="#services" class="text-gray-400 hover:text-accent-500 transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs text-accent-500"></i> Restorasyon</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="font-heading text-lg font-bold text-white mb-6">İletişim</h4>
+                    <ul class="space-y-4 text-gray-400">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-map-marker-alt text-accent-500 mt-1"></i>
+                            <span>Maslak Mah. Büyükdere Cad. No:123, Sarıyer/İstanbul</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-phone-alt text-accent-500"></i>
+                            <a href="tel:+902121234567" class="hover:text-accent-500 transition">+90 212 123 45 67</a>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-envelope text-accent-500"></i>
+                            <a href="mailto:info@yapitek.com" class="hover:text-accent-500 transition">info@yapitek.com</a>
+                        </li>
+                    </ul>
+
+                    <!-- Certifications -->
+                    <div class="mt-6 flex items-center gap-4">
+                        <div class="bg-slate-800 rounded-lg px-3 py-2 text-xs text-gray-400">
+                            <i class="fas fa-shield-alt text-accent-500 mr-1"></i> ISO 9001
+                        </div>
+                        <div class="bg-slate-800 rounded-lg px-3 py-2 text-xs text-gray-400">
+                            <i class="fas fa-leaf text-green-500 mr-1"></i> LEED
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="border-t border-slate-800 pt-8">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p class="text-gray-500 text-sm text-center md:text-left">
+                        © 2024 YapıTek İnşaat. Tüm hakları saklıdır.
+                    </p>
+                    <div class="flex items-center gap-6 text-sm text-gray-500">
+                        <a href="#" class="hover:text-accent-500 transition">Gizlilik Politikası</a>
+                        <a href="#" class="hover:text-accent-500 transition">Kullanım Şartları</a>
+                        <a href="#" class="hover:text-accent-500 transition">Çerez Politikası</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== PROMPT MODAL BUTTON ===== -->
+    <div class="fixed bottom-6 left-6 z-50" x-data="{ open: false }">
+        <button @click="open = true" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg shadow-lg text-sm flex items-center gap-2 transition">
+            <i class="fas fa-code"></i>
+            Prompt
+        </button>
+
+        <!-- Modal -->
+        <div x-show="open" x-transition class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" @click.self="open = false">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-8 max-w-md w-full shadow-2xl">
+                <h3 class="font-heading text-xl font-bold text-gray-900 dark:text-white mb-4">Tasarım Detayları</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-6">
+                    Bu tasarımın prompt dosyası ve görsel promptları için:
+                </p>
+                <a href="prompt.html" target="_blank" class="inline-flex items-center gap-2 bg-accent-500 hover:bg-accent-600 text-white px-6 py-3 rounded-lg font-semibold transition w-full justify-center">
+                    <i class="fas fa-external-link-alt"></i>
+                    prompt.html'i Görüntüle
+                </a>
+                <button @click="open = false" class="mt-4 w-full text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition">
+                    Kapat
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== BACK TO TOP ===== -->
+    <button x-data="{ show: false }"
+            x-show="show"
+            @scroll.window="show = window.scrollY > 500"
+            @click="window.scrollTo({ top: 0, behavior: 'smooth' })"
+            x-transition
+            class="fixed bottom-6 right-6 z-50 w-12 h-12 bg-accent-500 hover:bg-accent-600 text-white rounded-full shadow-lg flex items-center justify-center transition hover:-translate-y-1">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- AOS Animation Script -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            easing: 'ease-out',
+            once: true,
+            offset: 100
+        });
+    </script>
+
+</body>
+</html>

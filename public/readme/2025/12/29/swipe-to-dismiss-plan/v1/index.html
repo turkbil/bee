@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swipe-to-Dismiss Plan - Muzibu Mobile UX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+
+    <header class="bg-slate-800 border-b border-slate-700 py-6">
+        <div class="max-w-3xl mx-auto px-4">
+            <span class="bg-blue-600 text-xs px-3 py-1 rounded-full">UX Plan</span>
+            <h1 class="text-2xl font-bold mt-3">Swipe-to-Dismiss Pattern</h1>
+            <p class="text-slate-400 mt-2">Muzibu Mobile - Tutarlı Kapatma Deneyimi</p>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-4 py-8 space-y-8">
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-700 rounded-xl p-6">
+            <h2 class="text-lg font-bold text-green-400 mb-3">📝 Basit Anlatım</h2>
+            <p class="text-slate-300">
+                iPhone'larda alışık olduğumuz "aşağı kaydırarak kapatma" özelliğini Muzibu'nun tüm açılır panellerine ekleyeceğiz.
+                Böylece kullanıcılar X butonuna basmadan, parmağını aşağı kaydırarak modal ve panelleri kapatabilecek.
+                Her yerde aynı hareket = kolay öğrenme.
+            </p>
+        </div>
+
+        <!-- Handle Görseli -->
+        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <h2 class="text-lg font-bold mb-4">🎯 Handle Çizgisi (Grab Indicator)</h2>
+            <div class="flex justify-center mb-4">
+                <div class="bg-zinc-900 rounded-t-3xl p-4 w-64">
+                    <div class="w-12 h-1.5 bg-zinc-500 rounded-full mx-auto mb-2"></div>
+                    <p class="text-center text-zinc-400 text-sm">↓ Kapatmak için aşağı çek</p>
+                </div>
+            </div>
+            <p class="text-slate-400 text-sm text-center">Bu çizgi "buradan tutup çekebilirsin" anlamına gelir</p>
+        </div>
+
+        <!-- Uygulanacak Yerler -->
+        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <h2 class="text-lg font-bold mb-4 text-emerald-400">✅ Uygulanacak Yerler</h2>
+
+            <div class="space-y-4">
+                <!-- 1. Playlist Select Modal -->
+                <div class="bg-emerald-900/20 border border-emerald-700/50 rounded-lg p-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🎵</span>
+                        <div class="flex-1">
+                            <p class="font-medium">Playlist Select Modal</p>
+                            <p class="text-sm text-slate-400">Şarkıyı playlist'e ekleme paneli</p>
+                        </div>
+                        <span class="bg-emerald-600 text-xs px-2 py-1 rounded">YAPILDI ✓</span>
+                    </div>
+                    <p class="text-xs text-emerald-400 mt-2">Yön: Aşağı ↓</p>
+                </div>
+
+                <!-- 2. Queue Panel -->
+                <div class="bg-slate-700/50 border border-slate-600 rounded-lg p-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">📋</span>
+                        <div class="flex-1">
+                            <p class="font-medium">Queue Panel (Sıradakiler)</p>
+                            <p class="text-sm text-slate-400">Çalma sırasındaki şarkılar listesi</p>
+                        </div>
+                        <span class="bg-amber-600 text-xs px-2 py-1 rounded">YAPILACAK</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2">Yön: Aşağı ↓ (Bottom sheet)</p>
+                </div>
+
+                <!-- 3. Create Playlist Modal -->
+                <div class="bg-slate-700/50 border border-slate-600 rounded-lg p-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">➕</span>
+                        <div class="flex-1">
+                            <p class="font-medium">Create Playlist Modal</p>
+                            <p class="text-sm text-slate-400">Yeni playlist oluşturma formu</p>
+                        </div>
+                        <span class="bg-amber-600 text-xs px-2 py-1 rounded">YAPILACAK</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2">Yön: Aşağı ↓ (Bottom sheet)</p>
+                </div>
+
+                <!-- 4. Mobile Menu -->
+                <div class="bg-slate-700/50 border border-slate-600 rounded-lg p-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">☰</span>
+                        <div class="flex-1">
+                            <p class="font-medium">Mobile Header Menu</p>
+                            <p class="text-sm text-slate-400">Hamburger menü (profil, ayarlar vs.)</p>
+                        </div>
+                        <span class="bg-amber-600 text-xs px-2 py-1 rounded">YAPILACAK</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2">Yön: Sola ← (Sağdan açılıyorsa) veya Aşağı ↓</p>
+                </div>
+
+                <!-- 5. Player Dropdown Menu -->
+                <div class="bg-slate-700/50 border border-slate-600 rounded-lg p-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🎛️</span>
+                        <div class="flex-1">
+                            <p class="font-medium">Player Dropdown Menu</p>
+                            <p class="text-sm text-slate-400">3 nokta menüsü (favoriler, sıradakiler vs.)</p>
+                        </div>
+                        <span class="bg-amber-600 text-xs px-2 py-1 rounded">YAPILACAK</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2">Yön: Aşağı ↓ (Zaten yukarı açılıyor, ters mantık)</p>
+                </div>
+
+                <!-- 6. Song Context Menu -->
+                <div class="bg-slate-700/50 border border-slate-600 rounded-lg p-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">⋮</span>
+                        <div class="flex-1">
+                            <p class="font-medium">Song Context Menu</p>
+                            <p class="text-sm text-slate-400">Şarkı kartındaki 3 nokta menüsü</p>
+                        </div>
+                        <span class="bg-amber-600 text-xs px-2 py-1 rounded">YAPILACAK</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2">Yön: Aşağı ↓ (Bottom sheet)</p>
+                </div>
+
+                <!-- 7. Lyrics Panel -->
+                <div class="bg-slate-700/50 border border-slate-600 rounded-lg p-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🎤</span>
+                        <div class="flex-1">
+                            <p class="font-medium">Lyrics Panel</p>
+                            <p class="text-sm text-slate-400">Şarkı sözleri paneli (varsa)</p>
+                        </div>
+                        <span class="bg-amber-600 text-xs px-2 py-1 rounded">YAPILACAK</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2">Yön: Aşağı ↓</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Uygulanmayacak Yerler -->
+        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <h2 class="text-lg font-bold mb-4 text-red-400">❌ Uygulanmayacak Yerler</h2>
+
+            <div class="space-y-3">
+                <div class="bg-red-900/20 border border-red-700/50 rounded-lg p-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🔐</span>
+                        <div>
+                            <p class="font-medium">Login / Register Modal</p>
+                            <p class="text-sm text-red-400">Yanlışlıkla kapanmamalı, form kaybedilir</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-red-900/20 border border-red-700/50 rounded-lg p-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">⚠️</span>
+                        <div>
+                            <p class="font-medium">Confirmation Modals (Silme onayı vs.)</p>
+                            <p class="text-sm text-red-400">Kritik kararlar, yanlışlıkla geçilmemeli</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-red-900/20 border border-red-700/50 rounded-lg p-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">💳</span>
+                        <div>
+                            <p class="font-medium">Payment / Subscription Modals</p>
+                            <p class="text-sm text-red-400">Ödeme formları, yanlışlıkla kapanmamalı</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-red-900/20 border border-red-700/50 rounded-lg p-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🔔</span>
+                        <div>
+                            <p class="font-medium">Toast / Alert Notifications</p>
+                            <p class="text-sm text-red-400">Zaten otomatik kapanıyor, farklı pattern</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-red-900/20 border border-red-700/50 rounded-lg p-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">📱</span>
+                        <div>
+                            <p class="font-medium">Device Limit Modal</p>
+                            <p class="text-sm text-red-400">Önemli bilgi, kullanıcı okumalı</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-700 rounded-xl p-6">
+            <h2 class="text-lg font-bold text-blue-400 mb-3">🔧 Teknik Detaylar</h2>
+
+            <div class="space-y-4 text-sm">
+                <div>
+                    <p class="font-medium text-white mb-1">Dismiss Threshold:</p>
+                    <p class="text-slate-400">80px - Bu mesafeden fazla çekilince kapanır</p>
+                </div>
+
+                <div>
+                    <p class="font-medium text-white mb-1">Handle Çizgisi:</p>
+                    <p class="text-slate-400">w-12 h-1.5 bg-zinc-500 rounded-full (merkezi)</p>
+                </div>
+
+                <div>
+                    <p class="font-medium text-white mb-1">Touch Area:</p>
+                    <p class="text-slate-400">Header + Info alanı (touch-none ile pull-to-refresh engellenir)</p>
+                </div>
+
+                <div>
+                    <p class="font-medium text-white mb-1">Görsel Feedback:</p>
+                    <p class="text-slate-400">translateY ile modal/panel hareket eder</p>
+                </div>
+
+                <div>
+                    <p class="font-medium text-white mb-1">Snap Back:</p>
+                    <p class="text-slate-400">Threshold'a ulaşılmazsa panel yerine döner</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Uygulama Sırası -->
+        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <h2 class="text-lg font-bold mb-4">📋 Önerilen Uygulama Sırası</h2>
+
+            <ol class="space-y-3">
+                <li class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center font-bold">1</span>
+                    <span class="line-through text-slate-500">Playlist Select Modal</span>
+                    <span class="text-emerald-400 text-sm">✓ Yapıldı</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center font-bold">2</span>
+                    <span>Queue Panel (En çok kullanılan)</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center font-bold">3</span>
+                    <span>Player Dropdown Menu</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center font-bold">4</span>
+                    <span>Song Context Menu</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center font-bold">5</span>
+                    <span>Create Playlist Modal</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center font-bold">6</span>
+                    <span>Mobile Header Menu</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center font-bold">7</span>
+                    <span class="text-slate-400">Lyrics Panel (varsa)</span>
+                </li>
+            </ol>
+        </div>
+
+        <!-- Karar Bekleyen -->
+        <div class="bg-amber-900/20 border border-amber-700 rounded-xl p-6">
+            <h2 class="text-lg font-bold text-amber-400 mb-3">⏳ Seninle Konuşalım</h2>
+            <ul class="space-y-2 text-slate-300">
+                <li>• <strong>Mobile Header Menu:</strong> Sağdan mı açılıyor, alttan mı? Swipe yönü buna göre değişir.</li>
+                <li>• <strong>Player Dropdown:</strong> Şu an yukarı açılıyor, swipe yukarı mı aşağı mı kapatsın?</li>
+                <li>• <strong>Hepsini yapalım mı:</strong> Yoksa sadece en önemli 2-3 tanesi mi?</li>
+            </ul>
+        </div>
+
+    </main>
+
+    <footer class="border-t border-slate-800 py-6 mt-8">
+        <div class="max-w-3xl mx-auto px-4 text-center text-slate-500 text-sm">
+            <p>Claude AI tarafından oluşturuldu • 29 Aralık 2025</p>
+        </div>
+    </footer>
+
+</body>
+</html>

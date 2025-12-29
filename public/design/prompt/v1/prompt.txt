@@ -1,0 +1,54 @@
+## KAYIT BILGILERI
+
+Dosya konumu: public/design/templates/{kategori-adi}/{versiyon}/index.html
+
+Ornek:
+- public/design/templates/saglik-klinigi/v1/index.html
+- public/design/templates/belediye-sitesi/v2-koyu/index.html
+
+Kurallar:
+- Kategori: sektor veya proje adi (kucuk harf, tire ile)
+- Versiyon: v1, v2, v3 veya v1-aciklama, v2-minimal gibi
+- Dosya adi: her zaman index.html
+
+---
+
+## TASARIM TALIMATLARI
+
+ANA HEDEF: Profesyonel, duzenli ve sektore uygun kurumsal web sitesi. Temiz layout, okunabilir tipografi, tutarli spacing. Icerik Turkce olsun.
+
+KULLANILACAK TEKNOLOJILER: Tailwind CSS v4 (CDN), Alpine.js (interaktivite), ve gerektiginde ek kutuphaneler (Swiper, GSAP, AOS, Lottie vb. CDN ile). Sayfa modern, profesyonel ve premium ama sakin hissettirmeli.
+
+FONT SECIMI: Google Fonts'tan sektore uygun font cifti sec. Basliklar icin display veya serif font, govde icin okunabilir sans-serif tercih edilebilir. Font agirlik cesitliligi kullan (300, 400, 500, 600, 700). Her uretimde farkli font kombinasyonu dene.
+
+RENK SISTEMI: CSS custom properties (degiskenler) ile renk sistemi kur. Ana renk (--color-primary), ikincil renk (--color-secondary), vurgu rengi (--color-accent) ve notr tonlar tanimla. Sektore uygun renk psikolojisi uygula ama renkleri tutumlu kullan.
+
+IKON SISTEMI: FontAwesome Pro kullan (fa-thin, fa-light, fa-regular, fa-solid, fa-duotone). Varsayilan ince stiller, hover durumunda solid'e gecis - animasyonlu olsun.
+
+HERO SECTION: Her uretimde farkli hero yaklasimi dene - tam ekran gorsel/video, split layout, slider/carousel, minimalist tipografik hero, overlapping elementler, paralaks efekt, animasyonlu arka plan, geometrik sekiller.
+
+LAYOUT VE BOSLUK: Section'lar tam genislik (fluid), icerik max-width container icinde. Comert bosluk kullan, "nefes alan" tasarim hedefle.
+
+Responsive tasarim (mobil oncelikli). Mobil menu, dark/light mode toggle dahil edilsin. Dark/light mode premium ozellik, mutlaka olsun.
+
+Header cok onemli; mumkunse mega menu yapisi olsun.
+
+DROPDOWN ORTALAMA (KRITIK): Mega menu dropdown'lari MUTLAKA parent linkin altinda ORTALI acilmali! CSS: position: absolute; left: 50%; transform: translateX(-50%);
+
+Hover efektleri onemli ama abartisiz. Kartlar ziplamasin, scale ile yaklasmasin.
+
+Zengin footer sart; iletisim bilgileri, sosyal medya, hizli erisim linkleri, mini site haritasi icermeli.
+
+PROMPT MODAL (ZORUNLU): Sayfanin en altina kucuk "Prompt" butonu ekle. Tiklayinca modal acilsin, icinde bu siteyi olusturmak icin kullanilan prompt gosterilsin.
+
+Tum cikti tek dosya index.html olarak verilecek.
+
+---
+
+## PROJE BILGILERI (EN ONEMLI KISIM!)
+
+sektor: genel kurumsal
+tarz: profesyonel ve dengeli
+ek_bilgiler: (kullanici tarafindan doldurulacak)
+
+⚠️ EK BILGILER COK ONEMLI! Tasarimin ana yonunu belirler.

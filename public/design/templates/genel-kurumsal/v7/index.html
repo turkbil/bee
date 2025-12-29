@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Kurumsal - Lüks Tasarım v7</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS v4 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'display': ['Bebas Neue', 'sans-serif'],
+                        'body': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'gold': {
+                            50: '#fefce8',
+                            100: '#fef9c3',
+                            200: '#fef08a',
+                            300: '#fde047',
+                            400: '#facc15',
+                            500: '#d4a853',
+                            600: '#b8860b',
+                            700: '#92700c',
+                            800: '#775a0b',
+                            900: '#5c450a',
+                        },
+                        'premium': {
+                            900: '#0a0a0a',
+                            800: '#141414',
+                            700: '#1f1f1f',
+                            600: '#2a2a2a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --gold-primary: #d4a853;
+            --gold-light: #e8c87a;
+            --gold-dark: #b8860b;
+            --black-deep: #0a0a0a;
+            --black-soft: #141414;
+        }
+
+        .font-display { font-family: 'Bebas Neue', sans-serif; }
+        .font-body { font-family: 'Inter', sans-serif; }
+
+        /* Video Background */
+        .video-hero {
+            position: relative;
+            overflow: hidden;
+        }
+        .video-hero video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+        .video-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(10,10,10,0.9) 0%, rgba(10,10,10,0.6) 50%, rgba(180,135,11,0.2) 100%);
+        }
+
+        /* Wave Divider */
+        .wave-divider {
+            position: relative;
+            height: 120px;
+            overflow: hidden;
+            line-height: 0;
+        }
+        .wave-divider svg {
+            display: block;
+            width: 100%;
+            height: 120px;
+        }
+        .wave-divider-top {
+            transform: rotate(180deg);
+        }
+
+        /* Gold Gradient Text */
+        .text-gold-gradient {
+            background: linear-gradient(135deg, #d4a853 0%, #e8c87a 50%, #b8860b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Asymmetric Card */
+        .asymmetric-card {
+            clip-path: polygon(0 0, 100% 5%, 100% 95%, 0 100%);
+        }
+
+        /* Premium Border */
+        .premium-border {
+            border: 1px solid rgba(212, 168, 83, 0.3);
+            background: linear-gradient(135deg, rgba(20,20,20,0.9) 0%, rgba(30,30,30,0.9) 100%);
+        }
+
+        /* Hover Lift */
+        .hover-lift {
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(212, 168, 83, 0.15);
+        }
+
+        /* Glass Effect */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Pricing Card Popular */
+        .pricing-popular {
+            transform: scale(1.05);
+            border: 2px solid var(--gold-primary);
+        }
+
+        /* Scroll Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold-primary);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-premium-900 text-white font-body antialiased" x-data="{ mobileMenu: false, darkMode: true }">
+
+    <!-- ========== HEADER ========== -->
+    <!-- Layout #3: Logo center + Nav split sides -->
+    <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+            x-data="{ scrolled: false }"
+            @scroll.window="scrolled = window.scrollY > 50"
+            :class="scrolled ? 'bg-premium-900/95 backdrop-blur-lg py-3 shadow-2xl' : 'bg-transparent py-6'">
+        <div class="container mx-auto px-6">
+            <nav class="flex items-center justify-between">
+                <!-- Left Nav -->
+                <div class="hidden lg:flex items-center space-x-8">
+                    <a href="#hakkimizda" class="text-sm tracking-widest text-gray-300 hover:text-gold-500 transition-colors uppercase">Hakkımızda</a>
+                    <a href="#hizmetler" class="text-sm tracking-widest text-gray-300 hover:text-gold-500 transition-colors uppercase">Hizmetler</a>
+                    <a href="#fiyatlar" class="text-sm tracking-widest text-gray-300 hover:text-gold-500 transition-colors uppercase">Fiyatlar</a>
+                </div>
+
+                <!-- Center Logo -->
+                <div class="flex-1 lg:flex-none text-center">
+                    <a href="#" class="inline-block">
+                        <span class="font-display text-4xl text-gold-gradient tracking-wider">PREMIUM</span>
+                    </a>
+                </div>
+
+                <!-- Right Nav -->
+                <div class="hidden lg:flex items-center space-x-8">
+                    <a href="#degerler" class="text-sm tracking-widest text-gray-300 hover:text-gold-500 transition-colors uppercase">Değerler</a>
+                    <a href="#iletisim" class="text-sm tracking-widest text-gray-300 hover:text-gold-500 transition-colors uppercase">İletişim</a>
+                    <a href="#iletisim" class="px-6 py-2 border border-gold-500 text-gold-500 text-sm tracking-widest uppercase hover:bg-gold-500 hover:text-black transition-all">
+                        Teklif Al
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button @click="mobileMenu = !mobileMenu" class="lg:hidden text-gold-500 text-2xl">
+                    <i :class="mobileMenu ? 'fa-solid fa-xmark' : 'fa-solid fa-bars'"></i>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div x-show="mobileMenu"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 -translate-y-full"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 -translate-y-full"
+             class="lg:hidden absolute top-full left-0 right-0 bg-premium-800/98 backdrop-blur-lg">
+            <div class="container mx-auto px-6 py-8 flex flex-col space-y-6">
+                <a href="#hakkimizda" @click="mobileMenu = false" class="text-lg tracking-widest text-gray-300 hover:text-gold-500 transition-colors uppercase">Hakkımızda</a>
+                <a href="#hizmetler" @click="mobileMenu = false" class="text-lg tracking-widest text-gray-300 hover:text-gold-500 transition-colors uppercase">Hizmetler</a>
+                <a href="#fiyatlar" @click="mobileMenu = false" class="text-lg tracking-widest text-gray-300 hover:text-gold-500 transition-colors uppercase">Fiyatlar</a>
+                <a href="#degerler" @click="mobileMenu = false" class="text-lg tracking-widest text-gray-300 hover:text-gold-500 transition-colors uppercase">Değerler</a>
+                <a href="#iletisim" @click="mobileMenu = false" class="text-lg tracking-widest text-gray-300 hover:text-gold-500 transition-colors uppercase">İletişim</a>
+                <a href="#iletisim" class="inline-block px-6 py-3 border border-gold-500 text-gold-500 text-center tracking-widest uppercase hover:bg-gold-500 hover:text-black transition-all">
+                    Teklif Al
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========== HERO SECTION ========== -->
+    <!-- Layout #1: Full-screen video background + ortalanmis beyaz metin + gradient overlay -->
+    <section class="video-hero min-h-screen flex items-center justify-center relative">
+        <!-- Video Background -->
+        <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-set-of-plateaus-702-large.mp4" type="video/mp4">
+        </video>
+
+        <!-- Overlay -->
+        <div class="video-overlay"></div>
+
+        <!-- Content -->
+        <div class="relative z-10 container mx-auto px-6 text-center">
+            <div data-aos="fade-up" data-aos-duration="1000">
+                <span class="inline-block px-6 py-2 border border-gold-500/50 text-gold-500 text-sm tracking-[0.3em] uppercase mb-8">
+                    Premium Deneyim
+                </span>
+            </div>
+
+            <h1 class="font-display text-6xl md:text-8xl lg:text-9xl text-white mb-6 leading-none" data-aos="fade-up" data-aos-delay="200">
+                MÜKEMMELLIĞI
+                <span class="block text-gold-gradient">KEŞFEDIN</span>
+            </h1>
+
+            <p class="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-12 font-light" data-aos="fade-up" data-aos-delay="400">
+                Kalite, zarafet ve profesyonelliğin buluştuğu noktada
+                işletmenizi yeniden tanımlıyoruz.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-6 justify-center" data-aos="fade-up" data-aos-delay="600">
+                <a href="#hizmetler" class="px-10 py-4 bg-gold-500 text-black font-semibold tracking-widest uppercase hover:bg-gold-400 transition-all hover:shadow-2xl hover:shadow-gold-500/20">
+                    Hizmetlerimiz
+                </a>
+                <a href="#iletisim" class="px-10 py-4 border-2 border-white/30 text-white tracking-widest uppercase hover:border-gold-500 hover:text-gold-500 transition-all">
+                    İletişime Geç
+                </a>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 float-animation">
+            <a href="#hakkimizda" class="text-gold-500 text-3xl">
+                <i class="fa-solid fa-chevron-down"></i>
+            </a>
+        </div>
+
+        <!-- Floating Stats -->
+        <div class="absolute bottom-20 right-10 hidden lg:block" data-aos="fade-left" data-aos-delay="800">
+            <div class="glass-card rounded-lg p-6 text-right">
+                <div class="font-display text-5xl text-gold-500">25+</div>
+                <div class="text-gray-400 text-sm tracking-widest uppercase">Yıllık Tecrübe</div>
+            </div>
+        </div>
+
+        <div class="absolute top-1/3 left-10 hidden lg:block" data-aos="fade-right" data-aos-delay="1000">
+            <div class="glass-card rounded-lg p-6">
+                <div class="font-display text-5xl text-gold-500">500+</div>
+                <div class="text-gray-400 text-sm tracking-widest uppercase">Mutlu Müşteri</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Wave Divider -->
+    <div class="wave-divider">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" preserveAspectRatio="none">
+            <path fill="#141414" d="M0,0 C240,100 480,20 720,60 C960,100 1200,20 1440,80 L1440,120 L0,120 Z"/>
+        </svg>
+    </div>
+
+    <!-- ========== HAKKIMIZDA SECTION ========== -->
+    <!-- Layout #106: Premium Minimal -->
+    <section id="hakkimizda" class="bg-premium-800 py-24 lg:py-32">
+        <div class="container mx-auto px-6">
+            <!-- Asymmetric Layout -->
+            <div class="grid lg:grid-cols-12 gap-12 items-center">
+                <!-- Left Content - 5 columns, offset -->
+                <div class="lg:col-span-5 lg:col-start-1" data-aos="fade-right">
+                    <span class="text-gold-500 text-sm tracking-[0.3em] uppercase mb-4 block">Hakkımızda</span>
+                    <h2 class="font-display text-5xl md:text-7xl text-white mb-6 leading-tight">
+                        BIZ <span class="text-gold-gradient">KIMIZ?</span>
+                    </h2>
+                    <div class="w-24 h-1 bg-gold-500 mb-8"></div>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-8">
+                        25 yılı aşkın süredir sektörümüzde öncü konumumuzu sürdürüyoruz.
+                        Müşterilerimize sunduğumuz premium hizmet anlayışı ve kalite standartlarımız
+                        ile fark yaratmaya devam ediyoruz.
+                    </p>
+                    <p class="text-gray-500 leading-relaxed mb-8">
+                        Her projede mükemmeliyeti hedefliyor, detaylara gösterdiğimiz özenle
+                        işlerimizi sanata dönüştürüyoruz. Bize güvenen 500'den fazla kurumsal
+                        müşterimiz bu vizyonumuzun kanıtıdır.
+                    </p>
+                    <a href="#iletisim" class="inline-flex items-center gap-3 text-gold-500 hover:gap-5 transition-all group">
+                        <span class="tracking-widest uppercase text-sm">Daha Fazla Bilgi</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                    </a>
+                </div>
+
+                <!-- Right Image - 6 columns, asymmetric placement -->
+                <div class="lg:col-span-6 lg:col-start-7 relative" data-aos="fade-left">
+                    <!-- Main Image -->
+                    <div class="asymmetric-card overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80"
+                             alt="Premium Office"
+                             class="w-full h-[500px] object-cover">
+                    </div>
+
+                    <!-- Floating Card -->
+                    <div class="absolute -bottom-10 -left-10 glass-card rounded-lg p-8 max-w-xs" data-aos="fade-up" data-aos-delay="300">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-16 h-16 rounded-full bg-gold-500/20 flex items-center justify-center">
+                                <i class="fa-solid fa-award text-gold-500 text-2xl"></i>
+                            </div>
+                            <div>
+                                <div class="font-display text-3xl text-white">50+</div>
+                                <div class="text-gray-400 text-sm">Ödül</div>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm">Sektörümüzdeki başarılarımız uluslararası arenada da tescillendi.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mt-24 pt-16 border-t border-white/10">
+                <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+                    <div class="font-display text-5xl md:text-6xl text-gold-500 mb-2">25+</div>
+                    <div class="text-gray-400 text-sm tracking-widest uppercase">Yıllık Deneyim</div>
+                </div>
+                <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+                    <div class="font-display text-5xl md:text-6xl text-gold-500 mb-2">500+</div>
+                    <div class="text-gray-400 text-sm tracking-widest uppercase">Mutlu Müşteri</div>
+                </div>
+                <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+                    <div class="font-display text-5xl md:text-6xl text-gold-500 mb-2">1200+</div>
+                    <div class="text-gray-400 text-sm tracking-widest uppercase">Tamamlanan Proje</div>
+                </div>
+                <div class="text-center" data-aos="fade-up" data-aos-delay="400">
+                    <div class="font-display text-5xl md:text-6xl text-gold-500 mb-2">98%</div>
+                    <div class="text-gray-400 text-sm tracking-widest uppercase">Müşteri Memnuniyeti</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Wave Divider (Reversed) -->
+    <div class="wave-divider wave-divider-top">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" preserveAspectRatio="none">
+            <path fill="#141414" d="M0,0 C240,100 480,20 720,60 C960,100 1200,20 1440,80 L1440,120 L0,120 Z"/>
+        </svg>
+    </div>
+
+    <!-- ========== HIZMETLER SECTION ========== -->
+    <!-- Layout #47: Asymmetric grid -->
+    <section id="hizmetler" class="bg-premium-900 py-24 lg:py-32">
+        <div class="container mx-auto px-6">
+            <!-- Section Header -->
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="text-gold-500 text-sm tracking-[0.3em] uppercase mb-4 block">Hizmetlerimiz</span>
+                <h2 class="font-display text-5xl md:text-7xl text-white mb-6">
+                    NELER <span class="text-gold-gradient">SUNUYORUZ?</span>
+                </h2>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+                    Premium kalite standartlarımızla sizin için en iyisini sunuyoruz.
+                </p>
+            </div>
+
+            <!-- Asymmetric Service Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Large Featured Card -->
+                <div class="lg:col-span-2 lg:row-span-2 premium-border rounded-2xl p-10 hover-lift relative overflow-hidden group" data-aos="fade-right">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-gold-500/5 rounded-full blur-3xl group-hover:bg-gold-500/10 transition-all duration-700"></div>
+                    <div class="relative z-10">
+                        <div class="w-20 h-20 rounded-2xl bg-gold-500/10 flex items-center justify-center mb-8">
+                            <i class="fa-solid fa-gem text-gold-500 text-4xl"></i>
+                        </div>
+                        <h3 class="font-display text-4xl text-white mb-4">PREMIUM DANIŞMANLIK</h3>
+                        <p class="text-gray-400 text-lg leading-relaxed mb-8">
+                            Sektörünüzde fark yaratmak için ihtiyacınız olan stratejik danışmanlık hizmetleri.
+                            Uzman ekibimiz, işletmenizi bir sonraki seviyeye taşımak için yanınızda.
+                        </p>
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-center gap-3 text-gray-300">
+                                <i class="fa-solid fa-check text-gold-500"></i>
+                                Stratejik planlama ve yol haritası
+                            </li>
+                            <li class="flex items-center gap-3 text-gray-300">
+                                <i class="fa-solid fa-check text-gold-500"></i>
+                                Pazar analizi ve rekabet değerlendirmesi
+                            </li>
+                            <li class="flex items-center gap-3 text-gray-300">
+                                <i class="fa-solid fa-check text-gold-500"></i>
+                                Operasyonel verimlilik optimizasyonu
+                            </li>
+                        </ul>
+                        <a href="#iletisim" class="inline-flex items-center gap-3 text-gold-500 hover:gap-5 transition-all">
+                            <span class="tracking-widest uppercase text-sm">Detaylı Bilgi</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Regular Cards -->
+                <div class="premium-border rounded-2xl p-8 hover-lift group" data-aos="fade-left" data-aos-delay="100">
+                    <div class="w-16 h-16 rounded-xl bg-gold-500/10 flex items-center justify-center mb-6 group-hover:bg-gold-500/20 transition-colors">
+                        <i class="fa-solid fa-chart-line text-gold-500 text-2xl"></i>
+                    </div>
+                    <h3 class="font-display text-2xl text-white mb-3">VERİ ANALİTİĞİ</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        Verilerinizi anlamlı içgörülere dönüştürün. Karar alma süreçlerinizi güçlendirin.
+                    </p>
+                </div>
+
+                <div class="premium-border rounded-2xl p-8 hover-lift group" data-aos="fade-left" data-aos-delay="200">
+                    <div class="w-16 h-16 rounded-xl bg-gold-500/10 flex items-center justify-center mb-6 group-hover:bg-gold-500/20 transition-colors">
+                        <i class="fa-solid fa-laptop-code text-gold-500 text-2xl"></i>
+                    </div>
+                    <h3 class="font-display text-2xl text-white mb-3">DİJİTAL DÖNÜŞÜM</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        İşletmenizi dijital çağa hazırlayın. Süreçlerinizi otomatikleştirin.
+                    </p>
+                </div>
+
+                <div class="premium-border rounded-2xl p-8 hover-lift group" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-16 h-16 rounded-xl bg-gold-500/10 flex items-center justify-center mb-6 group-hover:bg-gold-500/20 transition-colors">
+                        <i class="fa-solid fa-bullhorn text-gold-500 text-2xl"></i>
+                    </div>
+                    <h3 class="font-display text-2xl text-white mb-3">MARKA STRATEJİSİ</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        Markanızı unutulmaz kılın. Güçlü bir kimlik inşa edin.
+                    </p>
+                </div>
+
+                <div class="premium-border rounded-2xl p-8 hover-lift group" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-16 h-16 rounded-xl bg-gold-500/10 flex items-center justify-center mb-6 group-hover:bg-gold-500/20 transition-colors">
+                        <i class="fa-solid fa-users text-gold-500 text-2xl"></i>
+                    </div>
+                    <h3 class="font-display text-2xl text-white mb-3">İK DANIŞMANLIĞI</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        Doğru yetenekleri çekin ve geliştirin. Kurumsal kültürünüzü güçlendirin.
+                    </p>
+                </div>
+
+                <div class="premium-border rounded-2xl p-8 hover-lift group" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-16 h-16 rounded-xl bg-gold-500/10 flex items-center justify-center mb-6 group-hover:bg-gold-500/20 transition-colors">
+                        <i class="fa-solid fa-shield-halved text-gold-500 text-2xl"></i>
+                    </div>
+                    <h3 class="font-display text-2xl text-white mb-3">RİSK YÖNETİMİ</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        Riskleri önceden tespit edin. İşletmenizi koruma altına alın.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Wave Divider -->
+    <div class="wave-divider">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" preserveAspectRatio="none">
+            <path fill="#0a0a0a" d="M0,40 C360,120 720,0 1080,80 C1260,100 1380,60 1440,40 L1440,120 L0,120 Z"/>
+        </svg>
+    </div>
+
+    <!-- ========== FIYATLANDIRMA SECTION ========== -->
+    <!-- Fiyatlama Kartı: plan adı + fiyat + özellik listesi + CTA butonu -->
+    <section id="fiyatlar" class="bg-premium-800 py-24 lg:py-32">
+        <div class="container mx-auto px-6">
+            <!-- Section Header -->
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="text-gold-500 text-sm tracking-[0.3em] uppercase mb-4 block">Fiyatlandırma</span>
+                <h2 class="font-display text-5xl md:text-7xl text-white mb-6">
+                    PAKET <span class="text-gold-gradient">SEÇENEKLERİ</span>
+                </h2>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+                    İhtiyaçlarınıza en uygun paketi seçin, premium deneyimin tadını çıkarın.
+                </p>
+            </div>
+
+            <!-- Pricing Cards -->
+            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- Starter Plan -->
+                <div class="premium-border rounded-2xl p-8 hover-lift" data-aos="fade-up" data-aos-delay="100">
+                    <div class="text-center mb-8">
+                        <span class="text-gray-400 text-sm tracking-widest uppercase">Başlangıç</span>
+                        <h3 class="font-display text-3xl text-white mt-2">STARTER</h3>
+                        <div class="mt-6">
+                            <span class="font-display text-6xl text-white">₺5.900</span>
+                            <span class="text-gray-400">/ay</span>
+                        </div>
+                    </div>
+                    <div class="w-full h-px bg-white/10 mb-8"></div>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3 text-gray-300">
+                            <i class="fa-solid fa-check text-gold-500 text-sm"></i>
+                            Temel danışmanlık hizmeti
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-300">
+                            <i class="fa-solid fa-check text-gold-500 text-sm"></i>
+                            Aylık 4 saat destek
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-300">
+                            <i class="fa-solid fa-check text-gold-500 text-sm"></i>
+                            E-posta desteği
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-300">
+                            <i class="fa-solid fa-check text-gold-500 text-sm"></i>
+                            Temel raporlama
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-500">
+                            <i class="fa-solid fa-xmark text-gray-600 text-sm"></i>
+                            7/24 destek
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-500">
+                            <i class="fa-solid fa-xmark text-gray-600 text-sm"></i>
+                            Özel proje yönetimi
+                        </li>
+                    </ul>
+                    <a href="#iletisim" class="block text-center py-4 border border-gold-500/50 text-gold-500 tracking-widest uppercase hover:bg-gold-500 hover:text-black transition-all">
+                        Başlayın
+                    </a>
+                </div>
+
+                <!-- Professional Plan - Popular -->
+                <div class="premium-border rounded-2xl p-8 hover-lift pricing-popular relative bg-gradient-to-b from-gold-500/5 to-transparent" data-aos="fade-up" data-aos-delay="200">
+                    <!-- Popular Badge -->
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-1 bg-gold-500 text-black text-sm font-semibold tracking-widest uppercase">
+                        Popüler
+                    </div>
+                    <div class="text-center mb-8 mt-4">
+                        <span class="text-gold-500 text-sm tracking-widest uppercase">Profesyonel</span>
+                        <h3 class="font-display text-3xl text-white mt-2">PROFESSIONAL</h3>
+                        <div class="mt-6">
+                            <span class="font-display text-6xl text-gold-500">₺12.900</span>
+                            <span class="text-gray-400">/ay</span>
+                        </div>
+                    </div>
+                    <div class="w-full h-px bg-gold-500/30 mb-8"></div>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3 text-gray-200">
+                            <i class="fa-solid fa-check text-gold-500 text-sm"></i>
+                            Kapsamlı danışmanlık
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-200">
+                            <i class="fa-solid fa-check text-gold-500 text-sm"></i>
+                            Aylık 16 saat destek
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-200">
+                            <i class="fa-solid fa-check text-gold-500 text-sm"></i>
+                            Telefon + E-posta desteği
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-200">
+                            <i class="fa-solid fa-check text-gold-500 text-sm"></i>
+                            Detaylı analiz raporları
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-200">
+                            <i class="fa-solid fa-check text-gold-500 text-sm"></i>
+                            Haftalık toplantılar
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-500">
+                            <i class="fa-solid fa-xmark text-gray-600 text-sm"></i>
+                            VIP destek hattı
+                        </li>
+                    </ul>
+                    <a href="#iletisim" class="block text-center py-4 bg-gold-500 text-black font-semibold tracking-widest uppercase hover:bg-gold-400 transition-all">
+                        Hemen Başlayın
+                    </a>
+                </div>
+
+                <!-- Enterprise Plan -->
+                <div class="premium-border rounded-2xl p-8 hover-lift" data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-center mb-8">
+                        <span class="text-gray-400 text-sm tracking-widest uppercase">Kurumsal</span>
+                        <h3 class="font-display text-3xl text-white mt-2">ENTERPRISE</h3>
+                        <div class="mt-6">
+                            <span class="font-display text-6xl text-white">₺29.900</span>
+                            <span class="text-gray-400">/ay</span>
+                        </div>
+                    </div>
+                    <div class="w-full h-px bg-white/10 mb-8"></div>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3 text-gray-300">
+                            <i class="fa-solid fa-check text-gold-500 text-sm"></i>
+                            360° danışmanlık paketi
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-300">
+                            <i class="fa-solid fa-check text-gold-500 text-sm"></i>
+                            Sınırsız destek saati
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-300">
+                            <i class="fa-solid fa-check text-gold-500 text-sm"></i>
+                            7/24 VIP destek hattı
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-300">
+                            <i class="fa-solid fa-check text-gold-500 text-sm"></i>
+                            Özel proje yönetimi
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-300">
+                            <i class="fa-solid fa-check text-gold-500 text-sm"></i>
+                            Yerinde danışman
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-300">
+                            <i class="fa-solid fa-check text-gold-500 text-sm"></i>
+                            Yönetim kurulu raporları
+                        </li>
+                    </ul>
+                    <a href="#iletisim" class="block text-center py-4 border border-gold-500/50 text-gold-500 tracking-widest uppercase hover:bg-gold-500 hover:text-black transition-all">
+                        İletişime Geçin
+                    </a>
+                </div>
+            </div>
+
+            <!-- Additional Info -->
+            <div class="text-center mt-12 text-gray-400" data-aos="fade-up" data-aos-delay="400">
+                <p>Tüm paketler aylık olarak faturalandırılır. Yıllık ödemelerde %20 indirim.</p>
+                <p class="mt-2">Özel ihtiyaçlarınız için <a href="#iletisim" class="text-gold-500 hover:underline">bizimle iletişime geçin</a>.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Wave Divider -->
+    <div class="wave-divider wave-divider-top">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" preserveAspectRatio="none">
+            <path fill="#141414" d="M0,40 C360,120 720,0 1080,80 C1260,100 1380,60 1440,40 L1440,120 L0,120 Z"/>
+        </svg>
+    </div>
+
+    <!-- ========== DEGERLER SECTION ========== -->
+    <!-- Layout #76: Large quote + supporting text -->
+    <section id="degerler" class="bg-premium-900 py-24 lg:py-32">
+        <div class="container mx-auto px-6">
+            <!-- Main Quote -->
+            <div class="max-w-5xl mx-auto text-center mb-20" data-aos="fade-up">
+                <i class="fa-solid fa-quote-left text-gold-500/30 text-8xl mb-8"></i>
+                <blockquote class="font-display text-4xl md:text-6xl lg:text-7xl text-white leading-tight mb-8">
+                    MÜKEMMELLIK BIR AMAÇ DEĞIL,
+                    <span class="text-gold-gradient">BIR YOLCULUKTUR</span>
+                </blockquote>
+                <p class="text-gray-400 text-xl max-w-3xl mx-auto">
+                    Her adımda kaliteyi, her projede tutkuyu ve her ilişkide güveni esas alıyoruz.
+                </p>
+            </div>
+
+            <!-- Values Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center p-8" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-20 h-20 mx-auto rounded-full bg-gold-500/10 flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-handshake text-gold-500 text-3xl"></i>
+                    </div>
+                    <h3 class="font-display text-2xl text-white mb-3">GÜVEN</h3>
+                    <p class="text-gray-400">
+                        Müşterilerimizle kurduğumuz güven ilişkisi, başarımızın temelidir.
+                    </p>
+                </div>
+
+                <div class="text-center p-8" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-20 h-20 mx-auto rounded-full bg-gold-500/10 flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-star text-gold-500 text-3xl"></i>
+                    </div>
+                    <h3 class="font-display text-2xl text-white mb-3">KALİTE</h3>
+                    <p class="text-gray-400">
+                        Her işte en yüksek standartları hedefliyoruz, taviz vermiyoruz.
+                    </p>
+                </div>
+
+                <div class="text-center p-8" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-20 h-20 mx-auto rounded-full bg-gold-500/10 flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-lightbulb text-gold-500 text-3xl"></i>
+                    </div>
+                    <h3 class="font-display text-2xl text-white mb-3">İNOVASYON</h3>
+                    <p class="text-gray-400">
+                        Sürekli gelişim ve yenilik arayışındayız, geleceği şekillendiriyoruz.
+                    </p>
+                </div>
+
+                <div class="text-center p-8" data-aos="fade-up" data-aos-delay="400">
+                    <div class="w-20 h-20 mx-auto rounded-full bg-gold-500/10 flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-heart text-gold-500 text-3xl"></i>
+                    </div>
+                    <h3 class="font-display text-2xl text-white mb-3">TUTKU</h3>
+                    <p class="text-gray-400">
+                        İşimizi seviyoruz, bu tutku her projemize yansıyor.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Wave Divider -->
+    <div class="wave-divider">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" preserveAspectRatio="none">
+            <path fill="#0a0a0a" d="M0,60 C180,100 360,20 540,60 C720,100 900,20 1080,60 C1260,100 1380,40 1440,20 L1440,120 L0,120 Z"/>
+        </svg>
+    </div>
+
+    <!-- ========== ILETISIM SECTION ========== -->
+    <!-- Layout #1: Sol info + Sag form -->
+    <section id="iletisim" class="bg-premium-800 py-24 lg:py-32">
+        <div class="container mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16">
+                <!-- Left - Contact Info -->
+                <div data-aos="fade-right">
+                    <span class="text-gold-500 text-sm tracking-[0.3em] uppercase mb-4 block">İletişim</span>
+                    <h2 class="font-display text-5xl md:text-6xl text-white mb-6">
+                        BIZIMLE
+                        <span class="text-gold-gradient">ILETISIME GEÇIN</span>
+                    </h2>
+                    <p class="text-gray-400 text-lg mb-12 leading-relaxed">
+                        Projeleriniz hakkında konuşmak, sorularınızı yanıtlamak veya
+                        size özel çözümler sunmak için buradayız.
+                    </p>
+
+                    <!-- Contact Cards -->
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-6 p-6 premium-border rounded-xl hover-lift">
+                            <div class="w-14 h-14 rounded-lg bg-gold-500/10 flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-location-dot text-gold-500 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-display text-xl text-white mb-2">ADRES</h4>
+                                <p class="text-gray-400">Maslak Mah. AOS 55. Sok.<br>No: 2 Kat: 18 Sarıyer / İstanbul</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-6 p-6 premium-border rounded-xl hover-lift">
+                            <div class="w-14 h-14 rounded-lg bg-gold-500/10 flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-phone text-gold-500 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-display text-xl text-white mb-2">TELEFON</h4>
+                                <p class="text-gray-400">+90 (212) 123 45 67<br>+90 (532) 123 45 67</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-6 p-6 premium-border rounded-xl hover-lift">
+                            <div class="w-14 h-14 rounded-lg bg-gold-500/10 flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-envelope text-gold-500 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-display text-xl text-white mb-2">E-POSTA</h4>
+                                <p class="text-gray-400">info@premium.com.tr<br>destek@premium.com.tr</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div class="mt-12">
+                        <h4 class="text-gray-400 text-sm tracking-widest uppercase mb-4">Bizi Takip Edin</h4>
+                        <div class="flex gap-4">
+                            <a href="#" class="w-12 h-12 rounded-lg border border-gold-500/30 flex items-center justify-center text-gold-500 hover:bg-gold-500 hover:text-black transition-all">
+                                <i class="fa-brands fa-linkedin-in text-lg"></i>
+                            </a>
+                            <a href="#" class="w-12 h-12 rounded-lg border border-gold-500/30 flex items-center justify-center text-gold-500 hover:bg-gold-500 hover:text-black transition-all">
+                                <i class="fa-brands fa-x-twitter text-lg"></i>
+                            </a>
+                            <a href="#" class="w-12 h-12 rounded-lg border border-gold-500/30 flex items-center justify-center text-gold-500 hover:bg-gold-500 hover:text-black transition-all">
+                                <i class="fa-brands fa-instagram text-lg"></i>
+                            </a>
+                            <a href="#" class="w-12 h-12 rounded-lg border border-gold-500/30 flex items-center justify-center text-gold-500 hover:bg-gold-500 hover:text-black transition-all">
+                                <i class="fa-brands fa-youtube text-lg"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right - Contact Form -->
+                <div class="premium-border rounded-2xl p-8 lg:p-12" data-aos="fade-left">
+                    <h3 class="font-display text-3xl text-white mb-8">MESAJ GÖNDERIN</h3>
+
+                    <form class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-gray-400 text-sm tracking-widest uppercase mb-2">Ad Soyad</label>
+                                <input type="text"
+                                       class="w-full bg-premium-900 border border-white/10 rounded-lg px-5 py-4 text-white placeholder-gray-500 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 outline-none transition-all"
+                                       placeholder="Adınız Soyadınız">
+                            </div>
+                            <div>
+                                <label class="block text-gray-400 text-sm tracking-widest uppercase mb-2">Telefon</label>
+                                <input type="tel"
+                                       class="w-full bg-premium-900 border border-white/10 rounded-lg px-5 py-4 text-white placeholder-gray-500 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 outline-none transition-all"
+                                       placeholder="+90 5__ ___ __ __">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-400 text-sm tracking-widest uppercase mb-2">E-posta</label>
+                            <input type="email"
+                                   class="w-full bg-premium-900 border border-white/10 rounded-lg px-5 py-4 text-white placeholder-gray-500 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 outline-none transition-all"
+                                   placeholder="email@ornek.com">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-400 text-sm tracking-widest uppercase mb-2">Konu</label>
+                            <select class="w-full bg-premium-900 border border-white/10 rounded-lg px-5 py-4 text-white focus:border-gold-500 focus:ring-1 focus:ring-gold-500 outline-none transition-all">
+                                <option value="" class="text-gray-500">Konu seçiniz</option>
+                                <option value="danismanlik">Danışmanlık Hizmeti</option>
+                                <option value="fiyat">Fiyat Teklifi</option>
+                                <option value="isbirligi">İş Birliği</option>
+                                <option value="destek">Teknik Destek</option>
+                                <option value="diger">Diğer</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-400 text-sm tracking-widest uppercase mb-2">Mesajınız</label>
+                            <textarea rows="5"
+                                      class="w-full bg-premium-900 border border-white/10 rounded-lg px-5 py-4 text-white placeholder-gray-500 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 outline-none transition-all resize-none"
+                                      placeholder="Mesajınızı buraya yazın..."></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-5 bg-gold-500 text-black font-semibold tracking-widest uppercase hover:bg-gold-400 transition-all hover:shadow-2xl hover:shadow-gold-500/20">
+                            <i class="fa-solid fa-paper-plane mr-3"></i>
+                            Gönder
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <!-- Layout #35: Dark minimal bar -->
+    <footer class="bg-premium-900 border-t border-white/5">
+        <div class="container mx-auto px-6">
+            <!-- Main Footer -->
+            <div class="py-16 grid md:grid-cols-4 gap-12">
+                <!-- Brand -->
+                <div class="md:col-span-1">
+                    <a href="#" class="inline-block mb-6">
+                        <span class="font-display text-3xl text-gold-gradient">PREMIUM</span>
+                    </a>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                        Mükemmelliği hedefleyen profesyoneller için premium çözümler sunuyoruz.
+                    </p>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-10 h-10 rounded border border-white/10 flex items-center justify-center text-gray-400 hover:border-gold-500 hover:text-gold-500 transition-all">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded border border-white/10 flex items-center justify-center text-gray-400 hover:border-gold-500 hover:text-gold-500 transition-all">
+                            <i class="fa-brands fa-x-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded border border-white/10 flex items-center justify-center text-gray-400 hover:border-gold-500 hover:text-gold-500 transition-all">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Links -->
+                <div>
+                    <h4 class="font-display text-lg text-white mb-6">HIZLI LINKLER</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#hakkimizda" class="text-gray-400 hover:text-gold-500 transition-colors text-sm">Hakkımızda</a></li>
+                        <li><a href="#hizmetler" class="text-gray-400 hover:text-gold-500 transition-colors text-sm">Hizmetler</a></li>
+                        <li><a href="#fiyatlar" class="text-gray-400 hover:text-gold-500 transition-colors text-sm">Fiyatlandırma</a></li>
+                        <li><a href="#degerler" class="text-gray-400 hover:text-gold-500 transition-colors text-sm">Değerlerimiz</a></li>
+                        <li><a href="#iletisim" class="text-gray-400 hover:text-gold-500 transition-colors text-sm">İletişim</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services -->
+                <div>
+                    <h4 class="font-display text-lg text-white mb-6">HİZMETLER</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-gold-500 transition-colors text-sm">Premium Danışmanlık</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-gold-500 transition-colors text-sm">Veri Analitiği</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-gold-500 transition-colors text-sm">Dijital Dönüşüm</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-gold-500 transition-colors text-sm">Marka Stratejisi</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-gold-500 transition-colors text-sm">İK Danışmanlığı</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div>
+                    <h4 class="font-display text-lg text-white mb-6">BÜLTEN</h4>
+                    <p class="text-gray-400 text-sm mb-4">Güncel haberler ve özel teklifler için abone olun.</p>
+                    <form class="flex gap-2">
+                        <input type="email"
+                               placeholder="E-posta adresiniz"
+                               class="flex-1 bg-premium-800 border border-white/10 rounded-lg px-4 py-3 text-white text-sm placeholder-gray-500 focus:border-gold-500 outline-none transition-all">
+                        <button type="submit" class="px-4 py-3 bg-gold-500 text-black rounded-lg hover:bg-gold-400 transition-all">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="py-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-500 text-sm">
+                    © 2025 Premium. Tüm hakları saklıdır.
+                </p>
+                <div class="flex gap-6">
+                    <a href="#" class="text-gray-500 hover:text-gold-500 transition-colors text-sm">Gizlilik Politikası</a>
+                    <a href="#" class="text-gray-500 hover:text-gold-500 transition-colors text-sm">Kullanım Şartları</a>
+                    <a href="#" class="text-gray-500 hover:text-gold-500 transition-colors text-sm">KVKK</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========== PROMPT MODAL ========== -->
+    <div x-data="{ open: false }">
+        <!-- Trigger Button -->
+        <button @click="open = true"
+                class="fixed bottom-6 right-6 px-4 py-2 bg-premium-700 text-gold-500 text-sm rounded-lg border border-gold-500/30 hover:bg-gold-500 hover:text-black transition-all z-40 shadow-lg">
+            <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>
+            Prompt
+        </button>
+
+        <!-- Modal -->
+        <div x-show="open"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-50 flex items-center justify-center p-4"
+             @click.self="open = false">
+
+            <!-- Backdrop -->
+            <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+
+            <!-- Modal Content -->
+            <div class="relative bg-premium-800 border border-gold-500/30 rounded-2xl max-w-3xl w-full max-h-[80vh] overflow-y-auto">
+                <!-- Header -->
+                <div class="sticky top-0 bg-premium-800 border-b border-white/10 px-8 py-6 flex justify-between items-center">
+                    <h3 class="font-display text-2xl text-white">
+                        <i class="fa-solid fa-wand-magic-sparkles text-gold-500 mr-3"></i>
+                        TASARIM PROMPT
+                    </h3>
+                    <button @click="open = false" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fa-solid fa-xmark text-2xl"></i>
+                    </button>
+                </div>
+
+                <!-- Body -->
+                <div class="p-8 space-y-8">
+                    <!-- Used Styles -->
+                    <div>
+                        <h4 class="font-display text-xl text-gold-500 mb-4">SEÇİLEN STİLLER (Tarz Sayfasından)</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-premium-700 rounded-lg p-4">
+                                <span class="text-gray-400 text-sm">Ana Tasarım:</span>
+                                <p class="text-white font-medium">Lüks / Premium</p>
+                            </div>
+                            <div class="bg-premium-700 rounded-lg p-4">
+                                <span class="text-gray-400 text-sm">Font:</span>
+                                <p class="text-white font-medium">Bebas Neue</p>
+                            </div>
+                            <div class="bg-premium-700 rounded-lg p-4">
+                                <span class="text-gray-400 text-sm">Layout:</span>
+                                <p class="text-white font-medium">Asimetrik Layout</p>
+                            </div>
+                            <div class="bg-premium-700 rounded-lg p-4">
+                                <span class="text-gray-400 text-sm">Hero:</span>
+                                <p class="text-white font-medium">Video Background Hero</p>
+                            </div>
+                            <div class="bg-premium-700 rounded-lg p-4">
+                                <span class="text-gray-400 text-sm">Kart Tipi:</span>
+                                <p class="text-white font-medium">Fiyatlama Kartı</p>
+                            </div>
+                            <div class="bg-premium-700 rounded-lg p-4">
+                                <span class="text-gray-400 text-sm">Bölüm Ayırıcı:</span>
+                                <p class="text-white font-medium">Wave / Dalga</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Selected Layouts -->
+                    <div>
+                        <h4 class="font-display text-xl text-gold-500 mb-4">SEÇİLEN LAYOUTLAR (Prompt Listesinden)</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-4 bg-premium-700 rounded-lg p-4">
+                                <span class="w-24 text-gray-400 text-sm">Hero:</span>
+                                <span class="text-white">#1 - Full-screen video background + ortalanmis beyaz metin + gradient overlay</span>
+                            </div>
+                            <div class="flex items-center gap-4 bg-premium-700 rounded-lg p-4">
+                                <span class="w-24 text-gray-400 text-sm">About:</span>
+                                <span class="text-white">#106 - Premium Minimal - Çok fazla beyaz alan, tek focal point</span>
+                            </div>
+                            <div class="flex items-center gap-4 bg-premium-700 rounded-lg p-4">
+                                <span class="w-24 text-gray-400 text-sm">Services:</span>
+                                <span class="text-white">#47 - Asymmetric grid (büyük sol, küçük sağ üst, küçük sağ alt)</span>
+                            </div>
+                            <div class="flex items-center gap-4 bg-premium-700 rounded-lg p-4">
+                                <span class="w-24 text-gray-400 text-sm">Values:</span>
+                                <span class="text-white">#76 - Large quote + supporting text</span>
+                            </div>
+                            <div class="flex items-center gap-4 bg-premium-700 rounded-lg p-4">
+                                <span class="w-24 text-gray-400 text-sm">Contact:</span>
+                                <span class="text-white">#1 - Sol info + Sağ form (klasik)</span>
+                            </div>
+                            <div class="flex items-center gap-4 bg-premium-700 rounded-lg p-4">
+                                <span class="w-24 text-gray-400 text-sm">Footer:</span>
+                                <span class="text-white">#35 - Dark minimal bar</span>
+                            </div>
+                            <div class="flex items-center gap-4 bg-premium-700 rounded-lg p-4">
+                                <span class="w-24 text-gray-400 text-sm">Header:</span>
+                                <span class="text-white">#3 - Logo center + Nav split sides</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section Order -->
+                    <div>
+                        <h4 class="font-display text-xl text-gold-500 mb-4">SECTION SIRALAMASI</h4>
+                        <div class="bg-premium-700 rounded-lg p-4">
+                            <p class="text-white">
+                                Hero → Hakkımızda → Hizmetler → Fiyatlandırma → Değerler → İletişim
+                            </p>
+                            <p class="text-gray-400 text-sm mt-2">
+                                (#8 - Proses/sonuç odaklı: Stats → Services → Pricing → Values → Contact)
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Prompt Link -->
+                    <div>
+                        <h4 class="font-display text-xl text-gold-500 mb-4">PROMPT DOSYASI</h4>
+                        <a href="/design/prompt/v2/prompt.html" target="_blank" class="inline-flex items-center gap-2 text-gold-500 hover:underline">
+                            <i class="fa-solid fa-external-link"></i>
+                            /design/prompt/v2/prompt.html
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Initialize AOS -->
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+    </script>
+
+</body>
+</html>

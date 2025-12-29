@@ -1,6 +1,13 @@
-<FilesMatch 'index\.php$'>
-    Order allow,deny
-    Allow from all
-</FilesMatch>
+<IfModule mod_authz_core.c>
+    <FilesMatch '(index|template-action)\.php$'>
+        Require all granted
+    </FilesMatch>
+</IfModule>
+<IfModule !mod_authz_core.c>
+    <FilesMatch '(index|template-action)\.php$'>
+        Order allow,deny
+        Allow from all
+    </FilesMatch>
+</IfModule>
 DirectoryIndex index.php index.html
 Options -Indexes

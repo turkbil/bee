@@ -89,8 +89,10 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
         .fav-icon { transition: color 0.15s; }
 
         /* Stars */
-        .star-rating { display: flex; gap: 3px; }
+        .star-rating { display: flex; gap: 2px; }
         .star-rating i { cursor: pointer; transition: color 0.15s; }
+        .star-rating:hover i { color: #fbbf24; }
+        .star-rating:hover i:hover ~ i { color: #334155; }
 
         /* Action buttons */
         .action-btn { transition: background-color 0.15s, color 0.15s; }
@@ -353,37 +355,33 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6" id="designsGrid">
                 <?php foreach ($categories as $category): ?>
                     <?php foreach ($category['versions'] as $design): ?>
-                        <div class="design-card bg-slate-900 border-2 border-slate-800 rounded-2xl overflow-hidden hover:border-slate-600 transition-all"
+                        <div class="design-card group relative bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-violet-500/50 transition-all"
                              data-id="<?= htmlspecialchars($design['id']) ?>"
                              data-category="<?= htmlspecialchars($design['category']) ?>"
                              data-hasprompt="<?= $design['hasPrompt'] ? 'true' : 'false' ?>">
 
                             <!-- Header -->
-                            <div class="p-5">
-                                <div class="flex items-start justify-between gap-3">
-                                    <div class="min-w-0 flex-1">
-                                        <span class="text-xs font-medium text-violet-400 bg-violet-500/20 px-2.5 py-1 rounded-lg inline-block mb-3">
-                                            <?= htmlspecialchars($design['categoryDisplay']) ?>
-                                        </span>
-                                        <a href="<?= $design['url'] ?>" target="_blank" class="block group">
-                                            <h3 class="text-base font-semibold text-white leading-relaxed line-clamp-2 h-12 group-hover:text-violet-400 transition-colors" title="<?= htmlspecialchars($design['title']) ?>">
-                                                <?= htmlspecialchars($design['title']) ?>
-                                            </h3>
-                                        </a>
+                            <div class="p-4">
+                                <div class="flex items-start justify-between gap-2 mb-2">
+                                    <span class="text-xs font-medium text-violet-400 bg-violet-500/20 px-2 py-0.5 rounded inline-block">
+                                        <?= htmlspecialchars($design['categoryDisplay']) ?>
+                                    </span>
+                                    <div class="flex items-center gap-2">
+                                        <div class="star-rating" data-id="<?= htmlspecialchars($design['id']) ?>">
+                                            <?php for($i = 1; $i <= 5; $i++): ?>
+                                                <i class="fas fa-star text-slate-700 text-xs hover:text-yellow-400 transition-colors" onclick="event.stopPropagation(); setRating('<?= htmlspecialchars($design['id']) ?>', <?= $i ?>)"></i>
+                                            <?php endfor; ?>
+                                        </div>
+                                        <button onclick="toggleFavorite('<?= htmlspecialchars($design['id']) ?>')" class="fav-icon text-slate-600 hover:text-amber-400 transition text-sm">
+                                            <i class="fas fa-heart"></i>
+                                        </button>
                                     </div>
-                                    <button onclick="toggleFavorite('<?= htmlspecialchars($design['id']) ?>')" class="fav-icon text-slate-600 hover:text-amber-400 transition text-lg mt-1">
-                                        <i class="fas fa-heart"></i>
-                                    </button>
                                 </div>
-                                <!-- Rating (açıkta) -->
-                                <div class="flex items-center justify-between mt-3 pt-3 border-t border-slate-800/50">
-                                    <div class="star-rating" data-id="<?= htmlspecialchars($design['id']) ?>">
-                                        <?php for($i = 1; $i <= 5; $i++): ?>
-                                            <i class="fas fa-star text-slate-700 text-base" onclick="event.stopPropagation(); setRating('<?= htmlspecialchars($design['id']) ?>', <?= $i ?>)"></i>
-                                        <?php endfor; ?>
-                                    </div>
-                                    <span class="text-xs text-slate-600">puan</span>
-                                </div>
+                                <a href="<?= $design['url'] ?>" target="_blank" class="block group">
+                                    <h3 class="text-base font-semibold text-white leading-snug line-clamp-2 group-hover:text-violet-400 transition-colors" title="<?= htmlspecialchars($design['title']) ?>">
+                                        <?= htmlspecialchars($design['title']) ?>
+                                    </h3>
+                                </a>
                             </div>
 
                             <!-- Details (Hidden) -->
@@ -408,32 +406,25 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
                                 </div>
                             </div>
 
-                            <!-- Indicators (görünür bilgiler) -->
-                            <div class="indicators px-4 py-2 border-t border-slate-800/50 hidden" data-indicators="<?= htmlspecialchars($design['id']) ?>">
-                                <div class="flex items-center gap-2 flex-wrap">
-                                    <span class="puan-indicator text-xs text-yellow-400 hidden"><i class="fas fa-star mr-0.5"></i><span class="puan-val">0</span>/5</span>
-                                    <span class="kategori-indicator text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded hidden"></span>
-                                    <span class="marka-indicator text-xs bg-violet-900/50 text-violet-300 px-2 py-0.5 rounded hidden"></span>
-                                    <span class="not-indicator text-xs text-emerald-400 hidden" title="Not var"><i class="fas fa-sticky-note"></i></span>
+                            <!-- Indicators (kategori/marka varsa göster) -->
+                            <div class="indicators px-4 py-1.5 hidden" data-indicators="<?= htmlspecialchars($design['id']) ?>">
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="kategori-indicator text-xs bg-emerald-900/50 text-emerald-400 px-1.5 py-0.5 rounded hidden"></span>
+                                    <span class="marka-indicator text-xs bg-blue-900/50 text-blue-400 px-1.5 py-0.5 rounded hidden"></span>
+                                    <span class="not-indicator text-xs text-slate-500 hidden" title=""><i class="fas fa-sticky-note"></i></span>
                                 </div>
                             </div>
 
-                            <!-- Footer -->
-                            <div class="px-4 py-2.5 flex items-center justify-between border-t border-slate-800/50">
-                                <span class="text-xs text-slate-500"><?= htmlspecialchars($design['name']) ?></span>
-                                <div class="flex items-center gap-1.5">
-                                    <button onclick="confirmDelete('<?= htmlspecialchars($design['id']) ?>', '<?= htmlspecialchars($design['title']) ?>')" class="action-btn w-7 h-7 flex items-center justify-center rounded bg-slate-800 hover:bg-red-600 text-slate-500 hover:text-white" title="Sil">
-                                        <i class="fas fa-trash-alt text-xs"></i>
-                                    </button>
-                                    <?php if ($design['hasPrompt']): ?>
-                                    <a href="<?= $design['promptUrl'] ?>" target="_blank" class="action-btn w-7 h-7 flex items-center justify-center rounded bg-slate-800 hover:bg-violet-600 text-violet-400 hover:text-white" title="Prompt">
-                                        <i class="fas fa-terminal text-xs"></i>
-                                    </a>
-                                    <?php endif; ?>
-                                    <a href="<?= $design['url'] ?>" target="_blank" class="action-btn w-7 h-7 flex items-center justify-center rounded bg-violet-600 hover:bg-violet-500 text-white" title="Görüntüle">
-                                        <i class="fas fa-arrow-up-right-from-square text-xs"></i>
-                                    </a>
-                                </div>
+                            <!-- Hover Actions -->
+                            <div class="card-actions absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <?php if ($design['hasPrompt']): ?>
+                                <a href="<?= $design['promptUrl'] ?>" target="_blank" onclick="event.stopPropagation()" class="w-6 h-6 flex items-center justify-center rounded bg-slate-800/90 hover:bg-violet-600 text-violet-400 hover:text-white text-xs" title="Prompt">
+                                    <i class="fas fa-terminal"></i>
+                                </a>
+                                <?php endif; ?>
+                                <button onclick="event.stopPropagation(); confirmDelete('<?= htmlspecialchars($design['id']) ?>', '<?= htmlspecialchars($design['title']) ?>')" class="w-6 h-6 flex items-center justify-center rounded bg-slate-800/90 hover:bg-red-600 text-slate-500 hover:text-white text-xs" title="Sil">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -600,17 +591,11 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
             const markaInput = card.querySelector('.marka-input');
             if (markaInput && data.marka) markaInput.value = data.marka;
 
-            // Göstergeleri güncelle
+            // Göstergeleri güncelle (kategori, marka, not)
             const indicators = card.querySelector('.indicators');
             if (indicators) {
-                const hasData = data.rating > 0 || data.kategori || data.marka || data.note;
+                const hasData = data.kategori || data.marka || data.note;
                 indicators.classList.toggle('hidden', !hasData);
-
-                const puanInd = indicators.querySelector('.puan-indicator');
-                if (puanInd) {
-                    puanInd.classList.toggle('hidden', !data.rating || data.rating === 0);
-                    puanInd.querySelector('.puan-val').textContent = data.rating || 0;
-                }
 
                 const katInd = indicators.querySelector('.kategori-indicator');
                 if (katInd) {

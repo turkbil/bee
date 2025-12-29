@@ -782,16 +782,14 @@
         <div x-show="!isLoggedIn" x-cloak class="flex items-center gap-3">
             <a
                 href="/login"
-               
-                class="hidden sm:flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-full text-white text-sm font-semibold transition-all duration-300"
+                class="hidden sm:flex items-center gap-2 px-4 py-2 border border-muzibu-coral/60 hover:border-muzibu-coral hover:bg-muzibu-coral/10 rounded-full text-muzibu-coral text-sm font-semibold transition-all duration-300"
             >
                 <i class="fas fa-sign-in-alt text-xs"></i>
                 <span>{{ trans('muzibu::front.general.login') }}</span>
             </a>
             <a
                 href="/register"
-
-                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-muzibu-coral to-muzibu-coral-light hover:from-muzibu-coral-light hover:to-muzibu-coral rounded-full text-white text-sm font-bold transition-all duration-300 shadow-lg hover:shadow-muzibu-coral/30"
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-muzibu-coral to-[#ff9966] hover:from-[#ff9966] hover:to-muzibu-coral rounded-full text-white text-sm font-bold transition-all duration-300 shadow-lg hover:shadow-muzibu-coral/30"
             >
                 <i class="fas fa-user-plus text-xs"></i>
                 <span class="hidden md:inline">{{ trans('muzibu::front.general.register') }}</span>

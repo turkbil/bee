@@ -88,7 +88,14 @@ self.addEventListener('fetch', (event) => {
             fetch(event.request)
                 .then(response => response)
                 .catch(error => {
-                    console.error('[SW] HLS fetch error:', error);
+                    // 🔇 Silent fail for HLS segments - network hiccups are expected
+                    // HLS.js has its own retry mechanism, no need to spam console
+                    if (self._hlsErrorLogged !== true) {
+                        console.warn('[SW] HLS fetch failed (subsequent errors silenced)');
+                        self._hlsErrorLogged = true;
+                        // Reset after 10 seconds to allow occasional logging
+                        setTimeout(() => { self._hlsErrorLogged = false; }, 10000);
+                    }
                     throw error;
                 })
         );

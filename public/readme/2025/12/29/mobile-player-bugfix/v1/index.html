@@ -34,17 +34,18 @@
                     <li><strong>Sorun 1:</strong> Şarkıyı durdurup tekrar başlatınca, şarkı kaldığı yerden değil baştan başlıyordu</li>
                     <li><strong>Sorun 2:</strong> 3 nokta menüsünde şarkıyı ileri/geri alma özelliği yoktu</li>
                 </ul>
-                <p>
+                <p class="mt-4">
                     <strong>Ne yapıldı?</strong>
                 </p>
                 <ul class="list-disc list-inside space-y-2 ml-4">
-                    <li>Artık şarkıyı durdurup devam ettirdiğinizde kaldığı yerden devam ediyor</li>
-                    <li>3 nokta menüsüne parmakla sürüklenebilen ilerleme çubuğu eklendi</li>
-                    <li>Menü artık aşağı kaydırarak kapatılabiliyor (swipe-to-dismiss)</li>
-                    <li>İlerleme çubuğu daha büyük ve kullanımı kolay hale getirildi</li>
+                    <li><i class="fas fa-check text-green-400 mr-1"></i>Artık şarkıyı durdurup devam ettirdiğinizde kaldığı yerden devam ediyor</li>
+                    <li><i class="fas fa-check text-green-400 mr-1"></i>3 nokta menüsüne parmakla sürüklenebilen ilerleme çubuğu eklendi</li>
+                    <li><i class="fas fa-check text-green-400 mr-1"></i>Menü artık aşağı kaydırarak kapatılabiliyor (swipe-to-dismiss)</li>
+                    <li><i class="fas fa-check text-green-400 mr-1"></i>Time badge artık <strong>kalan süreyi</strong> gösteriyor</li>
+                    <li><i class="fas fa-check text-green-400 mr-1"></i>İlerleme çubuğu daha büyük ve kullanımı kolay hale getirildi</li>
                 </ul>
                 <p class="text-green-400 font-medium mt-4">
-                    <i class="fas fa-check mr-2"></i>Sonuç: Mobil müzik deneyimi çok daha akıcı!
+                    <i class="fas fa-mobile-alt mr-2"></i>Sonuç: Mobil müzik deneyimi çok daha akıcı!
                 </p>
             </div>
         </section>
@@ -87,10 +88,10 @@
                     </div>
                 </div>
 
-                <!-- Bug 2 -->
+                <!-- Feature: Progress Bar -->
                 <div class="bg-slate-800/50 rounded-lg p-4">
-                    <h3 class="font-semibold text-orange-400 mb-2">
-                        <i class="fas fa-plus-circle mr-2"></i>Feature: Mobile Progress Bar
+                    <h3 class="font-semibold text-cyan-400 mb-2">
+                        <i class="fas fa-sliders-h mr-2"></i>Feature: Mobile Progress Bar
                     </h3>
                     <p class="text-slate-400 text-sm mb-3">3 dots menüsüne touch-draggable progress bar eklendi</p>
 
@@ -100,8 +101,11 @@
                             <li>Parmakla sürüklenebilir (touch-draggable)</li>
                             <li>Anlık görsel feedback (sürüklerken zaman güncellenir)</li>
                             <li>Şarkıya göre değişen gradient renk</li>
-                            <li>Büyük touch area (kolay kullanım)</li>
-                            <li>Handle sürüklenirken büyüyor (scale-125)</li>
+                            <li>Büyük touch area (<code class="bg-slate-700 px-1 rounded">py-3 -my-3</code>)</li>
+                            <li>Kalın progress track (<code class="bg-slate-700 px-1 rounded">h-2.5</code>)</li>
+                            <li>Büyük drag handle (<code class="bg-slate-700 px-1 rounded">w-5 h-5</code> + border)</li>
+                            <li>Handle sürüklenirken büyüyor (<code class="bg-slate-700 px-1 rounded">scale-125</code>)</li>
+                            <li>Tabular nums font (<code class="bg-slate-700 px-1 rounded">tabular-nums</code>)</li>
                         </ul>
 
                         <p class="mt-3"><strong class="text-yellow-400">Dikkat Edilen Noktalar:</strong></p>
@@ -110,6 +114,7 @@
                             <li><code class="bg-slate-700 px-1 rounded">touch-none</code> CSS - browser varsayılan davranışlarını devre dışı</li>
                             <li><code class="bg-slate-700 px-1 rounded">seekTime</code> ayrı değişken - sürükleme sırasında geçici pozisyon</li>
                             <li><code class="bg-slate-700 px-1 rounded">pointer-events-none</code> child elementlerde</li>
+                            <li><code class="bg-slate-700 px-1 rounded">$el.querySelector('.progress-track')</code> ile doğru element referansı</li>
                         </ul>
                     </div>
 
@@ -119,19 +124,60 @@
                     </div>
                 </div>
 
-                <!-- Ek İyileştirmeler -->
+                <!-- Feature: Swipe to Dismiss -->
                 <div class="bg-slate-800/50 rounded-lg p-4">
                     <h3 class="font-semibold text-purple-400 mb-2">
-                        <i class="fas fa-magic mr-2"></i>Ek İyileştirmeler (Kullanıcı tarafından)
+                        <i class="fas fa-hand-pointer mr-2"></i>Feature: Swipe-to-Dismiss
                     </h3>
+                    <p class="text-slate-400 text-sm mb-3">Menü aşağı kaydırarak kapatılabiliyor</p>
 
-                    <ul class="list-disc list-inside text-slate-300 ml-4 space-y-1 text-sm">
-                        <li>Time badge artık kalan süreyi gösteriyor (duration - currentTime)</li>
-                        <li>Swipe-to-dismiss: Menü aşağı kaydırılarak kapatılabiliyor</li>
-                        <li>Handle bar eklendi (menünün üstünde)</li>
-                        <li>Progress bar track daha kalın (h-2.5)</li>
-                        <li>Daha büyük drag handle (w-5 h-5)</li>
-                    </ul>
+                    <div class="text-sm space-y-2">
+                        <p><strong class="text-blue-400">Implementasyon:</strong></p>
+                        <ul class="list-disc list-inside text-slate-300 ml-4 space-y-1">
+                            <li>Handle bar eklendi (üstte <code class="bg-slate-700 px-1 rounded">w-10 h-1 bg-zinc-600</code>)</li>
+                            <li>Header alanı swipe zone olarak ayarlandı</li>
+                            <li><code class="bg-slate-700 px-1 rounded">startY, currentY, isDragging</code> state'leri</li>
+                            <li>Sürükleme sırasında transform + opacity animasyonu</li>
+                            <li>60px'den fazla kaydırılırsa menü kapanıyor</li>
+                        </ul>
+
+                        <div class="mt-3 bg-slate-700/50 rounded p-3 font-mono text-xs">
+                            <span class="text-purple-400">:style</span>="isDragging && currentY > 0 ? <br>
+                            &nbsp;&nbsp;<span class="text-green-400">`transform: translateY(${currentY}px); opacity: ${1 - currentY/150}`</span> : ''"
+                        </div>
+                    </div>
+
+                    <div class="mt-3 text-xs text-slate-500">
+                        <i class="fas fa-file-code mr-1"></i>
+                        player.blade.php:127-139
+                    </div>
+                </div>
+
+                <!-- Feature: Remaining Time -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold text-emerald-400 mb-2">
+                        <i class="fas fa-clock mr-2"></i>Feature: Kalan Süre Badge
+                    </h3>
+                    <p class="text-slate-400 text-sm mb-3">Time badge artık kalan süreyi gösteriyor</p>
+
+                    <div class="text-sm space-y-2">
+                        <p><strong class="text-blue-400">Önceki:</strong></p>
+                        <div class="bg-slate-700/50 rounded p-2 font-mono text-xs ml-4">
+                            <span class="text-red-400 line-through">x-text="formatTime(currentTime)"</span>
+                        </div>
+
+                        <p class="mt-2"><strong class="text-green-400">Yeni:</strong></p>
+                        <div class="bg-slate-700/50 rounded p-2 font-mono text-xs ml-4">
+                            <span class="text-green-400">x-text="duration > 0 ? formatTime(Math.max(0, duration - currentTime)) : '0:00'"</span>
+                        </div>
+
+                        <p class="text-slate-400 mt-2">Bu değişiklik hem mobile hem desktop player'da uygulandı.</p>
+                    </div>
+
+                    <div class="mt-3 text-xs text-slate-500">
+                        <i class="fas fa-file-code mr-1"></i>
+                        player.blade.php:77, 244
+                    </div>
                 </div>
             </div>
         </section>
@@ -144,18 +190,50 @@
             </h2>
             <div class="space-y-3">
                 <div class="flex items-start gap-3 text-sm">
-                    <span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs font-mono">MODIFIED</span>
+                    <span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs font-mono shrink-0">MODIFIED</span>
                     <div>
                         <code class="text-slate-300">public/themes/muzibu/js/player/core/player-core.js</code>
                         <p class="text-slate-500 text-xs mt-1">Safari Native HLS pause/resume fix (satır 711-737)</p>
                     </div>
                 </div>
                 <div class="flex items-start gap-3 text-sm">
-                    <span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs font-mono">MODIFIED</span>
+                    <span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs font-mono shrink-0">MODIFIED</span>
                     <div>
                         <code class="text-slate-300">resources/views/themes/muzibu/components/player.blade.php</code>
-                        <p class="text-slate-500 text-xs mt-1">Mobile progress bar, swipe-to-dismiss, kalan süre badge</p>
+                        <p class="text-slate-500 text-xs mt-1">
+                            Mobile progress bar, swipe-to-dismiss, kalan süre badge, handle bar, büyük touch area
+                        </p>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kod Özeti -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <i class="fas fa-layer-group text-pink-400"></i>
+                Mobile Menu Yapısı (Son Hali)
+            </h2>
+            <div class="space-y-2 text-sm font-mono">
+                <div class="flex items-center gap-2 text-slate-400">
+                    <span class="w-4">┌</span>
+                    <span class="bg-zinc-700 px-2 py-0.5 rounded text-zinc-300">Handle Bar</span>
+                    <span class="text-slate-500">w-10 h-1 bg-zinc-600</span>
+                </div>
+                <div class="flex items-center gap-2 text-slate-400">
+                    <span class="w-4">├</span>
+                    <span class="bg-zinc-700 px-2 py-0.5 rounded text-zinc-300">Header (Swipe Zone)</span>
+                    <span class="text-slate-500">Şarkı adı + Sanatçı</span>
+                </div>
+                <div class="flex items-center gap-2 text-slate-400">
+                    <span class="w-4">├</span>
+                    <span class="bg-orange-700 px-2 py-0.5 rounded text-orange-200">Progress Bar</span>
+                    <span class="text-slate-500">Touch-draggable, gradient</span>
+                </div>
+                <div class="flex items-center gap-2 text-slate-400">
+                    <span class="w-4">└</span>
+                    <span class="bg-zinc-700 px-2 py-0.5 rounded text-zinc-300">Menu Items</span>
+                    <span class="text-slate-500">Favoriler, Sıradakiler, Playlist'e Ekle</span>
                 </div>
             </div>
         </section>
@@ -181,11 +259,19 @@
                 </label>
                 <label class="flex items-center gap-3 text-slate-300">
                     <input type="checkbox" class="w-4 h-4 rounded" checked disabled>
-                    <span>Menü aşağı kaydırarak kapatılabilmeli</span>
+                    <span>Menü aşağı kaydırarak kapatılabilmeli (60px+)</span>
                 </label>
                 <label class="flex items-center gap-3 text-slate-300">
                     <input type="checkbox" class="w-4 h-4 rounded" checked disabled>
-                    <span>Kalan süre badge'i doğru göstermeli</span>
+                    <span>Kalan süre badge'i doğru göstermeli (duration - currentTime)</span>
+                </label>
+                <label class="flex items-center gap-3 text-slate-300">
+                    <input type="checkbox" class="w-4 h-4 rounded" checked disabled>
+                    <span>Handle sürüklenirken büyümeli (scale-125)</span>
+                </label>
+                <label class="flex items-center gap-3 text-slate-300">
+                    <input type="checkbox" class="w-4 h-4 rounded" checked disabled>
+                    <span>Desktop player'da da kalan süre gösterilmeli</span>
                 </label>
             </div>
         </section>

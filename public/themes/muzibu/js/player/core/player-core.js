@@ -974,44 +974,162 @@ function muzibuApp() {
         /**
          * 🚀 INSTANT QUEUE: Sayfa açılır açılmaz queue yükle
          * Backend'den son dinlenen şarkı + genre şarkıları alır
+         *
+         * 🛡️ ROBUST: Her durumda kuyruk doldurulmaya garanti edilir!
+         * - API hatası → Retry (3 kez)
+         * - Tüm retry'lar başarısız → Popular fallback
+         * - Popular da başarısız → Emergency genre fallback
          */
         async loadInitialQueue() {
-            try {
-                const response = await fetch('/api/muzibu/queue/initial', {
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                    },
-                    credentials: 'same-origin'
-                });
+            const maxRetries = 3;
+            let lastError = null;
 
-                if (!response.ok) {
-                    console.warn('⚠️ Initial queue fetch failed:', response.status);
-                    return;
-                }
+            // 🔄 Retry logic with exponential backoff
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    const response = await fetch('/api/muzibu/queue/initial', {
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        credentials: 'same-origin'
+                    });
 
-                const data = await response.json();
+                    if (!response.ok) {
+                        console.warn(`⚠️ Initial queue attempt ${attempt}/${maxRetries} failed:`, response.status);
+                        lastError = new Error(`HTTP ${response.status}`);
+                        if (attempt < maxRetries) {
+                            await new Promise(r => setTimeout(r, attempt * 500)); // 500ms, 1s, 1.5s
+                            continue;
+                        }
+                    } else {
+                        const data = await response.json();
 
-                if (data.success && data.songs && data.songs.length > 0) {
-                    // Queue'ya şarkıları ekle
-                    this.queue = data.songs;
-                    this.queueIndex = 0;
-                    this.currentSong = data.songs[0];
+                        if (data.success && data.songs && data.songs.length > 0) {
+                            // Queue'ya şarkıları ekle
+                            this.queue = data.songs;
+                            this.queueIndex = 0;
+                            this.currentSong = data.songs[0];
 
-                    // 🎨 Update player gradient colors (initial queue load)
-                    this.updatePlayerColors();
+                            // 🎨 Update player gradient colors (initial queue load)
+                            this.updatePlayerColors();
 
-                    // Context'i güncelle (genre/popular)
-                    if (data.context) {
-                        const muzibuStore = Alpine.store('muzibu');
-                        if (muzibuStore) {
-                            muzibuStore.updatePlayContext(data.context);
+                            // Context'i güncelle (genre/popular)
+                            // 🔧 FIX: setPlayContext kullan (yeni context oluştur)
+                            // updatePlayContext sadece MEVCUT context'i günceller, yeni oluşturmaz!
+                            if (data.context) {
+                                const muzibuStore = Alpine.store('muzibu');
+                                if (muzibuStore && typeof muzibuStore.setPlayContext === 'function') {
+                                    muzibuStore.setPlayContext(data.context);
+                                    console.log('✅ Context set:', data.context.type, data.context.id);
+                                }
+                            }
+
+                            console.log(`✅ Initial queue loaded: ${data.songs.length} songs`);
+                            return; // Success!
                         }
                     }
+                } catch (error) {
+                    console.warn(`⚠️ Initial queue attempt ${attempt}/${maxRetries} error:`, error.message);
+                    lastError = error;
+                    if (attempt < maxRetries) {
+                        await new Promise(r => setTimeout(r, attempt * 500));
+                        continue;
+                    }
                 }
-            } catch (error) {
-                console.error('❌ Initial queue error:', error);
             }
+
+            // 🛡️ FALLBACK: Tüm retry'lar başarısız, emergency queue yükle
+            console.warn('⚠️ All initial queue attempts failed, trying emergency fallback...');
+            await this.loadEmergencyQueue();
+        },
+
+        /**
+         * 🆘 EMERGENCY QUEUE: Ana kuyruk yüklenemezse çalışır
+         * Popular şarkılar veya herhangi bir genre'den şarkı çeker
+         *
+         * ASLA BOŞ KUYRUK OLMAMALI!
+         */
+        async loadEmergencyQueue() {
+            try {
+                // 1. Önce popular endpoint'i dene
+                const response = await fetch('/api/muzibu/queue/refill', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                    },
+                    body: JSON.stringify({
+                        type: 'popular',
+                        id: null,
+                        offset: 0,
+                        limit: 15,
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.songs && data.songs.length > 0) {
+                        this.queue = data.songs;
+                        this.queueIndex = 0;
+                        this.currentSong = data.songs[0];
+                        this.updatePlayerColors();
+
+                        // 🔧 FIX: setPlayContext kullan (yeni context oluştur)
+                        const muzibuStore = Alpine.store('muzibu');
+                        if (muzibuStore && typeof muzibuStore.setPlayContext === 'function') {
+                            muzibuStore.setPlayContext({
+                                type: 'popular',
+                                id: null,
+                                name: 'Popüler',
+                                offset: 0
+                            });
+                            console.log('✅ Context set: popular');
+                        }
+
+                        console.log(`✅ Emergency queue loaded (popular): ${data.songs.length} songs`);
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.error('❌ Emergency popular queue failed:', e.message);
+            }
+
+            // 2. Popular da başarısız, genre 1'i dene (ilk genre)
+            try {
+                const response = await fetch('/api/muzibu/queue/refill', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                    },
+                    body: JSON.stringify({
+                        type: 'genre',
+                        id: 1, // İlk genre
+                        offset: 0,
+                        limit: 15,
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.songs && data.songs.length > 0) {
+                        this.queue = data.songs;
+                        this.queueIndex = 0;
+                        this.currentSong = data.songs[0];
+                        this.updatePlayerColors();
+
+                        console.log(`✅ Emergency queue loaded (genre fallback): ${data.songs.length} songs`);
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.error('❌ Emergency genre queue failed:', e.message);
+            }
+
+            console.error('❌ ALL EMERGENCY QUEUE ATTEMPTS FAILED - queue is empty!');
         },
 
         async previousTrack() {
@@ -1174,19 +1292,39 @@ function muzibuApp() {
                         console.error('❌ Auto-refill failed:', error);
                         // 🔍 SERVER LOG
                         serverLog('refillError', { error: error.message });
-                        if (this.currentUser?.is_root) {
-                            this.showToast(`❌ Refill hata: ${error.message}`, 'error');
+
+                        // 🛡️ EMERGENCY: Refill hata verdi, emergency queue yükle
+                        console.warn('⚠️ Refill failed, trying emergency queue...');
+                        await this.loadEmergencyQueue();
+                        if (this.queue.length > 0) {
+                            await this.playSongFromQueue(0);
+                            return;
                         }
                     }
                 } else {
                     // 🔍 SERVER LOG
                     serverLog('refillSkipped', { reason: 'no store or function or context' });
-                    if (this.currentUser?.is_root) {
-                        this.showToast(`⚠️ Context yok, refill yapılamıyor`, 'warning');
+
+                    // 🛡️ EMERGENCY: Context yok, emergency queue yükle (silent)
+                    await this.loadEmergencyQueue();
+                    if (this.queue.length > 0) {
+                        await this.playSongFromQueue(0);
+                        return;
                     }
                 }
 
-                // Refill başarısız, dur
+                // 🛡️ SON ÇARE: Hala boşsa emergency queue'yu bir kez daha dene
+                if (this.queue.length === 0 || this.queueIndex >= this.queue.length) {
+                    // Silent last attempt - emergency queue handles logging
+                    await this.loadEmergencyQueue();
+                    if (this.queue.length > 0) {
+                        await this.playSongFromQueue(0);
+                        return;
+                    }
+                }
+
+                // Gerçekten hiçbir şey yüklenemedi - durmak zorunda
+                console.error('❌ ALL QUEUE LOAD ATTEMPTS FAILED - stopping playback');
                 this.isPlaying = false;
             }
         },
@@ -3194,12 +3332,21 @@ onplay: function() {
             // Fix: Set withCredentials=false for all HLS requests
             xhrSetup: function(xhr, url) {
                 xhr.withCredentials = false; // 🔑 CRITICAL: Disable credentials for CORS
-                // Frag/key debug için
+                // 🔇 XHR error throttling - avoid console spam
+                // HLS.js retries automatically, no need to log every failure
                 xhr.addEventListener('error', () => {
-                    console.warn('HLS XHR error', { url });
+                    if (!self._xhrErrorThrottled) {
+                        console.warn('HLS XHR error (throttled 5s)', url.substring(0, 80));
+                        self._xhrErrorThrottled = true;
+                        setTimeout(() => { self._xhrErrorThrottled = false; }, 5000);
+                    }
                 });
                 xhr.addEventListener('timeout', () => {
-                    console.warn('HLS XHR timeout', { url });
+                    if (!self._xhrTimeoutThrottled) {
+                        console.warn('HLS XHR timeout (throttled 5s)', url.substring(0, 80));
+                        self._xhrTimeoutThrottled = true;
+                        setTimeout(() => { self._xhrTimeoutThrottled = false; }, 5000);
+                    }
                 });
             }
         });
@@ -5099,32 +5246,70 @@ onplay: function() {
 
         /**
          * 🔄 QUEUE REFILL CHECKER: Queue 3 şarkıya düştüyse otomatik refill
+         *
+         * 🛡️ ROBUST: Her durumda kuyruk doldurulmaya garanti edilir!
+         * - Context yoksa → currentSong'dan context oluştur
+         * - Context oluşturulamadı → Emergency queue yükle
+         * - Refill boş döndü → Emergency queue yükle
          */
         async checkAndRefillQueue() {
             try {
                 // Queue kontrolü
                 const queueLength = this.queue.length - this.queueIndex;
 
-                // Sadece queue varsa log yaz (boş queue spam yapmasın)
-                if (this.queue.length > 0) {
+                // 🆘 EMERGENCY CHECK: Queue tamamen boşsa hemen doldur!
+                if (this.queue.length === 0 || queueLength === 0) {
+                    // Silent emergency refill - expected behavior when starting fresh
+                    await this.loadEmergencyQueue();
+                    return;
                 }
 
                 // Eğer 3 veya daha az şarkı kaldıysa refill et
                 if (queueLength <= 3) {
                     // Context var mı kontrol et
-                    const context = Alpine.store('muzibu')?.getPlayContext();
+                    let context = Alpine.store('muzibu')?.getPlayContext();
 
-                    if (!context) {
-                        // Sadece ilk kez uyar (spam yapmasın)
-                        if (!this._noContextWarningShown && this.queue.length > 0) {
-                            // Console logs removed - no context is normal on initial load
-                            this._noContextWarningShown = true;
+                    // 🛡️ FALLBACK: Context yoksa currentSong'dan oluştur
+                    // 🔧 FIX: setPlayContext kullan (yeni context oluştur)
+                    // 🎯 PRIORITY: genre_id → album_id → sector_id → artist_id → popular
+                    if (!context && this.currentSong) {
+                        const genreId = this.currentSong.genre_id;
+                        const albumId = this.currentSong.album_id;
+                        const sectorId = this.currentSong.sector_id;
+                        const artistId = this.currentSong.artist_id;
+                        const muzibuStore = Alpine.store('muzibu');
+
+                        if (genreId && muzibuStore && typeof muzibuStore.setPlayContext === 'function') {
+                            context = { type: 'genre', id: genreId, name: 'Genre', offset: 0, source: 'auto_from_current' };
+                            muzibuStore.setPlayContext(context);
+                            // Silent auto-context creation (debug only)
+                        } else if (albumId && muzibuStore && typeof muzibuStore.setPlayContext === 'function') {
+                            context = { type: 'album', id: albumId, name: 'Album', offset: 0, source: 'auto_from_current' };
+                            muzibuStore.setPlayContext(context);
+                        } else if (sectorId && muzibuStore && typeof muzibuStore.setPlayContext === 'function') {
+                            context = { type: 'sector', id: sectorId, name: 'Sector', offset: 0, source: 'auto_from_current' };
+                            muzibuStore.setPlayContext(context);
+                        } else if (artistId && muzibuStore && typeof muzibuStore.setPlayContext === 'function') {
+                            context = { type: 'artist', id: artistId, name: 'Artist', offset: 0, source: 'auto_from_current' };
+                            muzibuStore.setPlayContext(context);
                         }
-                        return;
                     }
 
-                    // Context varsa flag'i resetle (yeni session için)
-                    this._noContextWarningShown = false;
+                    // 🛡️ FALLBACK: Context oluşturulamadı, popular context kullan
+                    if (!context) {
+                        // 🎯 Silent fallback: Popular context oluştur (warning spam önle)
+                        const muzibuStore = Alpine.store('muzibu');
+                        if (muzibuStore && typeof muzibuStore.setPlayContext === 'function') {
+                            context = { type: 'popular', id: null, name: 'Popular', offset: 0, source: 'auto_fallback' };
+                            muzibuStore.setPlayContext(context);
+                        } else {
+                            // Store yoksa emergency queue yükle (sessiz)
+                            await this.loadEmergencyQueue();
+                            return;
+                        }
+                    }
+
+                    // Context oluşturuldu, refill devam edebilir
 
                     // Auto-refilling queue (silent operation)
 
@@ -5153,16 +5338,14 @@ onplay: function() {
                         // İlk şarkıyı preload et
                         this.preloadFirstInQueue();
                     } else {
-                        console.warn('⚠️ Auto-refill returned empty - queue might end soon!');
-
-                        // Context Transition: Eğer queue boşsa Genre'ye geç
-                        if (context.type !== 'genre') {
-                            // TODO: Context transition logic (Phase 4 - Priority 4)
-                        }
+                        // 🔇 Silent fallback - emergency queue handles this gracefully
+                        await this.loadEmergencyQueue();
                     }
                 }
             } catch (error) {
                 console.error('❌ Queue check error:', error);
+                // 🛡️ EMERGENCY: Hata durumunda bile queue doldur
+                await this.loadEmergencyQueue();
             }
         },
 

@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abuse Detection - Çoklu Çakışma Raporu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .timeline-bar { height: 36px; border-radius: 6px; position: relative; transition: all 0.3s; }
+        .timeline-bar:hover { transform: scaleY(1.1); }
+        .timeline-overlap {
+            background: repeating-linear-gradient(45deg, #ef4444, #ef4444 8px, #dc2626 8px, #dc2626 16px);
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .severity-low { border-left: 4px solid #22c55e; }
+        .severity-medium { border-left: 4px solid #eab308; }
+        .severity-high { border-left: 4px solid #ef4444; }
+        .score-badge {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            animation: glow 2s infinite;
+        }
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(239, 68, 68, 0.8); }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-red-900/50 to-orange-900/50 border-b border-red-800/50">
+        <div class="max-w-6xl mx-auto px-6 py-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full">v5</span>
+                <span class="px-3 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-bold rounded-full border border-yellow-500/30">
+                    <i class="fas fa-database mr-1"></i>CANLI VERİ
+                </span>
+                <span class="px-3 py-1 bg-red-500/20 text-red-400 text-xs font-bold rounded-full border border-red-500/30">
+                    <i class="fas fa-exclamation-triangle mr-1"></i>3 ÇAKIŞMA
+                </span>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">
+                <i class="fas fa-shield-alt text-red-400 mr-3"></i>
+                Abuse Detection - Çoklu Çakışma Raporu
+            </h1>
+            <p class="text-slate-400">User ID: 1 - Son 2 saatlik analiz</p>
+            <div class="mt-4 text-sm text-slate-500">
+                <i class="fas fa-calendar mr-2"></i>29 Aralık 2025
+                <span class="mx-3">|</span>
+                <i class="fas fa-clock mr-2"></i>17:00 - 18:10 arası
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-8 space-y-8">
+
+        <!-- SKOR KARTI -->
+        <section class="bg-gradient-to-br from-red-900/30 to-orange-900/30 border border-red-700/50 rounded-xl p-6">
+            <div class="flex flex-col md:flex-row items-center gap-6">
+                <!-- Skor -->
+                <div class="score-badge w-32 h-32 rounded-full flex flex-col items-center justify-center text-white">
+                    <div class="text-4xl font-bold">206</div>
+                    <div class="text-xs uppercase tracking-wider opacity-80">Abuse Puanı</div>
+                </div>
+
+                <!-- Özet -->
+                <div class="flex-1 grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-3xl font-bold text-red-400">3</div>
+                        <div class="text-xs text-slate-500">Çakışma Sayısı</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-3xl font-bold text-orange-400">206</div>
+                        <div class="text-xs text-slate-500">Toplam Saniye</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-3xl font-bold text-yellow-400">2</div>
+                        <div class="text-xs text-slate-500">Farklı Cihaz</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-3xl font-bold text-purple-400">1</div>
+                        <div class="text-xs text-slate-500">IP Adresi</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Severity Bar -->
+            <div class="mt-6">
+                <div class="flex justify-between text-xs text-slate-400 mb-2">
+                    <span>Düşük Risk</span>
+                    <span>Orta Risk</span>
+                    <span>Yüksek Risk</span>
+                </div>
+                <div class="h-3 bg-slate-700 rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-green-500 via-yellow-500 to-red-500" style="width: 85%;"></div>
+                </div>
+                <div class="text-center mt-2">
+                    <span class="px-3 py-1 bg-red-500/20 text-red-400 text-sm font-bold rounded-full">
+                        YÜKSEK RİSK - Hesap Paylaşımı Şüphesi
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÇAKIŞMA 1 -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden severity-low">
+            <div class="bg-green-900/30 px-6 py-4 border-b border-slate-700">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center">
+                            <span class="text-green-400 font-bold">1</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white">Çakışma #1 - Düşük Şiddet</h3>
+                            <p class="text-sm text-slate-400">17:18:09 - 17:18:17 arası</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-green-400">8 sn</div>
+                        <div class="text-xs text-slate-500">çakışma süresi</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <!-- Şarkı Bilgisi -->
+                <div class="flex items-center gap-4 mb-6 p-4 bg-purple-900/20 rounded-lg border border-purple-700/30">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-music text-2xl text-white"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-white">Give Me the Power</h4>
+                        <div class="text-sm text-slate-400">
+                            <span class="mr-4"><i class="fas fa-hashtag mr-1"></i>Song #477</span>
+                            <span><i class="fas fa-clock mr-1"></i>2:36 (156 sn)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="bg-slate-900 rounded-lg p-4 mb-4">
+                    <div class="space-y-3">
+                        <!-- Mobile -->
+                        <div class="flex items-center gap-3">
+                            <div class="w-24 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <i class="fas fa-mobile-alt text-green-400"></i>
+                                    <span class="text-xs text-green-400">Mobile</span>
+                                </div>
+                                <div class="text-xs text-slate-600">#677</div>
+                            </div>
+                            <div class="flex-1 relative h-9">
+                                <div class="timeline-bar bg-gradient-to-r from-green-600 to-green-500 border border-green-400/50" style="width: 100%;">
+                                    <div class="absolute inset-0 flex items-center justify-between px-2 text-xs text-white">
+                                        <span>17:15:41</span>
+                                        <span>17:18:17</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Desktop -->
+                        <div class="flex items-center gap-3">
+                            <div class="w-24 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <i class="fas fa-desktop text-blue-400"></i>
+                                    <span class="text-xs text-blue-400">Desktop</span>
+                                </div>
+                                <div class="text-xs text-slate-600">#678</div>
+                            </div>
+                            <div class="flex-1 relative h-9">
+                                <div class="timeline-bar bg-gradient-to-r from-blue-600 to-blue-500 border border-blue-400/50" style="width: 100%; margin-left: 95%;">
+                                    <div class="absolute inset-0 flex items-center justify-between px-2 text-xs text-white">
+                                        <span>17:18:09</span>
+                                        <span>→</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Overlap indicator -->
+                        <div class="flex items-center gap-3">
+                            <div class="w-24 text-right">
+                                <i class="fas fa-exclamation-triangle text-red-400"></i>
+                            </div>
+                            <div class="flex-1 text-center">
+                                <span class="px-3 py-1 bg-red-500/20 text-red-400 text-xs rounded-full border border-red-500/30">
+                                    <i class="fas fa-clock mr-1"></i>8 saniye çakışma
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cihaz Detayları -->
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-900/50 rounded-lg p-4 border border-green-800/30">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fas fa-mobile-alt text-green-400"></i>
+                            <span class="font-medium text-green-400">iPhone Safari</span>
+                            <span class="text-xs text-slate-500">Play #677</span>
+                        </div>
+                        <div class="space-y-1 text-sm">
+                            <div class="flex justify-between"><span class="text-slate-500">IP:</span><span class="text-yellow-400 font-mono">92.44.171.31</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">OS:</span><span class="text-slate-300">iOS 18.7</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">Browser:</span><span class="text-slate-300">Safari Mobile 26.2</span></div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-4 border border-blue-800/30">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fas fa-desktop text-blue-400"></i>
+                            <span class="font-medium text-blue-400">Mac Chrome</span>
+                            <span class="text-xs text-slate-500">Play #678</span>
+                        </div>
+                        <div class="space-y-1 text-sm">
+                            <div class="flex justify-between"><span class="text-slate-500">IP:</span><span class="text-yellow-400 font-mono">92.44.171.31</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">OS:</span><span class="text-slate-300">macOS 10.15.7</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">Browser:</span><span class="text-slate-300">Chrome 143.0.0.0</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÇAKIŞMA 2 -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden severity-medium">
+            <div class="bg-yellow-900/30 px-6 py-4 border-b border-slate-700">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-yellow-500/20 rounded-full flex items-center justify-center">
+                            <span class="text-yellow-400 font-bold">2</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white">Çakışma #2 - Orta Şiddet</h3>
+                            <p class="text-sm text-slate-400">17:51:08 - 17:52:30 arası</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-yellow-400">82 sn</div>
+                        <div class="text-xs text-slate-500">çakışma süresi</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <!-- Şarkılar -->
+                <div class="grid md:grid-cols-2 gap-4 mb-6">
+                    <div class="flex items-center gap-3 p-3 bg-green-900/20 rounded-lg border border-green-700/30">
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-music text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white text-sm">Afterimage</h4>
+                            <div class="text-xs text-slate-400">#467 • 3:12 (192 sn) • Desktop #688</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 bg-blue-900/20 rounded-lg border border-blue-700/30">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-music text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white text-sm">ALMA</h4>
+                            <div class="text-xs text-slate-400">#471 • 2:04 (124 sn) • Mobile #689</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="bg-slate-900 rounded-lg p-4 mb-4">
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-24 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <i class="fas fa-desktop text-green-400"></i>
+                                    <span class="text-xs text-green-400">Desktop</span>
+                                </div>
+                                <div class="text-xs text-slate-600">#688</div>
+                            </div>
+                            <div class="flex-1 relative h-9">
+                                <div class="timeline-bar bg-gradient-to-r from-green-600 to-green-500 border border-green-400/50" style="width: 70%;">
+                                    <div class="absolute inset-0 flex items-center justify-between px-2 text-xs text-white">
+                                        <span>17:49:18</span>
+                                        <span>17:52:30</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-24 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <i class="fas fa-mobile-alt text-blue-400"></i>
+                                    <span class="text-xs text-blue-400">Mobile</span>
+                                </div>
+                                <div class="text-xs text-slate-600">#689</div>
+                            </div>
+                            <div class="flex-1 relative h-9">
+                                <div class="timeline-bar bg-gradient-to-r from-blue-600 to-blue-500 border border-blue-400/50" style="width: 55%; margin-left: 35%;">
+                                    <div class="absolute inset-0 flex items-center justify-between px-2 text-xs text-white">
+                                        <span>17:51:08</span>
+                                        <span>17:53:12</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-24 text-right">
+                                <i class="fas fa-exclamation-triangle text-red-400"></i>
+                            </div>
+                            <div class="flex-1 text-center">
+                                <span class="px-3 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full border border-yellow-500/30">
+                                    <i class="fas fa-clock mr-1"></i>82 saniye çakışma (17:51:08 - 17:52:30)
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÇAKIŞMA 3 -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden severity-high">
+            <div class="bg-red-900/30 px-6 py-4 border-b border-slate-700">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center">
+                            <span class="text-red-400 font-bold">3</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white">Çakışma #3 - Yüksek Şiddet</h3>
+                            <p class="text-sm text-slate-400">17:54:12 - 17:56:08 arası</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-red-400">116 sn</div>
+                        <div class="text-xs text-slate-500">çakışma süresi</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <!-- Şarkılar -->
+                <div class="grid md:grid-cols-2 gap-4 mb-6">
+                    <div class="flex items-center gap-3 p-3 bg-green-900/20 rounded-lg border border-green-700/30">
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-music text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white text-sm">ALONE</h4>
+                            <div class="text-xs text-slate-400">#472 • 2:55 (175 sn) • Mobile #690</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 bg-blue-900/20 rounded-lg border border-blue-700/30">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-music text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white text-sm">Afterimage</h4>
+                            <div class="text-xs text-slate-400">#467 • 3:12 (192 sn) • Desktop #691</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="bg-slate-900 rounded-lg p-4 mb-4">
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-24 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <i class="fas fa-mobile-alt text-green-400"></i>
+                                    <span class="text-xs text-green-400">Mobile</span>
+                                </div>
+                                <div class="text-xs text-slate-600">#690</div>
+                            </div>
+                            <div class="flex-1 relative h-9">
+                                <div class="timeline-bar bg-gradient-to-r from-green-600 to-green-500 border border-green-400/50" style="width: 65%;">
+                                    <div class="absolute inset-0 flex items-center justify-between px-2 text-xs text-white">
+                                        <span>17:53:13</span>
+                                        <span>17:56:08</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-24 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <i class="fas fa-desktop text-blue-400"></i>
+                                    <span class="text-xs text-blue-400">Desktop</span>
+                                </div>
+                                <div class="text-xs text-slate-600">#691</div>
+                            </div>
+                            <div class="flex-1 relative h-9">
+                                <div class="timeline-bar bg-gradient-to-r from-blue-600 to-blue-500 border border-blue-400/50" style="width: 75%; margin-left: 20%;">
+                                    <div class="absolute inset-0 flex items-center justify-between px-2 text-xs text-white">
+                                        <span>17:54:12</span>
+                                        <span>17:57:24</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-24 text-right">
+                                <i class="fas fa-exclamation-triangle text-red-400"></i>
+                            </div>
+                            <div class="flex-1 text-center">
+                                <span class="px-3 py-1 bg-red-500/20 text-red-400 text-xs rounded-full border border-red-500/30">
+                                    <i class="fas fa-clock mr-1"></i>116 saniye çakışma (17:54:12 - 17:56:08)
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GENEL GÖRÜNÜM - TÜM ÇAKIŞMALAR -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white mb-6">
+                <i class="fas fa-chart-gantt mr-2 text-purple-400"></i>
+                Genel Zaman Çizelgesi (17:00 - 18:10)
+            </h2>
+
+            <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto">
+                <!-- Zaman Ekseni -->
+                <div class="relative mb-4 ml-24" style="min-width: 600px;">
+                    <div class="flex justify-between text-xs text-slate-500">
+                        <span>17:00</span>
+                        <span>17:15</span>
+                        <span>17:30</span>
+                        <span>17:45</span>
+                        <span>18:00</span>
+                        <span>18:10</span>
+                    </div>
+                    <div class="h-px bg-slate-700 mt-2"></div>
+                </div>
+
+                <!-- Çakışma İşaretçileri -->
+                <div class="relative ml-24 h-16" style="min-width: 600px;">
+                    <!-- Çakışma 1 -->
+                    <div class="absolute" style="left: 26%; width: 2px; height: 100%; background: #ef4444;">
+                        <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+                            <span class="text-xs text-red-400">C1: 8sn</span>
+                        </div>
+                    </div>
+                    <!-- Çakışma 2 -->
+                    <div class="absolute" style="left: 73%; width: 8px; height: 100%; background: rgba(239, 68, 68, 0.5); border-radius: 2px;">
+                        <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+                            <span class="text-xs text-yellow-400">C2: 82sn</span>
+                        </div>
+                    </div>
+                    <!-- Çakışma 3 -->
+                    <div class="absolute" style="left: 77%; width: 12px; height: 100%; background: rgba(239, 68, 68, 0.7); border-radius: 2px;">
+                        <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+                            <span class="text-xs text-red-400">C3: 116sn</span>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Line -->
+                    <div class="absolute top-2 h-4 bg-green-500/30 rounded" style="left: 0%; width: 100%;"></div>
+                    <div class="absolute top-0 text-xs text-green-400 -left-20">
+                        <i class="fas fa-mobile-alt mr-1"></i>Mobile
+                    </div>
+
+                    <!-- Desktop Line -->
+                    <div class="absolute top-10 h-4 bg-blue-500/30 rounded" style="left: 0%; width: 100%;"></div>
+                    <div class="absolute top-8 text-xs text-blue-400 -left-20">
+                        <i class="fas fa-desktop mr-1"></i>Desktop
+                    </div>
+                </div>
+
+                <!-- Açıklama -->
+                <div class="mt-8 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-gavel text-red-400 text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-red-400 text-lg mb-2">Sonuç: Hesap Paylaşımı Kanıtlandı</h4>
+                            <ul class="space-y-1 text-sm text-red-200">
+                                <li><i class="fas fa-check mr-2"></i>1 saat içinde 3 farklı çakışma tespit edildi</li>
+                                <li><i class="fas fa-check mr-2"></i>Toplam 206 saniye eşzamanlı dinleme</li>
+                                <li><i class="fas fa-check mr-2"></i>Mobile ve Desktop cihazlar arasında geçiş pattern'i</li>
+                                <li><i class="fas fa-check mr-2"></i>Aynı IP adresinden (92.44.171.31) - aynı ağda 2 cihaz</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- JSON ÇIKTISI -->
+        <section class="bg-blue-900/20 border border-blue-700/50 rounded-xl p-6">
+            <h2 class="text-lg font-bold text-blue-400 mb-4">
+                <i class="fas fa-code mr-2"></i>
+                Abuse Report JSON
+            </h2>
+            <div class="bg-slate-900 rounded-lg p-4 overflow-x-auto">
+                <pre class="text-sm text-slate-300 font-mono"><code>{
+  "report_id": "abuse-2025-12-29-002",
+  "user_id": 1,
+  "analyzed_at": "2025-12-29T18:10:00Z",
+  "period": { "start": "17:00:00", "end": "18:10:00" },
+  "summary": {
+    "total_overlaps": 3,
+    "total_overlap_seconds": 206,
+    "abuse_score": 206,
+    "severity": "high",
+    "unique_devices": 2,
+    "unique_ips": 1
+  },
+  "overlaps": [
+    {
+      "id": 1,
+      "duration_seconds": 8,
+      "start": "17:18:09", "end": "17:18:17",
+      "plays": [677, 678],
+      "severity": "low"
+    },
+    {
+      "id": 2,
+      "duration_seconds": 82,
+      "start": "17:51:08", "end": "17:52:30",
+      "plays": [688, 689],
+      "severity": "medium"
+    },
+    {
+      "id": 3,
+      "duration_seconds": 116,
+      "start": "17:54:12", "end": "17:56:08",
+      "plays": [690, 691],
+      "severity": "high"
+    }
+  ],
+  "devices": {
+    "mobile": { "os": "iOS 18.7", "browser": "Safari Mobile 26.2", "plays": 18 },
+    "desktop": { "os": "macOS 10.15.7", "browser": "Chrome 143", "plays": 5 }
+  },
+  "recommendation": "WARNING_FIRST"
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Versiyon Geçmişi -->
+        <section class="bg-slate-800/30 rounded-xl p-6">
+            <h2 class="text-lg font-bold text-slate-400 mb-3">
+                <i class="fas fa-history mr-2"></i>Versiyon Geçmişi
+            </h2>
+            <div class="flex flex-wrap gap-2">
+                <a href="../v1/" class="px-3 py-1 bg-slate-700/50 text-slate-400 text-sm rounded hover:bg-slate-700">v1</a>
+                <a href="../v2/" class="px-3 py-1 bg-slate-700/50 text-slate-400 text-sm rounded hover:bg-slate-700">v2</a>
+                <a href="../v3/" class="px-3 py-1 bg-slate-700/50 text-slate-400 text-sm rounded hover:bg-slate-700">v3</a>
+                <a href="../v4/" class="px-3 py-1 bg-slate-700/50 text-slate-400 text-sm rounded hover:bg-slate-700">v4</a>
+                <span class="px-3 py-1 bg-red-500/20 text-red-400 text-sm rounded border border-red-500/30">v5 - Çoklu Çakışma (Şu an)</span>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 mt-12">
+        <div class="max-w-6xl mx-auto px-6 py-6 text-center text-slate-500 text-sm">
+            <i class="fas fa-robot mr-2"></i>Claude AI
+            <span class="mx-2">|</span>
+            <i class="fas fa-database mr-2"></i>Gerçek DB Verileri
+            <span class="mx-2">|</span>
+            <i class="fas fa-calendar mr-2"></i>29 Aralık 2025
+        </div>
+    </footer>
+</body>
+</html>

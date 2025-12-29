@@ -1014,11 +1014,11 @@ function muzibuApp() {
                                 const muzibuStore = Alpine.store('muzibu');
                                 if (muzibuStore && typeof muzibuStore.setPlayContext === 'function') {
                                     muzibuStore.setPlayContext(data.context);
-                                    console.log('✅ Context set:', data.context.type, data.context.id);
+                                    
                                 }
                             }
 
-                            console.log(`✅ Initial queue loaded: ${data.songs.length} songs`);
+                            
                             return; // Success!
                         }
                     }
@@ -1078,10 +1078,10 @@ function muzibuApp() {
                                 name: 'Popüler',
                                 offset: 0
                             });
-                            console.log('✅ Context set: popular');
+                            
                         }
 
-                        console.log(`✅ Emergency queue loaded (popular): ${data.songs.length} songs`);
+                        
                         return;
                     }
                 }
@@ -1114,7 +1114,7 @@ function muzibuApp() {
                         this.currentSong = data.songs[0];
                         this.updatePlayerColors();
 
-                        console.log(`✅ Emergency queue loaded (genre fallback): ${data.songs.length} songs`);
+                        
                         return;
                     }
                 }

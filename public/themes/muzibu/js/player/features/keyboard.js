@@ -290,8 +290,6 @@ function muzibuKeyboard() {
             if (feedback) {
                 feedback.remove();
             }
-
-            console.log('🎹 Keyboard shortcuts cleaned up');
         },
 
         /**

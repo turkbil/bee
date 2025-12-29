@@ -67,6 +67,8 @@ return [
         // Actions
         'add_to_favorites' => 'إضافة إلى المفضلة',
         'remove_from_favorites' => 'إزالة من المفضلة',
+        'added_to_favorites' => 'تمت الإضافة إلى المفضلة',
+        'removed_from_favorites' => 'تمت الإزالة من المفضلة',
         'add_to_playlist' => 'إضافة إلى قائمة التشغيل',
         'share' => 'مشاركة',
         'download' => 'تحميل',

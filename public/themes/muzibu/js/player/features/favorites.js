@@ -77,10 +77,13 @@ document.addEventListener('alpine:init', () => {
                         window.MuzibuSpaRouter.clearDynamicCache();
                     }
 
-                    // Show toast
+                    // Show toast (using frontLang for i18n)
                     if (window.Alpine?.store('toast')?.show) {
+                        const lang = window.muzibuPlayerConfig?.frontLang?.player || {};
+                        const addedMsg = lang.added_to_favorites || 'Added to favorites';
+                        const removedMsg = lang.removed_from_favorites || 'Removed from favorites';
                         window.Alpine.store('toast').show(
-                            data.data.is_favorited ? 'Favorilere eklendi' : 'Favorilerden kaldırıldı',
+                            data.data.is_favorited ? addedMsg : removedMsg,
                             data.data.is_favorited ? 'success' : 'info'
                         );
                     }

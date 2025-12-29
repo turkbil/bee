@@ -110,6 +110,8 @@ return [
         // Favorites
         'add_to_favorites' => 'Favorilere ekle',
         'remove_from_favorites' => 'Favorilerden çıkar',
+        'added_to_favorites' => 'Favorilere eklendi',
+        'removed_from_favorites' => 'Favorilerden kaldırıldı',
 
         // Playlist
         'add_to_playlist' => 'Çalma Listesine Ekle',

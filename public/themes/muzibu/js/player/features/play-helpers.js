@@ -36,7 +36,6 @@ const playDebounce = {
         const lastTime = this.lastCall[key] || 0;
 
         if (now - lastTime < this.delay) {
-            console.log(`⏱️ Debounced: ${key} (too soon)`);
             return false;
         }
 
@@ -351,8 +350,6 @@ async function playSector(sectorId) {
  * @param {number} id - Content ID
  */
 window.playContent = async function(type, id, options = {}) {
-    console.log(`🎵 playContent called: type=${type}, id=${id}, userInitiated=${options.userInitiated ?? true}`);
-
     // Default: user initiated (from UI clicks)
     const isUserInitiated = options.userInitiated ?? true;
 
@@ -434,8 +431,6 @@ window.playContent = async function(type, id, options = {}) {
  * @param {number} id - Content ID
  */
 window.addContentToQueue = async function(type, id) {
-    console.log(`➕ addContentToQueue called: type=${type}, id=${id}`);
-
     const player = Alpine.store('player');
     if (!player) {
         console.error('Player store not found');
@@ -550,8 +545,6 @@ window.addContentToQueue = async function(type, id) {
  * Çalan şarkının hemen ardına ekler
  */
 window.addContentToQueueNext = async function(type, id) {
-    console.log(`➕ addContentToQueueNext called: type=${type}, id=${id}`);
-
     const player = Alpine.store('player');
     if (!player) {
         console.error('Player store not found');

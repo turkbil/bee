@@ -24,7 +24,6 @@ const MuzibuSession = {
      */
     startSessionPolling() {
         // 🔴 GEÇİCİ: Polling tamamen devre dışı
-        console.log('🔴 Session polling DISABLED (DeviceService off)');
         return;
 
         // Clear any existing interval
@@ -48,7 +47,6 @@ const MuzibuSession = {
             this.checkSessionValidity();
         }, SESSION_POLL_INTERVAL);
 
-        console.log(`🔐 Session polling started (${SESSION_POLL_INTERVAL/1000}s interval, initial check in 2s)`);
     },
 
     /**
@@ -58,7 +56,6 @@ const MuzibuSession = {
         if (this.sessionPollInterval) {
             clearInterval(this.sessionPollInterval);
             this.sessionPollInterval = null;
-            console.log('🔐 Session polling stopped');
         }
     },
 
@@ -92,18 +89,15 @@ const MuzibuSession = {
 
                 // Handle based on reason
                 if (data.reason === 'device_limit_exceeded') {
-                    console.log('🚨 Device limit exceeded - showing modal');
                     this.handleDeviceLimitExceeded();
                 } else if (data.reason === 'session_terminated') {
                     // 🔐 SESSION TERMINATED: Başka cihazdan giriş yapıldı (LIFO)
                     if (!this._sessionTerminatedHandling) {
-                        console.log('🔐 Session terminated - another device logged in');
                         this.handleSessionTerminated(data.message);
                     }
                 } else if (data.reason === 'not_authenticated') {
                     // Sayfa renderda auth vardı ama API'de yok
                     // Session sync sorunu - agresif logout YAPMA
-                    console.log('🔐 Not authenticated - waiting for session sync');
                     this.isLoggedIn = false;
                     this.stopSessionPolling();
                 } else {
@@ -124,7 +118,6 @@ const MuzibuSession = {
      * 🔐 DEVICE LIMIT EXCEEDED: Show modal to select which device to terminate
      */
     handleDeviceLimitExceeded() {
-        console.log('🔐 Device limit exceeded - checking terminable devices...');
 
         this.deviceLimitExceeded = true;
         this.stopCurrentPlayback();
@@ -135,10 +128,8 @@ const MuzibuSession = {
             const terminableDevices = this.activeDevices.filter(d => !d.is_current);
 
             if (terminableDevices.length > 0) {
-                console.log('🔐 Found', terminableDevices.length, 'terminable devices - showing modal');
                 this.showDeviceSelectionModal = true;
             } else {
-                console.log('🔐 No terminable devices - showing logout prompt');
                 this.showToast('Cihaz limitine ulaştınız. Müzik dinlemek için bu cihazdan çıkış yapıp tekrar giriş yapabilirsiniz.', 'warning', 8000);
                 this.deviceLimitExceeded = false;
             }
@@ -149,7 +140,6 @@ const MuzibuSession = {
      * 🔐 SILENT LOGOUT: Logout without modal (session expired)
      */
     handleSilentLogout() {
-        console.log('🔐 Session expired - silent logout');
         this.forceLogout();
     },
 
@@ -160,12 +150,10 @@ const MuzibuSession = {
     handleSessionTerminated(message) {
         // Sonsuz döngü önleme
         if (this._sessionTerminatedHandling) {
-            console.log('🔐 Session terminated already being handled, skipping...');
             return;
         }
         this._sessionTerminatedHandling = true;
 
-        console.log('🔐 Session terminated - IMMEDIATE LOGOUT');
 
         // HER ŞEYİ DURDUR
         try {
@@ -179,7 +167,6 @@ const MuzibuSession = {
         // API LOGOUT + HARD REDIRECT
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
-        console.log('🔐 Calling logout API...');
 
         fetch('/api/auth/logout', {
             method: 'POST',
@@ -191,14 +178,11 @@ const MuzibuSession = {
             credentials: 'same-origin'
         })
         .then(() => {
-            console.log('🔐 Logout API success, redirecting to login...');
         })
         .catch((err) => {
-            console.log('🔐 Logout API error (ignored):', err.message);
         })
         .finally(() => {
             // HARD REDIRECT - Livewire/SPA INTERCEPT EDEMEZ!
-            console.log('🔐 HARD REDIRECT to login page NOW!');
             window.location.href = '/login?session_terminated=1';
         });
     },
@@ -251,7 +235,6 @@ const MuzibuSession = {
             btn.innerHTML = '<span class="animate-pulse">Çıkış yapılıyor...</span>';
         }
 
-        console.log('🔐 Performing full logout via form POST...');
 
         this.clearAllBrowserStorage();
         this.clearCacheAPI();
@@ -284,7 +267,6 @@ const MuzibuSession = {
      * 🔥 TÜM COOKIE'LERİ TEMİZLE
      */
     clearAllCookies() {
-        console.log('🍪 Clearing all cookies...');
         const cookies = document.cookie.split(';');
 
         for (let cookie of cookies) {
@@ -296,7 +278,6 @@ const MuzibuSession = {
             document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.' + window.location.hostname;
         }
 
-        console.log('🍪 Cookies cleared');
     },
 
     /**
@@ -307,9 +288,7 @@ const MuzibuSession = {
             try {
                 const cacheNames = await caches.keys();
                 await Promise.all(cacheNames.map(name => caches.delete(name)));
-                console.log('🗄️ Cache API cleared');
             } catch (e) {
-                console.log('🗄️ Cache API clear error:', e.message);
             }
         }
     },
@@ -318,7 +297,6 @@ const MuzibuSession = {
      * 🔥 BROWSER STORAGE TEMİZLE
      */
     clearAllBrowserStorage() {
-        console.log('🧹 Clearing browser storage...');
 
         try {
             localStorage.removeItem('muzibu_player_state');
@@ -327,16 +305,13 @@ const MuzibuSession = {
             localStorage.removeItem('muzibu_play_context');
             localStorage.removeItem('muzibu_volume');
         } catch (e) {
-            console.log('🧹 localStorage clear error:', e.message);
         }
 
         try {
             sessionStorage.clear();
         } catch (e) {
-            console.log('🧹 sessionStorage clear error:', e.message);
         }
 
-        console.log('🧹 Browser storage cleared');
     },
 
     /**

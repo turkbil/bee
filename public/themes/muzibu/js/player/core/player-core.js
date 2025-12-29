@@ -375,9 +375,6 @@ function muzibuApp() {
                 this.loadFeaturedPlaylists();
             }, 300);
 
-            // Initialize keyboard shortcuts
-            this.initKeyboard();
-
             // ⚡ PERFORMANCE: Show content immediately (no delay!)
             this.isLoading = false;
             this.contentLoaded = true;

@@ -148,7 +148,17 @@ function muzibuApp() {
         currentFallbackUrl: null, // 🔐 MP3 fallback URL (signed)
         queue: [],
         queueIndex: 0,
-        b2bMode: safeStorage.getItem('b2b_mode') === 'true', // 💾 B2B mode: infinite loop
+
+        // 🚫 CROSSFADE DEVRE DIŞI (2025-12-29)
+        // Tüm crossfade kodları hala var ama false olduğu için çalışmaz
+        crossfadeEnabled: false,
+        crossfadeDuration: 0,
+        isCrossfading: false,
+        crossfadeTimeoutId: null,
+        crossfadeNextIndex: -1,
+        howlNext: null,
+        hlsNext: null,
+
         isLoggingOut: false,
         currentPath: window.location.pathname,
         _initialized: false,
@@ -1145,12 +1155,8 @@ function muzibuApp() {
 
                 // 🎯 Preload first song in queue (after track change)
                 this.preloadFirstInQueue();
-            } else if (this.b2bMode) {
-                // 💾 B2B mode: infinite loop (auto-restart)
-                this.queueIndex = 0;
-                await this.playSongFromQueue(this.queueIndex);
             } else {
-                // 🔄 AUTO-REFILL: Queue bitti, yeni şarkılar çekmeyi dene
+                // 🔄 AUTO-REFILL: Queue bitti, yeni şarkılar çekmeyi dene (infinite loop)
                 if (this.currentUser?.is_root) {
                     this.showToast('🔄 Queue bitti, refill deneniyor...', 'warning');
                 }
@@ -1385,11 +1391,8 @@ function muzibuApp() {
         getNextSongIndex() {
             if (this.queueIndex < this.queue.length - 1) {
                 return this.queueIndex + 1;
-            } else if (this.b2bMode) {
-                return 0; // B2B mode: Loop back
             }
-
-            return -1; // No next song
+            return -1; // No next song (auto-refill handles infinite loop)
         },
 
         // Start crossfade transition (using Howler.js)

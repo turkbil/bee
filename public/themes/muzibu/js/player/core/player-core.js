@@ -2634,32 +2634,15 @@ function muzibuApp() {
                 const preloadedAudio = document.getElementById(preloadedAudioId);
 
                 if (preloadedAudio) {
-                    // 🧹 RAM CLEANUP: Eski HLS/Howler ve audio buffer'ı temizle
-                    if (this.hls && this.hls !== preloadedHls) {
-                        try {
-                            const oldAudioId = this.activeHlsAudioId || 'hlsAudio';
-                            const oldAudio = document.getElementById(oldAudioId);
-                            if (oldAudio) {
-                                oldAudio.pause();
-                                // 🧹 RAM: Audio buffer'ı temizle
-                                oldAudio.src = '';
-                                oldAudio.load(); // MediaSource buffer'ı serbest bırak
-                            }
-                            this.hls.destroy();
-                        } catch (e) {}
-                        this.hls = null;
-                    }
-                    if (this.howl) {
-                        try {
-                            this.howl.stop();
-                            this.howl.unload();
-                        } catch (e) {}
-                        this.howl = null;
-                    }
+                    // ⚡ GAPLESS: Önce eski referansları sakla, sonra YENİ audio başlayınca temizle
+                    const oldHls = this.hls;
+                    const oldHowl = this.howl;
+                    const oldAudioId = this.activeHlsAudioId || 'hlsAudio';
+                    const oldProgressInterval = this.progressInterval;
 
-                    // Progress tracking durdur
-                    if (this.progressInterval) {
-                        clearInterval(this.progressInterval);
+                    // Progress tracking durdur (hemen, UI güncelleme için)
+                    if (oldProgressInterval) {
+                        clearInterval(oldProgressInterval);
                         this.progressInterval = null;
                     }
 
@@ -2674,6 +2657,7 @@ function muzibuApp() {
 
                     // 🔄 State güncelle
                     this.hls = preloadedHls; // Safari'de null olacak
+                    this.howl = null; // HLS kullanıyoruz, Howler değil
                     this.activeHlsAudioId = preloadedAudioId;
                     this.isHlsStream = true;
                     this._lastHlsUrl = preloaded.streamUrl;
@@ -2780,6 +2764,30 @@ function muzibuApp() {
 
                             // 🎨 Update player gradient colors for preloaded song
                             this.updatePlayerColors();
+
+                            // ⚡ GAPLESS: Yeni audio başladıktan SONRA eski kaynakları temizle (async)
+                            // Bu sayede şarkılar arasında GAP oluşmaz!
+                            setTimeout(() => {
+                                // 🧹 Eski HLS temizle
+                                if (oldHls && oldHls !== preloadedHls) {
+                                    try {
+                                        const oldAudio = document.getElementById(oldAudioId);
+                                        if (oldAudio) {
+                                            oldAudio.pause();
+                                            oldAudio.src = '';
+                                            oldAudio.load();
+                                        }
+                                        oldHls.destroy();
+                                    } catch (e) {}
+                                }
+                                // 🧹 Eski Howler temizle
+                                if (oldHowl) {
+                                    try {
+                                        oldHowl.stop();
+                                        oldHowl.unload();
+                                    } catch (e) {}
+                                }
+                            }, 100); // 100ms delay - yeni audio başladıktan sonra
                         } catch (e) {
                             console.warn('Preloaded play failed:', e);
                             this.isPlaying = false;

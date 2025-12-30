@@ -108,7 +108,9 @@ class MuzibuServiceProvider extends ServiceProvider
      */
     protected function registerMorphMap(): void
     {
-        Relation::enforceMorphMap([
+        // morphMap() = sadece alias tanımla (diğer modellere dokunma)
+        // enforceMorphMap() = TÜM morphable modeller tanımlı olmalı (User vb. için hata verir)
+        Relation::morphMap([
             'sector' => \Modules\Muzibu\App\Models\Sector::class,
             'radio' => \Modules\Muzibu\App\Models\Radio::class,
             'corporate' => \Modules\Muzibu\App\Models\MuzibuCorporateAccount::class,

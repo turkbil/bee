@@ -11,10 +11,11 @@ use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 use Modules\Favorite\App\Traits\HasFavorites;
+use Modules\Muzibu\App\Traits\HasPlaylistDistribution;
 
 class Sector extends BaseModel implements HasMedia
 {
-    use Sluggable, HasTranslations, HasFactory, HasMediaManagement, SoftDeletes, Searchable, HasFavorites;
+    use Sluggable, HasTranslations, HasFactory, HasMediaManagement, SoftDeletes, Searchable, HasFavorites, HasPlaylistDistribution;
 
     protected $table = 'muzibu_sectors';
     protected $primaryKey = 'sector_id';
@@ -79,20 +80,8 @@ class Sector extends BaseModel implements HasMedia
         return $query->where('is_active', true);
     }
 
-    /**
-     * Playlist'ler ilişkisi (many-to-many)
-     */
-    public function playlists()
-    {
-        return $this->belongsToMany(
-            Playlist::class,
-            'muzibu_playlist_sector',
-            'sector_id',
-            'playlist_id',
-            'sector_id',
-            'playlist_id'
-        );
-    }
+    // playlists() metodu artık HasPlaylistDistribution trait'inden geliyor
+    // Eski tablo: muzibu_playlist_sector → Yeni tablo: muzibu_playlistables
 
     /**
      * Radyo ilişkisi (many-to-many)

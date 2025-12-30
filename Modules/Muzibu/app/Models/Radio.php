@@ -13,10 +13,11 @@ use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 use Modules\Favorite\App\Traits\HasFavorites;
+use Modules\Muzibu\App\Traits\HasPlaylistDistribution;
 
 class Radio extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, Searchable, HasFavorites;
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, Searchable, HasFavorites, HasPlaylistDistribution;
 
     protected $table = 'muzibu_radios';
     protected $primaryKey = 'radio_id';
@@ -95,20 +96,8 @@ class Radio extends BaseModel implements TranslatableEntity, HasMedia
         );
     }
 
-    /**
-     * Playlist'ler ilişkisi (many-to-many)
-     */
-    public function playlists()
-    {
-        return $this->belongsToMany(
-            Playlist::class,
-            'muzibu_playlist_radio',
-            'radio_id',
-            'playlist_id',
-            'radio_id',
-            'playlist_id'
-        );
-    }
+    // playlists() metodu artık HasPlaylistDistribution trait'inden geliyor
+    // Eski tablo: muzibu_playlist_radio → Yeni tablo: muzibu_playlistables
 
     /**
      * Toplam süreyi hesapla (tüm playlist'lerdeki şarkıların toplamı)

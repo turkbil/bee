@@ -236,6 +236,91 @@
                             </div>
                         </div>
 
+                        <!-- Kurumsal Hesaplar (Playlist Dağıtımı) -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">
+                                    <i class="fa-solid fa-building me-2"></i>
+                                    Kurumsal Hesaplar
+                                </label>
+                                <div class="dual-listbox-wrapper">
+                                    {{-- Search input with float label --}}
+                                    <div class="mb-3">
+                                        <div class="form-floating">
+                                            <input type="text"
+                                                class="form-control"
+                                                placeholder="Kurum ara..."
+                                                wire:model.live.debounce.300ms="corporateSearch"
+                                                id="corporate-search">
+                                            <label for="corporate-search">
+                                                <i class="fa-solid fa-magnifying-glass me-2"></i>
+                                                Kurum Ara
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-2">
+                                        <div class="col-5">
+                                            <label class="form-label small">Tüm Kurumlar</label>
+                                            <div class="listbox" id="available-corporates">
+                                                @if(isset($this->activeCorporates))
+                                                    @foreach($this->activeCorporates as $corporate)
+                                                        @if(!in_array($corporate->id, $inputs['corporate_ids'] ?? []))
+                                                            <div class="listbox-item"
+                                                                data-value="{{ $corporate->id }}"
+                                                                data-title="{{ strtolower($corporate->company_name) }}">
+                                                                {{ $corporate->company_name }}
+                                                                @if($corporate->branch_name)
+                                                                    <small class="text-muted">- {{ $corporate->branch_name }}</small>
+                                                                @endif
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="col-2 d-flex align-items-center justify-content-center">
+                                            <div class="transfer-buttons">
+                                                <button type="button" class="btn btn-sm btn-primary mb-2" onclick="transferCorporatesRight()">
+                                                    <i class="fa-solid fa-chevron-right"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="transferCorporatesLeft()">
+                                                    <i class="fa-solid fa-chevron-left"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-5">
+                                            <label class="form-label small">Seçilen Kurumlar</label>
+                                            <div class="listbox" id="selected-corporates">
+                                                @if(isset($this->activeCorporates))
+                                                    @foreach($this->activeCorporates as $corporate)
+                                                        @if(in_array($corporate->id, $inputs['corporate_ids'] ?? []))
+                                                            <div class="listbox-item"
+                                                                data-value="{{ $corporate->id }}"
+                                                                data-title="{{ strtolower($corporate->company_name) }}">
+                                                                {{ $corporate->company_name }}
+                                                                @if($corporate->branch_name)
+                                                                    <small class="text-muted">- {{ $corporate->branch_name }}</small>
+                                                                @endif
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-text mt-2">
+                                        <small class="">
+                                            <i class="fa-solid fa-circle-info me-1"></i>
+                                            Bu playlist'i görebilecek kurumsal hesapları seçin
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- 2. Özellikler (Aktif/Pasif Hariç) -->
                         <div class="row mb-4">
                             <div class="col-12 col-md-6 col-lg-4">
@@ -414,6 +499,20 @@
             function updateLivewireRadios() {
                 const selectedValues = getDualListboxValues('selected-radios');
                 @this.set('inputs.radio_ids', selectedValues);
+            }
+
+            // 🏢 CORPORATE DUAL LISTBOX FUNCTIONS
+            function transferCorporatesRight() {
+                dualListboxTransfer('available-corporates', 'selected-corporates', 'right', updateLivewireCorporates);
+            }
+
+            function transferCorporatesLeft() {
+                dualListboxTransfer('available-corporates', 'selected-corporates', 'left', updateLivewireCorporates);
+            }
+
+            function updateLivewireCorporates() {
+                const selectedValues = getDualListboxValues('selected-corporates');
+                @this.set('inputs.corporate_ids', selectedValues);
             }
         </script>
 

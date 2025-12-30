@@ -27,10 +27,12 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
         'is_radio' => false,     // Varsayılan: Liste Modu
         'sector_ids' => [],
         'radio_ids' => [],
+        'corporate_ids' => [],   // ✅ Kurumsal hesap dağıtımı
     ];
 
     public $sectorSearch = '';
     public $radioSearch = '';
+    public $corporateSearch = '';
 
     public $currentLanguage;
     public $availableLanguages = [];
@@ -83,6 +85,24 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
         }
 
         return $query->orderBy('title->tr')->get();
+    }
+
+    #[Computed]
+    public function activeCorporates()
+    {
+        $query = \Modules\Muzibu\App\Models\MuzibuCorporateAccount::where('is_active', true)
+            ->whereNull('parent_id'); // Sadece ana firmalar (şubeler değil)
+
+        // Search filter
+        if (!empty($this->corporateSearch)) {
+            $search = strtolower($this->corporateSearch);
+            $query->where(function($q) use ($search) {
+                $q->whereRaw('LOWER(company_name) LIKE ?', ["%{$search}%"])
+                  ->orWhereRaw('LOWER(corporate_code) LIKE ?', ["%{$search}%"]);
+            });
+        }
+
+        return $query->orderBy('company_name')->get();
     }
 
     protected $listeners = [
@@ -206,9 +226,10 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
         if ($playlist) {
             $this->inputs = $playlist->only(['is_active', 'is_system', 'is_public', 'is_radio']);
 
-            // İlişkileri yükle
-            $this->inputs['sector_ids'] = $playlist->sectors()->pluck('muzibu_sectors.sector_id')->toArray();
-            $this->inputs['radio_ids'] = $playlist->radios()->pluck('muzibu_radios.radio_id')->toArray();
+            // İlişkileri yükle (playlistables tablosundan)
+            $this->inputs['sector_ids'] = $playlist->sectors()->pluck('playlistable_id')->toArray();
+            $this->inputs['radio_ids'] = $playlist->radios()->pluck('playlistable_id')->toArray();
+            $this->inputs['corporate_ids'] = $playlist->corporates()->pluck('playlistable_id')->toArray();
 
             foreach ($this->availableLanguages as $lang) {
                 $this->multiLangInputs[$lang] = [
@@ -381,9 +402,10 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
         // İlişkiler için ayrı tut
         $sectorIds = $this->inputs['sector_ids'] ?? [];
         $radioIds = $this->inputs['radio_ids'] ?? [];
+        $corporateIds = $this->inputs['corporate_ids'] ?? [];
 
         // İlişkileri çıkar
-        $safeInputs = collect($this->inputs)->except(['sector_ids', 'radio_ids'])->all();
+        $safeInputs = collect($this->inputs)->except(['sector_ids', 'radio_ids', 'corporate_ids'])->all();
 
         $data = array_merge($safeInputs, $multiLangData);
 
@@ -410,9 +432,10 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
                 ];
             }
 
-            // İlişkileri sync et
+            // İlişkileri sync et (playlistables tablosuna)
             $playlist->sectors()->sync($sectorIds);
             $playlist->radios()->sync($radioIds);
+            $playlist->corporates()->sync($corporateIds);
         } else {
             $playlist = Playlist::query()->create($data);
             $this->playlistId = $playlist->playlist_id;
@@ -423,9 +446,10 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
                 \muzibu_generate_ai_cover($playlist, $playlist->title, 'playlist');
             }
 
-            // İlişkileri sync et
+            // İlişkileri sync et (playlistables tablosuna)
             $playlist->sectors()->sync($sectorIds);
             $playlist->radios()->sync($radioIds);
+            $playlist->corporates()->sync($corporateIds);
 
             $toast = [
                 'title' => __('admin.success'),

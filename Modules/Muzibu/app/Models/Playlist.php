@@ -319,34 +319,48 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
-     * Sektörler ilişkisi (many-to-many)
+     * Sektörler ilişkisi (Polymorphic - playlistables tablosu)
+     * ✅ v5 sistemi: Artık playlistables tablosunu kullanıyor
      */
     public function sectors()
     {
-        return $this->belongsToMany(
+        return $this->morphedByMany(
             Sector::class,
-            'muzibu_playlist_sector',
+            'playlistable',
+            'muzibu_playlistables',
             'playlist_id',
-            'sector_id',
-            'playlist_id',
-            'sector_id'
-        );
+            'playlistable_id'
+        )->withPivot('position')->withTimestamps();
     }
 
     /**
-     * Radyolar ilişkisi (many-to-many) - LEGACY
-     * @deprecated Use distributedToRadios() instead
+     * Radyolar ilişkisi (Polymorphic - playlistables tablosu)
+     * ✅ v5 sistemi: Artık playlistables tablosunu kullanıyor
      */
     public function radios()
     {
-        return $this->belongsToMany(
+        return $this->morphedByMany(
             Radio::class,
-            'muzibu_playlist_radio',
+            'playlistable',
+            'muzibu_playlistables',
             'playlist_id',
-            'radio_id',
+            'playlistable_id'
+        )->withPivot('position')->withTimestamps();
+    }
+
+    /**
+     * Kurumsal hesaplar ilişkisi (Polymorphic - playlistables tablosu)
+     * ✅ v5 sistemi: Corporate'lara playlist dağıtımı
+     */
+    public function corporates()
+    {
+        return $this->morphedByMany(
+            MuzibuCorporateAccount::class,
+            'playlistable',
+            'muzibu_playlistables',
             'playlist_id',
-            'radio_id'
-        );
+            'playlistable_id'
+        )->withPivot('position')->withTimestamps();
     }
 
     // =========================================================================

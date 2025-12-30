@@ -6,9 +6,11 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Muzibu\App\Traits\HasPlaylistDistribution;
 
 class MuzibuCorporateAccount extends Model
 {
+    use HasPlaylistDistribution;
     protected $table = 'muzibu_corporate_accounts';
 
     protected $fillable = [

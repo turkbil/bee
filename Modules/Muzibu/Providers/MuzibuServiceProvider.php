@@ -4,6 +4,7 @@ namespace Modules\Muzibu\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -64,6 +65,10 @@ class MuzibuServiceProvider extends ServiceProvider
 
         // ✅ MODEL OBSERVERS: UTF-8 Temizleme (30 bin şarkı için production-ready!)
         $this->registerModelObservers();
+
+        // ✅ MORPH MAP: Polymorphic ilişkiler için kısa alias'lar
+        // playlistables tablosu bu alias'ları kullanır
+        $this->registerMorphMap();
     }
 
     /**
@@ -87,6 +92,30 @@ class MuzibuServiceProvider extends ServiceProvider
         // Cache Count Observers
         \Modules\Muzibu\App\Models\Song::observe(\Modules\Muzibu\App\Observers\SongObserver::class);
         \Modules\Muzibu\App\Models\Album::observe(\Modules\Muzibu\App\Observers\AlbumObserver::class);
+    }
+
+    /**
+     * Morph Map Kayıtları
+     *
+     * Polymorphic ilişkilerde tam class adı yerine kısa alias kullanılır.
+     * Bu sayede DB'de "Modules\Muzibu\App\Models\Sector" yerine sadece "sector" yazılır.
+     *
+     * playlistables tablosu bu alias'ları kullanır:
+     * - sector -> Sector model
+     * - radio -> Radio model
+     * - corporate -> MuzibuCorporateAccount model
+     * - mood -> (İleride eklenecek)
+     */
+    protected function registerMorphMap(): void
+    {
+        Relation::enforceMorphMap([
+            'sector' => \Modules\Muzibu\App\Models\Sector::class,
+            'radio' => \Modules\Muzibu\App\Models\Radio::class,
+            'corporate' => \Modules\Muzibu\App\Models\MuzibuCorporateAccount::class,
+            // İleride eklenecek:
+            // 'mood' => \Modules\Muzibu\App\Models\Mood::class,
+            // 'genre' => \Modules\Muzibu\App\Models\Genre::class,
+        ]);
     }
 
     /**

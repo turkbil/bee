@@ -334,7 +334,8 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
-     * Radyolar ilişkisi (many-to-many)
+     * Radyolar ilişkisi (many-to-many) - LEGACY
+     * @deprecated Use distributedToRadios() instead
      */
     public function radios()
     {
@@ -346,6 +347,159 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
             'playlist_id',
             'radio_id'
         );
+    }
+
+    // =========================================================================
+    // POLYMORPHIC DISTRIBUTION RELATIONS (New v5 System)
+    // =========================================================================
+
+    /**
+     * Playlist'in dağıtıldığı tüm entity'ler (sectors, radios, corporates, moods vb.)
+     * Polymorphic many-to-many relation
+     *
+     * @param string|null $type Filter by type: 'sector', 'radio', 'corporate', 'mood'
+     */
+    public function distributedTo(?string $type = null)
+    {
+        $query = $this->morphedByMany(
+            \Illuminate\Database\Eloquent\Model::class, // Generic, type ile belirlenir
+            'playlistable',
+            'muzibu_playlistables',
+            'playlist_id',
+            'playlistable_id'
+        )->withPivot('position', 'playlistable_type')->withTimestamps();
+
+        if ($type) {
+            $query->wherePivot('playlistable_type', $type);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Playlist'in dağıtıldığı sektörler (Polymorphic)
+     */
+    public function distributedToSectors()
+    {
+        return $this->morphedByMany(
+            Sector::class,
+            'playlistable',
+            'muzibu_playlistables',
+            'playlist_id',
+            'playlistable_id'
+        )->withPivot('position')->withTimestamps();
+    }
+
+    /**
+     * Playlist'in dağıtıldığı radyolar (Polymorphic)
+     */
+    public function distributedToRadios()
+    {
+        return $this->morphedByMany(
+            Radio::class,
+            'playlistable',
+            'muzibu_playlistables',
+            'playlist_id',
+            'playlistable_id'
+        )->withPivot('position')->withTimestamps();
+    }
+
+    /**
+     * Playlist'in dağıtıldığı kurumsal hesaplar (Polymorphic)
+     */
+    public function distributedToCorporates()
+    {
+        return $this->morphedByMany(
+            MuzibuCorporateAccount::class,
+            'playlistable',
+            'muzibu_playlistables',
+            'playlist_id',
+            'playlistable_id'
+        )->withPivot('position')->withTimestamps();
+    }
+
+    /**
+     * Tüm distribution entity'lerini tek sorguda getir
+     * @return array ['sectors' => [...], 'radios' => [...], 'corporates' => [...]]
+     */
+    public function getAllDistributions(): array
+    {
+        $distributions = \DB::table('muzibu_playlistables')
+            ->where('playlist_id', $this->playlist_id)
+            ->get()
+            ->groupBy('playlistable_type');
+
+        return [
+            'sectors' => $distributions->get('sector', collect())->pluck('playlistable_id')->toArray(),
+            'radios' => $distributions->get('radio', collect())->pluck('playlistable_id')->toArray(),
+            'corporates' => $distributions->get('corporate', collect())->pluck('playlistable_id')->toArray(),
+        ];
+    }
+
+    /**
+     * Playlist'i bir entity'e dağıt
+     *
+     * @param string $type 'sector', 'radio', 'corporate', 'mood'
+     * @param int $id Entity ID
+     * @param int $position Sıralama
+     */
+    public function distributeToEntity(string $type, int $id, int $position = 0): void
+    {
+        \DB::table('muzibu_playlistables')->insertOrIgnore([
+            'playlist_id' => $this->playlist_id,
+            'playlistable_type' => $type,
+            'playlistable_id' => $id,
+            'position' => $position,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
+
+    /**
+     * Playlist'i bir entity'den kaldır
+     *
+     * @param string $type 'sector', 'radio', 'corporate', 'mood'
+     * @param int $id Entity ID
+     */
+    public function removeFromEntity(string $type, int $id): void
+    {
+        \DB::table('muzibu_playlistables')
+            ->where('playlist_id', $this->playlist_id)
+            ->where('playlistable_type', $type)
+            ->where('playlistable_id', $id)
+            ->delete();
+    }
+
+    /**
+     * Playlist'in dağıtımlarını sync et
+     *
+     * @param string $type 'sector', 'radio', 'corporate', 'mood'
+     * @param array $ids Entity ID'leri
+     */
+    public function syncDistribution(string $type, array $ids): void
+    {
+        // Önce bu type için tüm mevcut kayıtları sil
+        \DB::table('muzibu_playlistables')
+            ->where('playlist_id', $this->playlist_id)
+            ->where('playlistable_type', $type)
+            ->delete();
+
+        // Yeni kayıtları ekle
+        $records = [];
+        foreach ($ids as $position => $id) {
+            $records[] = [
+                'playlist_id' => $this->playlist_id,
+                'playlistable_type' => $type,
+                'playlistable_id' => $id,
+                'position' => $position,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        if (!empty($records)) {
+            \DB::table('muzibu_playlistables')->insert($records);
+        }
     }
 
     /**

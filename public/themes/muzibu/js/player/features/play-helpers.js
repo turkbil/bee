@@ -369,6 +369,7 @@ window.playContent = async function(type, id, options = {}) {
     const functionMap = {
         'song': async (songId) => {
             const player = Alpine.store('player');
+            const muzibuStore = Alpine.store('muzibu');
             if (!player) return;
 
             // Check if song is already in queue
@@ -395,6 +396,28 @@ window.playContent = async function(type, id, options = {}) {
                     // Insert song after current position
                     const insertIndex = player.queueIndex + 1;
                     player.queue.splice(insertIndex, 0, song);
+
+                    // 🎵 Context güncelle: Şarkının albümüne veya genre'sine geç
+                    if (muzibuStore && typeof muzibuStore.setPlayContext === 'function') {
+                        if (song.album_id) {
+                            muzibuStore.setPlayContext({
+                                type: 'album',
+                                id: song.album_id,
+                                name: song.album_title || 'Albüm',
+                                offset: 0,
+                                source: 'song_click'
+                            });
+                        } else if (song.genre_id) {
+                            muzibuStore.setPlayContext({
+                                type: 'genre',
+                                id: song.genre_id,
+                                name: song.genre_title || 'Tür',
+                                offset: 0,
+                                source: 'song_click'
+                            });
+                        }
+                    }
+
                     // Play the newly inserted song
                     await player.playSongFromQueue(insertIndex);
                 } else {
@@ -408,8 +431,51 @@ window.playContent = async function(type, id, options = {}) {
         'sector': playSector,
         'radio': playRadio,
         'artist': async (artistId) => {
-            // Artist play implementation
-            console.warn('Artist play not implemented yet');
+            // 🎵 Artist play: Sanatçının şarkılarını shuffle çal
+            const player = Alpine.store('player');
+            const muzibuStore = Alpine.store('muzibu');
+            if (!player) return;
+
+            try {
+                // API'den sanatçı ve şarkılarını al
+                const response = await fetch(`/api/muzibu/artists/${artistId}/songs?limit=30`, {
+                    credentials: 'same-origin',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (!response.ok) {
+                    player.showToast('Sanatçı şarkıları yüklenemedi', 'error');
+                    return;
+                }
+
+                const data = await response.json();
+                const songs = data.songs || [];
+
+                if (songs.length === 0) {
+                    player.showToast('Bu sanatçının şarkısı bulunamadı', 'warning');
+                    return;
+                }
+
+                // 🎵 Context ayarla
+                if (muzibuStore && typeof muzibuStore.setPlayContext === 'function') {
+                    muzibuStore.setPlayContext({
+                        type: 'artist',
+                        id: artistId,
+                        name: data.artist?.title || 'Sanatçı',
+                        offset: 0,
+                        source: 'artist_click'
+                    });
+                }
+
+                // Queue'yu yeni şarkılarla değiştir ve çalmaya başla
+                player.queue = songs;
+                player.queueIndex = 0;
+                await player.playSongFromQueue(0);
+
+            } catch (error) {
+                console.error('Artist play error:', error);
+                player.showToast('Sanatçı çalınamadı', 'error');
+            }
         }
     };
 

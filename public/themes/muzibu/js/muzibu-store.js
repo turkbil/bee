@@ -209,7 +209,7 @@ document.addEventListener('alpine:init', () => {
          */
         setPlayContext(context) {
             // Validate context
-            const validTypes = ['genre', 'album', 'playlist', 'user_playlist', 'sector', 'radio', 'popular', 'recent', 'favorites', 'artist', 'search'];
+            const validTypes = ['genre', 'album', 'playlist', 'user_playlist', 'sector', 'radio', 'popular', 'recent', 'favorites', 'artist', 'search', 'song'];
             if (!validTypes.includes(context.type)) {
                 console.warn('⚠️ Invalid context type:', context.type);
                 return;

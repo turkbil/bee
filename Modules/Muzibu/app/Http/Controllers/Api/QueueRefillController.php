@@ -37,7 +37,7 @@ class QueueRefillController extends Controller
             ]);
 
             $context = $request->validate([
-                'type' => 'required|string|in:genre,album,playlist,user_playlist,sector,radio,popular,recent,favorites,artist,search',
+                'type' => 'required|string|in:genre,album,playlist,user_playlist,sector,radio,popular,recent,favorites,artist,search,song',
                 'id' => 'nullable|integer',
                 'offset' => 'nullable|integer|min:0',
                 'limit' => 'nullable|integer|min:1|max:50',
@@ -61,25 +61,32 @@ class QueueRefillController extends Controller
                 ]);
             }
 
-            $songs = match($type) {
-                'genre' => $this->getGenreSongs($id, $offset, $limit, $excludeSongIds),
+            // 🎯 TRANSITION AWARE: album, playlist, artist, popular, favorites transition döndürebilir
+            // 📋 DOCUMENT: https://ixtif.com/readme/2025/12/05/context-based-infinite-queue/v4/
+            // Genre-Based (7): Album, Playlist, Artist, Search, Popular, Favorites, Genre → Genre'ye geç
+            // Self-Contained (3): Sector, Radio, Recent → Kendi havuzunda döner
+            $result = match($type) {
+                'genre' => ['songs' => $this->getGenreSongs($id, $offset, $limit, $excludeSongIds), 'transition' => null],
                 'album' => $this->getAlbumSongs($id, $offset, $limit, $excludeSongIds),
                 'playlist' => $this->getPlaylistSongs($id, $offset, $limit, $excludeSongIds),
                 'user_playlist' => $this->getUserPlaylistSongs($id, $offset, $limit, $excludeSongIds),
-                'sector' => $this->getSectorSongs($id, $offset, $limit, $excludeSongIds),
-                'radio' => $this->getRadioSongs($id, $offset, $limit, $excludeSongIds),
-                'popular' => $this->getPopularSongs($offset, $limit, $excludeSongIds),
-                'recent' => $this->getRecentSongs($offset, $limit, $context['subType'] ?? null, $excludeSongIds),
-                'favorites' => $this->getFavoriteSongs($offset, $limit, $excludeSongIds),
+                'sector' => ['songs' => $this->getSectorSongs($id, $offset, $limit, $excludeSongIds), 'transition' => null],
+                'radio' => ['songs' => $this->getRadioSongs($id, $offset, $limit, $excludeSongIds), 'transition' => null],
+                'popular' => $this->getPopularSongs($offset, $limit, $excludeSongIds), // 🔄 Genre transition
+                'recent' => ['songs' => $this->getRecentSongs($offset, $limit, $context['subType'] ?? null, $excludeSongIds), 'transition' => null],
+                'favorites' => $this->getFavoriteSongs($offset, $limit, $excludeSongIds), // 🔄 Genre transition
                 'artist' => $this->getArtistSongs($id, $offset, $limit, $excludeSongIds),
                 'search' => $this->getSearchSongs($id, $offset, $limit, $excludeSongIds),
-                default => [],
+                'song' => $this->getSongContext($id, $limit, $excludeSongIds), // 🎵 Tek şarkı → Albüm/Genre'ye geç
+                default => ['songs' => [], 'transition' => null],
             };
 
-            // 🔄 CONTEXT TRANSITION: Eğer queue boş ve genre değilse, fallback öner
-            $transitionSuggestion = null;
-            if (empty($songs) && $type !== 'genre') {
-                // Get most popular genre as fallback
+            // Sonuçları ayır
+            $songs = $result['songs'] ?? $result; // Eski format uyumluluğu
+            $transitionSuggestion = $result['transition'] ?? null;
+
+            // 🔄 FALLBACK: Eğer hala boşsa ve genre değilse, popüler genre'ye geç
+            if (empty($songs) && $type !== 'genre' && !$transitionSuggestion) {
                 $fallbackGenre = Genre::withCount(['songs' => function($query) {
                     $query->where('is_active', 1);
                 }])
@@ -88,15 +95,16 @@ class QueueRefillController extends Controller
                 ->first();
 
                 if ($fallbackGenre && $fallbackGenre->songs_count > 0) {
+                    $genreTitle = $this->extractTitle($fallbackGenre, 'Tür');
+
                     $transitionSuggestion = [
                         'type' => 'genre',
                         'id' => $fallbackGenre->genre_id,
-                        'name' => $fallbackGenre->title,
-                        'reason' => 'Current context empty - transitioning to popular genre for infinite music'
+                        'name' => $genreTitle,
+                        'reason' => 'Şarkı bulunamadı, popüler türe geçiliyor'
                     ];
 
-                    // Auto-fill with genre songs (infinite loop guaranteed)
-                    $songs = $this->getGenreSongs($fallbackGenre->genre_id, 0, $limit);
+                    $songs = $this->getGenreSongs($fallbackGenre->genre_id, 0, $limit, []);
                 }
             }
 
@@ -116,8 +124,8 @@ class QueueRefillController extends Controller
                 'context' => $context,
                 'songs' => $songs,
                 'count' => count($songs),
-                'transition' => $transitionSuggestion, // Frontend will auto-update context
-                'explanation' => $explanation, // 🧪 Debug için açıklama
+                'transition' => $transitionSuggestion, // 🎯 Frontend context'i güncelleyecek!
+                'explanation' => $explanation,
             ]);
 
         } catch (\Exception $e) {
@@ -138,6 +146,45 @@ class QueueRefillController extends Controller
      * 🚀 OPTIMIZED: PHP shuffle instead of ORDER BY RAND()
      */
     private function getGenreSongs(int $genreId, int $offset, int $limit, array $excludeSongIds = []): array
+    {
+        return $this->getGenreSongsOnly($genreId, $limit, $excludeSongIds);
+    }
+
+    /**
+     * 🎯 HELPER: Model title'ını çıkar (düz string, JSON veya array olabilir)
+     */
+    private function extractTitle($model, string $default = 'Unknown'): string
+    {
+        if (!$model || !isset($model->title)) {
+            return $default;
+        }
+
+        $title = $model->title;
+
+        // Already array (Laravel cast)
+        if (is_array($title)) {
+            return $title['tr'] ?? $title['en'] ?? $default;
+        }
+
+        // Plain string (not JSON)
+        if (is_string($title) && !str_starts_with(trim($title), '{')) {
+            return $title;
+        }
+
+        // JSON string - try to decode
+        $decoded = json_decode($title, true);
+        if (is_array($decoded)) {
+            return $decoded['tr'] ?? $decoded['en'] ?? $default;
+        }
+
+        return $title ?: $default;
+    }
+
+    /**
+     * 🎯 HELPER: Genre şarkılarını al (transition için kullanılır)
+     * Sadece şarkı dizisi döner (wrapper yok)
+     */
+    private function getGenreSongsOnly(int $genreId, int $limit, array $excludeSongIds = []): array
     {
         // 🔥 CACHE: Genre song IDs (5 min TTL)
         $cacheKey = "genre_{$genreId}_song_ids";
@@ -162,16 +209,18 @@ class QueueRefillController extends Controller
     /**
      * Get songs by album
      * 🔄 TRANSITION: Album biter → Genre'ye geç
-     * 🚀 OPTIMIZED: PHP shuffle instead of ORDER BY RAND()
+     * 🎲 SHUFFLE: Albüm şarkıları karışık sırayla
+     *
+     * @return array ['songs' => array, 'transition' => array|null]
      */
     private function getAlbumSongs(int $albumId, int $offset, int $limit, array $excludeSongIds = []): array
     {
+        $album = Album::with('artist')->find($albumId);
+        if (!$album) return ['songs' => [], 'transition' => null];
+
         // 🔥 CACHE: Album song IDs (5 min TTL)
         $cacheKey = "album_{$albumId}_song_ids";
-        $albumSongIds = \Cache::remember($cacheKey, 300, function () use ($albumId) {
-            $album = Album::find($albumId);
-            if (!$album) return [];
-
+        $albumSongIds = \Cache::remember($cacheKey, 300, function () use ($album) {
             return $album->songs()
                 ->where('is_active', 1)
                 ->whereNotNull('hls_path')
@@ -180,71 +229,188 @@ class QueueRefillController extends Controller
         });
 
         if (empty($albumSongIds)) {
-            return [];
+            return ['songs' => [], 'transition' => null];
         }
 
-        // Check if album exhausted
+        // 🎲 SHUFFLE: Exclude sonrası shuffle
         $remainingIds = array_diff($albumSongIds, $excludeSongIds);
-        if (count($remainingIds) <= 1) {
-            // Transition to genre
-            $lastSong = Song::whereIn('song_id', $albumSongIds)->first();
-            if ($lastSong && $lastSong->genre_id) {
-                return $this->getGenreSongs($lastSong->genre_id, 0, $limit, []);
+
+        // 🔄 Album bitti → Genre'ye geç
+        if (empty($remainingIds)) {
+            $albumGenreId = $album->songs()->where('is_active', 1)->value('genre_id');
+
+            if ($albumGenreId) {
+                $genre = Genre::find($albumGenreId);
+                $genreSongs = $this->getGenreSongsOnly($albumGenreId, $limit, []);
+
+                $genreTitle = $this->extractTitle($genre, 'Tür');
+                $albumTitle = $this->extractTitle($album, 'Albüm');
+                return [
+                    'songs' => $genreSongs,
+                    'transition' => [
+                        'type' => 'genre',
+                        'id' => $albumGenreId,
+                        'name' => $genreTitle,
+                        'reason' => "Albüm '{$albumTitle}' bitti, {$genreTitle} türünde devam ediliyor"
+                    ]
+                ];
             }
+            return ['songs' => [], 'transition' => null];
         }
 
-        return $this->getRandomSongsFromIds($albumSongIds, $limit, $excludeSongIds);
+        // 🎲 Shuffle ve seç
+        $remainingIds = array_values($remainingIds);
+        shuffle($remainingIds);
+        $selectedIds = array_slice($remainingIds, 0, $limit);
+
+        $songs = Song::whereIn('song_id', $selectedIds)
+            ->where('is_active', 1)
+            ->with(['album.artist'])
+            ->get()
+            ->sortBy(fn($song) => array_search($song->song_id, $selectedIds))
+            ->values();
+
+        return ['songs' => $this->formatSongs($songs), 'transition' => null];
     }
 
     /**
-     * Get songs by playlist
+     * Get songs by playlist (SYSTEM PLAYLISTS)
      * 🔄 TRANSITION: Playlist biter → Genre'ye geç
-     * 🚀 OPTIMIZED: PHP shuffle instead of ORDER BY RAND()
+     * 🎲 SHUFFLE: Sistem playlist'leri karışık sırayla oynar
+     *
+     * @return array ['songs' => array, 'transition' => array|null]
      */
     private function getPlaylistSongs(int $playlistId, int $offset, int $limit, array $excludeSongIds = []): array
     {
+        $playlist = Playlist::find($playlistId);
+        if (!$playlist) return ['songs' => [], 'transition' => null];
+
         // 🔥 CACHE: Playlist song IDs (5 min TTL)
         $cacheKey = "playlist_{$playlistId}_song_ids";
         $playlistSongIds = \Cache::remember($cacheKey, 300, function () use ($playlistId) {
-            $pivotIds = DB::table('muzibu_playlist_song')
+            return DB::table('muzibu_playlist_song')
                 ->where('playlist_id', $playlistId)
-                ->pluck('song_id')
-                ->unique()
-                ->toArray();
-
-            if (empty($pivotIds)) return [];
-
-            return Song::whereIn('song_id', $pivotIds)
-                ->where('is_active', 1)
-                ->whereNotNull('hls_path')
-                ->pluck('song_id')
+                ->join('muzibu_songs', 'muzibu_playlist_song.song_id', '=', 'muzibu_songs.song_id')
+                ->where('muzibu_songs.is_active', 1)
+                ->whereNotNull('muzibu_songs.hls_path')
+                ->pluck('muzibu_playlist_song.song_id')
                 ->toArray();
         });
 
         if (empty($playlistSongIds)) {
-            return [];
+            return ['songs' => [], 'transition' => null];
         }
 
-        // Check if playlist exhausted
+        // 🎲 SHUFFLE: Exclude sonrası shuffle
         $remainingIds = array_diff($playlistSongIds, $excludeSongIds);
-        if (count($remainingIds) <= 1) {
-            // Transition to most common genre
-            $lastSong = Song::whereIn('song_id', $playlistSongIds)->first();
-            if ($lastSong && $lastSong->genre_id) {
-                return $this->getGenreSongs($lastSong->genre_id, 0, $limit, []);
+
+        // 🔄 Playlist bitti → Genre'ye geç
+        if (empty($remainingIds)) {
+            $anySong = DB::table('muzibu_playlist_song')
+                ->where('playlist_id', $playlistId)
+                ->first();
+
+            if ($anySong) {
+                $song = Song::with('genre')->find($anySong->song_id);
+                if ($song && $song->genre_id) {
+                    $genre = $song->genre;
+                    $genreSongs = $this->getGenreSongsOnly($song->genre_id, $limit, []);
+                    $playlistTitle = $this->extractTitle($playlist, 'Playlist');
+                    $genreTitle = $this->extractTitle($genre, 'Tür');
+
+                    return [
+                        'songs' => $genreSongs,
+                        'transition' => [
+                            'type' => 'genre',
+                            'id' => $song->genre_id,
+                            'name' => $genreTitle,
+                            'reason' => "Playlist '{$playlistTitle}' bitti, {$genreTitle} türünde devam ediliyor"
+                        ]
+                    ];
+                }
             }
+            return ['songs' => [], 'transition' => null];
         }
 
-        return $this->getRandomSongsFromIds($playlistSongIds, $limit, $excludeSongIds);
+        // 🎲 Shuffle ve seç
+        $remainingIds = array_values($remainingIds);
+        shuffle($remainingIds);
+        $selectedIds = array_slice($remainingIds, 0, $limit);
+
+        $songs = Song::whereIn('song_id', $selectedIds)
+            ->where('is_active', 1)
+            ->with(['album.artist'])
+            ->get()
+            ->sortBy(fn($song) => array_search($song->song_id, $selectedIds))
+            ->values();
+
+        return ['songs' => $this->formatSongs($songs), 'transition' => null];
     }
 
     /**
-     * Get songs by user playlist
+     * Get songs by user playlist (USER-CREATED PLAYLISTS)
+     * 🔄 TRANSITION: Playlist biter → Genre'ye geç
+     * 🎯 ORDERED: Kullanıcı playlist'leri SIRALI oynar (position sırası)
+     *
+     * @return array ['songs' => array, 'transition' => array|null]
      */
     private function getUserPlaylistSongs(int $playlistId, int $offset, int $limit, array $excludeSongIds = []): array
     {
-        // User playlists use same table, just filter by user
-        return $this->getPlaylistSongs($playlistId, $offset, $limit, $excludeSongIds);
+        $playlist = Playlist::find($playlistId);
+        if (!$playlist) return ['songs' => [], 'transition' => null];
+
+        // 🎯 ORDERED: Pivot sırasıyla al (position → song_id)
+        $pivotData = DB::table('muzibu_playlist_song')
+            ->where('playlist_id', $playlistId)
+            ->join('muzibu_songs', 'muzibu_playlist_song.song_id', '=', 'muzibu_songs.song_id')
+            ->where('muzibu_songs.is_active', 1)
+            ->whereNotNull('muzibu_songs.hls_path')
+            ->when(!empty($excludeSongIds), function ($query) use ($excludeSongIds) {
+                $query->whereNotIn('muzibu_playlist_song.song_id', $excludeSongIds);
+            })
+            ->orderBy('muzibu_playlist_song.position', 'asc')
+            ->orderBy('muzibu_playlist_song.song_id', 'asc')
+            ->take($limit)
+            ->pluck('muzibu_playlist_song.song_id')
+            ->toArray();
+
+        // 🔄 Playlist bitti → Genre'ye geç
+        if (empty($pivotData)) {
+            $anySong = DB::table('muzibu_playlist_song')
+                ->where('playlist_id', $playlistId)
+                ->first();
+
+            if ($anySong) {
+                $song = Song::with('genre')->find($anySong->song_id);
+                if ($song && $song->genre_id) {
+                    $genre = $song->genre;
+                    $genreSongs = $this->getGenreSongsOnly($song->genre_id, $limit, []);
+                    $playlistTitle = $this->extractTitle($playlist, 'Playlist');
+                    $genreTitle = $this->extractTitle($genre, 'Tür');
+
+                    return [
+                        'songs' => $genreSongs,
+                        'transition' => [
+                            'type' => 'genre',
+                            'id' => $song->genre_id,
+                            'name' => $genreTitle,
+                            'reason' => "Playlist '{$playlistTitle}' bitti, {$genreTitle} türünde devam ediliyor"
+                        ]
+                    ];
+                }
+            }
+            return ['songs' => [], 'transition' => null];
+        }
+
+        // 🎯 ORDERED: Pivot sırasına göre fetch
+        $songs = Song::whereIn('song_id', $pivotData)
+            ->where('is_active', 1)
+            ->with(['album.artist'])
+            ->get()
+            ->sortBy(fn($song) => array_search($song->song_id, $pivotData))
+            ->values();
+
+        return ['songs' => $this->formatSongs($songs), 'transition' => null];
     }
 
     /**
@@ -326,6 +492,9 @@ class QueueRefillController extends Controller
     /**
      * Get popular songs
      * 🚀 OPTIMIZED: PHP shuffle instead of ORDER BY RAND()
+     * 🔄 TRANSITION: Popular biter → Son dinlenen şarkının genre'sine geç
+     *
+     * @return array ['songs' => array, 'transition' => array|null]
      */
     private function getPopularSongs(int $offset, int $limit, array $excludeSongIds = []): array
     {
@@ -341,10 +510,37 @@ class QueueRefillController extends Controller
         });
 
         if (empty($popularSongIds)) {
-            return [];
+            return ['songs' => [], 'transition' => null];
         }
 
-        return $this->getRandomSongsFromIds($popularSongIds, $limit, $excludeSongIds);
+        // Exclude sonrası kalan şarkı sayısını kontrol et
+        $remainingIds = array_diff($popularSongIds, $excludeSongIds);
+
+        // 🔄 Popular tükendi → Son dinlenen şarkının genre'sine geç
+        if (count($remainingIds) < $limit && !empty($excludeSongIds)) {
+            // Son dinlenen şarkının genre'sini bul (excludeSongIds[0] = en son dinlenen)
+            $lastPlayedSongId = $excludeSongIds[0] ?? null;
+            if ($lastPlayedSongId) {
+                $lastSong = Song::with('genre')->find($lastPlayedSongId);
+                if ($lastSong && $lastSong->genre_id) {
+                    $genre = $lastSong->genre;
+                    $genreSongs = $this->getGenreSongsOnly($lastSong->genre_id, $limit, []);
+                    $genreTitle = $this->extractTitle($genre, 'Tür');
+
+                    return [
+                        'songs' => $genreSongs,
+                        'transition' => [
+                            'type' => 'genre',
+                            'id' => $lastSong->genre_id,
+                            'name' => $genreTitle,
+                            'reason' => "Popüler şarkılar bitti, {$genreTitle} türünde devam ediliyor"
+                        ]
+                    ];
+                }
+            }
+        }
+
+        return ['songs' => $this->getRandomSongsFromIds($popularSongIds, $limit, $excludeSongIds), 'transition' => null];
     }
 
     /**
@@ -373,54 +569,95 @@ class QueueRefillController extends Controller
 
     /**
      * Get favorite songs
-     * 🚀 OPTIMIZED: PHP shuffle instead of ORDER BY RAND()
-     * Note: User-specific, so shorter cache (1 min)
+     * 🎯 ORDERED: Favoriler ekleme sırasına göre (created_at desc → en yenisi önce)
+     * 🔄 TRANSITION: Favorites biter → Son dinlenen şarkının genre'sine geç
+     * Note: User-specific, no cache for ordered queries
+     *
+     * @return array ['songs' => array, 'transition' => array|null]
      */
     private function getFavoriteSongs(int $offset, int $limit, array $excludeSongIds = []): array
     {
         $userId = auth()->id();
         if (!$userId) {
-            return [];
+            return ['songs' => [], 'transition' => null];
         }
 
-        // 🔥 CACHE: User favorite song IDs (1 min TTL - user specific)
-        $cacheKey = "user_{$userId}_favorite_song_ids";
-        $favoriteSongIds = \Cache::remember($cacheKey, 60, function () use ($userId) {
-            $favoriteIds = DB::table('favorites')
+        // 🎯 ORDERED: Favorilere eklenme sırasına göre (en yeni önce)
+        $favoriteData = DB::table('favorites')
+            ->where('user_id', $userId)
+            ->where('favoritable_type', Song::class)
+            ->join('muzibu_songs', 'favorites.favoritable_id', '=', 'muzibu_songs.song_id')
+            ->where('muzibu_songs.is_active', 1)
+            ->whereNotNull('muzibu_songs.hls_path')
+            ->when(!empty($excludeSongIds), function ($query) use ($excludeSongIds) {
+                $query->whereNotIn('favorites.favoritable_id', $excludeSongIds);
+            })
+            ->orderBy('favorites.created_at', 'desc') // En yeni favori önce
+            ->take($limit)
+            ->pluck('favorites.favoritable_id')
+            ->toArray();
+
+        // 🔄 Favorites bitti → Son dinlenen şarkının genre'sine geç
+        if (empty($favoriteData)) {
+            // Tüm favorileri (exclude dahil) kontrol et
+            $anyFavorite = DB::table('favorites')
                 ->where('user_id', $userId)
                 ->where('favoritable_type', Song::class)
-                ->pluck('favoritable_id')
-                ->toArray();
+                ->first();
 
-            if (empty($favoriteIds)) return [];
+            if ($anyFavorite && !empty($excludeSongIds)) {
+                $lastPlayedSongId = $excludeSongIds[0] ?? null;
+                if ($lastPlayedSongId) {
+                    $lastSong = Song::with('genre')->find($lastPlayedSongId);
+                    if ($lastSong && $lastSong->genre_id) {
+                        $genre = $lastSong->genre;
+                        $genreSongs = $this->getGenreSongsOnly($lastSong->genre_id, $limit, []);
+                        $genreTitle = $this->extractTitle($genre, 'Tür');
 
-            return Song::whereIn('song_id', $favoriteIds)
-                ->where('is_active', 1)
-                ->whereNotNull('hls_path')
-                ->pluck('song_id')
-                ->toArray();
-        });
-
-        if (empty($favoriteSongIds)) {
-            return [];
+                        return [
+                            'songs' => $genreSongs,
+                            'transition' => [
+                                'type' => 'genre',
+                                'id' => $lastSong->genre_id,
+                                'name' => $genreTitle,
+                                'reason' => "Favori şarkılar bitti, {$genreTitle} türünde devam ediliyor"
+                            ]
+                        ];
+                    }
+                }
+            }
+            return ['songs' => [], 'transition' => null];
         }
 
-        return $this->getRandomSongsFromIds($favoriteSongIds, $limit, $excludeSongIds);
+        // 🎯 ORDERED: Fetch songs in favorite order
+        $songs = Song::whereIn('song_id', $favoriteData)
+            ->where('is_active', 1)
+            ->with(['album.artist'])
+            ->get()
+            ->sortBy(fn($song) => array_search($song->song_id, $favoriteData))
+            ->values();
+
+        return ['songs' => $this->formatSongs($songs), 'transition' => null];
     }
 
     /**
      * Get songs by artist
-     * 🚀 OPTIMIZED: PHP shuffle instead of ORDER BY RAND()
+     * 🎲 SHUFFLE: Sanatçı şarkıları karışık sırayla oynar
+     * 🔄 TRANSITION: Artist biter → Genre'ye geç
+     *
+     * @return array ['songs' => array, 'transition' => array|null]
      */
     private function getArtistSongs(int $artistId, int $offset, int $limit, array $excludeSongIds = []): array
     {
+        $artist = \Modules\Muzibu\App\Models\Artist::find($artistId);
+        if (!$artist) return ['songs' => [], 'transition' => null];
+
         // 🔥 CACHE: Artist song IDs (5 min TTL)
         $cacheKey = "artist_{$artistId}_song_ids";
         $artistSongIds = \Cache::remember($cacheKey, 300, function () use ($artistId) {
-            $albumIds = Album::where('artist_id', $artistId)->pluck('album_id')->toArray();
-            if (empty($albumIds)) return [];
-
-            return Song::whereIn('album_id', $albumIds)
+            return Song::whereHas('album', function ($query) use ($artistId) {
+                    $query->where('artist_id', $artistId);
+                })
                 ->where('is_active', 1)
                 ->whereNotNull('hls_path')
                 ->pluck('song_id')
@@ -428,24 +665,123 @@ class QueueRefillController extends Controller
         });
 
         if (empty($artistSongIds)) {
-            return [];
+            return ['songs' => [], 'transition' => null];
         }
 
-        return $this->getRandomSongsFromIds($artistSongIds, $limit, $excludeSongIds);
+        // 🎲 SHUFFLE: Exclude sonrası shuffle
+        $remainingIds = array_diff($artistSongIds, $excludeSongIds);
+
+        // 🔄 Artist bitti → Genre'ye geç
+        if (empty($remainingIds)) {
+            $anySong = Song::whereIn('song_id', $artistSongIds)
+                ->where('is_active', 1)
+                ->with('genre')
+                ->first();
+
+            if ($anySong && $anySong->genre_id) {
+                $genre = $anySong->genre;
+                $genreSongs = $this->getGenreSongsOnly($anySong->genre_id, $limit, []);
+                $artistTitle = $this->extractTitle($artist, 'Sanatçı');
+                $genreTitle = $this->extractTitle($genre, 'Tür');
+
+                return [
+                    'songs' => $genreSongs,
+                    'transition' => [
+                        'type' => 'genre',
+                        'id' => $anySong->genre_id,
+                        'name' => $genreTitle,
+                        'reason' => "Sanatçı '{$artistTitle}' şarkıları bitti, {$genreTitle} türünde devam ediliyor"
+                    ]
+                ];
+            }
+            return ['songs' => [], 'transition' => null];
+        }
+
+        // 🎲 Shuffle ve seç
+        $remainingIds = array_values($remainingIds);
+        shuffle($remainingIds);
+        $selectedIds = array_slice($remainingIds, 0, $limit);
+
+        $songs = Song::whereIn('song_id', $selectedIds)
+            ->where('is_active', 1)
+            ->with(['album.artist'])
+            ->get()
+            ->sortBy(fn($song) => array_search($song->song_id, $selectedIds))
+            ->values();
+
+        return ['songs' => $this->formatSongs($songs), 'transition' => null];
     }
 
     /**
      * Get songs by search
+     * @return array ['songs' => array, 'transition' => array|null]
      */
     private function getSearchSongs(int $songId, int $offset, int $limit, array $excludeSongIds = []): array
     {
         // For search, get the selected song's album songs
         $song = Song::find($songId);
         if (!$song || !$song->album_id) {
-            return [];
+            return ['songs' => [], 'transition' => null];
         }
 
         return $this->getAlbumSongs($song->album_id, $offset, $limit, $excludeSongIds);
+    }
+
+    /**
+     * Get songs for single song context
+     * 🎵 Tek şarkıya tıklandığında: Albüm varsa albümden, yoksa genre'den devam
+     *
+     * Davranış:
+     * - Albüm varsa → Albüm şarkılarını shuffle (albüm context gibi)
+     * - Albüm yoksa → Genre şarkılarını shuffle
+     * - İkisi de yoksa → Popüler şarkılar
+     *
+     * @return array ['songs' => array, 'transition' => array|null]
+     */
+    private function getSongContext(int $songId, int $limit, array $excludeSongIds = []): array
+    {
+        $song = Song::with(['album.artist', 'genre'])->find($songId);
+
+        if (!$song) {
+            return ['songs' => [], 'transition' => null];
+        }
+
+        // 🎵 Albüm varsa → Albüm context'ine geç (shuffle)
+        if ($song->album_id) {
+            $albumTitle = $this->extractTitle($song->album, 'Albüm');
+            $albumSongs = $this->getAlbumSongs($song->album_id, 0, $limit, $excludeSongIds);
+
+            // Transition bilgisi ekle - kullanıcı neye geçtiğini görsün
+            if (!isset($albumSongs['transition']) || !$albumSongs['transition']) {
+                $albumSongs['transition'] = [
+                    'type' => 'album',
+                    'id' => $song->album_id,
+                    'name' => $albumTitle,
+                    'reason' => "'{$song->title}' şarkısının albümünden devam ediliyor"
+                ];
+            }
+
+            return $albumSongs;
+        }
+
+        // 🎵 Genre varsa → Genre context'ine geç
+        if ($song->genre_id) {
+            $genreTitle = $this->extractTitle($song->genre, 'Tür');
+            $genreSongs = $this->getGenreSongsOnly($song->genre_id, $limit, $excludeSongIds);
+
+            return [
+                'songs' => $genreSongs,
+                'transition' => [
+                    'type' => 'genre',
+                    'id' => $song->genre_id,
+                    'name' => $genreTitle,
+                    'reason' => "'{$song->title}' şarkısının türünden devam ediliyor"
+                ]
+            ];
+        }
+
+        // 🎵 Hiçbiri yoksa → Popüler şarkılar
+        return $this->getPopularSongs(0, $limit, $excludeSongIds);
     }
 
     /**
@@ -456,18 +792,35 @@ class QueueRefillController extends Controller
      * @param int $limit Number of songs to return
      * @param array $excludeIds Songs to exclude (already played)
      * @return array Formatted songs
+     *
+     * 🎯 EXCLUDE LOGIC:
+     * - Normalde son dinlenenler hariç tutulur (tekrar gelmesin)
+     * - Şarkılar tükenirse (count < limit), orijinal havuza dön (♾️ sonsuz döngü)
+     * - "şarkılar bittiyse çıkarabilir" - tükenince tekrar gelebilir
      */
     private function getRandomSongsFromIds(array $songIds, int $limit, array $excludeIds = []): array
     {
-        // Exclude already played songs
+        // 💾 Orijinal havuzu sakla (exclude öncesi)
+        $originalPool = $songIds;
+        $originalCount = count($originalPool);
+
+        // 🚫 Son dinlenenleri hariç tut
         if (!empty($excludeIds)) {
             $songIds = array_values(array_diff($songIds, $excludeIds));
         }
 
-        // If not enough songs after exclude, reset (infinite loop)
-        if (count($songIds) < $limit) {
-            // Get original IDs from cache or use current
-            $songIds = array_values($songIds); // Reset to available
+        $afterExcludeCount = count($songIds);
+
+        // 🔄 INFINITE LOOP: Şarkılar tükendiyse orijinal havuza dön
+        // "şarkılar bittiyse çıkarabilir" - tükenince tekrar gelebilir
+        if ($afterExcludeCount < $limit && $originalCount >= $limit) {
+            \Log::info('🔄 SONGS EXHAUSTED - Allowing replay (infinite loop)', [
+                'after_exclude' => $afterExcludeCount,
+                'needed' => $limit,
+                'original_pool' => $originalCount,
+                'excluded_count' => count($excludeIds),
+            ]);
+            $songIds = $originalPool; // ♾️ Orijinal havuza dön (exclude'lar dahil)
         }
 
         if (empty($songIds)) {
@@ -483,6 +836,11 @@ class QueueRefillController extends Controller
             ->where('is_active', 1)
             ->with(['album.artist'])
             ->get();
+
+        // 🔧 FIX: whereIn sırayı korumaz! Shuffle sırasına göre sırala
+        $songs = $songs->sortBy(function ($song) use ($selectedIds) {
+            return array_search($song->song_id, $selectedIds);
+        })->values();
 
         return $this->formatSongs($songs);
     }
@@ -529,14 +887,26 @@ class QueueRefillController extends Controller
                 $playlist = Playlist::find($id);
                 $sourceName = $playlist?->title ?? "Playlist #{$id}";
                 $totalSongs = $playlist?->songs()->where('is_active', 1)->count() ?? 0;
-                $algorithm = "🎲 Rastgele seçim (son 300 şarkı hariç)";
+                $algorithm = "🎲 Karışık oynatma (sistem playlist, bitince genre'ye geç)";
+                break;
+
+            case 'user_playlist':
+                $playlist = Playlist::find($id);
+                $sourceName = $playlist?->title ?? "Playlist #{$id}";
+                $totalSongs = $playlist?->songs()->where('is_active', 1)->count() ?? 0;
+                $algorithm = "📋 Sıralı oynatma (kullanıcı playlist, bitince genre'ye geç)";
                 break;
 
             case 'album':
                 $album = Album::with('artist')->find($id);
                 $sourceName = $album?->title ?? "Albüm #{$id}";
                 $totalSongs = $album?->songs()->where('is_active', 1)->count() ?? 0;
-                $algorithm = "🎲 Rastgele seçim (son 300 şarkı hariç)";
+                $algorithm = "🎲 Karışık oynatma (albüm, bitince genre'ye geç)";
+                break;
+
+            case 'artist':
+                $sourceName = "Sanatçı #{$id}";
+                $algorithm = "🎲 Karışık oynatma (sanatçı, bitince genre'ye geç)";
                 break;
 
             case 'genre':
@@ -566,13 +936,24 @@ class QueueRefillController extends Controller
 
             case 'favorites':
                 $sourceName = 'Favorilerim';
-                $algorithm = "🎲 Rastgele seçim (favorilerden, son 300 hariç)";
+                $algorithm = "📋 Sıralı oynatma (eklenme sırasına göre, bitince genre'ye geç)";
                 break;
 
             case 'recent':
                 $sourceName = 'Son Eklenenler';
                 $totalSongs = Song::where('is_active', 1)->count();
                 $algorithm = "🎲 Rastgele seçim (son 200'den, son 300 hariç)";
+                break;
+
+            case 'song':
+                $song = Song::with('album')->find($id);
+                $sourceName = $song?->title ?? "Şarkı #{$id}";
+                $algorithm = "🎵 Tek şarkı (albüm/genre'ye geçiş)";
+                break;
+
+            case 'search':
+                $sourceName = 'Arama Sonucu';
+                $algorithm = "🔍 Arama (albüm şarkılarına geçiş)";
                 break;
 
             default:
@@ -678,6 +1059,8 @@ class QueueRefillController extends Controller
      * 🚀 FAST RANDOM: PHP shuffle instead of ORDER BY RAND()
      * ORDER BY RAND() = O(n log n) + full table scan
      * PHP shuffle = O(n) on cached IDs
+     *
+     * 🎯 EXCLUDE LOGIC: Son dinlenenler hariç, tükenirse tekrar gelebilir
      */
     private function getFastRandomGenreSongs(int $genreId, int $limit, array $excludeIds = []): array
     {
@@ -699,8 +1082,21 @@ class QueueRefillController extends Controller
             return [];
         }
 
-        // Exclude IDs
-        $songIds = array_diff($songIds, $excludeIds);
+        // 💾 Orijinal havuzu sakla
+        $originalPool = $songIds;
+        $originalCount = count($originalPool);
+
+        // 🚫 Son dinlenenleri hariç tut
+        if (!empty($excludeIds)) {
+            $songIds = array_values(array_diff($songIds, $excludeIds));
+        }
+
+        $afterExcludeCount = count($songIds);
+
+        // 🔄 INFINITE LOOP: Tükendiyse orijinal havuza dön
+        if ($afterExcludeCount < $limit && $originalCount >= $limit) {
+            $songIds = $originalPool;
+        }
 
         if (empty($songIds)) {
             return [];
@@ -716,39 +1112,50 @@ class QueueRefillController extends Controller
             ->with(['album.artist'])
             ->get();
 
+        // 🔧 FIX: whereIn sırayı korumaz! Shuffle sırasına göre sırala
+        $songs = $songs->sortBy(function ($song) use ($selectedIds) {
+            return array_search($song->song_id, $selectedIds);
+        })->values();
+
         return $this->formatSongs($songs);
     }
 
     /**
      * 🚀 CACHED POPULAR: Guest users get cached popular songs
+     * ⚠️ NOT: Cache içinde shuffle var - her request'te farklı sıra için cache'i kısa tut
      */
     private function getCachedPopularSongs(int $limit): array
     {
-        $cacheKey = 'initial_queue_popular_songs';
-
-        return \Cache::remember($cacheKey, 300, function () use ($limit) {
-            // 🔥 Top 50'den random 15 al (ORDER BY play_count, sonra PHP shuffle)
-            $topSongIds = Song::where('is_active', 1)
+        // 🔥 Top 50 ID'leri cache'le (5 min), shuffle her request'te
+        $cacheKey = 'popular_song_ids_top50';
+        $topSongIds = \Cache::remember($cacheKey, 300, function () {
+            return Song::where('is_active', 1)
                 ->whereNotNull('hls_path')
                 ->orderBy('play_count', 'desc')
                 ->take(50)
                 ->pluck('song_id')
                 ->toArray();
-
-            if (empty($topSongIds)) {
-                return [];
-            }
-
-            shuffle($topSongIds);
-            $selectedIds = array_slice($topSongIds, 0, $limit);
-
-            $songs = Song::whereIn('song_id', $selectedIds)
-                ->where('is_active', 1)
-                ->with(['album.artist'])
-                ->get();
-
-            return $this->formatSongs($songs);
         });
+
+        if (empty($topSongIds)) {
+            return [];
+        }
+
+        // 🎲 Her request'te shuffle (cache dışında!)
+        shuffle($topSongIds);
+        $selectedIds = array_slice($topSongIds, 0, $limit);
+
+        $songs = Song::whereIn('song_id', $selectedIds)
+            ->where('is_active', 1)
+            ->with(['album.artist'])
+            ->get();
+
+        // 🔧 FIX: Shuffle sırasına göre sırala
+        $songs = $songs->sortBy(function ($song) use ($selectedIds) {
+            return array_search($song->song_id, $selectedIds);
+        })->values();
+
+        return $this->formatSongs($songs);
     }
 
     /**

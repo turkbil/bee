@@ -18,6 +18,26 @@ class SidebarComposer
      */
     public function compose(View $view): void
     {
+        // 🛡️ Admin panelinde çalışma - sadece frontend için
+        if (request()->is('admin/*') || request()->is('admin')) {
+            return;
+        }
+
+        // Tenant başlatılmamışsa atla
+        if (!function_exists('tenancy') || !tenancy()->initialized) {
+            return;
+        }
+
+        // Tenant database bağlantısı yoksa atla
+        try {
+            $connection = DB::connection('tenant');
+            if (!$connection->getDatabaseName()) {
+                return;
+            }
+        } catch (\Exception $e) {
+            return;
+        }
+
         // 🔥 P1 FIX: Favorites N+1 → 1 query bulk loading
         // Pre-load all user's favorites in single query (174 queries → 1 query)
         // Use View::share() so is_favorited() helper can access it globally

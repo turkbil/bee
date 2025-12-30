@@ -13,6 +13,7 @@ use Modules\Muzibu\App\Services\DeviceService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class SongStreamController extends Controller
 {
@@ -256,36 +257,33 @@ class SongStreamController extends Controller
      * @param int $songId
      * @return JsonResponse
      */
-    public function trackProgress(\Illuminate\Http\Request $request, int $songId): JsonResponse
+    public function trackStart(\Illuminate\Http\Request $request, int $songId): JsonResponse
     {
         try {
-            // 🔥 FIX: Hem web hem sanctum guard'ı kontrol et
-            $user = auth('web')->user() ?? auth('sanctum')->user();
+            $user = auth('sanctum')->user();
 
             if (!$user) {
                 return response()->json(['error' => 'unauthorized'], 401);
             }
 
-            $song = Song::findOrFail($songId);
             $userId = $user->id;
 
-            // 🔒 Duplicate kontrolü: Aynı kullanıcı + şarkı için son 30 saniyede kayıt var mı?
+            // 🔒 Duplicate kontrolü: Aynı kullanıcı + şarkı için son 5 saniyede kayıt var mı?
             $recentPlay = \DB::table('muzibu_song_plays')
                 ->where('song_id', $songId)
                 ->where('user_id', $userId)
-                ->where('created_at', '>=', now()->subSeconds(30))
+                ->where('created_at', '>=', now()->subSeconds(5))
                 ->first();
 
-            // Eğer son 30 saniyede zaten kayıt varsa, duplicate kayıt ekleme
             if ($recentPlay) {
                 return response()->json([
                     'success' => true,
+                    'play_id' => $recentPlay->id,
                     'duplicate_prevented' => true
                 ]);
             }
 
-            // 30+ saniye dinlendi, kayıt ekle (Analytics için)
-            // 🔥 FIX: jenssegers/agent ile browser/platform tespiti (DeviceService pattern)
+            // 📊 HEMEN kayıt oluştur (abuse detection için)
             $agent = new \Jenssegers\Agent\Agent();
             $agent->setUserAgent($request->userAgent());
 
@@ -296,24 +294,77 @@ class SongStreamController extends Controller
                 $deviceType = 'tablet';
             }
 
-            \DB::table('muzibu_song_plays')->insert([
+            // 🌐 Gelişmiş browser tespiti (jenssegers/agent yerine kendi metodumuz)
+            $browserName = $this->detectBrowserFromUA($request->userAgent() ?? '');
+
+            $playId = \DB::table('muzibu_song_plays')->insertGetId([
                 'song_id' => $songId,
                 'user_id' => $userId,
                 'ip_address' => $request->ip(),
                 'user_agent' => $request->userAgent(),
                 'device_type' => $deviceType,
-                'browser' => $agent->browser() ?: 'Unknown',
+                'browser' => $browserName,
                 'platform' => $agent->platform() ?: 'Unknown',
+                'source_type' => $request->input('source_type'),
+                'source_id' => $request->input('source_id'),
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
 
-            // 🔥 FIX: songs.play_count'u da artır
+            // ⚠️ play_count ARTIRMA - 30 saniye sonra trackHit ile artırılacak
+
+            return response()->json([
+                'success' => true,
+                'play_id' => $playId
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Muzibu: Failed to track start', [
+                'song_id' => $songId,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'error' => 'tracking_failed',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * 🎵 Track hit - 30 saniye dinledikten sonra play_count artır
+     * POST /api/muzibu/songs/{id}/track-hit
+     */
+    public function trackHit(Request $request, int $songId): JsonResponse
+    {
+        try {
+            $user = auth('sanctum')->user();
+
+            if (!$user) {
+                return response()->json(['error' => 'unauthorized'], 401);
+            }
+
+            $song = Song::findOrFail($songId);
+            $playId = $request->input('play_id');
+
+            // play_id kontrolü - sadece kendi kaydını güncelleyebilir
+            if ($playId) {
+                $play = \DB::table('muzibu_song_plays')
+                    ->where('id', $playId)
+                    ->where('user_id', $user->id)
+                    ->first();
+
+                if (!$play) {
+                    return response()->json(['error' => 'play_not_found'], 404);
+                }
+            }
+
+            // 🎯 play_count artır (hits için)
             $song->increment('play_count');
 
-            Log::info('Muzibu: Play tracked', [
+            Log::info('Muzibu: Hit tracked', [
                 'song_id' => $songId,
-                'user_id' => $userId,
+                'user_id' => $user->id,
                 'play_count' => $song->play_count
             ]);
 
@@ -323,7 +374,87 @@ class SongStreamController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Muzibu: Failed to track progress', [
+            Log::error('Muzibu: Failed to track hit', [
+                'song_id' => $songId,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'error' => 'tracking_failed',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * 📊 Track progress - DEPRECATED, use trackStart + trackHit
+     * Kept for backwards compatibility
+     */
+    public function trackProgress(\Illuminate\Http\Request $request, int $songId): JsonResponse
+    {
+        // Redirect to trackStart + trackHit combined behavior
+        return $this->trackStart($request, $songId);
+    }
+
+    /**
+     * Track when song playback ends (for abuse detection)
+     * Called when: song ends naturally, user skips, user pauses, tab closes
+     *
+     * POST /api/song/{id}/end
+     * Body: { play_id, listened_duration, was_skipped }
+     */
+    public function trackEnd(Request $request, int $songId)
+    {
+        try {
+            // 🔐 Use Sanctum's stateful auth (cookie-based for SPA)
+            // EnsureFrontendRequestsAreStateful middleware handles session
+            $user = auth('sanctum')->user();
+
+            if (!$user) {
+                Log::warning('Muzibu: trackEnd unauthorized', [
+                    'song_id' => $songId,
+                    'ip' => $request->ip(),
+                ]);
+                return response()->json(['error' => 'unauthorized'], 401);
+            }
+
+            $playId = $request->input('play_id');
+            $listenedDuration = $request->input('listened_duration', 0);
+            $wasSkipped = $request->boolean('was_skipped', false);
+
+            if (!$playId) {
+                return response()->json(['error' => 'play_id_required'], 400);
+            }
+
+            // Update the play record
+            $updated = \DB::table('muzibu_song_plays')
+                ->where('id', $playId)
+                ->where('user_id', $user->id)
+                ->whereNull('ended_at')
+                ->update([
+                    'ended_at' => now(),
+                    'listened_duration' => max(0, (int) $listenedDuration),
+                    'was_skipped' => $wasSkipped,
+                    'updated_at' => now()
+                ]);
+
+            if ($updated) {
+                Log::info('Muzibu: Play ended', [
+                    'play_id' => $playId,
+                    'song_id' => $songId,
+                    'user_id' => $user->id,
+                    'listened_duration' => $listenedDuration,
+                    'was_skipped' => $wasSkipped
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'updated' => (bool) $updated
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Muzibu: Failed to track end', [
                 'song_id' => $songId,
                 'error' => $e->getMessage()
             ]);
@@ -639,5 +770,81 @@ class SongStreamController extends Controller
             'admin_terminated' => 'Oturumunuz yönetici tarafından sonlandırıldı.',
             default => 'Oturumunuz sonlandırıldı. Lütfen tekrar giriş yapın.',
         };
+    }
+
+    /**
+     * 🌐 Gelişmiş Browser Tespiti
+     *
+     * User-Agent string'inden tarayıcıyı doğru tespit eder.
+     * Chromium tabanlı tarayıcıları (Edge, Opera, Brave, Vivaldi, Samsung, Yandex)
+     * Chrome'dan ayırt eder.
+     *
+     * @param string $userAgent
+     * @return string Browser adı
+     */
+    protected function detectBrowserFromUA(string $userAgent): string
+    {
+        $ua = strtolower($userAgent);
+
+        // 🔴 ÖNCELİK SIRASI ÖNEMLİ!
+        // Chromium tabanlı tarayıcılar Chrome'dan ÖNCE kontrol edilmeli
+
+        // Edge (Edg/ veya Edge/)
+        if (str_contains($ua, 'edg/') || str_contains($ua, 'edge/')) {
+            return 'Edge';
+        }
+
+        // Opera (OPR/ veya Opera/)
+        if (str_contains($ua, 'opr/') || str_contains($ua, 'opera')) {
+            return 'Opera';
+        }
+
+        // Brave - Client Hints kullanabilir, ama bazılarında "Brave" geçer
+        if (str_contains($ua, 'brave')) {
+            return 'Brave';
+        }
+
+        // Vivaldi
+        if (str_contains($ua, 'vivaldi')) {
+            return 'Vivaldi';
+        }
+
+        // Samsung Internet
+        if (str_contains($ua, 'samsungbrowser')) {
+            return 'Samsung';
+        }
+
+        // Yandex Browser
+        if (str_contains($ua, 'yabrowser') || str_contains($ua, 'yowser')) {
+            return 'Yandex';
+        }
+
+        // UC Browser
+        if (str_contains($ua, 'ucbrowser') || str_contains($ua, 'ubrowser')) {
+            return 'UCBrowser';
+        }
+
+        // Firefox
+        if (str_contains($ua, 'firefox') || str_contains($ua, 'fxios')) {
+            return 'Firefox';
+        }
+
+        // Safari (Chrome içermemeli!)
+        if (str_contains($ua, 'safari') && !str_contains($ua, 'chrome') && !str_contains($ua, 'chromium')) {
+            return 'Safari';
+        }
+
+        // Chrome (en son kontrol - diğerleri zaten return etti)
+        if (str_contains($ua, 'chrome') || str_contains($ua, 'chromium') || str_contains($ua, 'crios')) {
+            return 'Chrome';
+        }
+
+        // Internet Explorer
+        if (str_contains($ua, 'msie') || str_contains($ua, 'trident')) {
+            return 'IE';
+        }
+
+        // Bilinmeyen
+        return 'Other';
     }
 }

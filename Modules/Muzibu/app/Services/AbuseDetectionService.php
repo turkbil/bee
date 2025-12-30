@@ -42,14 +42,21 @@ class AbuseDetectionService
         // Overlap'leri tespit et
         $overlaps = $this->detectOverlaps($plays);
 
-        // Abuse score hesapla
-        $abuseScore = $this->calculateAbuseScore($overlaps);
+        // 🔥 YENİ: Tüm pattern'leri tespit et
+        $patterns = $this->detectAllPatterns($plays, $overlaps);
+
+        // 🔥 YENİ: Toplam abuse score hesapla (overlap + patterns)
+        $abuseScore = $this->calculateTotalAbuseScore($overlaps, $patterns);
 
         // Status belirle
         $status = AbuseReport::determineStatus($abuseScore);
 
         // Günlük istatistikleri hesapla
         $dailyStats = $this->calculateDailyStats($plays, $overlaps);
+
+        // overlaps_json için max 100 kayıt sınırla (MySQL packet limit koruması)
+        // overlap_count zaten toplam sayıyı tutuyor
+        $overlapsForStorage = array_slice($overlaps, 0, 100);
 
         // Mevcut raporu güncelle veya yeni oluştur
         return AbuseReport::updateOrCreate(
@@ -61,13 +68,288 @@ class AbuseDetectionService
                 'period_start' => $periodStart,
                 'period_end' => $periodEnd,
                 'total_plays' => $plays->count(),
-                'overlap_count' => count($overlaps),
+                'overlap_count' => count($overlaps), // Gerçek toplam sayı
                 'abuse_score' => $abuseScore,
                 'status' => $status,
-                'overlaps_json' => $overlaps,
+                'overlaps_json' => $overlapsForStorage, // Sadece ilk 100 örnek
                 'daily_stats' => $dailyStats,
+                'patterns_json' => $patterns,
             ]
         );
+    }
+
+    /**
+     * B2B İşletme Müzik Platformu için Pattern Tespiti
+     *
+     * Kaldırılan pattern'ler (B2B için geçerli değil):
+     * - Hızlı Skip: Personel şarkı değiştirebilir
+     * - Tekrar Şarkı: Playlist loop normal
+     * - Gece Dinleme: 24 saat açık işletmeler var
+     * - Bot Davranışı: Para veren müşteriler bot olamaz
+     */
+    public function detectAllPatterns(Collection $plays, array $overlaps): array
+    {
+        $patterns = [];
+
+        // 1. Yüksek Hacim - Günde 600+ şarkı (çoklu stream şüphesi)
+        $highVolume = $this->detectHighVolume($plays);
+        if (!empty($highVolume)) {
+            $patterns['high_volume'] = $highVolume;
+        }
+
+        // 2. Çoklu Cihaz - 5+ farklı cihaz/gün (hesap paylaşımı)
+        $multiDevice = $this->detectMultiDevice($plays);
+        if (!empty($multiDevice)) {
+            $patterns['multi_device'] = $multiDevice;
+        }
+
+        // 3. Şüpheli IP - 5+ farklı IP/gün (farklı lokasyonlardan erişim)
+        $suspiciousIp = $this->detectSuspiciousIp($plays);
+        if (!empty($suspiciousIp)) {
+            $patterns['suspicious_ip'] = $suspiciousIp;
+        }
+
+        return $patterns;
+    }
+
+    /**
+     * 🔥 HIZLI SKİP TESPİTİ
+     * 30 saniyeden kısa dinlemeler = şüpheli
+     */
+    protected function detectRapidSkips(Collection $plays): array
+    {
+        $minListenSeconds = 30;
+        $rapidSkips = [];
+        $totalRapidSkips = 0;
+
+        foreach ($plays as $play) {
+            $listenDuration = $play['start']->diffInSeconds($play['end']);
+            if ($listenDuration < $minListenSeconds) {
+                $totalRapidSkips++;
+                $rapidSkips[] = [
+                    'play_id' => $play['id'],
+                    'song' => $play['title'],
+                    'duration' => $listenDuration,
+                    'time' => $play['time'],
+                ];
+            }
+        }
+
+        // %30'dan fazla hızlı skip varsa şüpheli
+        $skipRate = $plays->count() > 0 ? ($totalRapidSkips / $plays->count()) * 100 : 0;
+
+        if ($skipRate > 30) {
+            return [
+                'count' => $totalRapidSkips,
+                'rate' => round($skipRate, 1),
+                'severity' => $skipRate > 60 ? 'high' : ($skipRate > 45 ? 'medium' : 'low'),
+                'score' => min($totalRapidSkips * 5, 300), // Max 300 puan
+                'samples' => array_slice($rapidSkips, 0, 5),
+            ];
+        }
+
+        return [];
+    }
+
+    /**
+     * Yüksek Hacim Pattern - İşletme bazlı eşikler
+     *
+     * İşletme kullanımı hesabı:
+     * - Çalışma saatleri: 08:00 - 24:00 (16 saat)
+     * - Ortalama şarkı: 3-4 dakika
+     * - Normal: ~300 şarkı/gün (tek cihaz, kesintisiz)
+     * - Şüpheli: 600+ şarkı/gün (çoklu stream veya otomasyon)
+     */
+    protected function detectHighVolume(Collection $plays): array
+    {
+        $threshold = 600; // İşletme için günde max normal dinleme (16 saat x ~38 şarkı)
+        $playsByDay = $plays->groupBy(fn($p) => Carbon::parse($p['time'])->toDateString());
+
+        $highVolumeDays = [];
+        foreach ($playsByDay as $date => $dayPlays) {
+            $count = $dayPlays->count();
+            if ($count > $threshold) {
+                $highVolumeDays[] = [
+                    'date' => $date,
+                    'count' => $count,
+                    'excess' => $count - $threshold,
+                ];
+            }
+        }
+
+        if (!empty($highVolumeDays)) {
+            $totalExcess = array_sum(array_column($highVolumeDays, 'excess'));
+            return [
+                'days' => $highVolumeDays,
+                'total_excess' => $totalExcess,
+                'severity' => $totalExcess > 400 ? 'high' : ($totalExcess > 200 ? 'medium' : 'low'),
+                'score' => min($totalExcess, 400), // Max 400 puan
+            ];
+        }
+
+        return [];
+    }
+
+    /**
+     * 🔥 TEKRAR ŞARKI TESPİTİ
+     * Aynı şarkı 10+ kez = şüpheli (loop abuse)
+     */
+    protected function detectRepeatSongs(Collection $plays): array
+    {
+        $threshold = 10;
+        $songCounts = $plays->groupBy('song_id')->map->count();
+        $repeatedSongs = $songCounts->filter(fn($count) => $count >= $threshold);
+
+        if ($repeatedSongs->isNotEmpty()) {
+            $songDetails = [];
+            foreach ($repeatedSongs as $songId => $count) {
+                $songPlay = $plays->firstWhere('song_id', $songId);
+                $songDetails[] = [
+                    'song_id' => $songId,
+                    'title' => $songPlay['title'] ?? 'Bilinmiyor',
+                    'count' => $count,
+                ];
+            }
+
+            // En çok tekrar edene göre sırala
+            usort($songDetails, fn($a, $b) => $b['count'] <=> $a['count']);
+
+            $maxCount = $songDetails[0]['count'] ?? 0;
+            return [
+                'songs' => array_slice($songDetails, 0, 5),
+                'total_repeats' => $repeatedSongs->sum(),
+                'severity' => $maxCount > 30 ? 'high' : ($maxCount > 20 ? 'medium' : 'low'),
+                'score' => min($repeatedSongs->sum() * 3, 300), // Max 300 puan
+            ];
+        }
+
+        return [];
+    }
+
+    /**
+     * 🔥 ÇOKLU CİHAZ TESPİTİ
+     * 24 saatte 5+ farklı cihaz = hesap paylaşımı şüphesi
+     */
+    protected function detectMultiDevice(Collection $plays): array
+    {
+        $threshold = 5;
+        $playsByDay = $plays->groupBy(fn($p) => Carbon::parse($p['time'])->toDateString());
+
+        $multiDeviceDays = [];
+        foreach ($playsByDay as $date => $dayPlays) {
+            $uniqueDevices = $dayPlays->pluck('device_key')->unique();
+            if ($uniqueDevices->count() >= $threshold) {
+                $multiDeviceDays[] = [
+                    'date' => $date,
+                    'device_count' => $uniqueDevices->count(),
+                    'devices' => $uniqueDevices->values()->all(),
+                ];
+            }
+        }
+
+        if (!empty($multiDeviceDays)) {
+            $maxDevices = max(array_column($multiDeviceDays, 'device_count'));
+            return [
+                'days' => $multiDeviceDays,
+                'max_devices' => $maxDevices,
+                'severity' => $maxDevices > 10 ? 'high' : ($maxDevices > 7 ? 'medium' : 'low'),
+                'score' => min($maxDevices * 20, 200), // Max 200 puan
+            ];
+        }
+
+        return [];
+    }
+
+    /**
+     * 🔥 ŞÜPHELİ IP TESPİTİ
+     * Kısa sürede farklı IP'ler = VPN veya hesap paylaşımı
+     */
+    protected function detectSuspiciousIp(Collection $plays): array
+    {
+        $threshold = 5; // 24 saatte max normal IP değişimi
+        $playsByDay = $plays->groupBy(fn($p) => Carbon::parse($p['time'])->toDateString());
+
+        $suspiciousDays = [];
+        foreach ($playsByDay as $date => $dayPlays) {
+            $uniqueIps = $dayPlays->pluck('ip')->filter()->unique();
+            if ($uniqueIps->count() >= $threshold) {
+                $suspiciousDays[] = [
+                    'date' => $date,
+                    'ip_count' => $uniqueIps->count(),
+                    'ips' => $uniqueIps->values()->all(),
+                ];
+            }
+        }
+
+        if (!empty($suspiciousDays)) {
+            $maxIps = max(array_column($suspiciousDays, 'ip_count'));
+            return [
+                'days' => $suspiciousDays,
+                'max_ips' => $maxIps,
+                'severity' => $maxIps > 10 ? 'high' : ($maxIps > 7 ? 'medium' : 'low'),
+                'score' => min($maxIps * 15, 150), // Max 150 puan
+            ];
+        }
+
+        return [];
+    }
+
+    /**
+     * 🔥 24/7 DİNLEME TESPİTİ
+     * Gece 02:00-06:00 arası sürekli dinleme = bot şüphesi
+     */
+    protected function detectNoSleepPattern(Collection $plays): array
+    {
+        // Gece saatlerini kontrol et (02:00 - 06:00)
+        $nightPlays = $plays->filter(function ($play) {
+            $hour = Carbon::parse($play['time'])->hour;
+            return $hour >= 2 && $hour < 6;
+        });
+
+        // Gece saatlerinde dinleme olan günleri grupla
+        $nightDays = $nightPlays->groupBy(fn($p) => Carbon::parse($p['time'])->toDateString());
+
+        $suspiciousNights = [];
+        foreach ($nightDays as $date => $plays) {
+            // Gece 5+ şarkı = şüpheli
+            if ($plays->count() >= 5) {
+                $suspiciousNights[] = [
+                    'date' => $date,
+                    'night_plays' => $plays->count(),
+                    'hours' => $plays->map(fn($p) => Carbon::parse($p['time'])->format('H:i'))->unique()->values()->all(),
+                ];
+            }
+        }
+
+        if (!empty($suspiciousNights)) {
+            $totalNightPlays = array_sum(array_column($suspiciousNights, 'night_plays'));
+            return [
+                'nights' => $suspiciousNights,
+                'total_night_plays' => $totalNightPlays,
+                'severity' => count($suspiciousNights) > 5 ? 'high' : (count($suspiciousNights) > 3 ? 'medium' : 'low'),
+                'score' => min($totalNightPlays * 5, 250), // Max 250 puan
+            ];
+        }
+
+        return [];
+    }
+
+    /**
+     * 🔥 TOPLAM ABUSE SCORE HESAPLA
+     * Overlap + Pattern skorlarını birleştir
+     */
+    public function calculateTotalAbuseScore(array $overlaps, array $patterns): int
+    {
+        // Overlap score
+        $overlapScore = $this->calculateAbuseScore($overlaps);
+
+        // Pattern scores
+        $patternScore = 0;
+        foreach ($patterns as $pattern) {
+            $patternScore += $pattern['score'] ?? 0;
+        }
+
+        return $overlapScore + $patternScore;
     }
 
     /**
@@ -140,28 +422,74 @@ class AbuseDetectionService
     }
 
     /**
-     * User-Agent'tan browser tespit et
+     * 🌐 Gelişmiş Browser Tespiti
+     *
+     * User-Agent string'inden tarayıcıyı doğru tespit eder.
+     * Chromium tabanlı tarayıcıları (Edge, Opera, Brave, Vivaldi, Samsung, Yandex)
+     * Chrome'dan ayırt eder.
+     *
+     * @param string $userAgent
+     * @return string Browser adı (lowercase)
      */
     protected function detectBrowser(string $userAgent): string
     {
-        $userAgent = strtolower($userAgent);
+        $ua = strtolower($userAgent);
 
-        if (str_contains($userAgent, 'edg/') || str_contains($userAgent, 'edge/')) {
+        // 🔴 ÖNCELİK SIRASI ÖNEMLİ!
+        // Chromium tabanlı tarayıcılar Chrome'dan ÖNCE kontrol edilmeli
+
+        // Edge (Edg/ veya Edge/)
+        if (str_contains($ua, 'edg/') || str_contains($ua, 'edge/')) {
             return 'edge';
         }
-        if (str_contains($userAgent, 'opr/') || str_contains($userAgent, 'opera')) {
+
+        // Opera (OPR/ veya Opera/)
+        if (str_contains($ua, 'opr/') || str_contains($ua, 'opera')) {
             return 'opera';
         }
-        if (str_contains($userAgent, 'chrome') && !str_contains($userAgent, 'edg')) {
-            return 'chrome';
+
+        // Brave
+        if (str_contains($ua, 'brave')) {
+            return 'brave';
         }
-        if (str_contains($userAgent, 'safari') && !str_contains($userAgent, 'chrome')) {
-            return 'safari';
+
+        // Vivaldi
+        if (str_contains($ua, 'vivaldi')) {
+            return 'vivaldi';
         }
-        if (str_contains($userAgent, 'firefox')) {
+
+        // Samsung Internet
+        if (str_contains($ua, 'samsungbrowser')) {
+            return 'samsung';
+        }
+
+        // Yandex Browser
+        if (str_contains($ua, 'yabrowser') || str_contains($ua, 'yowser')) {
+            return 'yandex';
+        }
+
+        // UC Browser
+        if (str_contains($ua, 'ucbrowser') || str_contains($ua, 'ubrowser')) {
+            return 'ucbrowser';
+        }
+
+        // Firefox
+        if (str_contains($ua, 'firefox') || str_contains($ua, 'fxios')) {
             return 'firefox';
         }
-        if (str_contains($userAgent, 'msie') || str_contains($userAgent, 'trident')) {
+
+        // Safari (Chrome içermemeli!)
+        if (str_contains($ua, 'safari') && !str_contains($ua, 'chrome') && !str_contains($ua, 'chromium')) {
+            return 'safari';
+        }
+
+        // Chrome (en son kontrol - diğerleri zaten return etti)
+        if (str_contains($ua, 'chrome') || str_contains($ua, 'chromium') || str_contains($ua, 'crios')) {
+            return 'chrome';
+        }
+
+        // Internet Explorer
+        if (str_contains($ua, 'msie') || str_contains($ua, 'trident')) {
             return 'ie';
         }
 

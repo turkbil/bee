@@ -34,11 +34,22 @@ class SongPlay extends Model
         'ip_address',
         'user_agent',
         'device_type',
+        'browser',
+        'platform',
+        'ended_at',
+        'listened_duration',
+        'was_skipped',
+        'source_type',
+        'source_id',
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'ended_at' => 'datetime',
+        'listened_duration' => 'integer',
+        'was_skipped' => 'boolean',
+        'source_id' => 'integer',
     ];
 
     /**
@@ -202,5 +213,104 @@ class SongPlay extends Model
         $uniqueIPs = $query->whereNull('user_id')->distinct('ip_address')->count('ip_address');
 
         return $uniqueUsers + $uniqueIPs;
+    }
+
+    /**
+     * Atlanan şarkıları getir
+     */
+    public function scopeSkipped($query)
+    {
+        return $query->where('was_skipped', true);
+    }
+
+    /**
+     * Tamamlanan şarkıları getir (atlanmayan)
+     */
+    public function scopeCompleted($query)
+    {
+        return $query->where('was_skipped', false)->whereNotNull('ended_at');
+    }
+
+    /**
+     * Belirli bir kaynaktan gelen dinlemeleri getir
+     */
+    public function scopeFromSource($query, string $sourceType, ?int $sourceId = null)
+    {
+        $query->where('source_type', $sourceType);
+
+        if ($sourceId !== null) {
+            $query->where('source_id', $sourceId);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Kısa dinlemeleri getir (abuse tespiti için)
+     * @param int $maxSeconds Maksimum süre (varsayılan 10 saniye)
+     */
+    public function scopeShortListens($query, int $maxSeconds = 10)
+    {
+        return $query->whereNotNull('listened_duration')
+            ->where('listened_duration', '<=', $maxSeconds);
+    }
+
+    /**
+     * Tamamlanmış dinlemeleri getir (ended_at dolu olanlar)
+     */
+    public function scopeEnded($query)
+    {
+        return $query->whereNotNull('ended_at');
+    }
+
+    /**
+     * Devam eden dinlemeleri getir (ended_at boş olanlar)
+     */
+    public function scopeOngoing($query)
+    {
+        return $query->whereNull('ended_at');
+    }
+
+    /**
+     * Skip oranını hesapla
+     */
+    public static function getSkipRate(int $userId, ?string $period = null): float
+    {
+        $query = self::where('user_id', $userId)->whereNotNull('ended_at');
+
+        if ($period === 'today') {
+            $query->today();
+        } elseif ($period === 'week') {
+            $query->thisWeek();
+        } elseif ($period === 'month') {
+            $query->thisMonth();
+        }
+
+        $total = $query->count();
+        if ($total === 0) {
+            return 0.0;
+        }
+
+        $skipped = (clone $query)->where('was_skipped', true)->count();
+
+        return round(($skipped / $total) * 100, 2);
+    }
+
+    /**
+     * Ortalama dinleme süresini hesapla
+     */
+    public static function getAverageListenDuration(int $userId, ?string $period = null): float
+    {
+        $query = self::where('user_id', $userId)->whereNotNull('listened_duration');
+
+        if ($period === 'today') {
+            $query->today();
+        } elseif ($period === 'week') {
+            $query->thisWeek();
+        } elseif ($period === 'month') {
+            $query->thisMonth();
+        }
+
+        return round($query->avg('listened_duration') ?? 0, 2);
     }
 }

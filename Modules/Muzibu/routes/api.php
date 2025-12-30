@@ -121,6 +121,20 @@ Route::prefix('muzibu')->group(function () {
         Route::post('/{id}/play', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'incrementPlayCount'])
             ->name('api.muzibu.songs.play')
             ->middleware('throttle.user:api');
+        // 📊 ABUSE DETECTION SYSTEM - 3 aşamalı tracking
+        // 1️⃣ track-start: Şarkı başlar başlamaz kayıt oluştur (play_id al)
+        Route::post('/{id}/track-start', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'trackStart'])
+            ->name('api.muzibu.songs.track-start')
+            ->middleware(['auth:sanctum', 'throttle.user:api']);
+        // 2️⃣ track-hit: 30 saniye sonra play_count artır (hits için)
+        Route::post('/{id}/track-hit', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'trackHit'])
+            ->name('api.muzibu.songs.track-hit')
+            ->middleware(['auth:sanctum', 'throttle.user:api']);
+        // 3️⃣ track-end: Şarkı bitince/skip olunca güncelle
+        Route::post('/{id}/track-end', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'trackEnd'])
+            ->name('api.muzibu.songs.track-end')
+            ->middleware(['auth:sanctum', 'throttle.user:api']);
+        // 📌 track-progress: Backwards compatibility (redirects to track-start)
         Route::post('/{id}/track-progress', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'trackProgress'])
             ->name('api.muzibu.songs.track-progress')
             ->middleware(['auth:sanctum', 'throttle.user:api']);

@@ -167,6 +167,30 @@ class AbuseReportController extends Controller
     {
         $today = now()->toDateString();
 
+        // Pattern sayılarını hesapla
+        $reportsWithPatterns = AbuseReport::whereDate('scan_date', $today)
+            ->whereNotNull('patterns_json')
+            ->get();
+
+        $patternCounts = [
+            'rapid_skips' => 0,
+            'high_volume' => 0,
+            'repeat_songs' => 0,
+            'multi_device' => 0,
+            'suspicious_ip' => 0,
+            'no_sleep' => 0,
+            'bot_like' => 0,
+        ];
+
+        foreach ($reportsWithPatterns as $report) {
+            $patterns = $report->patterns_json ?? [];
+            foreach (array_keys($patternCounts) as $key) {
+                if (isset($patterns[$key])) {
+                    $patternCounts[$key]++;
+                }
+            }
+        }
+
         $stats = [
             'total_scanned' => AbuseReport::whereDate('scan_date', $today)->count(),
             'clean' => AbuseReport::whereDate('scan_date', $today)->clean()->count(),
@@ -174,6 +198,8 @@ class AbuseReportController extends Controller
             'abuse' => AbuseReport::whereDate('scan_date', $today)->abuse()->count(),
             'unreviewed' => AbuseReport::unreviewed()->count(),
             'last_scan' => AbuseReport::latest('created_at')->first()?->created_at?->diffForHumans(),
+            'with_patterns' => $reportsWithPatterns->count(),
+            'pattern_counts' => $patternCounts,
         ];
 
         return response()->json($stats);
@@ -188,5 +214,28 @@ class AbuseReportController extends Controller
         $timelineData = $this->service->getUserTimelineData($userId, $periodDays);
 
         return response()->json($timelineData);
+    }
+
+    /**
+     * API: Kullanıcı arama (tek kullanıcı tarama için)
+     */
+    public function apiUsers(Request $request)
+    {
+        $query = $request->input('q', '');
+
+        if (strlen($query) < 2) {
+            return response()->json([]);
+        }
+
+        // Central database'den kullanıcıları ara
+        $users = \App\Models\User::where(function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                  ->orWhere('email', 'like', "%{$query}%");
+            })
+            ->select('id', 'name', 'email')
+            ->limit(10)
+            ->get();
+
+        return response()->json($users);
     }
 }

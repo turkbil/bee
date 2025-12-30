@@ -2,6 +2,9 @@
 @extends('admin.layout')
 
 @push('styles')
+<!-- vis-timeline -->
+<script src="https://unpkg.com/vis-timeline@7.7.3/standalone/umd/vis-timeline-graph2d.min.js"></script>
+<link href="https://unpkg.com/vis-timeline@7.7.3/styles/vis-timeline-graph2d.min.css" rel="stylesheet">
 <style>
     .abuse-report-page { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); min-height: 100vh; }
     .abuse-card { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(71, 85, 105, 0.5); border-radius: 12px; backdrop-filter: blur(10px); }
@@ -92,6 +95,19 @@
     .review-card { background: rgba(30, 41, 59, 0.9); }
     .form-select, .form-control { background: rgba(15, 23, 42, 0.8) !important; border-color: rgba(71, 85, 105, 0.5) !important; color: #e2e8f0 !important; }
     .form-select:focus, .form-control:focus { border-color: #3b82f6 !important; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important; }
+
+    /* vis-timeline */
+    .vis-timeline { border: none !important; background: transparent !important; }
+    .vis-item { border-radius: 4px; font-size: 10px; font-weight: 500; min-height: 24px; line-height: 24px; padding: 0 6px; }
+    .vis-item.overlap { background: #ef4444 !important; border-color: #f87171 !important; color: white !important; }
+    .vis-label { color: #e2e8f0 !important; font-weight: 600; font-size: 11px; }
+    .vis-labelset .vis-label { background: rgba(15, 23, 42, 0.95) !important; border-bottom: 1px solid rgba(71, 85, 105, 0.4) !important; }
+    .vis-time-axis .vis-text { color: #94a3b8 !important; fill: #94a3b8 !important; font-size: 10px; }
+    .vis-time-axis .vis-grid.vis-minor { border-color: rgba(71, 85, 105, 0.15) !important; }
+    .vis-time-axis .vis-grid.vis-major { border-color: rgba(71, 85, 105, 0.3) !important; }
+    .vis-panel.vis-background { background: rgba(15, 23, 42, 0.3) !important; }
+    .vis-panel.vis-left { background: rgba(15, 23, 42, 0.95) !important; border-right: 1px solid rgba(71, 85, 105, 0.4) !important; }
+    .vis-foreground .vis-group { border-bottom: 1px solid rgba(71, 85, 105, 0.15) !important; }
 </style>
 @endpush
 
@@ -159,6 +175,105 @@
             </div>
         </div>
     </div>
+
+    <!-- 🔥 YENİ: Pattern Analizi Bölümü -->
+    @php
+        $patterns = $report->patterns_json ?? [];
+        $patternCount = count($patterns);
+        $totalPatternScore = collect($patterns)->sum('score');
+
+        // Pattern isimleri ve ikonları
+        $patternMeta = [
+            'rapid_skips' => ['name' => 'Hızlı Skip', 'icon' => 'fas fa-forward', 'color' => 'warning', 'desc' => 'Şarkılar 30 saniyeden kısa dinleniyor'],
+            'high_volume' => ['name' => 'Yüksek Hacim', 'icon' => 'fas fa-chart-line', 'color' => 'danger', 'desc' => 'Günde 100+ şarkı dinleme'],
+            'repeat_songs' => ['name' => 'Tekrar Şarkı', 'icon' => 'fas fa-redo', 'color' => 'info', 'desc' => 'Aynı şarkı 10+ kez dinleniyor'],
+            'multi_device' => ['name' => 'Çoklu Cihaz', 'icon' => 'fas fa-laptop-mobile', 'color' => 'purple', 'desc' => '24 saatte 5+ farklı cihaz'],
+            'suspicious_ip' => ['name' => 'Şüpheli IP', 'icon' => 'fas fa-network-wired', 'color' => 'orange', 'desc' => 'Çok fazla farklı IP adresi'],
+            'no_sleep' => ['name' => '24/7 Dinleme', 'icon' => 'fas fa-moon', 'color' => 'indigo', 'desc' => 'Gece saatlerinde sürekli dinleme'],
+            'bot_like' => ['name' => 'Bot Davranışı', 'icon' => 'fas fa-robot', 'color' => 'danger', 'desc' => 'Çok düzenli aralıklarla dinleme'],
+        ];
+    @endphp
+
+    @if($patternCount > 0)
+    <div class="abuse-card mb-4">
+        <div class="abuse-card-header p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="text-white mb-0">
+                    <i class="fas fa-exclamation-triangle me-2 text-warning"></i>
+                    Tespit Edilen Şüpheli Davranışlar
+                </h5>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-warning text-dark">{{ $patternCount }} Pattern</span>
+                    <span class="badge bg-danger">+{{ $totalPatternScore }} Puan</span>
+                </div>
+            </div>
+        </div>
+        <div class="p-3">
+            <div class="row g-3">
+                @foreach($patterns as $key => $pattern)
+                    @php
+                        $meta = $patternMeta[$key] ?? ['name' => ucfirst(str_replace('_', ' ', $key)), 'icon' => 'fas fa-question', 'color' => 'secondary', 'desc' => ''];
+                        $severity = $pattern['severity'] ?? 'low';
+                        $severityColor = $severity === 'high' ? 'danger' : ($severity === 'medium' ? 'warning' : 'success');
+                        $severityLabel = $severity === 'high' ? 'Yüksek' : ($severity === 'medium' ? 'Orta' : 'Düşük');
+                    @endphp
+                    <div class="col-md-6 col-lg-4">
+                        <div class="p-3 rounded h-100" style="background: rgba({{ $severity === 'high' ? '239, 68, 68' : ($severity === 'medium' ? '245, 158, 11' : '34, 197, 94') }}, 0.1); border: 1px solid rgba({{ $severity === 'high' ? '239, 68, 68' : ($severity === 'medium' ? '245, 158, 11' : '34, 197, 94') }}, 0.3);">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="{{ $meta['icon'] }} text-{{ $meta['color'] }}"></i>
+                                    <span class="fw-bold text-white">{{ $meta['name'] }}</span>
+                                </div>
+                                <span class="badge bg-{{ $severityColor }}" style="font-size: 0.65rem;">{{ $severityLabel }}</span>
+                            </div>
+                            <p class="text-slate-400 small mb-2">{{ $meta['desc'] }}</p>
+
+                            {{-- Pattern'e özgü detaylar --}}
+                            @if($key === 'rapid_skips')
+                                <div class="text-slate-300 small">
+                                    <div><strong>{{ $pattern['count'] ?? 0 }}</strong> hızlı skip ({{ $pattern['rate'] ?? 0 }}%)</div>
+                                </div>
+                            @elseif($key === 'high_volume')
+                                <div class="text-slate-300 small">
+                                    <div><strong>{{ count($pattern['days'] ?? []) }}</strong> yüksek hacimli gün</div>
+                                    <div>Toplam fazla: <strong>{{ $pattern['total_excess'] ?? 0 }}</strong> şarkı</div>
+                                </div>
+                            @elseif($key === 'repeat_songs')
+                                <div class="text-slate-300 small">
+                                    @foreach(array_slice($pattern['songs'] ?? [], 0, 2) as $song)
+                                        <div class="text-truncate"><i class="fas fa-music me-1 text-slate-500"></i>{{ $song['title'] }} ({{ $song['count'] }}x)</div>
+                                    @endforeach
+                                </div>
+                            @elseif($key === 'multi_device')
+                                <div class="text-slate-300 small">
+                                    <div>Max <strong>{{ $pattern['max_devices'] ?? 0 }}</strong> cihaz/gün</div>
+                                </div>
+                            @elseif($key === 'suspicious_ip')
+                                <div class="text-slate-300 small">
+                                    <div>Max <strong>{{ $pattern['max_ips'] ?? 0 }}</strong> IP/gün</div>
+                                </div>
+                            @elseif($key === 'no_sleep')
+                                <div class="text-slate-300 small">
+                                    <div><strong>{{ count($pattern['nights'] ?? []) }}</strong> gece aktif</div>
+                                    <div>Toplam: <strong>{{ $pattern['total_night_plays'] ?? 0 }}</strong> gece dinlemesi</div>
+                                </div>
+                            @elseif($key === 'bot_like')
+                                <div class="text-slate-300 small">
+                                    <div>Ort. aralık: <strong>{{ $pattern['avg_interval'] ?? 0 }}sn</strong></div>
+                                    <div>Std sapma: <strong>{{ $pattern['std_deviation'] ?? 0 }}</strong></div>
+                                </div>
+                            @endif
+
+                            <div class="mt-2 pt-2" style="border-top: 1px solid rgba(71, 85, 105, 0.3);">
+                                <span class="text-{{ $severityColor }} fw-bold">+{{ $pattern['score'] ?? 0 }} puan</span>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+    @endif
 
     <!-- Üst Satır: 3 Kart -->
     <div class="row g-3 mb-4">
@@ -301,10 +416,17 @@
 
                 <!-- Day Tabs -->
                 <div class="p-3 border-bottom" style="border-color: rgba(71, 85, 105, 0.3) !important;">
-                    <div class="d-flex gap-2 flex-wrap">
+                    <div class="d-flex gap-2 flex-wrap align-items-center">
+                        <!-- Tümü butonu -->
+                        <div class="day-tab" :class="!selectedDate && 'active'" @click="selectDate(null)" style="background: rgba(59, 130, 246, 0.1);">
+                            <i class="fas fa-calendar-week me-1"></i> Tümü
+                            <span class="badge bg-secondary ms-1" style="font-size: 0.6rem;">{{ count($timelineData['items'] ?? []) }}</span>
+                        </div>
+                        <div class="border-start mx-2" style="height: 24px; border-color: rgba(71, 85, 105, 0.5) !important;"></div>
                         @foreach($report->daily_stats ?? [] as $date => $dayStat)
                             <div class="day-tab" :class="selectedDate === '{{ $date }}' && 'active'" @click="selectDate('{{ $date }}')">
                                 {{ \Carbon\Carbon::parse($date)->locale('tr')->isoFormat('D MMM ddd') }}
+                                <span class="badge bg-slate-600 ms-1" style="font-size: 0.6rem;">{{ $dayStat['plays'] ?? 0 }}</span>
                                 @if(($dayStat['overlaps'] ?? 0) > 0)
                                     <span class="overlap-count">{{ $dayStat['overlaps'] }}</span>
                                 @endif
@@ -320,104 +442,54 @@
                         $allOverlaps = $timelineData['overlaps'] ?? [];
                         $overlapIds = collect($allOverlaps)->flatMap(fn($o) => [$o['play1']['id'], $o['play2']['id']])->unique();
 
-                        // Seçili güne göre filtrele
-                        $selectedDateItems = $allItems;
-
                         // Zaman aralığını hesapla
                         if ($allItems->isNotEmpty()) {
                             $minTime = $allItems->min('start');
                             $maxTime = $allItems->max('end');
-                            $minTs = strtotime($minTime);
-                            $maxTs = strtotime($maxTime);
-                            $totalSeconds = max($maxTs - $minTs, 1);
                         } else {
-                            $minTs = $maxTs = $totalSeconds = 0;
+                            $minTime = $maxTime = null;
                         }
 
                         // Cihaz gruplarını oluştur (device_key bazlı)
                         $deviceGroups = $allItems->groupBy('device_key');
                     @endphp
 
-                    @if(count($allOverlaps) > 0)
-                    <!-- Genel Zaman Çizelgesi Başlık -->
+                    <!-- Genel Zaman Çizelgesi - vis-timeline (ALWAYS VISIBLE) -->
+                    @if($allItems->isNotEmpty())
                     <div class="abuse-card mb-4">
                         <div class="p-3" style="border-bottom: 1px solid rgba(71, 85, 105, 0.3);">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h6 class="text-white mb-0">
                                     <i class="fas fa-chart-gantt me-2 text-purple-400"></i>
-                                    Genel Zaman Çizelgesi
+                                    Dinleme Zaman Çizelgesi
+                                    <span class="badge bg-info ms-2" style="font-size: 0.6rem;">Interaktif</span>
                                 </h6>
-                                <span class="badge bg-danger">{{ count($allOverlaps) }} ÇAKIŞMA</span>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="text-slate-500 small"><i class="fas fa-mouse me-1"></i>Scroll: Zoom | Sürükle: Pan</span>
+                                    @if(count($allOverlaps) > 0)
+                                    <span class="badge bg-danger">{{ count($allOverlaps) }} ÇAKIŞMA</span>
+                                    @else
+                                    <span class="badge bg-success">Çakışma Yok</span>
+                                    @endif
+                                </div>
                             </div>
-                            @if($allItems->isNotEmpty())
-                            <div class="text-slate-500 small mt-1">
-                                {{ \Carbon\Carbon::parse($minTime)->format('H:i') }} - {{ \Carbon\Carbon::parse($maxTime)->format('H:i') }} arası
+                            <div class="text-slate-500 small mt-1" id="timelineRangeInfo">
+                                Seçili gün: <span x-text="selectedDate ? selectedDate : 'Tümü'"></span>
                             </div>
-                            @endif
                         </div>
 
-                        <div class="gantt-container">
-                            <!-- Zaman Ekseni -->
-                            <div class="gantt-time-axis">
-                                @php
-                                    // 5-6 zaman noktası göster
-                                    $timePoints = 6;
-                                    $interval = $totalSeconds / ($timePoints - 1);
-                                @endphp
-                                @for($i = 0; $i < $timePoints; $i++)
-                                    <span>{{ date('H:i', $minTs + ($interval * $i)) }}</span>
-                                @endfor
-                            </div>
-
-                            <!-- Her cihaz için satır -->
-                            @foreach($deviceGroups as $deviceKey => $devicePlays)
-                            @php
-                                $firstPlay = $devicePlays->first();
-                                $device = $firstPlay['group'] ?? 'desktop';
-                                $browser = $firstPlay['browser'] ?? 'other';
-                                $platform = $firstPlay['platform'] ?? 'Unknown';
-                            @endphp
-                            <div class="gantt-row">
-                                <div class="gantt-label">
-                                    <div class="d-flex align-items-center justify-content-end gap-1">
-                                        <i class="fas fa-{{ $device === 'mobile' ? 'mobile-alt' : ($device === 'tablet' ? 'tablet-alt' : 'desktop') }} text-{{ $device === 'mobile' ? 'success' : ($device === 'tablet' ? 'warning' : 'primary') }}" style="font-size: 0.8rem;"></i>
-                                        <span class="text-slate-400" style="font-size: 0.65rem;">{{ ucfirst($browser) }}</span>
-                                    </div>
-                                    <div class="text-slate-600" style="font-size: 0.55rem;">{{ Str::limit($platform, 10) }}</div>
-                                </div>
-                                <div class="gantt-track">
-                                    @foreach($devicePlays as $play)
-                                    @php
-                                        $playStart = strtotime($play['start']);
-                                        $playEnd = strtotime($play['end']);
-                                        $leftPercent = (($playStart - $minTs) / $totalSeconds) * 100;
-                                        $widthPercent = max((($playEnd - $playStart) / $totalSeconds) * 100, 3);
-                                        $isOverlap = $overlapIds->contains($play['id']);
-                                    @endphp
-                                    <div class="gantt-bar {{ $device }} {{ $isOverlap ? 'overlap' : '' }}"
-                                         style="left: {{ $leftPercent }}%; width: {{ $widthPercent }}%;"
-                                         title="{{ $play['content'] ?? 'Şarkı' }} ({{ \Carbon\Carbon::parse($play['start'])->format('H:i:s') }} - {{ \Carbon\Carbon::parse($play['end'])->format('H:i:s') }})">
-                                        <span>{{ \Carbon\Carbon::parse($play['start'])->format('H:i') }}</span>
-                                        <span>{{ \Carbon\Carbon::parse($play['end'])->format('H:i') }}</span>
-                                    </div>
-                                    @endforeach
-
-                                    <!-- Overlap işaretçileri -->
-                                    @foreach($allOverlaps as $overlap)
-                                    @php
-                                        $oStart = strtotime($overlap['overlap_start']);
-                                        $oEnd = strtotime($overlap['overlap_end']);
-                                        $oLeftPercent = (($oStart - $minTs) / $totalSeconds) * 100;
-                                        $oWidthPercent = max((($oEnd - $oStart) / $totalSeconds) * 100, 0.5);
-                                    @endphp
-                                    <div class="gantt-overlap-marker" style="left: {{ $oLeftPercent }}%; width: {{ $oWidthPercent }}%;"></div>
-                                    @endforeach
-                                </div>
-                            </div>
-                            @endforeach
+                        <div class="p-3">
+                            <div id="visTimeline" style="height: 300px;"></div>
                         </div>
                     </div>
+                    @else
+                    <div class="text-center text-slate-500 py-4">
+                        <i class="fas fa-inbox fa-2x mb-2"></i>
+                        <div>Bu dönemde dinleme kaydı yok</div>
+                    </div>
+                    @endif
 
+                    @if(count($allOverlaps) > 0)
                     <!-- Çakışma Detayları (v5 style) -->
                     <div class="text-danger small fw-bold mb-3">
                         <i class="fas fa-exclamation-triangle me-1"></i>
@@ -667,6 +739,155 @@
 <script>
 const dailyStatsData = @json($report->daily_stats ?? []);
 
+// vis-timeline için data
+const timelineItems = @json($timelineData['items'] ?? []);
+const timelineOverlaps = @json($timelineData['overlaps'] ?? []);
+const overlapIds = new Set(timelineOverlaps.flatMap(o => [o.play1.id, o.play2.id]));
+
+// Tarayıcı renkleri (Chromium tabanlı tarayıcılar dahil)
+const browserColors = {
+    'chrome': '#4285f4',
+    'safari': '#00d4ff',
+    'firefox': '#ff7139',
+    'edge': '#0078d7',
+    'opera': '#ff1b2d',
+    'brave': '#fb542b',
+    'vivaldi': '#ef3939',
+    'samsung': '#1428a0',
+    'yandex': '#ffcc00',
+    'ucbrowser': '#ff6600',
+    'ie': '#0076d6',
+    'other': '#9ca3af'
+};
+
+const browserIcons = {
+    'chrome': 'fab fa-chrome',
+    'safari': 'fab fa-safari',
+    'firefox': 'fab fa-firefox',
+    'edge': 'fab fa-edge',
+    'opera': 'fab fa-opera',
+    'brave': 'fab fa-brave',
+    'vivaldi': 'fas fa-v',
+    'samsung': 'fas fa-mobile-alt',
+    'yandex': 'fas fa-y',
+    'ucbrowser': 'fas fa-globe',
+    'ie': 'fab fa-internet-explorer',
+    'other': 'fas fa-globe'
+};
+
+// Tarih parse helper - hem MySQL hem ISO8601 formatını destekler
+function parseDate(dateStr) {
+    if (!dateStr) return new Date();
+    if (dateStr.includes('T')) {
+        return new Date(dateStr);
+    }
+    return new Date(dateStr.replace(' ', 'T') + '+03:00');
+}
+
+// Tarihi YYYY-MM-DD formatına çevir
+function toDateString(date) {
+    return date.toISOString().split('T')[0];
+}
+
+// Global timeline referansı
+let visTimeline = null;
+let visItems = null;
+let visGroups = null;
+let allParsedItems = [];
+
+// vis-timeline başlat
+console.log('🎯 Timeline Data:', {items: timelineItems.length, overlaps: timelineOverlaps.length});
+
+if (document.getElementById('visTimeline') && timelineItems.length > 0) {
+    // Dinamik tarayıcı listesi
+    const browsers = [...new Set(timelineItems.map(p => (p.browser || 'other').toLowerCase()))];
+
+    // Gruplar (tarayıcı bazlı)
+    visGroups = new vis.DataSet(browsers.map(b => ({
+        id: b,
+        content: `<i class="${browserIcons[b] || 'fas fa-globe'}" style="color:${browserColors[b] || '#9ca3af'}"></i> ${b.charAt(0).toUpperCase() + b.slice(1)}`,
+        style: 'min-height:45px;'
+    })));
+
+    // Tüm items'ı parse et ve sakla
+    allParsedItems = timelineItems.map(p => {
+        const browser = (p.browser || 'other').toLowerCase();
+        const isOverlap = overlapIds.has(p.id);
+        const bgColor = isOverlap ? '#ef4444' : (browserColors[browser] || '#9ca3af');
+        const textColor = (browser === 'safari' && !isOverlap) ? '#000' : '#fff';
+        const startTime = parseDate(p.start);
+        const endTime = parseDate(p.end);
+        const dateStr = toDateString(startTime);
+
+        const startStr = startTime.toLocaleTimeString('tr-TR', {hour: '2-digit', minute: '2-digit', second: '2-digit'});
+        const endStr = endTime.toLocaleTimeString('tr-TR', {hour: '2-digit', minute: '2-digit', second: '2-digit'});
+
+        return {
+            id: p.id,
+            group: browser,
+            content: (p.content || 'Şarkı').substring(0, 20),
+            start: startTime,
+            end: endTime,
+            dateStr: dateStr,
+            style: `background:${bgColor}; border-color:${bgColor}; color:${textColor};`,
+            className: isOverlap ? 'overlap' : '',
+            title: `<b>${p.content || 'Şarkı'}</b><br>${startStr} - ${endStr}<br>${dateStr}${isOverlap ? '<br><span style="color:#ef4444;font-weight:bold;">⚠️ ÇAKIŞMA!</span>' : ''}`
+        };
+    });
+
+    visItems = new vis.DataSet(allParsedItems);
+
+    try {
+        visTimeline = new vis.Timeline(document.getElementById('visTimeline'), visItems, visGroups, {
+            stack: true,
+            stackSubgroups: true,
+            zoomMin: 1000 * 60 * 5,       // Min 5 dakika
+            zoomMax: 1000 * 60 * 60 * 48, // Max 48 saat
+            orientation: { axis: 'top' },
+            tooltip: { followMouse: true, overflowMethod: 'cap' },
+            margin: { item: { horizontal: 2, vertical: 5 } }
+        });
+
+        // İlk yüklemede tüm veriye fit et
+        visTimeline.fit({ animation: false });
+
+        console.log('✅ vis-timeline başarıyla oluşturuldu!', {items: visItems.length, groups: visGroups.length});
+    } catch (e) {
+        console.error('❌ vis-timeline hatası:', e);
+    }
+}
+
+// Timeline'ı seçili tarihe göre filtrele
+function filterTimelineByDate(selectedDate) {
+    if (!visTimeline || !visItems) return;
+
+    if (!selectedDate) {
+        // Tüm verileri göster
+        visItems.clear();
+        visItems.add(allParsedItems);
+        visTimeline.fit({ animation: true });
+        return;
+    }
+
+    // Seçili güne göre filtrele
+    const filteredItems = allParsedItems.filter(item => item.dateStr === selectedDate);
+
+    if (filteredItems.length === 0) {
+        console.warn('⚠️ Seçili tarihte veri yok:', selectedDate);
+        return;
+    }
+
+    visItems.clear();
+    visItems.add(filteredItems);
+
+    // Filtreli veriye fit et
+    setTimeout(() => {
+        visTimeline.fit({ animation: true });
+    }, 100);
+
+    console.log(`📅 Tarih filtresi: ${selectedDate} → ${filteredItems.length} kayıt`);
+}
+
 function reportDetailApp() {
     return {
         selectedDate: null,
@@ -679,11 +900,20 @@ function reportDetailApp() {
                 // Çakışma olan ilk günü seç, yoksa son günü
                 const daysWithOverlaps = dates.filter(d => (dailyStatsData[d]?.overlaps || 0) > 0);
                 this.selectedDate = daysWithOverlaps.length > 0 ? daysWithOverlaps[0] : dates[dates.length - 1];
+
+                // İlk yüklemede timeline'ı filtrele
+                this.$nextTick(() => {
+                    filterTimelineByDate(this.selectedDate);
+                });
             }
         },
 
         selectDate(date) {
+            // Toggle: Aynı tarihe tıklanırsa tümünü göster
             this.selectedDate = this.selectedDate === date ? null : date;
+
+            // Timeline'ı filtrele
+            filterTimelineByDate(this.selectedDate);
         },
 
         async submitReview() {

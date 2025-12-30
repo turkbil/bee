@@ -47,6 +47,74 @@
         </div>
     </div>
 
+    <!-- 🔥 YENİ: Pattern Tespiti İstatistikleri -->
+    <div class="card mb-4" x-show="stats.with_patterns > 0">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                Tespit Edilen Şüpheli Davranışlar (Bugün)
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-6 col-md-4 col-lg-2" x-show="stats.pattern_counts?.rapid_skips > 0">
+                    <div class="d-flex align-items-center p-2 rounded" style="background: rgba(245, 158, 11, 0.1);">
+                        <i class="fas fa-forward text-warning me-2"></i>
+                        <div>
+                            <div class="fw-bold" x-text="stats.pattern_counts?.rapid_skips || 0"></div>
+                            <div class="text-muted small">Hızlı Skip</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2" x-show="stats.pattern_counts?.high_volume > 0">
+                    <div class="d-flex align-items-center p-2 rounded" style="background: rgba(239, 68, 68, 0.1);">
+                        <i class="fas fa-chart-line text-danger me-2"></i>
+                        <div>
+                            <div class="fw-bold" x-text="stats.pattern_counts?.high_volume || 0"></div>
+                            <div class="text-muted small">Yüksek Hacim</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2" x-show="stats.pattern_counts?.repeat_songs > 0">
+                    <div class="d-flex align-items-center p-2 rounded" style="background: rgba(59, 130, 246, 0.1);">
+                        <i class="fas fa-redo text-info me-2"></i>
+                        <div>
+                            <div class="fw-bold" x-text="stats.pattern_counts?.repeat_songs || 0"></div>
+                            <div class="text-muted small">Tekrar Şarkı</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2" x-show="stats.pattern_counts?.multi_device > 0">
+                    <div class="d-flex align-items-center p-2 rounded" style="background: rgba(139, 92, 246, 0.1);">
+                        <i class="fas fa-laptop text-purple me-2"></i>
+                        <div>
+                            <div class="fw-bold" x-text="stats.pattern_counts?.multi_device || 0"></div>
+                            <div class="text-muted small">Çoklu Cihaz</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2" x-show="stats.pattern_counts?.no_sleep > 0">
+                    <div class="d-flex align-items-center p-2 rounded" style="background: rgba(99, 102, 241, 0.1);">
+                        <i class="fas fa-moon text-indigo me-2"></i>
+                        <div>
+                            <div class="fw-bold" x-text="stats.pattern_counts?.no_sleep || 0"></div>
+                            <div class="text-muted small">24/7 Dinleme</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2" x-show="stats.pattern_counts?.bot_like > 0">
+                    <div class="d-flex align-items-center p-2 rounded" style="background: rgba(239, 68, 68, 0.15);">
+                        <i class="fas fa-robot text-danger me-2"></i>
+                        <div>
+                            <div class="fw-bold" x-text="stats.pattern_counts?.bot_like || 0"></div>
+                            <div class="text-muted small">Bot Davranışı</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Filters & Table -->
     <div class="card">
         <div class="card-header">
@@ -88,6 +156,7 @@
                             <th>Tarama Tarihi</th>
                             <th class="text-center">Play</th>
                             <th class="text-center">Çakışma</th>
+                            <th class="text-center">Pattern</th>
                             <th class="text-center">Skor</th>
                             <th class="text-center">Durum</th>
                             <th class="text-center">İnceleme</th>
@@ -97,14 +166,14 @@
                     <tbody>
                         <template x-if="loading">
                             <tr>
-                                <td colspan="9" class="text-center py-4">
+                                <td colspan="10" class="text-center py-4">
                                     <div class="spinner-border text-primary" role="status"></div>
                                 </td>
                             </tr>
                         </template>
                         <template x-if="!loading && reports.length === 0">
                             <tr>
-                                <td colspan="9" class="text-center py-4 text-muted">
+                                <td colspan="10" class="text-center py-4 text-muted">
                                     <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
                                     Henüz rapor bulunmuyor. Tarama başlatın.
                                 </td>
@@ -128,6 +197,14 @@
                                 <td class="text-center">
                                     <span class="badge" :class="report.overlap_count > 0 ? 'bg-warning' : 'bg-secondary'"
                                         x-text="report.overlap_count"></span>
+                                </td>
+                                <td class="text-center">
+                                    <template x-if="getPatternCount(report) > 0">
+                                        <span class="badge bg-danger" x-text="getPatternCount(report)"></span>
+                                    </template>
+                                    <template x-if="getPatternCount(report) === 0">
+                                        <span class="badge bg-secondary">0</span>
+                                    </template>
                                 </td>
                                 <td class="text-center">
                                     <span class="fw-bold" :class="{
@@ -197,11 +274,58 @@
                     <div class="mb-3">
                         <label class="form-label">Tarama Tipi</label>
                         <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="scanType" id="scanTypeSingle" value="single" x-model="scanType">
+                            <label class="btn btn-outline-success" for="scanTypeSingle">
+                                <i class="fas fa-user me-1"></i>Tek Kullanıcı
+                            </label>
                             <input type="radio" class="btn-check" name="scanType" id="scanTypePreset" value="preset" x-model="scanType">
                             <label class="btn btn-outline-primary" for="scanTypePreset">Hazır Periyot</label>
                             <input type="radio" class="btn-check" name="scanType" id="scanTypeCustom" value="custom" x-model="scanType">
                             <label class="btn btn-outline-primary" for="scanTypeCustom">Tarih Aralığı</label>
                         </div>
+                    </div>
+
+                    <!-- Tek Kullanıcı Tarama -->
+                    <div x-show="scanType === 'single'" class="mb-3">
+                        <label class="form-label">Kullanıcı Seç</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input type="text" class="form-control" placeholder="E-posta veya kullanıcı adı..."
+                                x-model="userSearch" @input.debounce.300ms="searchUsers()">
+                        </div>
+                        <div class="mt-2" x-show="userSearchResults.length > 0">
+                            <div class="list-group">
+                                <template x-for="user in userSearchResults" :key="user.id">
+                                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                        :class="selectedUserId === user.id ? 'active' : ''"
+                                        @click="selectUser(user)">
+                                        <div>
+                                            <strong x-text="user.name"></strong>
+                                            <small class="text-muted ms-2" x-text="user.email"></small>
+                                        </div>
+                                        <span class="badge bg-primary" x-text="'#' + user.id"></span>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="mt-2 text-muted small" x-show="userSearch.length > 0 && userSearchResults.length === 0 && !searchingUsers">
+                            <i class="fas fa-exclamation-circle me-1"></i>Kullanıcı bulunamadı
+                        </div>
+                        <div class="mt-2" x-show="selectedUserId">
+                            <div class="alert alert-success small py-2 mb-0">
+                                <i class="fas fa-check-circle me-1"></i>
+                                Seçili: <strong x-text="selectedUserName"></strong> (#<span x-text="selectedUserId"></span>)
+                            </div>
+                        </div>
+
+                        <label class="form-label mt-3">Tarama Periyodu</label>
+                        <select class="form-select" x-model="scanPeriod">
+                            <option value="7">Son 7 Gün</option>
+                            <option value="14">Son 14 Gün</option>
+                            <option value="30">Son 30 Gün</option>
+                            <option value="60">Son 60 Gün</option>
+                            <option value="90">Son 90 Gün</option>
+                        </select>
                     </div>
 
                     <!-- Hazır Periyot -->
@@ -233,9 +357,13 @@
 
                     <hr class="my-3">
 
-                    <div class="alert alert-info small mb-0">
+                    <div class="alert alert-info small mb-0" x-show="scanType !== 'single'">
                         <i class="fas fa-info-circle me-1"></i>
-                        <strong>Akıllı Tarama:</strong> Sadece seçilen dönemde şarkı dinleyen ve aktif aboneliği olan kullanıcılar taranır.
+                        <strong>Toplu Tarama:</strong> Seçilen dönemde şarkı dinleyen tüm aboneler taranır.
+                    </div>
+                    <div class="alert alert-success small mb-0" x-show="scanType === 'single'">
+                        <i class="fas fa-user-check me-1"></i>
+                        <strong>Tek Kullanıcı:</strong> Sadece seçtiğiniz kullanıcı taranır.
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -263,7 +391,9 @@ function abuseReportsApp() {
             clean: 0,
             suspicious: 0,
             abuse: 0,
-            last_scan: null
+            last_scan: null,
+            with_patterns: 0,
+            pattern_counts: {}
         },
         filters: {
             status: 'all',
@@ -281,6 +411,12 @@ function abuseReportsApp() {
         scanPeriod: 7,
         scanDateStart: '',
         scanDateEnd: '',
+        // Tek kullanıcı tarama
+        userSearch: '',
+        userSearchResults: [],
+        searchingUsers: false,
+        selectedUserId: null,
+        selectedUserName: '',
 
         init() {
             this.loadStats();
@@ -333,9 +469,38 @@ function abuseReportsApp() {
             this.loadReports(page);
         },
 
+        // Kullanıcı arama
+        async searchUsers() {
+            if (this.userSearch.length < 2) {
+                this.userSearchResults = [];
+                return;
+            }
+            this.searchingUsers = true;
+            try {
+                const res = await fetch('{{ route('admin.muzibu.abuse.api.users') }}?q=' + encodeURIComponent(this.userSearch));
+                this.userSearchResults = await res.json();
+            } catch (e) {
+                console.error('Kullanıcı araması başarısız:', e);
+                this.userSearchResults = [];
+            }
+            this.searchingUsers = false;
+        },
+
+        selectUser(user) {
+            this.selectedUserId = user.id;
+            this.selectedUserName = user.name;
+            this.userSearchResults = [];
+            this.userSearch = '';
+        },
+
         async startScan() {
             // Validasyon
-            if (this.scanType === 'custom') {
+            if (this.scanType === 'single') {
+                if (!this.selectedUserId) {
+                    alert('Lütfen taranacak kullanıcıyı seçin.');
+                    return;
+                }
+            } else if (this.scanType === 'custom') {
                 if (!this.scanDateStart || !this.scanDateEnd) {
                     alert('Lütfen başlangıç ve bitiş tarihi seçin.');
                     return;
@@ -348,14 +513,23 @@ function abuseReportsApp() {
 
             this.scanning = true;
             try {
-                // Request body hazırla
-                const body = this.scanType === 'preset'
-                    ? { period_days: parseInt(this.scanPeriod) }
-                    : { date_start: this.scanDateStart, date_end: this.scanDateEnd };
+                let url, body;
 
-                console.log('Scan request:', body);
+                if (this.scanType === 'single') {
+                    // Tek kullanıcı tarama
+                    url = '{{ route('admin.muzibu.abuse.scan.user', ['userId' => '__USER_ID__']) }}'.replace('__USER_ID__', this.selectedUserId);
+                    body = { period_days: parseInt(this.scanPeriod) };
+                } else {
+                    // Toplu tarama
+                    url = '{{ route('admin.muzibu.abuse.scan') }}';
+                    body = this.scanType === 'preset'
+                        ? { period_days: parseInt(this.scanPeriod) }
+                        : { date_start: this.scanDateStart, date_end: this.scanDateEnd };
+                }
 
-                const res = await fetch('{{ route('admin.muzibu.abuse.scan') }}', {
+                console.log('Scan request:', url, body);
+
+                const res = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -373,6 +547,10 @@ function abuseReportsApp() {
                     document.querySelector('#scanModal .btn-close')?.click();
 
                     alert('✅ ' + data.message);
+
+                    // Seçimi temizle
+                    this.selectedUserId = null;
+                    this.selectedUserName = '';
 
                     // Raporları yenile
                     setTimeout(() => {
@@ -409,6 +587,11 @@ function abuseReportsApp() {
                 'abuse': 'Suistimal'
             };
             return labels[status] || status;
+        },
+
+        getPatternCount(report) {
+            if (!report.patterns_json) return 0;
+            return Object.keys(report.patterns_json).length;
         }
     };
 }

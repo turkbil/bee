@@ -183,6 +183,10 @@ Route::middleware(['admin', 'tenant'])
                             ->middleware('module.permission:muzibu,view')
                             ->name('api.timeline');
 
+                        Route::get('/api/users', [\Modules\Muzibu\App\Http\Controllers\Admin\AbuseReportController::class, 'apiUsers'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('api.users');
+
                         // Liste sayfası
                         Route::get('/', [\Modules\Muzibu\App\Http\Controllers\Admin\AbuseReportController::class, 'index'])
                             ->middleware('module.permission:muzibu,view')
@@ -196,7 +200,7 @@ Route::middleware(['admin', 'tenant'])
                         // Tek kullanıcı tara
                         Route::post('/scan-user/{userId}', [\Modules\Muzibu\App\Http\Controllers\Admin\AbuseReportController::class, 'scanUser'])
                             ->middleware('module.permission:muzibu,create')
-                            ->name('scan-user');
+                            ->name('scan.user');
 
                         // Raporu incele/aksiyon al
                         Route::post('/{id}/review', [\Modules\Muzibu\App\Http\Controllers\Admin\AbuseReportController::class, 'review'])

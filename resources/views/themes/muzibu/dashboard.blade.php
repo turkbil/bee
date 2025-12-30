@@ -217,7 +217,60 @@
             </div>
         </div>
 
-        {{-- Playlists --}}
+        {{-- Playlists - Horizontal Scroll (Spotify Style) --}}
+        @if($playlists->count() > 0)
+        <div class="mb-6 sm:mb-8 relative group/scroll" x-data="{
+            scrollContainer: null,
+            scrollInterval: null,
+            startAutoScroll(direction) {
+                this.scrollInterval = setInterval(() => {
+                    this.scrollContainer.scrollBy({ left: direction === 'right' ? 20 : -20 });
+                }, 50);
+            },
+            stopAutoScroll() {
+                if (this.scrollInterval) {
+                    clearInterval(this.scrollInterval);
+                    this.scrollInterval = null;
+                }
+            }
+        }" x-init="scrollContainer = $refs.scrollContainer">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i class="fas fa-list-music text-purple-400"></i>
+                    {{ __('muzibu::front.dashboard.my_playlists') }}
+                </h2>
+                <a href="/muzibu/my-playlists" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/70 hover:text-white transition-all" title="{{ __('muzibu::front.dashboard.view_all') }}" data-spa>
+                    <i class="fas fa-chevron-right text-sm"></i>
+                </a>
+            </div>
+
+            {{-- Left Arrow --}}
+            <button
+                @click="scrollContainer.scrollBy({ left: -400, behavior: 'smooth' })"
+                @mouseenter="startAutoScroll('left')"
+                @mouseleave="stopAutoScroll()"
+                class="absolute left-[-12px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
+            >
+                <i class="fas fa-chevron-left"></i>
+            </button>
+
+            {{-- Right Arrow --}}
+            <button
+                @click="scrollContainer.scrollBy({ left: 400, behavior: 'smooth' })"
+                @mouseenter="startAutoScroll('right')"
+                @mouseleave="stopAutoScroll()"
+                class="absolute right-[-12px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
+            >
+                <i class="fas fa-chevron-right"></i>
+            </button>
+
+            <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
+                @foreach($playlists as $playlist)
+                    <x-muzibu.my-playlist-card :playlist="$playlist" :preview="true" :compact="true" />
+                @endforeach
+            </div>
+        </div>
+        @else
         <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden mb-6 sm:mb-8">
             <div class="flex items-center justify-between p-5 border-b border-white/10">
                 <h2 class="text-lg font-bold text-white flex items-center gap-2">
@@ -228,24 +281,15 @@
                     {{ __('muzibu::front.dashboard.view_all') }} <i class="fas fa-arrow-right ml-1"></i>
                 </a>
             </div>
-            @if($playlists->count() > 0)
-                <div class="p-4">
-                    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4">
-                        @foreach($playlists->take(5) as $playlist)
-                            <x-muzibu.my-playlist-card :playlist="$playlist" :preview="true" />
-                        @endforeach
-                    </div>
-                </div>
-            @else
-                <div class="p-8 text-center text-gray-400">
-                    <i class="fas fa-list-music text-4xl mb-3 opacity-50"></i>
-                    <p>{{ __('muzibu::front.dashboard.no_playlists_yet') }}</p>
-                    <a href="/muzibu/my-playlists" class="text-purple-400 hover:underline text-sm mt-2 inline-block">
-                        <i class="fas fa-plus mr-1"></i>{{ __('muzibu::front.dashboard.create_playlist') }}
-                    </a>
-                </div>
-            @endif
+            <div class="p-8 text-center text-gray-400">
+                <i class="fas fa-list-music text-4xl mb-3 opacity-50"></i>
+                <p>{{ __('muzibu::front.dashboard.no_playlists_yet') }}</p>
+                <a href="/muzibu/my-playlists" class="text-purple-400 hover:underline text-sm mt-2 inline-block">
+                    <i class="fas fa-plus mr-1"></i>{{ __('muzibu::front.dashboard.create_playlist') }}
+                </a>
+            </div>
         </div>
+        @endif
 
         {{-- Corporate Section (Alt Üye veya Kurumsal Değil) --}}
         @if($corporate && !$corporate['is_owner'])

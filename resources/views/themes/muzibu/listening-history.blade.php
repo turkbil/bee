@@ -3,7 +3,13 @@
 @section('title', __('muzibu::front.listening_history.title') . ' - Muzibu')
 
 @section('content')
-<div x-data="listeningHistory()">
+<div x-data="{
+    playSong(songId) {
+        if (window.MuzibuPlayer) {
+            window.MuzibuPlayer.playById(songId);
+        }
+    }
+}">
     <div class="px-4 py-6 sm:px-6 sm:py-8">
 
         {{-- Header --}}
@@ -42,7 +48,7 @@
                     <i class="fas fa-history text-5xl mb-4 opacity-50"></i>
                     <p class="text-lg mb-2">{{ __('muzibu::front.listening_history.no_history_yet') }}</p>
                     <p class="text-sm mb-4">{{ __('muzibu::front.listening_history.no_history_description') }}</p>
-                    <a href="/" class="inline-block px-6 py-2 bg-muzibu-coral hover:bg-red-600 text-white rounded-lg transition" data-spa>
+                    <a href="/" class="inline-block px-6 py-2 bg-gradient-to-r from-muzibu-coral to-[#ff9966] hover:opacity-90 text-white rounded-lg transition" data-spa>
                         <i class="fas fa-compass mr-2"></i>{{ __('muzibu::front.listening_history.discover') }}
                     </a>
                 </div>
@@ -52,17 +58,4 @@
     </div>
 </div>
 
-@push('scripts')
-<script>
-function listeningHistory() {
-    return {
-        playSong(songId) {
-            if (window.MuzibuPlayer) {
-                window.MuzibuPlayer.playById(songId);
-            }
-        }
-    }
-}
-</script>
-@endpush
 @endsection

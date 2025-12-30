@@ -32,6 +32,7 @@ class AbuseReport extends BaseModel
         'status',
         'overlaps_json',
         'daily_stats',
+        'patterns_json', // 🔥 YENİ: Tespit edilen pattern'ler
         'reviewed_by',
         'reviewed_at',
         'action_taken',
@@ -47,6 +48,7 @@ class AbuseReport extends BaseModel
         'abuse_score' => 'integer',
         'overlaps_json' => 'array',
         'daily_stats' => 'array',
+        'patterns_json' => 'array', // 🔥 YENİ
         'reviewed_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',

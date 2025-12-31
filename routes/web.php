@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StorageController;
 use App\Http\Controllers\DebugController;
 use App\Http\Controllers\FaviconController;
+use App\Http\Controllers\QrController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\InitializeTenancy;
 use Modules\Page\App\Http\Controllers\Front\PageController;
@@ -16,6 +17,12 @@ Route::get('/api/csrf-token', function () {
         'token' => csrf_token()
     ]);
 })->middleware('web');
+
+// 📱 UNIVERSAL QR GENERATOR
+// /qr/herhangi/path → herhangi/path için QR üretir
+Route::get('/qr/{path}', [QrController::class, 'generate'])
+    ->where('path', '.*')
+    ->name('qr.generate');
 
 // 🔐 SESSION CHECK - Tenant 1001 (Muzibu) için session kontrolü
 // 🔥 FIX: Bu route web.php'de olmalı (API middleware grubu session kullanmaz!)

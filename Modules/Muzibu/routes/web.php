@@ -14,6 +14,7 @@ use Modules\Muzibu\app\Http\Controllers\Front\RadioController;
 use Modules\Muzibu\app\Http\Controllers\Front\SongController;
 use Modules\Muzibu\App\Http\Controllers\Front\DashboardController;
 use Modules\Muzibu\App\Http\Controllers\Front\CorporateFrontController;
+use Modules\Muzibu\App\Http\Controllers\Front\CertificateController;
 
 // 🎵 FRONTEND ROUTES (Blade Views with SPA)
 // Loaded via ServiceProvider with:
@@ -54,6 +55,9 @@ Route::get('/radios', [RadioController::class, 'index'])->name('muzibu.radios.in
 Route::get('/corporate', [CorporateFrontController::class, 'index'])->name('muzibu.corporate.index');
 Route::get('/api/corporate', [CorporateFrontController::class, 'apiIndex'])->name('muzibu.corporate.api');
 
+// Certificate Verification (Public - No Auth Required)
+Route::get('/muzibu/certificate/{hash}', [CertificateController::class, 'verify'])->name('muzibu.certificate.verify');
+
 // User Library (Auth + Verified Required)
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/muzibu/favorites', [FavoritesController::class, 'index'])->name('muzibu.favorites');
@@ -73,6 +77,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // My Subscriptions (Abonelik Geçmişi)
     Route::get('/my-subscriptions', [DashboardController::class, 'subscriptions'])->name('muzibu.my-subscriptions');
     Route::get('/api/my-subscriptions', [DashboardController::class, 'apiSubscriptions'])->name('muzibu.my-subscriptions.api');
+
+    // Certificate Routes (Premium Sertifikası)
+    Route::get('/my-certificate', [CertificateController::class, 'index'])->name('muzibu.certificate.index');
+    Route::post('/my-certificate/preview', [CertificateController::class, 'preview'])->name('muzibu.certificate.preview');
+    Route::post('/my-certificate', [CertificateController::class, 'store'])->name('muzibu.certificate.store');
+    Route::get('/my-certificate/download', [CertificateController::class, 'download'])->name('muzibu.certificate.download');
 
     // Corporate Routes (Frontend - Auth Required)
     Route::prefix('corporate')->name('muzibu.corporate.')->group(function () {
@@ -110,6 +120,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/my-corporate', [CorporateFrontController::class, 'apiMyCorporate'])->name('api.corporate.my');
         Route::get('/subscriptions', [CorporateFrontController::class, 'apiSubscriptions'])->name('api.corporate.subscriptions');
         Route::get('/member/{id}/history', [CorporateFrontController::class, 'apiMemberHistory'])->name('api.corporate.member-history');
+    });
+
+    // 📢 Spot (Anons) API Routes
+    Route::prefix('api/spot')->group(function () {
+        Route::get('/settings', [CorporateFrontController::class, 'apiSpotSettings'])->name('api.spot.settings');
+        Route::get('/next', [CorporateFrontController::class, 'apiNextSpot'])->name('api.spot.next');
+        Route::post('/play-start', [CorporateFrontController::class, 'apiSpotPlayStart'])->name('api.spot.play-start');
+        Route::post('/play-end', [CorporateFrontController::class, 'apiSpotPlayEnd'])->name('api.spot.play-end');
+        Route::post('/toggle-pause', [CorporateFrontController::class, 'apiSpotTogglePause'])->name('api.spot.toggle-pause');
     });
 });
 

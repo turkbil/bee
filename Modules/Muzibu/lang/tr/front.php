@@ -310,6 +310,7 @@ return [
         // Library
         'my_library' => 'Kitaplığım',
         'my_playlists' => 'Playlistlerim',
+        'corporate_playlists' => 'Kurumsallist',
         'create_playlist' => 'Playlist Oluştur',
 
         // Membership
@@ -517,5 +518,25 @@ return [
         'enter_code' => '8 haneli kurumsal kod',
         'code_hint' => 'Kurumsal davet kodunuzu şirketinizden alabilirsiniz.',
         'error' => 'Bir hata oluştu.',
+
+        // Corporate Playlists
+        'playlists_title' => 'Kurumsal Playlistler',
+        'exclusive_playlists' => 'Size Ozel Muzik Koleksiyonu',
+        'no_corporate_yet' => 'Henuz Kurumsal Uyesiniz Degil',
+        'join_for_playlists' => 'Kurumsal playlistlere erismek icin bir kurumsal hesaba katilmaniz gerekiyor.',
+
+        // Custom Playlists Premium CTA
+        'custom_playlists_title' => 'Firmaniza Ozel Playlist Olusturalim',
+        'custom_playlists_description' => 'Muzibu ekibi, is yerinizin atmosferine uygun ozel muzik listeleri hazirlasin. Profesyonel kurator ekibimiz sizin icin en uygun muzikleri secsin.',
+        'contact_for_playlists' => 'Iletisime Gecin',
+        'custom_playlists_note' => 'Kurumsal playlist hizmeti, premium kurumsal paketinize dahildir. Detaylar icin bizimle iletisime gecin.',
+
+        // Custom Playlist Features
+        'feature_curated' => 'Profesyonel Secim',
+        'feature_curated_desc' => 'Uzman muzik kuratorlerimiz tarafindan ozenle secilmis parcalar.',
+        'feature_tailored' => 'Sektorunuze Ozel',
+        'feature_tailored_desc' => 'Is yerinizin atmosferine ve musterilerinize uygun muzik.',
+        'feature_updated' => 'Surekli Guncelleme',
+        'feature_updated_desc' => 'Playlistleriniz duzenlolarak yeni parcalarla guncellenir.',
     ],
 ];

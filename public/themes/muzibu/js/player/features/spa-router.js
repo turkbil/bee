@@ -16,7 +16,7 @@ const MuzibuSpaRouter = {
 
     // 🔴 DYNAMIC PAGES: User-specific content - NEVER cache!
     // Bu sayfalar kullanıcıya özel içerik gösterir, cache'lenmemeli
-    dynamicPaths: ['/favorites', '/my-playlists', '/dashboard', '/listening-history', '/corporate', '/cart', '/checkout', '/my-subscriptions', '/subscription-success'],
+    dynamicPaths: ['/muzibu/favorites', '/muzibu/my-playlists', '/dashboard', '/muzibu/listening-history', '/corporate', '/muzibu/corporate-playlists', '/cart', '/checkout', '/my-subscriptions', '/subscription-success'],
 
     // 🚀 PREFETCH SYSTEM
     prefetchCache: new Map(), // URL → {html, timestamp}

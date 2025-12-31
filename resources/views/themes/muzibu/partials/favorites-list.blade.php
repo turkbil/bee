@@ -8,25 +8,25 @@
     {{-- Modern Filter Tabs --}}
     <div class="mb-8">
         <nav class="flex gap-4 overflow-x-auto scrollbar-hide pb-2" x-data="{ activeTab: '{{ $type }}' }">
-            <a href="/favorites?type=all"
+            <a href="/muzibu/favorites?type=all"
                class="flex-shrink-0 px-6 py-3 rounded-full font-semibold text-base transition-all duration-200"
                :class="activeTab === 'all' ? 'bg-muzibu-coral text-white shadow-lg shadow-muzibu-coral/30' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'">
                 <i class="fas fa-heart mr-2"></i>
                 Tümü
             </a>
-            <a href="/favorites?type=songs"
+            <a href="/muzibu/favorites?type=songs"
                class="flex-shrink-0 px-6 py-3 rounded-full font-semibold text-base transition-all duration-200"
                :class="activeTab === 'songs' ? 'bg-muzibu-coral text-white shadow-lg shadow-muzibu-coral/30' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'">
                 <i class="fas fa-music mr-2"></i>
                 Şarkılar
             </a>
-            <a href="/favorites?type=albums"
+            <a href="/muzibu/favorites?type=albums"
                class="flex-shrink-0 px-6 py-3 rounded-full font-semibold text-base transition-all duration-200"
                :class="activeTab === 'albums' ? 'bg-muzibu-coral text-white shadow-lg shadow-muzibu-coral/30' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'">
                 <i class="fas fa-record-vinyl mr-2"></i>
                 Albümler
             </a>
-            <a href="/favorites?type=playlists"
+            <a href="/muzibu/favorites?type=playlists"
                class="flex-shrink-0 px-6 py-3 rounded-full font-semibold text-base transition-all duration-200"
                :class="activeTab === 'playlists' ? 'bg-muzibu-coral text-white shadow-lg shadow-muzibu-coral/30' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'">
                 <i class="fas fa-list-music mr-2"></i>

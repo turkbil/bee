@@ -416,6 +416,8 @@
             'muzibu.search',
             'muzibu.favorites',
             'muzibu.my-playlists',
+            'muzibu.corporate-playlists',
+            'muzibu.listening-history',
         ]);
 
         // Grid class'ları - PHP initial, Alpine SPA override

@@ -1346,8 +1346,10 @@ document.addEventListener('alpine:init', () => {
                 '/', '/home',
                 '/songs', '/albums', '/artists', '/playlists',
                 '/genres', '/sectors', '/radios', '/search',
-                '/muzibu/favorites', '/favorites',
-                '/muzibu/my-playlists', '/my-playlists'
+                '/muzibu/favorites',
+                '/muzibu/my-playlists',
+                '/muzibu/corporate-playlists',
+                '/muzibu/listening-history'
             ];
             return routes.some(route => {
                 if (route === '/') return path === '/';
@@ -1360,8 +1362,10 @@ document.addEventListener('alpine:init', () => {
             '/', '/home',
             '/songs', '/albums', '/artists', '/playlists',
             '/genres', '/sectors', '/radios', '/search',
-            '/muzibu/favorites', '/favorites',
-            '/muzibu/my-playlists', '/my-playlists'
+            '/muzibu/favorites',
+            '/muzibu/my-playlists',
+            '/muzibu/corporate-playlists',
+            '/muzibu/listening-history'
         ],
 
         /**

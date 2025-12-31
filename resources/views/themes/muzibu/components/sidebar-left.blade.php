@@ -20,6 +20,11 @@
                     <i :class="h ? 'fas' : 'fal'" class="fa-heart w-5 text-base transition-all duration-200"></i>
                     <span class="font-medium text-sm">{{ trans('muzibu::front.general.favorites') }}</span>
                 </a>
+                <a href="/muzibu/corporate-playlists" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg transition-all duration-300"
+                   x-data="{ h: false }" @mouseenter="h = true" @mouseleave="h = false">
+                    <i :class="h ? 'fas' : 'fal'" class="fa-briefcase w-5 text-base transition-all duration-200"></i>
+                    <span class="font-medium text-sm">{{ trans('muzibu::front.sidebar.corporate_playlists') }}</span>
+                </a>
             </nav>
         </div>
 

@@ -58,6 +58,8 @@ Route::get('/api/corporate', [CorporateFrontController::class, 'apiIndex'])->nam
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/muzibu/favorites', [FavoritesController::class, 'index'])->name('muzibu.favorites');
     Route::get('/muzibu/my-playlists', [MyPlaylistsController::class, 'index'])->name('muzibu.my-playlists');
+    Route::get('/muzibu/corporate-playlists', [CorporateFrontController::class, 'playlists'])->name('muzibu.corporate-playlists');
+    Route::get('/api/muzibu/corporate-playlists', [CorporateFrontController::class, 'apiPlaylists'])->name('muzibu.corporate-playlists.api');
 
     // Playlist Management (Edit Page)
     Route::get('/muzibu/playlist/{slug}/edit', [MyPlaylistsController::class, 'edit'])->name('muzibu.playlist.edit');

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Sertifika Sistemi - Final Plan v4</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .font-playfair { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-gray-100 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-green-600/20 border border-green-500 rounded-full text-green-400 text-sm mb-4">
+                <i class="fas fa-check-circle"></i>
+                <span>Final Plan v4</span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-2">
+                <i class="fas fa-certificate text-amber-400"></i> Muzibu Sertifika Sistemi
+            </h1>
+            <p class="text-gray-400">31 Aralık 2025 - Onaylanmış Final Plan</p>
+        </header>
+
+        <!-- Kararlar Özeti -->
+        <section class="bg-gradient-to-r from-green-900/30 to-emerald-900/30 border-2 border-green-500 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-semibold text-green-400 mb-4">
+                <i class="fas fa-gavel mr-2"></i> Alınan Kararlar
+            </h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-check text-green-400"></i>
+                    <span><strong>Erişim:</strong> Sadece aktif premium üyeler</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-check text-green-400"></i>
+                    <span><strong>Kayıt:</strong> DB'ye kaydet (doğrulama için)</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-check text-green-400"></i>
+                    <span><strong>Dil:</strong> Sadece Türkçe</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-check text-green-400"></i>
+                    <span><strong>Tasarım:</strong> Dark mode + Gold</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-check text-green-400"></i>
+                    <span><strong>Format:</strong> A4 Yatay (Landscape)</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-check text-green-400"></i>
+                    <span><strong>Tablo:</strong> Tek tablo (certificates)</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-check text-green-400"></i>
+                    <span><strong>Sayaç:</strong> view_count (ziyarette +1)</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-check text-green-400"></i>
+                    <span><strong>URL:</strong> Hash bazlı (ID gizli)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Basit Anlatım -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-semibold text-blue-400 mb-4">
+                <i class="fas fa-user-friends mr-2"></i> Nasıl Çalışacak? (Basit Anlatım)
+            </h2>
+            <div class="space-y-4 text-gray-300">
+                <div class="flex gap-4 items-start">
+                    <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">1</div>
+                    <div>
+                        <p class="font-medium text-white">Üye dashboard'a girer</p>
+                        <p class="text-sm text-gray-400">"Sertifikamı İndir" butonu görür</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 items-start">
+                    <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">2</div>
+                    <div>
+                        <p class="font-medium text-white">Butona tıklar</p>
+                        <p class="text-sm text-gray-400">Sistem sertifikayı oluşturur (ilk seferde) veya mevcut olanı verir</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 items-start">
+                    <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">3</div>
+                    <div>
+                        <p class="font-medium text-white">PDF indirilir</p>
+                        <p class="text-sm text-gray-400">Şık sertifika + QR kod içerir</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 items-start">
+                    <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">4</div>
+                    <div>
+                        <p class="font-medium text-white">Biri QR'ı tarar</p>
+                        <p class="text-sm text-gray-400">muzibu.com.tr/verify/xyz123 açılır → "Geçerli" veya "Geçersiz" yazar</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Veritabanı -->
+        <section class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-semibold text-white mb-6">
+                <i class="fas fa-database text-amber-400 mr-2"></i> Veritabanı: certificates
+            </h2>
+
+            <p class="text-gray-400 mb-4">Tek tablo, basit yapı:</p>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-left text-gray-400 border-b border-slate-600">
+                            <th class="pb-3 pr-4">Kolon</th>
+                            <th class="pb-3 pr-4">Tip</th>
+                            <th class="pb-3">Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-300">
+                        <tr class="border-b border-slate-700">
+                            <td class="py-3 pr-4"><code class="text-amber-400">id</code></td>
+                            <td class="pr-4">bigint</td>
+                            <td>Primary key (dahili kullanım)</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-3 pr-4"><code class="text-amber-400">user_id</code></td>
+                            <td class="pr-4">bigint</td>
+                            <td>Sertifika sahibi <span class="text-red-400">(değiştirilemez)</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-3 pr-4"><code class="text-amber-400">subscription_id</code></td>
+                            <td class="pr-4">bigint</td>
+                            <td>İlgili abonelik</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-3 pr-4"><code class="text-green-400">certificate_code</code></td>
+                            <td class="pr-4">varchar(32)</td>
+                            <td>Görünen kod: <code>MZB-2025-A1B2</code></td>
+                        </tr>
+                        <tr class="border-b border-slate-700 bg-purple-900/20">
+                            <td class="py-3 pr-4"><code class="text-purple-400">qr_hash</code></td>
+                            <td class="pr-4">varchar(64)</td>
+                            <td><strong>URL'de kullanılan şifreli hash</strong> (ID yerine bu kullanılır)</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-3 pr-4"><code class="text-blue-400">member_name</code></td>
+                            <td class="pr-4">varchar</td>
+                            <td>Üye adı (snapshot)</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-3 pr-4"><code class="text-blue-400">member_email</code></td>
+                            <td class="pr-4">varchar</td>
+                            <td>Üye email (snapshot)</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-3 pr-4"><code class="text-blue-400">membership_start</code></td>
+                            <td class="pr-4">date</td>
+                            <td>Üyelik başlangıç</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-3 pr-4"><code class="text-blue-400">membership_end</code></td>
+                            <td class="pr-4">date</td>
+                            <td>Üyelik bitiş</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-3 pr-4"><code class="text-blue-400">plan_name</code></td>
+                            <td class="pr-4">varchar</td>
+                            <td>Plan adı (Yıllık Premium vb.)</td>
+                        </tr>
+                        <tr class="border-b border-slate-700 bg-green-900/20">
+                            <td class="py-3 pr-4"><code class="text-green-400">view_count</code></td>
+                            <td class="pr-4">int</td>
+                            <td><strong>Sayaç:</strong> Doğrulama sayfası her açıldığında +1</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-3 pr-4"><code class="text-gray-400">issued_at</code></td>
+                            <td class="pr-4">datetime</td>
+                            <td>Sertifika oluşturulma tarihi</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-3 pr-4"><code class="text-gray-400">is_valid</code></td>
+                            <td class="pr-4">boolean</td>
+                            <td>Geçerli mi? (admin iptal edebilir)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 pr-4"><code class="text-gray-500">timestamps</code></td>
+                            <td class="pr-4">datetime</td>
+                            <td>created_at, updated_at</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 bg-slate-700/50 rounded-lg p-4">
+                <h3 class="text-amber-400 font-medium mb-2"><i class="fas fa-shield-alt mr-2"></i> Güvenlik: Hash Bazlı URL</h3>
+                <p class="text-gray-400 text-sm mb-3">ID yerine hash kullanılır, kimse başkasının sertifikasını tahmin edemez:</p>
+                <div class="grid md:grid-cols-2 gap-4 text-sm">
+                    <div class="bg-red-900/30 rounded p-3">
+                        <p class="text-red-400 font-medium">❌ Yanlış (ID ile)</p>
+                        <code class="text-gray-400">/verify/1</code>
+                        <code class="text-gray-400">/verify/2</code>
+                        <code class="text-gray-400">/verify/3</code>
+                        <p class="text-xs text-red-300 mt-1">Herkes sırayla deneyebilir!</p>
+                    </div>
+                    <div class="bg-green-900/30 rounded p-3">
+                        <p class="text-green-400 font-medium">✅ Doğru (Hash ile)</p>
+                        <code class="text-gray-400">/verify/a8f3d2e1...</code>
+                        <code class="text-gray-400">/verify/7bc92fa4...</code>
+                        <p class="text-xs text-green-300 mt-1">Tahmin edilemez, sadece QR'dan ulaşılır</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sertifika Tasarımı -->
+        <section class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-semibold text-white mb-6">
+                <i class="fas fa-palette text-purple-400 mr-2"></i> Sertifika Tasarımı (Dark + Gold)
+            </h2>
+
+            <!-- Certificate Preview -->
+            <div class="overflow-x-auto pb-4">
+                <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-lg mx-auto shadow-2xl" style="width: 842px; height: 500px; min-width: 842px;">
+                    <div class="h-full p-4">
+                        <div class="h-full border-4 border-amber-500/60 rounded-lg p-2">
+                            <div class="h-full border-2 border-amber-400/40 rounded p-6 relative overflow-hidden">
+
+                                <!-- Corner Decorations -->
+                                <div class="absolute top-4 left-4 w-12 h-12 border-l-4 border-t-4 border-amber-400/60 rounded-tl-lg"></div>
+                                <div class="absolute top-4 right-4 w-12 h-12 border-r-4 border-t-4 border-amber-400/60 rounded-tr-lg"></div>
+                                <div class="absolute bottom-4 left-4 w-12 h-12 border-l-4 border-b-4 border-amber-400/60 rounded-bl-lg"></div>
+                                <div class="absolute bottom-4 right-4 w-12 h-12 border-r-4 border-b-4 border-amber-400/60 rounded-br-lg"></div>
+
+                                <div class="relative h-full flex">
+                                    <!-- Left: Logo -->
+                                    <div class="w-40 flex flex-col items-center justify-center border-r border-amber-500/30 pr-4">
+                                        <div class="w-20 h-20 bg-gradient-to-br from-purple-500 via-pink-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-purple-500/30 mb-3">
+                                            <i class="fas fa-music text-white text-3xl"></i>
+                                        </div>
+                                        <h3 class="font-playfair text-2xl font-bold text-amber-400">Muzibu</h3>
+                                        <p class="text-amber-500/60 text-xs tracking-widest uppercase">Premium</p>
+                                    </div>
+
+                                    <!-- Center: Content -->
+                                    <div class="flex-1 flex flex-col justify-center px-6">
+                                        <div class="text-center mb-4">
+                                            <p class="text-amber-400/60 text-sm tracking-widest uppercase mb-1">Premium Üyelik</p>
+                                            <h2 class="font-playfair text-3xl font-bold text-white">SERTİFİKASI</h2>
+                                        </div>
+
+                                        <div class="text-center mb-4">
+                                            <p class="text-gray-400 italic mb-2">Bu belge,</p>
+                                            <p class="font-playfair text-2xl font-bold text-white border-b-2 border-amber-400 pb-1 inline-block px-6">[Ad Soyad]</p>
+                                            <p class="text-gray-400 mt-2">kişisinin <span class="text-amber-400">Muzibu Premium</span> üyesi olduğunu tasdik eder.</p>
+                                        </div>
+
+                                        <div class="flex justify-center gap-8 text-center text-sm">
+                                            <div>
+                                                <p class="text-gray-500 uppercase text-xs">Başlangıç</p>
+                                                <p class="text-gray-300">[01.01.2025]</p>
+                                            </div>
+                                            <div class="w-px bg-amber-500/30"></div>
+                                            <div>
+                                                <p class="text-gray-500 uppercase text-xs">Geçerlilik</p>
+                                                <p class="text-gray-300">[01.01.2026]</p>
+                                            </div>
+                                            <div class="w-px bg-amber-500/30"></div>
+                                            <div>
+                                                <p class="text-gray-500 uppercase text-xs">Plan</p>
+                                                <p class="text-amber-400">[Yıllık Premium]</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right: QR -->
+                                    <div class="w-40 flex flex-col items-center justify-center border-l border-amber-500/30 pl-4">
+                                        <div class="bg-white p-2 rounded-lg shadow-lg mb-3">
+                                            <div class="w-24 h-24 bg-slate-100 rounded flex items-center justify-center">
+                                                <i class="fas fa-qrcode text-5xl text-slate-700"></i>
+                                            </div>
+                                        </div>
+                                        <p class="text-gray-500 text-xs text-center mb-3">Doğrulamak için tarayın</p>
+                                        <div class="text-center">
+                                            <p class="text-gray-500 text-xs">Sertifika No</p>
+                                            <p class="font-mono text-sm text-amber-400 font-bold">MZB-2025-XXXX</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Bottom Note -->
+                                <div class="absolute bottom-2 left-0 right-0 text-center">
+                                    <p class="text-xs text-gray-600">
+                                        <i class="fas fa-shield-alt mr-1"></i>
+                                        muzibu.com.tr/verify • Bu sertifika QR kod ile doğrulanabilir
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Doğrulama Sayfası -->
+        <section class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-semibold text-white mb-6">
+                <i class="fas fa-check-circle text-green-400 mr-2"></i> Doğrulama Sayfası (/verify/{hash})
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Geçerli -->
+                <div class="bg-gradient-to-br from-green-900/30 to-green-800/20 border border-green-600 rounded-lg p-6 text-center">
+                    <div class="w-16 h-16 bg-green-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i class="fas fa-check text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-green-400 text-xl font-bold mb-2">Geçerli Sertifika</h3>
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-left text-sm">
+                        <p><span class="text-gray-500">Ad Soyad:</span> <span class="text-white">Ahmet Yılmaz</span></p>
+                        <p><span class="text-gray-500">Üyelik:</span> <span class="text-white">01.01.2025 - 01.01.2026</span></p>
+                        <p><span class="text-gray-500">Plan:</span> <span class="text-amber-400">Yıllık Premium</span></p>
+                        <p><span class="text-gray-500">Sertifika No:</span> <span class="text-amber-400 font-mono">MZB-2025-A1B2</span></p>
+                        <p class="mt-2 pt-2 border-t border-slate-700"><span class="text-gray-500">Görüntülenme:</span> <span class="text-white">47 kez</span></p>
+                    </div>
+                </div>
+
+                <!-- Geçersiz -->
+                <div class="bg-gradient-to-br from-red-900/30 to-red-800/20 border border-red-600 rounded-lg p-6 text-center">
+                    <div class="w-16 h-16 bg-red-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i class="fas fa-times text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-red-400 text-xl font-bold mb-2">Geçersiz Sertifika</h3>
+                    <p class="text-gray-400">Bu sertifika bulunamadı veya iptal edilmiş.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Oluşturulacak Dosyalar -->
+        <section class="bg-purple-900/20 border border-purple-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-semibold text-purple-400 mb-6">
+                <i class="fas fa-folder-open mr-2"></i> Oluşturulacak Dosyalar
+            </h2>
+
+            <div class="space-y-3 text-sm">
+                <div class="flex items-center gap-3 bg-slate-800 rounded-lg p-3">
+                    <i class="fas fa-database text-amber-400 w-5"></i>
+                    <code class="text-gray-300">Modules/Subscription/database/migrations/tenant/create_certificates_table.php</code>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-800 rounded-lg p-3">
+                    <i class="fas fa-cube text-blue-400 w-5"></i>
+                    <code class="text-gray-300">Modules/Subscription/app/Models/Certificate.php</code>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-800 rounded-lg p-3">
+                    <i class="fas fa-cogs text-green-400 w-5"></i>
+                    <code class="text-gray-300">Modules/Subscription/app/Services/CertificateService.php</code>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-800 rounded-lg p-3">
+                    <i class="fas fa-code text-purple-400 w-5"></i>
+                    <code class="text-gray-300">Modules/Subscription/app/Http/Controllers/Front/CertificateController.php</code>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-800 rounded-lg p-3">
+                    <i class="fas fa-file-pdf text-red-400 w-5"></i>
+                    <code class="text-gray-300">Modules/Subscription/resources/views/certificate/template.blade.php</code>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-800 rounded-lg p-3">
+                    <i class="fas fa-globe text-cyan-400 w-5"></i>
+                    <code class="text-gray-300">resources/views/themes/muzibu/certificate/verify.blade.php</code>
+                </div>
+            </div>
+        </section>
+
+        <!-- Route'lar -->
+        <section class="bg-cyan-900/20 border border-cyan-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-semibold text-cyan-400 mb-6">
+                <i class="fas fa-route mr-2"></i> URL Yapısı
+            </h2>
+
+            <div class="space-y-3">
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="px-2 py-1 bg-green-600 text-white text-xs rounded">GET</span>
+                        <code class="text-amber-400">/my-certificate</code>
+                        <span class="px-2 py-1 bg-red-600/50 text-red-300 text-xs rounded">Auth</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Sertifika PDF indir (sadece giriş yapmış premium üye)</p>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="px-2 py-1 bg-green-600 text-white text-xs rounded">GET</span>
+                        <code class="text-amber-400">/verify/{hash}</code>
+                        <span class="px-2 py-1 bg-blue-600/50 text-blue-300 text-xs rounded">Public</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Sertifika doğrulama sayfası (herkes erişebilir, view_count +1)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Akış -->
+        <section class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-semibold text-white mb-6">
+                <i class="fas fa-project-diagram mr-2"></i> Sistem Akışı
+            </h2>
+
+            <div class="space-y-4">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold">1</div>
+                    <div class="flex-1 bg-slate-700/50 rounded-lg p-4">
+                        <p class="text-white font-medium">Üye "Sertifikamı İndir" butonuna tıklar</p>
+                        <p class="text-gray-400 text-sm">Dashboard sayfasında buton görünür (sadece aktif premium üyelere)</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold">2</div>
+                    <div class="flex-1 bg-slate-700/50 rounded-lg p-4">
+                        <p class="text-white font-medium">Sistem sertifika oluşturur veya mevcut olanı getirir</p>
+                        <p class="text-gray-400 text-sm">İlk indirmede DB'ye kayıt oluşur, sonrakilerde aynı sertifika verilir</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold">3</div>
+                    <div class="flex-1 bg-slate-700/50 rounded-lg p-4">
+                        <p class="text-white font-medium">PDF oluşturulur ve indirilir</p>
+                        <p class="text-gray-400 text-sm">Dark gold tasarım, A4 yatay, QR kod içerir</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-amber-600 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold">4</div>
+                    <div class="flex-1 bg-slate-700/50 rounded-lg p-4">
+                        <p class="text-white font-medium">Biri QR kodu tarar</p>
+                        <p class="text-gray-400 text-sm">/verify/{hash} açılır → Sertifika bilgileri gösterilir → view_count +1</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gereksinimler -->
+        <section class="bg-amber-900/20 border border-amber-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-semibold text-amber-400 mb-4">
+                <i class="fas fa-tools mr-2"></i> Gereksinimler
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <p class="text-white font-medium mb-1"><i class="fas fa-check text-green-400 mr-2"></i> barryvdh/laravel-dompdf</p>
+                    <p class="text-gray-400 text-sm">PDF oluşturma (zaten yüklü)</p>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <p class="text-white font-medium mb-1"><i class="fas fa-check text-green-400 mr-2"></i> simplesoftwareio/simple-qrcode</p>
+                    <p class="text-gray-400 text-sm">QR kod oluşturma (yüklenecek)</p>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <p class="text-white font-medium mb-1"><i class="fas fa-key text-amber-400 mr-2"></i> .env ayarı</p>
+                    <p class="text-gray-400 text-sm">CERTIFICATE_SECRET_KEY=random_string</p>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <p class="text-white font-medium mb-1"><i class="fas fa-database text-blue-400 mr-2"></i> Migration</p>
+                    <p class="text-gray-400 text-sm">php artisan tenants:migrate</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 text-sm mt-12 pt-6 border-t border-slate-700">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-green-900/30 border border-green-600 rounded-full text-green-400 mb-4">
+                <i class="fas fa-check-circle"></i>
+                <span>Onay bekliyor</span>
+            </div>
+            <p><i class="fas fa-robot mr-1"></i> Claude AI tarafından hazırlandı</p>
+            <p class="mt-1">v4 Final - 31 Aralık 2025</p>
+        </footer>
+
+    </div>
+</body>
+</html>

@@ -36,14 +36,16 @@
 
 @section('content')
 @php
-    $patterns = $report->patterns_json ?? [];
+    // 🔥 PERFORMANS: Controller'dan gelen limitli veriler kullan
+    $patterns = $limitedPatterns ?? $report->patterns_json ?? [];
     $isEarlyExit = $patterns['early_exit'] ?? false;
     $pingPong = $patterns['ping_pong'] ?? ['detected' => false];
     $concurrent = $patterns['concurrent_different'] ?? ['detected' => false];
     $splitStream = $patterns['split_stream'] ?? ['detected' => false];
 
-    // Overlap samples (max 50)
-    $overlapSamples = array_slice($splitStream['samples'] ?? [], 0, 50);
+    // Overlap samples - Controller'da zaten limitlendi (max 50)
+    $overlapSamples = $splitStream['samples'] ?? [];
+    $samplesLimited = $splitStream['samples_limited'] ?? false;
     $totalOverlaps = $splitStream['count'] ?? 0;
 @endphp
 
@@ -267,7 +269,12 @@
                 <div class="abuse-card-header p-3">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="text-white mb-0"><i class="fas fa-stream me-2 text-primary"></i> Timeline</h5>
-                        <div class="d-flex gap-2">
+                        <div class="d-flex gap-2 align-items-center">
+                            @if($timelineData['items_limited'] ?? false)
+                                <span class="badge bg-warning text-dark" title="Performans için limit uygulandı">
+                                    <i class="fas fa-bolt me-1"></i>İlk 300
+                                </span>
+                            @endif
                             <span class="badge" style="background: rgba(59, 130, 246, 0.3);">Desktop</span>
                             <span class="badge" style="background: rgba(16, 185, 129, 0.3);">Mobile</span>
                         </div>
@@ -299,7 +306,12 @@
                             <i class="fas fa-exclamation-triangle me-2 text-danger"></i>
                             Split Stream Örnekleri
                         </h5>
-                        <span class="badge bg-danger">{{ $totalOverlaps }} toplam (ilk 50 gösteriliyor)</span>
+                        <span class="badge bg-danger">
+                            {{ $totalOverlaps }} toplam
+                            @if($samplesLimited || count($overlapSamples) < $totalOverlaps)
+                                (ilk {{ count($overlapSamples) }} gösteriliyor)
+                            @endif
+                        </span>
                     </div>
                 </div>
                 <div class="p-3" style="max-height: 500px; overflow-y: auto;">
@@ -357,13 +369,21 @@
             @if($concurrent['detected'] && count($concurrent['samples'] ?? []) > 0)
             <div class="abuse-card mt-4">
                 <div class="abuse-card-header p-3">
-                    <h5 class="text-white mb-0">
-                        <i class="fas fa-code-branch me-2 text-orange-400"></i>
-                        Concurrent Different Örnekleri
-                    </h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="text-white mb-0">
+                            <i class="fas fa-code-branch me-2 text-orange-400"></i>
+                            Concurrent Different Örnekleri
+                        </h5>
+                        <span class="badge bg-warning text-dark">
+                            {{ $concurrent['count'] ?? count($concurrent['samples'] ?? []) }} toplam
+                            @if($concurrent['samples_limited'] ?? false)
+                                (ilk 30 gösteriliyor)
+                            @endif
+                        </span>
+                    </div>
                 </div>
                 <div class="p-3" style="max-height: 300px; overflow-y: auto;">
-                    @foreach(array_slice($concurrent['samples'] ?? [], 0, 20) as $idx => $sample)
+                    @foreach($concurrent['samples'] ?? [] as $idx => $sample)
                     <div class="overlap-item" style="border-color: rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.1);">
                         <div class="d-flex justify-content-between mb-2">
                             <span class="text-white fw-bold">#{{ $idx + 1 }}</span>
@@ -415,7 +435,9 @@
 @push('scripts')
 <script>
 const dailyStatsData = @json($report->daily_stats ?? []);
-const timelineItems = @json(array_slice($timelineData['items'] ?? [], 0, 500)); // Max 500 item
+// 🔥 PERFORMANS: Controller'da zaten limitlendi (max 300)
+const timelineItems = @json($timelineData['items'] ?? []);
+const timelineLimited = {{ ($timelineData['items_limited'] ?? false) ? 'true' : 'false' }};
 const overlapSamplesCount = {{ count($overlapSamples) }};
 
 const browserColors = {

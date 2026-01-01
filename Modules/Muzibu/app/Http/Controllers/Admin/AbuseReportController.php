@@ -37,6 +37,8 @@ class AbuseReportController extends Controller
 
     /**
      * Tek bir raporun detayı (Timeline ile)
+     *
+     * PERFORMANS: Timeline ve overlap verileri limitlenir
      */
     public function show(int $id)
     {
@@ -45,9 +47,38 @@ class AbuseReportController extends Controller
         // Kullanıcının timeline verilerini al (Vis.js için)
         $timelineData = $this->service->getUserTimelineData($report->user_id, 7);
 
+        // 🔥 PERFORMANS: Timeline items limit (max 300)
+        if (count($timelineData['items'] ?? []) > 300) {
+            $timelineData['items'] = array_slice($timelineData['items'], 0, 300);
+            $timelineData['items_limited'] = true;
+        }
+
+        // 🔥 PERFORMANS: Overlaps/patterns samples limit
+        $patterns = $report->patterns_json ?? [];
+
+        // Split stream samples limit (max 50)
+        if (isset($patterns['split_stream']['samples']) && count($patterns['split_stream']['samples']) > 50) {
+            $patterns['split_stream']['samples'] = array_slice($patterns['split_stream']['samples'], 0, 50);
+            $patterns['split_stream']['samples_limited'] = true;
+        }
+
+        // Concurrent samples limit (max 30)
+        if (isset($patterns['concurrent_different']['samples']) && count($patterns['concurrent_different']['samples']) > 30) {
+            $patterns['concurrent_different']['samples'] = array_slice($patterns['concurrent_different']['samples'], 0, 30);
+            $patterns['concurrent_different']['samples_limited'] = true;
+        }
+
+        // overlaps_json limit (eski format uyumluluğu)
+        $overlapsJson = $report->overlaps_json ?? [];
+        if (count($overlapsJson) > 50) {
+            $overlapsJson = array_slice($overlapsJson, 0, 50);
+        }
+
         return view('muzibu::admin.abuse-reports.show', [
             'report' => $report,
             'timelineData' => $timelineData,
+            'limitedPatterns' => $patterns,
+            'limitedOverlaps' => $overlapsJson,
         ]);
     }
 

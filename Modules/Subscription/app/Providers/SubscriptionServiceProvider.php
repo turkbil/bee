@@ -42,6 +42,9 @@ class SubscriptionServiceProvider extends ServiceProvider
 
         // Frontend components
         Livewire::component('subscription-plans-component', SubscriptionPlansComponent::class);
+
+        // Register Model Observers
+        \Modules\Subscription\App\Models\SubscriptionPlan::observe(\Modules\Subscription\App\Observers\SubscriptionPlanObserver::class);
     }
 
     /**

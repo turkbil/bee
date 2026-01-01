@@ -34,6 +34,9 @@ class MailServiceProvider extends ServiceProvider
 
         // Livewire components
         Livewire::component('mail::admin.mail-component', \Modules\Mail\App\Http\Livewire\Admin\MailComponent::class);
+
+        // Register Model Observers
+        \Modules\Mail\App\Models\MailTemplate::observe(\Modules\Mail\App\Observers\MailTemplateObserver::class);
     }
 
     /**

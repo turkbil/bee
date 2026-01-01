@@ -34,6 +34,9 @@ class CouponServiceProvider extends ServiceProvider
         // Register Livewire components
         Livewire::component('coupon-component', CouponComponent::class);
         Livewire::component('coupon-manage-component', CouponManageComponent::class);
+
+        // Register Model Observers
+        \Modules\Coupon\App\Models\Coupon::observe(\Modules\Coupon\App\Observers\CouponObserver::class);
     }
 
     /**

@@ -81,6 +81,8 @@ class MuzibuServiceProvider extends ServiceProvider
      * - PlaylistObserver: Activity log, cache temizleme
      * - RadioObserver: Activity log, cache temizleme
      * - SectorObserver: Activity log, cache temizleme
+     * - CorporateSpotObserver: Activity log, cache temizleme
+     * - CertificateObserver: Activity log, cache temizleme
      */
     protected function registerModelObservers(): void
     {
@@ -102,6 +104,10 @@ class MuzibuServiceProvider extends ServiceProvider
         \Modules\Muzibu\App\Models\Playlist::observe(\Modules\Muzibu\App\Observers\PlaylistObserver::class);
         \Modules\Muzibu\App\Models\Radio::observe(\Modules\Muzibu\App\Observers\RadioObserver::class);
         \Modules\Muzibu\App\Models\Sector::observe(\Modules\Muzibu\App\Observers\SectorObserver::class);
+
+        // Corporate & Certificate Observers
+        \Modules\Muzibu\App\Models\CorporateSpot::observe(\Modules\Muzibu\App\Observers\CorporateSpotObserver::class);
+        \Modules\Muzibu\App\Models\Certificate::observe(\Modules\Muzibu\App\Observers\CertificateObserver::class);
     }
 
     /**

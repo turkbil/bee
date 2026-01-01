@@ -1844,6 +1844,7 @@ class CorporateFrontController extends Controller
             'songs_between' => $corporate->spot_songs_between ?? 10,
             'corporate_id' => $corporate->id,
             'branch_id' => $userCorporate->id,
+            'spot_is_paused' => (bool) $userCorporate->spot_is_paused,
         ]);
     }
 

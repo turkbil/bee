@@ -20,6 +20,7 @@ window.MuzibuSpotPlayer = (function() {
 
     const state = {
         enabled: false,
+        isPaused: false,     // Şube için durduruldu mu?
         songsBetween: 10,
         songsPlayed: 0,      // 30 saniyeden uzun dinlenen şarkı sayısı
         corporateId: null,
@@ -84,6 +85,7 @@ window.MuzibuSpotPlayer = (function() {
             console.log('🎙️ SpotPlayer: Settings response:', data);
 
             state.enabled = data.enabled === true;
+            state.isPaused = data.spot_is_paused === true;
             state.songsBetween = data.songs_between || 10;
             state.corporateId = data.corporate_id || null;
             state.branchId = data.branch_id || null;
@@ -427,8 +429,11 @@ window.MuzibuSpotPlayer = (function() {
             const data = await response.json();
 
             if (data.success) {
-                // Ayarları yeniden yükle
+                // isPaused state'i güncelle
+                state.isPaused = data.is_paused;
+                // Ayarları yeniden yükle (enabled durumu değişebilir)
                 await fetchSettings();
+                console.log('🎙️ SpotPlayer: Pause toggled. isPaused:', state.isPaused);
                 return {
                     success: true,
                     isPaused: data.is_paused,
@@ -436,7 +441,7 @@ window.MuzibuSpotPlayer = (function() {
                 };
             }
 
-            return { success: false };
+            return { success: false, error: data.error || 'unknown' };
 
         } catch (error) {
             console.error('🎙️ SpotPlayer: Failed to toggle pause', error);
@@ -466,6 +471,7 @@ window.MuzibuSpotPlayer = (function() {
 
         // State getters
         isEnabled: () => state.enabled,
+        isPaused: () => state.isPaused,
         getSongsPlayed: () => state.songsPlayed,
         getSongsBetween: () => state.songsBetween,
         getCurrentSpot: () => state.currentSpot,

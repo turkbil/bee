@@ -15,16 +15,11 @@ class MenuObserver
     public function created(Menu $menu): void
     {
         $this->clearMenuCache();
-        
-        // Log activity
-        activity()
-            ->performedOn($menu)
-            ->withProperties([
-                'menu_id' => $menu->menu_id,
-                'name' => $menu->getTranslated('name', app()->getLocale()),
-                'location' => $menu->location,
-            ])
-            ->log('Menu created');
+
+        // Activity log
+        if (function_exists('log_activity')) {
+            log_activity($menu, 'oluşturuldu');
+        }
     }
 
     /**
@@ -33,16 +28,24 @@ class MenuObserver
     public function updated(Menu $menu): void
     {
         $this->clearMenuCache();
-        
-        // Log activity
-        activity()
-            ->performedOn($menu)
-            ->withProperties([
-                'menu_id' => $menu->menu_id,
-                'name' => $menu->getTranslated('name', app()->getLocale()),
-                'changes' => $menu->getChanges(),
-            ])
-            ->log('Menu updated');
+
+        // Activity log - değişiklikleri kaydet
+        if (function_exists('log_activity')) {
+            $changes = $menu->getChanges();
+            unset($changes['updated_at']);
+
+            if (!empty($changes)) {
+                // Eski başlığı al (name değiştiyse)
+                $oldTitle = null;
+                if (isset($changes['name'])) {
+                    $oldTitle = $menu->getOriginal('name');
+                }
+
+                log_activity($menu, 'güncellendi', [
+                    'changed_fields' => array_keys($changes)
+                ], $oldTitle);
+            }
+        }
     }
 
     /**
@@ -51,14 +54,11 @@ class MenuObserver
     public function deleted(Menu $menu): void
     {
         $this->clearMenuCache();
-        
-        // Log activity
-        activity()
-            ->withProperties([
-                'menu_id' => $menu->menu_id,
-                'name' => $menu->getTranslated('name', app()->getLocale()),
-            ])
-            ->log('Menu deleted');
+
+        // Activity log - silinen kaydın adını sakla
+        if (function_exists('log_activity')) {
+            log_activity($menu, 'silindi', null, $menu->name);
+        }
     }
 
     /**
@@ -67,15 +67,11 @@ class MenuObserver
     public function restored(Menu $menu): void
     {
         $this->clearMenuCache();
-        
-        // Log activity
-        activity()
-            ->performedOn($menu)
-            ->withProperties([
-                'menu_id' => $menu->menu_id,
-                'name' => $menu->getTranslated('name', app()->getLocale()),
-            ])
-            ->log('Menu restored');
+
+        // Activity log
+        if (function_exists('log_activity')) {
+            log_activity($menu, 'geri yüklendi');
+        }
     }
 
     /**
@@ -84,14 +80,11 @@ class MenuObserver
     public function forceDeleted(Menu $menu): void
     {
         $this->clearMenuCache();
-        
-        // Log activity
-        activity()
-            ->withProperties([
-                'menu_id' => $menu->menu_id,
-                'name' => $menu->getTranslated('name', app()->getLocale()),
-            ])
-            ->log('Menu force deleted');
+
+        // Activity log - kalıcı silme
+        if (function_exists('log_activity')) {
+            log_activity($menu, 'kalıcı silindi', null, $menu->name);
+        }
     }
 
     /**

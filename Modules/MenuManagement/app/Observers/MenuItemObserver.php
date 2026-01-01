@@ -16,20 +16,14 @@ class MenuItemObserver
     {
         // Clear menu cache
         $this->clearMenuCache($menuItem);
-        
+
         // Update sort order for siblings
         $this->updateSiblingSortOrder($menuItem);
-        
-        // Log activity
-        activity()
-            ->performedOn($menuItem)
-            ->causedBy(auth()->user())
-            ->withProperties([
-                'menu_id' => $menuItem->menu_id,
-                'title' => $menuItem->title,
-                'url_type' => $menuItem->url_type,
-            ])
-            ->log('menu_item_created');
+
+        // Activity log
+        if (function_exists('log_activity')) {
+            log_activity($menuItem, 'oluşturuldu');
+        }
     }
 
     /**
@@ -39,21 +33,29 @@ class MenuItemObserver
     {
         // Clear menu cache
         $this->clearMenuCache($menuItem);
-        
+
         // If parent changed, update depth levels
         if ($menuItem->isDirty('parent_id')) {
             $this->updateDepthLevels($menuItem);
         }
-        
-        // Log activity
-        activity()
-            ->performedOn($menuItem)
-            ->causedBy(auth()->user())
-            ->withProperties([
-                'changes' => $menuItem->getDirty(),
-                'original' => $menuItem->getOriginal(),
-            ])
-            ->log('menu_item_updated');
+
+        // Activity log - değişiklikleri kaydet
+        if (function_exists('log_activity')) {
+            $changes = $menuItem->getChanges();
+            unset($changes['updated_at']);
+
+            if (!empty($changes)) {
+                // Eski başlığı al (title değiştiyse)
+                $oldTitle = null;
+                if (isset($changes['title'])) {
+                    $oldTitle = $menuItem->getOriginal('title');
+                }
+
+                log_activity($menuItem, 'güncellendi', [
+                    'changed_fields' => array_keys($changes)
+                ], $oldTitle);
+            }
+        }
     }
 
     /**
@@ -63,19 +65,14 @@ class MenuItemObserver
     {
         // Clear menu cache
         $this->clearMenuCache($menuItem);
-        
+
         // Delete all children
         $menuItem->children()->delete();
-        
-        // Log activity
-        activity()
-            ->performedOn($menuItem)
-            ->causedBy(auth()->user())
-            ->withProperties([
-                'menu_id' => $menuItem->menu_id,
-                'title' => $menuItem->title,
-            ])
-            ->log('menu_item_deleted');
+
+        // Activity log - silinen kaydın başlığını sakla
+        if (function_exists('log_activity')) {
+            log_activity($menuItem, 'silindi', null, $menuItem->title);
+        }
     }
 
     /**
@@ -85,12 +82,11 @@ class MenuItemObserver
     {
         // Clear menu cache
         $this->clearMenuCache($menuItem);
-        
-        // Log activity
-        activity()
-            ->performedOn($menuItem)
-            ->causedBy(auth()->user())
-            ->log('menu_item_restored');
+
+        // Activity log
+        if (function_exists('log_activity')) {
+            log_activity($menuItem, 'geri yüklendi');
+        }
     }
 
     /**

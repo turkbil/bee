@@ -95,9 +95,15 @@ class ShopProductObserver
             unset($changes['updated_at']);
 
             if (!empty($changes)) {
+                // Eski başlığı al (title değiştiyse)
+                $oldTitle = null;
+                if (isset($changes['title'])) {
+                    $oldTitle = $product->getOriginal('title');
+                }
+
                 log_activity($product, 'güncellendi', [
                     'changed_fields' => array_keys($changes),
-                ]);
+                ], $oldTitle);
             }
         }
 
@@ -180,11 +186,73 @@ class ShopProductObserver
         Cache::forget("sitemap_xml_{$tenantId}");
 
         if (function_exists('log_activity')) {
-            log_activity($product, 'silindi');
+            log_activity($product, 'silindi', null, $product->title);
         }
 
         Log::info('ShopProduct deleted successfully', [
             'product_id' => $product->product_id,
+            'user_id' => auth()->id(),
+        ]);
+    }
+
+    /**
+     * Handle the ShopProduct "restoring" event.
+     */
+    public function restoring(ShopProduct $product): void
+    {
+        Log::info('ShopProduct restoring', [
+            'product_id' => $product->product_id,
+            'title' => $product->title,
+            'user_id' => auth()->id(),
+        ]);
+    }
+
+    /**
+     * Handle the ShopProduct "restored" event.
+     */
+    public function restored(ShopProduct $product): void
+    {
+        $this->clearProductCaches();
+
+        if (function_exists('log_activity')) {
+            log_activity($product, 'geri yüklendi');
+        }
+
+        Log::info('ShopProduct restored successfully', [
+            'product_id' => $product->product_id,
+            'title' => $product->title,
+            'user_id' => auth()->id(),
+        ]);
+    }
+
+    /**
+     * Handle the ShopProduct "forceDeleting" event.
+     */
+    public function forceDeleting(ShopProduct $product): bool
+    {
+        Log::warning('ShopProduct force deleting', [
+            'product_id' => $product->product_id,
+            'title' => $product->title,
+            'user_id' => auth()->id(),
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Handle the ShopProduct "forceDeleted" event.
+     */
+    public function forceDeleted(ShopProduct $product): void
+    {
+        $this->clearProductCaches($product->product_id);
+
+        if (function_exists('log_activity')) {
+            log_activity($product, 'kalıcı silindi', null, $product->title);
+        }
+
+        Log::warning('ShopProduct force deleted', [
+            'product_id' => $product->product_id,
+            'title' => $product->title,
             'user_id' => auth()->id(),
         ]);
     }

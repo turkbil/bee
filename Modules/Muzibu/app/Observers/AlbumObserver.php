@@ -130,9 +130,15 @@ class AlbumObserver
             unset($changes['updated_at']); // updated_at'i loglamaya gerek yok
 
             if (!empty($changes)) {
+                // Eski başlığı al (title değiştiyse)
+                $oldTitle = null;
+                if (isset($changes['title'])) {
+                    $oldTitle = $album->getOriginal('title');
+                }
+
                 log_activity($album, 'güncellendi', [
                     'changed_fields' => array_keys($changes)
-                ]);
+                ], $oldTitle);
             }
         }
 
@@ -240,9 +246,9 @@ class AlbumObserver
             ]);
         }
 
-        // Activity log
+        // Activity log - silinen kaydın başlığını sakla
         if (function_exists('log_activity')) {
-            log_activity($album, 'silindi');
+            log_activity($album, 'silindi', null, $album->title);
         }
 
         Log::info('Muzibu Album deleted successfully', [
@@ -310,6 +316,11 @@ class AlbumObserver
     {
         // Tüm cache'leri temizle
         $this->clearAlbumCaches($album->album_id);
+
+        // Activity log - kalıcı silme
+        if (function_exists('log_activity')) {
+            log_activity($album, 'kalıcı silindi', null, $album->title);
+        }
 
         Log::warning('Muzibu Album force deleted', [
             'album_id' => $album->album_id,

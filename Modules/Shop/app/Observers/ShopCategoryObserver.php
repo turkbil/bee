@@ -93,9 +93,15 @@ class ShopCategoryObserver
             unset($changes['updated_at']);
 
             if (!empty($changes)) {
+                // Eski başlığı al (title değiştiyse)
+                $oldTitle = null;
+                if (isset($changes['title'])) {
+                    $oldTitle = $category->getOriginal('title');
+                }
+
                 log_activity($category, 'güncellendi', [
                     'changed_fields' => array_keys($changes),
-                ]);
+                ], $oldTitle);
             }
         }
 
@@ -163,11 +169,73 @@ class ShopCategoryObserver
         $this->clearCategoryCaches($category->category_id);
 
         if (function_exists('log_activity')) {
-            log_activity($category, 'silindi');
+            log_activity($category, 'silindi', null, $category->title);
         }
 
         Log::info('ShopCategory deleted successfully', [
             'category_id' => $category->category_id,
+            'user_id' => auth()->id(),
+        ]);
+    }
+
+    /**
+     * Handle the ShopCategory "restoring" event.
+     */
+    public function restoring(ShopCategory $category): void
+    {
+        Log::info('ShopCategory restoring', [
+            'category_id' => $category->category_id,
+            'title' => $category->title,
+            'user_id' => auth()->id(),
+        ]);
+    }
+
+    /**
+     * Handle the ShopCategory "restored" event.
+     */
+    public function restored(ShopCategory $category): void
+    {
+        $this->clearCategoryCaches();
+
+        if (function_exists('log_activity')) {
+            log_activity($category, 'geri yüklendi');
+        }
+
+        Log::info('ShopCategory restored successfully', [
+            'category_id' => $category->category_id,
+            'title' => $category->title,
+            'user_id' => auth()->id(),
+        ]);
+    }
+
+    /**
+     * Handle the ShopCategory "forceDeleting" event.
+     */
+    public function forceDeleting(ShopCategory $category): bool
+    {
+        Log::warning('ShopCategory force deleting', [
+            'category_id' => $category->category_id,
+            'title' => $category->title,
+            'user_id' => auth()->id(),
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Handle the ShopCategory "forceDeleted" event.
+     */
+    public function forceDeleted(ShopCategory $category): void
+    {
+        $this->clearCategoryCaches($category->category_id);
+
+        if (function_exists('log_activity')) {
+            log_activity($category, 'kalıcı silindi', null, $category->title);
+        }
+
+        Log::warning('ShopCategory force deleted', [
+            'category_id' => $category->category_id,
+            'title' => $category->title,
             'user_id' => auth()->id(),
         ]);
     }

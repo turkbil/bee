@@ -78,6 +78,68 @@ class BlogObserver
     }
 
     /**
+     * Handle the Blog "restoring" event.
+     */
+    public function restoring(Blog $blog): void
+    {
+        \Log::info('Blog restoring', [
+            'blog_id' => $blog->blog_id,
+            'title' => $blog->title,
+            'user_id' => auth()->id()
+        ]);
+    }
+
+    /**
+     * Handle the Blog "restored" event.
+     */
+    public function restored(Blog $blog): void
+    {
+        $this->clearRelatedCaches($blog);
+
+        if (function_exists('log_activity')) {
+            log_activity($blog, 'geri yüklendi');
+        }
+
+        \Log::info('Blog restored successfully', [
+            'blog_id' => $blog->blog_id,
+            'title' => $blog->title,
+            'user_id' => auth()->id()
+        ]);
+    }
+
+    /**
+     * Handle the Blog "forceDeleting" event.
+     */
+    public function forceDeleting(Blog $blog): bool
+    {
+        \Log::warning('Blog force deleting', [
+            'blog_id' => $blog->blog_id,
+            'title' => $blog->title,
+            'user_id' => auth()->id()
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Handle the Blog "forceDeleted" event.
+     */
+    public function forceDeleted(Blog $blog): void
+    {
+        $this->clearRelatedCaches($blog);
+
+        if (function_exists('log_activity')) {
+            log_activity($blog, 'kalıcı silindi', null, $blog->title);
+        }
+
+        \Log::warning('Blog force deleted', [
+            'blog_id' => $blog->blog_id,
+            'title' => $blog->title,
+            'user_id' => auth()->id()
+        ]);
+    }
+
+    /**
      * Excerpt otomatik oluştur
      */
     private function generateExcerpt(Blog $blog): void

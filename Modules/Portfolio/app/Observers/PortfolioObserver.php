@@ -127,9 +127,15 @@ class PortfolioObserver
             unset($changes['updated_at']); // updated_at'i loglamaya gerek yok
 
             if (!empty($changes)) {
+                // Eski başlığı al (title değiştiyse)
+                $oldTitle = null;
+                if (isset($changes['title'])) {
+                    $oldTitle = $portfolio->getOriginal('title');
+                }
+
                 log_activity($portfolio, 'güncellendi', [
                     'changed_fields' => array_keys($changes)
-                ]);
+                ], $oldTitle);
             }
         }
 
@@ -240,9 +246,9 @@ class PortfolioObserver
             $portfolio->seoSetting->delete();
         }
 
-        // Activity log
+        // Activity log - silinen kaydın başlığını sakla
         if (function_exists('log_activity')) {
-            log_activity($portfolio, 'silindi');
+            log_activity($portfolio, 'silindi', null, $portfolio->title);
         }
 
         Log::info('Portfolio deleted successfully', [
@@ -314,6 +320,11 @@ class PortfolioObserver
 
         // Tüm cache'leri temizle
         $this->clearPortfolioCaches($portfolio->portfolio_id);
+
+        // Activity log - kalıcı silme
+        if (function_exists('log_activity')) {
+            log_activity($portfolio, 'kalıcı silindi', null, $portfolio->title);
+        }
 
         Log::warning('Portfolio force deleted', [
             'portfolio_id' => $portfolio->portfolio_id,

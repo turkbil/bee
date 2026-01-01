@@ -93,9 +93,15 @@ class ShopBrandObserver
             unset($changes['updated_at']);
 
             if (!empty($changes)) {
+                // Eski başlığı al (title değiştiyse)
+                $oldTitle = null;
+                if (isset($changes['title'])) {
+                    $oldTitle = $brand->getOriginal('title');
+                }
+
                 log_activity($brand, 'güncellendi', [
                     'changed_fields' => array_keys($changes),
-                ]);
+                ], $oldTitle);
             }
         }
 
@@ -163,11 +169,73 @@ class ShopBrandObserver
         $this->clearBrandCaches($brand->brand_id);
 
         if (function_exists('log_activity')) {
-            log_activity($brand, 'silindi');
+            log_activity($brand, 'silindi', null, $brand->title);
         }
 
         Log::info('ShopBrand deleted successfully', [
             'brand_id' => $brand->brand_id,
+            'user_id' => auth()->id(),
+        ]);
+    }
+
+    /**
+     * Handle the ShopBrand "restoring" event.
+     */
+    public function restoring(ShopBrand $brand): void
+    {
+        Log::info('ShopBrand restoring', [
+            'brand_id' => $brand->brand_id,
+            'title' => $brand->title,
+            'user_id' => auth()->id(),
+        ]);
+    }
+
+    /**
+     * Handle the ShopBrand "restored" event.
+     */
+    public function restored(ShopBrand $brand): void
+    {
+        $this->clearBrandCaches();
+
+        if (function_exists('log_activity')) {
+            log_activity($brand, 'geri yüklendi');
+        }
+
+        Log::info('ShopBrand restored successfully', [
+            'brand_id' => $brand->brand_id,
+            'title' => $brand->title,
+            'user_id' => auth()->id(),
+        ]);
+    }
+
+    /**
+     * Handle the ShopBrand "forceDeleting" event.
+     */
+    public function forceDeleting(ShopBrand $brand): bool
+    {
+        Log::warning('ShopBrand force deleting', [
+            'brand_id' => $brand->brand_id,
+            'title' => $brand->title,
+            'user_id' => auth()->id(),
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Handle the ShopBrand "forceDeleted" event.
+     */
+    public function forceDeleted(ShopBrand $brand): void
+    {
+        $this->clearBrandCaches($brand->brand_id);
+
+        if (function_exists('log_activity')) {
+            log_activity($brand, 'kalıcı silindi', null, $brand->title);
+        }
+
+        Log::warning('ShopBrand force deleted', [
+            'brand_id' => $brand->brand_id,
+            'title' => $brand->title,
             'user_id' => auth()->id(),
         ]);
     }

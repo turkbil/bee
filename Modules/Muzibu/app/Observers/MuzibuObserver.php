@@ -127,9 +127,15 @@ class MuzibuObserver
             unset($changes['updated_at']); // updated_at'i loglamaya gerek yok
 
             if (!empty($changes)) {
+                // Eski başlığı al (title değiştiyse)
+                $oldTitle = null;
+                if (isset($changes['title'])) {
+                    $oldTitle = $muzibu->getOriginal('title');
+                }
+
                 log_activity($muzibu, 'güncellendi', [
                     'changed_fields' => array_keys($changes)
-                ]);
+                ], $oldTitle);
             }
         }
 
@@ -232,9 +238,9 @@ class MuzibuObserver
             $muzibu->seoSetting->delete();
         }
 
-        // Activity log
+        // Activity log - silinen kaydın başlığını sakla
         if (function_exists('log_activity')) {
-            log_activity($muzibu, 'silindi');
+            log_activity($muzibu, 'silindi', null, $muzibu->title);
         }
 
         Log::info('Muzibu deleted successfully', [
@@ -306,6 +312,11 @@ class MuzibuObserver
 
         // Tüm cache'leri temizle
         $this->clearMuzibuCaches($muzibu->muzibu_id);
+
+        // Activity log - kalıcı silme
+        if (function_exists('log_activity')) {
+            log_activity($muzibu, 'kalıcı silindi', null, $muzibu->title);
+        }
 
         Log::warning('Muzibu force deleted', [
             'muzibu_id' => $muzibu->muzibu_id,

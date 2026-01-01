@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Tenant Dağıtık Sistem - Kapsamlı Planlama Dokümanı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); }
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-slate-200">
+
+    <!-- Header -->
+    <header class="border-b border-slate-700/50 bg-slate-900/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-white flex items-center gap-3">
+                        <i class="fas fa-cubes text-indigo-400"></i>
+                        Multi-Tenant Dağıtık Sistem
+                    </h1>
+                    <p class="text-slate-400 text-sm mt-1">Kapsamlı Planlama Dokümanı - Tüm Kararlar</p>
+                </div>
+                <div class="text-right">
+                    <span class="bg-indigo-500/20 text-indigo-400 px-3 py-1 rounded-full text-sm font-medium">
+                        v8 - Master Doküman
+                    </span>
+                    <p class="text-slate-500 text-xs mt-1">1 Ocak 2026</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Table of Contents -->
+    <nav class="bg-slate-800/50 border-b border-slate-700/50">
+        <div class="max-w-6xl mx-auto px-6 py-3">
+            <div class="flex flex-wrap gap-2 text-xs">
+                <a href="#problem" class="bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1 rounded transition">1. Problem</a>
+                <a href="#mevcut-durum" class="bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1 rounded transition">2. Mevcut Durum</a>
+                <a href="#musteri-tipleri" class="bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1 rounded transition">3. Müşteri Tipleri</a>
+                <a href="#karar-sureci" class="bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1 rounded transition">4. Karar Süreci</a>
+                <a href="#lisans-sistemi" class="bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1 rounded transition">5. Lisans Sistemi</a>
+                <a href="#guncelleme-sistemi" class="bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1 rounded transition">6. Güncelleme</a>
+                <a href="#webhook" class="bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1 rounded transition">7. Webhook</a>
+                <a href="#database" class="bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1 rounded transition">8. Database</a>
+                <a href="#api" class="bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1 rounded transition">9. API</a>
+                <a href="#kurulum" class="bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1 rounded transition">10. Kurulum</a>
+                <a href="#fiyatlandirma" class="bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1 rounded transition">11. Fiyatlandırma</a>
+                <a href="#yapilacaklar" class="bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1 rounded transition">12. Yapılacaklar</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-6 py-8 space-y-12">
+
+        <!-- ============================================ -->
+        <!-- BÖLÜM 1: PROBLEM -->
+        <!-- ============================================ -->
+        <section id="problem" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center text-white font-bold">1</span>
+                <h2 class="text-2xl font-bold text-white">Problem Tanımı</h2>
+            </div>
+
+            <!-- Basit Anlatım -->
+            <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-6 mb-6">
+                <h3 class="text-green-400 font-semibold mb-3 flex items-center gap-2">
+                    <i class="fas fa-user"></i>
+                    Basit Anlatım (Herkes İçin)
+                </h3>
+                <p class="text-slate-300">
+                    Şu anda tüm müşteriler aynı sunucuda çalışıyor. Sunucumuz küçük.
+                    Bazı müşteriler (gazeteler, hastaneler) zaten kendi sunucularına büyük paralar ödüyor.
+                    Bu müşteriler bizim yazılımı kendi sunucularında kullanmak istiyor.
+                    Biz de hem küçük müşterilere ortak sunucudan hizmet verip, hem de büyük müşterilerin
+                    kendi sunucularında çalışmasını sağlayacak bir sistem kurmak istiyoruz.
+                </p>
+            </div>
+
+            <!-- Teknik Detay -->
+            <div class="bg-blue-900/20 border border-blue-800/50 rounded-xl p-6">
+                <h3 class="text-blue-400 font-semibold mb-3 flex items-center gap-2">
+                    <i class="fas fa-cog"></i>
+                    Teknik Detaylar
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-white font-medium mb-2">Mevcut Sorunlar:</h4>
+                        <ul class="text-sm text-slate-400 space-y-1">
+                            <li>• Tek sunucu = Tek hata noktası (SPOF)</li>
+                            <li>• Sunucu kapasitesi sınırlı</li>
+                            <li>• Büyük müşteriler için yeterli kaynak yok</li>
+                            <li>• Trafik artınca herkes etkileniyor</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-medium mb-2">Hedefler:</h4>
+                        <ul class="text-sm text-slate-400 space-y-1">
+                            <li>• Farklı müşteri tiplerine farklı çözüm</li>
+                            <li>• Self-hosted müşteri desteği</li>
+                            <li>• Merkezi lisans kontrolü</li>
+                            <li>• Otomatik güncelleme mekanizması</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BÖLÜM 2: MEVCUT DURUM -->
+        <!-- ============================================ -->
+        <section id="mevcut-durum" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold">2</span>
+                <h2 class="text-2xl font-bold text-white">Mevcut Sistem Analizi</h2>
+            </div>
+
+            <!-- Mevcut Altyapı -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50 mb-6">
+                <h3 class="text-white font-semibold mb-4">Mevcut Teknoloji Stack</h3>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fab fa-laravel text-red-400"></i>
+                            <span class="text-white font-medium">Laravel + Stancl/Tenancy</span>
+                        </div>
+                        <p class="text-xs text-slate-400">v3.8 - Multi-tenant framework</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-database text-blue-400"></i>
+                            <span class="text-white font-medium">MySQL + Redis</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Her tenant ayrı database</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-server text-green-400"></i>
+                            <span class="text-white font-medium">Plesk + Nginx</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Sunucu yönetimi</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mevcut Tenantlar -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50 mb-6">
+                <h3 class="text-white font-semibold mb-4">Mevcut Tenant'lar</h3>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-slate-400 border-b border-slate-700">
+                                <th class="text-left py-3">ID</th>
+                                <th class="text-left py-3">Domain</th>
+                                <th class="text-left py-3">Database</th>
+                                <th class="text-left py-3">Sektör</th>
+                                <th class="text-left py-3">Tip</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3">1</td>
+                                <td class="py-3 text-blue-400">tuufi.com</td>
+                                <td class="py-3 font-mono text-xs">tuufi_4ekim</td>
+                                <td class="py-3">Central (Ana Sistem)</td>
+                                <td class="py-3"><span class="bg-purple-500/20 text-purple-400 px-2 py-1 rounded text-xs">Central</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3">2</td>
+                                <td class="py-3 text-blue-400">ixtif.com</td>
+                                <td class="py-3 font-mono text-xs">tenant_ixtif</td>
+                                <td class="py-3">Endüstriyel Ekipman</td>
+                                <td class="py-3"><span class="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-xs">Shared</span></td>
+                            </tr>
+                            <tr>
+                                <td class="py-3">1001</td>
+                                <td class="py-3 text-blue-400">muzibu.com.tr</td>
+                                <td class="py-3 font-mono text-xs">tenant_muzibu_1528d0</td>
+                                <td class="py-3">Müzik Platformu</td>
+                                <td class="py-3"><span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">Büyüyecek</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Bootstrappers -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+                <h3 class="text-white font-semibold mb-4">Aktif Bootstrapper'lar</h3>
+
+                <div class="grid md:grid-cols-5 gap-3">
+                    <div class="bg-slate-700/30 rounded-lg p-3 text-center">
+                        <i class="fas fa-database text-blue-400 text-xl mb-2"></i>
+                        <p class="text-xs text-white">Database</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3 text-center">
+                        <i class="fas fa-bolt text-red-400 text-xl mb-2"></i>
+                        <p class="text-xs text-white">Redis</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3 text-center">
+                        <i class="fas fa-hdd text-green-400 text-xl mb-2"></i>
+                        <p class="text-xs text-white">Storage</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3 text-center">
+                        <i class="fas fa-cookie text-amber-400 text-xl mb-2"></i>
+                        <p class="text-xs text-white">Session</p>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-3 text-center">
+                        <i class="fas fa-envelope text-purple-400 text-xl mb-2"></i>
+                        <p class="text-xs text-white">Mail</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BÖLÜM 3: MÜŞTERİ TİPLERİ -->
+        <!-- ============================================ -->
+        <section id="musteri-tipleri" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">3</span>
+                <h2 class="text-2xl font-bold text-white">Müşteri Tipleri</h2>
+            </div>
+
+            <!-- Basit Anlatım -->
+            <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-6 mb-6">
+                <h3 class="text-green-400 font-semibold mb-3 flex items-center gap-2">
+                    <i class="fas fa-user"></i>
+                    Basit Anlatım
+                </h3>
+                <p class="text-slate-300">
+                    İki ana müşteri tipimiz var: <strong class="text-white">Küçükler</strong> bizim sunucumuzu kullanıyor (ixtif.com gibi),
+                    <strong class="text-white">Büyükler</strong> kendi sunucularını kullanıyor (gazeteler, hastaneler gibi).
+                    Büyükler zaten sunucuya 500-1000$/ay veriyor, bize sadece yazılım lisansı ödüyorlar.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Tip A: Shared -->
+                <div class="bg-gradient-to-br from-blue-900/30 to-blue-800/10 rounded-xl p-6 border-2 border-blue-700/50">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-bold">
+                            TİP A: SHARED
+                        </span>
+                        <i class="fas fa-cloud text-blue-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Ortak Sunucu</h3>
+
+                    <div class="space-y-3 text-sm mb-6">
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span class="text-slate-300">Bizim sunucumuzda çalışır</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span class="text-slate-300">Mevcut Stancl/Tenancy yapısı</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span class="text-slate-300">Bakım/güncelleme bizden</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span class="text-slate-300">Düşük giriş maliyeti</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-3">
+                        <p class="text-xs text-slate-400">
+                            <strong class="text-blue-400">Örnekler:</strong> ixtif.com, küçük işletmeler, startup'lar
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tip B: Self-Hosted -->
+                <div class="bg-gradient-to-br from-amber-900/30 to-amber-800/10 rounded-xl p-6 border-2 border-amber-700/50">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-amber-500 text-white px-4 py-1 rounded-full text-sm font-bold">
+                            TİP B: SELF-HOSTED
+                        </span>
+                        <i class="fas fa-server text-amber-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Kendi Sunucusu</h3>
+
+                    <div class="space-y-3 text-sm mb-6">
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span class="text-slate-300">Müşteri sunucusunda çalışır</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span class="text-slate-300">Lisans anahtarı ile doğrulama</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span class="text-slate-300">Kendi trafiği, kendi storage'ı</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span class="text-slate-300">Otomatik git pull güncelleme</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-3">
+                        <p class="text-xs text-slate-400">
+                            <strong class="text-amber-400">Örnekler:</strong> Ulusal gazeteler, hastaneler, Muzibu, büyük şirketler
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gerçek Örnekler -->
+            <div class="mt-6 bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+                <h3 class="text-white font-semibold mb-4">Gerçek Hayat Senaryoları</h3>
+
+                <div class="space-y-4">
+                    <div class="flex items-start gap-4 bg-slate-700/30 rounded-lg p-4">
+                        <i class="fas fa-newspaper text-amber-400 text-2xl mt-1"></i>
+                        <div>
+                            <h4 class="text-white font-medium">Ulusal Gazete</h4>
+                            <p class="text-sm text-slate-400">Zaten ayda 500-1000$ sunucu parası ödüyor. Yüzbinlerce haber, milyonlarca trafik. Kendi sunucusunda çalışacak, bize lisans ücreti ödeyecek.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4 bg-slate-700/30 rounded-lg p-4">
+                        <i class="fas fa-hospital text-blue-400 text-2xl mt-1"></i>
+                        <div>
+                            <h4 class="text-white font-medium">Hastane</h4>
+                            <p class="text-sm text-slate-400">KVKK/HIPAA uyumu gerekiyor. Veriler kendi datacenter'ında kalmalı. İzole sistem, dış dünyadan erişim yok.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4 bg-slate-700/30 rounded-lg p-4">
+                        <i class="fas fa-music text-purple-400 text-2xl mt-1"></i>
+                        <div>
+                            <h4 class="text-white font-medium">Muzibu</h4>
+                            <p class="text-sm text-slate-400">Şu an shared'da başlıyor. Büyüyünce 1 origin + 2 edge sunucu yapısına geçecek. Kademeli büyüme modeli.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4 bg-slate-700/30 rounded-lg p-4">
+                        <i class="fas fa-store text-green-400 text-2xl mt-1"></i>
+                        <div>
+                            <h4 class="text-white font-medium">İxtif (Küçük Site)</h4>
+                            <p class="text-sm text-slate-400">Bizim sunucuda kalıyor. Düşük trafik, düşük maliyet. Shared tenant olarak devam.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BÖLÜM 4: KARAR SÜRECİ -->
+        <!-- ============================================ -->
+        <section id="karar-sureci" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center text-white font-bold">4</span>
+                <h2 class="text-2xl font-bold text-white">Karar Süreci: Neden Bu Yolu Seçtik?</h2>
+            </div>
+
+            <!-- İlk Düşünce vs Son Karar -->
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-red-900/20 border border-red-800/50 rounded-xl p-6">
+                    <h3 class="text-red-400 font-semibold mb-3 flex items-center gap-2">
+                        <i class="fas fa-times-circle"></i>
+                        İlk Düşünce (v1-v4): Karmaşık Federation
+                    </h3>
+                    <ul class="text-sm text-slate-400 space-y-2">
+                        <li>❌ Kubernetes altyapısı</li>
+                        <li>❌ Origin + Edge sunucu replikasyonu</li>
+                        <li>❌ Ayrı License Server</li>
+                        <li>❌ GeoDNS routing</li>
+                        <li>❌ MySQL async replication</li>
+                        <li class="text-red-400 font-medium">⏱️ Geliştirme: Haftalar/Aylar</li>
+                    </ul>
+                </div>
+
+                <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-6">
+                    <h3 class="text-green-400 font-semibold mb-3 flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i>
+                        Son Karar (v5-v7): Basit Lisans + Git
+                    </h3>
+                    <ul class="text-sm text-slate-400 space-y-2">
+                        <li>✅ Basit lisans tablosu</li>
+                        <li>✅ Tek API endpoint</li>
+                        <li>✅ Git pull ile güncelleme</li>
+                        <li>✅ Webhook tetikleme</li>
+                        <li>✅ Mevcut altyapı yeterli</li>
+                        <li class="text-green-400 font-medium">⏱️ Geliştirme: ~6 saat</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Neden Basitleştirdik -->
+            <div class="bg-amber-900/20 border border-amber-800/50 rounded-xl p-6">
+                <h3 class="text-amber-400 font-semibold mb-3 flex items-center gap-2">
+                    <i class="fas fa-lightbulb"></i>
+                    Neden Basitleştirdik?
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-white font-medium mb-2">Gerçekler:</h4>
+                        <ul class="text-sm text-slate-400 space-y-1">
+                            <li>• Kubernetes bilgisi/tecrübesi yok</li>
+                            <li>• Federation için ekstra sunucu maliyeti</li>
+                            <li>• Bakım karmaşıklığı çok yüksek</li>
+                            <li>• Aynı işi basit yoldan yapabiliyoruz</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-medium mb-2">Sonuç:</h4>
+                        <ul class="text-sm text-slate-400 space-y-1">
+                            <li>• Git = Zaten biliyoruz</li>
+                            <li>• Webhook = Standart teknoloji</li>
+                            <li>• Lisans API = Basit CRUD</li>
+                            <li>• 6 saatte bitiyor!</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BÖLÜM 5: LİSANS SİSTEMİ -->
+        <!-- ============================================ -->
+        <section id="lisans-sistemi" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-cyan-500 rounded-lg flex items-center justify-center text-white font-bold">5</span>
+                <h2 class="text-2xl font-bold text-white">Lisans Sistemi</h2>
+            </div>
+
+            <!-- Basit Anlatım -->
+            <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-6 mb-6">
+                <h3 class="text-green-400 font-semibold mb-3 flex items-center gap-2">
+                    <i class="fas fa-user"></i>
+                    Basit Anlatım
+                </h3>
+                <p class="text-slate-300">
+                    Her müşteriye benzersiz bir anahtar veriyoruz. Müşteri sunucusu günde bir kez
+                    "bu anahtar geçerli mi?" diye bize soruyor. Geçerliyse çalışmaya devam ediyor.
+                    7 gün boyunca bize ulaşamasa bile çalışmaya devam eder (grace period).
+                </p>
+            </div>
+
+            <!-- 3 Bileşen -->
+            <div class="grid md:grid-cols-3 gap-6 mb-6">
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+                    <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl font-bold text-green-400">1</span>
+                    </div>
+                    <h3 class="font-semibold text-white mb-2">Lisans Anahtarı</h3>
+                    <p class="text-slate-400 text-sm mb-4">Her müşteriye benzersiz anahtar</p>
+                    <div class="bg-slate-900 rounded p-3 font-mono text-xs text-green-400">
+                        TUUFI-GZTE-2026-A1B2-C3D4
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl font-bold text-blue-400">2</span>
+                    </div>
+                    <h3 class="font-semibold text-white mb-2">Doğrulama API</h3>
+                    <p class="text-slate-400 text-sm mb-4">Günde 1 kez lisans kontrolü</p>
+                    <div class="bg-slate-900 rounded p-3 font-mono text-xs text-blue-400">
+                        POST /api/license/verify
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+                    <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
+                        <span class="text-2xl font-bold text-purple-400">3</span>
+                    </div>
+                    <h3 class="font-semibold text-white mb-2">Grace Period</h3>
+                    <p class="text-slate-400 text-sm mb-4">Offline çalışma süresi</p>
+                    <div class="bg-slate-900 rounded p-3 font-mono text-xs text-purple-400">
+                        7 gün (cache'lenmiş lisans)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lisans Akışı -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+                <h3 class="text-white font-semibold mb-4">Lisans Doğrulama Akışı</h3>
+
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center">
+                    <div class="flex-1 bg-slate-700/30 rounded-lg p-4">
+                        <i class="fas fa-server text-amber-400 text-2xl mb-2"></i>
+                        <p class="text-sm text-white">Müşteri Sunucu</p>
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-600 text-xl hidden md:block"></i>
+                    <i class="fas fa-arrow-down text-slate-600 text-xl md:hidden"></i>
+                    <div class="flex-1 bg-slate-700/30 rounded-lg p-4">
+                        <i class="fas fa-paper-plane text-blue-400 text-2xl mb-2"></i>
+                        <p class="text-sm text-white">POST /verify</p>
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-600 text-xl hidden md:block"></i>
+                    <i class="fas fa-arrow-down text-slate-600 text-xl md:hidden"></i>
+                    <div class="flex-1 bg-slate-700/30 rounded-lg p-4">
+                        <i class="fas fa-shield-alt text-green-400 text-2xl mb-2"></i>
+                        <p class="text-sm text-white">tuufi.com kontrol</p>
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-600 text-xl hidden md:block"></i>
+                    <i class="fas fa-arrow-down text-slate-600 text-xl md:hidden"></i>
+                    <div class="flex-1 bg-green-500/20 border border-green-500 rounded-lg p-4">
+                        <i class="fas fa-check-circle text-green-400 text-2xl mb-2"></i>
+                        <p class="text-sm text-white">OK + Versiyon</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BÖLÜM 6: GÜNCELLEME SİSTEMİ -->
+        <!-- ============================================ -->
+        <section id="guncelleme-sistemi" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center text-white font-bold">6</span>
+                <h2 class="text-2xl font-bold text-white">Otomatik Güncelleme Sistemi</h2>
+            </div>
+
+            <!-- Basit Anlatım -->
+            <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-6 mb-6">
+                <h3 class="text-green-400 font-semibold mb-3 flex items-center gap-2">
+                    <i class="fas fa-user"></i>
+                    Basit Anlatım
+                </h3>
+                <p class="text-slate-300">
+                    Sen kodu güncelleyip GitHub'a yüklediğinde, tüm müşteri sunucuları otomatik güncelleniyor.
+                    Müşteri hiçbir şey yapmak zorunda değil. Sistem her dakika kontrol edip yeni versiyon
+                    varsa git pull yapıyor.
+                </p>
+            </div>
+
+            <!-- Update Script -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50 mb-6">
+                <h3 class="text-orange-400 font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-file-code"></i>
+                    update.sh (Müşteri Sunucusunda Çalışır)
+                </h3>
+
+                <div class="bg-slate-900 rounded-lg p-4 overflow-x-auto">
+                    <pre class="text-sm text-slate-300"><code><span class="text-slate-500">#!/bin/bash</span>
+
+<span class="text-slate-500"># 1. Maintenance mode aç</span>
+php artisan down
+
+<span class="text-slate-500"># 2. Git pull</span>
+git pull origin main
+
+<span class="text-slate-500"># 3. Composer</span>
+composer install --no-dev
+
+<span class="text-slate-500"># 4. Migration</span>
+php artisan migrate --force
+
+<span class="text-slate-500"># 5. Cache</span>
+php artisan config:cache
+php artisan route:cache
+
+<span class="text-slate-500"># 6. Maintenance mode kapat</span>
+php artisan up
+
+<span class="text-slate-500"># 7. Başarı bildirimi</span>
+curl -s "https://tuufi.com/api/license/heartbeat?key=$LICENSE_KEY"</code></pre>
+                </div>
+            </div>
+
+            <!-- Shared vs Self-Hosted -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-blue-900/20 border border-blue-800/50 rounded-lg p-5">
+                    <h3 class="text-blue-400 font-semibold mb-3 flex items-center gap-2">
+                        <i class="fas fa-cloud"></i>
+                        Shared Müşteriler
+                    </h3>
+                    <p class="text-sm text-slate-300 mb-3">Bizim sunucuda, otomatik güncellenir.</p>
+                    <div class="bg-slate-900 rounded p-3 font-mono text-xs text-blue-400">
+                        # Biz yaparız<br>
+                        git pull && php artisan migrate
+                    </div>
+                </div>
+
+                <div class="bg-amber-900/20 border border-amber-800/50 rounded-lg p-5">
+                    <h3 class="text-amber-400 font-semibold mb-3 flex items-center gap-2">
+                        <i class="fas fa-server"></i>
+                        Self-Hosted Müşteriler
+                    </h3>
+                    <p class="text-sm text-slate-300 mb-3">Kendi sunucularında, cron ile otomatik.</p>
+                    <div class="bg-slate-900 rounded p-3 font-mono text-xs text-amber-400">
+                        # Cron her dakika kontrol eder<br>
+                        * * * * * /var/www/site/check-update.sh
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BÖLÜM 7: WEBHOOK SİSTEMİ -->
+        <!-- ============================================ -->
+        <section id="webhook" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-yellow-500 rounded-lg flex items-center justify-center text-white font-bold">7</span>
+                <h2 class="text-2xl font-bold text-white">Webhook ile Anında Güncelleme</h2>
+            </div>
+
+            <!-- Basit Anlatım -->
+            <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-6 mb-6">
+                <h3 class="text-green-400 font-semibold mb-3 flex items-center gap-2">
+                    <i class="fas fa-user"></i>
+                    Basit Anlatım
+                </h3>
+                <p class="text-slate-300">
+                    Sen "git push" dediğin an GitHub bize haber veriyor. Biz de versiyon numarasını güncelliyoruz.
+                    Müşteri sunucuları her dakika "yeni versiyon var mı?" diye kontrol ediyor.
+                    Varsa hemen güncelleniyor. Push'tan 1 dakika sonra 100 müşteri güncel!
+                </p>
+            </div>
+
+            <!-- Akış -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50 mb-6">
+                <h3 class="text-white font-semibold mb-4">Tam Akış</h3>
+
+                <div class="flex flex-wrap items-center justify-center gap-3 text-sm">
+                    <span class="bg-blue-500/20 text-blue-400 px-4 py-2 rounded-lg">1. git push</span>
+                    <i class="fas fa-arrow-right text-yellow-400"></i>
+                    <span class="bg-purple-500/20 text-purple-400 px-4 py-2 rounded-lg">2. GitHub webhook</span>
+                    <i class="fas fa-arrow-right text-yellow-400"></i>
+                    <span class="bg-green-500/20 text-green-400 px-4 py-2 rounded-lg">3. tuufi.com alır</span>
+                    <i class="fas fa-arrow-right text-yellow-400"></i>
+                    <span class="bg-amber-500/20 text-amber-400 px-4 py-2 rounded-lg">4. version güncelle</span>
+                    <i class="fas fa-arrow-right text-yellow-400"></i>
+                    <span class="bg-cyan-500/20 text-cyan-400 px-4 py-2 rounded-lg">5. müşteri poll (1dk)</span>
+                    <i class="fas fa-arrow-right text-yellow-400"></i>
+                    <span class="bg-pink-500/20 text-pink-400 px-4 py-2 rounded-lg">6. git pull</span>
+                    <i class="fas fa-arrow-right text-yellow-400"></i>
+                    <span class="bg-green-500 text-white px-4 py-2 rounded-lg font-bold">✓ Güncel!</span>
+                </div>
+
+                <div class="mt-6 text-center">
+                    <p class="text-slate-400">
+                        <i class="fas fa-clock text-yellow-400 mr-2"></i>
+                        Toplam süre: Push'tan <strong class="text-white">~1 dakika</strong> sonra tüm sunucular güncel
+                    </p>
+                </div>
+            </div>
+
+            <!-- Neden Polling -->
+            <div class="bg-cyan-900/20 border border-cyan-800/50 rounded-xl p-6">
+                <h3 class="text-cyan-400 font-semibold mb-3 flex items-center gap-2">
+                    <i class="fas fa-question-circle"></i>
+                    Neden Direkt Webhook Değil de Polling?
+                </h3>
+                <div class="grid md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <h4 class="text-white font-medium mb-2">Webhook Push Sorunları:</h4>
+                        <ul class="text-slate-400 space-y-1">
+                            <li>❌ Müşteri firewall'ı açmalı</li>
+                            <li>❌ Endpoint güvenliği sağlanmalı</li>
+                            <li>❌ Sunucu offline olursa webhook kaybolur</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-medium mb-2">Polling Avantajları:</h4>
+                        <ul class="text-slate-400 space-y-1">
+                            <li>✅ Firewall sorunu yok (outbound)</li>
+                            <li>✅ Sunucu online olunca güncelleme alır</li>
+                            <li>✅ Daha güvenli</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BÖLÜM 8: DATABASE -->
+        <!-- ============================================ -->
+        <section id="database" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-pink-500 rounded-lg flex items-center justify-center text-white font-bold">8</span>
+                <h2 class="text-2xl font-bold text-white">Database Yapısı</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- licenses tablosu -->
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+                    <h3 class="text-white font-mono text-sm mb-4 flex items-center gap-2">
+                        <i class="fas fa-table text-pink-400"></i>
+                        licenses
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs">
+                            <thead>
+                                <tr class="text-slate-400 border-b border-slate-700">
+                                    <th class="text-left py-2">Field</th>
+                                    <th class="text-left py-2">Type</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-slate-300">
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-pink-400">id</td>
+                                    <td>BIGINT PK</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-pink-400">license_key</td>
+                                    <td>VARCHAR(64) UNIQUE</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-pink-400">customer_name</td>
+                                    <td>VARCHAR(255)</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-pink-400">domain</td>
+                                    <td>VARCHAR(255)</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-pink-400">type</td>
+                                    <td>ENUM(shared, self_hosted)</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-pink-400">features</td>
+                                    <td>JSON</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-pink-400">expires_at</td>
+                                    <td>TIMESTAMP</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-pink-400">is_active</td>
+                                    <td>BOOLEAN</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-pink-400">last_verified</td>
+                                    <td>TIMESTAMP</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 font-mono text-pink-400">installed_version</td>
+                                    <td>VARCHAR(20)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- license_logs tablosu -->
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+                    <h3 class="text-white font-mono text-sm mb-4 flex items-center gap-2">
+                        <i class="fas fa-table text-pink-400"></i>
+                        license_logs
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs">
+                            <thead>
+                                <tr class="text-slate-400 border-b border-slate-700">
+                                    <th class="text-left py-2">Field</th>
+                                    <th class="text-left py-2">Type</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-slate-300">
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-pink-400">id</td>
+                                    <td>BIGINT PK</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-pink-400">license_id</td>
+                                    <td>BIGINT FK</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-pink-400">action</td>
+                                    <td>ENUM(verify, update, error)</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-pink-400">ip_address</td>
+                                    <td>VARCHAR(45)</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-pink-400">hostname</td>
+                                    <td>VARCHAR(255)</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-pink-400">version</td>
+                                    <td>VARCHAR(20)</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-pink-400">status</td>
+                                    <td>ENUM(success, failed)</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 font-mono text-pink-400">created_at</td>
+                                    <td>TIMESTAMP</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- system_info tablosu -->
+            <div class="mt-6 bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+                <h3 class="text-white font-mono text-sm mb-4 flex items-center gap-2">
+                    <i class="fas fa-table text-pink-400"></i>
+                    system_info (versiyon takibi için)
+                </h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-900 rounded p-3">
+                        <p class="text-xs text-slate-400 mb-1">current_version</p>
+                        <p class="text-green-400 font-mono">2.5.1</p>
+                    </div>
+                    <div class="bg-slate-900 rounded p-3">
+                        <p class="text-xs text-slate-400 mb-1">released_at</p>
+                        <p class="text-blue-400 font-mono">2026-01-01 15:30:00</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BÖLÜM 9: API ENDPOINTS -->
+        <!-- ============================================ -->
+        <section id="api" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-teal-500 rounded-lg flex items-center justify-center text-white font-bold">9</span>
+                <h2 class="text-2xl font-bold text-white">API Endpoints</h2>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Endpoint 1 -->
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-green-500 text-white px-3 py-1 rounded text-xs font-bold">POST</span>
+                        <code class="text-white font-mono">/api/license/verify</code>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-4">Lisans doğrulama - Müşteri sunucu günlük çağırır</p>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-900 rounded p-3">
+                            <p class="text-xs text-slate-500 mb-2">Request:</p>
+                            <pre class="text-xs text-blue-400">{
+  "license_key": "TUUFI-...",
+  "domain": "musteri.com",
+  "version": "2.4.8"
+}</pre>
+                        </div>
+                        <div class="bg-slate-900 rounded p-3">
+                            <p class="text-xs text-slate-500 mb-2">Response:</p>
+                            <pre class="text-xs text-green-400">{
+  "valid": true,
+  "expires": "2027-01-01",
+  "features": ["blog", "shop"]
+}</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Endpoint 2 -->
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-blue-500 text-white px-3 py-1 rounded text-xs font-bold">GET</span>
+                        <code class="text-white font-mono">/api/version</code>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-4">Son versiyon kontrolü - Polling için</p>
+                    <div class="bg-slate-900 rounded p-3">
+                        <p class="text-xs text-slate-500 mb-2">Response:</p>
+                        <pre class="text-xs text-green-400">{
+  "current_version": "2.5.1",
+  "released_at": "2026-01-01 15:30:00",
+  "changelog_url": "https://..."
+}</pre>
+                    </div>
+                </div>
+
+                <!-- Endpoint 3 -->
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-green-500 text-white px-3 py-1 rounded text-xs font-bold">POST</span>
+                        <code class="text-white font-mono">/api/license/heartbeat</code>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-4">Güncelleme başarı bildirimi</p>
+                    <div class="bg-slate-900 rounded p-3">
+                        <p class="text-xs text-slate-500 mb-2">Request:</p>
+                        <pre class="text-xs text-blue-400">{
+  "license_key": "TUUFI-...",
+  "version": "2.5.1",
+  "status": "updated"
+}</pre>
+                    </div>
+                </div>
+
+                <!-- Endpoint 4 -->
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-green-500 text-white px-3 py-1 rounded text-xs font-bold">POST</span>
+                        <code class="text-white font-mono">/api/webhook/github-deploy</code>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-4">GitHub webhook - Push bildirimini alır</p>
+                    <div class="bg-slate-900 rounded p-3">
+                        <p class="text-xs text-slate-500 mb-2">İşlem:</p>
+                        <ol class="text-xs text-slate-300 space-y-1">
+                            <li>1. GitHub signature doğrula (HMAC-SHA256)</li>
+                            <li>2. Branch kontrol (sadece main)</li>
+                            <li>3. system_info.current_version güncelle</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BÖLÜM 10: KURULUM -->
+        <!-- ============================================ -->
+        <section id="kurulum" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-indigo-500 rounded-lg flex items-center justify-center text-white font-bold">10</span>
+                <h2 class="text-2xl font-bold text-white">Müşteri Kurulum Süreci</h2>
+            </div>
+
+            <!-- Basit Anlatım -->
+            <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-6 mb-6">
+                <h3 class="text-green-400 font-semibold mb-3 flex items-center gap-2">
+                    <i class="fas fa-user"></i>
+                    Basit Anlatım
+                </h3>
+                <p class="text-slate-300">
+                    Müşteri lisans satın alır, biz anahtar veririz. Müşteri IT ekibi sunucuya kodu kurar,
+                    .env'ye anahtarı ekler, cron ayarlar. Bitti! Artık otomatik güncelleme alacak.
+                </p>
+            </div>
+
+            <!-- Adımlar -->
+            <div class="space-y-4">
+                <div class="flex gap-4 items-start">
+                    <div class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center flex-shrink-0 font-bold">1</div>
+                    <div class="flex-1 bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                        <h4 class="text-white font-medium mb-2">Lisans Satın Alma</h4>
+                        <p class="text-slate-400 text-sm">Müşteri ödeme yapar, biz licenses tablosuna kayıt ekleriz, mail ile anahtar göndeririz.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start">
+                    <div class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center flex-shrink-0 font-bold">2</div>
+                    <div class="flex-1 bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                        <h4 class="text-white font-medium mb-2">Deploy Key Oluşturma</h4>
+                        <p class="text-slate-400 text-sm mb-2">Müşteri SSH key oluşturur, public key'i bize gönderir:</p>
+                        <code class="text-xs text-green-400 bg-slate-900 px-2 py-1 rounded">ssh-keygen -t ed25519 -C "deploy@musteri.com"</code>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start">
+                    <div class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center flex-shrink-0 font-bold">3</div>
+                    <div class="flex-1 bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                        <h4 class="text-white font-medium mb-2">Git Clone</h4>
+                        <p class="text-slate-400 text-sm mb-2">Biz deploy key'i repo'ya ekleriz (read-only), müşteri clone yapar:</p>
+                        <code class="text-xs text-green-400 bg-slate-900 px-2 py-1 rounded">git clone git@github.com:tuufi/platform.git /var/www/site</code>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start">
+                    <div class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center flex-shrink-0 font-bold">4</div>
+                    <div class="flex-1 bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                        <h4 class="text-white font-medium mb-2">.env Ayarları</h4>
+                        <pre class="text-xs text-green-400 bg-slate-900 p-2 rounded">TUUFI_LICENSE_KEY=TUUFI-GZTE-2026-XXXX
+DB_DATABASE=musteri_db
+DB_USERNAME=musteri_user</pre>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start">
+                    <div class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center flex-shrink-0 font-bold">5</div>
+                    <div class="flex-1 bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                        <h4 class="text-white font-medium mb-2">Cron Ayarı</h4>
+                        <pre class="text-xs text-green-400 bg-slate-900 p-2 rounded"># Her dakika güncelleme kontrolü
+* * * * * /var/www/site/check-update.sh
+
+# Laravel scheduler
+* * * * * php /var/www/site/artisan schedule:run</pre>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start">
+                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-check text-white"></i>
+                    </div>
+                    <div class="flex-1 bg-green-900/20 border border-green-800/50 rounded-lg p-4">
+                        <h4 class="text-green-400 font-medium mb-2">Tamam!</h4>
+                        <p class="text-slate-300 text-sm">Sistem çalışır durumda. Artık otomatik güncelleme alacak.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BÖLÜM 11: FİYATLANDIRMA -->
+        <!-- ============================================ -->
+        <section id="fiyatlandirma" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center text-white font-bold">11</span>
+                <h2 class="text-2xl font-bold text-white">Fiyatlandırma Modeli</h2>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50 mb-6">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="bg-slate-700/50">
+                                <th class="text-left p-3 text-slate-300">Müşteri Tipi</th>
+                                <th class="text-left p-3 text-slate-300">Sunucu</th>
+                                <th class="text-left p-3 text-slate-300">Lisans Modeli</th>
+                                <th class="text-left p-3 text-slate-300">Destek</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-slate-700">
+                                <td class="p-3">
+                                    <span class="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-xs">SHARED</span>
+                                </td>
+                                <td class="p-3 text-slate-300">Bizim sunucu</td>
+                                <td class="p-3 text-slate-300">Aylık düşük ücret</td>
+                                <td class="p-3 text-slate-300">Email</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="p-3">
+                                    <span class="bg-amber-500/20 text-amber-400 px-2 py-1 rounded text-xs">SELF-HOSTED</span>
+                                </td>
+                                <td class="p-3 text-slate-300">Müşteri sunucusu</td>
+                                <td class="p-3 text-slate-300">Yıllık yüksek ücret</td>
+                                <td class="p-3 text-slate-300">Email + Öncelikli</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3">
+                                    <span class="bg-purple-500/20 text-purple-400 px-2 py-1 rounded text-xs">ENTERPRISE</span>
+                                </td>
+                                <td class="p-3 text-slate-300">Müşteri datacenter</td>
+                                <td class="p-3 text-slate-300">Yıllık + SLA</td>
+                                <td class="p-3 text-slate-300">7/24 + Telefon</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-amber-900/20 border border-amber-800/50 rounded-xl p-6">
+                <h3 class="text-amber-400 font-semibold mb-3 flex items-center gap-2">
+                    <i class="fas fa-lightbulb"></i>
+                    Önemli Not
+                </h3>
+                <p class="text-slate-300">
+                    Self-hosted müşteri zaten sunucuya 500-1000$/ay veriyor. Senden sadece yazılım lisansı alıyor.
+                    Bu yüzden lisans ücreti shared'dan yüksek olabilir - müşteri için yine de ucuz çünkü
+                    kendi altyapısını kullanıyor.
+                </p>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BÖLÜM 12: YAPILACAKLAR -->
+        <!-- ============================================ -->
+        <section id="yapilacaklar" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-rose-500 rounded-lg flex items-center justify-center text-white font-bold">12</span>
+                <h2 class="text-2xl font-bold text-white">Implementasyon Yapılacaklar</h2>
+            </div>
+
+            <div class="space-y-3">
+                <!-- Database -->
+                <div class="text-slate-400 text-sm font-medium">Database:</div>
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                    <span class="w-6 h-6 bg-pink-500 rounded flex items-center justify-center text-xs text-white">1</span>
+                    <span class="text-slate-300">Migration: <code class="text-rose-400">licenses</code>, <code class="text-rose-400">license_logs</code>, <code class="text-rose-400">system_info</code></span>
+                    <span class="text-xs text-slate-500 ml-auto">~30 dk</span>
+                </div>
+
+                <!-- Models -->
+                <div class="text-slate-400 text-sm font-medium mt-4">Models & Services:</div>
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                    <span class="w-6 h-6 bg-blue-500 rounded flex items-center justify-center text-xs text-white">2</span>
+                    <span class="text-slate-300">Model: <code class="text-rose-400">License</code>, <code class="text-rose-400">LicenseLog</code></span>
+                    <span class="text-xs text-slate-500 ml-auto">~20 dk</span>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                    <span class="w-6 h-6 bg-blue-500 rounded flex items-center justify-center text-xs text-white">3</span>
+                    <span class="text-slate-300">Service: <code class="text-rose-400">LicenseService</code> (key üretme, doğrulama)</span>
+                    <span class="text-xs text-slate-500 ml-auto">~30 dk</span>
+                </div>
+
+                <!-- API -->
+                <div class="text-slate-400 text-sm font-medium mt-4">API Endpoints:</div>
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                    <span class="w-6 h-6 bg-green-500 rounded flex items-center justify-center text-xs text-white">4</span>
+                    <span class="text-slate-300">API: <code class="text-rose-400">/api/license/verify</code></span>
+                    <span class="text-xs text-slate-500 ml-auto">~30 dk</span>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                    <span class="w-6 h-6 bg-green-500 rounded flex items-center justify-center text-xs text-white">5</span>
+                    <span class="text-slate-300">API: <code class="text-rose-400">/api/version</code>, <code class="text-rose-400">/api/license/heartbeat</code></span>
+                    <span class="text-xs text-slate-500 ml-auto">~20 dk</span>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                    <span class="w-6 h-6 bg-green-500 rounded flex items-center justify-center text-xs text-white">6</span>
+                    <span class="text-slate-300">API: <code class="text-rose-400">/api/webhook/github-deploy</code></span>
+                    <span class="text-xs text-slate-500 ml-auto">~30 dk</span>
+                </div>
+
+                <!-- Scripts -->
+                <div class="text-slate-400 text-sm font-medium mt-4">Scripts (Müşteri İçin):</div>
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                    <span class="w-6 h-6 bg-orange-500 rounded flex items-center justify-center text-xs text-white">7</span>
+                    <span class="text-slate-300">Script: <code class="text-rose-400">update.sh</code></span>
+                    <span class="text-xs text-slate-500 ml-auto">~20 dk</span>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                    <span class="w-6 h-6 bg-orange-500 rounded flex items-center justify-center text-xs text-white">8</span>
+                    <span class="text-slate-300">Script: <code class="text-rose-400">check-update.sh</code></span>
+                    <span class="text-xs text-slate-500 ml-auto">~15 dk</span>
+                </div>
+
+                <!-- Admin & Docs -->
+                <div class="text-slate-400 text-sm font-medium mt-4">Admin & Dokümantasyon:</div>
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                    <span class="w-6 h-6 bg-purple-500 rounded flex items-center justify-center text-xs text-white">9</span>
+                    <span class="text-slate-300">Admin Panel: Lisans yönetimi + müşteri durumları</span>
+                    <span class="text-xs text-slate-500 ml-auto">~1 saat</span>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                    <span class="w-6 h-6 bg-purple-500 rounded flex items-center justify-center text-xs text-white">10</span>
+                    <span class="text-slate-300">GitHub: Private repo + webhook ayarları</span>
+                    <span class="text-xs text-slate-500 ml-auto">~15 dk</span>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                    <span class="w-6 h-6 bg-purple-500 rounded flex items-center justify-center text-xs text-white">11</span>
+                    <span class="text-slate-300">Dokümantasyon: Müşteri kurulum kılavuzu</span>
+                    <span class="text-xs text-slate-500 ml-auto">~30 dk</span>
+                </div>
+            </div>
+
+            <!-- Toplam -->
+            <div class="mt-8 bg-gradient-to-r from-green-900/30 to-emerald-900/30 rounded-xl p-6 border border-green-700/50">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-green-400 font-bold text-lg">Toplam Tahmini Süre</h3>
+                        <p class="text-slate-400 text-sm">Tüm bileşenlerin implementasyonu</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-4xl font-bold text-green-400">~6</span>
+                        <span class="text-xl text-green-400">saat</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- SONUÇ -->
+        <!-- ============================================ -->
+        <section class="bg-gradient-to-r from-indigo-900/30 via-purple-900/30 to-pink-900/30 rounded-xl p-8 border border-indigo-700/50">
+            <h2 class="text-2xl font-bold text-white mb-6 text-center">Sonuç</h2>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-key text-blue-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-white font-semibold mb-2">Lisans Sistemi</h3>
+                    <p class="text-slate-400 text-sm">Müşteri yönetimi, doğrulama, grace period</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fab fa-git-alt text-orange-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-white font-semibold mb-2">Git Güncelleme</h3>
+                    <p class="text-slate-400 text-sm">Otomatik pull, rollback, maintenance mode</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-bolt text-yellow-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-white font-semibold mb-2">Webhook Tetikleme</h3>
+                    <p class="text-slate-400 text-sm">Push → 1 dakika → 100 müşteri güncel</p>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <p class="text-xl text-white mb-4">
+                    <i class="fas fa-rocket text-yellow-400 mr-2"></i>
+                    Tek <code class="bg-slate-800 px-2 py-1 rounded text-green-400">git push</code> ile tüm müşteriler otomatik güncellenir!
+                </p>
+                <p class="text-slate-400">
+                    Karmaşık federation yerine basit, etkili, sürdürülebilir çözüm.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-700/50 mt-12">
+        <div class="max-w-6xl mx-auto px-6 py-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-2 text-slate-400 text-sm">
+                    <i class="fas fa-robot"></i>
+                    <span>Claude AI tarafından oluşturuldu - 1 Ocak 2026</span>
+                </div>
+                <div class="flex items-center gap-4 text-sm">
+                    <a href="v1/" class="text-slate-500 hover:text-slate-300">v1</a>
+                    <a href="v2/" class="text-slate-500 hover:text-slate-300">v2</a>
+                    <a href="v3/" class="text-slate-500 hover:text-slate-300">v3</a>
+                    <a href="v4/" class="text-slate-500 hover:text-slate-300">v4</a>
+                    <a href="v5/" class="text-slate-500 hover:text-slate-300">v5</a>
+                    <a href="v6/" class="text-slate-500 hover:text-slate-300">v6</a>
+                    <a href="v7/" class="text-slate-500 hover:text-slate-300">v7</a>
+                    <span class="text-indigo-400 font-medium">v8 - Master</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

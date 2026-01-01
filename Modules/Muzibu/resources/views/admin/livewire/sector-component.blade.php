@@ -35,17 +35,17 @@
                 <div class="col-auto">
                     <div class="d-flex align-items-center justify-content-end gap-2">
                         <!-- Görünüm Toggle -->
-                        <div class="btn-group" role="group">
+                        <div class="d-flex align-items-center gap-2">
                             <button type="button"
                                 wire:click="$set('detailedView', false)"
-                                class="btn btn-icon {{ !$detailedView ? 'btn-primary' : 'btn-ghost-secondary' }}"
-                                title="Minimal">
+                                class="btn btn-icon {{ !$detailedView ? 'btn-primary' : 'btn-outline-secondary' }}"
+                                data-bs-toggle="tooltip" title="Minimal">
                                 <i class="fas fa-th-list"></i>
                             </button>
                             <button type="button"
                                 wire:click="$set('detailedView', true)"
-                                class="btn btn-icon {{ $detailedView ? 'btn-primary' : 'btn-ghost-secondary' }}"
-                                title="Detaylı">
+                                class="btn btn-icon {{ $detailedView ? 'btn-primary' : 'btn-outline-secondary' }}"
+                                data-bs-toggle="tooltip" title="Detaylı">
                                 <i class="fas fa-table"></i>
                             </button>
                         </div>

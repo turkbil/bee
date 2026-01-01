@@ -101,6 +101,34 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     }
 
     // ==========================================
+    // MUZIBU RELATIONSHIPS (Tenant 1001)
+    // ==========================================
+
+    /**
+     * Get user's playlists (Muzibu)
+     */
+    public function playlists()
+    {
+        if (!$this->isMuzibuTenant()) {
+            return $this->hasMany(self::class, 'id')->whereRaw('1=0'); // Empty relation
+        }
+
+        return $this->hasMany(\Modules\Muzibu\App\Models\Playlist::class, 'user_id');
+    }
+
+    /**
+     * Get user's song plays (Muzibu)
+     */
+    public function songPlays()
+    {
+        if (!$this->isMuzibuTenant()) {
+            return $this->hasMany(self::class, 'id')->whereRaw('1=0'); // Empty relation
+        }
+
+        return $this->hasMany(\Modules\Muzibu\App\Models\SongPlay::class, 'user_id');
+    }
+
+    // ==========================================
     // MEMBERSHIP RELATIONSHIPS
     // ==========================================
 

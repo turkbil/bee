@@ -9,6 +9,15 @@ use Modules\Muzibu\App\Models\AbuseReport;
 use Modules\Muzibu\App\Jobs\ScanUserForAbuseJob;
 use Modules\Muzibu\App\Services\AbuseDetectionService;
 
+/**
+ * Suistimal Rapor Controller - Ping-Pong Sistemi v2
+ *
+ * Early Exit Optimizasyonu:
+ * - Tek fingerprint'li kullanıcılar → Direkt CLEAN (Horizon'a gönderilmez)
+ * - Birden fazla fingerprint → Horizon'da detaylı analiz
+ *
+ * @see AbuseDetectionService
+ */
 class AbuseReportController extends Controller
 {
     protected AbuseDetectionService $service;
@@ -43,10 +52,13 @@ class AbuseReportController extends Controller
     }
 
     /**
-     * Toplu tarama başlat (tüm aktif kullanıcılar)
-     * İki mod destekler:
-     * 1. period_days: Son X gün (preset)
-     * 2. date_start + date_end: Belirli tarih aralığı (custom)
+     * 🔥 Toplu tarama başlat (Early Exit optimizasyonu ile)
+     *
+     * Akış:
+     * 1. Aktif kullanıcıları bul
+     * 2. Her kullanıcı için quickCheck yap
+     * 3. Tek fingerprint → Direkt CLEAN rapor oluştur
+     * 4. Birden fazla fingerprint → Horizon'a gönder
      */
     public function startScan(Request $request)
     {
@@ -81,22 +93,79 @@ class AbuseReportController extends Controller
             ]);
         }
 
-        // Her kullanıcı için job dispatch et
-        $dispatched = 0;
+        // ⚡ Early Exit ile akıllı tarama
+        $earlyExitCount = 0;  // Tek fingerprint, direkt CLEAN
+        $horizonCount = 0;    // Birden fazla fingerprint, Horizon'a gönderildi
+
         foreach ($userIds as $userId) {
-            ScanUserForAbuseJob::dispatch($userId, $periodStart, $periodEnd);
-            $dispatched++;
+            // 🔥 Quick Check: Tek fingerprint mi?
+            $quickResult = $this->service->quickCheck($userId, $periodStart, $periodEnd);
+
+            if ($quickResult['skip']) {
+                // Tek fingerprint → Direkt CLEAN rapor oluştur
+                $this->createCleanReport($userId, $periodStart, $periodEnd, $quickResult);
+                $earlyExitCount++;
+            } else {
+                // Birden fazla fingerprint → Horizon'da detaylı analiz
+                ScanUserForAbuseJob::dispatch($userId, $periodStart, $periodEnd);
+                $horizonCount++;
+            }
         }
 
         return response()->json([
             'success' => true,
-            'message' => "{$dispatched} kullanıcı için tarama başlatıldı. ({$periodLabel})",
-            'count' => $dispatched,
+            'message' => sprintf(
+                "Tarama başlatıldı. (%s)\n⚡ %d kullanıcı Early Exit (tek fingerprint)\n🔍 %d kullanıcı Horizon'da analiz ediliyor",
+                $periodLabel,
+                $earlyExitCount,
+                $horizonCount
+            ),
+            'total' => $userIds->count(),
+            'early_exit' => $earlyExitCount,
+            'horizon' => $horizonCount,
         ]);
     }
 
     /**
-     * Tek bir kullanıcıyı tara
+     * ⚡ Early Exit için CLEAN rapor oluştur
+     */
+    protected function createCleanReport(int $userId, $periodStart, $periodEnd, array $quickResult): void
+    {
+        // Play sayısını al
+        $playCount = \Illuminate\Support\Facades\DB::connection('tenant')
+            ->table('muzibu_song_plays')
+            ->where('user_id', $userId)
+            ->whereBetween('created_at', [$periodStart, $periodEnd])
+            ->count();
+
+        AbuseReport::updateOrCreate(
+            [
+                'user_id' => $userId,
+                'scan_date' => now()->toDateString(),
+            ],
+            [
+                'period_start' => $periodStart,
+                'period_end' => $periodEnd,
+                'total_plays' => $playCount,
+                'overlap_count' => 0,
+                'abuse_score' => 0,
+                'status' => AbuseReport::STATUS_CLEAN,
+                'overlaps_json' => [],
+                'daily_stats' => [],
+                'patterns_json' => [
+                    'early_exit' => true,
+                    'reason' => $quickResult['reason'],
+                    'fingerprint_count' => $quickResult['fingerprint_count'],
+                    'ping_pong' => ['detected' => false, 'fields' => [], 'cycles' => []],
+                    'concurrent_different' => ['detected' => false, 'count' => 0, 'samples' => []],
+                    'split_stream' => ['detected' => false, 'count' => 0, 'samples' => []],
+                ],
+            ]
+        );
+    }
+
+    /**
+     * Tek bir kullanıcıyı tara (Early Exit ile)
      */
     public function scanUser(Request $request, int $userId)
     {
@@ -104,6 +173,19 @@ class AbuseReportController extends Controller
         $periodEnd = now();
         $periodStart = now()->subDays($periodDays);
 
+        // Quick Check
+        $quickResult = $this->service->quickCheck($userId, $periodStart, $periodEnd);
+
+        if ($quickResult['skip']) {
+            // Tek fingerprint → Direkt CLEAN
+            $this->createCleanReport($userId, $periodStart, $periodEnd, $quickResult);
+            return response()->json([
+                'success' => true,
+                'message' => "Kullanıcı #{$userId} ⚡ Early Exit (tek fingerprint) - CLEAN",
+            ]);
+        }
+
+        // Birden fazla fingerprint → Horizon'a gönder
         ScanUserForAbuseJob::dispatch($userId, $periodStart, $periodEnd);
 
         return response()->json([
@@ -161,33 +243,38 @@ class AbuseReportController extends Controller
     }
 
     /**
-     * API: İstatistikler
+     * API: İstatistikler (Ping-Pong sistemi için güncellendi)
      */
     public function apiStats()
     {
         $today = now()->toDateString();
 
-        // Pattern sayılarını hesapla
+        // Pattern sayılarını hesapla (Yeni 3 pattern sistemi)
         $reportsWithPatterns = AbuseReport::whereDate('scan_date', $today)
             ->whereNotNull('patterns_json')
             ->get();
 
         $patternCounts = [
-            'rapid_skips' => 0,
-            'high_volume' => 0,
-            'repeat_songs' => 0,
-            'multi_device' => 0,
-            'suspicious_ip' => 0,
-            'no_sleep' => 0,
-            'bot_like' => 0,
+            'ping_pong' => 0,
+            'concurrent_different' => 0,
+            'split_stream' => 0,
+            'early_exit' => 0,
         ];
 
         foreach ($reportsWithPatterns as $report) {
             $patterns = $report->patterns_json ?? [];
-            foreach (array_keys($patternCounts) as $key) {
-                if (isset($patterns[$key])) {
-                    $patternCounts[$key]++;
-                }
+
+            if ($patterns['early_exit'] ?? false) {
+                $patternCounts['early_exit']++;
+            }
+            if ($patterns['ping_pong']['detected'] ?? false) {
+                $patternCounts['ping_pong']++;
+            }
+            if ($patterns['concurrent_different']['detected'] ?? false) {
+                $patternCounts['concurrent_different']++;
+            }
+            if ($patterns['split_stream']['detected'] ?? false) {
+                $patternCounts['split_stream']++;
             }
         }
 

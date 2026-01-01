@@ -68,6 +68,16 @@ class GenerateSongCover implements ShouldQueue
                 return;
             }
 
+            // ✅ KULLANICI GÖRSELİ KONTROLÜ: Hero varsa AI üretme!
+            // Kullanıcının yüklediği görsel daha değerli, AI onu ezmemeli
+            if ($song->hasMedia('hero')) {
+                Log::info('🎵 GenerateSongCover: SKIPPED - Hero already exists (user uploaded)', [
+                    'song_id' => $this->songId,
+                    'existing_media_id' => $song->getFirstMedia('hero')?->id,
+                ]);
+                return;
+            }
+
             Log::info('🎵 GenerateSongCover: Song found', [
                 'song_id' => $song->song_id,
             ]);

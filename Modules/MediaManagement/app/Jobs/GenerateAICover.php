@@ -76,6 +76,18 @@ class GenerateAICover implements ShouldQueue
                 return;
             }
 
+            // ✅ KULLANICI GÖRSELİ KONTROLÜ: Hero varsa AI üretme!
+            // Kullanıcının yüklediği görsel daha değerli, AI onu ezmemeli
+            // Job queue'da beklerken kullanıcı görsel yükleyebilir, bu kontrol kritik!
+            if (method_exists($model, 'hasMedia') && $model->hasMedia('hero')) {
+                Log::info('🎨 GenerateAICover: SKIPPED - Hero already exists (user uploaded)', [
+                    'model_class' => $this->modelClass,
+                    'model_id' => $this->modelId,
+                    'existing_media_id' => $model->getFirstMedia('hero')?->id,
+                ]);
+                return;
+            }
+
             // Basit prompt oluştur
             $simplePrompt = $this->buildPrompt($this->title, $this->type);
 

@@ -166,6 +166,19 @@ class MuzibuServiceProvider extends ServiceProvider
         Livewire::component('muzibu::admin.certificate-component', \Modules\Muzibu\App\Http\Livewire\Admin\CertificateComponent::class);
         Livewire::component('muzibu::admin.certificate-manage-component', \Modules\Muzibu\App\Http\Livewire\Admin\CertificateManageComponent::class);
 
+        // Dashboard Component
+        Livewire::component('muzibu::admin.dashboard-component', \Modules\Muzibu\App\Http\Livewire\Admin\DashboardComponent::class);
+
+        // Stats & Tools Components
+        Livewire::component('muzibu::admin.stats-component', \Modules\Muzibu\App\Http\Livewire\Admin\StatsComponent::class);
+        Livewire::component('muzibu::admin.ai-cover-component', \Modules\Muzibu\App\Http\Livewire\Admin\AICoverComponent::class);
+        Livewire::component('muzibu::admin.user-playlist-component', \Modules\Muzibu\App\Http\Livewire\Admin\UserPlaylistComponent::class);
+        Livewire::component('muzibu::admin.listening-history-component', \Modules\Muzibu\App\Http\Livewire\Admin\ListeningHistoryComponent::class);
+
+        // Corporate Extended Components
+        Livewire::component('muzibu::admin.corporate-subscription-component', \Modules\Muzibu\App\Http\Livewire\Admin\CorporateSubscriptionComponent::class);
+        Livewire::component('muzibu::admin.corporate-usage-component', \Modules\Muzibu\App\Http\Livewire\Admin\CorporateUsageComponent::class);
+
         // Frontend Components
         Livewire::component('muzibu::frontend.search-results', \Modules\Muzibu\App\Http\Livewire\Frontend\SearchResults::class);
     }

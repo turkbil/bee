@@ -2,5 +2,5 @@
 @extends('admin.layout')
 
 @section('content')
-    @livewire(\Modules\Muzibu\App\Http\Livewire\Admin\DashboardComponent::class)
+    @livewire('muzibu::admin.dashboard-component')
 @endsection

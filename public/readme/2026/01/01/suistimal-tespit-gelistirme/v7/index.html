@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Hesap Paylaşımı Tespiti - Döngü Bazlı Tespit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="mb-10 text-center border-b border-slate-700 pb-8">
+            <div class="inline-flex items-center gap-2 bg-orange-500/20 text-orange-400 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                <i class="fas fa-sync-alt"></i>
+                <span>Döngü Bazlı Tespit</span>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">Hesap Paylaşımı Tespiti</h1>
+            <p class="text-slate-400">Önemli olan tek seferlik değişim değil, DÖNGÜ!</p>
+        </header>
+
+        <!-- Ana Mantık -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-blue-500/20 text-blue-400 w-10 h-10 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-brain"></i>
+                </span>
+                Temel Mantık
+            </h2>
+
+            <div class="bg-gradient-to-r from-blue-900/30 to-slate-800 border border-blue-700 rounded-xl p-6 mb-6">
+                <div class="text-center mb-6">
+                    <p class="text-xl text-blue-300">1 Üye = 1 Cihaz = 1 IP (aynı anda)</p>
+                    <p class="text-slate-400 mt-2">Ama kullanıcı lokasyon değiştirebilir. Önemli olan <strong class="text-white">kalıcılık</strong>.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-green-900/20 border border-green-600 rounded-xl p-5">
+                        <h3 class="font-bold text-green-400 text-lg mb-3">
+                            <i class="fas fa-check-circle mr-2"></i>NORMAL
+                        </h3>
+                        <p class="text-slate-300 mb-3">Biri durur, diğeri başlar ve <strong>KALICI</strong></p>
+                        <div class="bg-slate-900 rounded-lg p-3 font-mono text-sm">
+                            <p class="text-slate-400">Hafta 1: IP-A (ofis)</p>
+                            <p class="text-slate-400">Hafta 2: IP-B (yeni ofis)</p>
+                            <p class="text-green-400 mt-2">→ Taşınmış, sorun yok</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-red-900/20 border border-red-600 rounded-xl p-5">
+                        <h3 class="font-bold text-red-400 text-lg mb-3">
+                            <i class="fas fa-times-circle mr-2"></i>SUİSTİMAL
+                        </h3>
+                        <p class="text-slate-300 mb-3">Sürekli gidip gelme <strong>DÖNGÜ</strong></p>
+                        <div class="bg-slate-900 rounded-lg p-3 font-mono text-sm">
+                            <p class="text-slate-400">Pazartesi: IP-A → IP-B → IP-A</p>
+                            <p class="text-slate-400">Salı: IP-B → IP-A → IP-B</p>
+                            <p class="text-red-400 mt-2">→ Ping-pong = paylaşım</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tespit Kuralları -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-red-500/20 text-red-400 w-10 h-10 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-gavel"></i>
+                </span>
+                Tespit Kuralları
+            </h2>
+
+            <div class="space-y-4">
+
+                <!-- Kural 1: Eş Zamanlı -->
+                <div class="bg-gradient-to-r from-red-900/40 to-slate-800 border-l-4 border-red-500 rounded-r-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <span class="bg-red-500 text-white w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0">1</span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-xl text-red-400 mb-2">Eş Zamanlı Farklı IP/Device</h3>
+                            <p class="text-slate-400">Aynı anda 2 farklı yerden dinleme = <strong class="text-red-400">KESİN SUİSTİMAL</strong></p>
+                            <div class="mt-3 bg-slate-900 rounded-lg p-4 font-mono text-sm">
+                                <p class="text-slate-500">// Senaryo: Overlap + Farklı IP</p>
+                                <p class="text-slate-400">10:00-10:05 Şarkı A | IP: 92.44.x</p>
+                                <p class="text-slate-400">10:02-10:07 Şarkı B | IP: 88.230.x</p>
+                                <p class="text-red-400 mt-2">→ 2 farklı lokasyonda aynı anda = %100 paylaşım</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kural 2: Döngü -->
+                <div class="bg-gradient-to-r from-orange-900/40 to-slate-800 border-l-4 border-orange-500 rounded-r-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <span class="bg-orange-500 text-white w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0">2</span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-xl text-orange-400 mb-2">IP/Device Döngüsü (Ping-Pong)</h3>
+                            <p class="text-slate-400">Biri durur diğeri başlar, sonra tekrar eski başlar = <strong class="text-orange-400">SUİSTİMAL</strong></p>
+                            <div class="mt-3 bg-slate-900 rounded-lg p-4 font-mono text-sm">
+                                <p class="text-slate-500">// Senaryo: Sıralı ama döngü var</p>
+                                <p class="text-slate-400">09:00 IP-A başlar</p>
+                                <p class="text-slate-400">12:00 IP-A durur → IP-B başlar</p>
+                                <p class="text-slate-400">15:00 IP-B durur → IP-A başlar</p>
+                                <p class="text-slate-400">18:00 IP-A durur → IP-B başlar</p>
+                                <p class="text-orange-400 mt-2">→ A↔B döngüsü = 2 kişi sırayla kullanıyor</p>
+                            </div>
+                            <div class="mt-3 text-sm text-slate-500">
+                                <strong>Tespit:</strong> X aralıkta (örn: 7 gün) IP-A ve IP-B arası 3+ geçiş varsa = döngü
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kural 3: Tek Seferlik (Normal) -->
+                <div class="bg-gradient-to-r from-green-900/40 to-slate-800 border-l-4 border-green-500 rounded-r-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <span class="bg-green-500 text-white w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0">3</span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-xl text-green-400 mb-2">Tek Seferlik Geçiş (Normal)</h3>
+                            <p class="text-slate-400">Biri durur, diğeri başlar ve <strong class="text-green-400">KALICI kalır</strong> = Normal</p>
+                            <div class="mt-3 bg-slate-900 rounded-lg p-4 font-mono text-sm">
+                                <p class="text-slate-500">// Senaryo: Lokasyon değişikliği</p>
+                                <p class="text-slate-400">1-15 Ocak: IP-A (eski ofis)</p>
+                                <p class="text-slate-400">16 Ocak: Geçiş</p>
+                                <p class="text-slate-400">17-31 Ocak: IP-B (yeni ofis)</p>
+                                <p class="text-green-400 mt-2">→ Kalıcı geçiş = işletme taşınmış, sorun yok</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Döngü Tespiti Detay -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-purple-500/20 text-purple-400 w-10 h-10 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-sync"></i>
+                </span>
+                Döngü Tespiti Nasıl Yapılır?
+            </h2>
+
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                <h3 class="font-bold text-white mb-4">Algoritma</h3>
+
+                <div class="space-y-4">
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <h4 class="text-yellow-400 font-bold mb-2">1. Fingerprint Geçişlerini Listele</h4>
+                        <p class="text-slate-400 text-sm">Her play kaydında önceki play'in fingerprint'i ile karşılaştır.</p>
+                        <div class="font-mono text-xs text-slate-500 mt-2 bg-slate-800 p-3 rounded">
+                            geçişler = []<br>
+                            for i = 1 to plays.length:<br>
+                            &nbsp;&nbsp;if plays[i].fingerprint != plays[i-1].fingerprint:<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;geçişler.push({from: plays[i-1].fingerprint, to: plays[i].fingerprint})
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <h4 class="text-yellow-400 font-bold mb-2">2. Geri Dönüş Kontrol Et</h4>
+                        <p class="text-slate-400 text-sm">Bir fingerprint'e geri dönüş var mı?</p>
+                        <div class="font-mono text-xs text-slate-500 mt-2 bg-slate-800 p-3 rounded">
+                            A → B (geçiş 1)<br>
+                            B → A (geçiş 2) ← <span class="text-red-400">GERİ DÖNÜŞ!</span><br>
+                            A → B (geçiş 3) ← <span class="text-red-400">TEKRAR!</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <h4 class="text-yellow-400 font-bold mb-2">3. Döngü Sayısını Hesapla</h4>
+                        <p class="text-slate-400 text-sm">X gün içinde kaç kez geri dönüş var?</p>
+                        <div class="mt-3 grid grid-cols-3 gap-3 text-center text-sm">
+                            <div class="bg-green-900/30 border border-green-700 rounded-lg p-3">
+                                <p class="text-green-400 font-bold">0-1 Geri Dönüş</p>
+                                <p class="text-slate-500">Normal</p>
+                            </div>
+                            <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-3">
+                                <p class="text-yellow-400 font-bold">2 Geri Dönüş</p>
+                                <p class="text-slate-500">Şüpheli</p>
+                            </div>
+                            <div class="bg-red-900/30 border border-red-700 rounded-lg p-3">
+                                <p class="text-red-400 font-bold">3+ Geri Dönüş</p>
+                                <p class="text-slate-500">Suistimal</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özet Tablo -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-cyan-500/20 text-cyan-400 w-10 h-10 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-table"></i>
+                </span>
+                Özet
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-4 text-slate-400">Durum</th>
+                            <th class="text-left py-4 text-slate-400">Açıklama</th>
+                            <th class="text-center py-4 text-slate-400">Sonuç</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-4 font-bold">Eş zamanlı 2 IP/Device</td>
+                            <td class="text-slate-400">Aynı anda farklı yerlerden</td>
+                            <td class="text-center"><span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs">SUİSTİMAL</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-4 font-bold">Döngü (3+ geri dönüş)</td>
+                            <td class="text-slate-400">A→B→A→B pattern'i</td>
+                            <td class="text-center"><span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs">SUİSTİMAL</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-4 font-bold">Şüpheli (2 geri dönüş)</td>
+                            <td class="text-slate-400">A→B→A olmuş</td>
+                            <td class="text-center"><span class="bg-yellow-500 text-white px-3 py-1 rounded-full text-xs">ŞÜPHELİ</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-4 font-bold">Tek seferlik geçiş</td>
+                            <td class="text-slate-400">A→B ve kalıcı B</td>
+                            <td class="text-center"><span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs">NORMAL</span></td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 font-bold">Hiç değişiklik yok</td>
+                            <td class="text-slate-400">Hep aynı fingerprint</td>
+                            <td class="text-center"><span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs">NORMAL</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Örnek Timeline -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-yellow-500/20 text-yellow-400 w-10 h-10 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-clock"></i>
+                </span>
+                Örnek Timeline
+            </h2>
+
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                <div class="space-y-6">
+                    <!-- Normal -->
+                    <div>
+                        <h4 class="font-bold text-green-400 mb-3"><i class="fas fa-check mr-2"></i>Normal Kullanım</h4>
+                        <div class="flex items-center gap-2 overflow-x-auto pb-2">
+                            <div class="bg-blue-500/30 border border-blue-500 rounded-lg px-4 py-2 text-sm whitespace-nowrap">
+                                <p class="font-bold">IP-A</p>
+                                <p class="text-xs text-slate-400">1-31 Ocak</p>
+                            </div>
+                            <i class="fas fa-arrow-right text-slate-600"></i>
+                            <div class="bg-green-500/30 border border-green-500 rounded-lg px-4 py-2 text-sm whitespace-nowrap">
+                                <p class="font-bold">IP-B</p>
+                                <p class="text-xs text-slate-400">1-28 Şubat (kalıcı)</p>
+                            </div>
+                        </div>
+                        <p class="text-slate-500 text-sm mt-2">→ Tek geçiş, kalıcı. İşletme taşınmış.</p>
+                    </div>
+
+                    <!-- Suistimal -->
+                    <div>
+                        <h4 class="font-bold text-red-400 mb-3"><i class="fas fa-times mr-2"></i>Suistimal (Döngü)</h4>
+                        <div class="flex items-center gap-2 overflow-x-auto pb-2">
+                            <div class="bg-blue-500/30 border border-blue-500 rounded-lg px-4 py-2 text-sm whitespace-nowrap">
+                                <p class="font-bold">IP-A</p>
+                                <p class="text-xs text-slate-400">Sabah</p>
+                            </div>
+                            <i class="fas fa-arrow-right text-slate-600"></i>
+                            <div class="bg-orange-500/30 border border-orange-500 rounded-lg px-4 py-2 text-sm whitespace-nowrap">
+                                <p class="font-bold">IP-B</p>
+                                <p class="text-xs text-slate-400">Öğlen</p>
+                            </div>
+                            <i class="fas fa-arrow-right text-slate-600"></i>
+                            <div class="bg-blue-500/30 border border-blue-500 rounded-lg px-4 py-2 text-sm whitespace-nowrap">
+                                <p class="font-bold">IP-A</p>
+                                <p class="text-xs text-slate-400">Akşam</p>
+                            </div>
+                            <i class="fas fa-arrow-right text-slate-600"></i>
+                            <div class="bg-orange-500/30 border border-orange-500 rounded-lg px-4 py-2 text-sm whitespace-nowrap">
+                                <p class="font-bold">IP-B</p>
+                                <p class="text-xs text-slate-400">Gece</p>
+                            </div>
+                        </div>
+                        <p class="text-slate-500 text-sm mt-2">→ A↔B ping-pong. 2 farklı lokasyon sırayla kullanıyor.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Implementasyon -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-emerald-500/20 text-emerald-400 w-10 h-10 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-code"></i>
+                </span>
+                Implementasyon
+            </h2>
+
+            <div class="bg-emerald-900/20 border border-emerald-700 rounded-xl p-6">
+                <h3 class="font-bold text-white mb-4">Yeni Fonksiyonlar</h3>
+                <div class="space-y-3">
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <code class="text-yellow-400 font-mono">detectConcurrentSessions()</code>
+                        <p class="text-slate-400 text-sm mt-1">Aynı anda 2+ farklı fingerprint var mı? → Kesin suistimal</p>
+                    </div>
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <code class="text-yellow-400 font-mono">detectFingerprintCycle()</code>
+                        <p class="text-slate-400 text-sm mt-1">A→B→A şeklinde geri dönüş var mı? Kaç kez? → Döngü tespiti</p>
+                    </div>
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <code class="text-yellow-400 font-mono">countFingerprintSwitches()</code>
+                        <p class="text-slate-400 text-sm mt-1">Toplam kaç geçiş var? Geri dönüş sayısı?</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-800 pt-8">
+            <p>Muzibu Hesap Paylaşımı Tespiti - Döngü Bazlı v7</p>
+            <p class="mt-1">Önemli olan döngü, tek seferlik geçiş normal.</p>
+        </footer>
+    </div>
+</body>
+</html>

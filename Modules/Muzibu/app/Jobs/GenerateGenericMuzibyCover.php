@@ -74,6 +74,17 @@ class GenerateGenericMuzibyCover implements ShouldQueue
                 return;
             }
 
+            // ✅ KULLANICI GÖRSELİ KONTROLÜ: Hero varsa AI üretme!
+            // Kullanıcının yüklediği görsel daha değerli, AI onu ezmemeli
+            if ($model->hasMedia('hero')) {
+                Log::info('🎨 GenerateGenericMuzibyCover: SKIPPED - Hero already exists (user uploaded)', [
+                    'type' => $this->type,
+                    'model_id' => $this->modelId,
+                    'existing_media_id' => $model->getFirstMedia('hero')?->id,
+                ]);
+                return;
+            }
+
             // 🎨 SERBEST HAYAL GÜCÜ: Sadece başlığı ver, AI kendi hayal etsin
             // Hiçbir yönlendirme, kısıtlama, şablon YOK
             $prompt = $this->title;

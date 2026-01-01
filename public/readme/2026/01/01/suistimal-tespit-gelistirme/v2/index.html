@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suistimal Tespit - Eldeki Verilerle Geliştirme Planı v2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="mb-10 text-center">
+            <div class="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-400 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                <i class="fas fa-database"></i>
+                <span>Eldeki Verilerle Tespit</span>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">Suistimal Tespit Geliştirme - v2</h1>
+            <p class="text-slate-400">Mevcut DB kolonlarıyla yapılabilecekler</p>
+        </header>
+
+        <!-- Mevcut Veriler -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-slate-200 mb-4">
+                <i class="fas fa-table mr-2 text-blue-400"></i>Elimizdeki Veriler (muzibu_song_plays)
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                <div class="bg-slate-900 p-3 rounded-lg">
+                    <span class="text-emerald-400 font-mono">created_at</span>
+                    <p class="text-slate-500">Başlangıç zamanı</p>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-lg">
+                    <span class="text-emerald-400 font-mono">ended_at</span>
+                    <p class="text-slate-500">Bitiş zamanı</p>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-lg">
+                    <span class="text-emerald-400 font-mono">listened_duration</span>
+                    <p class="text-slate-500">Dinlenen süre (sn)</p>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-lg">
+                    <span class="text-emerald-400 font-mono">was_skipped</span>
+                    <p class="text-slate-500">Atlandı mı?</p>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-lg">
+                    <span class="text-yellow-400 font-mono">device_type</span>
+                    <p class="text-slate-500">desktop/mobile</p>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-lg">
+                    <span class="text-yellow-400 font-mono">browser</span>
+                    <p class="text-slate-500">Chrome, Safari...</p>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-lg">
+                    <span class="text-yellow-400 font-mono">platform</span>
+                    <p class="text-slate-500">Windows, macOS...</p>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-lg">
+                    <span class="text-yellow-400 font-mono">ip_address</span>
+                    <p class="text-slate-500">IP adresi</p>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-lg">
+                    <span class="text-purple-400 font-mono">source_type</span>
+                    <p class="text-slate-500">genre, playlist...</p>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-lg">
+                    <span class="text-purple-400 font-mono">source_id</span>
+                    <p class="text-slate-500">Kaynak ID</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Yeni Pattern Önerileri -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-orange-500/20 text-orange-400 w-10 h-10 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-search"></i>
+                </span>
+                Yeni Tespit Pattern'leri
+            </h2>
+
+            <div class="space-y-4">
+
+                <!-- Pattern 1: Gerçek Overlap -->
+                <div class="bg-gradient-to-r from-red-900/30 to-slate-800/50 border border-red-700/50 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <span class="bg-red-500/30 text-red-300 w-10 h-10 rounded-lg flex items-center justify-center shrink-0 font-bold">1</span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-red-300 mb-2">Gerçek Overlap Tespiti (ended_at ile)</h3>
+                            <p class="text-slate-400 text-sm mb-3">Mevcut sistem <code>created_at + duration</code> hesaplıyor. <code>ended_at</code> varsa gerçek bitiş zamanını kullan.</p>
+                            <div class="bg-slate-900 rounded-lg p-3 text-sm font-mono">
+                                <p class="text-slate-500">// Şu an:</p>
+                                <p class="text-slate-400">$end = $play->created_at->addSeconds($song->duration);</p>
+                                <p class="text-green-400 mt-2">// Olması gereken:</p>
+                                <p class="text-slate-400">$end = $play->ended_at ?? $play->created_at->addSeconds($play->listened_duration ?? $song->duration);</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern 2: Hızlı Device Switching -->
+                <div class="bg-gradient-to-r from-yellow-900/30 to-slate-800/50 border border-yellow-700/50 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <span class="bg-yellow-500/30 text-yellow-300 w-10 h-10 rounded-lg flex items-center justify-center shrink-0 font-bold">2</span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-yellow-300 mb-2">Hızlı Device/IP Switching</h3>
+                            <p class="text-slate-400 text-sm mb-3">Ardışık 2 play arasında 5 dakika içinde farklı device veya IP = şüpheli</p>
+                            <div class="bg-slate-900 rounded-lg p-3 text-sm">
+                                <p class="text-slate-400">10:00:00 - Chrome / Windows / 192.168.1.5</p>
+                                <p class="text-slate-400">10:03:00 - Safari / macOS / 192.168.1.10</p>
+                                <p class="text-red-400 mt-2">→ 3 dakikada device + IP değişti = Hesap paylaşımı şüphesi</p>
+                            </div>
+                            <div class="mt-3 text-xs text-slate-500">
+                                <strong>Eşik:</strong> 5-10 dakika içinde farklı device_key
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern 3: Anormal Skip Oranı -->
+                <div class="bg-gradient-to-r from-purple-900/30 to-slate-800/50 border border-purple-700/50 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <span class="bg-purple-500/30 text-purple-300 w-10 h-10 rounded-lg flex items-center justify-center shrink-0 font-bold">3</span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-purple-300 mb-2">Anormal Skip Oranı</h3>
+                            <p class="text-slate-400 text-sm mb-3"><code>was_skipped = 1</code> verisi var. Yüksek skip oranı = otomasyon veya abuse</p>
+                            <div class="flex gap-4 text-sm">
+                                <div class="bg-slate-900 p-3 rounded-lg flex-1">
+                                    <p class="text-green-400">Normal</p>
+                                    <p class="text-slate-400">%10-20 skip</p>
+                                </div>
+                                <div class="bg-slate-900 p-3 rounded-lg flex-1">
+                                    <p class="text-yellow-400">Şüpheli</p>
+                                    <p class="text-slate-400">%30-50 skip</p>
+                                </div>
+                                <div class="bg-slate-900 p-3 rounded-lg flex-1">
+                                    <p class="text-red-400">Abuse</p>
+                                    <p class="text-slate-400">%50+ skip</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern 4: Dinleme Süresi Analizi -->
+                <div class="bg-gradient-to-r from-blue-900/30 to-slate-800/50 border border-blue-700/50 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <span class="bg-blue-500/30 text-blue-300 w-10 h-10 rounded-lg flex items-center justify-center shrink-0 font-bold">4</span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-blue-300 mb-2">Dinleme Süresi Tutarsızlığı</h3>
+                            <p class="text-slate-400 text-sm mb-3"><code>listened_duration</code> vs <code>song.duration</code> karşılaştır</p>
+                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                <div class="bg-slate-900 p-3 rounded-lg">
+                                    <p class="text-yellow-400 font-bold">Çok Kısa Dinleme</p>
+                                    <p class="text-slate-400">listened &lt; 10 sn = hızlı skip</p>
+                                    <p class="text-slate-500 text-xs mt-1">Sürekli böyleyse bot olabilir</p>
+                                </div>
+                                <div class="bg-slate-900 p-3 rounded-lg">
+                                    <p class="text-yellow-400 font-bold">Aşırı Uzun Dinleme</p>
+                                    <p class="text-slate-400">listened > duration * 1.5</p>
+                                    <p class="text-slate-500 text-xs mt-1">Repeat/loop yapılmış olabilir</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern 5: Ardışık Play Boşluğu -->
+                <div class="bg-gradient-to-r from-cyan-900/30 to-slate-800/50 border border-cyan-700/50 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <span class="bg-cyan-500/30 text-cyan-300 w-10 h-10 rounded-lg flex items-center justify-center shrink-0 font-bold">5</span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-cyan-300 mb-2">Sıfır Boşluk Pattern (Bot Tespiti)</h3>
+                            <p class="text-slate-400 text-sm mb-3">Ardışık play'ler arası 0-2 saniye boşluk = otomasyon şüphesi</p>
+                            <div class="bg-slate-900 rounded-lg p-3 text-sm">
+                                <p class="text-slate-400">Play 1 ended_at: 10:03:25</p>
+                                <p class="text-slate-400">Play 2 created_at: 10:03:26</p>
+                                <p class="text-yellow-400 mt-2">→ 1 saniye boşluk (İnsan bu kadar hızlı olamaz)</p>
+                            </div>
+                            <div class="mt-3 text-xs text-slate-500">
+                                <strong>Not:</strong> Gapless playback için normal, ama SÜREKLİ böyleyse şüpheli
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern 6: Source Loop -->
+                <div class="bg-gradient-to-r from-pink-900/30 to-slate-800/50 border border-pink-700/50 rounded-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <span class="bg-pink-500/30 text-pink-300 w-10 h-10 rounded-lg flex items-center justify-center shrink-0 font-bold">6</span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-pink-300 mb-2">Aynı Kaynaktan Aşırı Dinleme</h3>
+                            <p class="text-slate-400 text-sm mb-3"><code>source_type + source_id</code> kombinasyonu tekrar sayısı</p>
+                            <div class="bg-slate-900 rounded-lg p-3 text-sm">
+                                <p class="text-slate-400">Aynı playlist'ten günde 50+ şarkı = Normal (loop)</p>
+                                <p class="text-slate-400">Aynı playlist'ten günde 200+ şarkı = Şüpheli</p>
+                                <p class="text-red-400 mt-2">→ İşletme "sürekli aynı listeyi çal" modunda olabilir</p>
+                            </div>
+                            <div class="mt-3 text-xs text-slate-500">
+                                <strong>Dikkat:</strong> B2B için bu normal olabilir, ama kişisel hesapta şüpheli
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Mevcut vs Yeni -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-slate-200 mb-4">
+                <i class="fas fa-exchange-alt mr-2 text-green-400"></i>Mevcut vs Eklenecek Pattern'ler
+            </h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <h3 class="font-bold text-green-400 mb-3">Mevcut (Çalışıyor)</h3>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Overlap (çakışma) tespiti</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>High Volume (600+ şarkı/gün)</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Multi Device (5+ cihaz/gün)</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Suspicious IP (5+ IP/gün)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-yellow-400 mb-3">Eklenecek (Yeni)</h3>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><i class="fas fa-plus text-yellow-500 mr-2"></i>Gerçek ended_at ile overlap</li>
+                        <li><i class="fas fa-plus text-yellow-500 mr-2"></i>Hızlı device/IP switching</li>
+                        <li><i class="fas fa-plus text-yellow-500 mr-2"></i>Skip oranı analizi</li>
+                        <li><i class="fas fa-plus text-yellow-500 mr-2"></i>Dinleme süresi tutarsızlığı</li>
+                        <li><i class="fas fa-plus text-yellow-500 mr-2"></i>Sıfır boşluk pattern (bot)</li>
+                        <li><i class="fas fa-plus text-yellow-500 mr-2"></i>Source loop tespiti</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Öncelik -->
+        <section class="bg-emerald-900/20 border border-emerald-700 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-emerald-400 mb-4">
+                <i class="fas fa-sort-amount-down mr-2"></i>Öncelik Sırası
+            </h2>
+            <div class="space-y-3">
+                <div class="flex items-center gap-4">
+                    <span class="bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">1</span>
+                    <div>
+                        <span class="font-bold text-slate-200">Hızlı Device/IP Switching</span>
+                        <span class="text-slate-500 text-sm ml-2">→ En net hesap paylaşımı göstergesi</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="bg-orange-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">2</span>
+                    <div>
+                        <span class="font-bold text-slate-200">Gerçek Overlap (ended_at)</span>
+                        <span class="text-slate-500 text-sm ml-2">→ Mevcut overlap'i daha doğru yapar</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="bg-yellow-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">3</span>
+                    <div>
+                        <span class="font-bold text-slate-200">Skip Oranı Analizi</span>
+                        <span class="text-slate-500 text-sm ml-2">→ was_skipped verisi zaten var</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">4</span>
+                    <div>
+                        <span class="font-bold text-slate-200">Sıfır Boşluk (Bot Tespiti)</span>
+                        <span class="text-slate-500 text-sm ml-2">→ Otomasyon tespiti</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+            <p>Claude AI - Suistimal Tespit Geliştirme Planı v2</p>
+            <p class="mt-1">Eldeki verilerle, yeni API/servis entegrasyonu olmadan</p>
+        </footer>
+    </div>
+</body>
+</html>

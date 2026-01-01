@@ -182,13 +182,10 @@ https://ixtif.com/readme/2025/11/30/horizon-cpu-sorunu-analiz/
    Role::all();
    ```
 
-4. ✅ Migration oluştururken İKİ YERDE oluştur:
-   ```bash
-   # Central
-   database/migrations/YYYY_MM_DD_create_table.php
-
-   # Tenant
-   database/migrations/tenant/YYYY_MM_DD_create_table.php
+4. ✅ Migration oluştururken MODÜL İÇİNDE, İKİ YERDE oluştur:
+   ```
+   Modules/[Modül]/database/migrations/YYYY_MM_DD_xxx.php          → Central
+   Modules/[Modül]/database/migrations/tenant/YYYY_MM_DD_xxx.php   → Tenant
    ```
 
 ### 📚 Detaylı Döküman
@@ -276,7 +273,45 @@ npm run mix-only     # Sadece app.css (Laravel Mix)
 
 ---
 
-### 🚨 3. HTML RAPOR SİSTEMİ (Ana İletişim Aracı)
+### 🚨 3. SİSTEM TUTARLILIĞI - PATTERN UYUMU
+
+**🔥 KRİTİK: Yeni dosyalar MEVCUT DOSYALARDAN ilham almalı!**
+
+#### 🎯 ANA KURAL: "Var Olandan Öğren, Aynısını Uygula"
+
+Yeni bir sayfa, component, tablo veya UI elementi oluştururken:
+1. **ÖNCE** referans dosyayı aç ve incele
+2. **AYNI** pattern, class, yapı ve spacing'i kullan
+3. **FARKLI** yapma, tutarlılığı bozma!
+
+#### 📋 REFERANS DOSYALAR
+
+**Admin Panel (Tablo, Form, Liste, Sıralama):**
+```
+Modules/Page/resources/views/admin/livewire/page-component.blade.php              → Tablo pattern
+Modules/Page/resources/views/admin/livewire/page-manage-component.blade.php       → Form pattern
+Modules/Portfolio/resources/views/admin/livewire/portfolio-component.blade.php    → Liste pattern
+Modules/Portfolio/resources/views/admin/livewire/category-component.blade.php     → Sıralama (drag & drop) pattern
+```
+
+**Frontend Theme:**
+```
+resources/views/themes/simple/       → Fallback tema (tüm temalar bundan türer)
+resources/views/themes/[tema-adi]/   → Tenant'a özel tema (simple'dan override eder)
+```
+
+#### ⚠️ YAPILACAKLAR (Yeni Dosya Oluştururken)
+
+1. Referans dosyayı oku (`Read` tool ile)
+2. Tablo class'larını, buton spacing'lerini, ikon stillerini kopyala
+3. Sadece içeriği değiştir, yapıyı değiştirme
+4. `btn-group` kullanma, `d-flex gap-2` kullan
+
+**UNUTMA:** Referans dosya değişirse, yeni dosyalar da o pattern'i alır!
+
+---
+
+### 🚨 4. HTML RAPOR SİSTEMİ (Ana İletişim Aracı)
 
 **🎯 KRİTİK: Analiz, rapor, planlama, sunum → DAIMA HTML!**
 
@@ -529,6 +564,78 @@ ln -sf v3/index.html index.html
 
 **UNUTMA:** HTML = Rapor, Analiz, Plan, Sunum (KOD YOK!)
 
+#### 🔴 BİRİKİMLİ VERSİYON İÇERİĞİ (ÇOK KRİTİK!)
+
+> **💎 "Versiyon mantığı, eskiyi silmek ve unutmak değil; yeni kurallarla eskiyi geliştirip güçlendirmektir."**
+
+**🚨 MUTLAKA UYGULA: Her yeni versiyon önceki versiyonların BİRİKİMLİ devamıdır!**
+
+**Problem:** v1 → v2 → v3 geçişlerinde önceki bilgiler kayboluyor, sadece son söylenenler ekleniyor.
+
+**Çözüm:** Her versiyon = Önceki tüm versiyonlar + Yeni eklemeler
+
+**Formül:**
+```
+v1 = İlk bilgiler
+v2 = v1 + Yeni bilgiler
+v3 = v1 + v2 + Yeni bilgiler (v2 zaten v1'i içerir)
+v10 = v9 + Yeni bilgiler (v9 zaten v1-v8'i içerir)
+```
+
+**Yeni Versiyon Oluştururken:**
+
+1️⃣ **Önceki versiyonu OKU:**
+   - En son versiyonun tüm içeriğini oku
+   - Tüm başlıkları, bölümleri, senaryoları not al
+   - v1'den beri söylenen her şey orada olmalı
+
+2️⃣ **Yeni bilgileri EKLE:**
+   - Kullanıcının yeni söylediklerini ekle
+   - Düzeltmeleri uygula
+   - Çelişen bilgileri güncelle (silme, düzelt)
+
+3️⃣ **Hiçbir şeyi SİLME:**
+   - v1'de söylenen ama v5'te tekrar edilmeyen → SİLME, KORU!
+   - Eski senaryolar → KORU!
+   - Eski kararlar → KORU (güncellenmediyse)
+   - Eski örnekler → KORU!
+
+**Örnek:**
+
+❌ **YANLIŞ (Bilgi Kaybı):**
+```
+v1: A, B, C senaryoları anlatıldı
+v2: Kullanıcı D ekledi → Sadece D yazıldı (A, B, C kayboldu!)
+v3: Kullanıcı E ekledi → Sadece E yazıldı (A, B, C, D kayboldu!)
+```
+
+✅ **DOĞRU (Birikimli):**
+```
+v1: A, B, C senaryoları
+v2: A, B, C + D (hepsi var)
+v3: A, B, C, D + E (hepsi var)
+v10: A, B, C, D, E, F, G, H, I, J (v1'den beri HEPSİ var)
+```
+
+**❌ ASLA YAPMA:**
+- Önceki versiyonu okumadan yeni versiyon oluşturma
+- Sadece son söyleneni yazma (öncekiler kaybolur!)
+- Eski bilgileri "zaten biliyoruz" diye atlama
+- "Özet" yapma, DETAYLI yaz!
+- v1'deki senaryoları v5'te unutma!
+
+**✅ MUTLAKA YAP:**
+- Yeni versiyon öncesi: Mevcut en son versiyonu MUTLAKA oku
+- Tüm eski içeriği yeni versiyona KOPYALA
+- Yeni bilgileri üstüne EKLE
+- Çelişen/değişen bilgileri GÜNCELLE (silme, düzelt)
+- Konuşmanın BAŞINDAN BERİ söylenen her şey son versiyonda olmalı
+
+**🎯 AMAÇ:**
+- Son versiyon = Tüm konuşmanın kapsamlı özeti
+- v10'u okuyan biri v1-v9'u okumaya gerek duymamalı
+- Hiçbir bilgi, senaryo, karar, örnek kaybolmamalı!
+
 ---
 
 ### 🎉 3B. GÖREV TAMAMLANDI RAPORU
@@ -752,7 +859,7 @@ https://muzibu.com.tr/readme/
 
 ---
 
-### 🚨 4. MARKDOWN (MD) KULLANIMI
+### 🚨 5. MARKDOWN (MD) KULLANIMI
 
 **📝 MD = Sadece TODO!**
 
@@ -824,7 +931,7 @@ readme/claude-docs/todo/2025/11/18/todo-15-00-blog-ai.md
 
 ---
 
-### 🚨 5. GIT CHECKPOINT KURALLARI
+### 🚨 6. GIT CHECKPOINT KURALLARI
 
 **🔐 Önemli İşlem Öncesi Git Checkpoint**
 
@@ -862,7 +969,7 @@ git reset --hard [hash]
 
 ---
 
-### 🚨 6. DOSYA İZİNLERİ (PERMİSSİON) - STANDART WORKFLOW
+### 🚨 7. DOSYA İZİNLERİ (PERMİSSİON) - STANDART WORKFLOW
 
 **🔴 ANA KURAL: ROOT YASAK! → HER ZAMAN tuufi.com_ KULLAN!**
 
@@ -904,7 +1011,7 @@ sudo find /path/ -type d -exec chmod 755 {} \;
 
 ---
 
-### 🚨 7. ANA DİZİN TEMİZ KALMALI
+### 🚨 8. ANA DİZİN TEMİZ KALMALI
 
 **❌ Ana Dizine ASLA Dosya Açma:**
 - test-*.php
@@ -941,7 +1048,7 @@ sudo rm "ekran-goruntusu.png"
 
 ---
 
-### 🚨 8. BUFFER DOSYALARI (a-console.txt, a-html.txt)
+### 🚨 9. BUFFER DOSYALARI (a-console.txt, a-html.txt)
 
 **⚠️ Bu dosyaları ASLA silme!**
 
@@ -1121,23 +1228,31 @@ setting('site_phone'); // "+90 212 123 45 67"
 
 ### 🗄️ MİGRATION OLUŞTURMA
 
-**🚨 ÇİFTE MİGRATION ZORUNLU!**
+**🚨 KRİTİK: Migration'lar MODÜL İÇİNE eklenir!**
 
-Her migration **İKİ YERDE** oluşturulmalı:
+Her migration **KENDİ MODÜLÜ** içinde, **İKİ YERDE** oluşturulmalı:
 
-```bash
-# 1. Central
-database/migrations/YYYY_MM_DD_create_table.php
-
-# 2. Tenant
-database/migrations/tenant/YYYY_MM_DD_create_table.php
-
-# Migration çalıştır
-php artisan migrate  # Central
-php artisan tenants:migrate  # Tüm tenant'lar
+```
+Modules/[ModulAdı]/database/migrations/YYYY_MM_DD_xxx.php           → Central
+Modules/[ModulAdı]/database/migrations/tenant/YYYY_MM_DD_xxx.php    → Tenant
 ```
 
-**UNUTURSAN:** Tenant database'ler çalışmaz!
+**Örnek (Page modülü için):**
+```
+Modules/Page/database/migrations/2024_02_17_000001_create_pages_table.php
+Modules/Page/database/migrations/tenant/2024_02_17_000001_create_pages_table.php
+```
+
+**❌ YANLIŞ:** `database/migrations/` (ana klasör) - KULLANMA!
+**✅ DOĞRU:** `Modules/[Modül]/database/migrations/` (modül içi)
+
+**Migration çalıştır:**
+```bash
+php artisan migrate           # Central
+php artisan tenants:migrate   # Tüm tenant'lar
+```
+
+**UNUTMA:** Tenant'a eklenen her migration, Central'a da eklenmeli!
 
 ### YENİ TENANT EKLEME
 

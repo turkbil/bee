@@ -11,6 +11,18 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Modules\Muzibu\App\Services\AbuseDetectionService;
 
+/**
+ * Suistimal Tarama Job'u - Ping-Pong Sistemi v2
+ *
+ * Bu job Horizon üzerinden çalışır ve kullanıcının
+ * hesap paylaşımı yapıp yapmadığını tespit eder.
+ *
+ * Early Exit: Tek fingerprint'li kullanıcılar bu job'a
+ * gönderilmeden önce quickCheck ile CLEAN işaretlenir.
+ * Bu job sadece birden fazla fingerprint'li kullanıcılar için çalışır.
+ *
+ * @see AbuseDetectionService
+ */
 class ScanUserForAbuseJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -64,6 +76,9 @@ class ScanUserForAbuseJob implements ShouldQueue
 
     /**
      * Execute the job.
+     *
+     * NOT: Bu job'a gelen kullanıcılar zaten Early Exit'i geçmiştir.
+     * Yani birden fazla fingerprint'e sahiptirler ve detaylı analiz gerekir.
      */
     public function handle(AbuseDetectionService $service): void
     {
@@ -72,14 +87,29 @@ class ScanUserForAbuseJob implements ShouldQueue
         try {
             Log::info("[AbuseDetection] Scanning user #{$this->userId} for period: {$periodLabel}");
 
+            // Detaylı analiz yap (3 pattern kontrolü)
             $report = $service->scanUser($this->userId, $this->periodStart, $this->periodEnd);
 
             if ($report) {
+                // Pattern bilgilerini logla
+                $patterns = $report->patterns_json ?? [];
+                $detectedPatterns = [];
+
+                if ($patterns['ping_pong']['detected'] ?? false) {
+                    $detectedPatterns[] = 'ping_pong';
+                }
+                if ($patterns['concurrent_different']['detected'] ?? false) {
+                    $detectedPatterns[] = 'concurrent_different';
+                }
+                if ($patterns['split_stream']['detected'] ?? false) {
+                    $detectedPatterns[] = 'split_stream';
+                }
+
                 Log::info("[AbuseDetection] User #{$this->userId} scanned", [
                     'status' => $report->status,
                     'plays' => $report->total_plays,
-                    'overlaps' => $report->overlap_count,
                     'score' => $report->abuse_score,
+                    'patterns_detected' => $detectedPatterns,
                 ]);
             } else {
                 Log::info("[AbuseDetection] User #{$this->userId} has no plays in period");

@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webhook ile Anında Güncelleme - Multi-Tenant v7</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-slate-200">
+
+    <!-- Header -->
+    <header class="border-b border-slate-700/50 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-white flex items-center gap-3">
+                        <i class="fas fa-bolt text-yellow-400"></i>
+                        Webhook ile Anında Güncelleme
+                    </h1>
+                    <p class="text-slate-400 text-sm mt-1">Push yap → Tüm sunucular anında güncellenir</p>
+                </div>
+                <div class="text-right">
+                    <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-medium">
+                        v7 - Instant Deploy
+                    </span>
+                    <p class="text-slate-500 text-xs mt-1">1 Ocak 2026</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-8 space-y-8">
+
+        <!-- v6 vs v7 Karşılaştırma -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-xl font-bold text-amber-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-balance-scale"></i>
+                v6 (Cron) vs v7 (Webhook)
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-700/30 rounded-lg p-5 border-2 border-slate-600">
+                    <h3 class="text-slate-400 font-semibold mb-3 flex items-center gap-2">
+                        <i class="fas fa-clock"></i>
+                        v6 - Cron Tabanlı
+                    </h3>
+                    <ul class="text-sm text-slate-400 space-y-2">
+                        <li>• Her gece 03:00 kontrol</li>
+                        <li>• Güncelleme max 24 saat gecikir</li>
+                        <li>• Basit kurulum</li>
+                        <li>• Sunucu webhook dinlemez</li>
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-900/20 rounded-lg p-5 border-2 border-yellow-600">
+                    <h3 class="text-yellow-400 font-semibold mb-3 flex items-center gap-2">
+                        <i class="fas fa-bolt"></i>
+                        v7 - Webhook Tabanlı ⭐
+                    </h3>
+                    <ul class="text-sm text-slate-300 space-y-2">
+                        <li>• Push anında güncelleme</li>
+                        <li>• Saniyeler içinde tüm sunucular güncel</li>
+                        <li>• Gerçek zamanlı kontrol</li>
+                        <li>• Profesyonel CI/CD yaklaşımı</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ana Akış Diyagramı -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-project-diagram"></i>
+                Webhook Akışı
+            </h2>
+
+            <div class="bg-slate-900/50 rounded-lg p-6">
+                <!-- Flow Steps -->
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 text-center">
+                    <!-- Step 1 -->
+                    <div class="relative">
+                        <div class="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-3 border-2 border-blue-500">
+                            <i class="fab fa-git-alt text-blue-400 text-2xl"></i>
+                        </div>
+                        <p class="text-sm font-bold text-white">1. Git Push</p>
+                        <p class="text-xs text-slate-400 mt-1">Biz push yaparız</p>
+                        <div class="hidden md:block absolute top-8 -right-4 text-yellow-400">
+                            <i class="fas fa-arrow-right text-xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="relative">
+                        <div class="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-3 border-2 border-purple-500">
+                            <i class="fab fa-github text-purple-400 text-2xl"></i>
+                        </div>
+                        <p class="text-sm font-bold text-white">2. GitHub Webhook</p>
+                        <p class="text-xs text-slate-400 mt-1">GitHub bildirir</p>
+                        <div class="hidden md:block absolute top-8 -right-4 text-yellow-400">
+                            <i class="fas fa-arrow-right text-xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="relative">
+                        <div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-3 border-2 border-green-500">
+                            <i class="fas fa-server text-green-400 text-2xl"></i>
+                        </div>
+                        <p class="text-sm font-bold text-white">3. tuufi.com</p>
+                        <p class="text-xs text-slate-400 mt-1">Merkez alır</p>
+                        <div class="hidden md:block absolute top-8 -right-4 text-yellow-400">
+                            <i class="fas fa-arrow-right text-xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="relative">
+                        <div class="w-16 h-16 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-3 border-2 border-amber-500">
+                            <i class="fas fa-broadcast-tower text-amber-400 text-2xl"></i>
+                        </div>
+                        <p class="text-sm font-bold text-white">4. Broadcast</p>
+                        <p class="text-xs text-slate-400 mt-1">Tüm sunuculara</p>
+                        <div class="hidden md:block absolute top-8 -right-4 text-yellow-400">
+                            <i class="fas fa-arrow-right text-xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div>
+                        <div class="w-16 h-16 bg-cyan-500/20 rounded-full flex items-center justify-center mx-auto mb-3 border-2 border-cyan-500">
+                            <i class="fas fa-sync text-cyan-400 text-2xl"></i>
+                        </div>
+                        <p class="text-sm font-bold text-white">5. Git Pull</p>
+                        <p class="text-xs text-slate-400 mt-1">Herkes güncellenir</p>
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="mt-8 bg-slate-800 rounded-lg p-4">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="text-slate-500">0 sn</span>
+                        <span class="text-slate-500">~2 sn</span>
+                        <span class="text-slate-500">~5 sn</span>
+                        <span class="text-slate-500">~10 sn</span>
+                        <span class="text-green-400 font-bold">~30 sn</span>
+                    </div>
+                    <div class="h-2 bg-slate-700 rounded-full mt-2 relative overflow-hidden">
+                        <div class="absolute inset-y-0 left-0 w-full bg-gradient-to-r from-blue-500 via-purple-500 via-green-500 via-amber-500 to-cyan-500 rounded-full"></div>
+                    </div>
+                    <p class="text-center text-slate-400 text-sm mt-2">
+                        <i class="fas fa-bolt text-yellow-400 mr-1"></i>
+                        Push'tan 30 saniye sonra 100 müşteri güncel!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-800/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-user"></i>
+                Basit Anlatım (Herkes İçin)
+            </h2>
+
+            <div class="space-y-4 text-slate-300">
+                <p>
+                    <strong class="text-white">Ne oluyor?</strong><br>
+                    Sen kodu güncelleyip "git push" dediğin an, tüm müşterilerin siteleri otomatik güncelleniyor.
+                    Gece 03:00 beklemeye gerek yok, anında!
+                </p>
+                <p>
+                    <strong class="text-white">Nasıl çalışıyor?</strong><br>
+                    GitHub sana "push yaptın" diyor → Sen tuufi.com'a "yeni versiyon var" diyorsun →
+                    tuufi.com tüm müşteri sunucularına "güncellenin" diyor → Herkes git pull yapıyor.
+                </p>
+                <p>
+                    <strong class="text-white">Güvenli mi?</strong><br>
+                    Evet. Her adımda secret key kontrolü var. Yetkisiz kimse güncelleme tetikleyemez.
+                </p>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="bg-blue-900/20 border border-blue-800/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-cog"></i>
+                Teknik Detaylar
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Adım 1: GitHub Webhook -->
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="text-white font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-xs">1</span>
+                        GitHub → tuufi.com Webhook
+                    </h3>
+                    <p class="text-slate-400 text-sm mb-3">GitHub repo ayarlarından webhook eklenir:</p>
+                    <div class="bg-slate-950 rounded p-3 text-sm">
+                        <p class="text-slate-400 mb-2">Webhook URL:</p>
+                        <code class="text-green-400">https://tuufi.com/api/webhook/github-deploy</code>
+                        <p class="text-slate-400 mt-3 mb-2">Secret:</p>
+                        <code class="text-amber-400">GITHUB_WEBHOOK_SECRET=xxxxx</code>
+                    </div>
+                </div>
+
+                <!-- Adım 2: tuufi.com Alır -->
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="text-white font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-xs">2</span>
+                        tuufi.com Webhook'u Alır
+                    </h3>
+                    <p class="text-slate-400 text-sm mb-3">Endpoint webhook'u doğrular ve işler:</p>
+                    <div class="bg-slate-950 rounded p-3 text-sm font-mono text-slate-300">
+<span class="text-slate-500">// POST /api/webhook/github-deploy</span>
+
+<span class="text-purple-400">1.</span> GitHub signature doğrula (HMAC-SHA256)
+<span class="text-purple-400">2.</span> Branch kontrol (sadece main kabul)
+<span class="text-purple-400">3.</span> Yeni versiyon numarasını kaydet
+<span class="text-purple-400">4.</span> Tüm aktif lisanslara bildirim gönder
+                    </div>
+                </div>
+
+                <!-- Adım 3: Müşterilere Bildirim -->
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="text-white font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center text-xs">3</span>
+                        Müşteri Sunucularına Bildirim
+                    </h3>
+                    <p class="text-slate-400 text-sm mb-3">İki yöntem mevcut:</p>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-800 rounded p-3">
+                            <h4 class="text-cyan-400 font-medium mb-2">Yöntem A: Webhook Push</h4>
+                            <p class="text-xs text-slate-400 mb-2">tuufi.com → Müşteri sunuculara POST atar</p>
+                            <code class="text-xs text-green-400">POST https://musteri.com/api/deploy</code>
+                            <p class="text-xs text-slate-500 mt-2">⚠️ Müşteri sunucu endpoint açmalı</p>
+                        </div>
+
+                        <div class="bg-slate-800 rounded p-3 border border-cyan-500">
+                            <h4 class="text-cyan-400 font-medium mb-2">Yöntem B: Polling ⭐</h4>
+                            <p class="text-xs text-slate-400 mb-2">Müşteri sunucu her 1 dk kontrol eder</p>
+                            <code class="text-xs text-green-400">GET tuufi.com/api/version</code>
+                            <p class="text-xs text-green-500 mt-2">✅ Daha güvenli, firewall sorunu yok</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adım 4: Git Pull -->
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="text-white font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center text-xs">4</span>
+                        Müşteri Sunucu Güncellenir
+                    </h3>
+                    <p class="text-slate-400 text-sm mb-3">Aynı v6 script'i çalışır:</p>
+                    <div class="bg-slate-950 rounded p-3 text-sm font-mono text-green-400">
+git pull origin main
+composer install --no-dev
+php artisan migrate --force
+php artisan config:cache
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- İki Yöntem Karşılaştırma -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-code-branch"></i>
+                Bildirim Yöntemi Seçimi
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-slate-700/50">
+                            <th class="text-left p-3 text-slate-300">Özellik</th>
+                            <th class="text-left p-3 text-slate-300">Webhook Push</th>
+                            <th class="text-left p-3 text-cyan-400">Polling (Önerilen) ⭐</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-slate-700">
+                            <td class="p-3 text-slate-300">Hız</td>
+                            <td class="p-3 text-green-400">Anında (~5 sn)</td>
+                            <td class="p-3 text-amber-400">Max 1 dakika</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="p-3 text-slate-300">Firewall</td>
+                            <td class="p-3 text-red-400">Müşteri port açmalı</td>
+                            <td class="p-3 text-green-400">Sorun yok (outbound)</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="p-3 text-slate-300">Güvenlik</td>
+                            <td class="p-3 text-amber-400">Endpoint korumalı olmalı</td>
+                            <td class="p-3 text-green-400">Daha güvenli</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="p-3 text-slate-300">Kurulum</td>
+                            <td class="p-3 text-amber-400">Webhook URL gerekli</td>
+                            <td class="p-3 text-green-400">Sadece cron</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="p-3 text-slate-300">Sunucu Offline</td>
+                            <td class="p-3 text-red-400">Webhook kaybolur</td>
+                            <td class="p-3 text-green-400">Online olunca yakalar</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 text-slate-300">Önerilen</td>
+                            <td class="p-3 text-slate-400">Kritik sistemler</td>
+                            <td class="p-3 text-cyan-400 font-bold">Genel kullanım ⭐</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 bg-cyan-900/20 border border-cyan-800/50 rounded-lg p-4">
+                <p class="text-cyan-400">
+                    <i class="fas fa-lightbulb mr-2"></i>
+                    <strong>Öneri:</strong> Polling yöntemi daha pratik. 1 dakika gecikme çoğu senaryo için kabul edilebilir.
+                    Müşteri firewall ayarı yapmak zorunda kalmaz.
+                </p>
+            </div>
+        </section>
+
+        <!-- Polling Detayı -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-xl font-bold text-cyan-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-sync"></i>
+                Polling Sistemi Detayı
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Sunucu Tarafı -->
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="text-green-400 font-semibold mb-3">
+                        <i class="fas fa-server mr-2"></i>
+                        tuufi.com (API)
+                    </h3>
+                    <div class="bg-slate-950 rounded p-3 text-sm">
+                        <p class="text-slate-400 mb-2">GET /api/version</p>
+                        <pre class="text-green-400 text-xs">{
+  "current_version": "2.5.1",
+  "released_at": "2026-01-01 15:30:00",
+  "changelog_url": "https://...",
+  "critical": false
+}</pre>
+                    </div>
+                </div>
+
+                <!-- Müşteri Tarafı -->
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="text-amber-400 font-semibold mb-3">
+                        <i class="fas fa-building mr-2"></i>
+                        Müşteri Sunucu (Cron)
+                    </h3>
+                    <div class="bg-slate-950 rounded p-3 text-sm">
+                        <p class="text-slate-400 mb-2"># Her 1 dakikada bir</p>
+                        <pre class="text-amber-400 text-xs">* * * * * /var/www/site/check-update.sh</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Check Update Script -->
+            <div class="mt-6 bg-slate-900 rounded-lg p-4">
+                <h4 class="text-white font-medium mb-3">check-update.sh (Müşteri Sunucu)</h4>
+                <pre class="text-sm text-slate-300 overflow-x-auto"><code><span class="text-slate-500">#!/bin/bash</span>
+
+<span class="text-purple-400">SITE_PATH</span>=<span class="text-green-400">"/var/www/site"</span>
+<span class="text-purple-400">LICENSE_KEY</span>=<span class="text-green-400">"$TUUFI_LICENSE_KEY"</span>
+<span class="text-purple-400">VERSION_FILE</span>=<span class="text-green-400">"$SITE_PATH/.current_version"</span>
+
+<span class="text-slate-500"># Mevcut versiyonu oku</span>
+<span class="text-purple-400">CURRENT</span>=$(<span class="text-amber-400">cat</span> <span class="text-purple-400">$VERSION_FILE</span> 2>/dev/null || <span class="text-amber-400">echo</span> <span class="text-green-400">"0.0.0"</span>)
+
+<span class="text-slate-500"># Sunucudan son versiyonu al</span>
+<span class="text-purple-400">LATEST</span>=$(<span class="text-amber-400">curl</span> -s <span class="text-green-400">"https://tuufi.com/api/version?key=$LICENSE_KEY"</span> | jq -r '.current_version')
+
+<span class="text-slate-500"># Karşılaştır</span>
+<span class="text-blue-400">if</span> [ <span class="text-green-400">"$CURRENT"</span> != <span class="text-green-400">"$LATEST"</span> ]; <span class="text-blue-400">then</span>
+    <span class="text-amber-400">echo</span> <span class="text-green-400">"Yeni versiyon: $LATEST (mevcut: $CURRENT)"</span>
+
+    <span class="text-slate-500"># Güncelleme script'ini çalıştır</span>
+    <span class="text-purple-400">$SITE_PATH</span>/update.sh
+
+    <span class="text-slate-500"># Yeni versiyonu kaydet</span>
+    <span class="text-amber-400">echo</span> <span class="text-green-400">"$LATEST"</span> > <span class="text-purple-400">$VERSION_FILE</span>
+<span class="text-blue-400">fi</span></code></pre>
+            </div>
+        </section>
+
+        <!-- Güvenlik -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-shield-alt"></i>
+                Güvenlik Önlemleri
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-700/30 rounded-lg p-4">
+                    <h4 class="text-white font-medium mb-2 flex items-center gap-2">
+                        <i class="fas fa-key text-amber-400"></i>
+                        GitHub Webhook Secret
+                    </h4>
+                    <p class="text-slate-400 text-sm">HMAC-SHA256 ile imza doğrulama. Sahte webhook engelenir.</p>
+                </div>
+
+                <div class="bg-slate-700/30 rounded-lg p-4">
+                    <h4 class="text-white font-medium mb-2 flex items-center gap-2">
+                        <i class="fas fa-lock text-green-400"></i>
+                        License Key Kontrolü
+                    </h4>
+                    <p class="text-slate-400 text-sm">Her API isteğinde lisans anahtarı doğrulanır.</p>
+                </div>
+
+                <div class="bg-slate-700/30 rounded-lg p-4">
+                    <h4 class="text-white font-medium mb-2 flex items-center gap-2">
+                        <i class="fas fa-code-branch text-blue-400"></i>
+                        Branch Kontrolü
+                    </h4>
+                    <p class="text-slate-400 text-sm">Sadece main branch push'ları kabul edilir.</p>
+                </div>
+
+                <div class="bg-slate-700/30 rounded-lg p-4">
+                    <h4 class="text-white font-medium mb-2 flex items-center gap-2">
+                        <i class="fas fa-clock text-purple-400"></i>
+                        Rate Limiting
+                    </h4>
+                    <p class="text-slate-400 text-sm">Dakikada max 1 güncelleme isteği kabul edilir.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tüm Sistem Özeti -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-xl font-bold text-amber-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-sitemap"></i>
+                Tüm Sistem Özeti (v5 + v6 + v7)
+            </h2>
+
+            <div class="bg-slate-900/50 rounded-lg p-4 overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-slate-400 border-b border-slate-700">
+                            <th class="text-left py-3">Bileşen</th>
+                            <th class="text-left py-3">Versiyon</th>
+                            <th class="text-left py-3">Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 font-medium text-white">Lisans Sistemi</td>
+                            <td class="py-3 text-blue-400">v5</td>
+                            <td class="py-3">licenses tablosu, API, doğrulama</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 font-medium text-white">Git Güncelleme</td>
+                            <td class="py-3 text-orange-400">v6</td>
+                            <td class="py-3">update.sh, rollback, cron</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 font-medium text-white">Webhook Tetikleme</td>
+                            <td class="py-3 text-yellow-400">v7</td>
+                            <td class="py-3">GitHub webhook → Polling → Anında güncelleme</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Akış Özeti -->
+            <div class="mt-6 bg-gradient-to-r from-blue-900/30 via-purple-900/30 to-green-900/30 rounded-lg p-4">
+                <h4 class="text-white font-medium mb-3 text-center">Tam Akış</h4>
+                <div class="flex flex-wrap items-center justify-center gap-2 text-sm">
+                    <span class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded">git push</span>
+                    <i class="fas fa-arrow-right text-slate-600"></i>
+                    <span class="bg-purple-500/20 text-purple-400 px-3 py-1 rounded">GitHub webhook</span>
+                    <i class="fas fa-arrow-right text-slate-600"></i>
+                    <span class="bg-green-500/20 text-green-400 px-3 py-1 rounded">tuufi.com/api/webhook</span>
+                    <i class="fas fa-arrow-right text-slate-600"></i>
+                    <span class="bg-amber-500/20 text-amber-400 px-3 py-1 rounded">version güncelle</span>
+                    <i class="fas fa-arrow-right text-slate-600"></i>
+                    <span class="bg-cyan-500/20 text-cyan-400 px-3 py-1 rounded">müşteri poll</span>
+                    <i class="fas fa-arrow-right text-slate-600"></i>
+                    <span class="bg-pink-500/20 text-pink-400 px-3 py-1 rounded">git pull</span>
+                    <i class="fas fa-arrow-right text-slate-600"></i>
+                    <span class="bg-green-500 text-white px-3 py-1 rounded">✓ Güncel</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Yapılacaklar -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-xl font-bold text-rose-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-tasks"></i>
+                Toplam Yapılacaklar (v5 + v6 + v7)
+            </h2>
+
+            <div class="space-y-3">
+                <!-- v5 -->
+                <div class="text-slate-400 text-sm font-medium">v5 - Lisans Sistemi:</div>
+                <div class="flex items-center gap-3 bg-blue-900/20 rounded-lg p-3">
+                    <span class="w-6 h-6 bg-blue-500 rounded flex items-center justify-center text-xs">1</span>
+                    <span class="text-slate-300">Migration + Model: licenses, license_logs</span>
+                    <span class="text-xs text-slate-500 ml-auto">~30 dk</span>
+                </div>
+                <div class="flex items-center gap-3 bg-blue-900/20 rounded-lg p-3">
+                    <span class="w-6 h-6 bg-blue-500 rounded flex items-center justify-center text-xs">2</span>
+                    <span class="text-slate-300">API: /api/license/verify, /heartbeat</span>
+                    <span class="text-xs text-slate-500 ml-auto">~45 dk</span>
+                </div>
+                <div class="flex items-center gap-3 bg-blue-900/20 rounded-lg p-3">
+                    <span class="w-6 h-6 bg-blue-500 rounded flex items-center justify-center text-xs">3</span>
+                    <span class="text-slate-300">Service: LicenseService</span>
+                    <span class="text-xs text-slate-500 ml-auto">~30 dk</span>
+                </div>
+
+                <!-- v6 -->
+                <div class="text-slate-400 text-sm font-medium mt-4">v6 - Git Güncelleme:</div>
+                <div class="flex items-center gap-3 bg-orange-900/20 rounded-lg p-3">
+                    <span class="w-6 h-6 bg-orange-500 rounded flex items-center justify-center text-xs">4</span>
+                    <span class="text-slate-300">Script: update.sh (müşteri için)</span>
+                    <span class="text-xs text-slate-500 ml-auto">~30 dk</span>
+                </div>
+
+                <!-- v7 -->
+                <div class="text-slate-400 text-sm font-medium mt-4">v7 - Webhook Sistemi:</div>
+                <div class="flex items-center gap-3 bg-yellow-900/20 rounded-lg p-3">
+                    <span class="w-6 h-6 bg-yellow-500 rounded flex items-center justify-center text-xs text-black">5</span>
+                    <span class="text-slate-300">API: /api/webhook/github-deploy</span>
+                    <span class="text-xs text-slate-500 ml-auto">~30 dk</span>
+                </div>
+                <div class="flex items-center gap-3 bg-yellow-900/20 rounded-lg p-3">
+                    <span class="w-6 h-6 bg-yellow-500 rounded flex items-center justify-center text-xs text-black">6</span>
+                    <span class="text-slate-300">API: /api/version (polling için)</span>
+                    <span class="text-xs text-slate-500 ml-auto">~15 dk</span>
+                </div>
+                <div class="flex items-center gap-3 bg-yellow-900/20 rounded-lg p-3">
+                    <span class="w-6 h-6 bg-yellow-500 rounded flex items-center justify-center text-xs text-black">7</span>
+                    <span class="text-slate-300">Script: check-update.sh (müşteri için)</span>
+                    <span class="text-xs text-slate-500 ml-auto">~20 dk</span>
+                </div>
+
+                <!-- Common -->
+                <div class="text-slate-400 text-sm font-medium mt-4">Ortak:</div>
+                <div class="flex items-center gap-3 bg-slate-700/30 rounded-lg p-3">
+                    <span class="w-6 h-6 bg-slate-500 rounded flex items-center justify-center text-xs">8</span>
+                    <span class="text-slate-300">Admin Panel: Lisans yönetimi + müşteri durumları</span>
+                    <span class="text-xs text-slate-500 ml-auto">~1 saat</span>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-700/30 rounded-lg p-3">
+                    <span class="w-6 h-6 bg-slate-500 rounded flex items-center justify-center text-xs">9</span>
+                    <span class="text-slate-300">GitHub: Webhook ayarları + private repo</span>
+                    <span class="text-xs text-slate-500 ml-auto">~15 dk</span>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-700/30 rounded-lg p-3">
+                    <span class="w-6 h-6 bg-slate-500 rounded flex items-center justify-center text-xs">10</span>
+                    <span class="text-slate-300">Dokümantasyon: Müşteri kurulum kılavuzu</span>
+                    <span class="text-xs text-slate-500 ml-auto">~30 dk</span>
+                </div>
+            </div>
+
+            <div class="mt-6 flex items-center justify-between bg-green-900/20 border border-green-800/50 rounded-lg p-4">
+                <span class="text-green-400 font-medium">Toplam Tahmini Süre:</span>
+                <span class="text-2xl font-bold text-green-400">~6 saat</span>
+            </div>
+        </section>
+
+        <!-- Sonuç -->
+        <section class="bg-gradient-to-r from-green-900/30 to-cyan-900/30 rounded-xl p-6 border border-green-700/50">
+            <h2 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-check-circle"></i>
+                Sonuç
+            </h2>
+
+            <div class="space-y-3 text-slate-300">
+                <p>
+                    <i class="fas fa-check text-green-400 mr-2"></i>
+                    <strong class="text-white">v5:</strong> Lisans sistemi ile müşteri yönetimi
+                </p>
+                <p>
+                    <i class="fas fa-check text-green-400 mr-2"></i>
+                    <strong class="text-white">v6:</strong> Otomatik git pull ile güncelleme
+                </p>
+                <p>
+                    <i class="fas fa-check text-green-400 mr-2"></i>
+                    <strong class="text-white">v7:</strong> Webhook ile anında tetikleme
+                </p>
+            </div>
+
+            <div class="mt-4 p-4 bg-slate-900/50 rounded-lg">
+                <p class="text-center text-lg text-white">
+                    <i class="fas fa-rocket text-yellow-400 mr-2"></i>
+                    Tek <code class="text-green-400">git push</code> ile 100 müşteri 1 dakika içinde güncel!
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-700/50 mt-8">
+        <div class="max-w-6xl mx-auto px-6 py-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-2 text-slate-400 text-sm">
+                    <i class="fas fa-robot"></i>
+                    <span>Claude AI tarafından oluşturuldu</span>
+                </div>
+                <div class="flex items-center gap-4 text-sm">
+                    <a href="v1/" class="text-slate-500 hover:text-slate-300">v1</a>
+                    <a href="v2/" class="text-slate-500 hover:text-slate-300">v2</a>
+                    <a href="v3/" class="text-slate-500 hover:text-slate-300">v3</a>
+                    <a href="v4/" class="text-slate-500 hover:text-slate-300">v4</a>
+                    <a href="v5/" class="text-slate-500 hover:text-slate-300">v5</a>
+                    <a href="v6/" class="text-slate-500 hover:text-slate-300">v6</a>
+                    <span class="text-yellow-400 font-medium">v7 (aktif)</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

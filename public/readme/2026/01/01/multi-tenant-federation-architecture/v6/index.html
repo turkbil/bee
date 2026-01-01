@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otomatik Git Güncelleme Sistemi - Multi-Tenant v6</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-slate-200">
+
+    <!-- Header -->
+    <header class="border-b border-slate-700/50 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-white flex items-center gap-3">
+                        <i class="fab fa-git-alt text-orange-400"></i>
+                        Otomatik Git Güncelleme Sistemi
+                    </h1>
+                    <p class="text-slate-400 text-sm mt-1">100 müşteri, tek git push, hepsi otomatik güncellenir</p>
+                </div>
+                <div class="text-right">
+                    <span class="bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-sm font-medium">
+                        v6 - Auto Git
+                    </span>
+                    <p class="text-slate-500 text-xs mt-1">1 Ocak 2026</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-8 space-y-8">
+
+        <!-- Ana Konsept -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-magic"></i>
+                Ana Konsept
+            </h2>
+
+            <div class="bg-slate-900/50 rounded-lg p-6">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6 text-center">
+                    <!-- Step 1 -->
+                    <div class="flex-1">
+                        <div class="w-20 h-20 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fab fa-git-alt text-blue-400 text-3xl"></i>
+                        </div>
+                        <p class="text-lg font-bold text-white">Biz Push Yaparız</p>
+                        <p class="text-sm text-slate-400 mt-1">git push origin main</p>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="hidden md:block">
+                        <i class="fas fa-arrow-right text-green-400 text-3xl"></i>
+                    </div>
+                    <div class="md:hidden">
+                        <i class="fas fa-arrow-down text-green-400 text-3xl"></i>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="flex-1">
+                        <div class="w-20 h-20 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-clock text-amber-400 text-3xl"></i>
+                        </div>
+                        <p class="text-lg font-bold text-white">Cron Kontrol Eder</p>
+                        <p class="text-sm text-slate-400 mt-1">Her gece 03:00</p>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="hidden md:block">
+                        <i class="fas fa-arrow-right text-green-400 text-3xl"></i>
+                    </div>
+                    <div class="md:hidden">
+                        <i class="fas fa-arrow-down text-green-400 text-3xl"></i>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="flex-1">
+                        <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-sync text-green-400 text-3xl"></i>
+                        </div>
+                        <p class="text-lg font-bold text-white">Otomatik Güncellenir</p>
+                        <p class="text-sm text-slate-400 mt-1">git pull + migrate</p>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="hidden md:block">
+                        <i class="fas fa-arrow-right text-green-400 text-3xl"></i>
+                    </div>
+                    <div class="md:hidden">
+                        <i class="fas fa-arrow-down text-green-400 text-3xl"></i>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="flex-1">
+                        <div class="w-20 h-20 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-check-circle text-purple-400 text-3xl"></i>
+                        </div>
+                        <p class="text-lg font-bold text-white">100 Müşteri Hazır</p>
+                        <p class="text-sm text-slate-400 mt-1">Sabah güncel</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-800/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-user"></i>
+                Basit Anlatım (Herkes İçin)
+            </h2>
+
+            <div class="space-y-4 text-slate-300">
+                <p>
+                    <strong class="text-white">Ne oluyor?</strong><br>
+                    Sen bir güncelleme yaptığında, tüm müşterilerin siteleri gece otomatik güncelleniyor.
+                    Kimse bir şey yapmıyor, sabah herkes yeni versiyonda.
+                </p>
+                <p>
+                    <strong class="text-white">Nasıl çalışıyor?</strong><br>
+                    Her müşterinin sunucusunda bir "bekçi" var. Bu bekçi her gece "yeni güncelleme var mı?" diye bakıyor.
+                    Varsa indiriyor, yoksa uyuyor.
+                </p>
+                <p>
+                    <strong class="text-white">Ya bir şey bozulursa?</strong><br>
+                    Bekçi akıllı - güncelleme başarısız olursa eski haline döndürüyor ve sana haber veriyor.
+                </p>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="bg-blue-900/20 border border-blue-800/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-cog"></i>
+                Teknik Detaylar (Geliştiriciler İçin)
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Git Repo Yapısı -->
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="text-white font-semibold mb-3 flex items-center gap-2">
+                        <i class="fab fa-github text-slate-400"></i>
+                        Private Git Repo
+                    </h3>
+                    <div class="text-sm text-slate-400 space-y-2">
+                        <p>• GitHub/GitLab private repo</p>
+                        <p>• Her müşteriye deploy key (read-only)</p>
+                        <p>• Branch: <code class="text-blue-400">main</code> (stable)</p>
+                        <p>• Tag: <code class="text-blue-400">v2.5.0</code> (versiyonlar)</p>
+                    </div>
+                </div>
+
+                <!-- Cron Job -->
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h3 class="text-white font-semibold mb-3 flex items-center gap-2">
+                        <i class="fas fa-clock text-slate-400"></i>
+                        Cron Job (Müşteri Sunucu)
+                    </h3>
+                    <pre class="text-xs text-green-400 bg-slate-950 rounded p-2 overflow-x-auto"># Her gece 03:00'te çalışır
+0 3 * * * /var/www/site/update.sh >> /var/log/tuufi-update.log 2>&1</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Update Script -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-xl font-bold text-orange-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-file-code"></i>
+                Otomatik Güncelleme Script'i
+            </h2>
+
+            <div class="bg-slate-900 rounded-lg p-4 overflow-x-auto">
+                <pre class="text-sm text-slate-300"><code><span class="text-slate-500">#!/bin/bash</span>
+<span class="text-slate-500"># update.sh - Müşteri sunucusunda çalışır</span>
+
+<span class="text-purple-400">SITE_PATH</span>=<span class="text-green-400">"/var/www/site"</span>
+<span class="text-purple-400">LOG_FILE</span>=<span class="text-green-400">"/var/log/tuufi-update.log"</span>
+
+<span class="text-amber-400">echo</span> <span class="text-green-400">"[$(date)] Güncelleme kontrolü başlıyor..."</span>
+
+<span class="text-blue-400">cd</span> <span class="text-purple-400">$SITE_PATH</span>
+
+<span class="text-slate-500"># 1. Yeni commit var mı kontrol et</span>
+<span class="text-amber-400">git</span> fetch origin main --quiet
+
+<span class="text-purple-400">LOCAL</span>=$(<span class="text-amber-400">git</span> rev-parse HEAD)
+<span class="text-purple-400">REMOTE</span>=$(<span class="text-amber-400">git</span> rev-parse origin/main)
+
+<span class="text-blue-400">if</span> [ <span class="text-green-400">"$LOCAL"</span> = <span class="text-green-400">"$REMOTE"</span> ]; <span class="text-blue-400">then</span>
+    <span class="text-amber-400">echo</span> <span class="text-green-400">"[$(date)] Güncelleme yok, çıkılıyor."</span>
+    <span class="text-blue-400">exit</span> 0
+<span class="text-blue-400">fi</span>
+
+<span class="text-amber-400">echo</span> <span class="text-green-400">"[$(date)] Yeni güncelleme bulundu! Güncelleniyor..."</span>
+
+<span class="text-slate-500"># 2. Maintenance mode aç</span>
+<span class="text-amber-400">php</span> artisan down --secret=<span class="text-green-400">"update-in-progress"</span>
+
+<span class="text-slate-500"># 3. Git pull</span>
+<span class="text-amber-400">git</span> pull origin main
+
+<span class="text-slate-500"># 4. Composer (production)</span>
+<span class="text-amber-400">composer</span> install --no-dev --optimize-autoloader --quiet
+
+<span class="text-slate-500"># 5. Migration</span>
+<span class="text-amber-400">php</span> artisan migrate --force
+
+<span class="text-slate-500"># 6. Cache temizle</span>
+<span class="text-amber-400">php</span> artisan config:cache
+<span class="text-amber-400">php</span> artisan route:cache
+<span class="text-amber-400">php</span> artisan view:cache
+
+<span class="text-slate-500"># 7. Maintenance mode kapat</span>
+<span class="text-amber-400">php</span> artisan up
+
+<span class="text-slate-500"># 8. Başarı bildirimi (opsiyonel)</span>
+<span class="text-amber-400">curl</span> -s <span class="text-green-400">"https://tuufi.com/api/license/heartbeat?key=$TUUFI_LICENSE_KEY&version=$(git describe --tags)"</span>
+
+<span class="text-amber-400">echo</span> <span class="text-green-400">"[$(date)] ✅ Güncelleme tamamlandı!"</span></code></pre>
+            </div>
+
+            <div class="mt-4 grid md:grid-cols-3 gap-4 text-sm">
+                <div class="bg-slate-700/30 rounded-lg p-3">
+                    <i class="fas fa-shield-alt text-green-400 mr-2"></i>
+                    <span class="text-slate-300">Maintenance mode ile kullanıcı etkilenmez</span>
+                </div>
+                <div class="bg-slate-700/30 rounded-lg p-3">
+                    <i class="fas fa-undo text-amber-400 mr-2"></i>
+                    <span class="text-slate-300">Hata olursa git reset ile geri dönüş</span>
+                </div>
+                <div class="bg-slate-700/30 rounded-lg p-3">
+                    <i class="fas fa-bell text-blue-400 mr-2"></i>
+                    <span class="text-slate-300">Heartbeat ile merkeze bildirim</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rollback Script -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-undo"></i>
+                Hata Durumunda Geri Dönüş
+            </h2>
+
+            <div class="bg-slate-900 rounded-lg p-4 overflow-x-auto">
+                <pre class="text-sm text-slate-300"><code><span class="text-slate-500"># Güncelleme başarısız olursa otomatik rollback</span>
+
+<span class="text-blue-400">if</span> ! <span class="text-amber-400">php</span> artisan migrate --force; <span class="text-blue-400">then</span>
+    <span class="text-amber-400">echo</span> <span class="text-red-400">"❌ Migration hatası! Geri alınıyor..."</span>
+
+    <span class="text-slate-500"># Önceki commit'e dön</span>
+    <span class="text-amber-400">git</span> reset --hard <span class="text-purple-400">$LOCAL</span>
+
+    <span class="text-slate-500"># Cache'leri eski haline getir</span>
+    <span class="text-amber-400">php</span> artisan config:cache
+    <span class="text-amber-400">php</span> artisan route:cache
+
+    <span class="text-slate-500"># Siteyi aç</span>
+    <span class="text-amber-400">php</span> artisan up
+
+    <span class="text-slate-500"># Hata bildirimi gönder</span>
+    <span class="text-amber-400">curl</span> -s <span class="text-green-400">"https://tuufi.com/api/license/error?key=$TUUFI_LICENSE_KEY&error=migration_failed"</span>
+
+    <span class="text-blue-400">exit</span> 1
+<span class="text-blue-400">fi</span></code></pre>
+            </div>
+        </section>
+
+        <!-- Kurulum (Müşteri Tarafı) -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-xl font-bold text-indigo-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-download"></i>
+                İlk Kurulum (Tek Seferlik)
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Step 1 -->
+                <div class="flex gap-4 items-start">
+                    <div class="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">1</div>
+                    <div class="flex-1 bg-slate-700/30 rounded-lg p-4">
+                        <h4 class="text-white font-medium mb-2">Deploy Key Oluştur</h4>
+                        <pre class="bg-slate-900 rounded p-2 text-xs text-green-400 overflow-x-auto">ssh-keygen -t ed25519 -C "deploy@musteri.com" -f ~/.ssh/tuufi_deploy</pre>
+                        <p class="text-slate-400 text-xs mt-2">Public key'i bize gönderir, biz repo'ya ekleriz (read-only)</p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="flex gap-4 items-start">
+                    <div class="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">2</div>
+                    <div class="flex-1 bg-slate-700/30 rounded-lg p-4">
+                        <h4 class="text-white font-medium mb-2">Repo'yu Clone Et</h4>
+                        <pre class="bg-slate-900 rounded p-2 text-xs text-green-400 overflow-x-auto">git clone git@github.com:tuufi/platform.git /var/www/site</pre>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="flex gap-4 items-start">
+                    <div class="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">3</div>
+                    <div class="flex-1 bg-slate-700/30 rounded-lg p-4">
+                        <h4 class="text-white font-medium mb-2">.env Ayarla</h4>
+                        <pre class="bg-slate-900 rounded p-2 text-xs text-green-400 overflow-x-auto">TUUFI_LICENSE_KEY=GZTE-2026-XXXX-XXXX
+DB_DATABASE=musteri_db
+DB_USERNAME=musteri_user</pre>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="flex gap-4 items-start">
+                    <div class="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">4</div>
+                    <div class="flex-1 bg-slate-700/30 rounded-lg p-4">
+                        <h4 class="text-white font-medium mb-2">Cron Ekle</h4>
+                        <pre class="bg-slate-900 rounded p-2 text-xs text-green-400 overflow-x-auto">crontab -e
+# Ekle:
+0 3 * * * /var/www/site/update.sh >> /var/log/tuufi-update.log 2>&1</pre>
+                    </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="flex gap-4 items-start">
+                    <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-check text-white text-sm"></i>
+                    </div>
+                    <div class="flex-1 bg-green-900/20 border border-green-800/50 rounded-lg p-4">
+                        <h4 class="text-green-400 font-medium mb-2">Tamam!</h4>
+                        <p class="text-slate-400 text-sm">Artık her gece otomatik güncelleme alacak. Müşteri bir daha dokunmaz.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Merkez Kontrol Paneli -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-xl font-bold text-cyan-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-th-large"></i>
+                Merkez Kontrol Paneli (Biz Görürüz)
+            </h2>
+
+            <div class="bg-slate-900/50 rounded-lg p-4">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-slate-400 border-b border-slate-700">
+                            <th class="text-left py-3">Müşteri</th>
+                            <th class="text-left py-3">Versiyon</th>
+                            <th class="text-left py-3">Son Güncelleme</th>
+                            <th class="text-left py-3">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3">
+                                <i class="fas fa-newspaper text-amber-400 mr-2"></i>
+                                Ulusal Gazete
+                            </td>
+                            <td class="py-3 font-mono text-green-400">v2.5.0</td>
+                            <td class="py-3 text-slate-400">2 saat önce</td>
+                            <td class="py-3">
+                                <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">Güncel</span>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3">
+                                <i class="fas fa-hospital text-blue-400 mr-2"></i>
+                                Hastane
+                            </td>
+                            <td class="py-3 font-mono text-green-400">v2.5.0</td>
+                            <td class="py-3 text-slate-400">3 saat önce</td>
+                            <td class="py-3">
+                                <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">Güncel</span>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3">
+                                <i class="fas fa-music text-purple-400 mr-2"></i>
+                                Muzibu
+                            </td>
+                            <td class="py-3 font-mono text-amber-400">v2.4.8</td>
+                            <td class="py-3 text-slate-400">1 gün önce</td>
+                            <td class="py-3">
+                                <span class="bg-amber-500/20 text-amber-400 px-2 py-1 rounded text-xs">Bekliyor</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="py-3">
+                                <i class="fas fa-building text-red-400 mr-2"></i>
+                                Şirket X
+                            </td>
+                            <td class="py-3 font-mono text-red-400">v2.4.5</td>
+                            <td class="py-3 text-slate-400">5 gün önce</td>
+                            <td class="py-3">
+                                <span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs">Hata</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 text-sm text-slate-400">
+                <i class="fas fa-info-circle mr-2"></i>
+                Heartbeat API sayesinde tüm müşterilerin durumunu tek panelden görürsün
+            </div>
+        </section>
+
+        <!-- Avantajlar -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-check-double"></i>
+                Bu Sistemin Avantajları
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-700/30 rounded-lg p-4 flex items-start gap-3">
+                    <i class="fas fa-rocket text-green-400 text-xl mt-1"></i>
+                    <div>
+                        <h4 class="text-white font-medium">Tek Push, Herkes Güncellenir</h4>
+                        <p class="text-slate-400 text-sm">git push yap, gece 100 müşteri otomatik güncellenir</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-700/30 rounded-lg p-4 flex items-start gap-3">
+                    <i class="fas fa-shield-alt text-blue-400 text-xl mt-1"></i>
+                    <div>
+                        <h4 class="text-white font-medium">Zero Downtime</h4>
+                        <p class="text-slate-400 text-sm">Maintenance mode ile kullanıcı etkilenmez</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-700/30 rounded-lg p-4 flex items-start gap-3">
+                    <i class="fas fa-undo text-amber-400 text-xl mt-1"></i>
+                    <div>
+                        <h4 class="text-white font-medium">Otomatik Rollback</h4>
+                        <p class="text-slate-400 text-sm">Hata olursa eski versiyona döner</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-700/30 rounded-lg p-4 flex items-start gap-3">
+                    <i class="fas fa-eye text-purple-400 text-xl mt-1"></i>
+                    <div>
+                        <h4 class="text-white font-medium">Merkezi İzleme</h4>
+                        <p class="text-slate-400 text-sm">Tüm müşterilerin durumunu tek yerden gör</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-700/30 rounded-lg p-4 flex items-start gap-3">
+                    <i class="fas fa-code-branch text-cyan-400 text-xl mt-1"></i>
+                    <div>
+                        <h4 class="text-white font-medium">Git = Versiyon Kontrolü</h4>
+                        <p class="text-slate-400 text-sm">Her değişiklik takip edilir, istediğin an geri dön</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-700/30 rounded-lg p-4 flex items-start gap-3">
+                    <i class="fas fa-moon text-indigo-400 text-xl mt-1"></i>
+                    <div>
+                        <h4 class="text-white font-medium">Gece Çalışır</h4>
+                        <p class="text-slate-400 text-sm">Düşük trafik saatinde güncelleme, kimse fark etmez</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tüm Sistem Özeti -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-xl font-bold text-amber-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-sitemap"></i>
+                Tüm Sistem Özeti (v5 + v6)
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-slate-700/50">
+                            <th class="text-left p-3 text-slate-300">Bileşen</th>
+                            <th class="text-left p-3 text-slate-300">Açıklama</th>
+                            <th class="text-left p-3 text-slate-300">Konum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-slate-700">
+                            <td class="p-3 text-white font-medium">Lisans Tablosu</td>
+                            <td class="p-3 text-slate-400">Müşteri lisansları, süreleri, özellikleri</td>
+                            <td class="p-3 text-blue-400">tuufi.com (central DB)</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="p-3 text-white font-medium">License API</td>
+                            <td class="p-3 text-slate-400">/api/license/verify, /heartbeat, /error</td>
+                            <td class="p-3 text-blue-400">tuufi.com</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="p-3 text-white font-medium">Git Repo</td>
+                            <td class="p-3 text-slate-400">Private repo, deploy key erişimi</td>
+                            <td class="p-3 text-purple-400">GitHub/GitLab</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="p-3 text-white font-medium">Update Script</td>
+                            <td class="p-3 text-slate-400">update.sh - otomatik güncelleme</td>
+                            <td class="p-3 text-green-400">Müşteri sunucu</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="p-3 text-white font-medium">Cron Job</td>
+                            <td class="p-3 text-slate-400">Gece 03:00 güncelleme kontrolü</td>
+                            <td class="p-3 text-green-400">Müşteri sunucu</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 text-white font-medium">Admin Panel</td>
+                            <td class="p-3 text-slate-400">Lisans yönetimi + müşteri durumları</td>
+                            <td class="p-3 text-blue-400">tuufi.com/admin</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Yapılacaklar -->
+        <section class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+            <h2 class="text-xl font-bold text-rose-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-tasks"></i>
+                Toplam Yapılacaklar (v5 + v6)
+            </h2>
+
+            <div class="space-y-3">
+                <div class="text-slate-400 text-sm mb-4">v5'ten (Lisans Sistemi):</div>
+
+                <div class="flex items-center gap-3 bg-slate-700/30 rounded-lg p-3">
+                    <span class="w-6 h-6 bg-slate-600 rounded flex items-center justify-center text-xs">1</span>
+                    <span class="text-slate-300">Migration: <code class="text-rose-400">licenses</code> + <code class="text-rose-400">license_logs</code></span>
+                    <span class="text-xs text-slate-500 ml-auto">~20 dk</span>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-700/30 rounded-lg p-3">
+                    <span class="w-6 h-6 bg-slate-600 rounded flex items-center justify-center text-xs">2</span>
+                    <span class="text-slate-300">Model: <code class="text-rose-400">License</code>, <code class="text-rose-400">LicenseLog</code></span>
+                    <span class="text-xs text-slate-500 ml-auto">~15 dk</span>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-700/30 rounded-lg p-3">
+                    <span class="w-6 h-6 bg-slate-600 rounded flex items-center justify-center text-xs">3</span>
+                    <span class="text-slate-300">API: <code class="text-rose-400">/api/license/verify</code>, <code class="text-rose-400">/heartbeat</code>, <code class="text-rose-400">/error</code></span>
+                    <span class="text-xs text-slate-500 ml-auto">~45 dk</span>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-700/30 rounded-lg p-3">
+                    <span class="w-6 h-6 bg-slate-600 rounded flex items-center justify-center text-xs">4</span>
+                    <span class="text-slate-300">Service: <code class="text-rose-400">LicenseService</code></span>
+                    <span class="text-xs text-slate-500 ml-auto">~30 dk</span>
+                </div>
+
+                <div class="text-slate-400 text-sm mb-4 mt-6">v6'dan (Otomatik Git):</div>
+
+                <div class="flex items-center gap-3 bg-slate-700/30 rounded-lg p-3">
+                    <span class="w-6 h-6 bg-slate-600 rounded flex items-center justify-center text-xs">5</span>
+                    <span class="text-slate-300">Script: <code class="text-rose-400">update.sh</code> (müşteri sunucu için)</span>
+                    <span class="text-xs text-slate-500 ml-auto">~30 dk</span>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-700/30 rounded-lg p-3">
+                    <span class="w-6 h-6 bg-slate-600 rounded flex items-center justify-center text-xs">6</span>
+                    <span class="text-slate-300">Git Repo: Private repo + deploy key yönetimi</span>
+                    <span class="text-xs text-slate-500 ml-auto">~20 dk</span>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-700/30 rounded-lg p-3">
+                    <span class="w-6 h-6 bg-slate-600 rounded flex items-center justify-center text-xs">7</span>
+                    <span class="text-slate-300">Admin Panel: Lisans yönetimi + müşteri durumları</span>
+                    <span class="text-xs text-slate-500 ml-auto">~1 saat</span>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-700/30 rounded-lg p-3">
+                    <span class="w-6 h-6 bg-slate-600 rounded flex items-center justify-center text-xs">8</span>
+                    <span class="text-slate-300">Dokümantasyon: Müşteri kurulum kılavuzu</span>
+                    <span class="text-xs text-slate-500 ml-auto">~30 dk</span>
+                </div>
+            </div>
+
+            <div class="mt-6 flex items-center justify-between bg-green-900/20 border border-green-800/50 rounded-lg p-4">
+                <span class="text-green-400 font-medium">Toplam Tahmini Süre:</span>
+                <span class="text-2xl font-bold text-green-400">~5 saat</span>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-700/50 mt-8">
+        <div class="max-w-6xl mx-auto px-6 py-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-2 text-slate-400 text-sm">
+                    <i class="fas fa-robot"></i>
+                    <span>Claude AI tarafından oluşturuldu</span>
+                </div>
+                <div class="flex items-center gap-4 text-sm">
+                    <a href="v1/" class="text-slate-500 hover:text-slate-300">v1</a>
+                    <a href="v2/" class="text-slate-500 hover:text-slate-300">v2</a>
+                    <a href="v3/" class="text-slate-500 hover:text-slate-300">v3</a>
+                    <a href="v4/" class="text-slate-500 hover:text-slate-300">v4</a>
+                    <a href="v5/" class="text-slate-500 hover:text-slate-300">v5</a>
+                    <span class="text-orange-400 font-medium">v6 (aktif)</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

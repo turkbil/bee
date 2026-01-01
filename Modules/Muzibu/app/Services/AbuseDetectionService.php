@@ -7,11 +7,40 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Modules\Muzibu\App\Models\AbuseReport;
 
+/**
+ * Suistimal Tespit Servisi - Ping-Pong Sistemi v2
+ *
+ * B2B Müzik Platformu için hesap paylaşımı tespiti.
+ * 1 abonelik = 1 cihaz = 1 aktif stream kuralını denetler.
+ *
+ * 3 TEMEL PATTERN:
+ * 1. Ping-Pong: A→B→A döngüsü (IP, browser, platform, device)
+ * 2. Concurrent Different Source: Aynı anda farklı fingerprint
+ * 3. Split Stream: Aynı fingerprint + overlap (1 PC → 2 hoparlör)
+ *
+ * B2B KURALLARI (Normal sayılan):
+ * - 15 saat, 7/24 dinleme = NORMAL (işletme)
+ * - Yüksek hacim = NORMAL (restoran)
+ * - Skip yok = NORMAL (arka plan müzik)
+ * - Gece dinleme = NORMAL (24 saat açık mekan)
+ *
+ * @version 2.0 - Ping-Pong Detection System
+ * @see https://muzibu.com.tr/readme/2026/01/01/suistimal-tespit-gelistirme/
+ */
 class AbuseDetectionService
 {
     /**
+     * Fingerprint oluşturmak için kullanılan alanlar
+     */
+    protected array $fingerprintFields = ['ip_address', 'browser', 'platform'];
+
+    /**
+     * Ping-Pong tespiti için kontrol edilecek alanlar
+     */
+    protected array $pingPongFields = ['ip_address', 'browser', 'platform', 'device_key'];
+
+    /**
      * Tenant-aware database bağlantısı al
-     * Tenant context yoksa exception fırlat
      */
     protected function getTenantConnection(): \Illuminate\Database\Connection
     {
@@ -23,14 +52,60 @@ class AbuseDetectionService
     }
 
     /**
-     * Tek bir kullanıcıyı tara ve rapor oluştur
+     * ⚡ EARLY EXIT: Hızlı kontrol - Horizon'a gerek var mı?
+     *
+     * Kullanıcı hep aynı kıstaslarla girmişse (tek fingerprint),
+     * ping-pong OLAMAZ → direkt CLEAN işaretle, Horizon'a gönderme.
      *
      * @param int $userId
-     * @param Carbon $periodStart Dönem başlangıcı
-     * @param Carbon $periodEnd Dönem sonu
+     * @param Carbon $periodStart
+     * @param Carbon $periodEnd
+     * @return array ['skip' => bool, 'reason' => string, 'fingerprint_count' => int]
+     */
+    public function quickCheck(int $userId, Carbon $periodStart, Carbon $periodEnd): array
+    {
+        // Kullanıcının unique fingerprint sayısını kontrol et
+        $fingerprints = $this->getTenantConnection()
+            ->table('muzibu_song_plays')
+            ->where('user_id', $userId)
+            ->whereBetween('created_at', [$periodStart, $periodEnd])
+            ->select([
+                DB::raw("CONCAT(COALESCE(ip_address,''), '|', COALESCE(browser,''), '|', COALESCE(platform,'')) as fingerprint")
+            ])
+            ->distinct()
+            ->pluck('fingerprint');
+
+        $uniqueCount = $fingerprints->filter(fn($f) => $f !== '||')->count();
+
+        // Tek fingerprint = Ping-Pong OLAMAZ
+        if ($uniqueCount <= 1) {
+            return [
+                'skip' => true,
+                'reason' => 'single_fingerprint',
+                'fingerprint_count' => $uniqueCount,
+                'status' => AbuseReport::STATUS_CLEAN,
+            ];
+        }
+
+        // Birden fazla fingerprint var, Horizon'da detaylı analiz gerekli
+        return [
+            'skip' => false,
+            'reason' => 'multiple_fingerprints',
+            'fingerprint_count' => $uniqueCount,
+            'status' => null,
+        ];
+    }
+
+    /**
+     * 🎯 ANA TARAMA: Tek bir kullanıcıyı tara ve rapor oluştur
+     *
+     * @param int $userId
+     * @param Carbon $periodStart
+     * @param Carbon $periodEnd
+     * @param bool $skipQuickCheck Early exit kontrolünü atla (job'dan geliyorsa)
      * @return AbuseReport|null
      */
-    public function scanUser(int $userId, Carbon $periodStart, Carbon $periodEnd): ?AbuseReport
+    public function scanUser(int $userId, Carbon $periodStart, Carbon $periodEnd, bool $skipQuickCheck = false): ?AbuseReport
     {
         // Kullanıcının play verilerini çek
         $plays = $this->getUserPlays($userId, $periodStart, $periodEnd);
@@ -39,24 +114,18 @@ class AbuseDetectionService
             return null;
         }
 
-        // Overlap'leri tespit et
-        $overlaps = $this->detectOverlaps($plays);
+        // 🔥 YENİ: Tüm pattern'leri tespit et (3 pattern)
+        $patterns = $this->detectAllPatterns($plays);
 
-        // 🔥 YENİ: Tüm pattern'leri tespit et
-        $patterns = $this->detectAllPatterns($plays, $overlaps);
-
-        // 🔥 YENİ: Toplam abuse score hesapla (overlap + patterns)
-        $abuseScore = $this->calculateTotalAbuseScore($overlaps, $patterns);
-
-        // Status belirle
-        $status = AbuseReport::determineStatus($abuseScore);
+        // Status belirle (herhangi bir pattern detected ise abuse)
+        $hasAbuse = $this->hasAnyPatternDetected($patterns);
+        $status = $hasAbuse ? AbuseReport::STATUS_ABUSE : AbuseReport::STATUS_CLEAN;
 
         // Günlük istatistikleri hesapla
-        $dailyStats = $this->calculateDailyStats($plays, $overlaps);
+        $dailyStats = $this->calculateDailyStats($plays, $patterns);
 
-        // overlaps_json için max 100 kayıt sınırla (MySQL packet limit koruması)
-        // overlap_count zaten toplam sayıyı tutuyor
-        $overlapsForStorage = array_slice($overlaps, 0, 100);
+        // Abuse score: Tespit edilen pattern sayısı + örnek sayıları
+        $abuseScore = $this->calculatePatternScore($patterns);
 
         // Mevcut raporu güncelle veya yeni oluştur
         return AbuseReport::updateOrCreate(
@@ -68,10 +137,10 @@ class AbuseDetectionService
                 'period_start' => $periodStart,
                 'period_end' => $periodEnd,
                 'total_plays' => $plays->count(),
-                'overlap_count' => count($overlaps), // Gerçek toplam sayı
+                'overlap_count' => $patterns['split_stream']['count'] ?? 0,
                 'abuse_score' => $abuseScore,
                 'status' => $status,
-                'overlaps_json' => $overlapsForStorage, // Sadece ilk 100 örnek
+                'overlaps_json' => $patterns['split_stream']['samples'] ?? [],
                 'daily_stats' => $dailyStats,
                 'patterns_json' => $patterns,
             ]
@@ -79,277 +148,325 @@ class AbuseDetectionService
     }
 
     /**
-     * B2B İşletme Müzik Platformu için Pattern Tespiti
+     * 🔥 TÜM PATTERN'LERİ TESPİT ET
      *
-     * Kaldırılan pattern'ler (B2B için geçerli değil):
-     * - Hızlı Skip: Personel şarkı değiştirebilir
-     * - Tekrar Şarkı: Playlist loop normal
-     * - Gece Dinleme: 24 saat açık işletmeler var
-     * - Bot Davranışı: Para veren müşteriler bot olamaz
+     * 3 Pattern:
+     * 1. Ping-Pong: A→B→A döngüsü (her field için ayrı kontrol)
+     * 2. Concurrent Different Source: Aynı anda farklı fingerprint
+     * 3. Split Stream: Aynı fingerprint + overlap (1 PC → 2 hoparlör)
      */
-    public function detectAllPatterns(Collection $plays, array $overlaps): array
+    public function detectAllPatterns(Collection $plays): array
     {
-        $patterns = [];
+        $patterns = [
+            'ping_pong' => [
+                'detected' => false,
+                'fields' => [],
+                'cycles' => [],
+            ],
+            'concurrent_different' => [
+                'detected' => false,
+                'count' => 0,
+                'samples' => [],
+            ],
+            'split_stream' => [
+                'detected' => false,
+                'count' => 0,
+                'samples' => [],
+            ],
+        ];
 
-        // 1. Yüksek Hacim - Günde 600+ şarkı (çoklu stream şüphesi)
-        $highVolume = $this->detectHighVolume($plays);
-        if (!empty($highVolume)) {
-            $patterns['high_volume'] = $highVolume;
+        // 1. Ping-Pong tespiti (her field için)
+        foreach ($this->pingPongFields as $field) {
+            $pingPongResult = $this->detectPingPong($plays, $field);
+            if ($pingPongResult['detected']) {
+                $patterns['ping_pong']['detected'] = true;
+                $patterns['ping_pong']['fields'][] = $field;
+                $patterns['ping_pong']['cycles'] = array_merge(
+                    $patterns['ping_pong']['cycles'],
+                    $pingPongResult['cycles']
+                );
+            }
         }
 
-        // 2. Çoklu Cihaz - 5+ farklı cihaz/gün (hesap paylaşımı)
-        $multiDevice = $this->detectMultiDevice($plays);
-        if (!empty($multiDevice)) {
-            $patterns['multi_device'] = $multiDevice;
-        }
+        // 2. Concurrent Different Source tespiti
+        $concurrentResult = $this->detectConcurrentDifferentSource($plays);
+        $patterns['concurrent_different'] = $concurrentResult;
 
-        // 3. Şüpheli IP - 5+ farklı IP/gün (farklı lokasyonlardan erişim)
-        $suspiciousIp = $this->detectSuspiciousIp($plays);
-        if (!empty($suspiciousIp)) {
-            $patterns['suspicious_ip'] = $suspiciousIp;
-        }
+        // 3. Split Stream tespiti
+        $splitResult = $this->detectSplitStream($plays);
+        $patterns['split_stream'] = $splitResult;
 
         return $patterns;
     }
 
     /**
-     * 🔥 HIZLI SKİP TESPİTİ
-     * 30 saniyeden kısa dinlemeler = şüpheli
-     */
-    protected function detectRapidSkips(Collection $plays): array
-    {
-        $minListenSeconds = 30;
-        $rapidSkips = [];
-        $totalRapidSkips = 0;
-
-        foreach ($plays as $play) {
-            $listenDuration = $play['start']->diffInSeconds($play['end']);
-            if ($listenDuration < $minListenSeconds) {
-                $totalRapidSkips++;
-                $rapidSkips[] = [
-                    'play_id' => $play['id'],
-                    'song' => $play['title'],
-                    'duration' => $listenDuration,
-                    'time' => $play['time'],
-                ];
-            }
-        }
-
-        // %30'dan fazla hızlı skip varsa şüpheli
-        $skipRate = $plays->count() > 0 ? ($totalRapidSkips / $plays->count()) * 100 : 0;
-
-        if ($skipRate > 30) {
-            return [
-                'count' => $totalRapidSkips,
-                'rate' => round($skipRate, 1),
-                'severity' => $skipRate > 60 ? 'high' : ($skipRate > 45 ? 'medium' : 'low'),
-                'score' => min($totalRapidSkips * 5, 300), // Max 300 puan
-                'samples' => array_slice($rapidSkips, 0, 5),
-            ];
-        }
-
-        return [];
-    }
-
-    /**
-     * Yüksek Hacim Pattern - İşletme bazlı eşikler
+     * 🔄 PING-PONG TESPİTİ
      *
-     * İşletme kullanımı hesabı:
-     * - Çalışma saatleri: 08:00 - 24:00 (16 saat)
-     * - Ortalama şarkı: 3-4 dakika
-     * - Normal: ~300 şarkı/gün (tek cihaz, kesintisiz)
-     * - Şüpheli: 600+ şarkı/gün (çoklu stream veya otomasyon)
+     * A→B→A döngüsünü tespit eder.
+     * Kalıcı geçiş (A→B kalır) = NORMAL
+     * Döngü (A→B→A) = ABUSE
+     *
+     * @param Collection $plays Zaman sıralı play listesi
+     * @param string $field Kontrol edilecek alan (ip_address, browser, platform, device_key)
+     * @return array ['detected' => bool, 'cycles' => [...]]
      */
-    protected function detectHighVolume(Collection $plays): array
+    protected function detectPingPong(Collection $plays, string $field): array
     {
-        $threshold = 600; // İşletme için günde max normal dinleme (16 saat x ~38 şarkı)
-        $playsByDay = $plays->groupBy(fn($p) => Carbon::parse($p['time'])->toDateString());
+        $result = [
+            'detected' => false,
+            'cycles' => [],
+        ];
 
-        $highVolumeDays = [];
-        foreach ($playsByDay as $date => $dayPlays) {
-            $count = $dayPlays->count();
-            if ($count > $threshold) {
-                $highVolumeDays[] = [
-                    'date' => $date,
-                    'count' => $count,
-                    'excess' => $count - $threshold,
+        // Field değerlerini zaman sırasına göre al
+        $values = $plays->pluck($field)->filter()->values()->all();
+
+        if (count($values) < 3) {
+            return $result;
+        }
+
+        // Ardışık farklı değerleri bul ve döngü ara
+        $cycles = [];
+        $i = 0;
+        while ($i < count($values) - 2) {
+            $a = $values[$i];
+            $b = $values[$i + 1] ?? null;
+            $c = $values[$i + 2] ?? null;
+
+            // A→B→A döngüsü var mı?
+            if ($a && $b && $c && $a !== $b && $a === $c) {
+                $cycles[] = [
+                    'field' => $field,
+                    'sequence' => [$a, $b, $a],
+                    'position' => $i,
                 ];
+                $i += 2; // Döngüyü atla
+            } else {
+                $i++;
             }
         }
 
-        if (!empty($highVolumeDays)) {
-            $totalExcess = array_sum(array_column($highVolumeDays, 'excess'));
-            return [
-                'days' => $highVolumeDays,
-                'total_excess' => $totalExcess,
-                'severity' => $totalExcess > 400 ? 'high' : ($totalExcess > 200 ? 'medium' : 'low'),
-                'score' => min($totalExcess, 400), // Max 400 puan
-            ];
+        if (!empty($cycles)) {
+            $result['detected'] = true;
+            $result['cycles'] = array_slice($cycles, 0, 10); // Max 10 örnek
         }
 
-        return [];
+        return $result;
     }
 
     /**
-     * 🔥 TEKRAR ŞARKI TESPİTİ
-     * Aynı şarkı 10+ kez = şüpheli (loop abuse)
+     * 🔀 CONCURRENT DIFFERENT SOURCE TESPİTİ
+     *
+     * Aynı anda farklı fingerprint = 2 farklı lokasyon/cihaz
+     * Örnek: 14:00'da hem Ankara IP hem İstanbul IP → 2 kişi kullanıyor
+     *
+     * @param Collection $plays
+     * @return array ['detected' => bool, 'count' => int, 'samples' => [...]]
      */
-    protected function detectRepeatSongs(Collection $plays): array
+    protected function detectConcurrentDifferentSource(Collection $plays): array
     {
-        $threshold = 10;
-        $songCounts = $plays->groupBy('song_id')->map->count();
-        $repeatedSongs = $songCounts->filter(fn($count) => $count >= $threshold);
+        $result = [
+            'detected' => false,
+            'count' => 0,
+            'samples' => [],
+        ];
 
-        if ($repeatedSongs->isNotEmpty()) {
-            $songDetails = [];
-            foreach ($repeatedSongs as $songId => $count) {
-                $songPlay = $plays->firstWhere('song_id', $songId);
-                $songDetails[] = [
-                    'song_id' => $songId,
-                    'title' => $songPlay['title'] ?? 'Bilinmiyor',
-                    'count' => $count,
-                ];
-            }
+        $playsArray = $plays->values()->all();
+        $count = count($playsArray);
+        $samples = [];
 
-            // En çok tekrar edene göre sırala
-            usort($songDetails, fn($a, $b) => $b['count'] <=> $a['count']);
+        for ($i = 0; $i < $count; $i++) {
+            for ($j = $i + 1; $j < $count; $j++) {
+                $p1 = $playsArray[$i];
+                $p2 = $playsArray[$j];
 
-            $maxCount = $songDetails[0]['count'] ?? 0;
-            return [
-                'songs' => array_slice($songDetails, 0, 5),
-                'total_repeats' => $repeatedSongs->sum(),
-                'severity' => $maxCount > 30 ? 'high' : ($maxCount > 20 ? 'medium' : 'low'),
-                'score' => min($repeatedSongs->sum() * 3, 300), // Max 300 puan
-            ];
-        }
+                // Fingerprint'ler farklı mı?
+                $fp1 = $this->getFingerprint($p1);
+                $fp2 = $this->getFingerprint($p2);
 
-        return [];
-    }
+                if ($fp1 === $fp2) {
+                    continue; // Aynı kaynak, bu split stream olabilir
+                }
 
-    /**
-     * 🔥 ÇOKLU CİHAZ TESPİTİ
-     * 24 saatte 5+ farklı cihaz = hesap paylaşımı şüphesi
-     */
-    protected function detectMultiDevice(Collection $plays): array
-    {
-        $threshold = 5;
-        $playsByDay = $plays->groupBy(fn($p) => Carbon::parse($p['time'])->toDateString());
-
-        $multiDeviceDays = [];
-        foreach ($playsByDay as $date => $dayPlays) {
-            $uniqueDevices = $dayPlays->pluck('device_key')->unique();
-            if ($uniqueDevices->count() >= $threshold) {
-                $multiDeviceDays[] = [
-                    'date' => $date,
-                    'device_count' => $uniqueDevices->count(),
-                    'devices' => $uniqueDevices->values()->all(),
-                ];
+                // Zaman çakışması var mı?
+                if ($this->hasTimeOverlap($p1, $p2)) {
+                    $samples[] = [
+                        'play1' => [
+                            'id' => $p1['id'],
+                            'song' => $p1['title'],
+                            'fingerprint' => $fp1,
+                            'ip' => $p1['ip'] ?? '',
+                            'browser' => $p1['browser'] ?? '',
+                            'time' => $p1['time'],
+                        ],
+                        'play2' => [
+                            'id' => $p2['id'],
+                            'song' => $p2['title'],
+                            'fingerprint' => $fp2,
+                            'ip' => $p2['ip'] ?? '',
+                            'browser' => $p2['browser'] ?? '',
+                            'time' => $p2['time'],
+                        ],
+                        'date' => Carbon::parse($p1['time'])->toDateString(),
+                    ];
+                }
             }
         }
 
-        if (!empty($multiDeviceDays)) {
-            $maxDevices = max(array_column($multiDeviceDays, 'device_count'));
-            return [
-                'days' => $multiDeviceDays,
-                'max_devices' => $maxDevices,
-                'severity' => $maxDevices > 10 ? 'high' : ($maxDevices > 7 ? 'medium' : 'low'),
-                'score' => min($maxDevices * 20, 200), // Max 200 puan
-            ];
+        if (!empty($samples)) {
+            $result['detected'] = true;
+            $result['count'] = count($samples);
+            $result['samples'] = array_slice($samples, 0, 20); // Max 20 örnek
         }
 
-        return [];
+        return $result;
     }
 
     /**
-     * 🔥 ŞÜPHELİ IP TESPİTİ
-     * Kısa sürede farklı IP'ler = VPN veya hesap paylaşımı
+     * 📺 SPLIT STREAM TESPİTİ
+     *
+     * Aynı fingerprint + overlap = 1 PC'den 2 hoparlöre yönlendirme
+     * Örnek: Aynı Chrome'dan 14:00'da 2 farklı şarkı aynı anda
+     *
+     * @param Collection $plays
+     * @return array ['detected' => bool, 'count' => int, 'samples' => [...]]
      */
-    protected function detectSuspiciousIp(Collection $plays): array
+    protected function detectSplitStream(Collection $plays): array
     {
-        $threshold = 5; // 24 saatte max normal IP değişimi
-        $playsByDay = $plays->groupBy(fn($p) => Carbon::parse($p['time'])->toDateString());
+        $result = [
+            'detected' => false,
+            'count' => 0,
+            'samples' => [],
+        ];
 
-        $suspiciousDays = [];
-        foreach ($playsByDay as $date => $dayPlays) {
-            $uniqueIps = $dayPlays->pluck('ip')->filter()->unique();
-            if ($uniqueIps->count() >= $threshold) {
-                $suspiciousDays[] = [
-                    'date' => $date,
-                    'ip_count' => $uniqueIps->count(),
-                    'ips' => $uniqueIps->values()->all(),
-                ];
+        $playsArray = $plays->values()->all();
+        $count = count($playsArray);
+        $samples = [];
+
+        for ($i = 0; $i < $count; $i++) {
+            for ($j = $i + 1; $j < $count; $j++) {
+                $p1 = $playsArray[$i];
+                $p2 = $playsArray[$j];
+
+                // Fingerprint'ler aynı mı?
+                $fp1 = $this->getFingerprint($p1);
+                $fp2 = $this->getFingerprint($p2);
+
+                if ($fp1 !== $fp2) {
+                    continue; // Farklı kaynak, bu concurrent different olabilir
+                }
+
+                // Zaman çakışması var mı?
+                if ($this->hasTimeOverlap($p1, $p2)) {
+                    $overlapSeconds = $this->calculateOverlapSeconds($p1, $p2);
+
+                    // Minimum 5 saniye çakışma (gürültü filtresi)
+                    if ($overlapSeconds < 5) {
+                        continue;
+                    }
+
+                    $samples[] = [
+                        'play1' => [
+                            'id' => $p1['id'],
+                            'song' => $p1['title'],
+                            'start' => $p1['time'],
+                            'end' => $p1['end']->toDateTimeString(),
+                        ],
+                        'play2' => [
+                            'id' => $p2['id'],
+                            'song' => $p2['title'],
+                            'start' => $p2['time'],
+                            'end' => $p2['end']->toDateTimeString(),
+                        ],
+                        'fingerprint' => $fp1,
+                        'overlap_seconds' => $overlapSeconds,
+                        'date' => Carbon::parse($p1['time'])->toDateString(),
+                    ];
+                }
             }
         }
 
-        if (!empty($suspiciousDays)) {
-            $maxIps = max(array_column($suspiciousDays, 'ip_count'));
-            return [
-                'days' => $suspiciousDays,
-                'max_ips' => $maxIps,
-                'severity' => $maxIps > 10 ? 'high' : ($maxIps > 7 ? 'medium' : 'low'),
-                'score' => min($maxIps * 15, 150), // Max 150 puan
-            ];
+        if (!empty($samples)) {
+            $result['detected'] = true;
+            $result['count'] = count($samples);
+            $result['samples'] = array_slice($samples, 0, 50); // Max 50 örnek
         }
 
-        return [];
+        return $result;
     }
 
     /**
-     * 🔥 24/7 DİNLEME TESPİTİ
-     * Gece 02:00-06:00 arası sürekli dinleme = bot şüphesi
+     * Fingerprint oluştur (IP + Browser + Platform)
      */
-    protected function detectNoSleepPattern(Collection $plays): array
+    protected function getFingerprint(array $play): string
     {
-        // Gece saatlerini kontrol et (02:00 - 06:00)
-        $nightPlays = $plays->filter(function ($play) {
-            $hour = Carbon::parse($play['time'])->hour;
-            return $hour >= 2 && $hour < 6;
-        });
-
-        // Gece saatlerinde dinleme olan günleri grupla
-        $nightDays = $nightPlays->groupBy(fn($p) => Carbon::parse($p['time'])->toDateString());
-
-        $suspiciousNights = [];
-        foreach ($nightDays as $date => $plays) {
-            // Gece 5+ şarkı = şüpheli
-            if ($plays->count() >= 5) {
-                $suspiciousNights[] = [
-                    'date' => $date,
-                    'night_plays' => $plays->count(),
-                    'hours' => $plays->map(fn($p) => Carbon::parse($p['time'])->format('H:i'))->unique()->values()->all(),
-                ];
-            }
-        }
-
-        if (!empty($suspiciousNights)) {
-            $totalNightPlays = array_sum(array_column($suspiciousNights, 'night_plays'));
-            return [
-                'nights' => $suspiciousNights,
-                'total_night_plays' => $totalNightPlays,
-                'severity' => count($suspiciousNights) > 5 ? 'high' : (count($suspiciousNights) > 3 ? 'medium' : 'low'),
-                'score' => min($totalNightPlays * 5, 250), // Max 250 puan
-            ];
-        }
-
-        return [];
+        return implode('|', [
+            $play['ip'] ?? '',
+            $play['browser'] ?? '',
+            $play['platform'] ?? '',
+        ]);
     }
 
     /**
-     * 🔥 TOPLAM ABUSE SCORE HESAPLA
-     * Overlap + Pattern skorlarını birleştir
+     * İki play arasında zaman çakışması var mı?
      */
-    public function calculateTotalAbuseScore(array $overlaps, array $patterns): int
+    protected function hasTimeOverlap(array $p1, array $p2): bool
     {
-        // Overlap score
-        $overlapScore = $this->calculateAbuseScore($overlaps);
+        // p1 daha önce başlamış olmalı
+        $first = $p1['start']->lte($p2['start']) ? $p1 : $p2;
+        $second = $p1['start']->lte($p2['start']) ? $p2 : $p1;
 
-        // Pattern scores
-        $patternScore = 0;
-        foreach ($patterns as $pattern) {
-            $patternScore += $pattern['score'] ?? 0;
+        // first biterken second başlamış mı?
+        return $first['end']->gt($second['start']);
+    }
+
+    /**
+     * İki play arasındaki çakışma süresini hesapla
+     */
+    protected function calculateOverlapSeconds(array $p1, array $p2): int
+    {
+        $first = $p1['start']->lte($p2['start']) ? $p1 : $p2;
+        $second = $p1['start']->lte($p2['start']) ? $p2 : $p1;
+
+        $overlapEnd = $first['end']->lt($second['end']) ? $first['end'] : $second['end'];
+        return abs($overlapEnd->diffInSeconds($second['start']));
+    }
+
+    /**
+     * Herhangi bir pattern tespit edildi mi?
+     */
+    protected function hasAnyPatternDetected(array $patterns): bool
+    {
+        return ($patterns['ping_pong']['detected'] ?? false)
+            || ($patterns['concurrent_different']['detected'] ?? false)
+            || ($patterns['split_stream']['detected'] ?? false);
+    }
+
+    /**
+     * Pattern'lere göre abuse score hesapla
+     */
+    protected function calculatePatternScore(array $patterns): int
+    {
+        $score = 0;
+
+        // Ping-Pong: Her döngü 100 puan
+        if ($patterns['ping_pong']['detected'] ?? false) {
+            $cycleCount = count($patterns['ping_pong']['cycles'] ?? []);
+            $score += min($cycleCount * 100, 500);
         }
 
-        return $overlapScore + $patternScore;
+        // Concurrent Different: Her örnek 50 puan
+        if ($patterns['concurrent_different']['detected'] ?? false) {
+            $count = $patterns['concurrent_different']['count'] ?? 0;
+            $score += min($count * 50, 500);
+        }
+
+        // Split Stream: Her örnek 30 puan
+        if ($patterns['split_stream']['detected'] ?? false) {
+            $count = $patterns['split_stream']['count'] ?? 0;
+            $score += min($count * 30, 300);
+        }
+
+        return $score;
     }
 
     /**
@@ -369,8 +486,8 @@ class AbuseDetectionService
                 's.title',
                 's.duration',
                 'sp.device_type',
-                'sp.browser',       // 🔥 NEW: jenssegers/agent ile kaydedilen browser
-                'sp.platform',      // 🔥 NEW: jenssegers/agent ile kaydedilen platform
+                'sp.browser',
+                'sp.platform',
                 'sp.ip_address',
                 'sp.user_agent',
                 'sp.created_at',
@@ -384,19 +501,16 @@ class AbuseDetectionService
                     $title = $decoded['tr'] ?? $decoded['en'] ?? $title;
                 }
 
-                // 🔥 FIX: Önce DB'deki browser değerini kullan, yoksa user_agent'tan parse et
+                // Browser tespiti
                 $browser = $play->browser;
                 if (empty($browser) || $browser === 'Unknown') {
                     $browser = $this->detectBrowser($play->user_agent ?? '');
                 }
 
-                // Platform bilgisi
                 $platform = $play->platform ?? 'Unknown';
-
                 $device = $play->device_type ?? 'desktop';
 
-                // 🔥 Benzersiz cihaz kimliği: platform + browser + IP son 2 oktet
-                // Örnek: "macOS-Chrome-192.168" veya "Windows-Firefox-10.0"
+                // Device key: platform + browser + IP son 2 oktet
                 $ipShort = '';
                 if ($play->ip_address) {
                     $parts = explode('.', $play->ip_address);
@@ -408,12 +522,13 @@ class AbuseDetectionService
                     'id' => $play->id,
                     'song_id' => $play->song_id,
                     'title' => $title,
-                    'duration' => (int) ($play->duration ?? 180), // Default 3 dakika
+                    'duration' => (int) ($play->duration ?? 180),
                     'device' => $device,
                     'browser' => $browser,
                     'platform' => $platform,
-                    'device_key' => $deviceKey, // Benzersiz cihaz kimliği
+                    'device_key' => $deviceKey,
                     'ip' => $play->ip_address,
+                    'ip_address' => $play->ip_address, // Ping-pong için alias
                     'time' => $play->created_at,
                     'start' => Carbon::parse($play->created_at),
                     'end' => Carbon::parse($play->created_at)->addSeconds($play->duration ?? 180),
@@ -422,214 +537,60 @@ class AbuseDetectionService
     }
 
     /**
-     * 🌐 Gelişmiş Browser Tespiti
-     *
-     * User-Agent string'inden tarayıcıyı doğru tespit eder.
-     * Chromium tabanlı tarayıcıları (Edge, Opera, Brave, Vivaldi, Samsung, Yandex)
-     * Chrome'dan ayırt eder.
-     *
-     * @param string $userAgent
-     * @return string Browser adı (lowercase)
+     * Browser tespiti (User-Agent'tan)
      */
     protected function detectBrowser(string $userAgent): string
     {
         $ua = strtolower($userAgent);
 
-        // 🔴 ÖNCELİK SIRASI ÖNEMLİ!
-        // Chromium tabanlı tarayıcılar Chrome'dan ÖNCE kontrol edilmeli
-
-        // Edge (Edg/ veya Edge/)
-        if (str_contains($ua, 'edg/') || str_contains($ua, 'edge/')) {
-            return 'edge';
-        }
-
-        // Opera (OPR/ veya Opera/)
-        if (str_contains($ua, 'opr/') || str_contains($ua, 'opera')) {
-            return 'opera';
-        }
-
-        // Brave
-        if (str_contains($ua, 'brave')) {
-            return 'brave';
-        }
-
-        // Vivaldi
-        if (str_contains($ua, 'vivaldi')) {
-            return 'vivaldi';
-        }
-
-        // Samsung Internet
-        if (str_contains($ua, 'samsungbrowser')) {
-            return 'samsung';
-        }
-
-        // Yandex Browser
-        if (str_contains($ua, 'yabrowser') || str_contains($ua, 'yowser')) {
-            return 'yandex';
-        }
-
-        // UC Browser
-        if (str_contains($ua, 'ucbrowser') || str_contains($ua, 'ubrowser')) {
-            return 'ucbrowser';
-        }
-
-        // Firefox
-        if (str_contains($ua, 'firefox') || str_contains($ua, 'fxios')) {
-            return 'firefox';
-        }
-
-        // Safari (Chrome içermemeli!)
-        if (str_contains($ua, 'safari') && !str_contains($ua, 'chrome') && !str_contains($ua, 'chromium')) {
-            return 'safari';
-        }
-
-        // Chrome (en son kontrol - diğerleri zaten return etti)
-        if (str_contains($ua, 'chrome') || str_contains($ua, 'chromium') || str_contains($ua, 'crios')) {
-            return 'chrome';
-        }
-
-        // Internet Explorer
-        if (str_contains($ua, 'msie') || str_contains($ua, 'trident')) {
-            return 'ie';
-        }
+        // Öncelik sırasına göre kontrol
+        if (str_contains($ua, 'edg/') || str_contains($ua, 'edge/')) return 'edge';
+        if (str_contains($ua, 'opr/') || str_contains($ua, 'opera')) return 'opera';
+        if (str_contains($ua, 'brave')) return 'brave';
+        if (str_contains($ua, 'vivaldi')) return 'vivaldi';
+        if (str_contains($ua, 'samsungbrowser')) return 'samsung';
+        if (str_contains($ua, 'yabrowser') || str_contains($ua, 'yowser')) return 'yandex';
+        if (str_contains($ua, 'ucbrowser') || str_contains($ua, 'ubrowser')) return 'ucbrowser';
+        if (str_contains($ua, 'firefox') || str_contains($ua, 'fxios')) return 'firefox';
+        if (str_contains($ua, 'safari') && !str_contains($ua, 'chrome') && !str_contains($ua, 'chromium')) return 'safari';
+        if (str_contains($ua, 'chrome') || str_contains($ua, 'chromium') || str_contains($ua, 'crios')) return 'chrome';
+        if (str_contains($ua, 'msie') || str_contains($ua, 'trident')) return 'ie';
 
         return 'other';
     }
 
     /**
-     * Overlap'leri tespit et
-     * TÜM şarkı çakışmalarını kontrol et (aynı tarayıcı dahil!)
-     *
-     * AMAÇ: Eş zamanlı şarkı dinlemeyi tespit etmek
-     * - Chrome + Chrome = ABUSE (2 sekme açılmış)
-     * - Chrome + Safari = ABUSE (2 farklı tarayıcı)
-     * - Desktop + Mobile = ABUSE (2 farklı cihaz)
-     *
-     * Kullanıcı aynı tarayıcıda 2 sekme açıp farklı hoparlörlere
-     * yönlendirerek dinleyebilir - bu da suistimaldir!
-     */
-    public function detectOverlaps(Collection $plays): array
-    {
-        $overlaps = [];
-        $playsArray = $plays->values()->all();
-        $count = count($playsArray);
-        $checkedPairs = []; // Aynı çifti tekrar kontrol etmeyi önle
-
-        // Tüm çiftleri kontrol et (O(n²) ama gerekli)
-        for ($i = 0; $i < $count; $i++) {
-            for ($j = $i + 1; $j < $count; $j++) {
-                $p1 = $playsArray[$i];
-                $p2 = $playsArray[$j];
-
-                // 🔥 KALDIRILDI: device_key kontrolü
-                // Aynı tarayıcıda 2 sekme açılması da abuse olarak sayılmalı!
-                // Amaç: Eş zamanlı şarkı dinlemeyi tespit etmek
-
-                // Aynı çifti tekrar kontrol etme
-                $pairKey = min($p1['id'], $p2['id']) . '-' . max($p1['id'], $p2['id']);
-                if (isset($checkedPairs[$pairKey])) {
-                    continue;
-                }
-                $checkedPairs[$pairKey] = true;
-
-                // p1 daha önce başlamış olmalı (zaman sıralı)
-                $first = $p1['start']->lte($p2['start']) ? $p1 : $p2;
-                $second = $p1['start']->lte($p2['start']) ? $p2 : $p1;
-
-                // Çakışma var mı? (first biterken second başlamış mı?)
-                if ($first['end']->gt($second['start'])) {
-                    // Çakışma süresi hesapla
-                    // Gerçek çakışma = min(first_end, second_end) - second_start
-                    $overlapEnd = $first['end']->lt($second['end']) ? $first['end'] : $second['end'];
-                    $overlapSeconds = abs($overlapEnd->diffInSeconds($second['start']));
-
-                    // Minimum 5 saniye çakışma olsun (gürültüyü filtrele)
-                    if ($overlapSeconds < 5) {
-                        continue;
-                    }
-
-                    // Aynı cihaz/tarayıcı mı kontrol et (UI'da göstermek için)
-                    $sameDevice = ($p1['device_key'] ?? $p1['device']) === ($p2['device_key'] ?? $p2['device']);
-                    $sameBrowser = strtolower($p1['browser'] ?? '') === strtolower($p2['browser'] ?? '');
-                    $sameIp = ($p1['ip'] ?? '') === ($p2['ip'] ?? '');
-
-                    $overlaps[] = [
-                        'play1' => [
-                            'id' => $first['id'],
-                            'song' => $first['title'],
-                            'device' => $first['device'],
-                            'browser' => $first['browser'] ?? 'unknown',
-                            'platform' => $first['platform'] ?? 'Unknown',
-                            'device_key' => $first['device_key'] ?? $first['device'],
-                            'ip' => $first['ip'] ?? '',
-                            'start' => $first['time'],
-                            'end' => $first['end']->toDateTimeString(),
-                        ],
-                        'play2' => [
-                            'id' => $second['id'],
-                            'song' => $second['title'],
-                            'device' => $second['device'],
-                            'browser' => $second['browser'] ?? 'unknown',
-                            'platform' => $second['platform'] ?? 'Unknown',
-                            'device_key' => $second['device_key'] ?? $second['device'],
-                            'ip' => $second['ip'] ?? '',
-                            'start' => $second['time'],
-                            'end' => $second['end']->toDateTimeString(),
-                        ],
-                        'overlap_seconds' => $overlapSeconds,
-                        'overlap_start' => $second['time'],
-                        'overlap_end' => $overlapEnd->toDateTimeString(),
-                        'date' => Carbon::parse($first['time'])->toDateString(),
-                        // 🔥 Yeni flag'ler
-                        'same_device' => $sameDevice,
-                        'same_browser' => $sameBrowser,
-                        'same_ip' => $sameIp,
-                    ];
-                }
-            }
-        }
-
-        // Çakışmaları zaman sırasına göre sırala
-        usort($overlaps, function ($a, $b) {
-            return strcmp($a['overlap_start'], $b['overlap_start']);
-        });
-
-        return $overlaps;
-    }
-
-    /**
-     * Abuse score hesapla (toplam çakışma saniyesi)
-     */
-    public function calculateAbuseScore(array $overlaps): int
-    {
-        return array_reduce($overlaps, function ($carry, $overlap) {
-            return $carry + ($overlap['overlap_seconds'] ?? 0);
-        }, 0);
-    }
-
-    /**
      * Günlük istatistikleri hesapla
      */
-    public function calculateDailyStats(Collection $plays, array $overlaps): array
+    public function calculateDailyStats(Collection $plays, array $patterns): array
     {
         $dailyStats = [];
 
-        // Play'leri günlere göre grupla
         $playsByDate = $plays->groupBy(function ($play) {
             return Carbon::parse($play['time'])->toDateString();
         });
 
         foreach ($playsByDate as $date => $datePlays) {
-            // O güne ait overlap'leri bul
-            $dateOverlaps = array_filter($overlaps, fn($o) => $o['date'] === $date);
-            $dateAbuseScore = array_reduce($dateOverlaps, fn($c, $o) => $c + $o['overlap_seconds'], 0);
+            // O güne ait pattern örneklerini say
+            $pingPongCount = collect($patterns['ping_pong']['cycles'] ?? [])
+                ->filter(fn($c) => true) // Tüm döngüler sayılır
+                ->count();
+
+            $concurrentCount = collect($patterns['concurrent_different']['samples'] ?? [])
+                ->filter(fn($s) => ($s['date'] ?? '') === $date)
+                ->count();
+
+            $splitCount = collect($patterns['split_stream']['samples'] ?? [])
+                ->filter(fn($s) => ($s['date'] ?? '') === $date)
+                ->count();
 
             $dailyStats[$date] = [
                 'plays' => $datePlays->count(),
                 'desktop' => $datePlays->where('device', 'desktop')->count(),
                 'mobile' => $datePlays->where('device', 'mobile')->count(),
-                'overlaps' => count($dateOverlaps),
-                'abuse_score' => $dateAbuseScore,
+                'ping_pong' => $pingPongCount,
+                'concurrent' => $concurrentCount,
+                'split_stream' => $splitCount,
             ];
         }
 
@@ -637,16 +598,10 @@ class AbuseDetectionService
     }
 
     /**
-     * AKILLI TARAMA: Belirli tarih aralığında şarkı dinleyen AKTİF ABONELİK SAHİBİ kullanıcıları bul
-     * Aktif = users.subscription_expires_at > NOW()
-     *
-     * @param Carbon $start Başlangıç tarihi
-     * @param Carbon $end Bitiş tarihi
-     * @return Collection User ID listesi
+     * Belirli tarih aralığında aktif abonelik sahibi kullanıcıları bul
      */
     public function getActiveUserIdsInRange(Carbon $start, Carbon $end): Collection
     {
-        // 1. Belirtilen tarih aralığında şarkı dinleyen kullanıcıları bul
         $activeUserIds = $this->getTenantConnection()
             ->table('muzibu_song_plays')
             ->whereBetween('created_at', [$start, $end])
@@ -658,7 +613,6 @@ class AbuseDetectionService
             return collect();
         }
 
-        // 2. Bu kullanıcılardan subscription_expires_at > NOW() olanları bul (tenant DB)
         return $this->getTenantConnection()
             ->table('users')
             ->whereIn('id', $activeUserIds)
@@ -668,11 +622,7 @@ class AbuseDetectionService
     }
 
     /**
-     * AKILLI TARAMA: Son X günde şarkı dinleyen AKTİF ABONELİK SAHİBİ kullanıcıları bul
-     * (Geriye dönük uyumluluk için)
-     *
-     * @param int $days Kaç günlük aktivite kontrol edilsin
-     * @return Collection User ID listesi
+     * Son X günde aktif abonelik sahibi kullanıcıları bul
      */
     public function getActiveUserIds(int $days = 7): Collection
     {
@@ -680,7 +630,7 @@ class AbuseDetectionService
     }
 
     /**
-     * Belirli bir kullanıcının timeline verilerini al
+     * Kullanıcının timeline verilerini al (UI için)
      */
     public function getUserTimelineData(int $userId, int $periodDays = 7): array
     {
@@ -688,14 +638,13 @@ class AbuseDetectionService
         $periodStart = now()->subDays($periodDays);
 
         $plays = $this->getUserPlays($userId, $periodStart, $periodEnd);
-        $overlaps = $this->detectOverlaps($plays);
+        $patterns = $this->detectAllPatterns($plays);
 
         // Timeline formatına çevir
         $items = [];
         foreach ($plays as $play) {
-            $isOverlapping = collect($overlaps)->contains(function ($o) use ($play) {
-                return $o['play1']['id'] === $play['id'] || $o['play2']['id'] === $play['id'];
-            });
+            // Bu play herhangi bir pattern'de var mı?
+            $isAbuse = $this->isPlayInPatterns($play, $patterns);
 
             $items[] = [
                 'id' => $play['id'],
@@ -707,7 +656,7 @@ class AbuseDetectionService
                 'content' => $play['title'],
                 'start' => $play['time'],
                 'end' => $play['end']->toIso8601String(),
-                'className' => $play['device'] . ' ' . ($play['browser'] ?? 'other') . ($isOverlapping ? ' overlap' : ''),
+                'className' => $play['device'] . ' ' . ($play['browser'] ?? 'other') . ($isAbuse ? ' overlap' : ''),
                 'title' => sprintf(
                     "%s\n%s - %s\n%s / %s (%s)",
                     $play['title'],
@@ -722,14 +671,40 @@ class AbuseDetectionService
 
         return [
             'items' => $items,
-            'overlaps' => $overlaps,
+            'patterns' => $patterns,
             'stats' => [
                 'total_plays' => $plays->count(),
                 'desktop_plays' => $plays->where('device', 'desktop')->count(),
                 'mobile_plays' => $plays->where('device', 'mobile')->count(),
-                'overlap_count' => count($overlaps),
-                'abuse_score' => $this->calculateAbuseScore($overlaps),
+                'ping_pong_detected' => $patterns['ping_pong']['detected'],
+                'concurrent_detected' => $patterns['concurrent_different']['detected'],
+                'split_stream_detected' => $patterns['split_stream']['detected'],
+                'abuse_score' => $this->calculatePatternScore($patterns),
             ],
         ];
+    }
+
+    /**
+     * Bir play herhangi bir pattern'de yer alıyor mu?
+     */
+    protected function isPlayInPatterns(array $play, array $patterns): bool
+    {
+        $playId = $play['id'];
+
+        // Concurrent different'da mı?
+        foreach ($patterns['concurrent_different']['samples'] ?? [] as $sample) {
+            if (($sample['play1']['id'] ?? 0) === $playId || ($sample['play2']['id'] ?? 0) === $playId) {
+                return true;
+            }
+        }
+
+        // Split stream'de mi?
+        foreach ($patterns['split_stream']['samples'] ?? [] as $sample) {
+            if (($sample['play1']['id'] ?? 0) === $playId || ($sample['play2']['id'] ?? 0) === $playId) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

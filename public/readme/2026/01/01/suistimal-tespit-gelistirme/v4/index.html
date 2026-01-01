@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1 Üye = 1 Cihaz Kuralı - Suistimal Tespit v4</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="mb-10 text-center">
+            <div class="inline-flex items-center gap-2 bg-red-500/20 text-red-400 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                <i class="fas fa-user-lock"></i>
+                <span>Tek Cihaz Politikası</span>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">1 Üye = 1 Cihaz = 1 Tarayıcı</h1>
+            <p class="text-slate-400">Basit ve Net Suistimal Tespiti</p>
+        </header>
+
+        <!-- Ana Kural -->
+        <section class="bg-gradient-to-r from-red-900/30 to-slate-800 border-2 border-red-500 rounded-xl p-6 mb-8">
+            <div class="text-center">
+                <h2 class="text-2xl font-bold text-red-400 mb-4">ANA KURAL</h2>
+                <div class="flex items-center justify-center gap-4 text-lg">
+                    <span class="bg-slate-800 px-4 py-2 rounded-lg">1 Üye</span>
+                    <span class="text-slate-500">=</span>
+                    <span class="bg-slate-800 px-4 py-2 rounded-lg">1 Cihaz</span>
+                    <span class="text-slate-500">=</span>
+                    <span class="bg-slate-800 px-4 py-2 rounded-lg">1 Session</span>
+                    <span class="text-slate-500">=</span>
+                    <span class="bg-slate-800 px-4 py-2 rounded-lg">1 Tarayıcı</span>
+                </div>
+                <p class="text-red-300 mt-4 text-lg font-bold">
+                    2. bir şey görüldüğünde = SUİSTİMAL
+                </p>
+            </div>
+        </section>
+
+        <!-- Tespit Kriterleri -->
+        <section class="mb-10">
+            <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-yellow-500/20 text-yellow-400 w-10 h-10 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-search"></i>
+                </span>
+                Tespit Kriterleri
+            </h2>
+
+            <div class="space-y-4">
+
+                <!-- Kriter 1 -->
+                <div class="bg-slate-800/50 border border-red-500/50 rounded-xl p-5">
+                    <div class="flex items-center gap-4">
+                        <span class="bg-red-500 text-white w-12 h-12 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fas fa-clone"></i>
+                        </span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-red-400">Herhangi Bir Overlap = Suistimal</h3>
+                            <p class="text-slate-400 text-sm">Aynı anda 2 şarkı çalıyorsa, IP/browser ne olursa olsun = kural ihlali</p>
+                        </div>
+                        <span class="bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-sm font-bold">+500</span>
+                    </div>
+                </div>
+
+                <!-- Kriter 2 -->
+                <div class="bg-slate-800/50 border border-orange-500/50 rounded-xl p-5">
+                    <div class="flex items-center gap-4">
+                        <span class="bg-orange-500 text-white w-12 h-12 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fas fa-exchange-alt"></i>
+                        </span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-orange-400">Hızlı Cihaz/Tarayıcı Değişimi</h3>
+                            <p class="text-slate-400 text-sm">10 dakika içinde farklı fingerprint = hesap paylaşılıyor</p>
+                        </div>
+                        <span class="bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-sm font-bold">+300</span>
+                    </div>
+                </div>
+
+                <!-- Kriter 3 -->
+                <div class="bg-slate-800/50 border border-yellow-500/50 rounded-xl p-5">
+                    <div class="flex items-center gap-4">
+                        <span class="bg-yellow-500 text-white w-12 h-12 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fas fa-network-wired"></i>
+                        </span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-yellow-400">Günde 2+ Farklı IP</h3>
+                            <p class="text-slate-400 text-sm">1 cihaz = 1 IP olmalı. 2+ IP = farklı lokasyonlar</p>
+                        </div>
+                        <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-bold">+200</span>
+                    </div>
+                </div>
+
+                <!-- Kriter 4 -->
+                <div class="bg-slate-800/50 border border-purple-500/50 rounded-xl p-5">
+                    <div class="flex items-center gap-4">
+                        <span class="bg-purple-500 text-white w-12 h-12 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fas fa-laptop"></i>
+                        </span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-purple-400">Günde 2+ Farklı Platform</h3>
+                            <p class="text-slate-400 text-sm">Windows + macOS aynı gün = 2 farklı bilgisayar</p>
+                        </div>
+                        <span class="bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-sm font-bold">+200</span>
+                    </div>
+                </div>
+
+                <!-- Kriter 5 -->
+                <div class="bg-slate-800/50 border border-blue-500/50 rounded-xl p-5">
+                    <div class="flex items-center gap-4">
+                        <span class="bg-blue-500 text-white w-12 h-12 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fab fa-chrome"></i>
+                        </span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-blue-400">Günde 2+ Farklı Tarayıcı</h3>
+                            <p class="text-slate-400 text-sm">Chrome + Safari aynı gün = kural ihlali</p>
+                        </div>
+                        <span class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm font-bold">+150</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Fingerprint Tanımı -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-slate-200 mb-4">
+                <i class="fas fa-fingerprint mr-2 text-cyan-400"></i>Cihaz Fingerprint = Benzersiz Kimlik
+            </h2>
+            <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm">
+                <p class="text-cyan-400 mb-2">// Benzersiz cihaz kimliği</p>
+                <p class="text-slate-300">fingerprint = <span class="text-yellow-400">IP</span> + <span class="text-green-400">Platform</span> + <span class="text-purple-400">Browser</span></p>
+                <p class="text-slate-500 mt-2">Örnek: 92.44.171.31-Windows-Chrome</p>
+            </div>
+            <div class="mt-4 grid grid-cols-3 gap-3 text-sm text-center">
+                <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
+                    <p class="text-yellow-400 font-bold">IP</p>
+                    <p class="text-slate-500">Lokasyon</p>
+                </div>
+                <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-3">
+                    <p class="text-green-400 font-bold">Platform</p>
+                    <p class="text-slate-500">İşletim Sistemi</p>
+                </div>
+                <div class="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3">
+                    <p class="text-purple-400 font-bold">Browser</p>
+                    <p class="text-slate-500">Tarayıcı</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skor Tablosu -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-slate-200 mb-4">
+                <i class="fas fa-chart-bar mr-2 text-green-400"></i>Skor Eşikleri
+            </h2>
+            <div class="grid grid-cols-3 gap-4 text-center">
+                <div class="bg-green-900/30 border border-green-700 rounded-xl p-4">
+                    <p class="text-3xl font-bold text-green-400">0-199</p>
+                    <p class="text-slate-400 mt-2">Temiz</p>
+                    <p class="text-slate-500 text-xs mt-1">Tek cihaz kullanımı</p>
+                </div>
+                <div class="bg-yellow-900/30 border border-yellow-700 rounded-xl p-4">
+                    <p class="text-3xl font-bold text-yellow-400">200-499</p>
+                    <p class="text-slate-400 mt-2">Şüpheli</p>
+                    <p class="text-slate-500 text-xs mt-1">İncelenmeli</p>
+                </div>
+                <div class="bg-red-900/30 border border-red-700 rounded-xl p-4">
+                    <p class="text-3xl font-bold text-red-400">500+</p>
+                    <p class="text-slate-400 mt-2">Suistimal</p>
+                    <p class="text-slate-500 text-xs mt-1">Aksiyon gerekli</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Örnek Senaryolar -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-slate-200 mb-4">
+                <i class="fas fa-list-check mr-2 text-orange-400"></i>Örnek Senaryolar
+            </h2>
+            <div class="space-y-4 text-sm">
+                <div class="bg-green-900/20 border border-green-700/50 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-check-circle text-green-400"></i>
+                        <span class="font-bold text-green-400">TEMİZ</span>
+                    </div>
+                    <p class="text-slate-400">Tüm gün: 92.44.171.31 / Windows / Chrome</p>
+                    <p class="text-slate-500 text-xs mt-1">→ Tek fingerprint, kural ihlali yok</p>
+                </div>
+                <div class="bg-yellow-900/20 border border-yellow-700/50 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+                        <span class="font-bold text-yellow-400">ŞÜPHELİ (+200)</span>
+                    </div>
+                    <p class="text-slate-400">Sabah: Chrome / Akşam: Firefox (aynı IP)</p>
+                    <p class="text-slate-500 text-xs mt-1">→ 2 farklı tarayıcı. Kullanıcı mı değiştirdi, başkası mı girdi?</p>
+                </div>
+                <div class="bg-red-900/20 border border-red-700/50 rounded-lg p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-times-circle text-red-400"></i>
+                        <span class="font-bold text-red-400">SUİSTİMAL (+500)</span>
+                    </div>
+                    <p class="text-slate-400">10:00 - Şarkı A çalıyor (IP: 92.44.x)</p>
+                    <p class="text-slate-400">10:02 - Şarkı B çalıyor (IP: 88.230.x)</p>
+                    <p class="text-slate-500 text-xs mt-1">→ Aynı anda 2 farklı IP = 2 farklı lokasyon!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Implementasyon -->
+        <section class="bg-emerald-900/20 border border-emerald-700 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-emerald-400 mb-4">
+                <i class="fas fa-code mr-2"></i>Eklenecek Fonksiyonlar
+            </h2>
+            <ul class="space-y-3 text-slate-300">
+                <li class="flex items-start gap-3">
+                    <i class="far fa-square text-emerald-400 mt-1"></i>
+                    <div>
+                        <code class="text-yellow-400">detectAnyOverlap()</code>
+                        <p class="text-slate-500 text-sm">Herhangi overlap = +500 (IP fark etmez)</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="far fa-square text-emerald-400 mt-1"></i>
+                    <div>
+                        <code class="text-yellow-400">detectMultipleIPs()</code>
+                        <p class="text-slate-500 text-sm">Günde 2+ farklı IP = +200</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="far fa-square text-emerald-400 mt-1"></i>
+                    <div>
+                        <code class="text-yellow-400">detectMultiplePlatforms()</code>
+                        <p class="text-slate-500 text-sm">Günde 2+ farklı platform = +200</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="far fa-square text-emerald-400 mt-1"></i>
+                    <div>
+                        <code class="text-yellow-400">detectMultipleBrowsers()</code>
+                        <p class="text-slate-500 text-sm">Günde 2+ farklı browser = +150</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="far fa-square text-emerald-400 mt-1"></i>
+                    <div>
+                        <code class="text-yellow-400">detectRapidFingerprintChange()</code>
+                        <p class="text-slate-500 text-sm">10dk içinde fingerprint değişimi = +300</p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+            <p>Claude AI - 1 Üye = 1 Cihaz Politikası v4</p>
+            <p class="mt-1">Basit kural, net tespit</p>
+        </footer>
+    </div>
+</body>
+</html>

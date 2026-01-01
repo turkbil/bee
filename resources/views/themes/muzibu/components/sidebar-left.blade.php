@@ -67,56 +67,46 @@
     @if(auth()->check())
     <div x-data="{
             spotEnabled: true,
-            isLoading: false,
-            hasCorporate: false,
-            async init() {
+            init() {
                 // MuzibuSpotPlayer yüklendikten sonra durumu senkronize et
                 const syncState = () => {
                     if (window.MuzibuSpotPlayer) {
-                        // API'den gelen gerçek durumu al
-                        this.hasCorporate = !!window.MuzibuSpotPlayer.isEnabled() || !window.MuzibuSpotPlayer.isPaused();
                         this.spotEnabled = !window.MuzibuSpotPlayer.isPaused();
                     }
                 };
-                // İlk sync
                 if (window.MuzibuSpotPlayer) {
-                    // SpotPlayer init tamamlanmış mı kontrol et, değilse bekle
                     setTimeout(syncState, 500);
                 } else {
-                    // SpotPlayer henüz yüklenmedi, event dinle
                     document.addEventListener('DOMContentLoaded', () => setTimeout(syncState, 500));
                 }
             },
-            async toggle() {
-                if (this.isLoading) return;
-                if (!window.MuzibuSpotPlayer) {
-                    console.warn('SpotPlayer not loaded');
-                    return;
-                }
+            toggle() {
+                // Optimistic UI: Önce UI'ı değiştir
+                this.spotEnabled = !this.spotEnabled;
+                localStorage.setItem('muzibu_ads_enabled', this.spotEnabled);
 
-                this.isLoading = true;
-                try {
-                    const result = await window.MuzibuSpotPlayer.togglePause();
-                    if (result.success) {
-                        this.spotEnabled = !result.isPaused;
-                        // Fallback: localStorage'a da kaydet
+                // Arka planda API çağır
+                if (window.MuzibuSpotPlayer) {
+                    window.MuzibuSpotPlayer.togglePause().then(result => {
+                        if (!result.success) {
+                            // API başarısız olursa geri al
+                            this.spotEnabled = !this.spotEnabled;
+                            localStorage.setItem('muzibu_ads_enabled', this.spotEnabled);
+                        }
+                    }).catch(() => {
+                        // Hata olursa geri al
+                        this.spotEnabled = !this.spotEnabled;
                         localStorage.setItem('muzibu_ads_enabled', this.spotEnabled);
-                    } else {
-                        console.error('Toggle failed:', result.error);
-                    }
-                } catch (e) {
-                    console.error('Toggle error:', e);
-                } finally {
-                    this.isLoading = false;
+                    });
                 }
             }
          }"
          x-init="init()"
          class="flex-shrink-0 px-3 pb-2">
-        <div @click="toggle()" class="flex items-center gap-2 cursor-pointer select-none py-1.5 px-2.5" :class="{ 'opacity-50 pointer-events-none': isLoading }">
+        <div @click="toggle()" class="flex items-center gap-2 cursor-pointer select-none py-1.5 px-2.5">
             <i class="fas text-[10px] text-white/50" :class="spotEnabled ? 'fa-bullhorn' : 'fa-ban'"></i>
             <span class="text-xs text-white/50" x-text="spotEnabled ? '{{ trans('muzibu::front.sidebar.spots_active') }}' : '{{ trans('muzibu::front.sidebar.spots_paused') }}'"></span>
-            <div class="w-2.5 h-2.5 rounded-sm transition-colors duration-200 ml-auto"
+            <div class="w-2.5 h-2.5 rounded-sm ml-auto"
                  :class="spotEnabled ? 'bg-green-400/60' : 'bg-red-400/60'"></div>
         </div>
     </div>

@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Tenant Dagitik Sistem - Master Dokuman v11</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); }
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-slate-200">
+
+    <!-- Header -->
+    <header class="border-b border-slate-700/50 bg-slate-900/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-white flex items-center gap-3">
+                        <i class="fas fa-cubes text-emerald-400"></i>
+                        Multi-Tenant Dagitik Sistem
+                    </h1>
+                    <p class="text-slate-400 text-sm mt-1">Master Dokuman - Endustri Standartlari Eklendi</p>
+                </div>
+                <div class="text-right">
+                    <span class="bg-cyan-500/20 text-cyan-400 px-3 py-1 rounded-full text-sm font-medium">
+                        v11 - Universal Koruma
+                    </span>
+                    <p class="text-slate-500 text-xs mt-1">1 Ocak 2026</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Table of Contents -->
+    <nav class="bg-slate-800/50 border-b border-slate-700/50">
+        <div class="max-w-6xl mx-auto px-6 py-3">
+            <div class="flex flex-wrap gap-2 text-xs">
+                <a href="#problem" class="bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1 rounded transition">1. Problem</a>
+                <a href="#musteri-tipleri" class="bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1 rounded transition">2. Musteri Tipleri</a>
+                <a href="#altyapi" class="bg-emerald-700/50 hover:bg-emerald-600/50 px-3 py-1 rounded transition">3. Altyapi</a>
+                <a href="#endustri-standartlari" class="bg-cyan-700/50 hover:bg-cyan-600/50 px-3 py-1 rounded transition">4. Endustri Standartlari *</a>
+                <a href="#secilen-yontemler" class="bg-purple-700/50 hover:bg-purple-600/50 px-3 py-1 rounded transition">5. Secilen Yontemler *</a>
+                <a href="#sifreli-dosya" class="bg-purple-700/50 hover:bg-purple-600/50 px-3 py-1 rounded transition">6. Sifreli Dosya</a>
+                <a href="#lisans-koruma" class="bg-red-700/50 hover:bg-red-600/50 px-3 py-1 rounded transition">7. Koruma Katmanlari</a>
+                <a href="#guncelleme" class="bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1 rounded transition">8. Guncelleme</a>
+                <a href="#database" class="bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1 rounded transition">9. Database</a>
+                <a href="#api" class="bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1 rounded transition">10. API</a>
+                <a href="#kurulum" class="bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1 rounded transition">11. Kurulum</a>
+                <a href="#yapilacaklar" class="bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1 rounded transition">12. Yapilacaklar</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-6 py-8 space-y-12">
+
+        <!-- ============================================ -->
+        <!-- BOLUM 1: PROBLEM -->
+        <!-- ============================================ -->
+        <section id="problem" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center text-white font-bold">1</span>
+                <h2 class="text-2xl font-bold text-white">Problem Tanimi</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-6">
+                    <h3 class="text-green-400 font-semibold mb-3"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                    <p class="text-slate-300">
+                        Sunucumuz kucuk, buyuk musteriler kendi sunucularini kullanmak istiyor.
+                        Hem shared hem self-hosted destegi lazim. Ana sunucu cokerse diger musteriler
+                        etkilenmemeli. Lisans kodu silinirse sistem yine de calismamali.
+                    </p>
+                </div>
+
+                <div class="bg-blue-900/20 border border-blue-800/50 rounded-xl p-6">
+                    <h3 class="text-blue-400 font-semibold mb-3"><i class="fas fa-cog mr-2"></i>Teknik Hedefler</h3>
+                    <ul class="text-sm text-slate-400 space-y-1">
+                        <li>+ Ayri License Server (SPOF cozumu)</li>
+                        <li>+ Sifreli cekirdek dosya (bypass imkansiz)</li>
+                        <li>+ Endustri standardi koruma yontemleri</li>
+                        <li>+ Otomatik guncelleme (webhook + git)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BOLUM 2: MUSTERI TIPLERI -->
+        <!-- ============================================ -->
+        <section id="musteri-tipleri" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">2</span>
+                <h2 class="text-2xl font-bold text-white">Musteri Tipleri</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-gradient-to-br from-blue-900/30 to-blue-800/10 rounded-xl p-6 border-2 border-blue-700/50">
+                    <span class="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-bold">SHARED</span>
+                    <h3 class="text-xl font-bold text-white my-3">Ortak Sunucu</h3>
+                    <p class="text-sm text-slate-400">Bizim sunucumuzda, dusuk maliyet, bakim bizden</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-amber-900/30 to-amber-800/10 rounded-xl p-6 border-2 border-amber-700/50">
+                    <span class="bg-amber-500 text-white px-4 py-1 rounded-full text-sm font-bold">SELF-HOSTED</span>
+                    <h3 class="text-xl font-bold text-white my-3">Kendi Sunucusu</h3>
+                    <p class="text-sm text-slate-400">Musteri sunucusunda, yuksek lisans, otomatik update</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BOLUM 3: ALTYAPI -->
+        <!-- ============================================ -->
+        <section id="altyapi" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center text-white font-bold">3</span>
+                <h2 class="text-2xl font-bold text-white">Altyapi Mimarisi</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-blue-900/20 border border-blue-700/50 rounded-lg p-5">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fas fa-server text-blue-400 text-2xl"></i>
+                        <div>
+                            <h4 class="text-white font-bold">Ana Sunucu</h4>
+                            <p class="text-blue-400 text-sm">tuufi.com</p>
+                        </div>
+                    </div>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>+ Shared musteriler</li>
+                        <li>+ Admin panel</li>
+                        <li>+ GitHub webhook</li>
+                        <li>+ Versiyon API</li>
+                    </ul>
+                </div>
+
+                <div class="bg-emerald-900/20 border border-emerald-700/50 rounded-lg p-5">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fas fa-key text-emerald-400 text-2xl"></i>
+                        <div>
+                            <h4 class="text-white font-bold">Lisans Sunucusu</h4>
+                            <p class="text-emerald-400 text-sm">license.tuufi.com</p>
+                        </div>
+                    </div>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>+ Lisans dogrulama</li>
+                        <li>+ Sifreli dosya anahtari</li>
+                        <li>+ Farkli datacenter</li>
+                        <li>+ $5-10/ay VPS</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BOLUM 4: ENDUSTRI STANDARTLARI (YENI!) -->
+        <!-- ============================================ -->
+        <section id="endustri-standartlari" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-cyan-500 rounded-lg flex items-center justify-center text-white font-bold">4</span>
+                <h2 class="text-2xl font-bold text-white">Endustri Standartlari</h2>
+                <span class="bg-cyan-500/20 text-cyan-400 px-2 py-1 rounded text-xs">YENI - v11</span>
+            </div>
+
+            <!-- Basit Anlatim -->
+            <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-6 mb-6">
+                <h3 class="text-green-400 font-semibold mb-3"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                <p class="text-slate-300">
+                    Dunya genelinde yazilim korumak icin kullanilan yontemleri inceledik.
+                    Microsoft, Adobe, JetBrains gibi firmalar ne yapiyor? ionCube, Zend Guard
+                    gibi PHP koruma araclari nasil calisiyor? En iyi pratikleri alip kendi sistemimize
+                    uyarlayacagiz.
+                </p>
+            </div>
+
+            <!-- Universal Yontemler -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50 mb-6">
+                <h3 class="text-white font-semibold mb-4">Universal Koruma Yontemleri</h3>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <!-- Yontem 1: Bytecode Encoding -->
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <div class="flex items-start gap-3">
+                            <span class="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">1</span>
+                            <div>
+                                <h4 class="text-cyan-400 font-medium mb-1">Bytecode Encoding</h4>
+                                <p class="text-slate-400 text-xs mb-2">
+                                    Kaynak kod derlenerek bytecode'a cevrilir. Orijinal kod geri alinamaz.
+                                </p>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="bg-cyan-900/50 text-cyan-400 px-2 py-0.5 rounded text-xs">ionCube</span>
+                                    <span class="bg-cyan-900/50 text-cyan-400 px-2 py-0.5 rounded text-xs">Zend Guard</span>
+                                    <span class="bg-cyan-900/50 text-cyan-400 px-2 py-0.5 rounded text-xs">SourceGuardian</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yontem 2: Domain Locking -->
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <div class="flex items-start gap-3">
+                            <span class="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">2</span>
+                            <div>
+                                <h4 class="text-cyan-400 font-medium mb-1">Domain Locking</h4>
+                                <p class="text-slate-400 text-xs mb-2">
+                                    Lisans sadece belirli domain'de calisir. Baska domain = calismaz.
+                                </p>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="bg-green-900/50 text-green-400 px-2 py-0.5 rounded text-xs">Kullanacagiz</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yontem 3: Hardware Fingerprint -->
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <div class="flex items-start gap-3">
+                            <span class="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">3</span>
+                            <div>
+                                <h4 class="text-cyan-400 font-medium mb-1">Hardware Fingerprint</h4>
+                                <p class="text-slate-400 text-xs mb-2">
+                                    Lisans sunucu MAC adresi, CPU ID ile baglanir. Sunucu degisirse gecersiz.
+                                </p>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="bg-amber-900/50 text-amber-400 px-2 py-0.5 rounded text-xs">Opsiyonel</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yontem 4: Time-Based Expiry -->
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <div class="flex items-start gap-3">
+                            <span class="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">4</span>
+                            <div>
+                                <h4 class="text-cyan-400 font-medium mb-1">Time-Based Expiry</h4>
+                                <p class="text-slate-400 text-xs mb-2">
+                                    Lisansin bitis tarihi var. Suresi dolunca calismayi durdurur.
+                                </p>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="bg-green-900/50 text-green-400 px-2 py-0.5 rounded text-xs">Kullanacagiz</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yontem 5: Online Activation -->
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <div class="flex items-start gap-3">
+                            <span class="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">5</span>
+                            <div>
+                                <h4 class="text-cyan-400 font-medium mb-1">Online Activation</h4>
+                                <p class="text-slate-400 text-xs mb-2">
+                                    Ilk kurulumda sunucuya baglanti gerekli. Microsoft, Adobe modeli.
+                                </p>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="bg-green-900/50 text-green-400 px-2 py-0.5 rounded text-xs">Kullanacagiz</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yontem 6: Heartbeat -->
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <div class="flex items-start gap-3">
+                            <span class="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">6</span>
+                            <div>
+                                <h4 class="text-cyan-400 font-medium mb-1">Heartbeat (Periodic Check)</h4>
+                                <p class="text-slate-400 text-xs mb-2">
+                                    Belirli araliklarla sunucuya "yasiyorum" sinyali gonderir.
+                                </p>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="bg-green-900/50 text-green-400 px-2 py-0.5 rounded text-xs">Kullanacagiz</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yontem 7: Feature Flags -->
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <div class="flex items-start gap-3">
+                            <span class="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">7</span>
+                            <div>
+                                <h4 class="text-cyan-400 font-medium mb-1">Server-Side Feature Flags</h4>
+                                <p class="text-slate-400 text-xs mb-2">
+                                    Hangi ozelliklerin acik oldugu sunucudan gelir. Lokal degistirilemez.
+                                </p>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="bg-green-900/50 text-green-400 px-2 py-0.5 rounded text-xs">Kullanacagiz</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yontem 8: Signed License File -->
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <div class="flex items-start gap-3">
+                            <span class="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">8</span>
+                            <div>
+                                <h4 class="text-cyan-400 font-medium mb-1">Signed License File</h4>
+                                <p class="text-slate-400 text-xs mb-2">
+                                    Lisans dosyasi RSA ile imzalanir. Degistirilirse imza bozulur.
+                                </p>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="bg-green-900/50 text-green-400 px-2 py-0.5 rounded text-xs">Kullanacagiz</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yontem 9: Code Obfuscation -->
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <div class="flex items-start gap-3">
+                            <span class="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">9</span>
+                            <div>
+                                <h4 class="text-cyan-400 font-medium mb-1">Code Obfuscation</h4>
+                                <p class="text-slate-400 text-xs mb-2">
+                                    Degisken/fonksiyon isimleri karistirilir. Kod okunmaz hale gelir.
+                                </p>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="bg-amber-900/50 text-amber-400 px-2 py-0.5 rounded text-xs">Opsiyonel</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yontem 10: Challenge-Response -->
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <div class="flex items-start gap-3">
+                            <span class="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">10</span>
+                            <div>
+                                <h4 class="text-cyan-400 font-medium mb-1">Challenge-Response</h4>
+                                <p class="text-slate-400 text-xs mb-2">
+                                    Sunucu soru sorar, istemci dogru cevap vermeli. Her seferinde farkli.
+                                </p>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="bg-green-900/50 text-green-400 px-2 py-0.5 rounded text-xs">Kullanacagiz</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHP Koruma Araclari -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50 mb-6">
+                <h3 class="text-white font-semibold mb-4">PHP Koruma Araclari Karsilastirmasi</h3>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="bg-slate-700/50">
+                                <th class="text-left p-3 text-slate-300">Arac</th>
+                                <th class="text-left p-3 text-slate-300">Fiyat</th>
+                                <th class="text-left p-3 text-slate-300">Ozellikler</th>
+                                <th class="text-left p-3 text-slate-300">Dezavantaj</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-slate-700">
+                                <td class="p-3">
+                                    <span class="text-cyan-400 font-medium">ionCube</span>
+                                </td>
+                                <td class="p-3 text-slate-400">$199-$999/yil</td>
+                                <td class="p-3 text-slate-400">Bytecode, lisans yonetimi, domain lock</td>
+                                <td class="p-3 text-red-400">Loader gerekli</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="p-3">
+                                    <span class="text-cyan-400 font-medium">SourceGuardian</span>
+                                </td>
+                                <td class="p-3 text-slate-400">$199-$349</td>
+                                <td class="p-3 text-slate-400">Guclu lisanslama, MAC lock</td>
+                                <td class="p-3 text-red-400">Loader gerekli</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="p-3">
+                                    <span class="text-cyan-400 font-medium">Zend Guard</span>
+                                </td>
+                                <td class="p-3 text-slate-400">$600+</td>
+                                <td class="p-3 text-slate-400">En eski, en stabil</td>
+                                <td class="p-3 text-red-400">Pahali, loader gerekli</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="p-3">
+                                    <span class="text-cyan-400 font-medium">PHP Defend</span>
+                                </td>
+                                <td class="p-3 text-slate-400">$129-$259</td>
+                                <td class="p-3 text-slate-400">Self-decode (loader'siz)</td>
+                                <td class="p-3 text-amber-400">Daha az guvenli</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3">
+                                    <span class="text-green-400 font-medium">Kendi Sistemimiz</span>
+                                </td>
+                                <td class="p-3 text-slate-400">$0 (gelistirme)</td>
+                                <td class="p-3 text-slate-400">Sifreli dosya + server key + coklu katman</td>
+                                <td class="p-3 text-green-400">Loader gereksiz!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Buyuk Firmalarin Yontemleri -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+                <h3 class="text-white font-semibold mb-4">Buyuk Firmalarin Yontemleri</h3>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fab fa-microsoft text-blue-400 text-xl"></i>
+                            <span class="text-white font-medium">Microsoft</span>
+                        </div>
+                        <ul class="text-xs text-slate-400 space-y-1">
+                            <li>+ Product key + online activation</li>
+                            <li>+ Hardware fingerprint</li>
+                            <li>+ Periodic validation</li>
+                            <li>+ Grace period (30 gun)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fab fa-adobe text-red-400 text-xl"></i>
+                            <span class="text-white font-medium">Adobe</span>
+                        </div>
+                        <ul class="text-xs text-slate-400 space-y-1">
+                            <li>+ Subscription model (SaaS)</li>
+                            <li>+ Cloud validation</li>
+                            <li>+ Device limit (2 cihaz)</li>
+                            <li>+ Offline mode (30 gun)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fas fa-code text-purple-400 text-xl"></i>
+                            <span class="text-white font-medium">JetBrains</span>
+                        </div>
+                        <ul class="text-xs text-slate-400 space-y-1">
+                            <li>+ License server (offline)</li>
+                            <li>+ Floating licenses</li>
+                            <li>+ Fallback license</li>
+                            <li>+ Perpetual + subscription</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BOLUM 5: SECILEN YONTEMLER -->
+        <!-- ============================================ -->
+        <section id="secilen-yontemler" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center text-white font-bold">5</span>
+                <h2 class="text-2xl font-bold text-white">Secilen Yontemler</h2>
+                <span class="bg-purple-500/20 text-purple-400 px-2 py-1 rounded text-xs">YENI - v11</span>
+            </div>
+
+            <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-6 mb-6">
+                <h3 class="text-green-400 font-semibold mb-3"><i class="fas fa-user mr-2"></i>Basit Anlatim</h3>
+                <p class="text-slate-300">
+                    Endustri standartlarindan en uygun olanlari sectik. ionCube gibi loader gerektiren
+                    sistemler yerine kendi sifreli dosya sistemimizi kullanacagiz. Bu sayede musteri
+                    sunucusuna ek kurulum gerekmeyecek.
+                </p>
+            </div>
+
+            <!-- Kullanacaklarimiz -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50 mb-6">
+                <h3 class="text-white font-semibold mb-4">Kullanacagimiz Yontemler</h3>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-green-900/20 border border-green-700/50 rounded-lg p-4">
+                        <h4 class="text-green-400 font-medium mb-2">1. Sifreli Cekirdek Dosya (core.enc)</h4>
+                        <p class="text-xs text-slate-400">
+                            ionCube yerine kendi sifreleme sistemimiz. AES-256 ile sifreli dosya,
+                            anahtar sunucudan gelir. Loader gereksiz!
+                        </p>
+                    </div>
+
+                    <div class="bg-green-900/20 border border-green-700/50 rounded-lg p-4">
+                        <h4 class="text-green-400 font-medium mb-2">2. Domain Locking</h4>
+                        <p class="text-xs text-slate-400">
+                            Lisans sadece kayitli domain'de calisir. musteri.com icin alinan
+                            lisans baska-site.com'da calismaz.
+                        </p>
+                    </div>
+
+                    <div class="bg-green-900/20 border border-green-700/50 rounded-lg p-4">
+                        <h4 class="text-green-400 font-medium mb-2">3. Online Activation + Heartbeat</h4>
+                        <p class="text-xs text-slate-400">
+                            Ilk kurulumda aktivasyon, sonra periyodik heartbeat.
+                            Microsoft/Adobe modeli.
+                        </p>
+                    </div>
+
+                    <div class="bg-green-900/20 border border-green-700/50 rounded-lg p-4">
+                        <h4 class="text-green-400 font-medium mb-2">4. Server-Side Feature Flags</h4>
+                        <p class="text-xs text-slate-400">
+                            Premium ozellikler sunucudan acilir. Lokal dosya degistirerek
+                            ozellik acilamaz.
+                        </p>
+                    </div>
+
+                    <div class="bg-green-900/20 border border-green-700/50 rounded-lg p-4">
+                        <h4 class="text-green-400 font-medium mb-2">5. Challenge-Response</h4>
+                        <p class="text-xs text-slate-400">
+                            Her dogrulamada sunucu farkli soru sorar. Kayitli cevaplarla
+                            bypass imkansiz.
+                        </p>
+                    </div>
+
+                    <div class="bg-green-900/20 border border-green-700/50 rounded-lg p-4">
+                        <h4 class="text-green-400 font-medium mb-2">6. Grace Period (7 Gun)</h4>
+                        <p class="text-xs text-slate-400">
+                            Internet kesilirse 7 gun offline calisir. JetBrains modeli.
+                            Sonra durdurur.
+                        </p>
+                    </div>
+
+                    <div class="bg-green-900/20 border border-green-700/50 rounded-lg p-4">
+                        <h4 class="text-green-400 font-medium mb-2">7. Coklu Kontrol Noktasi</h4>
+                        <p class="text-xs text-slate-400">
+                            Middleware, Provider, Scheduler, Controller - birini bypass etsen
+                            digeri yakalar.
+                        </p>
+                    </div>
+
+                    <div class="bg-green-900/20 border border-green-700/50 rounded-lg p-4">
+                        <h4 class="text-green-400 font-medium mb-2">8. Kod Butunlugu (Checksum)</h4>
+                        <p class="text-xs text-slate-400">
+                            Kritik dosyalarin hash'i sunucuda sakli. Degistirilirse tespit edilir.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Opsiyonel -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+                <h3 class="text-white font-semibold mb-4">Opsiyonel (Gelecekte Eklenebilir)</h3>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-amber-900/20 border border-amber-700/50 rounded-lg p-4">
+                        <h4 class="text-amber-400 font-medium mb-2">Hardware Fingerprint</h4>
+                        <p class="text-xs text-slate-400">
+                            Sunucu MAC/CPU ID ile baglama. Sunucu degisince lisans gecersiz.
+                            Esnek olmadigi icin opsiyonel.
+                        </p>
+                    </div>
+
+                    <div class="bg-amber-900/20 border border-amber-700/50 rounded-lg p-4">
+                        <h4 class="text-amber-400 font-medium mb-2">ionCube Encoding</h4>
+                        <p class="text-xs text-slate-400">
+                            Bytecode sifreleme. Ekstra guvenlik katmani olarak eklenebilir
+                            ama loader kurulumu gerektirir.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BOLUM 6: SIFRELI DOSYA -->
+        <!-- ============================================ -->
+        <section id="sifreli-dosya" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center text-white font-bold">6</span>
+                <h2 class="text-2xl font-bold text-white">Sifreli Cekirdek Dosya (core.enc)</h2>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50 mb-6">
+                <h3 class="text-white font-semibold mb-4">Nasil Calisir?</h3>
+
+                <div class="grid md:grid-cols-5 gap-2 items-center text-center mb-6">
+                    <div class="bg-purple-500/20 rounded-lg p-3">
+                        <i class="fas fa-play text-purple-400 text-xl mb-2"></i>
+                        <p class="text-xs text-slate-300">Sistem baslar</p>
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-600"></i>
+                    <div class="bg-purple-500/20 rounded-lg p-3">
+                        <i class="fas fa-file-lock text-purple-400 text-xl mb-2"></i>
+                        <p class="text-xs text-slate-300">core.enc hash alinir</p>
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-600"></i>
+                    <div class="bg-emerald-500/20 rounded-lg p-3">
+                        <i class="fas fa-server text-emerald-400 text-xl mb-2"></i>
+                        <p class="text-xs text-slate-300">Sunucuya sorulur</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-5 gap-2 items-center text-center">
+                    <div class="bg-green-500/20 rounded-lg p-3">
+                        <i class="fas fa-check text-green-400 text-xl mb-2"></i>
+                        <p class="text-xs text-slate-300">Anahtar alinir</p>
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-600"></i>
+                    <div class="bg-green-500/20 rounded-lg p-3">
+                        <i class="fas fa-unlock text-green-400 text-xl mb-2"></i>
+                        <p class="text-xs text-slate-300">Dosya acilir</p>
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-600"></i>
+                    <div class="bg-green-500 rounded-lg p-3">
+                        <i class="fas fa-rocket text-white text-xl mb-2"></i>
+                        <p class="text-xs text-white">Sistem calisir!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Koruma Senaryolari -->
+            <div class="bg-red-900/20 border border-red-700/50 rounded-xl p-6">
+                <h3 class="text-red-400 font-semibold mb-4">Koruma Senaryolari</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-900/50 rounded-lg p-3">
+                        <p class="text-sm text-slate-300"><span class="text-red-400">X</span> Dosya degistirildi -> Hash uyusmaz -> Calismaz</p>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-3">
+                        <p class="text-sm text-slate-300"><span class="text-red-400">X</span> Dosya silindi -> Config yok -> Boot olmaz</p>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-3">
+                        <p class="text-sm text-slate-300"><span class="text-red-400">X</span> Sahte dosya -> Hash uyusmaz -> Anahtar yok</p>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-3">
+                        <p class="text-sm text-slate-300"><span class="text-red-400">X</span> Loader bypass -> Kritik config yok -> Calismaz</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BOLUM 7: KORUMA KATMANLARI -->
+        <!-- ============================================ -->
+        <section id="lisans-koruma" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center text-white font-bold">7</span>
+                <h2 class="text-2xl font-bold text-white">Koruma Katmanlari</h2>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3 bg-purple-900/20 rounded-lg p-3 border border-purple-700/50">
+                        <span class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                        <span class="text-slate-300 flex-1">Sifreli Cekirdek Dosya (core.enc) - AES-256</span>
+                        <span class="text-purple-400 text-xs">EN GUCLU</span>
+                    </div>
+                    <div class="flex items-center gap-3 bg-slate-700/30 rounded-lg p-3">
+                        <span class="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                        <span class="text-slate-300 flex-1">Domain Locking - Sadece kayitli domain</span>
+                    </div>
+                    <div class="flex items-center gap-3 bg-slate-700/30 rounded-lg p-3">
+                        <span class="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                        <span class="text-slate-300 flex-1">Challenge-Response - Her seferinde farkli soru</span>
+                    </div>
+                    <div class="flex items-center gap-3 bg-slate-700/30 rounded-lg p-3">
+                        <span class="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-sm font-bold">4</span>
+                        <span class="text-slate-300 flex-1">Coklu Kontrol Noktasi - Middleware, Provider, Scheduler</span>
+                    </div>
+                    <div class="flex items-center gap-3 bg-slate-700/30 rounded-lg p-3">
+                        <span class="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-sm font-bold">5</span>
+                        <span class="text-slate-300 flex-1">Kod Hash Kontrolu - Degisiklik tespiti</span>
+                    </div>
+                    <div class="flex items-center gap-3 bg-slate-700/30 rounded-lg p-3">
+                        <span class="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-sm font-bold">6</span>
+                        <span class="text-slate-300 flex-1">Server-Side Feature Flags - Ozellikler sunucudan</span>
+                    </div>
+                    <div class="flex items-center gap-3 bg-slate-700/30 rounded-lg p-3">
+                        <span class="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-sm font-bold">7</span>
+                        <span class="text-slate-300 flex-1">Anomali Tespiti - Supheli davranis uyarisi</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BOLUM 8: GUNCELLEME -->
+        <!-- ============================================ -->
+        <section id="guncelleme" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center text-white font-bold">8</span>
+                <h2 class="text-2xl font-bold text-white">Guncelleme Sistemi</h2>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+                <div class="flex flex-wrap items-center justify-center gap-3 text-sm">
+                    <span class="bg-blue-500/20 text-blue-400 px-4 py-2 rounded-lg">git push</span>
+                    <i class="fas fa-arrow-right text-orange-400"></i>
+                    <span class="bg-purple-500/20 text-purple-400 px-4 py-2 rounded-lg">GitHub webhook</span>
+                    <i class="fas fa-arrow-right text-orange-400"></i>
+                    <span class="bg-blue-500/20 text-blue-400 px-4 py-2 rounded-lg">tuufi.com</span>
+                    <i class="fas fa-arrow-right text-orange-400"></i>
+                    <span class="bg-amber-500/20 text-amber-400 px-4 py-2 rounded-lg">version++</span>
+                    <i class="fas fa-arrow-right text-orange-400"></i>
+                    <span class="bg-cyan-500/20 text-cyan-400 px-4 py-2 rounded-lg">musteri poll</span>
+                    <i class="fas fa-arrow-right text-orange-400"></i>
+                    <span class="bg-green-500 text-white px-4 py-2 rounded-lg font-bold">Guncel!</span>
+                </div>
+                <p class="text-center text-slate-400 mt-4 text-sm">
+                    Push'tan ~1 dakika sonra tum sunucular guncel
+                </p>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BOLUM 9: DATABASE -->
+        <!-- ============================================ -->
+        <section id="database" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-pink-500 rounded-lg flex items-center justify-center text-white font-bold">9</span>
+                <h2 class="text-2xl font-bold text-white">Database Yapisi</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+                    <h3 class="text-white font-mono text-sm mb-4"><i class="fas fa-table text-pink-400 mr-2"></i>licenses</h3>
+                    <div class="space-y-1 text-xs">
+                        <div class="flex justify-between py-1 border-b border-slate-700">
+                            <span class="text-pink-400">license_key</span>
+                            <span class="text-slate-400">VARCHAR(64)</span>
+                        </div>
+                        <div class="flex justify-between py-1 border-b border-slate-700">
+                            <span class="text-pink-400">domain</span>
+                            <span class="text-slate-400">VARCHAR(255)</span>
+                        </div>
+                        <div class="flex justify-between py-1 border-b border-slate-700">
+                            <span class="text-pink-400">core_hash</span>
+                            <span class="text-slate-400">VARCHAR(128)</span>
+                        </div>
+                        <div class="flex justify-between py-1 border-b border-slate-700">
+                            <span class="text-pink-400">decrypt_key</span>
+                            <span class="text-slate-400">TEXT</span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="text-pink-400">features</span>
+                            <span class="text-slate-400">JSON</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50">
+                    <h3 class="text-white font-mono text-sm mb-4"><i class="fas fa-table text-purple-400 mr-2"></i>core_versions</h3>
+                    <div class="space-y-1 text-xs">
+                        <div class="flex justify-between py-1 border-b border-slate-700">
+                            <span class="text-purple-400">version</span>
+                            <span class="text-slate-400">VARCHAR(20)</span>
+                        </div>
+                        <div class="flex justify-between py-1 border-b border-slate-700">
+                            <span class="text-purple-400">core_hash</span>
+                            <span class="text-slate-400">VARCHAR(128)</span>
+                        </div>
+                        <div class="flex justify-between py-1 border-b border-slate-700">
+                            <span class="text-purple-400">decrypt_key</span>
+                            <span class="text-slate-400">TEXT</span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="text-purple-400">challenges</span>
+                            <span class="text-slate-400">JSON</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BOLUM 10: API -->
+        <!-- ============================================ -->
+        <section id="api" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-teal-500 rounded-lg flex items-center justify-center text-white font-bold">10</span>
+                <h2 class="text-2xl font-bold text-white">API Endpoints</h2>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-emerald-900/20 border border-emerald-700/50 rounded-xl p-4">
+                    <h3 class="text-emerald-400 font-medium mb-3">license.tuufi.com</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-green-500 text-white px-2 py-0.5 rounded text-xs">POST</span>
+                            <code class="text-slate-300">/api/core/decrypt</code>
+                            <span class="text-slate-500">- core.enc anahtari</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-green-500 text-white px-2 py-0.5 rounded text-xs">POST</span>
+                            <code class="text-slate-300">/api/license/verify</code>
+                            <span class="text-slate-500">- Lisans dogrulama</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-green-500 text-white px-2 py-0.5 rounded text-xs">POST</span>
+                            <code class="text-slate-300">/api/license/challenge</code>
+                            <span class="text-slate-500">- Challenge-response</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-green-500 text-white px-2 py-0.5 rounded text-xs">POST</span>
+                            <code class="text-slate-300">/api/license/heartbeat</code>
+                            <span class="text-slate-500">- Periyodik kontrol</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-900/20 border border-blue-700/50 rounded-xl p-4">
+                    <h3 class="text-blue-400 font-medium mb-3">tuufi.com</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-blue-500 text-white px-2 py-0.5 rounded text-xs">GET</span>
+                            <code class="text-slate-300">/api/version</code>
+                            <span class="text-slate-500">- Son versiyon</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-green-500 text-white px-2 py-0.5 rounded text-xs">POST</span>
+                            <code class="text-slate-300">/api/webhook/github</code>
+                            <span class="text-slate-500">- GitHub webhook</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BOLUM 11: KURULUM -->
+        <!-- ============================================ -->
+        <section id="kurulum" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-indigo-500 rounded-lg flex items-center justify-center text-white font-bold">11</span>
+                <h2 class="text-2xl font-bold text-white">Musteri Kurulum</h2>
+            </div>
+
+            <div class="space-y-2">
+                <div class="flex gap-3 items-center bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                    <span class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-xs">1</span>
+                    <span class="text-slate-300">Lisans satin al -> Anahtar al</span>
+                </div>
+                <div class="flex gap-3 items-center bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                    <span class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-xs">2</span>
+                    <span class="text-slate-300">Git clone + composer install</span>
+                </div>
+                <div class="flex gap-3 items-center bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                    <span class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-xs">3</span>
+                    <span class="text-slate-300">.env'e LICENSE_KEY ekle</span>
+                </div>
+                <div class="flex gap-3 items-center bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                    <span class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-xs">4</span>
+                    <span class="text-slate-300">Ilk calistirmada otomatik aktivasyon</span>
+                </div>
+                <div class="flex gap-3 items-center bg-green-900/20 border border-green-700/50 rounded-lg p-3">
+                    <span class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-xs"><i class="fas fa-check text-white text-xs"></i></span>
+                    <span class="text-green-400">Sistem calisir, otomatik guncelleme aktif!</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- BOLUM 12: YAPILACAKLAR -->
+        <!-- ============================================ -->
+        <section id="yapilacaklar" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-10 h-10 bg-rose-500 rounded-lg flex items-center justify-center text-white font-bold">12</span>
+                <h2 class="text-2xl font-bold text-white">Yapilacaklar</h2>
+            </div>
+
+            <div class="space-y-3">
+                <div class="text-purple-400 text-sm font-medium">Sifreli Dosya Sistemi:</div>
+                <div class="flex items-center gap-3 bg-purple-900/20 rounded-lg p-3 border border-purple-700/50">
+                    <span class="w-6 h-6 bg-purple-500 rounded flex items-center justify-center text-xs">1</span>
+                    <span class="text-slate-300">core.enc sifreleme + CoreLoader</span>
+                    <span class="text-xs text-slate-500 ml-auto">~1.5 saat</span>
+                </div>
+                <div class="flex items-center gap-3 bg-purple-900/20 rounded-lg p-3 border border-purple-700/50">
+                    <span class="w-6 h-6 bg-purple-500 rounded flex items-center justify-center text-xs">2</span>
+                    <span class="text-slate-300">Challenge-Response sistemi</span>
+                    <span class="text-xs text-slate-500 ml-auto">~45 dk</span>
+                </div>
+
+                <div class="text-emerald-400 text-sm font-medium mt-4">License Server:</div>
+                <div class="flex items-center gap-3 bg-emerald-900/20 rounded-lg p-3 border border-emerald-700/50">
+                    <span class="w-6 h-6 bg-emerald-500 rounded flex items-center justify-center text-xs">3</span>
+                    <span class="text-slate-300">VPS + Laravel minimal kurulum</span>
+                    <span class="text-xs text-slate-500 ml-auto">~1 saat</span>
+                </div>
+                <div class="flex items-center gap-3 bg-emerald-900/20 rounded-lg p-3 border border-emerald-700/50">
+                    <span class="w-6 h-6 bg-emerald-500 rounded flex items-center justify-center text-xs">4</span>
+                    <span class="text-slate-300">API endpoints (decrypt, verify, challenge)</span>
+                    <span class="text-xs text-slate-500 ml-auto">~1.5 saat</span>
+                </div>
+
+                <div class="text-red-400 text-sm font-medium mt-4">Koruma Katmanlari:</div>
+                <div class="flex items-center gap-3 bg-red-900/20 rounded-lg p-3 border border-red-700/50">
+                    <span class="w-6 h-6 bg-red-500 rounded flex items-center justify-center text-xs">5</span>
+                    <span class="text-slate-300">Domain lock + coklu checkpoint</span>
+                    <span class="text-xs text-slate-500 ml-auto">~1 saat</span>
+                </div>
+                <div class="flex items-center gap-3 bg-red-900/20 rounded-lg p-3 border border-red-700/50">
+                    <span class="w-6 h-6 bg-red-500 rounded flex items-center justify-center text-xs">6</span>
+                    <span class="text-slate-300">Kod hash + feature flags</span>
+                    <span class="text-xs text-slate-500 ml-auto">~1 saat</span>
+                </div>
+
+                <div class="text-blue-400 text-sm font-medium mt-4">Ana Sunucu:</div>
+                <div class="flex items-center gap-3 bg-blue-900/20 rounded-lg p-3 border border-blue-700/50">
+                    <span class="w-6 h-6 bg-blue-500 rounded flex items-center justify-center text-xs">7</span>
+                    <span class="text-slate-300">Version API + webhook + admin panel</span>
+                    <span class="text-xs text-slate-500 ml-auto">~1.5 saat</span>
+                </div>
+
+                <div class="text-orange-400 text-sm font-medium mt-4">Scripts & Dokumanlar:</div>
+                <div class="flex items-center gap-3 bg-orange-900/20 rounded-lg p-3 border border-orange-700/50">
+                    <span class="w-6 h-6 bg-orange-500 rounded flex items-center justify-center text-xs">8</span>
+                    <span class="text-slate-300">update.sh + kurulum dokumantasyonu</span>
+                    <span class="text-xs text-slate-500 ml-auto">~1 saat</span>
+                </div>
+            </div>
+
+            <!-- Toplam -->
+            <div class="mt-8 bg-gradient-to-r from-cyan-900/30 to-purple-900/30 rounded-xl p-6 border border-cyan-700/50">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-cyan-400 font-bold text-lg">Toplam Tahmini Sure</h3>
+                        <p class="text-slate-400 text-sm">Endustri standartlarinda koruma sistemi</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-4xl font-bold text-cyan-400">~10</span>
+                        <span class="text-xl text-cyan-400">saat</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- SONUC -->
+        <!-- ============================================ -->
+        <section class="bg-gradient-to-r from-cyan-900/30 via-purple-900/30 to-emerald-900/30 rounded-xl p-8 border border-cyan-700/50">
+            <h2 class="text-2xl font-bold text-white mb-6 text-center">Final Ozet - Endustri Standartlari</h2>
+
+            <div class="grid md:grid-cols-4 gap-4 mb-8">
+                <div class="text-center bg-slate-900/50 rounded-lg p-4">
+                    <i class="fas fa-lock text-purple-400 text-2xl mb-2"></i>
+                    <h3 class="text-white font-semibold text-sm">Sifreli Dosya</h3>
+                    <p class="text-slate-400 text-xs">ionCube alternatifi</p>
+                </div>
+                <div class="text-center bg-slate-900/50 rounded-lg p-4">
+                    <i class="fas fa-globe text-cyan-400 text-2xl mb-2"></i>
+                    <h3 class="text-white font-semibold text-sm">Domain Lock</h3>
+                    <p class="text-slate-400 text-xs">Kayitli domain only</p>
+                </div>
+                <div class="text-center bg-slate-900/50 rounded-lg p-4">
+                    <i class="fas fa-question-circle text-emerald-400 text-2xl mb-2"></i>
+                    <h3 class="text-white font-semibold text-sm">Challenge</h3>
+                    <p class="text-slate-400 text-xs">Her seferinde farkli</p>
+                </div>
+                <div class="text-center bg-slate-900/50 rounded-lg p-4">
+                    <i class="fas fa-layer-group text-red-400 text-2xl mb-2"></i>
+                    <h3 class="text-white font-semibold text-sm">7 Katman</h3>
+                    <p class="text-slate-400 text-xs">Bypass imkansiz</p>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <p class="text-lg text-white">
+                    Microsoft, Adobe, JetBrains yontemlerinden esinlendik<br>
+                    + ionCube/Zend Guard gibi loader gerektirmez<br>
+                    + Kendi sifreli dosya sistemimiz<br>
+                    + Endustri standartlarinda koruma
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-700/50 mt-12">
+        <div class="max-w-6xl mx-auto px-6 py-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-2 text-slate-400 text-sm">
+                    <i class="fas fa-robot"></i>
+                    <span>Claude AI - 1 Ocak 2026</span>
+                </div>
+                <div class="flex items-center gap-3 text-xs">
+                    <a href="v1/" class="text-slate-500 hover:text-slate-300">v1-v9</a>
+                    <a href="v10/" class="text-slate-500 hover:text-slate-300">v10</a>
+                    <span class="text-cyan-400 font-medium">v11 - Universal Koruma</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

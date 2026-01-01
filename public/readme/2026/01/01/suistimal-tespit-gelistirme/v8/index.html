@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Suistimal Tespiti - Ping-Pong + Robot Pattern</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="mb-10 text-center border-b border-slate-700 pb-8">
+            <h1 class="text-3xl font-bold mb-2">Suistimal Tespiti</h1>
+            <p class="text-slate-400">Ping-Pong Pattern + Robot Dinleme Tespiti</p>
+        </header>
+
+        <!-- İki Ana Pattern -->
+        <section class="mb-10">
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Pattern 1: Ping-Pong -->
+                <div class="bg-gradient-to-b from-orange-900/30 to-slate-800 border-2 border-orange-500 rounded-xl p-6">
+                    <div class="text-center mb-4">
+                        <span class="bg-orange-500 text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl mx-auto mb-3">
+                            <i class="fas fa-sync-alt"></i>
+                        </span>
+                        <h2 class="text-2xl font-bold text-orange-400">Pattern 1: Ping-Pong</h2>
+                        <p class="text-slate-400 mt-1">Herhangi bir verinin döngüsü</p>
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-4 text-sm">
+                        <p class="text-orange-300 font-bold mb-2">Tespit edilecek:</p>
+                        <ul class="text-slate-400 space-y-1">
+                            <li>• IP ping-pong</li>
+                            <li>• Browser ping-pong</li>
+                            <li>• Device ping-pong</li>
+                            <li>• Platform ping-pong</li>
+                            <li>• Fingerprint ping-pong</li>
+                        </ul>
+                        <p class="text-orange-400 mt-3 font-bold">A → B → A = Suistimal</p>
+                    </div>
+                </div>
+
+                <!-- Pattern 2: Robot -->
+                <div class="bg-gradient-to-b from-purple-900/30 to-slate-800 border-2 border-purple-500 rounded-xl p-6">
+                    <div class="text-center mb-4">
+                        <span class="bg-purple-500 text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl mx-auto mb-3">
+                            <i class="fas fa-robot"></i>
+                        </span>
+                        <h2 class="text-2xl font-bold text-purple-400">Pattern 2: Robot Dinleme</h2>
+                        <p class="text-slate-400 mt-1">Otomasyon/Bot tespiti</p>
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-4 text-sm">
+                        <p class="text-purple-300 font-bold mb-2">Tespit edilecek:</p>
+                        <ul class="text-slate-400 space-y-1">
+                            <li>• Şarkılar hep sonuna kadar</li>
+                            <li>• Next tuşu hiç kullanılmamış</li>
+                            <li>• Skip yok</li>
+                            <li>• Süreler çok tutarlı</li>
+                        </ul>
+                        <p class="text-purple-400 mt-3 font-bold">İnsan böyle dinlemez!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pattern 1 Detay: Ping-Pong -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-orange-500/20 text-orange-400 w-10 h-10 rounded-lg flex items-center justify-center">1</span>
+                Ping-Pong Pattern (Detay)
+            </h2>
+
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+                <h3 class="font-bold text-white mb-4">Dinamik IP Sorunu</h3>
+                <div class="bg-yellow-900/20 border border-yellow-700 rounded-lg p-4 mb-4">
+                    <p class="text-yellow-400"><i class="fas fa-exclamation-triangle mr-2"></i><strong>Dikkat:</strong> IP değişebilir (dinamik IP). Sadece IP'ye güvenme!</p>
+                </div>
+                <p class="text-slate-400">Çözüm: Tüm verileri kombine et. Herhangi birinde ping-pong varsa = suistimal.</p>
+            </div>
+
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                <h3 class="font-bold text-white mb-4">Kontrol Edilecek Veriler</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="bg-slate-900 rounded-lg p-3 text-center">
+                        <i class="fas fa-network-wired text-yellow-400 text-xl mb-2"></i>
+                        <p class="text-sm font-bold">IP</p>
+                        <p class="text-xs text-slate-500">Değişebilir</p>
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-3 text-center">
+                        <i class="fab fa-chrome text-blue-400 text-xl mb-2"></i>
+                        <p class="text-sm font-bold">Browser</p>
+                        <p class="text-xs text-slate-500">Chrome, Safari...</p>
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-3 text-center">
+                        <i class="fas fa-laptop text-green-400 text-xl mb-2"></i>
+                        <p class="text-sm font-bold">Platform</p>
+                        <p class="text-xs text-slate-500">Windows, macOS...</p>
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-3 text-center">
+                        <i class="fas fa-mobile-alt text-purple-400 text-xl mb-2"></i>
+                        <p class="text-sm font-bold">Device</p>
+                        <p class="text-xs text-slate-500">Desktop, Mobile</p>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="font-bold text-orange-400 mb-3">Ping-Pong Örnekleri</h4>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-red-900/20 border border-red-700/50 rounded-lg p-3">
+                            <p class="text-red-400 font-bold mb-1">IP Ping-Pong</p>
+                            <p class="text-slate-400 font-mono">92.44.x → 88.230.x → 92.44.x → 88.230.x</p>
+                        </div>
+                        <div class="bg-red-900/20 border border-red-700/50 rounded-lg p-3">
+                            <p class="text-red-400 font-bold mb-1">Browser Ping-Pong</p>
+                            <p class="text-slate-400 font-mono">Chrome → Safari → Chrome → Safari</p>
+                        </div>
+                        <div class="bg-red-900/20 border border-red-700/50 rounded-lg p-3">
+                            <p class="text-red-400 font-bold mb-1">Platform Ping-Pong</p>
+                            <p class="text-slate-400 font-mono">Windows → macOS → Windows → macOS</p>
+                        </div>
+                        <div class="bg-red-900/20 border border-red-700/50 rounded-lg p-3">
+                            <p class="text-red-400 font-bold mb-1">Device Ping-Pong</p>
+                            <p class="text-slate-400 font-mono">Desktop → Mobile → Desktop → Mobile</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-orange-900/20 border border-orange-700 rounded-lg p-4">
+                    <p class="text-orange-400 font-bold">Kural: A → B → A = Suistimal</p>
+                    <p class="text-slate-400 text-sm mt-1">Herhangi bir veride geri dönüş varsa = hesap paylaşılıyor.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pattern 2 Detay: Robot -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-purple-500/20 text-purple-400 w-10 h-10 rounded-lg flex items-center justify-center">2</span>
+                Robot Dinleme Pattern (Detay)
+            </h2>
+
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+                <h3 class="font-bold text-white mb-4">İnsan vs Robot Davranışı</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-green-900/20 border border-green-700 rounded-lg p-4">
+                        <h4 class="font-bold text-green-400 mb-3"><i class="fas fa-user mr-2"></i>İnsan Dinleme</h4>
+                        <ul class="text-slate-400 text-sm space-y-2">
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>Bazen şarkıyı skip eder</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>Bazen yarıda bırakır</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>Next tuşuna basar</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>Dinleme süreleri rastgele</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>Ara verir, devam eder</li>
+                        </ul>
+                    </div>
+                    <div class="bg-red-900/20 border border-red-700 rounded-lg p-4">
+                        <h4 class="font-bold text-red-400 mb-3"><i class="fas fa-robot mr-2"></i>Robot Dinleme</h4>
+                        <ul class="text-slate-400 text-sm space-y-2">
+                            <li><i class="fas fa-times text-red-500 mr-2"></i>Hiç skip yok</li>
+                            <li><i class="fas fa-times text-red-500 mr-2"></i>Her şarkı tam bitiyor</li>
+                            <li><i class="fas fa-times text-red-500 mr-2"></i>Next tuşu kullanılmamış</li>
+                            <li><i class="fas fa-times text-red-500 mr-2"></i>Süreler çok tutarlı</li>
+                            <li><i class="fas fa-times text-red-500 mr-2"></i>Kesintisiz, 7/24</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                <h3 class="font-bold text-white mb-4">Tespit Kriterleri</h3>
+
+                <div class="space-y-4">
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <h4 class="text-purple-400 font-bold mb-2">1. Şarkı Sonuna Kadar Gitmiş</h4>
+                        <div class="font-mono text-sm text-slate-400 bg-slate-800 p-3 rounded mt-2">
+                            listened_duration ≈ song.duration (±5 saniye tolerans)
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <h4 class="text-purple-400 font-bold mb-2">2. Skip/Next Yok</h4>
+                        <div class="font-mono text-sm text-slate-400 bg-slate-800 p-3 rounded mt-2">
+                            was_skipped = 0 (sürekli)<br>
+                            next_button_pressed = false (eğer takip ediliyorsa)
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <h4 class="text-purple-400 font-bold mb-2">3. Çok Tutarlı Süreler</h4>
+                        <p class="text-slate-400 text-sm mb-2">Ardışık şarkılar arasındaki boşluk çok az ve tutarlı:</p>
+                        <div class="font-mono text-sm bg-slate-800 p-3 rounded mt-2">
+                            <p class="text-slate-500">// Örnek: 2-3 dk'lık şarkılar</p>
+                            <p class="text-slate-400">Şarkı 1: 2:45 bitti → Şarkı 2: 2:46 başladı (1 sn)</p>
+                            <p class="text-slate-400">Şarkı 2: 3:02 bitti → Şarkı 3: 3:03 başladı (1 sn)</p>
+                            <p class="text-slate-400">Şarkı 3: 2:58 bitti → Şarkı 4: 2:59 başladı (1 sn)</p>
+                            <p class="text-red-400 mt-2">→ Hep 1 saniye boşluk = Otomasyon!</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <h4 class="text-purple-400 font-bold mb-2">4. Uzun Süre Kesintisiz</h4>
+                        <div class="font-mono text-sm text-slate-400 bg-slate-800 p-3 rounded mt-2">
+                            // 16, 17, 18, 18, 20, 21 dakika gibi...<br>
+                            // Saatlerce kesintisiz, hep aynı pattern
+                        </div>
+                        <p class="text-slate-500 text-sm mt-2">İnsan bu kadar düzenli dinlemez!</p>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-purple-900/20 border border-purple-700 rounded-lg p-4">
+                    <p class="text-purple-400 font-bold">Tespit Formülü:</p>
+                    <p class="text-slate-300 text-sm mt-2">
+                        Eğer son X şarkıda:
+                    </p>
+                    <ul class="text-slate-400 text-sm mt-2 space-y-1">
+                        <li>• %95+ şarkı tam bitmiş (skip yok)</li>
+                        <li>• Şarkı arası boşluk standart sapması &lt; 3 saniye</li>
+                        <li>• Next tuşu hiç kullanılmamış</li>
+                    </ul>
+                    <p class="text-purple-400 font-bold mt-3">→ Robot/Otomasyon = Suistimal</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Örnek Veriler -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-cyan-500/20 text-cyan-400 w-10 h-10 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-table"></i>
+                </span>
+                Örnek Veriler
+            </h2>
+
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-6">
+                <h3 class="font-bold text-green-400 mb-4"><i class="fas fa-check mr-2"></i>Normal İnsan Dinleme</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-700 text-slate-400">
+                                <th class="text-left py-2">Şarkı</th>
+                                <th class="text-left py-2">Süre</th>
+                                <th class="text-left py-2">Dinlenen</th>
+                                <th class="text-left py-2">Skip?</th>
+                                <th class="text-left py-2">Ara</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-300 font-mono text-xs">
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2">A</td>
+                                <td>3:24</td>
+                                <td>3:24</td>
+                                <td class="text-green-400">Hayır</td>
+                                <td>-</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2">B</td>
+                                <td>2:58</td>
+                                <td class="text-yellow-400">1:45</td>
+                                <td class="text-yellow-400">Evet</td>
+                                <td>2 sn</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2">C</td>
+                                <td>4:12</td>
+                                <td>4:12</td>
+                                <td class="text-green-400">Hayır</td>
+                                <td>15 sn</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2">D</td>
+                                <td>3:05</td>
+                                <td class="text-yellow-400">0:32</td>
+                                <td class="text-yellow-400">Evet</td>
+                                <td>1 sn</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2">E</td>
+                                <td>3:45</td>
+                                <td>3:45</td>
+                                <td class="text-green-400">Hayır</td>
+                                <td>45 sn</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-slate-500 text-sm mt-3">→ Skip var, yarım bırakma var, aralar değişken = Normal insan</p>
+            </div>
+
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                <h3 class="font-bold text-red-400 mb-4"><i class="fas fa-robot mr-2"></i>Robot Dinleme (Suistimal)</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-700 text-slate-400">
+                                <th class="text-left py-2">Şarkı</th>
+                                <th class="text-left py-2">Süre</th>
+                                <th class="text-left py-2">Dinlenen</th>
+                                <th class="text-left py-2">Skip?</th>
+                                <th class="text-left py-2">Ara</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-300 font-mono text-xs">
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2">A</td>
+                                <td>3:24</td>
+                                <td class="text-red-400">3:24</td>
+                                <td>Hayır</td>
+                                <td>-</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2">B</td>
+                                <td>2:58</td>
+                                <td class="text-red-400">2:58</td>
+                                <td>Hayır</td>
+                                <td class="text-red-400">1 sn</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2">C</td>
+                                <td>4:12</td>
+                                <td class="text-red-400">4:12</td>
+                                <td>Hayır</td>
+                                <td class="text-red-400">1 sn</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2">D</td>
+                                <td>3:05</td>
+                                <td class="text-red-400">3:05</td>
+                                <td>Hayır</td>
+                                <td class="text-red-400">1 sn</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2">E</td>
+                                <td>3:45</td>
+                                <td class="text-red-400">3:45</td>
+                                <td>Hayır</td>
+                                <td class="text-red-400">1 sn</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-red-400 text-sm mt-3">→ Her şarkı tam, skip yok, aralar hep 1 sn = Robot!</p>
+            </div>
+        </section>
+
+        <!-- Özet -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-emerald-500/20 text-emerald-400 w-10 h-10 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-list-check"></i>
+                </span>
+                Özet: Tespit Kuralları
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-4 text-slate-400">Pattern</th>
+                            <th class="text-left py-4 text-slate-400">Tespit</th>
+                            <th class="text-center py-4 text-slate-400">Sonuç</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-4 font-bold text-orange-400">Ping-Pong (IP)</td>
+                            <td>IP-A → IP-B → IP-A</td>
+                            <td class="text-center"><span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs">SUİSTİMAL</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-4 font-bold text-orange-400">Ping-Pong (Browser)</td>
+                            <td>Chrome → Safari → Chrome</td>
+                            <td class="text-center"><span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs">SUİSTİMAL</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-4 font-bold text-orange-400">Ping-Pong (Platform)</td>
+                            <td>Windows → macOS → Windows</td>
+                            <td class="text-center"><span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs">SUİSTİMAL</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-4 font-bold text-orange-400">Ping-Pong (Device)</td>
+                            <td>Desktop → Mobile → Desktop</td>
+                            <td class="text-center"><span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs">SUİSTİMAL</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-4 font-bold text-purple-400">Robot Dinleme</td>
+                            <td>%95+ tam dinleme + tutarlı aralar + skip yok</td>
+                            <td class="text-center"><span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs">SUİSTİMAL</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-4 font-bold text-red-400">Eş Zamanlı</td>
+                            <td>Aynı anda 2 farklı IP/device</td>
+                            <td class="text-center"><span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs">SUİSTİMAL</span></td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 font-bold text-green-400">Normal</td>
+                            <td>Tek cihaz, ara sıra skip, değişken aralar</td>
+                            <td class="text-center"><span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs">TEMİZ</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Implementasyon -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-blue-500/20 text-blue-400 w-10 h-10 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-code"></i>
+                </span>
+                Implementasyon
+            </h2>
+
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                <div class="space-y-4">
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <code class="text-yellow-400 font-mono">detectPingPong($field)</code>
+                        <p class="text-slate-400 text-sm mt-1">Verilen field'da (ip, browser, platform, device) A→B→A pattern'i var mı?</p>
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <code class="text-yellow-400 font-mono">detectRobotListening()</code>
+                        <p class="text-slate-400 text-sm mt-1">
+                            - %95+ şarkı tam bitiyor mu?<br>
+                            - Şarkı arası boşluk standart sapması &lt; 3 sn mi?<br>
+                            - Skip oranı &lt; 5% mi?
+                        </p>
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <code class="text-yellow-400 font-mono">detectConcurrent()</code>
+                        <p class="text-slate-400 text-sm mt-1">Aynı anda 2+ farklı fingerprint var mı?</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-800 pt-8">
+            <p>Muzibu Suistimal Tespiti v8</p>
+            <p class="mt-1">Ping-Pong Pattern + Robot Dinleme Tespiti</p>
+        </footer>
+    </div>
+</body>
+</html>

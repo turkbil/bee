@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Tenant Federation Mimarisi v2 - Gercek Senaryolar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-text { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+        .architecture-diagram { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .pulse-dot { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-purple-900/50 via-slate-900 to-blue-900/50 border-b border-slate-700/50 sticky top-0 z-50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-3 py-1 bg-purple-600/30 text-purple-300 text-xs font-medium rounded-full border border-purple-500/30">
+                            <i class="fas fa-sitemap mr-1"></i> Mimari Analiz
+                        </span>
+                        <span class="px-3 py-1 bg-green-600/30 text-green-300 text-xs font-medium rounded-full border border-green-500/30">
+                            v2 - Guncellendi
+                        </span>
+                    </div>
+                    <h1 class="text-3xl font-bold mt-3 gradient-text">Multi-Tenant Federation Mimarisi</h1>
+                    <p class="text-slate-400 mt-2">Gercek Senaryolar: Muzibu CDN, Gazete Self-Hosted, Hastane Compliance</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-slate-400 text-sm">1 Ocak 2026</div>
+                    <div class="text-purple-400 text-sm mt-1">tuufi.com</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+
+        <!-- Executive Summary -->
+        <section class="bg-gradient-to-br from-green-900/20 to-emerald-900/10 border border-green-800/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-green-400 mb-4"><i class="fas fa-lightbulb mr-2"></i>Basit Anlatim (Herkes Icin)</h2>
+            <div class="prose prose-invert max-w-none">
+                <p class="text-slate-300 leading-relaxed">
+                    Farkli musteri tipleri icin <strong class="text-green-400">farkli dagitim modelleri</strong> gerekiyor:
+                </p>
+                <div class="mt-4 grid md:grid-cols-3 gap-4">
+                    <div class="bg-purple-900/30 rounded-lg p-4 border border-purple-700/50">
+                        <div class="text-2xl mb-2">🎵</div>
+                        <div class="font-semibold text-purple-300">Muzibu Modeli</div>
+                        <div class="text-sm text-slate-400">1 Origin + 2 Edge</div>
+                        <div class="text-xs text-purple-400 mt-1">Streaming icin CDN</div>
+                    </div>
+                    <div class="bg-blue-900/30 rounded-lg p-4 border border-blue-700/50">
+                        <div class="text-2xl mb-2">📰</div>
+                        <div class="font-semibold text-blue-300">Gazete Modeli</div>
+                        <div class="text-sm text-slate-400">1 Self-Hosted Sunucu</div>
+                        <div class="text-xs text-blue-400 mt-1">Kendi datacenter</div>
+                    </div>
+                    <div class="bg-red-900/30 rounded-lg p-4 border border-red-700/50">
+                        <div class="text-2xl mb-2">🏥</div>
+                        <div class="font-semibold text-red-300">Hastane Modeli</div>
+                        <div class="text-sm text-slate-400">1 Izole Sunucu</div>
+                        <div class="text-xs text-red-400 mt-1">KVKK/Compliance</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Deployment Types Overview -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden">
+            <div class="bg-gradient-to-r from-indigo-900/50 to-purple-900/50 px-6 py-4 border-b border-slate-700">
+                <h2 class="text-xl font-bold text-white"><i class="fas fa-layer-group mr-2 text-indigo-400"></i>4 Farkli Dagitim Tipi</h2>
+            </div>
+            <div class="p-6">
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Type 1: Shared -->
+                    <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-600 card-hover">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 bg-slate-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-users text-slate-300"></i>
+                            </div>
+                            <span class="text-xs font-bold text-slate-400">TIP 1</span>
+                        </div>
+                        <h3 class="font-bold text-white">Shared</h3>
+                        <p class="text-xs text-slate-400 mt-1">Standart musteriler</p>
+                        <div class="mt-3 pt-3 border-t border-slate-700">
+                            <div class="text-xs text-slate-500">Ornek: KOBİ siteleri</div>
+                        </div>
+                    </div>
+
+                    <!-- Type 2: CDN/Edge -->
+                    <div class="bg-gradient-to-br from-purple-900/30 to-purple-800/10 rounded-lg p-4 border border-purple-600 card-hover">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-globe text-white"></i>
+                            </div>
+                            <span class="text-xs font-bold text-purple-400">TIP 2</span>
+                        </div>
+                        <h3 class="font-bold text-white">Origin + Edge</h3>
+                        <p class="text-xs text-slate-400 mt-1">1 Ana + N Dagitim</p>
+                        <div class="mt-3 pt-3 border-t border-purple-700/50">
+                            <div class="text-xs text-purple-400">Ornek: Muzibu</div>
+                        </div>
+                    </div>
+
+                    <!-- Type 3: Self-Hosted -->
+                    <div class="bg-gradient-to-br from-blue-900/30 to-blue-800/10 rounded-lg p-4 border border-blue-600 card-hover">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-server text-white"></i>
+                            </div>
+                            <span class="text-xs font-bold text-blue-400">TIP 3</span>
+                        </div>
+                        <h3 class="font-bold text-white">Self-Hosted</h3>
+                        <p class="text-xs text-slate-400 mt-1">Musteri sunucusu</p>
+                        <div class="mt-3 pt-3 border-t border-blue-700/50">
+                            <div class="text-xs text-blue-400">Ornek: Gazeteler</div>
+                        </div>
+                    </div>
+
+                    <!-- Type 4: Compliance -->
+                    <div class="bg-gradient-to-br from-red-900/30 to-red-800/10 rounded-lg p-4 border border-red-600 card-hover">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-shield-alt text-white"></i>
+                            </div>
+                            <span class="text-xs font-bold text-red-400">TIP 4</span>
+                        </div>
+                        <h3 class="font-bold text-white">Compliance</h3>
+                        <p class="text-xs text-slate-400 mt-1">KVKK/HIPAA izole</p>
+                        <div class="mt-3 pt-3 border-t border-red-700/50">
+                            <div class="text-xs text-red-400">Ornek: Hastaneler</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCENARIO 1: MUZIBU CDN MODEL -->
+        <section class="architecture-diagram border border-purple-700/50 rounded-xl overflow-hidden">
+            <div class="bg-purple-900/50 px-6 py-4 border-b border-purple-700/50">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-white"><i class="fas fa-music mr-2 text-purple-400"></i>Senaryo 1: Muzibu - Origin + Edge Model</h2>
+                    <span class="px-3 py-1 bg-purple-600 text-white text-xs font-bold rounded-full">3 SUNUCU</span>
+                </div>
+            </div>
+            <div class="p-6">
+                <!-- Architecture Diagram -->
+                <div class="relative mb-8">
+                    <!-- Central Origin -->
+                    <div class="flex justify-center mb-6">
+                        <div class="bg-gradient-to-br from-purple-600 to-purple-800 rounded-xl p-5 text-center shadow-lg shadow-purple-500/20 border border-purple-500/50 max-w-xs">
+                            <div class="w-14 h-14 bg-purple-500/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-database text-2xl text-purple-200"></i>
+                            </div>
+                            <h3 class="font-bold text-white">Origin Server</h3>
+                            <p class="text-purple-200 text-sm mt-1">Ana Sunucu (Istanbul)</p>
+                            <div class="mt-3 flex flex-wrap justify-center gap-1 text-xs">
+                                <span class="px-2 py-1 bg-purple-700/50 rounded">MySQL Master</span>
+                                <span class="px-2 py-1 bg-purple-700/50 rounded">Admin Panel</span>
+                                <span class="px-2 py-1 bg-purple-700/50 rounded">API</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Connection Lines -->
+                    <div class="flex justify-center items-center gap-2 mb-6">
+                        <div class="h-8 w-0.5 bg-gradient-to-b from-purple-500 to-blue-500"></div>
+                    </div>
+                    <div class="flex justify-center mb-6">
+                        <div class="bg-slate-800 px-4 py-2 rounded-full border border-slate-600 text-sm">
+                            <i class="fas fa-arrows-alt-h text-purple-400 mr-2"></i>
+                            <span class="text-slate-300">CDN Sync / Replication</span>
+                        </div>
+                    </div>
+
+                    <!-- Edge Servers -->
+                    <div class="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+                        <div class="bg-gradient-to-br from-blue-900/50 to-blue-800/20 rounded-xl p-5 border border-blue-700/50">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 bg-blue-600/30 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-broadcast-tower text-blue-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-white">Edge Server 1</h4>
+                                    <p class="text-xs text-blue-300">Avrupa (Frankfurt)</p>
+                                </div>
+                                <div class="ml-auto">
+                                    <span class="w-2 h-2 bg-green-400 rounded-full inline-block pulse-dot"></span>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-sm text-slate-300">
+                                <div class="flex justify-between text-xs">
+                                    <span>Rol</span>
+                                    <span class="text-blue-400">Stream Dagitim</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span>Cache</span>
+                                    <span class="text-blue-400">Redis Replica</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span>DB</span>
+                                    <span class="text-blue-400">Read Replica</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-green-900/50 to-green-800/20 rounded-xl p-5 border border-green-700/50">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 bg-green-600/30 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-broadcast-tower text-green-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-white">Edge Server 2</h4>
+                                    <p class="text-xs text-green-300">Asya (Singapur)</p>
+                                </div>
+                                <div class="ml-auto">
+                                    <span class="w-2 h-2 bg-green-400 rounded-full inline-block pulse-dot"></span>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-sm text-slate-300">
+                                <div class="flex justify-between text-xs">
+                                    <span>Rol</span>
+                                    <span class="text-green-400">Stream Dagitim</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span>Cache</span>
+                                    <span class="text-green-400">Redis Replica</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span>DB</span>
+                                    <span class="text-green-400">Read Replica</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Details -->
+                <div class="grid md:grid-cols-3 gap-4 mt-6">
+                    <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                        <h4 class="font-semibold text-purple-400 mb-2 text-sm"><i class="fas fa-music mr-2"></i>Muzik Dagitimi</h4>
+                        <ul class="text-xs text-slate-400 space-y-1">
+                            <li>• MP3/FLAC dosyalar S3'te</li>
+                            <li>• CloudFront CDN cache</li>
+                            <li>• Geo-based routing</li>
+                            <li>• HLS streaming</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                        <h4 class="font-semibold text-blue-400 mb-2 text-sm"><i class="fas fa-database mr-2"></i>Veri Senkronizasyonu</h4>
+                        <ul class="text-xs text-slate-400 space-y-1">
+                            <li>• MySQL async replication</li>
+                            <li>• Origin → Edge (read-only)</li>
+                            <li>• Write sadece Origin'e</li>
+                            <li>• 100ms max lag</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                        <h4 class="font-semibold text-green-400 mb-2 text-sm"><i class="fas fa-users mr-2"></i>Kullanici Yonlendirme</h4>
+                        <ul class="text-xs text-slate-400 space-y-1">
+                            <li>• GeoDNS (Route53)</li>
+                            <li>• Turkiye → Origin</li>
+                            <li>• Avrupa → Edge 1</li>
+                            <li>• Asya → Edge 2</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Code Config -->
+                <div class="mt-6 bg-slate-900 rounded-lg p-4 border border-slate-700">
+                    <h4 class="font-semibold text-white mb-3 text-sm"><i class="fas fa-code mr-2 text-purple-400"></i>Tenant Konfigurasyon</h4>
+                    <div class="font-mono text-xs overflow-x-auto">
+<pre class="text-slate-300"><span class="text-slate-500">// tenants tablosu</span>
+[
+    <span class="text-purple-400">'id'</span> => 1001,
+    <span class="text-purple-400">'title'</span> => 'Muzibu',
+    <span class="text-green-400">'deployment_type'</span> => 'origin_edge',
+    <span class="text-green-400">'origin_server'</span> => 'origin.muzibu.internal',
+    <span class="text-green-400">'edge_servers'</span> => [
+        'eu' => 'edge-eu.muzibu.internal',
+        'asia' => 'edge-asia.muzibu.internal'
+    ],
+    <span class="text-blue-400">'cdn_provider'</span> => 'cloudfront',
+    <span class="text-blue-400">'streaming_enabled'</span> => true
+]</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCENARIO 2: GAZETTE SELF-HOSTED -->
+        <section class="architecture-diagram border border-blue-700/50 rounded-xl overflow-hidden">
+            <div class="bg-blue-900/50 px-6 py-4 border-b border-blue-700/50">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-white"><i class="fas fa-newspaper mr-2 text-blue-400"></i>Senaryo 2: Gazete - Self-Hosted Model</h2>
+                    <span class="px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-full">1 SUNUCU</span>
+                </div>
+            </div>
+            <div class="p-6">
+                <!-- Architecture Diagram -->
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <!-- Central Hub (Left) -->
+                    <div class="flex flex-col items-center">
+                        <div class="bg-gradient-to-br from-purple-600/30 to-purple-800/20 rounded-xl p-4 text-center border border-purple-500/30 w-full max-w-xs mb-4">
+                            <div class="w-12 h-12 bg-purple-500/30 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-crown text-xl text-purple-300"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-sm">Tuufi Central</h3>
+                            <p class="text-purple-200 text-xs mt-1">Lisans & Guncelleme</p>
+                        </div>
+
+                        <div class="flex items-center gap-2 my-2">
+                            <i class="fas fa-exchange-alt text-blue-400"></i>
+                            <span class="text-xs text-slate-400">API Sync</span>
+                        </div>
+
+                        <div class="bg-slate-800/50 rounded-lg p-3 border border-slate-600 text-xs text-slate-400 w-full max-w-xs">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <span>Lisans dogrulama</span>
+                            </div>
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-download text-blue-400"></i>
+                                <span>Kod guncellemeleri</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-chart-line text-purple-400"></i>
+                                <span>Metrik raporlama</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gazette Server (Right) -->
+                    <div>
+                        <div class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl p-5 border border-blue-500/50 shadow-lg shadow-blue-500/20">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-12 h-12 bg-blue-500/30 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-server text-2xl text-blue-200"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-white">Gazete Sunucusu</h3>
+                                    <p class="text-blue-200 text-sm">gazette.com.tr Datacenter</p>
+                                </div>
+                                <div class="ml-auto">
+                                    <span class="w-3 h-3 bg-green-400 rounded-full inline-block pulse-dot"></span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3 mb-4">
+                                <div class="bg-blue-700/30 rounded-lg p-3 text-center">
+                                    <i class="fas fa-database text-blue-300 text-lg mb-1"></i>
+                                    <div class="text-xs text-blue-200">MySQL</div>
+                                    <div class="text-xs text-blue-400">500K+ haber</div>
+                                </div>
+                                <div class="bg-blue-700/30 rounded-lg p-3 text-center">
+                                    <i class="fas fa-hdd text-blue-300 text-lg mb-1"></i>
+                                    <div class="text-xs text-blue-200">Storage</div>
+                                    <div class="text-xs text-blue-400">2TB+ gorsel</div>
+                                </div>
+                                <div class="bg-blue-700/30 rounded-lg p-3 text-center">
+                                    <i class="fas fa-bolt text-blue-300 text-lg mb-1"></i>
+                                    <div class="text-xs text-blue-200">Redis</div>
+                                    <div class="text-xs text-blue-400">Local cache</div>
+                                </div>
+                                <div class="bg-blue-700/30 rounded-lg p-3 text-center">
+                                    <i class="fas fa-globe text-blue-300 text-lg mb-1"></i>
+                                    <div class="text-xs text-blue-200">Nginx</div>
+                                    <div class="text-xs text-blue-400">10M+ hit/gun</div>
+                                </div>
+                            </div>
+
+                            <div class="bg-blue-900/50 rounded-lg p-3 text-xs text-blue-200">
+                                <div class="font-semibold mb-1">Tam Bagimsiz Calisma:</div>
+                                <ul class="text-blue-300 space-y-1">
+                                    <li>• Kendi IP ve domain</li>
+                                    <li>• Kendi SSL sertifikasi</li>
+                                    <li>• Kendi backup politikasi</li>
+                                    <li>• Gazete IT ekibi yonetir</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- How It Works -->
+                <div class="mt-6 grid md:grid-cols-4 gap-3">
+                    <div class="bg-slate-900/50 rounded-lg p-3 border border-slate-700 text-center">
+                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 text-white font-bold text-sm">1</div>
+                        <div class="text-xs text-white font-medium">Kurulum</div>
+                        <div class="text-xs text-slate-400 mt-1">installer.php calistir</div>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-3 border border-slate-700 text-center">
+                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 text-white font-bold text-sm">2</div>
+                        <div class="text-xs text-white font-medium">Aktivasyon</div>
+                        <div class="text-xs text-slate-400 mt-1">License key gir</div>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-3 border border-slate-700 text-center">
+                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 text-white font-bold text-sm">3</div>
+                        <div class="text-xs text-white font-medium">Baglanti</div>
+                        <div class="text-xs text-slate-400 mt-1">Central'a heartbeat</div>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-3 border border-slate-700 text-center">
+                        <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-2 text-white font-bold text-sm">✓</div>
+                        <div class="text-xs text-white font-medium">Calisir</div>
+                        <div class="text-xs text-slate-400 mt-1">Bagimsiz operasyon</div>
+                    </div>
+                </div>
+
+                <!-- Code Config -->
+                <div class="mt-6 bg-slate-900 rounded-lg p-4 border border-slate-700">
+                    <h4 class="font-semibold text-white mb-3 text-sm"><i class="fas fa-file-code mr-2 text-blue-400"></i>Gazete .env Dosyasi</h4>
+                    <div class="font-mono text-xs overflow-x-auto">
+<pre class="text-slate-300"><span class="text-slate-500"># Self-Hosted Gazete Konfigurasyonu</span>
+<span class="text-green-400">TUUFI_MODE</span>=self_hosted
+<span class="text-green-400">TUUFI_CENTRAL_URL</span>=https://tuufi.com
+<span class="text-green-400">TUUFI_LICENSE_KEY</span>=gazette_xxxxxxxxxxxx
+<span class="text-green-400">TUUFI_TENANT_ID</span>=5001
+
+<span class="text-slate-500"># Kendi Kaynaklari</span>
+<span class="text-blue-400">DB_HOST</span>=localhost
+<span class="text-blue-400">DB_DATABASE</span>=gazette_prod
+<span class="text-blue-400">REDIS_HOST</span>=localhost
+<span class="text-blue-400">FILESYSTEM_DISK</span>=local
+
+<span class="text-slate-500"># Sync Ayarlari</span>
+<span class="text-purple-400">TUUFI_HEARTBEAT_INTERVAL</span>=60
+<span class="text-purple-400">TUUFI_UPDATE_CHECK</span>=daily
+<span class="text-purple-400">TUUFI_AUTO_UPDATE</span>=false  <span class="text-slate-500"># IT ekibi manuel yapar</span></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCENARIO 3: HOSPITAL COMPLIANCE -->
+        <section class="architecture-diagram border border-red-700/50 rounded-xl overflow-hidden">
+            <div class="bg-red-900/50 px-6 py-4 border-b border-red-700/50">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-white"><i class="fas fa-hospital mr-2 text-red-400"></i>Senaryo 3: Hastane - Compliance Model</h2>
+                    <span class="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-full">IZOLE</span>
+                </div>
+            </div>
+            <div class="p-6">
+                <!-- Security Notice -->
+                <div class="bg-red-900/30 border border-red-700/50 rounded-lg p-4 mb-6">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-shield-alt text-red-400 text-xl mt-1"></i>
+                        <div>
+                            <h4 class="font-semibold text-red-300">KVKK / HIPAA Uyumluluk</h4>
+                            <p class="text-sm text-slate-400 mt-1">
+                                Hasta verileri Turkiye sinirlarinda, izole network, encrypted at rest,
+                                audit logging, merkeze SADECE anonim metrik gonder
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Architecture -->
+                <div class="grid lg:grid-cols-3 gap-6">
+                    <!-- DMZ -->
+                    <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700">
+                        <h4 class="font-semibold text-yellow-400 mb-3 text-sm"><i class="fas fa-shield-virus mr-2"></i>DMZ</h4>
+                        <div class="space-y-2">
+                            <div class="bg-yellow-900/20 rounded-lg p-2 border border-yellow-700/30 text-xs">
+                                <i class="fas fa-fire text-yellow-400 mr-2"></i>
+                                <span class="text-yellow-300">Firewall</span>
+                            </div>
+                            <div class="bg-yellow-900/20 rounded-lg p-2 border border-yellow-700/30 text-xs">
+                                <i class="fas fa-exchange-alt text-yellow-400 mr-2"></i>
+                                <span class="text-yellow-300">Reverse Proxy</span>
+                            </div>
+                            <div class="bg-yellow-900/20 rounded-lg p-2 border border-yellow-700/30 text-xs">
+                                <i class="fas fa-lock text-yellow-400 mr-2"></i>
+                                <span class="text-yellow-300">SSL Termination</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- App Server -->
+                    <div class="bg-gradient-to-br from-red-900/30 to-red-800/10 rounded-xl p-4 border border-red-700/50">
+                        <h4 class="font-semibold text-red-400 mb-3 text-sm"><i class="fas fa-server mr-2"></i>Application</h4>
+                        <div class="space-y-2">
+                            <div class="bg-red-900/20 rounded-lg p-2 border border-red-700/30 text-xs">
+                                <i class="fas fa-code text-red-400 mr-2"></i>
+                                <span class="text-red-300">Laravel App</span>
+                            </div>
+                            <div class="bg-red-900/20 rounded-lg p-2 border border-red-700/30 text-xs">
+                                <i class="fas fa-bolt text-red-400 mr-2"></i>
+                                <span class="text-red-300">Redis (isolated)</span>
+                            </div>
+                            <div class="bg-red-900/20 rounded-lg p-2 border border-red-700/30 text-xs">
+                                <i class="fas fa-tasks text-red-400 mr-2"></i>
+                                <span class="text-red-300">Queue Worker</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Database -->
+                    <div class="bg-gradient-to-br from-purple-900/30 to-purple-800/10 rounded-xl p-4 border border-purple-700/50">
+                        <h4 class="font-semibold text-purple-400 mb-3 text-sm"><i class="fas fa-database mr-2"></i>Veri Katmani</h4>
+                        <div class="space-y-2">
+                            <div class="bg-purple-900/20 rounded-lg p-2 border border-purple-700/30 text-xs">
+                                <i class="fas fa-database text-purple-400 mr-2"></i>
+                                <span class="text-purple-300">MySQL (encrypted)</span>
+                            </div>
+                            <div class="bg-purple-900/20 rounded-lg p-2 border border-purple-700/30 text-xs">
+                                <i class="fas fa-hdd text-purple-400 mr-2"></i>
+                                <span class="text-purple-300">Encrypted Storage</span>
+                            </div>
+                            <div class="bg-purple-900/20 rounded-lg p-2 border border-purple-700/30 text-xs">
+                                <i class="fas fa-history text-purple-400 mr-2"></i>
+                                <span class="text-purple-300">Backup (on-site)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Outbound Only -->
+                <div class="mt-6 bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h4 class="font-semibold text-white mb-3 text-sm"><i class="fas fa-arrow-right mr-2 text-green-400"></i>Sadece Outbound Trafik (Central'a)</h4>
+                    <div class="grid md:grid-cols-4 gap-3">
+                        <div class="text-center p-2 bg-green-900/20 rounded border border-green-700/30">
+                            <i class="fas fa-heartbeat text-green-400"></i>
+                            <div class="text-xs text-green-300 mt-1">Heartbeat</div>
+                            <div class="text-xs text-slate-500">Her dakika</div>
+                        </div>
+                        <div class="text-center p-2 bg-blue-900/20 rounded border border-blue-700/30">
+                            <i class="fas fa-key text-blue-400"></i>
+                            <div class="text-xs text-blue-300 mt-1">Lisans Check</div>
+                            <div class="text-xs text-slate-500">Gunluk</div>
+                        </div>
+                        <div class="text-center p-2 bg-purple-900/20 rounded border border-purple-700/30">
+                            <i class="fas fa-chart-pie text-purple-400"></i>
+                            <div class="text-xs text-purple-300 mt-1">Anonim Metrik</div>
+                            <div class="text-xs text-slate-500">Saatlik</div>
+                        </div>
+                        <div class="text-center p-2 bg-yellow-900/20 rounded border border-yellow-700/30">
+                            <i class="fas fa-download text-yellow-400"></i>
+                            <div class="text-xs text-yellow-300 mt-1">Update Pull</div>
+                            <div class="text-xs text-slate-500">Manuel</div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-3 text-center">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Hasta verisi ASLA merkeze gitmez - sadece sistem metrikleri (CPU, memory, request count)
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Database Schema Changes -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden">
+            <div class="bg-gradient-to-r from-green-900/50 to-emerald-900/50 px-6 py-4 border-b border-slate-700">
+                <h2 class="text-xl font-bold text-white"><i class="fas fa-database mr-2 text-green-400"></i>Gerekli Veritabani Degisiklikleri</h2>
+            </div>
+            <div class="p-6">
+                <div class="bg-slate-900 rounded-lg p-4 border border-slate-700 font-mono text-sm overflow-x-auto">
+<pre class="text-slate-300"><span class="text-slate-500">-- tenants tablosuna yeni alanlar</span>
+<span class="text-blue-400">ALTER TABLE</span> tenants <span class="text-blue-400">ADD COLUMN</span> deployment_type <span class="text-green-400">ENUM</span>(
+    'shared',           <span class="text-slate-500">-- Tip 1: Mevcut sistem</span>
+    'origin_edge',      <span class="text-slate-500">-- Tip 2: Muzibu modeli</span>
+    'self_hosted',      <span class="text-slate-500">-- Tip 3: Gazete modeli</span>
+    'compliance'        <span class="text-slate-500">-- Tip 4: Hastane modeli</span>
+) <span class="text-blue-400">DEFAULT</span> 'shared';
+
+<span class="text-blue-400">ALTER TABLE</span> tenants <span class="text-blue-400">ADD COLUMN</span> license_key <span class="text-green-400">VARCHAR</span>(64) <span class="text-blue-400">NULL</span>;
+<span class="text-blue-400">ALTER TABLE</span> tenants <span class="text-blue-400">ADD COLUMN</span> edge_config <span class="text-green-400">JSON</span> <span class="text-blue-400">NULL</span>;
+<span class="text-blue-400">ALTER TABLE</span> tenants <span class="text-blue-400">ADD COLUMN</span> last_heartbeat <span class="text-green-400">TIMESTAMP</span> <span class="text-blue-400">NULL</span>;
+<span class="text-blue-400">ALTER TABLE</span> tenants <span class="text-blue-400">ADD COLUMN</span> installed_version <span class="text-green-400">VARCHAR</span>(20) <span class="text-blue-400">NULL</span>;
+
+<span class="text-slate-500">-- Yeni tablo: Satellite sunucu kayitlari</span>
+<span class="text-blue-400">CREATE TABLE</span> tenant_satellites (
+    id <span class="text-green-400">BIGINT</span> <span class="text-blue-400">PRIMARY KEY AUTO_INCREMENT</span>,
+    tenant_id <span class="text-green-400">BIGINT</span> <span class="text-blue-400">NOT NULL</span>,
+    server_type <span class="text-green-400">ENUM</span>('origin', 'edge', 'standalone'),
+    hostname <span class="text-green-400">VARCHAR</span>(255),
+    ip_address <span class="text-green-400">VARCHAR</span>(45),
+    region <span class="text-green-400">VARCHAR</span>(50),
+    is_active <span class="text-green-400">BOOLEAN</span> <span class="text-blue-400">DEFAULT</span> <span class="text-purple-400">TRUE</span>,
+    last_seen <span class="text-green-400">TIMESTAMP</span>,
+    metrics <span class="text-green-400">JSON</span>,
+    <span class="text-blue-400">FOREIGN KEY</span> (tenant_id) <span class="text-blue-400">REFERENCES</span> tenants(id)
+);</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparison Matrix -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden">
+            <div class="bg-gradient-to-r from-indigo-900/50 to-purple-900/50 px-6 py-4 border-b border-slate-700">
+                <h2 class="text-xl font-bold text-white"><i class="fas fa-th mr-2 text-indigo-400"></i>Model Karsilastirma Matrisi</h2>
+            </div>
+            <div class="p-6 overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-slate-400 border-b border-slate-700">
+                            <th class="py-3 text-left">Ozellik</th>
+                            <th class="py-3 text-center bg-slate-700/30">Shared<br><span class="text-xs">KOBİ</span></th>
+                            <th class="py-3 text-center bg-purple-900/20">Origin+Edge<br><span class="text-xs text-purple-400">Muzibu</span></th>
+                            <th class="py-3 text-center bg-blue-900/20">Self-Hosted<br><span class="text-xs text-blue-400">Gazete</span></th>
+                            <th class="py-3 text-center bg-red-900/20">Compliance<br><span class="text-xs text-red-400">Hastane</span></th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-3">Sunucu Sayisi</td>
+                            <td class="py-3 text-center">0 (paylasilmis)</td>
+                            <td class="py-3 text-center text-purple-400">1 + N edge</td>
+                            <td class="py-3 text-center text-blue-400">1</td>
+                            <td class="py-3 text-center text-red-400">1 (izole)</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-3">Sunucu Lokasyonu</td>
+                            <td class="py-3 text-center">Bizim DC</td>
+                            <td class="py-3 text-center text-purple-400">Bizim + Global CDN</td>
+                            <td class="py-3 text-center text-blue-400">Musteri DC</td>
+                            <td class="py-3 text-center text-red-400">Musteri IT Room</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-3">Veri Kontrolu</td>
+                            <td class="py-3 text-center">Bizde</td>
+                            <td class="py-3 text-center text-purple-400">Bizde (origin)</td>
+                            <td class="py-3 text-center text-blue-400">Musteride</td>
+                            <td class="py-3 text-center text-red-400">%100 Musteride</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-3">Guncelleme</td>
+                            <td class="py-3 text-center"><i class="fas fa-check text-green-400"></i> Otomatik</td>
+                            <td class="py-3 text-center"><i class="fas fa-check text-green-400"></i> Otomatik</td>
+                            <td class="py-3 text-center"><i class="fas fa-download text-blue-400"></i> Pull</td>
+                            <td class="py-3 text-center"><i class="fas fa-user text-red-400"></i> Manuel</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-3">Bakim Sorumlusu</td>
+                            <td class="py-3 text-center">Biz</td>
+                            <td class="py-3 text-center text-purple-400">Biz</td>
+                            <td class="py-3 text-center text-blue-400">Musteri IT</td>
+                            <td class="py-3 text-center text-red-400">Musteri IT</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-3">KVKK Uyumu</td>
+                            <td class="py-3 text-center"><i class="fas fa-check text-yellow-400"></i></td>
+                            <td class="py-3 text-center"><i class="fas fa-check text-yellow-400"></i></td>
+                            <td class="py-3 text-center"><i class="fas fa-check text-green-400"></i></td>
+                            <td class="py-3 text-center"><i class="fas fa-check-double text-green-400"></i> Tam</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3">Ornek Musteri</td>
+                            <td class="py-3 text-center text-slate-500">ixtif.com</td>
+                            <td class="py-3 text-center text-purple-400">muzibu.com.tr</td>
+                            <td class="py-3 text-center text-blue-400">gazette.com.tr</td>
+                            <td class="py-3 text-center text-red-400">hastane.gov.tr</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Quick Implementation -->
+        <section class="bg-gradient-to-br from-emerald-900/20 to-green-900/10 border border-green-800/50 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-green-400 mb-4"><i class="fas fa-rocket mr-2"></i>Hizli Baslangic</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-semibold text-white mb-3">1. Hafta - Altyapi</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span>tenants tablosuna <code class="bg-slate-800 px-1 rounded">deployment_type</code> ekle</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span>License verification API olustur</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span>Heartbeat endpoint ekle</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-white mb-3">2. Hafta - Installer</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-blue-400 mt-1"></i>
+                            <span>Self-hosted installer script</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-blue-400 mt-1"></i>
+                            <span>Config generator</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-blue-400 mt-1"></i>
+                            <span>Ilk gazete pilotu</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 mt-12 py-6 text-center text-slate-500 text-sm">
+        <p><i class="fas fa-robot mr-2"></i>Claude AI ile olusturuldu - 1 Ocak 2026</p>
+        <p class="mt-1">Tuufi Multi-Tenant Federation Architecture v2.0</p>
+        <p class="mt-2 text-xs">Guncelleme: Muzibu CDN modeli, Gazete self-hosted modeli eklendi</p>
+    </footer>
+</body>
+</html>

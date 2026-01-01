@@ -69,7 +69,7 @@
 
             <!-- Tablo -->
             <div class="table-responsive">
-                <table class="table table-vcenter card-table table-hover text-nowrap">
+                <table class="table table-vcenter card-table table-hover text-nowrap datatable">
                     <thead>
                         <tr>
                             <th style="width: 40px">
@@ -172,21 +172,26 @@
                                 @endif
                             </td>
                             <td class="text-center">
-                                <div class="btn-group">
+                                <div class="d-flex align-items-center gap-3 justify-content-center">
                                     <a href="{{ route('admin.muzibu.certificate.manage', $cert->id) }}"
-                                        class="btn btn-sm btn-ghost-primary" title="Duzenle">
-                                        <i class="fas fa-edit"></i>
+                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                        title="{{ __('admin.edit') }}"
+                                        style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
+                                        <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                     </a>
-                                    <button type="button" wire:click="toggleValid({{ $cert->id }})"
-                                        class="btn btn-sm btn-ghost-{{ $cert->is_valid ? 'success' : 'danger' }}"
-                                        title="{{ $cert->is_valid ? 'Iptal Et' : 'Gecerli Yap' }}">
-                                        <i class="fas fa-{{ $cert->is_valid ? 'toggle-on' : 'toggle-off' }}"></i>
-                                    </button>
-                                    <button type="button" wire:click="deleteCertificate({{ $cert->id }})"
+                                    <a href="javascript:void(0);" wire:click="toggleValid({{ $cert->id }})"
+                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                        title="{{ $cert->is_valid ? 'Iptal Et' : 'Gecerli Yap' }}"
+                                        style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
+                                        <i class="fa-solid fa-{{ $cert->is_valid ? 'toggle-on' : 'toggle-off' }} {{ $cert->is_valid ? 'link-success' : 'link-danger' }} fa-lg"></i>
+                                    </a>
+                                    <a href="javascript:void(0);" wire:click="deleteCertificate({{ $cert->id }})"
                                         wire:confirm="Bu sertifikayi silmek istediginize emin misiniz?"
-                                        class="btn btn-sm btn-ghost-danger" title="Sil">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                        title="Sil"
+                                        style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
+                                        <i class="fa-solid fa-trash link-danger fa-lg"></i>
+                                    </a>
                                 </div>
                             </td>
                         </tr>

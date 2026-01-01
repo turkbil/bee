@@ -78,7 +78,7 @@
 
             <!-- Tablo -->
             <div class="table-responsive">
-                <table class="table table-vcenter card-table table-hover text-nowrap">
+                <table class="table table-vcenter card-table table-hover text-nowrap datatable">
                     <thead>
                         <tr>
                             <th style="width: 40px">
@@ -176,26 +176,32 @@
                                 @endif
                             </td>
                             <td class="text-center">
-                                <div class="btn-group">
+                                <div class="d-flex align-items-center gap-3 justify-content-center">
                                     <a href="{{ route('admin.muzibu.spot.manage', $spot->id) }}"
-                                        class="btn btn-sm btn-ghost-primary" title="Düzenle">
-                                        <i class="fas fa-edit"></i>
+                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                        title="{{ __('admin.edit') }}"
+                                        style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
+                                        <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                     </a>
-                                    <button type="button" wire:click="toggleEnabled({{ $spot->id }})"
-                                        class="btn btn-sm btn-ghost-{{ $spot->is_enabled ? 'success' : 'secondary' }}"
-                                        title="{{ $spot->is_enabled ? 'Devre dışı bırak' : 'Etkinleştir' }}">
-                                        <i class="fas fa-{{ $spot->is_enabled ? 'toggle-on' : 'toggle-off' }}"></i>
-                                    </button>
-                                    <button type="button" wire:click="toggleArchived({{ $spot->id }})"
-                                        class="btn btn-sm btn-ghost-{{ $spot->is_archived ? 'dark' : 'warning' }}"
-                                        title="{{ $spot->is_archived ? 'Arşivden çıkar' : 'Arşivle' }}">
-                                        <i class="fas fa-{{ $spot->is_archived ? 'box-open' : 'archive' }}"></i>
-                                    </button>
-                                    <button type="button" wire:click="deleteSpot({{ $spot->id }})"
+                                    <a href="javascript:void(0);" wire:click="toggleEnabled({{ $spot->id }})"
+                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                        title="{{ $spot->is_enabled ? 'Devre dışı bırak' : 'Etkinleştir' }}"
+                                        style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
+                                        <i class="fa-solid fa-{{ $spot->is_enabled ? 'toggle-on' : 'toggle-off' }} {{ $spot->is_enabled ? 'link-success' : 'link-secondary' }} fa-lg"></i>
+                                    </a>
+                                    <a href="javascript:void(0);" wire:click="toggleArchived({{ $spot->id }})"
+                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                        title="{{ $spot->is_archived ? 'Arşivden çıkar' : 'Arşivle' }}"
+                                        style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
+                                        <i class="fa-solid fa-{{ $spot->is_archived ? 'box-open' : 'archive' }} {{ $spot->is_archived ? 'link-warning' : 'link-secondary' }} fa-lg"></i>
+                                    </a>
+                                    <a href="javascript:void(0);" wire:click="deleteSpot({{ $spot->id }})"
                                         wire:confirm="Bu spotu silmek istediğinize emin misiniz?"
-                                        class="btn btn-sm btn-ghost-danger" title="Sil">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                        title="Sil"
+                                        style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
+                                        <i class="fa-solid fa-trash link-danger fa-lg"></i>
+                                    </a>
                                 </div>
                             </td>
                         </tr>

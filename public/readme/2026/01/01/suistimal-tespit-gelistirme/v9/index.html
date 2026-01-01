@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Suistimal Tespiti - Final</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="mb-10 text-center border-b border-slate-700 pb-8">
+            <h1 class="text-3xl font-bold mb-2">Suistimal Tespiti</h1>
+            <p class="text-slate-400">1 Abonelik = 1 Cihaz = 1 Yayın</p>
+        </header>
+
+        <!-- Ana Kural -->
+        <section class="mb-10">
+            <div class="bg-gradient-to-r from-red-900/40 to-slate-800 border-2 border-red-500 rounded-xl p-6 text-center">
+                <h2 class="text-2xl font-bold text-white mb-4">Temel Kural</h2>
+                <p class="text-xl text-red-300">1 Abonelik = 1 Aktif Yayın</p>
+                <p class="text-slate-400 mt-2">2 hoparlöre ayrı yayın = 2 abonelik gerektirir</p>
+            </div>
+        </section>
+
+        <!-- 3 Pattern -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6">Tespit Edilecek Suistimal Türleri</h2>
+
+            <div class="space-y-6">
+
+                <!-- Pattern 1: Ping-Pong -->
+                <div class="bg-gradient-to-r from-orange-900/30 to-slate-800 border-l-4 border-orange-500 rounded-r-xl p-6">
+                    <div class="flex items-start gap-4">
+                        <span class="bg-orange-500 text-white w-14 h-14 rounded-xl flex items-center justify-center text-2xl shrink-0">
+                            <i class="fas fa-sync-alt"></i>
+                        </span>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-orange-400 mb-2">1. Ping-Pong Pattern</h3>
+                            <p class="text-slate-400 mb-4">Herhangi bir veride A → B → A döngüsü = Hesap paylaşımı</p>
+
+                            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                                <div class="bg-slate-900 rounded-lg p-4">
+                                    <p class="text-orange-300 font-bold mb-2">Kontrol Edilecek Veriler:</p>
+                                    <ul class="text-slate-400 space-y-1">
+                                        <li>• IP adresi</li>
+                                        <li>• Browser (Chrome, Safari...)</li>
+                                        <li>• Platform (Windows, macOS...)</li>
+                                        <li>• Device (Desktop, Mobile)</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-slate-900 rounded-lg p-4">
+                                    <p class="text-orange-300 font-bold mb-2">Örnek:</p>
+                                    <p class="text-slate-400 font-mono text-xs">
+                                        Chrome → Safari → Chrome<br>
+                                        Windows → macOS → Windows<br>
+                                        IP-A → IP-B → IP-A
+                                    </p>
+                                    <p class="text-red-400 mt-2">= SUİSTİMAL</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 bg-yellow-900/20 border border-yellow-700 rounded-lg p-3 text-sm">
+                                <p class="text-yellow-400"><i class="fas fa-info-circle mr-2"></i>Not: IP dinamik olabilir. Tek başına IP değişimi yeterli değil, döngü olmalı.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern 2: Eş Zamanlı -->
+                <div class="bg-gradient-to-r from-red-900/30 to-slate-800 border-l-4 border-red-500 rounded-r-xl p-6">
+                    <div class="flex items-start gap-4">
+                        <span class="bg-red-500 text-white w-14 h-14 rounded-xl flex items-center justify-center text-2xl shrink-0">
+                            <i class="fas fa-clone"></i>
+                        </span>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-red-400 mb-2">2. Eş Zamanlı Farklı Kaynak</h3>
+                            <p class="text-slate-400 mb-4">Aynı anda 2 farklı IP/device/browser = Kesin suistimal</p>
+
+                            <div class="bg-slate-900 rounded-lg p-4 text-sm">
+                                <p class="text-red-300 font-bold mb-2">Örnek:</p>
+                                <p class="text-slate-400 font-mono text-xs">
+                                    10:00-10:05 Şarkı A | IP: 92.44.x | Chrome<br>
+                                    10:02-10:07 Şarkı B | IP: 88.230.x | Safari
+                                </p>
+                                <p class="text-red-400 mt-2">= Aynı anda 2 farklı lokasyon = SUİSTİMAL</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern 3: Çoklu Yayın (Aynı PC, 2 Hoparlör) -->
+                <div class="bg-gradient-to-r from-purple-900/30 to-slate-800 border-l-4 border-purple-500 rounded-r-xl p-6">
+                    <div class="flex items-start gap-4">
+                        <span class="bg-purple-500 text-white w-14 h-14 rounded-xl flex items-center justify-center text-2xl shrink-0">
+                            <i class="fas fa-broadcast-tower"></i>
+                        </span>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-purple-400 mb-2">3. Çoklu Yayın (Split Stream)</h3>
+                            <p class="text-slate-400 mb-4">Aynı PC'den özel yazılımla 2 ayrı hoparlöre yayın</p>
+
+                            <div class="bg-slate-900 rounded-lg p-4 mb-4">
+                                <p class="text-purple-300 font-bold mb-2">Nasıl Çalışıyor?</p>
+                                <div class="flex items-center gap-4 text-sm">
+                                    <div class="bg-slate-800 p-3 rounded-lg text-center">
+                                        <i class="fas fa-laptop text-blue-400 text-2xl mb-2"></i>
+                                        <p class="text-slate-400">1 PC</p>
+                                    </div>
+                                    <i class="fas fa-arrow-right text-slate-600"></i>
+                                    <div class="bg-slate-800 p-3 rounded-lg text-center">
+                                        <i class="fas fa-code text-yellow-400 text-2xl mb-2"></i>
+                                        <p class="text-slate-400">Özel Yazılım</p>
+                                    </div>
+                                    <i class="fas fa-arrow-right text-slate-600"></i>
+                                    <div class="bg-slate-800 p-3 rounded-lg text-center">
+                                        <i class="fas fa-volume-up text-green-400 text-2xl mb-2"></i>
+                                        <p class="text-slate-400">Hoparlör 1</p>
+                                    </div>
+                                    <div class="bg-slate-800 p-3 rounded-lg text-center">
+                                        <i class="fas fa-volume-up text-green-400 text-2xl mb-2"></i>
+                                        <p class="text-slate-400">Hoparlör 2</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-900 rounded-lg p-4 text-sm">
+                                <p class="text-purple-300 font-bold mb-2">Tespit Nasıl?</p>
+                                <p class="text-slate-400 mb-2">Aynı fingerprint (IP + Browser + Platform) ama:</p>
+                                <ul class="text-slate-400 space-y-1">
+                                    <li>• Şarkılar aynı anda bitiyor (senkronize)</li>
+                                    <li>• Süreler çok yakın (16, 17, 18, 18, 20, 21 dk gibi)</li>
+                                    <li>• Next tuşu hiç kullanılmamış</li>
+                                    <li>• Her şarkı tam sonuna kadar gitmiş</li>
+                                    <li>• 2-3 dk'lık şarkılarda bile tutarlı pattern</li>
+                                </ul>
+                            </div>
+
+                            <div class="mt-4 bg-purple-900/20 border border-purple-700 rounded-lg p-4">
+                                <p class="text-purple-300 font-bold mb-2">Örnek Timeline:</p>
+                                <div class="font-mono text-xs text-slate-400 space-y-1">
+                                    <p>Stream 1: Şarkı A (3:24) → Şarkı B (2:58) → Şarkı C (4:12)</p>
+                                    <p>Stream 2: Şarkı X (3:24) → Şarkı Y (2:58) → Şarkı Z (4:12)</p>
+                                </div>
+                                <p class="text-purple-400 mt-2">→ Aynı süreler, aynı pattern = 2 paralel yayın!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Çoklu Yayın Detay -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-purple-500/20 text-purple-400 w-10 h-10 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-search"></i>
+                </span>
+                Çoklu Yayın Tespiti (Detay)
+            </h2>
+
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                <h3 class="font-bold text-white mb-4">Tespit Kriterleri</h3>
+
+                <div class="space-y-4">
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <h4 class="text-purple-400 font-bold mb-2">1. Aynı Fingerprint'ten Çok Fazla Play</h4>
+                        <p class="text-slate-400 text-sm">Normal: Günde 300-400 şarkı (tek hoparlör, 10-12 saat)</p>
+                        <p class="text-slate-400 text-sm">Şüpheli: Günde 600-800+ şarkı (2 hoparlör, paralel yayın)</p>
+                    </div>
+
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <h4 class="text-purple-400 font-bold mb-2">2. Şarkı Sürelerinin Tutarlılığı</h4>
+                        <p class="text-slate-400 text-sm mb-2">Her şarkı tam bitiyor + aralar çok tutarlı:</p>
+                        <div class="font-mono text-xs bg-slate-800 p-3 rounded">
+                            <p class="text-slate-400">listened_duration = song.duration (her seferinde)</p>
+                            <p class="text-slate-400">gap_between_songs = 0-2 saniye (sürekli aynı)</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <h4 class="text-purple-400 font-bold mb-2">3. Next/Skip Kullanımı = 0</h4>
+                        <p class="text-slate-400 text-sm">İnsan dinlerken bazen skip eder, bazen yarıda bırakır.</p>
+                        <p class="text-slate-400 text-sm">Otomatik yayın: Hiç müdahale yok, playlist olduğu gibi çalıyor.</p>
+                    </div>
+
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <h4 class="text-purple-400 font-bold mb-2">4. Overlap (Aynı Fingerprint)</h4>
+                        <p class="text-slate-400 text-sm">Aynı IP/browser/platform'dan aynı anda 2 şarkı çalıyorsa:</p>
+                        <p class="text-red-400 text-sm mt-1">→ 2 sekme/pencere açık = 2 hoparlöre yayın</p>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-red-900/20 border border-red-700 rounded-lg p-4">
+                    <p class="text-red-400 font-bold">Sonuç:</p>
+                    <p class="text-slate-300">Bu pattern görüldüğünde: 1 PC ile 2 farklı yere yayın yapılıyor.</p>
+                    <p class="text-slate-300">1 abonelik = 1 yayın. 2 hoparlör = 2 abonelik gerekli!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özet Tablo -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6">Özet</h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-4 text-slate-400">Pattern</th>
+                            <th class="text-left py-4 text-slate-400">Tespit</th>
+                            <th class="text-left py-4 text-slate-400">Anlam</th>
+                            <th class="text-center py-4 text-slate-400">Sonuç</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-4 font-bold text-orange-400">Ping-Pong</td>
+                            <td>A → B → A döngüsü</td>
+                            <td>2 kişi sırayla kullanıyor</td>
+                            <td class="text-center"><span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs">SUİSTİMAL</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-4 font-bold text-red-400">Eş Zamanlı Farklı</td>
+                            <td>Aynı anda 2 farklı IP/device</td>
+                            <td>2 farklı lokasyon</td>
+                            <td class="text-center"><span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs">SUİSTİMAL</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-4 font-bold text-purple-400">Çoklu Yayın</td>
+                            <td>Aynı fingerprint + overlap veya çok yüksek hacim + tutarlı süreler</td>
+                            <td>1 PC → 2 hoparlör</td>
+                            <td class="text-center"><span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs">SUİSTİMAL</span></td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 font-bold text-green-400">Normal</td>
+                            <td>Tek fingerprint, ara sıra skip, değişken aralar</td>
+                            <td>Normal kullanım</td>
+                            <td class="text-center"><span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs">TEMİZ</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Implementasyon -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6">Implementasyon</h2>
+
+            <div class="bg-emerald-900/20 border border-emerald-700 rounded-xl p-6">
+                <div class="space-y-4">
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <code class="text-yellow-400 font-mono">detectPingPong($field)</code>
+                        <p class="text-slate-400 text-sm mt-1">IP, browser, platform, device için A→B→A pattern kontrolü</p>
+                    </div>
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <code class="text-yellow-400 font-mono">detectConcurrentDifferentSource()</code>
+                        <p class="text-slate-400 text-sm mt-1">Aynı anda farklı fingerprint'lerden yayın var mı?</p>
+                    </div>
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <code class="text-yellow-400 font-mono">detectSplitStream()</code>
+                        <p class="text-slate-400 text-sm mt-1">Aynı fingerprint + (overlap VEYA yüksek hacim + tutarlı süreler + skip yok)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-800 pt-8">
+            <p>Muzibu Suistimal Tespiti v9</p>
+            <p class="mt-1">Ping-Pong + Eş Zamanlı + Çoklu Yayın Tespiti</p>
+        </footer>
+    </div>
+</body>
+</html>

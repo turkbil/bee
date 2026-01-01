@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B2B Suistimal Tespit - Detaylı Fingerprint Planı v3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="mb-10 text-center">
+            <div class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-400 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                <i class="fas fa-building"></i>
+                <span>B2B Odaklı Tespit</span>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">Hesap Paylaşımı Tespiti - v3</h1>
+            <p class="text-slate-400">Browser + Device + IP ile Detaylı Analiz</p>
+        </header>
+
+        <!-- B2B Mantığı -->
+        <section class="bg-blue-900/20 border border-blue-700 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-blue-400 mb-4">
+                <i class="fas fa-store mr-2"></i>B2B İşletme Mantığı
+            </h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-bold text-green-400 mb-2">Normal Kullanım</h3>
+                    <ul class="text-sm text-slate-400 space-y-2">
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>1 işletme = 1 sabit IP</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Aynı IP'den birden fazla cihaz (farklı hoparlörler)</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Gün boyu kesintisiz müzik</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Playlist loop normal</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-bold text-red-400 mb-2">Suistimal Belirtileri</h3>
+                    <ul class="text-sm text-slate-400 space-y-2">
+                        <li><i class="fas fa-times text-red-500 mr-2"></i>Aynı anda FARKLI IP'lerden dinleme</li>
+                        <li><i class="fas fa-times text-red-500 mr-2"></i>Kısa sürede farklı şehir/IP'ye geçiş</li>
+                        <li><i class="fas fa-times text-red-500 mr-2"></i>Aynı anda 3+ farklı cihaz/tarayıcı</li>
+                        <li><i class="fas fa-times text-red-500 mr-2"></i>Overlap + farklı IP = kesin paylaşım</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mevcut Fingerprint Verileri -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-slate-200 mb-4">
+                <i class="fas fa-fingerprint mr-2 text-purple-400"></i>Kullanılacak Fingerprint Verileri
+            </h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 text-slate-400">Veri</th>
+                            <th class="text-left py-3 text-slate-400">Örnek Değerler</th>
+                            <th class="text-left py-3 text-slate-400">Tespit Gücü</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 font-mono text-yellow-400">ip_address</td>
+                            <td>92.44.171.31, 88.230.89.180</td>
+                            <td><span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs">YÜKSEK</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 font-mono text-yellow-400">browser</td>
+                            <td>Chrome, Safari, Firefox, Edge, Opera, Brave, Vivaldi</td>
+                            <td><span class="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded text-xs">ORTA</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 font-mono text-yellow-400">platform</td>
+                            <td>Windows, macOS, Linux, iOS, Android</td>
+                            <td><span class="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded text-xs">ORTA</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 font-mono text-yellow-400">device_type</td>
+                            <td>desktop, mobile, tablet</td>
+                            <td><span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">DÜŞÜK</span></td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 font-mono text-yellow-400">user_agent</td>
+                            <td>Tam UA string (versiyon bilgisi)</td>
+                            <td><span class="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded text-xs">ORTA</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Tespit Kuralları -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-red-500/20 text-red-400 w-10 h-10 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-gavel"></i>
+                </span>
+                Tespit Kuralları (Öncelik Sırasıyla)
+            </h2>
+
+            <div class="space-y-4">
+
+                <!-- Kural 1: Farklı IP Overlap -->
+                <div class="bg-gradient-to-r from-red-900/40 to-slate-800/50 border-l-4 border-red-500 rounded-r-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <span class="bg-red-500 text-white w-10 h-10 rounded-lg flex items-center justify-center shrink-0 font-bold">1</span>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="font-bold text-lg text-red-300">Farklı IP'den Eş Zamanlı Dinleme</h3>
+                                <span class="bg-red-500/30 text-red-300 px-2 py-1 rounded text-xs">KESİN SUİSTİMAL</span>
+                            </div>
+                            <p class="text-slate-400 text-sm mb-3">Overlap tespiti + IP farklı = Hesap kesinlikle paylaşılıyor</p>
+                            <div class="bg-slate-900 rounded-lg p-4 text-sm font-mono">
+                                <p class="text-slate-400">Play 1: 10:00-10:03 | IP: <span class="text-yellow-400">92.44.171.31</span> | Chrome/macOS</p>
+                                <p class="text-slate-400">Play 2: 10:01-10:04 | IP: <span class="text-red-400">88.230.89.180</span> | Chrome/Windows</p>
+                                <p class="text-red-400 mt-2 font-bold">→ Aynı anda 2 farklı IP = 2 farklı lokasyon!</p>
+                            </div>
+                            <div class="mt-3 grid grid-cols-3 gap-3 text-xs">
+                                <div class="bg-slate-800 p-2 rounded text-center">
+                                    <span class="text-slate-500">Güven</span>
+                                    <p class="text-red-400 font-bold">%99</p>
+                                </div>
+                                <div class="bg-slate-800 p-2 rounded text-center">
+                                    <span class="text-slate-500">Aksiyon</span>
+                                    <p class="text-red-400 font-bold">Uyarı</p>
+                                </div>
+                                <div class="bg-slate-800 p-2 rounded text-center">
+                                    <span class="text-slate-500">Skor</span>
+                                    <p class="text-red-400 font-bold">+500</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kural 2: Aynı IP Farklı Platform -->
+                <div class="bg-gradient-to-r from-orange-900/40 to-slate-800/50 border-l-4 border-orange-500 rounded-r-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <span class="bg-orange-500 text-white w-10 h-10 rounded-lg flex items-center justify-center shrink-0 font-bold">2</span>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="font-bold text-lg text-orange-300">Aynı IP + Eş Zamanlı Farklı Platform</h3>
+                                <span class="bg-orange-500/30 text-orange-300 px-2 py-1 rounded text-xs">YÜKSEK ŞÜPHELİ</span>
+                            </div>
+                            <p class="text-slate-400 text-sm mb-3">Aynı IP'den ama Windows + macOS aynı anda = 2 farklı bilgisayar</p>
+                            <div class="bg-slate-900 rounded-lg p-4 text-sm font-mono">
+                                <p class="text-slate-400">Play 1: 10:00-10:03 | IP: 92.44.171.31 | Chrome/<span class="text-yellow-400">Windows</span></p>
+                                <p class="text-slate-400">Play 2: 10:01-10:04 | IP: 92.44.171.31 | Safari/<span class="text-orange-400">macOS</span></p>
+                                <p class="text-orange-400 mt-2 font-bold">→ Aynı ağda 2 farklı bilgisayar = İzin veriliyor mu?</p>
+                            </div>
+                            <div class="mt-3 text-xs text-slate-500">
+                                <strong>Not:</strong> B2B'de işletme 2 ayrı bilgisayardan çalıyor olabilir.
+                                Abonelik planına göre değerlendir.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kural 3: Hızlı IP Değişimi -->
+                <div class="bg-gradient-to-r from-yellow-900/40 to-slate-800/50 border-l-4 border-yellow-500 rounded-r-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <span class="bg-yellow-500 text-white w-10 h-10 rounded-lg flex items-center justify-center shrink-0 font-bold">3</span>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="font-bold text-lg text-yellow-300">Hızlı IP Değişimi (Ardışık Play)</h3>
+                                <span class="bg-yellow-500/30 text-yellow-300 px-2 py-1 rounded text-xs">ŞÜPHELİ</span>
+                            </div>
+                            <p class="text-slate-400 text-sm mb-3">Ardışık 2 play arasında 10 dakika içinde farklı IP</p>
+                            <div class="bg-slate-900 rounded-lg p-4 text-sm font-mono">
+                                <p class="text-slate-400">10:00 - Play | IP: <span class="text-green-400">92.44.171.31</span></p>
+                                <p class="text-slate-400">10:08 - Play | IP: <span class="text-yellow-400">88.230.89.180</span></p>
+                                <p class="text-yellow-400 mt-2">→ 8 dakikada IP değişti. Hesap başkasına mı geçti?</p>
+                            </div>
+                            <div class="mt-3 grid grid-cols-2 gap-3 text-xs">
+                                <div class="bg-slate-800 p-2 rounded">
+                                    <span class="text-slate-500">Eşik:</span>
+                                    <span class="text-yellow-400 ml-2">10 dakika</span>
+                                </div>
+                                <div class="bg-slate-800 p-2 rounded">
+                                    <span class="text-slate-500">Skor:</span>
+                                    <span class="text-yellow-400 ml-2">+100 / değişim</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kural 4: Günlük Benzersiz IP Sayısı -->
+                <div class="bg-gradient-to-r from-purple-900/40 to-slate-800/50 border-l-4 border-purple-500 rounded-r-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <span class="bg-purple-500 text-white w-10 h-10 rounded-lg flex items-center justify-center shrink-0 font-bold">4</span>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="font-bold text-lg text-purple-300">Günlük Benzersiz IP Sayısı</h3>
+                                <span class="bg-purple-500/30 text-purple-300 px-2 py-1 rounded text-xs">İSTATİSTİK</span>
+                            </div>
+                            <p class="text-slate-400 text-sm mb-3">İşletme genelde 1-2 IP kullanır (ana + yedek hat)</p>
+                            <div class="flex gap-4 text-sm">
+                                <div class="bg-slate-900 p-3 rounded-lg flex-1 text-center">
+                                    <p class="text-green-400 font-bold">1-2 IP</p>
+                                    <p class="text-slate-500">Normal</p>
+                                </div>
+                                <div class="bg-slate-900 p-3 rounded-lg flex-1 text-center">
+                                    <p class="text-yellow-400 font-bold">3-4 IP</p>
+                                    <p class="text-slate-500">Şüpheli</p>
+                                </div>
+                                <div class="bg-slate-900 p-3 rounded-lg flex-1 text-center">
+                                    <p class="text-red-400 font-bold">5+ IP</p>
+                                    <p class="text-slate-500">Suistimal</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kural 5: Platform/Browser Çeşitliliği -->
+                <div class="bg-gradient-to-r from-blue-900/40 to-slate-800/50 border-l-4 border-blue-500 rounded-r-xl p-5">
+                    <div class="flex items-start gap-4">
+                        <span class="bg-blue-500 text-white w-10 h-10 rounded-lg flex items-center justify-center shrink-0 font-bold">5</span>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="font-bold text-lg text-blue-300">Platform + Browser Çeşitliliği</h3>
+                                <span class="bg-blue-500/30 text-blue-300 px-2 py-1 rounded text-xs">İSTATİSTİK</span>
+                            </div>
+                            <p class="text-slate-400 text-sm mb-3">Günde kaç farklı platform/browser kombinasyonu?</p>
+                            <div class="bg-slate-900 rounded-lg p-4 text-sm">
+                                <p class="text-green-400 mb-1">Normal işletme:</p>
+                                <p class="text-slate-400">Windows/Chrome (tek bilgisayar)</p>
+                                <p class="text-yellow-400 mt-3 mb-1">Şüpheli:</p>
+                                <p class="text-slate-400">Windows/Chrome + macOS/Safari + iOS/Safari + Android/Chrome</p>
+                                <p class="text-slate-500 text-xs mt-2">→ 4 farklı platform = 4 farklı kişi mi?</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Fingerprint Birleştirme -->
+        <section class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-slate-200 mb-4">
+                <i class="fas fa-layer-group mr-2 text-cyan-400"></i>Fingerprint Birleştirme Stratejisi
+            </h2>
+            <div class="space-y-4">
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <h3 class="font-bold text-cyan-400 mb-2">Mevcut device_key</h3>
+                    <p class="font-mono text-sm text-slate-400">platform-browser-IP_son_2_oktet</p>
+                    <p class="text-slate-500 text-xs mt-1">Örnek: macOS-Chrome-171.31</p>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <h3 class="font-bold text-green-400 mb-2">Önerilen device_key (Geliştirilmiş)</h3>
+                    <p class="font-mono text-sm text-slate-400">platform-browser-IP_tam</p>
+                    <p class="text-slate-500 text-xs mt-1">Örnek: macOS-Chrome-92.44.171.31</p>
+                    <p class="text-yellow-400 text-xs mt-2">→ Tam IP kullanarak daha kesin cihaz tanıma</p>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <h3 class="font-bold text-purple-400 mb-2">Session Fingerprint (Overlap için)</h3>
+                    <p class="font-mono text-sm text-slate-400">IP_tam + platform</p>
+                    <p class="text-slate-500 text-xs mt-1">Örnek: 92.44.171.31-macOS</p>
+                    <p class="text-slate-500 text-xs mt-1">Aynı session_key ile overlap = aynı cihazda 2 sekme (kabul edilebilir)</p>
+                    <p class="text-red-400 text-xs mt-1">Farklı session_key ile overlap = farklı cihaz/lokasyon (suistimal)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skor Sistemi -->
+        <section class="bg-gradient-to-r from-slate-800 to-slate-900 border border-slate-700 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-slate-200 mb-4">
+                <i class="fas fa-calculator mr-2 text-yellow-400"></i>Abuse Skor Hesaplama
+            </h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 text-slate-400">Tespit</th>
+                            <th class="text-right py-3 text-slate-400">Skor</th>
+                            <th class="text-left py-3 text-slate-400 pl-4">Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3">Farklı IP overlap</td>
+                            <td class="text-right font-mono text-red-400">+500</td>
+                            <td class="pl-4 text-slate-500">Her overlap için</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3">Aynı IP farklı platform overlap</td>
+                            <td class="text-right font-mono text-orange-400">+200</td>
+                            <td class="pl-4 text-slate-500">Her overlap için</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3">Hızlı IP değişimi (&lt;10dk)</td>
+                            <td class="text-right font-mono text-yellow-400">+100</td>
+                            <td class="pl-4 text-slate-500">Her değişim için</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3">Günlük 5+ benzersiz IP</td>
+                            <td class="text-right font-mono text-purple-400">+150</td>
+                            <td class="pl-4 text-slate-500">Gün başına</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3">Günlük 4+ platform/browser</td>
+                            <td class="text-right font-mono text-blue-400">+100</td>
+                            <td class="pl-4 text-slate-500">Gün başına</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 grid grid-cols-3 gap-4 text-center text-sm">
+                <div class="bg-green-900/30 border border-green-700 rounded-lg p-3">
+                    <p class="text-green-400 font-bold">0-299</p>
+                    <p class="text-slate-400">Temiz</p>
+                </div>
+                <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-3">
+                    <p class="text-yellow-400 font-bold">300-599</p>
+                    <p class="text-slate-400">Şüpheli</p>
+                </div>
+                <div class="bg-red-900/30 border border-red-700 rounded-lg p-3">
+                    <p class="text-red-400 font-bold">600+</p>
+                    <p class="text-slate-400">Suistimal</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Yapılacaklar -->
+        <section class="bg-emerald-900/20 border border-emerald-700 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-emerald-400 mb-4">
+                <i class="fas fa-code mr-2"></i>AbuseDetectionService'e Eklenecekler
+            </h2>
+            <ul class="space-y-3 text-slate-300">
+                <li class="flex items-start gap-3">
+                    <span class="text-emerald-400 mt-1"><i class="far fa-square"></i></span>
+                    <div>
+                        <span class="font-bold">detectDifferentIpOverlap()</span>
+                        <p class="text-slate-500 text-sm">Mevcut overlap'leri IP bazlı grupla, farklı IP = yüksek skor</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-emerald-400 mt-1"><i class="far fa-square"></i></span>
+                    <div>
+                        <span class="font-bold">detectRapidIpSwitch()</span>
+                        <p class="text-slate-500 text-sm">Ardışık play'lerde 10dk içinde IP değişimi tespit</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-emerald-400 mt-1"><i class="far fa-square"></i></span>
+                    <div>
+                        <span class="font-bold">detectMultiPlatformOverlap()</span>
+                        <p class="text-slate-500 text-sm">Aynı IP'den farklı platform overlap</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-emerald-400 mt-1"><i class="far fa-square"></i></span>
+                    <div>
+                        <span class="font-bold">Overlap türlerini ayır</span>
+                        <p class="text-slate-500 text-sm">same_ip_same_platform, same_ip_diff_platform, diff_ip</p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-800 pt-6">
+            <p>Claude AI - B2B Suistimal Tespit Planı v3</p>
+            <p class="mt-1">IP + Browser + Platform = Hesap Paylaşımı Tespiti</p>
+        </footer>
+    </div>
+</body>
+</html>

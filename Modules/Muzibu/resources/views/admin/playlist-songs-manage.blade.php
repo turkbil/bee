@@ -119,6 +119,10 @@ $(document).ready(function() {
     let availableSongsHasMore = true;
     let currentSearch = '';
 
+    // Search cache - aynı aramaları tekrar yapmamak için
+    const searchCache = new Map();
+    const CACHE_TTL = 30000; // 30 saniye cache (backend ile senkron)
+
     // Playlist songs infinite scroll değişkenleri
     let playlistSongsOffset = 0;
     let playlistSongsLoading = false;
@@ -143,7 +147,7 @@ $(document).ready(function() {
         });
     }
 
-    // Kullanılabilir şarkıları yükle (Infinite Scroll)
+    // Kullanılabilir şarkıları yükle (Infinite Scroll + Cache)
     function loadAvailableSongs(search = '', append = false) {
         if (availableSongsLoading) return;
 
@@ -156,6 +160,19 @@ $(document).ready(function() {
         }
 
         if (!availableSongsHasMore && append) return;
+
+        // Cache key oluştur
+        const cacheKey = `${search}_${availableSongsOffset}`;
+        const cached = searchCache.get(cacheKey);
+
+        // Cache varsa ve geçerli ise kullan
+        if (cached && (Date.now() - cached.time < CACHE_TTL) && !append) {
+            availableSongs = cached.data;
+            availableSongsHasMore = cached.hasMore;
+            renderAvailableSongs(false);
+            availableSongsOffset = cached.data.length;
+            return;
+        }
 
         availableSongsLoading = true;
 
@@ -188,9 +205,15 @@ $(document).ready(function() {
                 availableSongsLoading = false;
                 $('#loading-more').remove();
 
-                if (data.length < 50) {
-                    availableSongsHasMore = false;
-                }
+                const hasMore = data.length >= 50;
+                availableSongsHasMore = hasMore;
+
+                // Cache'e kaydet
+                searchCache.set(cacheKey, {
+                    data: data,
+                    hasMore: hasMore,
+                    time: Date.now()
+                });
 
                 if (append) {
                     // Append to existing
@@ -313,14 +336,24 @@ $(document).ready(function() {
 
                     html += `
                         <div class="list-group-item list-group-item-action" data-song-id="${song.id}">
-                            <div class="song-row song-row-available">
-                                ${playBtn}
-                                <span class="song-title">${song.title}</span>
-                                <span class="song-artist">${song.artist || ''}</span>
-                                <span class="song-duration">${song.duration || ''}</span>
-                                <button class="btn-mini btn-mini-success add-song-btn" data-song-id="${song.id}" title="Ekle">
-                                    <i class="fas fa-plus"></i>
-                                </button>
+                            <div class="song-item">
+                                <div class="song-play">${playBtn}</div>
+                                <div class="song-content">
+                                    <div class="song-row1">
+                                        <span class="col-6" title="${song.title}">${song.title}</span>
+                                        <span class="col-6" title="${song.artist || ''}">${song.artist || '-'}</span>
+                                    </div>
+                                    <div class="song-row2">
+                                        <span class="col-6" title="${song.album || ''}">${song.album || '-'}</span>
+                                        <span class="col-6" title="${song.genre || ''}">${song.genre || '-'}</span>
+                                    </div>
+                                </div>
+                                <div class="song-action">
+                                    <span class="song-duration">${song.duration || ''}</span>
+                                    <button class="btn-mini btn-mini-success add-song-btn" data-song-id="${song.id}" title="Ekle">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -338,14 +371,24 @@ $(document).ready(function() {
 
                 html += `
                     <div class="list-group-item list-group-item-action" data-song-id="${song.id}">
-                        <div class="song-row song-row-available">
-                            ${playBtn}
-                            <span class="song-title">${song.title}</span>
-                            <span class="song-artist">${song.artist || ''}</span>
-                            <span class="song-duration">${song.duration || ''}</span>
-                            <button class="btn-mini btn-mini-success add-song-btn" data-song-id="${song.id}" title="Ekle">
-                                <i class="fas fa-plus"></i>
-                            </button>
+                        <div class="song-item">
+                            <div class="song-play">${playBtn}</div>
+                            <div class="song-content">
+                                <div class="song-row1">
+                                    <span class="col-6" title="${song.title}">${song.title}</span>
+                                    <span class="col-6" title="${song.artist || ''}">${song.artist || '-'}</span>
+                                </div>
+                                <div class="song-row2">
+                                    <span class="col-6" title="${song.album || ''}">${song.album || '-'}</span>
+                                    <span class="col-6" title="${song.genre || ''}">${song.genre || '-'}</span>
+                                </div>
+                            </div>
+                            <div class="song-action">
+                                <span class="song-duration">${song.duration || ''}</span>
+                                <button class="btn-mini btn-mini-success add-song-btn" data-song-id="${song.id}" title="Ekle">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -389,16 +432,26 @@ $(document).ready(function() {
 
                     html += `
                         <div class="list-group-item sortable-item" data-song-id="${song.id}" data-position="${startIndex + index}">
-                            <div class="song-row song-row-playlist">
+                            <div class="song-item">
                                 <i class="fas fa-grip-vertical sortable-handle"></i>
                                 <span class="song-index">${startIndex + index + 1}</span>
-                                ${playBtn}
-                                <span class="song-title">${song.title}</span>
-                                <span class="song-artist">${song.artist || ''}</span>
-                                <span class="song-duration">${song.duration || ''}</span>
-                                <button class="btn-mini btn-mini-danger remove-song-btn" data-song-id="${song.id}" title="Çıkar">
-                                    <i class="fas fa-times"></i>
-                                </button>
+                                <div class="song-play">${playBtn}</div>
+                                <div class="song-content">
+                                    <div class="song-row1">
+                                        <span class="col-6" title="${song.title}">${song.title}</span>
+                                        <span class="col-6" title="${song.artist || ''}">${song.artist || '-'}</span>
+                                    </div>
+                                    <div class="song-row2">
+                                        <span class="col-6" title="${song.album || ''}">${song.album || '-'}</span>
+                                        <span class="col-6" title="${song.genre || ''}">${song.genre || '-'}</span>
+                                    </div>
+                                </div>
+                                <div class="song-action">
+                                    <span class="song-duration">${song.duration || ''}</span>
+                                    <button class="btn-mini btn-mini-danger remove-song-btn" data-song-id="${song.id}" title="Çıkar">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -416,16 +469,26 @@ $(document).ready(function() {
 
                 html += `
                     <div class="list-group-item sortable-item" data-song-id="${song.id}" data-position="${index}">
-                        <div class="song-row song-row-playlist">
+                        <div class="song-item">
                             <i class="fas fa-grip-vertical sortable-handle"></i>
                             <span class="song-index">${index + 1}</span>
-                            ${playBtn}
-                            <span class="song-title">${song.title}</span>
-                            <span class="song-artist">${song.artist || ''}</span>
-                            <span class="song-duration">${song.duration || ''}</span>
-                            <button class="btn-mini btn-mini-danger remove-song-btn" data-song-id="${song.id}" title="Çıkar">
-                                <i class="fas fa-times"></i>
-                            </button>
+                            <div class="song-play">${playBtn}</div>
+                            <div class="song-content">
+                                <div class="song-row1">
+                                    <span class="col-6" title="${song.title}">${song.title}</span>
+                                    <span class="col-6" title="${song.artist || ''}">${song.artist || '-'}</span>
+                                </div>
+                                <div class="song-row2">
+                                    <span class="col-6" title="${song.album || ''}">${song.album || '-'}</span>
+                                    <span class="col-6" title="${song.genre || ''}">${song.genre || '-'}</span>
+                                </div>
+                            </div>
+                            <div class="song-action">
+                                <span class="song-duration">${song.duration || ''}</span>
+                                <button class="btn-mini btn-mini-danger remove-song-btn" data-song-id="${song.id}" title="Çıkar">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -643,6 +706,8 @@ $(document).ready(function() {
 
     // SOL TARAF: Arama (Backend) - debounce
     let searchAvailableTimeout;
+    let lastSearchValue = '';
+
     $('#search-available').on('keyup input', function() {
         clearTimeout(searchAvailableTimeout);
         const search = $(this).val();
@@ -654,13 +719,26 @@ $(document).ready(function() {
             $('#clear-available-search i').hide();
         }
 
+        // Aynı değerse tekrar arama yapma
+        if (search === lastSearchValue) return;
+
         searchAvailableTimeout = setTimeout(() => {
             // Boşsa veya 2+ karakterse backend'den yükle
             if (search.length === 0 || search.length >= 2) {
+                lastSearchValue = search;
                 loadAvailableSongs(search, false);
             }
             // 1 karakterse hiçbir şey yapma (kullanıcı yazmaya devam edecek)
-        }, 150); // Hızlı yanıt için 150ms
+        }, 400); // 400ms debounce - daha az request
+    });
+
+    // Sekme değişikliğinde state'i koru (visibility API)
+    document.addEventListener('visibilitychange', function() {
+        // Sekme görünür olduğunda mevcut sonuçları koru, yeniden yükleme
+        // Sadece availableSongs boşsa ve search varsa yeniden yükle
+        if (!document.hidden && availableSongs.length === 0 && currentSearch) {
+            loadAvailableSongs(currentSearch, false);
+        }
     });
 
     // Otomatik yükleme: Sol taraf azaldıysa yeni batch yükle
@@ -789,27 +867,85 @@ $(document).ready(function() {
 
 @push('styles')
 <style>
-/* Ultra Minimal Liste */
+/* Liste */
 .list-group-item {
-    padding: 0.4rem 0.75rem !important;
+    padding: 0.5rem 0.75rem !important;
     border-color: rgba(98, 105, 118, 0.1);
 }
 
-/* CSS Grid ile Simetrik Yapı */
-.song-row {
-    display: grid;
+/* Ana yapı: Play | Content | Action */
+.song-item {
+    display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-/* Sol Panel: Play | Title | Artist | Duration | Add */
-.song-row-available {
-    grid-template-columns: 1.25rem 1fr 5rem 2.5rem 1.25rem;
+.song-play {
+    flex-shrink: 0;
 }
 
-/* Sağ Panel: Handle | # | Play | Title | Artist | Duration | Remove */
-.song-row-playlist {
-    grid-template-columns: 0.75rem 1rem 1.25rem 1fr 5rem 2.5rem 1.25rem;
+.song-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.song-action {
+    flex-shrink: 0;
+}
+
+/* Satırlar */
+.song-row1,
+.song-row2 {
+    display: flex;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* Satırlar: 6-6 kolonlar */
+.song-row1 .col-6,
+.song-row2 .col-6 { flex: 6; overflow: hidden; text-overflow: ellipsis; }
+
+/* Genel stil */
+.song-row1 span,
+.song-row2 span {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-align: left;
+}
+
+/* 1. satır başlık vurgu */
+.song-row1 .col-6:first-child {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: inherit;
+}
+
+/* Action alanı: Süre + Buton */
+.song-action {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.song-action .song-duration {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    min-width: 2.5rem;
+    text-align: right;
+}
+
+/* 2. satır */
+.song-row2 {
+    margin-top: 2px;
+}
+
+/* Sıra numarası */
+.song-index {
+    flex-shrink: 0;
+    width: 1.5rem;
+    font-size: 0.7rem;
+    color: #94a3b8;
+    text-align: center;
 }
 
 /* Şarkı bilgileri */

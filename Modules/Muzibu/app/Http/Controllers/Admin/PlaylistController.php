@@ -52,45 +52,64 @@ class PlaylistController extends Controller
 
     /**
      * Kullanılabilir şarkıları getir (AJAX) - Playlist'te olmayanlar
+     * Cache: Sadece arama sonuçları için 30sn (boş arama = cache yok)
      */
     public function getAvailableSongs($id)
     {
         $search = request('search', '');
-        $offset = request('offset', 0);
+        $offset = (int) request('offset', 0);
         $limit = 50;
 
-        $query = \Modules\Muzibu\App\Models\Song::where('is_active', true)
-            ->with(['album.artist', 'genre'])
-            ->whereNotIn('song_id', function($q) use ($id) {
-                $q->select('song_id')
-                  ->from('muzibu_playlist_song')
-                  ->where('playlist_id', $id);
-            })
-            ->orderBy('title');
+        // Playlist şarkı ID'leri (kısa cache - 15sn)
+        $playlistSongIds = \Cache::remember("playlist_songs_ids_{$id}", 15, function() use ($id) {
+            return \DB::table('muzibu_playlist_song')
+                ->where('playlist_id', $id)
+                ->pluck('song_id')
+                ->toArray();
+        });
 
-        if ($search) {
-            $searchTerm = '%' . strtolower($search) . '%';
-            $query->where(function ($q) use ($searchTerm) {
-                // Şarkı adı - JSON field
-                $q->whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr"))) LIKE ?', [$searchTerm])
-                  // Şarkı sözleri (lyrics) - JSON field (sadece TR)
-                  ->orWhereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(lyrics, "$.tr"))) LIKE ?', [$searchTerm])
-                  // Sanatçı - JSON field
-                  ->orWhereHas('album.artist', fn($artistQuery) =>
-                      $artistQuery->whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr"))) LIKE ?', [$searchTerm])
-                  )
-                  // Albüm - JSON field
-                  ->orWhereHas('album', fn($albumQuery) =>
-                      $albumQuery->whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr"))) LIKE ?', [$searchTerm])
-                  )
-                  // Genre/Tür - JSON field
-                  ->orWhereHas('genre', fn($genreQuery) =>
-                      $genreQuery->whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr"))) LIKE ?', [$searchTerm])
-                  );
-            });
+        // Query builder
+        $buildQuery = function() use ($search, $offset, $limit, $playlistSongIds) {
+            $query = \Modules\Muzibu\App\Models\Song::where('is_active', true)
+                ->with(['album.artist', 'genre'])
+                ->whereNotIn('song_id', $playlistSongIds)
+                ->orderBy('title');
+
+            if ($search) {
+                $searchTerm = '%' . strtolower($search) . '%';
+                $query->where(function ($q) use ($searchTerm) {
+                    // Şarkı adı - JSON field
+                    $q->whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr"))) LIKE ?', [$searchTerm])
+                      // Şarkı sözleri (lyrics) - JSON field (sadece TR)
+                      ->orWhereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(lyrics, "$.tr"))) LIKE ?', [$searchTerm])
+                      // Sanatçı - JSON field
+                      ->orWhereHas('album.artist', fn($artistQuery) =>
+                          $artistQuery->whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr"))) LIKE ?', [$searchTerm])
+                      )
+                      // Albüm - JSON field
+                      ->orWhereHas('album', fn($albumQuery) =>
+                          $albumQuery->whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr"))) LIKE ?', [$searchTerm])
+                      )
+                      // Genre/Tür - JSON field
+                      ->orWhereHas('genre', fn($genreQuery) =>
+                          $genreQuery->whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr"))) LIKE ?', [$searchTerm])
+                      );
+                });
+            }
+
+            return $query->offset($offset)->limit($limit)->get();
+        };
+
+        // Boş arama = cache yok (yeni şarkılar hemen görünsün)
+        // Arama varsa = 30sn cache (tekrar aramalar hızlı olsun)
+        if (empty($search)) {
+            $songs = $buildQuery();
+        } else {
+            $cacheKey = "playlist_search_{$id}_{$offset}_" . md5($search);
+            $songs = \Cache::remember($cacheKey, 30, $buildQuery);
         }
 
-        $songs = $query->offset($offset)->limit($limit)->get()->map(function($song) {
+        $result = $songs->map(function($song) {
             $title = $song->getTranslated('title', app()->getLocale());
             $artistTitle = $song->album?->artist?->getTranslated('title', app()->getLocale()) ?? 'Unknown';
 
@@ -101,10 +120,16 @@ class PlaylistController extends Controller
             $hlsUrl = $song->hls_path ? asset('storage/' . $song->hls_path) : null;
             $fileUrl = $song->file_path ? asset('storage/muzibu/songs/' . $song->file_path) : null;
 
+            // Albüm ve Genre bilgisi
+            $albumTitle = $song->album?->getTranslated('title', app()->getLocale());
+            $genreTitle = $song->genre?->getTranslated('title', app()->getLocale());
+
             return [
                 'id' => $song->song_id,
                 'title' => is_string($title) ? $title : (is_array($title) ? ($title[app()->getLocale()] ?? $title['tr'] ?? reset($title)) : 'Unknown'),
                 'artist' => is_string($artistTitle) ? $artistTitle : (is_array($artistTitle) ? ($artistTitle[app()->getLocale()] ?? $artistTitle['tr'] ?? reset($artistTitle)) : 'Unknown'),
+                'album' => is_string($albumTitle) ? $albumTitle : (is_array($albumTitle) ? ($albumTitle[app()->getLocale()] ?? $albumTitle['tr'] ?? reset($albumTitle)) : null),
+                'genre' => is_string($genreTitle) ? $genreTitle : (is_array($genreTitle) ? ($genreTitle[app()->getLocale()] ?? $genreTitle['tr'] ?? reset($genreTitle)) : null),
                 'duration' => $song->duration ? gmdate('i:s', $song->duration) : null,
                 'cover_url' => $coverUrl,
                 'hls_path' => $song->hls_path,
@@ -115,7 +140,7 @@ class PlaylistController extends Controller
             ];
         });
 
-        return response()->json($songs);
+        return response()->json($result);
     }
 
     /**
@@ -129,7 +154,7 @@ class PlaylistController extends Controller
         $limit = 50;
 
         $songs = $playlist->songs()
-            ->with(['album.artist'])
+            ->with(['album.artist', 'genre'])
             ->orderBy('muzibu_playlist_song.position')
             ->offset($offset)
             ->limit($limit)
@@ -137,6 +162,10 @@ class PlaylistController extends Controller
             ->map(function($song) {
                 $title = $song->getTranslated('title', app()->getLocale());
                 $artistTitle = $song->album?->artist?->getTranslated('title', app()->getLocale()) ?? 'Unknown';
+
+                // Albüm ve Genre bilgisi
+                $albumTitle = $song->album?->getTranslated('title', app()->getLocale());
+                $genreTitle = $song->genre?->getTranslated('title', app()->getLocale());
 
                 // Thumbnail URL - şimdilik devre dışı (Media model yükleme sorunu)
                 $coverUrl = null;
@@ -149,6 +178,8 @@ class PlaylistController extends Controller
                     'id' => $song->song_id,
                     'title' => is_string($title) ? $title : (is_array($title) ? ($title[app()->getLocale()] ?? $title['tr'] ?? reset($title)) : 'Unknown'),
                     'artist' => is_string($artistTitle) ? $artistTitle : (is_array($artistTitle) ? ($artistTitle[app()->getLocale()] ?? $artistTitle['tr'] ?? reset($artistTitle)) : 'Unknown'),
+                    'album' => is_string($albumTitle) ? $albumTitle : (is_array($albumTitle) ? ($albumTitle[app()->getLocale()] ?? $albumTitle['tr'] ?? reset($albumTitle)) : null),
+                    'genre' => is_string($genreTitle) ? $genreTitle : (is_array($genreTitle) ? ($genreTitle[app()->getLocale()] ?? $genreTitle['tr'] ?? reset($genreTitle)) : null),
                     'duration' => $song->duration ? gmdate('i:s', $song->duration) : null,
                     'cover_url' => $coverUrl,
                     'hls_path' => $song->hls_path,
@@ -200,6 +231,9 @@ class PlaylistController extends Controller
         // Ekle (cache count'ları da güncelle)
         $playlist->attachSongWithCache($songId, ['position' => $newPosition]);
 
+        // Search cache'ini temizle
+        \Cache::forget("playlist_songs_ids_{$id}");
+
         return response()->json([
             'success' => true,
             'message' => 'Şarkı playlist\'e eklendi'
@@ -221,6 +255,9 @@ class PlaylistController extends Controller
 
         // Çıkar (cache count'ları da güncelle)
         $playlist->detachSongWithCache($songId);
+
+        // Search cache'ini temizle
+        \Cache::forget("playlist_songs_ids_{$id}");
 
         // Sıralamayı düzelt (gap kalmasın)
         $songs = $playlist->songs()->orderBy('muzibu_playlist_song.position')->get();

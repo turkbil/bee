@@ -15,12 +15,17 @@
 function safeAudioCleanup(audio) {
     if (!audio) return;
     try {
-        // Önce event handler'ları kaldır (hata tetiklemesin)
+        // Önce TÜM event handler'ları kaldır (hata tetiklemesin)
         audio.onerror = null;
         audio.onended = null;
         audio.ontimeupdate = null;
         audio.oncanplay = null;
         audio.onwaiting = null;
+        audio.onabort = null;
+        audio.onstalled = null;
+        audio.onemptied = null;
+        audio.onloadedmetadata = null;
+        audio.onseeked = null;
         audio.pause();
         // src='' yerine removeAttribute kullan (Empty src hatası önlenir)
         audio.removeAttribute('src');
@@ -2216,6 +2221,21 @@ function muzibuApp() {
             // Çal
             spotAudio.play().then(function() {
                 console.log('🎙️ Spot playing...');
+
+                // 🚀 GAPLESS: Spot başladığında sonraki şarkıyı preload et!
+                // Bu sayede spot bitince şarkı anında başlar
+                const nextIndex = (self.queueIndex + 1) % self.queue.length;
+                const nextSong = self.queue[nextIndex];
+                if (nextSong && !self._preloadedNext && !self._preloadNextInProgress) {
+                    console.log('🎙️ Preloading next song while spot plays:', nextSong.song_title);
+                    self._preloadNextInProgress = true;
+                    self.preloadSongForGapless(nextSong).then(function() {
+                        console.log('🎙️ Next song preloaded during spot!');
+                    }).catch(function(e) {
+                        console.warn('🎙️ Preload during spot failed:', e);
+                        self._preloadNextInProgress = false;
+                    });
+                }
             }).catch(function(err) {
                 console.error('🎙️ Spot play failed:', err);
                 spotAudio.ontimeupdate = null;
@@ -2242,6 +2262,13 @@ function muzibuApp() {
             if (this.queue && this.queue.length > 0) {
                 const nextIndex = (this.queueIndex + 1) % this.queue.length;
                 this.queueIndex = nextIndex;
+
+                // 🚀 GAPLESS: Preload varsa ve doğru şarkıysa KULLAN!
+                const nextSong = this.queue[nextIndex];
+                if (this._preloadedNext && this._preloadedNext.songId === nextSong?.song_id) {
+                    console.log('🎙️ Using preloaded song after spot (gapless):', nextSong.song_title);
+                    // playSongFromQueue preload'ı kullanacak
+                }
 
                 try {
                     await this.playSongFromQueue(nextIndex);

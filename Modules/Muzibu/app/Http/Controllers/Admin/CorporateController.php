@@ -23,4 +23,20 @@ class CorporateController extends Controller
             'corporateId' => $id
         ]);
     }
+
+    /**
+     * Kurumsal Abonelikler Sayfası
+     */
+    public function subscription()
+    {
+        return view('muzibu::admin.corporate-subscription');
+    }
+
+    /**
+     * Kurumsal Kullanım Raporları Sayfası
+     */
+    public function usage()
+    {
+        return view('muzibu::admin.corporate-usage');
+    }
 }

@@ -165,6 +165,14 @@ Route::middleware(['admin', 'tenant', \Modules\Muzibu\App\Http\Middleware\Initia
                         Route::get('/manage/{id?}', [\Modules\Muzibu\App\Http\Controllers\Admin\CorporateController::class, 'manage'])
                             ->middleware('module.permission:muzibu,create')
                             ->name('manage');
+
+                        Route::get('/subscription', [\Modules\Muzibu\App\Http\Controllers\Admin\CorporateController::class, 'subscription'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('subscription');
+
+                        Route::get('/usage', [\Modules\Muzibu\App\Http\Controllers\Admin\CorporateController::class, 'usage'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('usage');
                     });
 
                 // Corporate Spots - Kurumsal Anonslari
@@ -191,6 +199,42 @@ Route::middleware(['admin', 'tenant', \Modules\Muzibu\App\Http\Middleware\Initia
                         Route::get('/manage/{id?}', [\Modules\Muzibu\App\Http\Controllers\Admin\CertificateController::class, 'manage'])
                             ->middleware('module.permission:muzibu,create')
                             ->name('manage');
+                    });
+
+                // Stats - Dinleme İstatistikleri
+                Route::prefix('stats')
+                    ->name('stats.')
+                    ->group(function () {
+                        Route::get('/', [\Modules\Muzibu\App\Http\Controllers\Admin\StatsController::class, 'index'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('index');
+                    });
+
+                // AI Cover - AI Görsel Üretimi
+                Route::prefix('ai-cover')
+                    ->name('ai-cover.')
+                    ->group(function () {
+                        Route::get('/', [\Modules\Muzibu\App\Http\Controllers\Admin\AICoverController::class, 'index'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('index');
+                    });
+
+                // User Playlist - Kullanıcı Listeleri
+                Route::prefix('user-playlist')
+                    ->name('user-playlist.')
+                    ->group(function () {
+                        Route::get('/', [\Modules\Muzibu\App\Http\Controllers\Admin\UserPlaylistController::class, 'index'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('index');
+                    });
+
+                // Listening History - Dinleme Geçmişi
+                Route::prefix('listening-history')
+                    ->name('listening-history.')
+                    ->group(function () {
+                        Route::get('/', [\Modules\Muzibu\App\Http\Controllers\Admin\ListeningHistoryController::class, 'index'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('index');
                     });
 
                 // Abuse Reports - Suistimal Raporları

@@ -27,16 +27,14 @@
     .vis-label { color: #e2e8f0 !important; font-size: 11px; }
     .vis-labelset .vis-label { background: rgba(15, 23, 42, 0.95) !important; }
     .vis-time-axis .vis-text { color: #94a3b8 !important; font-size: 10px; }
-    .pagination-btn { background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; }
-    .pagination-btn:hover { background: rgba(59, 130, 246, 0.3); }
-    .pagination-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .form-select, .form-control { background: rgba(15, 23, 42, 0.8) !important; border-color: rgba(71, 85, 105, 0.5) !important; color: #e2e8f0 !important; }
 </style>
 @endpush
 
 @section('content')
 @php
-    $patterns = $report->patterns_json ?? [];
+    // Controller'dan gelen limitli veri varsa onu kullan (performans)
+    $patterns = $limitedPatterns ?? $report->patterns_json ?? [];
     $isEarlyExit = $patterns['early_exit'] ?? false;
     $pingPong = $patterns['ping_pong'] ?? ['detected' => false];
     $concurrent = $patterns['concurrent_different'] ?? ['detected' => false];
@@ -290,92 +288,64 @@
             </div>
             @endif
 
-            <!-- Split Stream Örnekleri (Paginated) -->
+            <!-- Split Stream Örnekleri -->
             @if($splitStream['detected'] && count($overlapSamples) > 0)
             <div class="abuse-card">
                 <div class="abuse-card-header p-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="text-white mb-0">
-                            <i class="fas fa-exclamation-triangle me-2 text-danger"></i>
-                            Split Stream Örnekleri
-                        </h5>
-                        <span class="badge bg-danger">{{ $totalOverlaps }} toplam (ilk 50 gösteriliyor)</span>
-                    </div>
+                    <h5 class="text-white mb-0">
+                        <i class="fas fa-exclamation-triangle me-2 text-danger"></i>
+                        Split Stream Örnekleri
+                        <span class="badge bg-danger ms-2">{{ $totalOverlaps }}</span>
+                    </h5>
                 </div>
-                <div class="p-3" style="max-height: 500px; overflow-y: auto;">
-                    <!-- Pagination Controls -->
-                    <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="p-3" style="max-height: 400px; overflow-y: auto;">
+                    @foreach(array_slice($overlapSamples, 0, 30) as $idx => $overlap)
+                    <div class="overlap-item">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-white small">#{{ $idx + 1 }}</span>
+                            <span class="badge bg-danger" style="font-size: 0.7rem;">{{ $overlap['overlap_seconds'] ?? 0 }}sn</span>
+                        </div>
                         <div class="text-slate-400 small">
-                            Sayfa <span x-text="currentPage"></span> / <span x-text="totalPages"></span>
-                            (<span x-text="itemsPerPage"></span> / sayfa)
+                            <i class="fas fa-music me-1"></i>{{ Str::limit($overlap['play1']['song'] ?? '', 30) }}
+                            <span class="text-slate-600 ms-2">{{ \Carbon\Carbon::parse($overlap['play1']['start'])->format('H:i') }}</span>
                         </div>
-                        <div class="d-flex gap-2">
-                            <button class="pagination-btn" @click="prevPage()" :disabled="currentPage <= 1">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <button class="pagination-btn" @click="nextPage()" :disabled="currentPage >= totalPages">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Overlap Items -->
-                    @foreach($overlapSamples as $idx => $overlap)
-                    <div class="overlap-item" x-show="isVisible({{ $idx }})">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <span class="text-white fw-bold">#{{ $idx + 1 }}</span>
-                            <span class="badge bg-danger">{{ $overlap['overlap_seconds'] ?? 0 }}sn</span>
-                        </div>
-                        <div class="row g-2">
-                            <div class="col-6">
-                                <div class="text-slate-300 small">
-                                    <i class="fas fa-music me-1"></i>{{ Str::limit($overlap['play1']['song'] ?? '', 25) }}
-                                    <div class="text-slate-500" style="font-size: 0.65rem;">
-                                        {{ \Carbon\Carbon::parse($overlap['play1']['start'])->format('H:i:s') }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="text-slate-300 small">
-                                    <i class="fas fa-music me-1"></i>{{ Str::limit($overlap['play2']['song'] ?? '', 25) }}
-                                    <div class="text-slate-500" style="font-size: 0.65rem;">
-                                        {{ \Carbon\Carbon::parse($overlap['play2']['start'])->format('H:i:s') }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-slate-500 small mt-1">
-                            <i class="fas fa-fingerprint me-1"></i>{{ Str::limit($overlap['fingerprint'] ?? '', 40) }}
+                        <div class="text-slate-400 small">
+                            <i class="fas fa-music me-1"></i>{{ Str::limit($overlap['play2']['song'] ?? '', 30) }}
+                            <span class="text-slate-600 ms-2">{{ \Carbon\Carbon::parse($overlap['play2']['start'])->format('H:i') }}</span>
                         </div>
                     </div>
                     @endforeach
+                    @if($totalOverlaps > 30)
+                    <div class="text-center text-slate-500 small mt-2">
+                        +{{ $totalOverlaps - 30 }} daha...
+                    </div>
+                    @endif
                 </div>
             </div>
             @endif
 
             <!-- Concurrent Different Örnekleri -->
             @if($concurrent['detected'] && count($concurrent['samples'] ?? []) > 0)
-            <div class="abuse-card mt-4">
+            <div class="abuse-card mt-3">
                 <div class="abuse-card-header p-3">
                     <h5 class="text-white mb-0">
-                        <i class="fas fa-code-branch me-2 text-orange-400"></i>
-                        Concurrent Different Örnekleri
+                        <i class="fas fa-code-branch me-2" style="color: #f59e0b;"></i>
+                        Concurrent Different
+                        <span class="badge bg-warning text-dark ms-2">{{ $concurrent['count'] ?? count($concurrent['samples']) }}</span>
                     </h5>
                 </div>
-                <div class="p-3" style="max-height: 300px; overflow-y: auto;">
-                    @foreach(array_slice($concurrent['samples'] ?? [], 0, 20) as $idx => $sample)
-                    <div class="overlap-item" style="border-color: rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.1);">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-white fw-bold">#{{ $idx + 1 }}</span>
-                            <span class="badge bg-warning text-dark">Farklı Kaynak</span>
+                <div class="p-3" style="max-height: 250px; overflow-y: auto;">
+                    @foreach(array_slice($concurrent['samples'] ?? [], 0, 15) as $idx => $sample)
+                    <div class="overlap-item mb-2" style="border-color: rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.1); padding: 0.75rem;">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-slate-400 small">#{{ $idx + 1 }}</span>
+                            <span class="text-warning small">Farklı Kaynak</span>
                         </div>
-                        <div class="row g-2">
-                            <div class="col-6">
-                                <div class="text-slate-300 small">{{ Str::limit($sample['play1']['fingerprint'] ?? '', 30) }}</div>
-                            </div>
-                            <div class="col-6">
-                                <div class="text-slate-300 small">{{ Str::limit($sample['play2']['fingerprint'] ?? '', 30) }}</div>
-                            </div>
+                        <div class="text-slate-300 small mt-1" style="font-size: 0.7rem;">
+                            {{ Str::limit($sample['play1']['fingerprint'] ?? '', 35) }}
+                        </div>
+                        <div class="text-slate-300 small" style="font-size: 0.7rem;">
+                            {{ Str::limit($sample['play2']['fingerprint'] ?? '', 35) }}
                         </div>
                     </div>
                     @endforeach
@@ -385,22 +355,23 @@
 
             <!-- Ping-Pong Döngüleri -->
             @if($pingPong['detected'] && count($pingPong['cycles'] ?? []) > 0)
-            <div class="abuse-card mt-4">
+            <div class="abuse-card mt-3">
                 <div class="abuse-card-header p-3">
                     <h5 class="text-white mb-0">
-                        <i class="fas fa-sync-alt me-2 text-purple-400"></i>
+                        <i class="fas fa-sync-alt me-2" style="color: #a855f7;"></i>
                         Ping-Pong Döngüleri
+                        <span class="badge ms-2" style="background: #a855f7;">{{ count($pingPong['cycles']) }}</span>
                     </h5>
                 </div>
-                <div class="p-3" style="max-height: 300px; overflow-y: auto;">
-                    @foreach($pingPong['cycles'] ?? [] as $idx => $cycle)
-                    <div class="overlap-item" style="border-color: rgba(139, 92, 246, 0.3); background: rgba(139, 92, 246, 0.1);">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-white fw-bold">#{{ $idx + 1 }} - {{ $cycle['field'] }}</span>
-                            <span class="badge bg-purple">A→B→A</span>
+                <div class="p-3" style="max-height: 250px; overflow-y: auto;">
+                    @foreach(array_slice($pingPong['cycles'] ?? [], 0, 10) as $idx => $cycle)
+                    <div class="overlap-item mb-2" style="border-color: rgba(139, 92, 246, 0.3); background: rgba(139, 92, 246, 0.1); padding: 0.75rem;">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-slate-400 small">#{{ $idx + 1 }} - {{ $cycle['field'] }}</span>
+                            <span class="small" style="color: #a855f7;">A→B→A</span>
                         </div>
-                        <div class="text-slate-300 small font-monospace">
-                            {{ implode(' → ', $cycle['sequence'] ?? []) }}
+                        <div class="text-slate-300 small mt-1" style="font-size: 0.7rem; font-family: monospace;">
+                            {{ Str::limit(implode(' → ', $cycle['sequence'] ?? []), 60) }}
                         </div>
                     </div>
                     @endforeach
@@ -416,7 +387,6 @@
 <script>
 const dailyStatsData = @json($report->daily_stats ?? []);
 const timelineItems = @json(array_slice($timelineData['items'] ?? [], 0, 500)); // Max 500 item
-const overlapSamplesCount = {{ count($overlapSamples) }};
 
 const browserColors = {
     'chrome': '#4285f4', 'safari': '#00d4ff', 'firefox': '#ff7139',
@@ -487,27 +457,6 @@ function reportDetailApp() {
         selectedDate: null,
         review: { action: 'none', notes: '' },
         submitting: false,
-        currentPage: 1,
-        itemsPerPage: 10,
-        totalItems: overlapSamplesCount,
-
-        get totalPages() {
-            return Math.ceil(this.totalItems / this.itemsPerPage);
-        },
-
-        isVisible(idx) {
-            const start = (this.currentPage - 1) * this.itemsPerPage;
-            const end = start + this.itemsPerPage;
-            return idx >= start && idx < end;
-        },
-
-        prevPage() {
-            if (this.currentPage > 1) this.currentPage--;
-        },
-
-        nextPage() {
-            if (this.currentPage < this.totalPages) this.currentPage++;
-        },
 
         selectDate(date) {
             this.selectedDate = this.selectedDate === date ? null : date;

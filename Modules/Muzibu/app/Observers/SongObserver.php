@@ -28,6 +28,11 @@ class SongObserver
         }
 
         $this->incrementCounts($song);
+
+        // Activity log
+        if (function_exists('log_activity')) {
+            log_activity($song, 'oluşturuldu');
+        }
     }
 
     /**
@@ -72,6 +77,24 @@ class SongObserver
                 $this->handleGenreChange($song, $oldGenreId, $newGenreId);
             }
         }
+
+        // Activity log - değişiklikleri kaydet
+        if (function_exists('log_activity')) {
+            $changes = $song->getChanges();
+            unset($changes['updated_at']);
+
+            if (!empty($changes)) {
+                // Eski başlığı al (title değiştiyse)
+                $oldTitle = null;
+                if (isset($changes['title'])) {
+                    $oldTitle = $song->getOriginal('title');
+                }
+
+                log_activity($song, 'güncellendi', [
+                    'changed_fields' => array_keys($changes)
+                ], $oldTitle);
+            }
+        }
     }
 
     /**
@@ -79,11 +102,14 @@ class SongObserver
      */
     public function deleted(Song $song): void
     {
-        if (!$song->is_active) {
-            return; // Inactive songs weren't counted
+        if ($song->is_active) {
+            $this->decrementCounts($song);
         }
 
-        $this->decrementCounts($song);
+        // Activity log - silinen kaydın başlığını sakla
+        if (function_exists('log_activity')) {
+            log_activity($song, 'silindi', null, $song->title);
+        }
     }
 
     /**
@@ -91,11 +117,14 @@ class SongObserver
      */
     public function restored(Song $song): void
     {
-        if (!$song->is_active) {
-            return;
+        if ($song->is_active) {
+            $this->incrementCounts($song);
         }
 
-        $this->incrementCounts($song);
+        // Activity log
+        if (function_exists('log_activity')) {
+            log_activity($song, 'geri yüklendi');
+        }
     }
 
     /**
@@ -103,11 +132,14 @@ class SongObserver
      */
     public function forceDeleted(Song $song): void
     {
-        if (!$song->is_active) {
-            return;
+        if ($song->is_active) {
+            $this->decrementCounts($song);
         }
 
-        $this->decrementCounts($song);
+        // Activity log - kalıcı silme
+        if (function_exists('log_activity')) {
+            log_activity($song, 'kalıcı silindi', null, $song->title);
+        }
     }
 
     /**

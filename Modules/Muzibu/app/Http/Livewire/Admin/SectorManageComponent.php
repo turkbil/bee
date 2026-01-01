@@ -475,10 +475,15 @@ class SectorManageComponent extends Component implements AIContentGeneratable
             $this->sectorId = $sector->sector_id;
             log_activity($sector, 'eklendi');
 
-            // 🎨 MUZIBU: Hero yoksa otomatik görsel üret (Universal Helper - Tercihen)
-            if (!$sector->hasMedia('hero')) {
-                \muzibu_generate_ai_cover($sector, $sector->title, 'sektor');
-            }
+            // 🎨 MUZIBU: Hero yoksa otomatik görsel üret
+            // ⚠️ DELAY: Görsel yükleme async olduğu için 10 saniye bekle
+            \Modules\Muzibu\App\Jobs\GenerateGenericMuzibyCover::dispatch(
+                'sektor',
+                $sector->sector_id,
+                $sector->title,
+                auth()->id(),
+                tenant('id')
+            )->delay(now()->addSeconds(10));
 
             // İlişkileri sync et
             $sector->radios()->sync($radioIds);

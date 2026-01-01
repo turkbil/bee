@@ -723,10 +723,16 @@ class SongManageComponent extends Component implements AIContentGeneratable
                 Log::info('🎵 Yeni şarkı, HLS conversion job\'a alındı', ['song_id' => $song->song_id]);
             }
 
-            // 🎨 MUZIBU: Hero yoksa otomatik görsel üret (Universal Helper - Queue)
-            if (!$song->hasMedia('hero')) {
-                \muzibu_generate_ai_cover($song, $song->title, 'song');
-            }
+            // 🎨 MUZIBU: Hero yoksa otomatik görsel üret
+            // ⚠️ DELAY: Görsel yükleme async olduğu için 10 saniye bekle
+            \Modules\Muzibu\App\Jobs\GenerateSongCover::dispatch(
+                $song->song_id,
+                $song->title,
+                $song->album?->artist?->title,
+                $song->genre?->title,
+                auth()->id(),
+                tenant('id')
+            )->delay(now()->addSeconds(10));
 
             $toast = [
                 'title' => __('admin.success'),

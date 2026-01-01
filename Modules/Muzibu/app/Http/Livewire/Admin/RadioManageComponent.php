@@ -401,10 +401,15 @@ class RadioManageComponent extends Component implements AIContentGeneratable
             $this->radioId = $radio->radio_id;
             log_activity($radio, 'eklendi');
 
-            // 🎨 MUZIBU: Hero yoksa otomatik görsel üret (Universal Helper - Tercihen)
-            if (!$radio->hasMedia('hero')) {
-                \muzibu_generate_ai_cover($radio, $radio->title, 'radio');
-            }
+            // 🎨 MUZIBU: Hero yoksa otomatik görsel üret
+            // ⚠️ DELAY: Görsel yükleme async olduğu için 10 saniye bekle
+            \Modules\Muzibu\App\Jobs\GenerateGenericMuzibyCover::dispatch(
+                'radio',
+                $radio->radio_id,
+                $radio->title,
+                auth()->id(),
+                tenant('id')
+            )->delay(now()->addSeconds(10));
 
             // İlişkileri sync et
             $radio->playlists()->sync($playlistIds);

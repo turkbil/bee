@@ -441,10 +441,15 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
             $this->playlistId = $playlist->playlist_id;
             log_activity($playlist, 'eklendi');
 
-            // 🎨 MUZIBU: Hero yoksa otomatik görsel üret (Universal Helper - Tercihen)
-            if (!$playlist->hasMedia('hero')) {
-                \muzibu_generate_ai_cover($playlist, $playlist->title, 'playlist');
-            }
+            // 🎨 MUZIBU: Hero yoksa otomatik görsel üret
+            // ⚠️ DELAY: Görsel yükleme async olduğu için 10 saniye bekle
+            \Modules\Muzibu\App\Jobs\GenerateGenericMuzibyCover::dispatch(
+                'playlist',
+                $playlist->playlist_id,
+                $playlist->title,
+                auth()->id(),
+                tenant('id')
+            )->delay(now()->addSeconds(10));
 
             // İlişkileri sync et (playlistables tablosuna)
             $playlist->sectors()->sync($sectorIds);

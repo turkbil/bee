@@ -18,6 +18,41 @@ class BlogObserver
     }
 
     /**
+     * Handle the Blog "created" event.
+     */
+    public function created(Blog $blog): void
+    {
+        // Activity log
+        if (function_exists('log_activity')) {
+            log_activity($blog, 'oluşturuldu');
+        }
+    }
+
+    /**
+     * Handle the Blog "updated" event.
+     */
+    public function updated(Blog $blog): void
+    {
+        // Activity log - değişiklikleri kaydet
+        if (function_exists('log_activity')) {
+            $changes = $blog->getChanges();
+            unset($changes['updated_at']);
+
+            if (!empty($changes)) {
+                // Eski başlığı al (title değiştiyse)
+                $oldTitle = null;
+                if (isset($changes['title'])) {
+                    $oldTitle = $blog->getOriginal('title');
+                }
+
+                log_activity($blog, 'güncellendi', [
+                    'changed_fields' => array_keys($changes)
+                ], $oldTitle);
+            }
+        }
+    }
+
+    /**
      * Handle the Blog "saved" event.
      */
     public function saved(Blog $blog): void
@@ -35,6 +70,11 @@ class BlogObserver
     {
         // Blog silindiğinde cache'leri temizle
         $this->clearRelatedCaches($blog);
+
+        // Activity log - silinen kaydın başlığını sakla
+        if (function_exists('log_activity')) {
+            log_activity($blog, 'silindi', null, $blog->title);
+        }
     }
 
     /**

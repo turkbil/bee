@@ -328,34 +328,45 @@ if (!function_exists('user_initials')) {
 // =====================================================
 
 if (!function_exists('log_activity')) {
+    /**
+     * Model değişikliklerini activity log'a kaydeder
+     *
+     * @param \Illuminate\Database\Eloquent\Model $model İşlem yapılan model
+     * @param string $event Event türü (oluşturuldu, güncellendi, silindi, geri_yüklendi)
+     * @param array|null $degisenler Değişen alanlar listesi
+     * @param string|array|null $old_title Eski başlık (güncelleme için, silinenlerde erişim için)
+     */
     function log_activity(
         \Illuminate\Database\Eloquent\Model $model,
         string $event,
-        ?array $degisenler = null
+        ?array $degisenler = null,
+        $old_title = null
     ): void {
-        // Multi-language JSON alanları için title extraction
-        $rawTitle = $model->title ?? $model->name ?? 'Bilinmeyen';
-
-        // Eğer title array/object ise (JSON decode edilmiş), ilk değeri al
-        if (is_array($rawTitle) || is_object($rawTitle)) {
-            $titleArray = (array) $rawTitle;
-            if (!empty($titleArray)) {
-                // Önce varsayılan dili dene, sonra ilk değeri al
-                $defaultLang = session('site_default_language', 'tr');
-                $baslik = $titleArray[$defaultLang] ?? reset($titleArray);
-            } else {
-                $baslik = 'Bilinmeyen';
+        // Multi-language JSON alanları için title extraction helper
+        $extractTitle = function ($rawTitle) {
+            if (is_array($rawTitle) || is_object($rawTitle)) {
+                $titleArray = (array) $rawTitle;
+                if (!empty($titleArray)) {
+                    $defaultLang = session('site_default_language', 'tr');
+                    return (string) ($titleArray[$defaultLang] ?? reset($titleArray));
+                }
+                return 'Bilinmeyen';
             }
-        } else {
-            $baslik = $rawTitle;
-        }
+            return (string) ($rawTitle ?: 'Bilinmeyen');
+        };
 
-        // Güvenlik için string'e çevir
-        $baslik = (string) $baslik;
+        // Mevcut başlığı al
+        $rawTitle = $model->title ?? $model->name ?? 'Bilinmeyen';
+        $baslik = $extractTitle($rawTitle);
+
+        // Eski başlığı işle (varsa)
+        $eskiBaslik = null;
+        if ($old_title !== null) {
+            $eskiBaslik = $extractTitle($old_title);
+        }
 
         // Event string'ini çevir (activity.php dil dosyasından)
         $translatedEvent = __('activity.' . $event);
-        // Çeviri bulunamazsa orijinal event'i kullan
         if ($translatedEvent === 'activity.' . $event) {
             $translatedEvent = $event;
         }
@@ -363,21 +374,29 @@ if (!function_exists('log_activity')) {
         $modelName = class_basename($model);
         $batchUuid = \Illuminate\Support\Str::uuid();
 
+        // Properties oluştur
+        $properties = [
+            'baslik' => $baslik,
+            'modul' => $modelName,
+            'degisenler' => $degisenler ?: [],
+            'event_key' => $event,
+        ];
+
+        // Eski başlık varsa ekle (güncelleme ve silme için önemli)
+        if ($eskiBaslik !== null && $eskiBaslik !== $baslik) {
+            $properties['eski_baslik'] = $eskiBaslik;
+        }
+
         activity()
             ->performedOn($model)
             ->causedBy(auth()->check() ? auth()->user() : null)
             ->inLog($modelName)
-            ->withProperties([
-                'baslik' => $baslik,
-                'modul' => $modelName,
-                'degisenler' => $degisenler ?: [],
-                'event_key' => $event, // Orijinal key'i de sakla
-            ])
+            ->withProperties($properties)
             ->tap(function (\Spatie\Activitylog\Models\Activity $activity) use ($batchUuid, $event) {
                 $activity->batch_uuid = $batchUuid;
-                $activity->event = $event; // DB'ye orijinal key kaydedilir
+                $activity->event = $event;
             })
-            ->log("{$baslik} {$translatedEvent}"); // Gösterim için çevrilmiş metin
+            ->log("{$baslik} {$translatedEvent}");
     }
 }
 

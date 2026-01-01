@@ -363,10 +363,15 @@ class GenreManageComponent extends Component implements AIContentGeneratable
             $this->genreId = $genre->genre_id;
             log_activity($genre, 'eklendi');
 
-            // 🎨 MUZIBU: Hero yoksa otomatik görsel üret (Universal Helper - Tercihen)
-            if (!$genre->hasMedia('hero')) {
-                \muzibu_generate_ai_cover($genre, $genre->title, 'genre');
-            }
+            // 🎨 MUZIBU: Hero yoksa otomatik görsel üret
+            // ⚠️ DELAY: Görsel yükleme async olduğu için 10 saniye bekle
+            \Modules\Muzibu\App\Jobs\GenerateGenericMuzibyCover::dispatch(
+                'genre',
+                $genre->genre_id,
+                $genre->title,
+                auth()->id(),
+                tenant('id')
+            )->delay(now()->addSeconds(10));
 
             $toast = [
                 'title' => __('admin.success'),

@@ -72,9 +72,11 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['title', 'is_active', 'data'])
+            ->useLogName('Tenant')  // "default" yerine "Tenant" olarak kaydedilsin
+            ->logOnly(['title', 'is_active'])  // data çok büyük, loglamayalım
             ->logOnlyDirty()
-            ->dontSubmitEmptyLogs();
+            ->dontSubmitEmptyLogs()
+            ->setDescriptionForEvent(fn(string $eventName) => "Tenant {$this->title} {$eventName}");
     }
     
     public function domains()

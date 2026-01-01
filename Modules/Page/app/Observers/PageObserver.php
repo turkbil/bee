@@ -140,9 +140,15 @@ class PageObserver
             unset($changes['updated_at']); // updated_at'i loglamaya gerek yok
 
             if (!empty($changes)) {
+                // Eski başlığı al (title değiştiyse)
+                $oldTitle = null;
+                if (isset($changes['title'])) {
+                    $oldTitle = $page->getOriginal('title');
+                }
+
                 log_activity($page, 'güncellendi', [
                     'changed_fields' => array_keys($changes)
-                ]);
+                ], $oldTitle);
             }
         }
 
@@ -268,9 +274,10 @@ class PageObserver
         $tenantId = tenant()?->id ?? 'central';
         Cache::forget("sitemap_xml_{$tenantId}");
 
-        // Activity log
+        // Activity log - silinen kaydın başlığını sakla
         if (function_exists('log_activity')) {
-            log_activity($page, 'silindi');
+            // Silinen başlığı 4. parametre olarak gönder (silinenlerin başlığına erişim için)
+            log_activity($page, 'silindi', null, $page->title);
         }
 
         Log::info('Page deleted successfully', [

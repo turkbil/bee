@@ -374,10 +374,16 @@ class AlbumManageComponent extends Component implements AIContentGeneratable
             $this->albumId = $album->album_id;
             log_activity($album, 'eklendi');
 
-            // 🎨 MUZIBU: Hero yoksa otomatik görsel üret (Universal Helper - Tercihen)
-            if (!$album->hasMedia('hero')) {
-                \muzibu_generate_ai_cover($album, $album->title, 'album');
-            }
+            // 🎨 MUZIBU: Hero yoksa otomatik görsel üret
+            // ⚠️ DELAY: Görsel yükleme async olduğu için 10 saniye bekle
+            // Bu sayede kullanıcı görseli yükleyebilir, job çalışınca hasMedia kontrolü yapar
+            \Modules\Muzibu\App\Jobs\GenerateGenericMuzibyCover::dispatch(
+                'album',
+                $album->album_id,
+                $album->title,
+                auth()->id(),
+                tenant('id')
+            )->delay(now()->addSeconds(10));
 
             $toast = [
                 'title' => __('admin.success'),

@@ -76,6 +76,11 @@ class MuzibuServiceProvider extends ServiceProvider
      * - MuzikDataObserver: UTF-8 temizleme
      * - SongObserver: Cache count güncellemeleri (Album, Genre, Artist)
      * - AlbumObserver: Cache, SEO, Artist albums_count
+     * - ArtistObserver: Activity log, cache temizleme
+     * - GenreObserver: Activity log, cache temizleme
+     * - PlaylistObserver: Activity log, cache temizleme
+     * - RadioObserver: Activity log, cache temizleme
+     * - SectorObserver: Activity log, cache temizleme
      */
     protected function registerModelObservers(): void
     {
@@ -89,9 +94,14 @@ class MuzibuServiceProvider extends ServiceProvider
         \Modules\Muzibu\App\Models\Genre::observe($dataObserver);
         \Modules\Muzibu\App\Models\Sector::observe($dataObserver);
 
-        // Cache Count Observers
+        // Activity Log + Cache Observers
         \Modules\Muzibu\App\Models\Song::observe(\Modules\Muzibu\App\Observers\SongObserver::class);
         \Modules\Muzibu\App\Models\Album::observe(\Modules\Muzibu\App\Observers\AlbumObserver::class);
+        \Modules\Muzibu\App\Models\Artist::observe(\Modules\Muzibu\App\Observers\ArtistObserver::class);
+        \Modules\Muzibu\App\Models\Genre::observe(\Modules\Muzibu\App\Observers\GenreObserver::class);
+        \Modules\Muzibu\App\Models\Playlist::observe(\Modules\Muzibu\App\Observers\PlaylistObserver::class);
+        \Modules\Muzibu\App\Models\Radio::observe(\Modules\Muzibu\App\Observers\RadioObserver::class);
+        \Modules\Muzibu\App\Models\Sector::observe(\Modules\Muzibu\App\Observers\SectorObserver::class);
     }
 
     /**

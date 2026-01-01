@@ -1,92 +1,102 @@
 @extends('themes.muzibu.layouts.app')
 
-@section('title', 'Sertifika Ön İzleme - Muzibu')
+@section('title', __('muzibu::front.certificate.preview_title') . ' - Muzibu')
 
 @section('content')
-<div class="px-4 py-6 sm:px-6 sm:py-8">
-    {{-- Header --}}
-    <div class="mb-6">
-        <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center">
-                <i class="fas fa-eye text-2xl text-amber-400"></i>
-            </div>
-            <div>
-                <h1 class="text-3xl font-extrabold text-white">Sertifika Ön İzleme</h1>
-                <p class="text-gray-400">Bilgilerinizi kontrol edin ve onaylayın</p>
-            </div>
-        </div>
-    </div>
+<div class="min-h-screen">
+    <div class="px-4 py-6 sm:px-6 sm:py-8 max-w-3xl mx-auto">
 
-    {{-- Warning --}}
-    <div class="bg-red-900/30 border border-red-600/50 rounded-xl p-4 mb-6">
-        <div class="flex items-start gap-3">
-            <i class="fas fa-exclamation-triangle text-red-400 mt-1"></i>
-            <div class="text-sm">
-                <p class="font-medium text-red-400 mb-1">Son Kontrol!</p>
-                <p class="text-gray-400">Onayladıktan sonra bu bilgiler <strong class="text-white">DEĞİŞTİRİLEMEZ!</strong></p>
-            </div>
-        </div>
-    </div>
-
-    {{-- Preview Card --}}
-    <div class="bg-gradient-to-br from-slate-800 to-slate-900 border-2 border-amber-500/50 rounded-xl p-6 mb-6 max-w-2xl">
-        <div class="text-center mb-6">
-            <p class="text-amber-400/60 text-sm uppercase tracking-widest mb-1">Premium Üyelik</p>
-            <h2 class="text-3xl font-bold text-white">SERTİFİKASI</h2>
-        </div>
-
-        <div class="text-center mb-6">
-            <p class="text-gray-400 text-sm italic mb-2">Bu belge,</p>
-            <p class="text-2xl font-bold text-white border-b-2 border-amber-400 pb-2 inline-block px-4">
-                {{ $previewData['member_name'] }}
-            </p>
-            <p class="text-gray-400 text-sm mt-2">firmasının Muzibu Premium üyesi olduğunu tasdik eder.</p>
-        </div>
-
-        <div class="bg-slate-800/50 rounded-lg p-4 mb-4">
-            <div class="grid grid-cols-2 gap-4 text-sm mb-3">
-                <div>
-                    <p class="text-gray-500 text-xs">Vergi Dairesi</p>
-                    <p class="text-gray-300">{{ $previewData['tax_office'] ?: '-' }}</p>
+        {{-- Header --}}
+        <div class="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex items-center gap-3 sm:gap-4">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-amber-500/30 to-amber-600/20 rounded-xl flex items-center justify-center flex-shrink-0 ring-1 ring-amber-500/30">
+                    <i class="fas fa-eye text-2xl sm:text-3xl text-amber-400"></i>
                 </div>
                 <div>
-                    <p class="text-gray-500 text-xs">Vergi No</p>
-                    <p class="text-gray-300">{{ $previewData['tax_number'] ?: '-' }}</p>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-0.5">
+                        {{ __('muzibu::front.certificate.preview_title') }}
+                    </h1>
+                    <p class="text-gray-400 text-sm sm:text-base">{{ __('muzibu::front.certificate.preview_info') }}</p>
                 </div>
             </div>
-            @if($previewData['address'])
-            <div>
-                <p class="text-gray-500 text-xs">Adres</p>
-                <p class="text-gray-400 text-sm">{{ $previewData['address'] }}</p>
+        </div>
+
+        {{-- Warning --}}
+        <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-6">
+            <div class="flex gap-3">
+                <div class="flex-shrink-0 w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-exclamation-triangle text-red-400"></i>
+                </div>
+                <div class="text-sm">
+                    <p class="font-medium text-red-400 mb-1">Son Kontrol!</p>
+                    <p class="text-gray-400">Onayladıktan sonra bu bilgiler <strong class="text-white">DEĞİŞTİRİLEMEZ!</strong></p>
+                </div>
             </div>
-            @endif
         </div>
 
-        <div class="text-center text-sm">
-            <span class="text-gray-500">Üyelik Başlangıç:</span>
-            <span class="text-gray-300 ml-1">{{ $previewData['membership_start']->format('d.m.Y') }}</span>
+        {{-- Preview Card --}}
+        <div class="bg-gradient-to-br from-slate-900 to-slate-800 border border-amber-500/30 rounded-2xl overflow-hidden shadow-2xl mb-6">
+            {{-- Certificate Header --}}
+            <div class="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-b border-amber-500/20 p-6 text-center">
+                <p class="text-amber-400/60 text-sm uppercase tracking-widest mb-2">Premium Üyelik Sertifikası</p>
+                <h2 class="text-2xl sm:text-3xl font-bold text-white">{{ $previewData['member_name'] }}</h2>
+            </div>
+
+            {{-- Certificate Body --}}
+            <div class="p-6 space-y-4">
+                {{-- Member Since --}}
+                <div class="flex items-center justify-between py-3 border-b border-white/10">
+                    <span class="text-gray-400">{{ __('muzibu::front.certificate.member_since') }}</span>
+                    <span class="text-white font-medium">{{ $previewData['membership_start']->format('d.m.Y') }}</span>
+                </div>
+
+                @if($previewData['tax_office'])
+                <div class="flex items-center justify-between py-3 border-b border-white/10">
+                    <span class="text-gray-400">{{ __('muzibu::front.certificate.tax_office') }}</span>
+                    <span class="text-white">{{ $previewData['tax_office'] }}</span>
+                </div>
+                @endif
+
+                @if($previewData['tax_number'])
+                <div class="flex items-center justify-between py-3 border-b border-white/10">
+                    <span class="text-gray-400">{{ __('muzibu::front.certificate.tax_number') }}</span>
+                    <span class="text-white font-mono">{{ $previewData['tax_number'] }}</span>
+                </div>
+                @endif
+
+                @if($previewData['address'])
+                <div class="py-3 border-b border-white/10">
+                    <span class="text-gray-400 block mb-2">{{ __('muzibu::front.certificate.address') }}</span>
+                    <span class="text-white">{{ $previewData['address'] }}</span>
+                </div>
+                @endif
+            </div>
         </div>
-    </div>
 
-    {{-- Actions --}}
-    <div class="flex gap-4 max-w-2xl">
-        <a href="{{ route('muzibu.certificate.index') }}"
-            class="flex-1 bg-white/10 hover:bg-white/20 text-white font-semibold py-3 rounded-lg text-center transition">
-            <i class="fas fa-arrow-left mr-2"></i> Geri Dön
-        </a>
+        {{-- Actions --}}
+        <div class="flex flex-col sm:flex-row gap-4">
+            <a href="{{ route('muzibu.certificate.index') }}"
+                class="flex-1 bg-white/10 hover:bg-white/20 text-white font-semibold py-4 rounded-xl text-center transition flex items-center justify-center gap-2">
+                <i class="fas fa-arrow-left"></i>
+                {{ __('muzibu::front.certificate.go_back') }}
+            </a>
 
-        <form action="{{ route('muzibu.certificate.store') }}" method="POST" class="flex-1">
-            @csrf
-            <input type="hidden" name="member_name" value="{{ $formData['member_name'] }}">
-            <input type="hidden" name="tax_office" value="{{ $formData['tax_office'] ?? '' }}">
-            <input type="hidden" name="tax_number" value="{{ $formData['tax_number'] ?? '' }}">
-            <input type="hidden" name="address" value="{{ $formData['address'] ?? '' }}">
+            <form action="{{ route('muzibu.certificate.store') }}" method="POST" class="flex-1">
+                @csrf
+                <input type="hidden" name="member_name" value="{{ $formData['member_name'] }}">
+                <input type="hidden" name="tax_office" value="{{ $formData['tax_office'] ?? '' }}">
+                <input type="hidden" name="tax_number" value="{{ $formData['tax_number'] ?? '' }}">
+                <input type="hidden" name="address" value="{{ $formData['address'] ?? '' }}">
+                <input type="hidden" name="skip_correction" value="{{ $formData['skip_correction'] ?? '' }}">
 
-            <button type="submit"
-                class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition">
-                <i class="fas fa-check mr-2"></i> Onayla ve Oluştur
-            </button>
-        </form>
+                <button type="submit"
+                    class="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-4 rounded-xl transition-all duration-300 shadow-lg shadow-green-500/25 hover:shadow-green-500/40 flex items-center justify-center gap-2">
+                    <i class="fas fa-check"></i>
+                    {{ __('muzibu::front.certificate.confirm_create') }}
+                </button>
+            </form>
+        </div>
+
     </div>
 </div>
 @endsection

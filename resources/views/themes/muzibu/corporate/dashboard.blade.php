@@ -58,6 +58,10 @@
                         <i class="fas fa-crown"></i>
                         <span>Uyelikleri Yonet</span>
                     </a>
+                    <a href="/corporate/spots" class="px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl transition-all flex items-center gap-2 text-sm" data-spa>
+                        <i class="fas fa-bullhorn text-amber-400"></i>
+                        <span class="hidden sm:inline">{{ __('muzibu::front.corporate.spot_management') }}</span>
+                    </a>
                     {{-- More Options --}}
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" class="p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white rounded-xl transition-all">
@@ -287,8 +291,7 @@
                                     @if($member['last_play'])
                                         @php
                                             $song = $member['last_play']->song;
-                                            $cover = $song->coverMedia ?? ($song->album ? $song->album->coverMedia : null) ?? null;
-                                            $coverUrl = $cover ? thumb($cover, 80, 80) : null;
+                                            $coverUrl = $song->getCoverUrl(80, 80);
                                         @endphp
                                         <div class="flex items-center gap-3 bg-white/[0.02] rounded-lg p-3">
                                             @if($coverUrl)

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abuse Timeline - Nurullah (User #1)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vis-timeline@7.7.3/standalone/umd/vis-timeline-graph2d.min.js"></script>
+    <link href="https://unpkg.com/vis-timeline@7.7.3/styles/vis-timeline-graph2d.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .chart-card { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(71, 85, 105, 0.5); }
+
+        .vis-timeline { border: none !important; background: transparent !important; }
+        .vis-item {
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: 500;
+            min-height: 22px;
+            line-height: 22px;
+            padding: 0 4px;
+        }
+        .vis-item.chrome { background: #4285f4; border-color: #5a95f5; color: white; }
+        .vis-item.safari { background: #00d4ff; border-color: #33ddff; color: #000; }
+        .vis-item.firefox { background: #ff7139; border-color: #ff8c5a; color: white; }
+        .vis-item.edge { background: #0078d4; border-color: #1a8ae6; color: white; }
+        .vis-item.other { background: #6b7280; border-color: #9ca3af; color: white; }
+
+        .vis-item.overlap {
+            background: #ef4444 !important;
+            border-color: #f87171 !important;
+            color: white !important;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+        }
+
+        .vis-label { color: #e2e8f0 !important; font-weight: 600; }
+        .vis-labelset .vis-label {
+            background: rgba(15, 23, 42, 0.95) !important;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.4) !important;
+            padding: 8px 12px !important;
+        }
+        .vis-time-axis .vis-text { color: #94a3b8 !important; fill: #94a3b8 !important; font-size: 11px; }
+        .vis-time-axis .vis-grid.vis-minor { border-color: rgba(71, 85, 105, 0.15) !important; }
+        .vis-time-axis .vis-grid.vis-major { border-color: rgba(71, 85, 105, 0.3) !important; }
+        .vis-panel.vis-background { background: rgba(15, 23, 42, 0.3) !important; }
+        .vis-panel.vis-center { border-color: rgba(71, 85, 105, 0.2) !important; }
+        .vis-panel.vis-left {
+            background: rgba(15, 23, 42, 0.95) !important;
+            border-right: 1px solid rgba(71, 85, 105, 0.4) !important;
+        }
+        .vis-panel.vis-top { border-bottom: 1px solid rgba(71, 85, 105, 0.4) !important; }
+        .vis-foreground .vis-group { border-bottom: 1px solid rgba(71, 85, 105, 0.15) !important; }
+
+        .stat-box { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(71, 85, 105, 0.4); }
+    </style>
+</head>
+<body class="min-h-screen text-white p-4">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h1 class="text-2xl font-bold">
+                    <i class="fas fa-chart-gantt text-blue-400 mr-2"></i>
+                    Abuse Timeline
+                </h1>
+                <p class="text-slate-400 text-sm">Nurullah (User #1) - Rapor #1</p>
+            </div>
+            <div class="flex gap-3 text-sm">
+                <div class="stat-box rounded px-3 py-1">
+                    <span class="text-slate-400">Play:</span>
+                    <span class="font-bold text-white ml-1" id="totalPlays">226</span>
+                </div>
+                <div class="stat-box rounded px-3 py-1">
+                    <span class="text-slate-400">Çakışma:</span>
+                    <span class="font-bold text-red-400 ml-1" id="overlapCount">-</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="flex flex-wrap gap-4 mb-4 text-xs">
+            <span class="flex items-center gap-1"><span class="w-4 h-3 rounded" style="background:#4285f4"></span> Chrome</span>
+            <span class="flex items-center gap-1"><span class="w-4 h-3 rounded" style="background:#00d4ff"></span> Safari</span>
+            <span class="flex items-center gap-1"><span class="w-4 h-3 rounded" style="background:#ef4444"></span> Çakışma (Overlap)</span>
+        </div>
+
+        <!-- Timeline -->
+        <div class="chart-card rounded-lg p-4">
+            <div id="timeline" style="height: 400px;"></div>
+        </div>
+
+        <!-- Info -->
+        <div class="mt-4 text-xs text-slate-500 text-center">
+            <i class="fas fa-mouse mr-1"></i> Zoom: Mouse scroll |
+            <i class="fas fa-hand-pointer mr-1"></i> Pan: Drag
+        </div>
+    </div>
+
+    <script>
+    // GERÇEK VERİ - Nurullah (User #1) - Rapor #1
+    const plays = [{"id":371,"browser":"chrome","song":"Bulk Upload Test 2","start":"2025-12-22 21:50:05","end":"2025-12-22 21:53:00"},{"id":372,"browser":"chrome","song":"DAYDREAMING","start":"2025-12-22 21:52:52","end":"2025-12-22 21:55:20"},{"id":373,"browser":"chrome","song":"Test Upload - 01:5","start":"2025-12-22 23:15:52","end":"2025-12-22 23:18:47"},{"id":374,"browser":"chrome","song":"Faded","start":"2025-12-23 00:04:59","end":"2025-12-23 00:08:24"},{"id":375,"browser":"chrome","song":"Death Of A Bachelo","start":"2025-12-23 00:08:30","end":"2025-12-23 00:10:37"},{"id":376,"browser":"chrome","song":"Death Of A Bachelo","start":"2025-12-23 00:09:01","end":"2025-12-23 00:11:08"},{"id":377,"browser":"chrome","song":"Cupid","start":"2025-12-23 00:10:33","end":"2025-12-23 00:13:10"},{"id":378,"browser":"chrome","song":"Dancin","start":"2025-12-23 00:13:04","end":"2025-12-23 00:16:40"},{"id":379,"browser":"chrome","song":"Dancin","start":"2025-12-23 00:17:13","end":"2025-12-23 00:20:49"},{"id":380,"browser":"chrome","song":"DAYDREAMING","start":"2025-12-23 00:19:19","end":"2025-12-23 00:21:47"},{"id":381,"browser":"chrome","song":"Bulk Upload Test 1","start":"2025-12-23 00:21:41","end":"2025-12-23 00:24:36"},{"id":382,"browser":"chrome","song":"Bulk Upload Test 1","start":"2025-12-23 00:22:12","end":"2025-12-23 00:25:07"},{"id":383,"browser":"chrome","song":"Bulk Upload Test 3","start":"2025-12-23 00:24:31","end":"2025-12-23 00:27:26"},{"id":384,"browser":"chrome","song":"Test Upload - 01:5","start":"2025-12-23 00:27:20","end":"2025-12-23 00:30:15"},{"id":385,"browser":"chrome","song":"En Su Lugar","start":"2025-12-23 00:30:11","end":"2025-12-23 00:32:49"},{"id":386,"browser":"chrome","song":"Faded","start":"2025-12-23 00:53:38","end":"2025-12-23 00:57:03"},{"id":392,"browser":"chrome","song":"Faded","start":"2025-12-24 04:20:48","end":"2025-12-24 04:24:13"},{"id":395,"browser":"chrome","song":"Saksıdaki Çiçekler","start":"2025-12-24 17:08:02","end":"2025-12-24 17:10:39"},{"id":397,"browser":"chrome","song":"Yalnız Kurt","start":"2025-12-24 18:04:20","end":"2025-12-24 18:07:15"},{"id":398,"browser":"chrome","song":"Yalnız Kurt","start":"2025-12-25 01:26:04","end":"2025-12-25 01:28:59"},{"id":399,"browser":"chrome","song":"Angels","start":"2025-12-25 01:37:46","end":"2025-12-25 01:40:14"},{"id":400,"browser":"chrome","song":"Saksıdaki Çiçekler","start":"2025-12-25 01:39:45","end":"2025-12-25 01:42:22"},{"id":401,"browser":"chrome","song":"All Again","start":"2025-12-25 01:43:07","end":"2025-12-25 01:45:33"},{"id":402,"browser":"chrome","song":"Go","start":"2025-12-25 02:02:35","end":"2025-12-25 02:05:44"},{"id":403,"browser":"chrome","song":"Yalnız Kurt","start":"2025-12-25 02:03:10","end":"2025-12-25 02:06:05"},{"id":404,"browser":"chrome","song":"Overrater","start":"2025-12-25 03:30:26","end":"2025-12-25 03:33:27"},{"id":412,"browser":"chrome","song":"A Bar Song","start":"2025-12-25 04:35:33","end":"2025-12-25 04:39:03"},{"id":413,"browser":"chrome","song":"Go","start":"2025-12-25 04:37:41","end":"2025-12-25 04:40:50"},{"id":414,"browser":"chrome","song":"After Hours","start":"2025-12-25 04:52:11","end":"2025-12-25 04:54:58"},{"id":415,"browser":"chrome","song":"All Night Long","start":"2025-12-25 05:19:28","end":"2025-12-25 05:21:28"},{"id":421,"browser":"chrome","song":"ASHES & BLOOM","start":"2025-12-25 20:14:45","end":"2025-12-25 20:17:25"},{"id":422,"browser":"chrome","song":"Amen","start":"2025-12-25 20:56:21","end":"2025-12-25 20:58:58"},{"id":423,"browser":"chrome","song":"A Great Day","start":"2025-12-25 22:00:42","end":"2025-12-25 22:03:48"},{"id":424,"browser":"chrome","song":"Happier","start":"2025-12-25 22:11:16","end":"2025-12-25 22:14:15"},{"id":426,"browser":"chrome","song":"Bulk Upload Test 3","start":"2025-12-25 23:51:52","end":"2025-12-25 23:54:47"},{"id":427,"browser":"chrome","song":"ALONE","start":"2025-12-25 23:59:19","end":"2025-12-26 00:02:14"},{"id":428,"browser":"chrome","song":"Bless the Broken R","start":"2025-12-26 00:07:35","end":"2025-12-26 00:10:06"},{"id":429,"browser":"chrome","song":"Cigarette Daydream","start":"2025-12-26 00:12:41","end":"2025-12-26 00:15:24"},{"id":430,"browser":"chrome","song":"A Bar Song","start":"2025-12-26 00:24:32","end":"2025-12-26 00:28:02"},{"id":431,"browser":"chrome","song":"GOD","start":"2025-12-26 00:25:43","end":"2025-12-26 00:28:05"},{"id":432,"browser":"chrome","song":"A Bar Song","start":"2025-12-26 00:26:08","end":"2025-12-26 00:29:38"},{"id":433,"browser":"chrome","song":"A Bar Song","start":"2025-12-26 00:27:07","end":"2025-12-26 00:30:37"},{"id":434,"browser":"chrome","song":"All Night Long","start":"2025-12-26 00:27:57","end":"2025-12-26 00:29:57"},{"id":435,"browser":"chrome","song":"Lucky Lady on a Sa","start":"2025-12-26 00:34:46","end":"2025-12-26 00:37:45"},{"id":436,"browser":"chrome","song":"Cold Love","start":"2025-12-26 00:42:45","end":"2025-12-26 00:44:48"},{"id":437,"browser":"chrome","song":"ALONE","start":"2025-12-26 01:36:37","end":"2025-12-26 01:39:32"},{"id":438,"browser":"chrome","song":"All Night Long","start":"2025-12-26 01:52:45","end":"2025-12-26 01:54:45"},{"id":439,"browser":"chrome","song":"ALONE","start":"2025-12-26 01:54:15","end":"2025-12-26 01:57:10"},{"id":440,"browser":"chrome","song":"Butterflies","start":"2025-12-26 01:57:03","end":"2025-12-26 01:59:06"},{"id":441,"browser":"chrome","song":"Butterflies","start":"2025-12-26 01:57:35","end":"2025-12-26 01:59:38"},{"id":442,"browser":"chrome","song":"Butterflies","start":"2025-12-26 03:02:10","end":"2025-12-26 03:04:13"},{"id":443,"browser":"chrome","song":"Bulk Upload Test 2","start":"2025-12-26 03:30:53","end":"2025-12-26 03:33:48"},{"id":444,"browser":"chrome","song":"Faded","start":"2025-12-26 04:38:08","end":"2025-12-26 04:41:33"},{"id":445,"browser":"chrome","song":"Punchin' Bag","start":"2025-12-26 04:40:55","end":"2025-12-26 04:44:15"},{"id":446,"browser":"chrome","song":"Punchin' Bag","start":"2025-12-26 04:41:26","end":"2025-12-26 04:44:46"},{"id":447,"browser":"chrome","song":"No Lie","start":"2025-12-26 04:44:09","end":"2025-12-26 04:46:44"},{"id":448,"browser":"chrome","song":"Off We Go","start":"2025-12-26 04:46:39","end":"2025-12-26 04:48:51"},{"id":449,"browser":"chrome","song":"Off We Go","start":"2025-12-26 04:47:10","end":"2025-12-26 04:49:22"},{"id":450,"browser":"chrome","song":"ALMA","start":"2025-12-26 04:48:46","end":"2025-12-26 04:50:50"},{"id":451,"browser":"chrome","song":"How Will I Know","start":"2025-12-26 04:49:03","end":"2025-12-26 04:51:42"},{"id":452,"browser":"chrome","song":"Go","start":"2025-12-26 04:49:40","end":"2025-12-26 04:52:49"},{"id":453,"browser":"chrome","song":"Go","start":"2025-12-26 04:50:11","end":"2025-12-26 04:53:20"},{"id":494,"browser":"chrome","song":"Punchin' Bag","start":"2025-12-26 15:12:10","end":"2025-12-26 15:15:30"},{"id":495,"browser":"chrome","song":"Dark Days","start":"2025-12-26 15:12:18","end":"2025-12-26 15:14:36"},{"id":511,"browser":"chrome","song":"Dark Days","start":"2025-12-26 16:04:12","end":"2025-12-26 16:06:30"},{"id":518,"browser":"chrome","song":"Charisma","start":"2025-12-26 20:44:38","end":"2025-12-26 20:46:54"},{"id":519,"browser":"chrome","song":"Mirror","start":"2025-12-26 20:58:48","end":"2025-12-26 21:01:28"},{"id":520,"browser":"chrome","song":"Gestures","start":"2025-12-26 21:45:50","end":"2025-12-26 21:48:49"},{"id":521,"browser":"chrome","song":"Give the People Wh","start":"2025-12-27 03:06:28","end":"2025-12-27 03:08:39"},{"id":522,"browser":"chrome","song":"Give the People Wh","start":"2025-12-27 03:37:12","end":"2025-12-27 03:39:23"},{"id":523,"browser":"chrome","song":"Gestures","start":"2025-12-27 03:41:30","end":"2025-12-27 03:44:29"},{"id":524,"browser":"safari","song":"Gestures","start":"2025-12-27 04:16:28","end":"2025-12-27 04:19:27"},{"id":525,"browser":"safari","song":"Cold Love","start":"2025-12-27 04:18:22","end":"2025-12-27 04:20:25"},{"id":526,"browser":"safari","song":"Cold Love","start":"2025-12-27 04:48:28","end":"2025-12-27 04:50:31"},{"id":527,"browser":"safari","song":"Saksıdaki Çiçekler","start":"2025-12-27 04:49:26","end":"2025-12-27 04:52:03"},{"id":528,"browser":"safari","song":"Afterimage","start":"2025-12-27 04:56:37","end":"2025-12-27 04:59:49"},{"id":529,"browser":"chrome","song":"Yalnız Kurt","start":"2025-12-27 05:11:00","end":"2025-12-27 05:13:55"},{"id":530,"browser":"chrome","song":"All Again","start":"2025-12-27 05:19:25","end":"2025-12-27 05:21:51"},{"id":531,"browser":"chrome","song":"All Again","start":"2025-12-27 05:42:27","end":"2025-12-27 05:44:53"},{"id":532,"browser":"chrome","song":"Cold Love","start":"2025-12-27 05:43:09","end":"2025-12-27 05:45:12"},{"id":533,"browser":"chrome","song":"Saksıdaki Çiçekler","start":"2025-12-27 05:43:53","end":"2025-12-27 05:46:30"},{"id":534,"browser":"chrome","song":"Kar Tanesi","start":"2025-12-27 05:46:24","end":"2025-12-27 05:48:50"},{"id":535,"browser":"chrome","song":"Cold Love","start":"2025-12-27 05:47:23","end":"2025-12-27 05:49:26"},{"id":536,"browser":"chrome","song":"Cold Love","start":"2025-12-27 05:49:28","end":"2025-12-27 05:51:31"},{"id":537,"browser":"chrome","song":"Saksıdaki Çiçekler","start":"2025-12-27 05:50:22","end":"2025-12-27 05:52:59"},{"id":564,"browser":"chrome","song":"Saksıdaki Çiçekler","start":"2025-12-27 21:12:15","end":"2025-12-27 21:14:52"},{"id":569,"browser":"chrome","song":"Saksıdaki Çiçekler","start":"2025-12-27 22:54:47","end":"2025-12-27 22:57:24"},{"id":570,"browser":"chrome","song":"Saksıdaki Çiçekler","start":"2025-12-27 23:10:51","end":"2025-12-27 23:13:28"},{"id":571,"browser":"chrome","song":"Cold Love","start":"2025-12-28 00:43:27","end":"2025-12-28 00:45:30"},{"id":572,"browser":"chrome","song":"After Hours","start":"2025-12-28 00:44:08","end":"2025-12-28 00:46:55"},{"id":573,"browser":"chrome","song":"Go","start":"2025-12-28 00:45:42","end":"2025-12-28 00:48:51"},{"id":574,"browser":"chrome","song":"Kar Tanesi","start":"2025-12-28 00:53:48","end":"2025-12-28 00:56:14"},{"id":575,"browser":"chrome","song":"After Hours","start":"2025-12-28 00:54:16","end":"2025-12-28 00:57:03"},{"id":576,"browser":"chrome","song":"After Hours","start":"2025-12-28 00:55:02","end":"2025-12-28 00:57:49"},{"id":577,"browser":"chrome","song":"Cold Love","start":"2025-12-28 00:55:24","end":"2025-12-28 00:57:27"},{"id":578,"browser":"chrome","song":"Cold Love","start":"2025-12-28 00:56:56","end":"2025-12-28 00:58:59"},{"id":579,"browser":"chrome","song":"Cold Love","start":"2025-12-28 01:05:01","end":"2025-12-28 01:07:04"},{"id":580,"browser":"safari","song":"Cold Love","start":"2025-12-28 02:31:24","end":"2025-12-28 02:33:27"},{"id":581,"browser":"safari","song":"Cold Love","start":"2025-12-28 02:36:14","end":"2025-12-28 02:38:17"},{"id":582,"browser":"safari","song":"Saksıdaki Çiçekler","start":"2025-12-28 02:36:58","end":"2025-12-28 02:39:35"},{"id":583,"browser":"safari","song":"Saksıdaki Çiçekler","start":"2025-12-28 02:53:20","end":"2025-12-28 02:55:57"},{"id":584,"browser":"safari","song":"Saksıdaki Çiçekler","start":"2025-12-28 02:56:30","end":"2025-12-28 02:59:07"},{"id":585,"browser":"safari","song":"Cold Love","start":"2025-12-28 03:00:30","end":"2025-12-28 03:02:33"},{"id":586,"browser":"safari","song":"Cold Love","start":"2025-12-28 03:21:13","end":"2025-12-28 03:23:16"},{"id":587,"browser":"safari","song":"Cold Love","start":"2025-12-28 03:23:02","end":"2025-12-28 03:25:05"},{"id":588,"browser":"safari","song":"Cold Love","start":"2025-12-28 03:30:32","end":"2025-12-28 03:32:35"},{"id":589,"browser":"safari","song":"Afterimage","start":"2025-12-28 03:32:26","end":"2025-12-28 03:35:38"},{"id":590,"browser":"safari","song":"Afterimage","start":"2025-12-28 03:35:02","end":"2025-12-28 03:38:14"},{"id":591,"browser":"safari","song":"Afterimage","start":"2025-12-28 03:40:54","end":"2025-12-28 03:44:06"},{"id":592,"browser":"safari","song":"Afterimage","start":"2025-12-28 03:43:46","end":"2025-12-28 03:46:58"},{"id":593,"browser":"safari","song":"Afterimage","start":"2025-12-28 03:59:59","end":"2025-12-28 04:03:11"},{"id":594,"browser":"safari","song":"Yalnız Kurt","start":"2025-12-28 04:01:12","end":"2025-12-28 04:04:07"},{"id":595,"browser":"safari","song":"Yalnız Kurt","start":"2025-12-28 04:05:38","end":"2025-12-28 04:08:33"},{"id":596,"browser":"safari","song":"Yalnız Kurt","start":"2025-12-28 04:09:55","end":"2025-12-28 04:12:50"},{"id":597,"browser":"safari","song":"Yalnız Kurt","start":"2025-12-28 04:13:18","end":"2025-12-28 04:16:13"},{"id":598,"browser":"safari","song":"No Lie","start":"2025-12-28 04:15:48","end":"2025-12-28 04:18:23"},{"id":599,"browser":"safari","song":"Cold Love","start":"2025-12-28 04:19:36","end":"2025-12-28 04:21:39"},{"id":600,"browser":"safari","song":"Cold Love","start":"2025-12-28 04:28:45","end":"2025-12-28 04:30:48"},{"id":601,"browser":"safari","song":"Cold Love","start":"2025-12-28 04:29:49","end":"2025-12-28 04:31:52"},{"id":602,"browser":"safari","song":"ALMA","start":"2025-12-28 04:30:01","end":"2025-12-28 04:32:05"},{"id":603,"browser":"safari","song":"All Again","start":"2025-12-28 04:31:07","end":"2025-12-28 04:33:33"},{"id":604,"browser":"safari","song":"Give Me the Power","start":"2025-12-28 04:34:53","end":"2025-12-28 04:37:29"},{"id":605,"browser":"safari","song":"All Night Long","start":"2025-12-28 04:35:48","end":"2025-12-28 04:37:48"},{"id":606,"browser":"safari","song":"All Night Long","start":"2025-12-28 04:42:42","end":"2025-12-28 04:44:42"},{"id":607,"browser":"safari","song":"All Night Long","start":"2025-12-28 04:45:42","end":"2025-12-28 04:47:42"},{"id":608,"browser":"safari","song":"After Hours","start":"2025-12-28 04:45:53","end":"2025-12-28 04:48:40"},{"id":609,"browser":"safari","song":"Afterimage","start":"2025-12-28 04:46:43","end":"2025-12-28 04:49:55"},{"id":613,"browser":"safari","song":"Afterimage","start":"2025-12-28 16:30:34","end":"2025-12-28 16:33:46"},{"id":614,"browser":"safari","song":"Afterimage","start":"2025-12-28 16:47:28","end":"2025-12-28 16:50:40"},{"id":617,"browser":"chrome","song":"Saksıdaki Çiçekler","start":"2025-12-28 20:43:23","end":"2025-12-28 20:46:00"},{"id":618,"browser":"chrome","song":"Saksıdaki Çiçekler","start":"2025-12-28 20:53:05","end":"2025-12-28 20:55:42"},{"id":622,"browser":"chrome","song":"Saksıdaki Çiçekler","start":"2025-12-28 21:18:12","end":"2025-12-28 21:20:49"},{"id":623,"browser":"chrome","song":"Enchanted Forest","start":"2025-12-28 21:46:35","end":"2025-12-28 21:49:28"},{"id":624,"browser":"chrome","song":"Enchanted Forest","start":"2025-12-28 22:02:48","end":"2025-12-28 22:05:41"},{"id":625,"browser":"chrome","song":"Cold Love","start":"2025-12-28 22:19:21","end":"2025-12-28 22:21:24"},{"id":626,"browser":"chrome","song":"Dark Days","start":"2025-12-28 22:35:56","end":"2025-12-28 22:38:14"},{"id":627,"browser":"chrome","song":"Dark Days","start":"2025-12-28 22:40:59","end":"2025-12-28 22:43:17"},{"id":628,"browser":"chrome","song":"Cold Love","start":"2025-12-29 01:24:02","end":"2025-12-29 01:26:05"},{"id":629,"browser":"chrome","song":"Afterimage","start":"2025-12-29 02:29:03","end":"2025-12-29 02:32:15"},{"id":630,"browser":"chrome","song":"Afterimage","start":"2025-12-29 03:14:13","end":"2025-12-29 03:17:25"},{"id":639,"browser":"safari","song":"Afterimage","start":"2025-12-29 14:48:11","end":"2025-12-29 14:51:23"},{"id":640,"browser":"safari","song":"Afterimage","start":"2025-12-29 15:52:42","end":"2025-12-29 15:55:54"},{"id":641,"browser":"safari","song":"Afterimage","start":"2025-12-29 15:55:49","end":"2025-12-29 15:59:01"},{"id":642,"browser":"chrome","song":"Afterimage","start":"2025-12-29 15:56:53","end":"2025-12-29 16:00:05"},{"id":643,"browser":"safari","song":"Cold Love","start":"2025-12-29 15:58:59","end":"2025-12-29 16:01:02"},{"id":644,"browser":"safari","song":"Saksıdaki Çiçekler","start":"2025-12-29 16:01:02","end":"2025-12-29 16:03:39"},{"id":645,"browser":"safari","song":"Saksıdaki Çiçekler","start":"2025-12-29 16:03:54","end":"2025-12-29 16:06:31"},{"id":646,"browser":"safari","song":"Kar Tanesi","start":"2025-12-29 16:04:27","end":"2025-12-29 16:06:53"},{"id":647,"browser":"safari","song":"After Hours","start":"2025-12-29 16:07:27","end":"2025-12-29 16:10:14"},{"id":648,"browser":"safari","song":"Afterimage","start":"2025-12-29 16:10:15","end":"2025-12-29 16:13:27"},{"id":649,"browser":"safari","song":"Afterimage","start":"2025-12-29 16:11:38","end":"2025-12-29 16:14:50"},{"id":650,"browser":"safari","song":"Cold Love","start":"2025-12-29 16:12:46","end":"2025-12-29 16:14:49"},{"id":651,"browser":"safari","song":"Saksıdaki Çiçekler","start":"2025-12-29 16:14:30","end":"2025-12-29 16:17:07"},{"id":652,"browser":"safari","song":"Yalnız Kurt","start":"2025-12-29 16:16:20","end":"2025-12-29 16:19:15"},{"id":653,"browser":"safari","song":"Yalnız Kurt","start":"2025-12-29 16:17:26","end":"2025-12-29 16:20:21"},{"id":654,"browser":"safari","song":"Yalnız Kurt","start":"2025-12-29 16:19:27","end":"2025-12-29 16:22:22"},{"id":655,"browser":"safari","song":"Yalnız Kurt","start":"2025-12-29 16:21:13","end":"2025-12-29 16:24:08"},{"id":656,"browser":"chrome","song":"Kar Tanesi","start":"2025-12-29 16:21:35","end":"2025-12-29 16:24:01"},{"id":657,"browser":"safari","song":"Cold Love","start":"2025-12-29 16:22:04","end":"2025-12-29 16:24:07"},{"id":658,"browser":"safari","song":"Cold Love","start":"2025-12-29 16:25:19","end":"2025-12-29 16:27:22"},{"id":659,"browser":"safari","song":"Cold Love","start":"2025-12-29 16:29:28","end":"2025-12-29 16:31:31"},{"id":660,"browser":"safari","song":"Saksıdaki Çiçekler","start":"2025-12-29 16:30:17","end":"2025-12-29 16:32:54"},{"id":661,"browser":"safari","song":"Saksıdaki Çiçekler","start":"2025-12-29 16:31:26","end":"2025-12-29 16:34:03"},{"id":662,"browser":"safari","song":"Cold Love","start":"2025-12-29 16:34:03","end":"2025-12-29 16:36:06"},{"id":663,"browser":"safari","song":"Cold Love","start":"2025-12-29 16:42:11","end":"2025-12-29 16:44:14"},{"id":664,"browser":"safari","song":"Cold Love","start":"2025-12-29 16:44:14","end":"2025-12-29 16:46:17"},{"id":665,"browser":"safari","song":"Saksıdaki Çiçekler","start":"2025-12-29 16:45:00","end":"2025-12-29 16:47:37"},{"id":666,"browser":"safari","song":"Yalnız Kurt","start":"2025-12-29 16:47:37","end":"2025-12-29 16:50:32"},{"id":667,"browser":"safari","song":"Kar Tanesi","start":"2025-12-29 16:50:32","end":"2025-12-29 16:52:58"},{"id":668,"browser":"safari","song":"After Hours","start":"2025-12-29 16:52:59","end":"2025-12-29 16:55:46"},{"id":669,"browser":"safari","song":"Afterimage","start":"2025-12-29 16:55:47","end":"2025-12-29 16:58:59"},{"id":670,"browser":"safari","song":"All Again","start":"2025-12-29 16:58:59","end":"2025-12-29 17:01:25"},{"id":671,"browser":"safari","song":"You Are Not a Sold","start":"2025-12-29 17:00:57","end":"2025-12-29 17:04:20"},{"id":672,"browser":"safari","song":"ALONE","start":"2025-12-29 17:02:41","end":"2025-12-29 17:05:36"},{"id":673,"browser":"safari","song":"Amen","start":"2025-12-29 17:05:36","end":"2025-12-29 17:08:13"},{"id":674,"browser":"safari","song":"Angels","start":"2025-12-29 17:08:14","end":"2025-12-29 17:10:42"},{"id":675,"browser":"safari","song":"ASHES & BLOOM","start":"2025-12-29 17:10:11","end":"2025-12-29 17:12:51"},{"id":676,"browser":"safari","song":"Gestures","start":"2025-12-29 17:12:43","end":"2025-12-29 17:15:42"},{"id":677,"browser":"safari","song":"Give Me the Power","start":"2025-12-29 17:15:41","end":"2025-12-29 17:18:17"},{"id":678,"browser":"chrome","song":"Give Me the Power","start":"2025-12-29 17:18:09","end":"2025-12-29 17:20:45"},{"id":679,"browser":"safari","song":"Give the People Wh","start":"2025-12-29 17:18:20","end":"2025-12-29 17:20:31"},{"id":680,"browser":"safari","song":"Cold Love","start":"2025-12-29 17:20:28","end":"2025-12-29 17:22:31"},{"id":681,"browser":"safari","song":"Yalnız Kurt","start":"2025-12-29 17:22:31","end":"2025-12-29 17:25:26"},{"id":682,"browser":"safari","song":"After Hours","start":"2025-12-29 17:25:26","end":"2025-12-29 17:28:13"},{"id":683,"browser":"safari","song":"Afterimage","start":"2025-12-29 17:28:14","end":"2025-12-29 17:31:26"},{"id":684,"browser":"chrome","song":"Afterimage","start":"2025-12-29 17:34:21","end":"2025-12-29 17:37:33"},{"id":685,"browser":"safari","song":"All Again","start":"2025-12-29 17:43:18","end":"2025-12-29 17:45:44"},{"id":686,"browser":"safari","song":"All Night Long","start":"2025-12-29 17:45:45","end":"2025-12-29 17:47:45"},{"id":687,"browser":"safari","song":"You Are Not a Sold","start":"2025-12-29 17:47:46","end":"2025-12-29 17:51:09"},{"id":688,"browser":"chrome","song":"Afterimage","start":"2025-12-29 17:49:18","end":"2025-12-29 17:52:30"},{"id":689,"browser":"safari","song":"ALMA","start":"2025-12-29 17:51:08","end":"2025-12-29 17:53:12"},{"id":690,"browser":"safari","song":"ALONE","start":"2025-12-29 17:53:13","end":"2025-12-29 17:56:08"},{"id":691,"browser":"chrome","song":"Afterimage","start":"2025-12-29 17:54:12","end":"2025-12-29 17:57:24"},{"id":692,"browser":"chrome","song":"All Again","start":"2025-12-29 18:04:44","end":"2025-12-29 18:07:10"},{"id":693,"browser":"safari","song":"Angels","start":"2025-12-29 18:07:26","end":"2025-12-29 18:09:54"},{"id":694,"browser":"safari","song":"ASHES & BLOOM","start":"2025-12-29 18:08:31","end":"2025-12-29 18:11:11"},{"id":695,"browser":"safari","song":"Gestures","start":"2025-12-29 18:11:13","end":"2025-12-29 18:14:12"},{"id":696,"browser":"safari","song":"Give Me the Power","start":"2025-12-29 18:14:12","end":"2025-12-29 18:16:48"},{"id":697,"browser":"safari","song":"Give the People Wh","start":"2025-12-29 18:16:48","end":"2025-12-29 18:18:59"},{"id":698,"browser":"safari","song":"Go","start":"2025-12-29 18:18:58","end":"2025-12-29 18:22:07"},{"id":699,"browser":"safari","song":"Cold Love","start":"2025-12-29 18:22:07","end":"2025-12-29 18:24:10"},{"id":700,"browser":"safari","song":"Saksıdaki Çiçekler","start":"2025-12-29 18:24:11","end":"2025-12-29 18:26:48"},{"id":701,"browser":"safari","song":"Yalnız Kurt","start":"2025-12-29 18:26:49","end":"2025-12-29 18:29:44"},{"id":702,"browser":"safari","song":"After Hours","start":"2025-12-29 18:29:43","end":"2025-12-29 18:32:30"},{"id":703,"browser":"safari","song":"Afterimage","start":"2025-12-29 18:32:31","end":"2025-12-29 18:35:43"},{"id":704,"browser":"safari","song":"All Again","start":"2025-12-29 18:35:44","end":"2025-12-29 18:38:10"},{"id":705,"browser":"safari","song":"All Night Long","start":"2025-12-29 18:38:10","end":"2025-12-29 18:40:10"},{"id":706,"browser":"safari","song":"You Are Not a Sold","start":"2025-12-29 18:40:11","end":"2025-12-29 18:43:34"},{"id":707,"browser":"safari","song":"ALMA","start":"2025-12-29 18:43:35","end":"2025-12-29 18:45:39"},{"id":708,"browser":"safari","song":"ALONE","start":"2025-12-29 18:45:38","end":"2025-12-29 18:48:33"},{"id":709,"browser":"safari","song":"Amen","start":"2025-12-29 18:48:33","end":"2025-12-29 18:51:10"},{"id":710,"browser":"chrome","song":"ALONE","start":"2025-12-29 18:49:07","end":"2025-12-29 18:52:02"},{"id":711,"browser":"safari","song":"Angels","start":"2025-12-29 18:51:11","end":"2025-12-29 18:53:39"},{"id":712,"browser":"safari","song":"ASHES & BLOOM","start":"2025-12-29 18:53:40","end":"2025-12-29 18:56:20"},{"id":713,"browser":"safari","song":"Gestures","start":"2025-12-29 18:56:21","end":"2025-12-29 18:59:20"},{"id":714,"browser":"safari","song":"Give the People Wh","start":"2025-12-29 18:59:20","end":"2025-12-29 19:01:31"},{"id":715,"browser":"safari","song":"Cold Love","start":"2025-12-29 19:01:30","end":"2025-12-29 19:03:33"},{"id":716,"browser":"safari","song":"Saksıdaki Çiçekler","start":"2025-12-29 19:03:34","end":"2025-12-29 19:06:11"},{"id":717,"browser":"chrome","song":"Saksıdaki Çiçekler","start":"2025-12-29 19:39:46","end":"2025-12-29 19:42:23"},{"id":719,"browser":"chrome","song":"Give the People Wh","start":"2025-12-29 20:11:55","end":"2025-12-29 20:14:06"},{"id":720,"browser":"chrome","song":"Give the People Wh","start":"2025-12-29 20:51:51","end":"2025-12-29 20:54:02"},{"id":721,"browser":"chrome","song":"Cold Love","start":"2025-12-29 20:54:02","end":"2025-12-29 20:56:05"},{"id":722,"browser":"chrome","song":"Saksıdaki Çiçekler","start":"2025-12-29 20:56:06","end":"2025-12-29 20:58:43"},{"id":723,"browser":"chrome","song":"Yalnız Kurt","start":"2025-12-29 20:58:46","end":"2025-12-29 21:01:41"},{"id":724,"browser":"chrome","song":"Afterimage","start":"2025-12-29 21:01:41","end":"2025-12-29 21:04:53"},{"id":725,"browser":"chrome","song":"All Again","start":"2025-12-29 21:04:53","end":"2025-12-29 21:07:19"}];
+
+    // Parse time
+    function parseTime(str) {
+        return new Date(str.replace(' ', 'T') + '+03:00');
+    }
+
+    // Overlap detection
+    function detectOverlaps(plays) {
+        const overlappingIds = new Set();
+        for (let i = 0; i < plays.length; i++) {
+            for (let j = i + 1; j < plays.length; j++) {
+                const p1 = plays[i];
+                const p2 = plays[j];
+                const s1 = parseTime(p1.start).getTime();
+                const e1 = parseTime(p1.end).getTime();
+                const s2 = parseTime(p2.start).getTime();
+                const e2 = parseTime(p2.end).getTime();
+
+                // Overlap check: p1 ends after p2 starts AND p2 ends after p1 starts
+                if (e1 > s2 && e2 > s1) {
+                    overlappingIds.add(p1.id);
+                    overlappingIds.add(p2.id);
+                }
+            }
+        }
+        return overlappingIds;
+    }
+
+    const overlappingIds = detectOverlaps(plays);
+    document.getElementById('overlapCount').textContent = overlappingIds.size;
+
+    // Browser icons
+    const browserIcons = {
+        chrome: { icon: 'fab fa-chrome', color: '#4285f4', label: 'Chrome' },
+        safari: { icon: 'fab fa-safari', color: '#00d4ff', label: 'Safari' },
+        firefox: { icon: 'fab fa-firefox-browser', color: '#ff7139', label: 'Firefox' },
+        edge: { icon: 'fab fa-edge', color: '#0078d4', label: 'Edge' },
+        other: { icon: 'fas fa-globe', color: '#6b7280', label: 'Other' }
+    };
+
+    // Groups
+    const browsers = [...new Set(plays.map(p => p.browser))];
+    const groups = new vis.DataSet(browsers.map(browser => {
+        const info = browserIcons[browser] || browserIcons.other;
+        return {
+            id: browser,
+            content: `<div style="display:flex; align-items:center; gap:8px;">
+                <i class="${info.icon}" style="color:${info.color}; font-size:16px;"></i>
+                <span>${info.label}</span>
+            </div>`,
+            style: 'min-height: 50px;'
+        };
+    }));
+
+    // Items
+    const items = new vis.DataSet(plays.map(play => {
+        const start = parseTime(play.start);
+        const end = parseTime(play.end);
+        const isOverlap = overlappingIds.has(play.id);
+        const startStr = play.start.split(' ')[1].substring(0, 5);
+        const endStr = play.end.split(' ')[1].substring(0, 5);
+
+        return {
+            id: play.id,
+            group: play.browser,
+            content: play.song,
+            start: start,
+            end: end,
+            className: play.browser + (isOverlap ? ' overlap' : ''),
+            title: `<div style="padding:10px; background:#1e293b; border:1px solid #475569; border-radius:6px;">
+                <div style="font-weight:bold; margin-bottom:4px;">${play.song}</div>
+                <div style="color:#94a3b8; font-size:12px;">${startStr} - ${endStr}</div>
+                ${isOverlap ? '<div style="color:#ef4444; font-weight:bold; margin-top:6px;">ÇAKIŞMA!</div>' : ''}
+            </div>`
+        };
+    }));
+
+    // Find a good starting point (area with overlaps)
+    let startView = parseTime('2025-12-29 15:50:00');
+    let endView = parseTime('2025-12-29 16:30:00');
+
+    // Timeline
+    const container = document.getElementById('timeline');
+    const options = {
+        stack: true,
+        showMajorLabels: true,
+        showMinorLabels: true,
+        zoomMin: 1000 * 60 * 2,
+        zoomMax: 1000 * 60 * 60 * 24,
+        orientation: { axis: 'top' },
+        margin: { item: { horizontal: 0, vertical: 2 } },
+        tooltip: { followMouse: true, overflowMethod: 'cap' },
+        start: startView,
+        end: endView,
+        format: {
+            minorLabels: { minute: 'HH:mm', hour: 'HH:mm' },
+            majorLabels: { hour: 'HH:mm', day: 'D MMM' }
+        }
+    };
+
+    new vis.Timeline(container, items, groups, options);
+    </script>
+</body>
+</html>

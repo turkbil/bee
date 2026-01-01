@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurumsal Playlist Sistemi - Basitleştirilmiş Plan (v2)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .gradient-border { background: linear-gradient(135deg, #22c55e, #3b82f6); }
+        .glass { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="bg-slate-900 text-gray-100 min-h-screen">
+    <!-- Header -->
+    <div class="gradient-border p-1">
+        <header class="bg-slate-900 px-6 py-8">
+            <div class="max-w-5xl mx-auto">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="px-3 py-1 bg-green-600/30 text-green-400 text-sm font-medium rounded-full">
+                        <i class="fas fa-leaf mr-1"></i> Basitleştirilmiş
+                    </span>
+                    <span class="px-3 py-1 bg-blue-600/30 text-blue-400 text-sm font-medium rounded-full">
+                        <i class="fas fa-code-branch mr-1"></i> v2
+                    </span>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-black mb-3">
+                    <i class="fas fa-feather text-green-500 mr-3"></i>
+                    Kurumsal Playlist - Tek Kolon Yaklaşımı
+                </h1>
+                <p class="text-xl text-gray-400">Pivot tablo yok, karmaşıklık yok, sadece <code class="bg-slate-700 px-2 py-1 rounded">corporate_id</code></p>
+                <div class="mt-4 flex flex-wrap gap-4 text-sm text-gray-500">
+                    <span><i class="fas fa-calendar mr-1"></i> 30 Aralık 2025</span>
+                    <span><i class="fas fa-sync mr-1"></i> Revize: v1 → v2</span>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <main class="max-w-5xl mx-auto px-6 py-10">
+
+        <!-- v1 vs v2 Comparison -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-exchange-alt text-amber-500"></i> Neden Değişti?
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- v1 - Old -->
+                <div class="bg-red-900/20 border border-red-800 rounded-xl p-5">
+                    <h3 class="font-semibold text-red-400 mb-4 flex items-center gap-2">
+                        <i class="fas fa-times-circle"></i> v1 - Karmaşık Yaklaşım
+                    </h3>
+                    <ul class="space-y-3 text-sm text-gray-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-database text-red-500 mt-1"></i>
+                            <span>Yeni pivot tablo: <code>corporate_playlists</code></span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-columns text-red-500 mt-1"></i>
+                            <span>3 yeni kolon: <code>is_corporate</code>, <code>owner_corporate_id</code>, <code>visibility</code></span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-code text-red-500 mt-1"></i>
+                            <span>Yeni Service class gerekli</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-tachometer-alt text-red-500 mt-1"></i>
+                            <span>Ekstra JOIN, performans yükü</span>
+                        </li>
+                    </ul>
+                    <div class="mt-4 p-3 bg-red-900/30 rounded text-xs text-red-300">
+                        <i class="fas fa-exclamation-triangle mr-1"></i>
+                        Over-engineering: İhtiyaç olmayan özellikler için karmaşıklık
+                    </div>
+                </div>
+
+                <!-- v2 - New -->
+                <div class="bg-green-900/20 border border-green-800 rounded-xl p-5">
+                    <h3 class="font-semibold text-green-400 mb-4 flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i> v2 - Basit Yaklaşım
+                    </h3>
+                    <ul class="space-y-3 text-sm text-gray-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-database text-green-500 mt-1"></i>
+                            <span>Yeni tablo yok, mevcut <code>playlists</code> kullan</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-columns text-green-500 mt-1"></i>
+                            <span>Sadece 1 kolon: <code>corporate_id</code></span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-code text-green-500 mt-1"></i>
+                            <span>Mevcut Playlist model'e birkaç method</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-tachometer-alt text-green-500 mt-1"></i>
+                            <span>Basit WHERE, hızlı query</span>
+                        </li>
+                    </ul>
+                    <div class="mt-4 p-3 bg-green-900/30 rounded text-xs text-green-300">
+                        <i class="fas fa-lightbulb mr-1"></i>
+                        KISS Prensibi: Keep It Simple, Stupid
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Simple Solution -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-magic text-green-500"></i> Tek Kolon Çözümü
+            </h2>
+
+            <div class="glass rounded-2xl p-6 border border-slate-700">
+                <!-- Visual Schema -->
+                <div class="bg-slate-800 rounded-xl p-6 mb-6">
+                    <h3 class="font-semibold text-cyan-400 mb-4"><i class="fas fa-table mr-2"></i>muzibu_playlists tablosu</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="text-gray-400 border-b border-slate-600">
+                                <tr>
+                                    <th class="text-left py-2 px-3">Kolon</th>
+                                    <th class="text-left py-2 px-3">Tip</th>
+                                    <th class="text-left py-2 px-3">Durum</th>
+                                    <th class="text-left py-2 px-3">Açıklama</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-slate-700">
+                                    <td class="py-2 px-3">playlist_id</td>
+                                    <td class="py-2 px-3">bigint PK</td>
+                                    <td class="py-2 px-3"><span class="text-gray-500">Mevcut</span></td>
+                                    <td class="py-2 px-3">Primary key</td>
+                                </tr>
+                                <tr class="border-b border-slate-700">
+                                    <td class="py-2 px-3">user_id</td>
+                                    <td class="py-2 px-3">bigint FK</td>
+                                    <td class="py-2 px-3"><span class="text-gray-500">Mevcut</span></td>
+                                    <td class="py-2 px-3">Oluşturan kullanıcı</td>
+                                </tr>
+                                <tr class="border-b border-slate-700 bg-green-900/20">
+                                    <td class="py-2 px-3 font-medium text-green-400">corporate_id</td>
+                                    <td class="py-2 px-3 text-green-400">bigint FK nullable</td>
+                                    <td class="py-2 px-3"><span class="px-2 py-0.5 bg-green-600 text-white text-xs rounded">YENİ</span></td>
+                                    <td class="py-2 px-3 text-green-300">Hangi kuruma ait? (NULL = normal playlist)</td>
+                                </tr>
+                                <tr class="border-b border-slate-700">
+                                    <td class="py-2 px-3">title</td>
+                                    <td class="py-2 px-3">json</td>
+                                    <td class="py-2 px-3"><span class="text-gray-500">Mevcut</span></td>
+                                    <td class="py-2 px-3">Çoklu dil başlık</td>
+                                </tr>
+                                <tr class="border-b border-slate-700">
+                                    <td class="py-2 px-3">is_system</td>
+                                    <td class="py-2 px-3">boolean</td>
+                                    <td class="py-2 px-3"><span class="text-gray-500">Mevcut</span></td>
+                                    <td class="py-2 px-3">Sistem playlisti mi?</td>
+                                </tr>
+                                <tr class="border-b border-slate-700">
+                                    <td class="py-2 px-3">is_public</td>
+                                    <td class="py-2 px-3">boolean</td>
+                                    <td class="py-2 px-3"><span class="text-gray-500">Mevcut</span></td>
+                                    <td class="py-2 px-3">Herkese açık mı?</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-3">...</td>
+                                    <td class="py-2 px-3">...</td>
+                                    <td class="py-2 px-3"><span class="text-gray-500">Mevcut</span></td>
+                                    <td class="py-2 px-3">Diğer alanlar aynı kalır</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Logic Explanation -->
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-slate-800 rounded-lg p-4 text-center">
+                        <div class="text-4xl mb-2">🏢</div>
+                        <h4 class="font-medium text-purple-400 mb-2">Kurumsal Playlist</h4>
+                        <code class="text-sm bg-slate-700 px-2 py-1 rounded">corporate_id = 5</code>
+                        <p class="text-xs text-gray-400 mt-2">Kurum #5'e ait playlist</p>
+                    </div>
+                    <div class="bg-slate-800 rounded-lg p-4 text-center">
+                        <div class="text-4xl mb-2">👤</div>
+                        <h4 class="font-medium text-blue-400 mb-2">Kullanıcı Playlisti</h4>
+                        <code class="text-sm bg-slate-700 px-2 py-1 rounded">corporate_id = NULL</code>
+                        <p class="text-xs text-gray-400 mt-2">Normal kullanıcı playlisti</p>
+                    </div>
+                    <div class="bg-slate-800 rounded-lg p-4 text-center">
+                        <div class="text-4xl mb-2">⚙️</div>
+                        <h4 class="font-medium text-cyan-400 mb-2">Sistem Playlisti</h4>
+                        <code class="text-sm bg-slate-700 px-2 py-1 rounded">corporate_id = NULL + is_system = 1</code>
+                        <p class="text-xs text-gray-400 mt-2">Admin oluşturduğu genel liste</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Migration -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-database text-blue-500"></i> Migration
+            </h2>
+
+            <div class="glass rounded-xl p-6 border border-slate-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-blue-400"><i class="fas fa-file-code mr-2"></i>add_corporate_id_to_muzibu_playlists_table.php</h3>
+                    <span class="text-xs text-gray-500">database/migrations/tenant/</span>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4 font-mono text-sm overflow-x-auto">
+                    <pre class="text-gray-300"><code><span class="text-purple-400">public function</span> <span class="text-yellow-400">up</span>(): <span class="text-cyan-400">void</span>
+{
+    Schema::table(<span class="text-green-400">'muzibu_playlists'</span>, <span class="text-purple-400">function</span> (Blueprint $table) {
+        <span class="text-gray-500">// Kurumsal playlist için foreign key</span>
+        $table-><span class="text-yellow-400">unsignedBigInteger</span>(<span class="text-green-400">'corporate_id'</span>)
+              -><span class="text-yellow-400">nullable</span>()
+              -><span class="text-yellow-400">after</span>(<span class="text-green-400">'user_id'</span>);
+
+        <span class="text-gray-500">// Foreign key constraint</span>
+        $table-><span class="text-yellow-400">foreign</span>(<span class="text-green-400">'corporate_id'</span>)
+              -><span class="text-yellow-400">references</span>(<span class="text-green-400">'id'</span>)
+              -><span class="text-yellow-400">on</span>(<span class="text-green-400">'muzibu_corporate_accounts'</span>)
+              -><span class="text-yellow-400">onDelete</span>(<span class="text-green-400">'cascade'</span>);
+
+        <span class="text-gray-500">// Hızlı sorgu için index</span>
+        $table-><span class="text-yellow-400">index</span>(<span class="text-green-400">'corporate_id'</span>);
+    });
+}
+
+<span class="text-purple-400">public function</span> <span class="text-yellow-400">down</span>(): <span class="text-cyan-400">void</span>
+{
+    Schema::table(<span class="text-green-400">'muzibu_playlists'</span>, <span class="text-purple-400">function</span> (Blueprint $table) {
+        $table-><span class="text-yellow-400">dropForeign</span>([<span class="text-green-400">'corporate_id'</span>]);
+        $table-><span class="text-yellow-400">dropIndex</span>([<span class="text-green-400">'corporate_id'</span>]);
+        $table-><span class="text-yellow-400">dropColumn</span>(<span class="text-green-400">'corporate_id'</span>);
+    });
+}</code></pre>
+                </div>
+                <div class="mt-4 p-3 bg-amber-900/20 border border-amber-800 rounded text-sm text-amber-300">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    <strong>Hatırlatma:</strong> Hem <code>database/migrations/tenant/</code> hem de <code>database/migrations/</code> klasörüne koy!
+                </div>
+            </div>
+        </section>
+
+        <!-- Model Updates -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-cube text-purple-500"></i> Model Güncellemeleri
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Playlist Model -->
+                <div class="glass rounded-xl p-6 border border-slate-700">
+                    <h3 class="font-semibold text-purple-400 mb-4"><i class="fas fa-list-music mr-2"></i>Playlist.php</h3>
+                    <div class="bg-slate-800 rounded-lg p-4 font-mono text-xs overflow-x-auto">
+                        <pre class="text-gray-300"><code><span class="text-gray-500">// Fillable'a ekle</span>
+<span class="text-purple-400">protected</span> $fillable = [
+    <span class="text-gray-500">// ... mevcut alanlar ...</span>
+    <span class="text-green-400">'corporate_id'</span>, <span class="text-gray-500">// YENİ</span>
+];
+
+<span class="text-gray-500">/**
+ * Playlist'in ait olduğu kurum
+ */</span>
+<span class="text-purple-400">public function</span> <span class="text-yellow-400">corporate</span>(): BelongsTo
+{
+    <span class="text-purple-400">return</span> $this-><span class="text-yellow-400">belongsTo</span>(
+        MuzibuCorporateAccount::<span class="text-purple-400">class</span>,
+        <span class="text-green-400">'corporate_id'</span>
+    );
+}
+
+<span class="text-gray-500">/**
+ * Kurumsal playlist mi?
+ */</span>
+<span class="text-purple-400">public function</span> <span class="text-yellow-400">isCorporate</span>(): bool
+{
+    <span class="text-purple-400">return</span> $this->corporate_id !== <span class="text-purple-400">null</span>;
+}
+
+<span class="text-gray-500">/**
+ * Scope: Kurumsal playlistler
+ */</span>
+<span class="text-purple-400">public function</span> <span class="text-yellow-400">scopeCorporate</span>($query)
+{
+    <span class="text-purple-400">return</span> $query-><span class="text-yellow-400">whereNotNull</span>(<span class="text-green-400">'corporate_id'</span>);
+}
+
+<span class="text-gray-500">/**
+ * Scope: Belirli kurumun playlistleri
+ */</span>
+<span class="text-purple-400">public function</span> <span class="text-yellow-400">scopeForCorporate</span>($query, $id)
+{
+    <span class="text-purple-400">return</span> $query-><span class="text-yellow-400">where</span>(<span class="text-green-400">'corporate_id'</span>, $id);
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Corporate Model -->
+                <div class="glass rounded-xl p-6 border border-slate-700">
+                    <h3 class="font-semibold text-cyan-400 mb-4"><i class="fas fa-building mr-2"></i>MuzibuCorporateAccount.php</h3>
+                    <div class="bg-slate-800 rounded-lg p-4 font-mono text-xs overflow-x-auto">
+                        <pre class="text-gray-300"><code><span class="text-gray-500">/**
+ * Kurumun playlistleri
+ */</span>
+<span class="text-purple-400">public function</span> <span class="text-yellow-400">playlists</span>(): HasMany
+{
+    <span class="text-purple-400">return</span> $this-><span class="text-yellow-400">hasMany</span>(
+        Playlist::<span class="text-purple-400">class</span>,
+        <span class="text-green-400">'corporate_id'</span>
+    );
+}
+
+<span class="text-gray-500">/**
+ * Aktif playlistler
+ */</span>
+<span class="text-purple-400">public function</span> <span class="text-yellow-400">activePlaylists</span>(): HasMany
+{
+    <span class="text-purple-400">return</span> $this-><span class="text-yellow-400">playlists</span>()
+        -><span class="text-yellow-400">where</span>(<span class="text-green-400">'is_active'</span>, <span class="text-purple-400">true</span>);
+}
+
+<span class="text-gray-500">/**
+ * Playlist sayısı
+ */</span>
+<span class="text-purple-400">public function</span> <span class="text-yellow-400">getPlaylistsCountAttribute</span>(): int
+{
+    <span class="text-purple-400">return</span> $this-><span class="text-yellow-400">playlists</span>()-><span class="text-yellow-400">count</span>();
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Query Examples -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-search text-cyan-500"></i> Query Örnekleri
+            </h2>
+
+            <div class="glass rounded-xl p-6 border border-slate-700">
+                <div class="space-y-4">
+                    <!-- Query 1 -->
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h4 class="text-sm font-medium text-green-400 mb-2"><i class="fas fa-building mr-2"></i>Kurumun playlistlerini getir</h4>
+                        <code class="text-xs text-gray-300">Playlist::forCorporate($corporateId)->active()->get();</code>
+                    </div>
+
+                    <!-- Query 2 -->
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h4 class="text-sm font-medium text-blue-400 mb-2"><i class="fas fa-user mr-2"></i>Üyenin erişebildiği kurumsal playlistler</h4>
+                        <code class="text-xs text-gray-300 block">$corporate = MuzibuCorporateAccount::getCorporateForUser($userId);<br>Playlist::forCorporate($corporate->id)->active()->get();</code>
+                    </div>
+
+                    <!-- Query 3 -->
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h4 class="text-sm font-medium text-purple-400 mb-2"><i class="fas fa-globe mr-2"></i>Playlist sayfası: Tümü + Kurum filtresi</h4>
+                        <code class="text-xs text-gray-300 block">$query = Playlist::active()->public();<br><br>if ($request->corporate) {<br>    $query->forCorporate($request->corporate);<br>}<br><br>return $query->paginate(20);</code>
+                    </div>
+
+                    <!-- Query 4 -->
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h4 class="text-sm font-medium text-amber-400 mb-2"><i class="fas fa-list mr-2"></i>Public kurumları listele (filter dropdown için)</h4>
+                        <code class="text-xs text-gray-300 block">MuzibuCorporateAccount::whereNull('parent_id')<br>    ->where('is_active', true)<br>    ->whereHas('playlists', fn($q) => $q->active()->public())<br>    ->get();</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Implementation Flow -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-stream text-amber-500"></i> Uygulama Akışı
+            </h2>
+
+            <div class="glass rounded-xl p-6 border border-slate-700">
+                <div class="relative">
+                    <!-- Timeline -->
+                    <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-slate-700"></div>
+
+                    <!-- Step 1 -->
+                    <div class="relative pl-12 pb-8">
+                        <div class="absolute left-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                        <h3 class="font-semibold text-blue-400 mb-2">Migration Oluştur & Çalıştır</h3>
+                        <p class="text-sm text-gray-400">Tek kolon ekleme: <code class="bg-slate-700 px-1 rounded">corporate_id</code></p>
+                        <div class="mt-2 text-xs text-gray-500">
+                            <code>php artisan make:migration add_corporate_id_to_muzibu_playlists_table</code>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="relative pl-12 pb-8">
+                        <div class="absolute left-0 w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                        <h3 class="font-semibold text-purple-400 mb-2">Model Relations Ekle</h3>
+                        <p class="text-sm text-gray-400">Playlist → corporate(), Corporate → playlists()</p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="relative pl-12 pb-8">
+                        <div class="absolute left-0 w-8 h-8 bg-cyan-600 rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                        <h3 class="font-semibold text-cyan-400 mb-2">Corporate Dashboard: Playlist Tab</h3>
+                        <p class="text-sm text-gray-400">Firma sahibinin playlist oluşturma/düzenleme arayüzü</p>
+                        <ul class="mt-2 text-xs text-gray-500 space-y-1">
+                            <li>• corporate/dashboard.blade.php → Yeni tab ekle</li>
+                            <li>• Playlist CRUD (mevcut admin pattern kullan)</li>
+                        </ul>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="relative pl-12 pb-8">
+                        <div class="absolute left-0 w-8 h-8 bg-pink-600 rounded-full flex items-center justify-center text-sm font-bold">4</div>
+                        <h3 class="font-semibold text-pink-400 mb-2">Playlist Sayfası: Kurum Filtresi</h3>
+                        <p class="text-sm text-gray-400">Sektör/Radyo gibi "Kurumlar" filter tab</p>
+                        <ul class="mt-2 text-xs text-gray-500 space-y-1">
+                            <li>• playlists/index.blade.php → Filter tabs</li>
+                            <li>• Kurum dropdown component</li>
+                        </ul>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="relative pl-12">
+                        <div class="absolute left-0 w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-sm font-bold">5</div>
+                        <h3 class="font-semibold text-green-400 mb-2">Üye Görünümü</h3>
+                        <p class="text-sm text-gray-400">My Corporate sayfasında kurumsal playlistler section</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- File Changes Summary -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-file-alt text-orange-500"></i> Değişecek Dosyalar
+            </h2>
+
+            <div class="glass rounded-xl p-6 border border-slate-700">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-semibold text-green-400 mb-3"><i class="fas fa-plus-circle mr-2"></i>Yeni Dosyalar</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="fas fa-file-code text-blue-400"></i>
+                                <span>migrations/tenant/add_corporate_id_to_playlists.php</span>
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="fas fa-file-code text-blue-400"></i>
+                                <span>migrations/add_corporate_id_to_playlists.php</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="font-semibold text-amber-400 mb-3"><i class="fas fa-edit mr-2"></i>Güncellenecek Dosyalar</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="fas fa-cube text-purple-400"></i>
+                                <span>Modules/Muzibu/app/Models/Playlist.php</span>
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="fas fa-cube text-purple-400"></i>
+                                <span>Modules/Muzibu/app/Models/MuzibuCorporateAccount.php</span>
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="fas fa-code text-cyan-400"></i>
+                                <span>Controllers/Front/PlaylistController.php</span>
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="fas fa-code text-cyan-400"></i>
+                                <span>Controllers/Front/CorporateFrontController.php</span>
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="fas fa-palette text-pink-400"></i>
+                                <span>views/themes/muzibu/playlists/index.blade.php</span>
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="fas fa-palette text-pink-400"></i>
+                                <span>views/themes/muzibu/corporate/dashboard.blade.php</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benefits -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-green-900/30 to-blue-900/30 border border-green-800 rounded-2xl p-6">
+                <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                    <i class="fas fa-trophy text-green-400"></i> Bu Yaklaşımın Avantajları
+                </h2>
+                <div class="grid md:grid-cols-4 gap-4">
+                    <div class="text-center p-4">
+                        <div class="text-3xl mb-2">⚡</div>
+                        <h3 class="font-medium text-green-400">Hızlı</h3>
+                        <p class="text-xs text-gray-400">Tek WHERE, ekstra JOIN yok</p>
+                    </div>
+                    <div class="text-center p-4">
+                        <div class="text-3xl mb-2">🧩</div>
+                        <h3 class="font-medium text-blue-400">Basit</h3>
+                        <p class="text-xs text-gray-400">Anlaşılır, bakımı kolay</p>
+                    </div>
+                    <div class="text-center p-4">
+                        <div class="text-3xl mb-2">🔧</div>
+                        <h3 class="font-medium text-purple-400">Mevcut Pattern</h3>
+                        <p class="text-xs text-gray-400">Playlist model'i zaten var</p>
+                    </div>
+                    <div class="text-center p-4">
+                        <div class="text-3xl mb-2">📈</div>
+                        <h3 class="font-medium text-amber-400">Genişletilebilir</h3>
+                        <p class="text-xs text-gray-400">İleride pivot gerekirse ekleriz</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 py-6 text-center text-gray-500 text-sm">
+        <p>
+            <i class="fas fa-robot mr-1"></i> Claude AI
+            <span class="mx-2">|</span>
+            <i class="fas fa-calendar mr-1"></i> 30 Aralık 2025
+            <span class="mx-2">|</span>
+            <span class="text-green-400">v2 - Basitleştirilmiş Plan</span>
+        </p>
+    </footer>
+</body>
+</html>

@@ -12,7 +12,8 @@ if (typeof MuzibuSpaRouter !== 'undefined') {
 
 const MuzibuSpaRouter = {
     // Auth pages that should NOT use SPA navigation
-    authPaths: ['/login', '/register', '/forgot-password', '/reset-password', '/verify-email', '/logout'],
+    // Also includes pages with inline Alpine.js components that need full page load
+    authPaths: ['/login', '/register', '/forgot-password', '/reset-password', '/verify-email', '/logout', '/corporate/spots'],
 
     // 🔴 DYNAMIC PAGES: User-specific content - NEVER cache!
     // Bu sayfalar kullanıcıya özel içerik gösterir, cache'lenmemeli

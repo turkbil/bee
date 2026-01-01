@@ -1357,6 +1357,101 @@ class CorporateFrontController extends Controller
     }
 
     /**
+     * Kurumsal Playlist'ler sayfası
+     * Kullanıcının dahil olduğu kurumun playlist'lerini gösterir
+     */
+    public function playlists(Request $request)
+    {
+        $user = auth()->user();
+
+        // Kullanıcının kurumsal hesabını bul
+        $userCorporate = MuzibuCorporateAccount::where('user_id', $user->id)->first();
+
+        if (!$userCorporate) {
+            // Kurumsal hesabı yok
+            return view('themes.muzibu.corporate.playlists', [
+                'corporate' => null,
+                'playlists' => collect(),
+                'hasNoCorporate' => true,
+            ]);
+        }
+
+        // Ana kurumu bul (üye ise parent, sahip ise kendisi)
+        $corporate = $userCorporate->parent_id
+            ? $userCorporate->parent
+            : $userCorporate;
+
+        // Kurumun playlist'lerini getir
+        $playlists = $corporate->playlists()
+            ->where('muzibu_playlists.is_active', 1)
+            ->whereHas('songs', fn($q) => $q->where('is_active', 1))
+            ->with(['coverMedia', 'songs' => fn($q) => $q->where('is_active', 1)])
+            ->withCount(['songs' => fn($q) => $q->where('is_active', 1)])
+            ->withSum(['songs' => fn($q) => $q->where('is_active', 1)], 'duration')
+            ->orderBy('muzibu_playlistables.position')
+            ->get();
+
+        return view('themes.muzibu.corporate.playlists', [
+            'corporate' => $corporate,
+            'playlists' => $playlists,
+            'hasNoCorporate' => false,
+        ]);
+    }
+
+    /**
+     * Kurumsal Playlist'ler API (SPA)
+     */
+    public function apiPlaylists(Request $request)
+    {
+        $user = auth()->user();
+
+        $userCorporate = MuzibuCorporateAccount::where('user_id', $user->id)->first();
+
+        if (!$userCorporate) {
+            $html = view('themes.muzibu.partials.corporate-playlists-content', [
+                'corporate' => null,
+                'playlists' => collect(),
+                'hasNoCorporate' => true,
+            ])->render();
+
+            return response()->json([
+                'html' => $html,
+                'meta' => [
+                    'title' => 'Kurumsal Playlist\'ler - Muzibu',
+                    'description' => 'Kurumsal hesabınızın özel playlist\'leri'
+                ]
+            ]);
+        }
+
+        $corporate = $userCorporate->parent_id
+            ? $userCorporate->parent
+            : $userCorporate;
+
+        $playlists = $corporate->playlists()
+            ->where('muzibu_playlists.is_active', 1)
+            ->whereHas('songs', fn($q) => $q->where('is_active', 1))
+            ->with(['coverMedia', 'songs' => fn($q) => $q->where('is_active', 1)])
+            ->withCount(['songs' => fn($q) => $q->where('is_active', 1)])
+            ->withSum(['songs' => fn($q) => $q->where('is_active', 1)], 'duration')
+            ->orderBy('muzibu_playlistables.position')
+            ->get();
+
+        $html = view('themes.muzibu.partials.corporate-playlists-content', [
+            'corporate' => $corporate,
+            'playlists' => $playlists,
+            'hasNoCorporate' => false,
+        ])->render();
+
+        return response()->json([
+            'html' => $html,
+            'meta' => [
+                'title' => ($corporate->company_name ?? 'Kurumsal') . ' Playlist\'ler - Muzibu',
+                'description' => 'Kurumsal hesabınızın özel playlist\'leri'
+            ]
+        ]);
+    }
+
+    /**
      * Seçilen user_id'lerin bu kurumsal hesaba ait olduğunu doğrula
      * Owner dahil (owner = parentAccount->user_id)
      * 30 günden fazla süresi olanları hariç tut
@@ -1393,5 +1488,543 @@ class CorporateFrontController extends Controller
         }
 
         return $validIds;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // SPOT (ANONS) YÖNETİM (FRONTEND)
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    /**
+     * Spot yönetim sayfası (Ana Şube Only)
+     * Kurumsal hesabın tüm spotlarını listeler
+     */
+    public function spots(Request $request)
+    {
+        $user = auth()->user();
+
+        // Ana şube kontrolü
+        $account = MuzibuCorporateAccount::where('user_id', $user->id)
+            ->whereNull('parent_id')
+            ->first();
+
+        if (!$account) {
+            // Alt üye veya kurumsal değil
+            $anyAccount = MuzibuCorporateAccount::where('user_id', $user->id)->first();
+
+            if ($anyAccount && $anyAccount->parent_id) {
+                // Alt üye - my-corporate'a yönlendir
+                return redirect()->route('muzibu.corporate.my')
+                    ->with('info', 'Spot yönetimi sadece ana şubeler için kullanılabilir.');
+            }
+
+            // Kurumsal değil - join'e yönlendir
+            return redirect()->route('muzibu.corporate.join')
+                ->with('info', 'Bu özelliği kullanmak için kurumsal hesap oluşturmalısınız.');
+        }
+
+        // Spotları getir
+        $spots = \Modules\Muzibu\App\Models\CorporateSpot::where('corporate_account_id', $account->id)
+            ->with('media')
+            ->orderBy('position')
+            ->orderBy('is_archived')
+            ->orderByDesc('is_enabled')
+            ->orderByDesc('created_at')
+            ->get();
+
+        \Log::info('🎙️ Corporate Spots Debug', [
+            'user_id' => $user->id,
+            'account_id' => $account->id,
+            'company_name' => $account->company_name,
+            'spots_count' => $spots->count(),
+        ]);
+
+        // JSON için hazırla
+        $spotsJson = $spots->values()->map(function ($s, $index) {
+            return [
+                'id' => $s->id,
+                'title' => $s->title,
+                'is_enabled' => $s->is_enabled,
+                'is_archived' => $s->is_archived,
+                'starts_at' => $s->starts_at ? $s->starts_at->format('Y-m-d\TH:i') : null,
+                'ends_at' => $s->ends_at ? $s->ends_at->format('Y-m-d\TH:i') : null,
+                'duration' => $s->duration ?? 0,
+                'play_count' => $s->play_count ?? 0,
+                'today_play_count' => $s->today_play_count ?? 0,
+                'audio_url' => $s->getFirstMediaUrl('audio'),
+                'position' => $s->position ?? ($index + 1),
+            ];
+        });
+
+        // Songs played sayısı (session'dan veya varsayılan)
+        $songsPlayed = session('spot_songs_played_' . $account->id, 0);
+
+        return view('themes.muzibu.corporate.spots', compact('account', 'spots', 'spotsJson', 'songsPlayed'));
+    }
+
+    /**
+     * Spot yönetim sayfası API (SPA)
+     */
+    public function apiSpots(Request $request)
+    {
+        $user = auth()->user();
+
+        $account = MuzibuCorporateAccount::where('user_id', $user->id)
+            ->whereNull('parent_id')
+            ->first();
+
+        if (!$account) {
+            $anyAccount = MuzibuCorporateAccount::where('user_id', $user->id)->first();
+
+            if ($anyAccount && $anyAccount->parent_id) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Spot yönetimi sadece ana şubeler için kullanılabilir.',
+                    'redirect' => '/corporate/my-corporate'
+                ], 403);
+            }
+
+            return response()->json([
+                'error' => true,
+                'message' => 'Bu özelliği kullanmak için kurumsal hesap oluşturmalısınız.',
+                'redirect' => '/corporate/join'
+            ], 403);
+        }
+
+        $spots = \Modules\Muzibu\App\Models\CorporateSpot::where('corporate_account_id', $account->id)
+            ->with('media')
+            ->orderBy('is_archived')
+            ->orderByDesc('is_enabled')
+            ->orderByDesc('created_at')
+            ->get();
+
+        $html = view('themes.muzibu.partials.corporate-spots-content', compact('account', 'spots'))->render();
+
+        return response()->json([
+            'html' => $html,
+            'meta' => [
+                'title' => 'Spot Yönetimi - ' . ($account->company_name ?? 'Kurumsal'),
+                'description' => 'Kurumsal anons ve spotlarınızı yönetin'
+            ]
+        ]);
+    }
+
+    /**
+     * Spot güncelle (inline edit)
+     * title, is_enabled, starts_at, ends_at güncellenebilir
+     */
+    public function updateSpot(Request $request, int $id)
+    {
+        $user = auth()->user();
+
+        $account = MuzibuCorporateAccount::where('user_id', $user->id)
+            ->whereNull('parent_id')
+            ->first();
+
+        if (!$account) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Yetkiniz yok.'
+            ], 403);
+        }
+
+        $spot = \Modules\Muzibu\App\Models\CorporateSpot::where('id', $id)
+            ->where('corporate_account_id', $account->id)
+            ->first();
+
+        if (!$spot) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Spot bulunamadı.'
+            ], 404);
+        }
+
+        $updateData = [];
+
+        // Title
+        if ($request->has('title')) {
+            $request->validate(['title' => 'required|min:3|max:255']);
+            $updateData['title'] = $request->title;
+            $updateData['slug'] = \Illuminate\Support\Str::slug($request->title);
+        }
+
+        // is_enabled toggle
+        if ($request->has('is_enabled')) {
+            $updateData['is_enabled'] = (bool) $request->is_enabled;
+        }
+
+        // is_archived toggle
+        if ($request->has('is_archived')) {
+            $updateData['is_archived'] = (bool) $request->is_archived;
+        }
+
+        // starts_at
+        if ($request->has('starts_at')) {
+            $updateData['starts_at'] = $request->starts_at ? \Carbon\Carbon::parse($request->starts_at) : null;
+        }
+
+        // ends_at
+        if ($request->has('ends_at')) {
+            $updateData['ends_at'] = $request->ends_at ? \Carbon\Carbon::parse($request->ends_at) : null;
+        }
+
+        if (!empty($updateData)) {
+            $spot->update($updateData);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Spot güncellendi.',
+            'spot' => [
+                'id' => $spot->id,
+                'title' => $spot->title,
+                'is_enabled' => $spot->is_enabled,
+                'is_archived' => $spot->is_archived,
+                'starts_at' => $spot->starts_at?->format('Y-m-d\TH:i'),
+                'ends_at' => $spot->ends_at?->format('Y-m-d\TH:i'),
+            ]
+        ]);
+    }
+
+    /**
+     * Spot sıralamasını güncelle
+     */
+    public function reorderSpots(Request $request)
+    {
+        $user = auth()->user();
+
+        $account = MuzibuCorporateAccount::where('user_id', $user->id)
+            ->whereNull('parent_id')
+            ->first();
+
+        if (!$account) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Yetkiniz yok.'
+            ], 403);
+        }
+
+        $request->validate([
+            'order' => 'required|array',
+            'order.*' => 'integer'
+        ]);
+
+        foreach ($request->order as $position => $spotId) {
+            \Modules\Muzibu\App\Models\CorporateSpot::where('id', $spotId)
+                ->where('corporate_account_id', $account->id)
+                ->update(['position' => $position]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Sıralama güncellendi.'
+        ]);
+    }
+
+    /**
+     * Spot sistem ayarlarını güncelle (spot_enabled, spot_songs_between)
+     */
+    public function updateSpotSettings(Request $request)
+    {
+        $user = auth()->user();
+
+        $account = MuzibuCorporateAccount::where('user_id', $user->id)
+            ->whereNull('parent_id')
+            ->first();
+
+        if (!$account) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Yetkiniz yok.'
+            ], 403);
+        }
+
+        $data = [];
+
+        if ($request->has('spot_enabled')) {
+            $data['spot_enabled'] = (bool) $request->spot_enabled;
+        }
+
+        if ($request->has('spot_songs_between')) {
+            $data['spot_songs_between'] = max(1, min(100, (int) $request->spot_songs_between));
+        }
+
+        // Songs played - session'da sakla
+        if ($request->has('songs_played')) {
+            $songsPlayed = max(0, min(100, (int) $request->songs_played));
+            session(['spot_songs_played_' . $account->id => $songsPlayed]);
+        }
+
+        if (!empty($data)) {
+            $account->update($data);
+        }
+
+        $songsPlayed = session('spot_songs_played_' . $account->id, 0);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Ayarlar güncellendi.',
+            'settings' => [
+                'spot_enabled' => (bool) $account->spot_enabled,
+                'spot_songs_between' => (int) $account->spot_songs_between,
+                'songs_played' => (int) $songsPlayed,
+            ]
+        ]);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // SPOT (ANONS) SİSTEMİ API
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    /**
+     * Kullanıcının kurumsal hesap spot ayarlarını getir
+     * Player bu bilgiyi kullanarak spot sayacını başlatır
+     */
+    public function apiSpotSettings(Request $request)
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json([
+                'enabled' => false,
+                'reason' => 'not_authenticated'
+            ]);
+        }
+
+        $userCorporate = MuzibuCorporateAccount::where('user_id', $user->id)->first();
+
+        if (!$userCorporate) {
+            return response()->json([
+                'enabled' => false,
+                'reason' => 'no_corporate_account'
+            ]);
+        }
+
+        // Ana şubeyi bul
+        $corporate = $userCorporate->parent_id
+            ? $userCorporate->parent
+            : $userCorporate;
+
+        if (!$corporate) {
+            return response()->json([
+                'enabled' => false,
+                'reason' => 'corporate_not_found'
+            ]);
+        }
+
+        // Spot sistemi açık mı?
+        if (!$corporate->spot_enabled) {
+            return response()->json([
+                'enabled' => false,
+                'reason' => 'spot_disabled_by_corporate'
+            ]);
+        }
+
+        // Şube için durdurulmuş mu?
+        if ($userCorporate->spot_is_paused) {
+            return response()->json([
+                'enabled' => false,
+                'reason' => 'spot_paused_for_branch'
+            ]);
+        }
+
+        // Aktif spot var mı?
+        $hasActiveSpots = \Modules\Muzibu\App\Models\CorporateSpot::where('corporate_account_id', $corporate->id)
+            ->currentlyActive()
+            ->exists();
+
+        if (!$hasActiveSpots) {
+            return response()->json([
+                'enabled' => false,
+                'reason' => 'no_active_spots'
+            ]);
+        }
+
+        return response()->json([
+            'enabled' => true,
+            'songs_between' => $corporate->spot_songs_between ?? 10,
+            'corporate_id' => $corporate->id,
+            'branch_id' => $userCorporate->id,
+        ]);
+    }
+
+    /**
+     * Bir sonraki spotu getir (rotation)
+     * Player X şarkıdan sonra bunu çağırır
+     */
+    public function apiNextSpot(Request $request)
+    {
+        try {
+            $user = auth()->user();
+
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'not_authenticated'
+                ], 401);
+            }
+
+            $userCorporate = MuzibuCorporateAccount::where('user_id', $user->id)->first();
+
+            if (!$userCorporate) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'no_corporate_account'
+                ], 404);
+            }
+
+            // Ana şubeyi bul
+            $corporate = $userCorporate->parent_id
+                ? $userCorporate->parent
+                : $userCorporate;
+
+            if (!$corporate || !$corporate->spot_enabled || $userCorporate->spot_is_paused) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'spot_disabled'
+                ]);
+            }
+
+            // Bir sonraki spotu al
+            $spot = $corporate->getNextSpot();
+
+            if (!$spot) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'no_spot_available'
+                ]);
+            }
+
+            // Audio URL'i al
+            $audioUrl = $spot->getAudioUrl();
+
+            if (!$audioUrl) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'spot_has_no_audio'
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'spot' => [
+                    'id' => $spot->id,
+                    'title' => $spot->title,
+                    'duration' => $spot->duration,
+                    'audio_url' => $audioUrl,
+                    'corporate_id' => $corporate->id,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Spot API Error: ' . $e->getMessage(), [
+                'user_id' => auth()->id(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'server_error',
+                'message' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+            ], 500);
+        }
+    }
+
+    /**
+     * Spot dinleme başladı - log kaydı oluştur
+     */
+    public function apiSpotPlayStart(Request $request)
+    {
+        $request->validate([
+            'spot_id' => 'required|integer|exists:muzibu_corporate_spots,id',
+        ]);
+
+        $user = auth()->user();
+        $userCorporate = $user ? MuzibuCorporateAccount::where('user_id', $user->id)->first() : null;
+
+        $corporate = null;
+        if ($userCorporate) {
+            $corporate = $userCorporate->parent_id ? $userCorporate->parent : $userCorporate;
+        }
+
+        $play = \Modules\Muzibu\App\Models\CorporateSpotPlay::logPlay(
+            $request->spot_id,
+            $corporate ? $corporate->id : 0,
+            $user?->id,
+            $request->source_type,
+            $request->source_id
+        );
+
+        return response()->json([
+            'success' => true,
+            'play_id' => $play->id
+        ]);
+    }
+
+    /**
+     * Spot dinleme bitti - log kaydını güncelle
+     */
+    public function apiSpotPlayEnd(Request $request)
+    {
+        $request->validate([
+            'play_id' => 'required|integer|exists:muzibu_corporate_spot_plays,id',
+            'listened_duration' => 'nullable|integer|min:0',
+            'was_skipped' => 'nullable|boolean',
+        ]);
+
+        $play = \Modules\Muzibu\App\Models\CorporateSpotPlay::find($request->play_id);
+
+        if (!$play) {
+            return response()->json([
+                'success' => false,
+                'error' => 'play_not_found'
+            ], 404);
+        }
+
+        $play->update([
+            'ended_at' => now(),
+            'listened_duration' => $request->listened_duration ?? 0,
+            'was_skipped' => $request->was_skipped ?? false,
+        ]);
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
+    /**
+     * Şube için spot'u durdur/devam ettir (toggle)
+     * Sadece şube sahibi veya ana şube yapabilir
+     */
+    public function apiSpotTogglePause(Request $request)
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'error' => 'not_authenticated'
+            ], 401);
+        }
+
+        $userCorporate = MuzibuCorporateAccount::where('user_id', $user->id)->first();
+
+        if (!$userCorporate) {
+            return response()->json([
+                'success' => false,
+                'error' => 'no_corporate_account'
+            ], 404);
+        }
+
+        // Toggle pause durumu
+        $userCorporate->update([
+            'spot_is_paused' => !$userCorporate->spot_is_paused
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'is_paused' => $userCorporate->spot_is_paused,
+            'message' => $userCorporate->spot_is_paused
+                ? 'Spotlar bu şube için durduruldu.'
+                : 'Spotlar bu şube için devam ettirildi.'
+        ]);
     }
 }

@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Anons Sistemi - Kapsamlı Plan v2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .gradient-border { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2px; border-radius: 1rem; }
+        .gradient-border > div { background: #0f172a; border-radius: calc(1rem - 2px); }
+        .nav-link { @apply px-4 py-2 rounded-lg text-sm transition-all; }
+        .nav-link:hover { @apply bg-slate-700; }
+        .nav-link.active { @apply bg-purple-600 text-white; }
+    </style>
+</head>
+<body class="bg-slate-900 text-gray-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-purple-900/50 to-indigo-900/50 border-b border-purple-800/30 sticky top-0 z-50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="flex items-center gap-3 mb-1">
+                        <span class="px-3 py-1 bg-purple-600 text-white text-xs font-medium rounded-full">
+                            <i class="fas fa-file-lines mr-1"></i>v2 - Kapsamlı Plan
+                        </span>
+                        <span class="text-gray-400 text-sm">31 Aralık 2025</span>
+                    </div>
+                    <h1 class="text-2xl font-bold text-white">
+                        <i class="fas fa-bullhorn text-purple-400 mr-2"></i>
+                        Muzibu Anons Sistemi
+                    </h1>
+                </div>
+                <div class="text-right">
+                    <p class="text-purple-300 text-sm">Kurumsal Şarkı Arası Anons</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-slate-800/50 border-b border-slate-700 sticky top-[72px] z-40 backdrop-blur-sm overflow-x-auto">
+        <div class="max-w-7xl mx-auto px-6 py-2 flex gap-2 min-w-max">
+            <a href="#ozet" class="nav-link active"><i class="fas fa-home mr-1"></i>Özet</a>
+            <a href="#admin-panel" class="nav-link"><i class="fas fa-user-shield mr-1"></i>Admin Panel</a>
+            <a href="#kurumsal-panel" class="nav-link"><i class="fas fa-building mr-1"></i>Kurumsal Panel</a>
+            <a href="#sube-panel" class="nav-link"><i class="fas fa-code-branch mr-1"></i>Şube Paneli</a>
+            <a href="#player" class="nav-link"><i class="fas fa-play mr-1"></i>Player</a>
+            <a href="#dosya-yonetimi" class="nav-link"><i class="fas fa-folder mr-1"></i>Dosya</a>
+            <a href="#veritabani" class="nav-link"><i class="fas fa-database mr-1"></i>DB</a>
+            <a href="#api" class="nav-link"><i class="fas fa-plug mr-1"></i>API</a>
+            <a href="#senaryolar" class="nav-link"><i class="fas fa-route mr-1"></i>Senaryolar</a>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 py-8 space-y-12">
+
+        <!-- ==================== BÖLÜM 1: ÖZET ==================== -->
+        <section id="ozet">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-home"></i>
+                </span>
+                Sistem Özeti
+            </h2>
+
+            <!-- Basit Anlatım -->
+            <div class="grid lg:grid-cols-2 gap-6 mb-8">
+                <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-6">
+                    <h3 class="font-semibold text-green-400 mb-4 text-lg">
+                        <i class="fas fa-user mr-2"></i>Basit Anlatım (Herkes İçin)
+                    </h3>
+                    <div class="space-y-4 text-gray-300">
+                        <p>
+                            <strong>Ne yapıyoruz?</strong> Kurumsal müşterilerin (restoranlar, kafeler, mağazalar, ofisler)
+                            müzik dinlerken araya kendi duyurularını ekleyebilmesini sağlıyoruz.
+                        </p>
+                        <p>
+                            <strong>Nasıl çalışacak?</strong> Örneğin bir restoran müzik çalarken, her 10 şarkıda bir
+                            "Değerli müşterilerimiz, happy hour başlamıştır" gibi bir anons otomatik çalacak.
+                        </p>
+                        <p>
+                            <strong>Kim kontrol edecek?</strong>
+                        </p>
+                        <ul class="list-disc list-inside ml-4 space-y-1 text-sm">
+                            <li><strong>Muzibu Admin:</strong> Anons dosyalarını yükler, sıralar</li>
+                            <li><strong>Ana Şube:</strong> Kaç şarkıda bir çalacağını ayarlar</li>
+                            <li><strong>Her Şube:</strong> Kendi için durdurabilir/devam ettirebilir</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-blue-900/20 border border-blue-800/50 rounded-xl p-6">
+                    <h3 class="font-semibold text-blue-400 mb-4 text-lg">
+                        <i class="fas fa-cogs mr-2"></i>Teknik Özet (Geliştiriciler İçin)
+                    </h3>
+                    <div class="space-y-3 text-gray-300 text-sm">
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check text-blue-400 mt-1"></i>
+                            <span>4 yeni veritabanı tablosu (tenant DB'de)</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check text-blue-400 mt-1"></i>
+                            <span>Admin Livewire component (CRUD + drag-drop)</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check text-blue-400 mt-1"></i>
+                            <span>Kurumsal ayarlar API (settings GET/PUT)</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check text-blue-400 mt-1"></i>
+                            <span>Player JS entegrasyonu (Alpine.js store)</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check text-blue-400 mt-1"></i>
+                            <span>Şube bazlı state yönetimi (localStorage + DB sync)</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-check text-blue-400 mt-1"></i>
+                            <span>MP3 dosya yükleme (Spatie Media Library)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aktörler -->
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                <h3 class="font-semibold text-white mb-4">
+                    <i class="fas fa-users mr-2 text-purple-400"></i>Sistemdeki Aktörler
+                </h3>
+                <div class="grid md:grid-cols-4 gap-4">
+                    <div class="bg-slate-900 rounded-lg p-4 text-center">
+                        <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-user-shield text-2xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-white">Muzibu Admin</h4>
+                        <p class="text-gray-400 text-sm mt-2">Anons dosyalarını yükler, yönetir, sıralar</p>
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-4 text-center">
+                        <div class="w-16 h-16 bg-yellow-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-building text-2xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-white">Ana Şube</h4>
+                        <p class="text-gray-400 text-sm mt-2">Anons ayarlarını yapar, tüm şubeleri görür</p>
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-4 text-center">
+                        <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-code-branch text-2xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-white">Alt Şube</h4>
+                        <p class="text-gray-400 text-sm mt-2">Sadece kendi için durdur/devam yapabilir</p>
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-4 text-center">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-headphones text-2xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-white">Dinleyici</h4>
+                        <p class="text-gray-400 text-sm mt-2">Müzik dinler, anonsları duyar</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== BÖLÜM 2: ADMİN PANEL ==================== -->
+        <section id="admin-panel" class="pt-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-user-shield"></i>
+                </span>
+                Admin Panel (Muzibu Yönetimi)
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Menü Konumu -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-bars mr-2 text-red-400"></i>Menü Konumu
+                    </h3>
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <div class="flex items-center gap-2 text-sm">
+                            <span class="text-gray-400">Admin Sidebar →</span>
+                            <span class="px-2 py-1 bg-slate-700 rounded">Muzibu</span>
+                            <i class="fas fa-chevron-right text-gray-600"></i>
+                            <span class="px-2 py-1 bg-purple-600 rounded text-white">
+                                <i class="fas fa-bullhorn mr-1"></i>Anonslar
+                            </span>
+                        </div>
+                        <p class="text-gray-500 text-xs mt-2">
+                            Route: <code class="bg-slate-800 px-2 py-1 rounded">/admin/muzibu/announcements</code>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Liste Sayfası -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-list mr-2 text-red-400"></i>Anons Listesi Sayfası
+                    </h3>
+
+                    <!-- Mock UI -->
+                    <div class="bg-slate-900 rounded-lg overflow-hidden">
+                        <!-- Header -->
+                        <div class="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700">
+                            <div>
+                                <h4 class="text-white font-medium">Anons Yönetimi</h4>
+                                <p class="text-gray-500 text-xs">Kurumsal hesaplarda çalacak anonsları yönetin</p>
+                            </div>
+                            <button class="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700">
+                                <i class="fas fa-plus mr-2"></i>Yeni Anons Yükle
+                            </button>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="grid grid-cols-4 gap-4 p-4 border-b border-slate-700">
+                            <div class="bg-slate-800 rounded-lg p-3 text-center">
+                                <p class="text-2xl font-bold text-white">5</p>
+                                <p class="text-gray-500 text-xs">Toplam Anons</p>
+                            </div>
+                            <div class="bg-slate-800 rounded-lg p-3 text-center">
+                                <p class="text-2xl font-bold text-green-400">3</p>
+                                <p class="text-gray-500 text-xs">Aktif</p>
+                            </div>
+                            <div class="bg-slate-800 rounded-lg p-3 text-center">
+                                <p class="text-2xl font-bold text-yellow-400">2</p>
+                                <p class="text-gray-500 text-xs">Pasif</p>
+                            </div>
+                            <div class="bg-slate-800 rounded-lg p-3 text-center">
+                                <p class="text-2xl font-bold text-blue-400">1,245</p>
+                                <p class="text-gray-500 text-xs">Toplam Çalınma</p>
+                            </div>
+                        </div>
+
+                        <!-- Table -->
+                        <div class="p-4">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="text-left text-gray-500 border-b border-slate-700">
+                                        <th class="pb-3 w-12"></th>
+                                        <th class="pb-3">Sıra</th>
+                                        <th class="pb-3">Anons</th>
+                                        <th class="pb-3">Süre</th>
+                                        <th class="pb-3">Çalınma</th>
+                                        <th class="pb-3">Durum</th>
+                                        <th class="pb-3 text-right">İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-300">
+                                    <tr class="border-b border-slate-800 hover:bg-slate-800/50">
+                                        <td class="py-3"><i class="fas fa-grip-vertical text-gray-600 cursor-move"></i></td>
+                                        <td><span class="w-6 h-6 bg-purple-600 rounded-full inline-flex items-center justify-center text-xs text-white">1</span></td>
+                                        <td>
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 bg-purple-900 rounded-lg flex items-center justify-center">
+                                                    <i class="fas fa-volume-high text-purple-400"></i>
+                                                </div>
+                                                <div>
+                                                    <p class="text-white font-medium">Yılbaşı Kampanyası</p>
+                                                    <p class="text-gray-500 text-xs">Yüklenme: 30 Ara 2025</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>0:45</td>
+                                        <td>523</td>
+                                        <td><span class="px-2 py-1 bg-green-600/20 text-green-400 text-xs rounded">Aktif</span></td>
+                                        <td class="text-right">
+                                            <button class="p-2 text-gray-400 hover:text-white" title="Dinle"><i class="fas fa-play"></i></button>
+                                            <button class="p-2 text-gray-400 hover:text-white" title="Düzenle"><i class="fas fa-pen"></i></button>
+                                            <button class="p-2 text-gray-400 hover:text-red-400" title="Sil"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b border-slate-800 hover:bg-slate-800/50">
+                                        <td class="py-3"><i class="fas fa-grip-vertical text-gray-600 cursor-move"></i></td>
+                                        <td><span class="w-6 h-6 bg-purple-600 rounded-full inline-flex items-center justify-center text-xs text-white">2</span></td>
+                                        <td>
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 bg-purple-900 rounded-lg flex items-center justify-center">
+                                                    <i class="fas fa-volume-high text-purple-400"></i>
+                                                </div>
+                                                <div>
+                                                    <p class="text-white font-medium">Happy Hour Duyurusu</p>
+                                                    <p class="text-gray-500 text-xs">Yüklenme: 28 Ara 2025</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>0:30</td>
+                                        <td>412</td>
+                                        <td><span class="px-2 py-1 bg-green-600/20 text-green-400 text-xs rounded">Aktif</span></td>
+                                        <td class="text-right">
+                                            <button class="p-2 text-gray-400 hover:text-white"><i class="fas fa-play"></i></button>
+                                            <button class="p-2 text-gray-400 hover:text-white"><i class="fas fa-pen"></i></button>
+                                            <button class="p-2 text-gray-400 hover:text-red-400"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b border-slate-800 hover:bg-slate-800/50 opacity-50">
+                                        <td class="py-3"><i class="fas fa-grip-vertical text-gray-600 cursor-move"></i></td>
+                                        <td><span class="w-6 h-6 bg-gray-600 rounded-full inline-flex items-center justify-center text-xs text-white">3</span></td>
+                                        <td>
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center">
+                                                    <i class="fas fa-volume-xmark text-gray-500"></i>
+                                                </div>
+                                                <div>
+                                                    <p class="text-gray-400 font-medium">Eski Kampanya</p>
+                                                    <p class="text-gray-600 text-xs">Yüklenme: 15 Ara 2025</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>0:35</td>
+                                        <td>310</td>
+                                        <td><span class="px-2 py-1 bg-gray-600/20 text-gray-400 text-xs rounded">Pasif</span></td>
+                                        <td class="text-right">
+                                            <button class="p-2 text-gray-400 hover:text-white"><i class="fas fa-play"></i></button>
+                                            <button class="p-2 text-gray-400 hover:text-white"><i class="fas fa-pen"></i></button>
+                                            <button class="p-2 text-gray-400 hover:text-red-400"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Açıklamalar -->
+                    <div class="mt-4 grid md:grid-cols-2 gap-4 text-sm">
+                        <div class="bg-slate-900 rounded-lg p-4">
+                            <h5 class="font-semibold text-purple-400 mb-2">Sıralama (Drag & Drop)</h5>
+                            <ul class="text-gray-400 space-y-1">
+                                <li>• Sol taraftaki tutma ikonundan sürükle-bırak</li>
+                                <li>• Sıra numarası otomatik güncellenir</li>
+                                <li>• Anonslar bu sırayla çalar (rotation)</li>
+                                <li>• Livewire + SortableJS kullanılacak</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-4">
+                            <h5 class="font-semibold text-purple-400 mb-2">Durum Yönetimi</h5>
+                            <ul class="text-gray-400 space-y-1">
+                                <li>• <span class="text-green-400">Aktif:</span> Rotation'a dahil, çalabilir</li>
+                                <li>• <span class="text-gray-400">Pasif:</span> Rotation dışı, çalmaz</li>
+                                <li>• Pasif anonslar listede soluk görünür</li>
+                                <li>• Tek tıkla durum değiştirilebilir</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yükleme/Düzenleme Formu -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-upload mr-2 text-red-400"></i>Anons Yükleme / Düzenleme Formu
+                    </h3>
+
+                    <!-- Mock Form -->
+                    <div class="bg-slate-900 rounded-lg p-6">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <!-- Sol: Form -->
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-gray-400 text-sm mb-2">Anons Başlığı *</label>
+                                    <input type="text" placeholder="Örn: Yılbaşı Kampanyası"
+                                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                                    <p class="text-gray-600 text-xs mt-1">Admin panelde görünecek isim</p>
+                                </div>
+
+                                <div>
+                                    <label class="block text-gray-400 text-sm mb-2">Ses Dosyası *</label>
+                                    <div class="border-2 border-dashed border-slate-700 rounded-lg p-6 text-center hover:border-purple-500 transition-colors cursor-pointer">
+                                        <i class="fas fa-cloud-arrow-up text-4xl text-gray-500 mb-2"></i>
+                                        <p class="text-gray-400">Dosya sürükle veya tıkla</p>
+                                        <p class="text-gray-600 text-xs mt-1">MP3, WAV • Max 10MB • Max 2 dakika</p>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-gray-400 text-sm mb-2">Durum</label>
+                                    <div class="flex gap-4">
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="status" checked class="text-purple-600">
+                                            <span class="text-gray-300">Aktif</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="status" class="text-purple-600">
+                                            <span class="text-gray-300">Pasif</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="flex gap-3 pt-4">
+                                    <button class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                                        <i class="fas fa-save mr-2"></i>Kaydet
+                                    </button>
+                                    <button class="px-6 py-2 bg-slate-700 text-gray-300 rounded-lg hover:bg-slate-600">
+                                        İptal
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Sağ: Önizleme -->
+                            <div>
+                                <label class="block text-gray-400 text-sm mb-2">Önizleme</label>
+                                <div class="bg-slate-800 rounded-lg p-4">
+                                    <div class="flex items-center gap-4 mb-4">
+                                        <div class="w-16 h-16 bg-purple-900 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-bullhorn text-2xl text-purple-400"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-white font-medium">Yılbaşı Kampanyası</p>
+                                            <p class="text-gray-500 text-sm">anons-yilbasi.mp3</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Audio Player -->
+                                    <div class="bg-slate-900 rounded-lg p-3">
+                                        <div class="flex items-center gap-3">
+                                            <button class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-700">
+                                                <i class="fas fa-play text-white"></i>
+                                            </button>
+                                            <div class="flex-1">
+                                                <div class="bg-slate-700 rounded-full h-2 mb-1">
+                                                    <div class="bg-purple-500 h-2 rounded-full w-0"></div>
+                                                </div>
+                                                <div class="flex justify-between text-xs text-gray-500">
+                                                    <span>0:00</span>
+                                                    <span>0:45</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Info -->
+                                    <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+                                        <div class="bg-slate-900 rounded p-2">
+                                            <p class="text-gray-500">Süre</p>
+                                            <p class="text-white font-medium">0:45</p>
+                                        </div>
+                                        <div class="bg-slate-900 rounded p-2">
+                                            <p class="text-gray-500">Boyut</p>
+                                            <p class="text-white font-medium">1.2 MB</p>
+                                        </div>
+                                        <div class="bg-slate-900 rounded p-2">
+                                            <p class="text-gray-500">Format</p>
+                                            <p class="text-white font-medium">MP3</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Validasyon Kuralları -->
+                    <div class="mt-4 bg-yellow-900/20 border border-yellow-700/50 rounded-lg p-4">
+                        <h5 class="font-semibold text-yellow-400 mb-2">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>Dosya Kuralları
+                        </h5>
+                        <div class="grid md:grid-cols-3 gap-4 text-sm text-gray-400">
+                            <div>
+                                <p class="text-white font-medium">Format</p>
+                                <p>MP3, WAV, M4A kabul edilir</p>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium">Boyut</p>
+                                <p>Maksimum 10 MB</p>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium">Süre</p>
+                                <p>Maksimum 2 dakika (120 saniye)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin İstatistikler -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-chart-bar mr-2 text-red-400"></i>Admin İstatistikleri
+                    </h3>
+
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h5 class="text-gray-400 text-sm mb-3">Anons Bazlı İstatistik</h5>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-gray-300">Yılbaşı Kampanyası</span>
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-32 bg-slate-700 rounded-full h-2">
+                                                <div class="bg-purple-500 h-2 rounded-full" style="width: 80%"></div>
+                                            </div>
+                                            <span class="text-white text-sm w-12 text-right">523</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-gray-300">Happy Hour</span>
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-32 bg-slate-700 rounded-full h-2">
+                                                <div class="bg-purple-500 h-2 rounded-full" style="width: 65%"></div>
+                                            </div>
+                                            <span class="text-white text-sm w-12 text-right">412</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-gray-300">Eski Kampanya</span>
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-32 bg-slate-700 rounded-full h-2">
+                                                <div class="bg-gray-500 h-2 rounded-full" style="width: 50%"></div>
+                                            </div>
+                                            <span class="text-gray-400 text-sm w-12 text-right">310</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h5 class="text-gray-400 text-sm mb-3">Genel Metrikler</h5>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="bg-slate-800 rounded-lg p-3">
+                                        <p class="text-gray-500 text-xs">Bugün</p>
+                                        <p class="text-xl font-bold text-white">127</p>
+                                    </div>
+                                    <div class="bg-slate-800 rounded-lg p-3">
+                                        <p class="text-gray-500 text-xs">Bu Hafta</p>
+                                        <p class="text-xl font-bold text-white">843</p>
+                                    </div>
+                                    <div class="bg-slate-800 rounded-lg p-3">
+                                        <p class="text-gray-500 text-xs">Atlama Oranı</p>
+                                        <p class="text-xl font-bold text-green-400">12%</p>
+                                    </div>
+                                    <div class="bg-slate-800 rounded-lg p-3">
+                                        <p class="text-gray-500 text-xs">Ort. Dinleme</p>
+                                        <p class="text-xl font-bold text-blue-400">38sn</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== BÖLÜM 3: KURUMSAL PANEL ==================== -->
+        <section id="kurumsal-panel" class="pt-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 bg-yellow-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-building"></i>
+                </span>
+                Kurumsal Panel (Ana Şube)
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Menü Konumu -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-location-dot mr-2 text-yellow-400"></i>Erişim Noktası
+                    </h3>
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <div class="flex items-center gap-2 text-sm mb-3">
+                            <span class="text-gray-400">Kurumsal Dashboard →</span>
+                            <span class="px-2 py-1 bg-yellow-600 rounded text-white">
+                                <i class="fas fa-bullhorn mr-1"></i>Anons Ayarları
+                            </span>
+                        </div>
+                        <p class="text-gray-500 text-xs">
+                            Route: <code class="bg-slate-800 px-2 py-1 rounded">/corporate/announcement-settings</code>
+                        </p>
+                        <p class="text-yellow-400 text-xs mt-2">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Sadece ana şube (parent_id = null) bu sayfayı görebilir
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Ayarlar Sayfası -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-sliders mr-2 text-yellow-400"></i>Anons Ayarları Sayfası
+                    </h3>
+
+                    <!-- Mock UI -->
+                    <div class="bg-slate-900 rounded-lg overflow-hidden">
+                        <div class="bg-gradient-to-r from-yellow-900/50 to-orange-900/50 px-6 py-4 border-b border-yellow-800/30">
+                            <h4 class="text-white font-medium flex items-center gap-2">
+                                <i class="fas fa-bullhorn text-yellow-400"></i>
+                                Anons Sistemi Ayarları
+                            </h4>
+                            <p class="text-yellow-200/60 text-sm">Tüm şubeleriniz için anons ayarlarını buradan yönetin</p>
+                        </div>
+
+                        <div class="p-6 space-y-6">
+                            <!-- Ana Kontrol -->
+                            <div class="bg-slate-800 rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h5 class="text-white font-medium">Anons Sistemi</h5>
+                                        <p class="text-gray-500 text-sm">Tüm şubelerde anons çalmasını aç/kapat</p>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-green-400 text-sm">Aktif</span>
+                                        <button class="w-14 h-8 bg-green-600 rounded-full relative">
+                                            <span class="absolute right-1 top-1 w-6 h-6 bg-white rounded-full"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Şarkı Aralığı -->
+                            <div class="bg-slate-800 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h5 class="text-white font-medium">Anons Aralığı</h5>
+                                        <p class="text-gray-500 text-sm">Kaç şarkıdan sonra anons çalsın?</p>
+                                    </div>
+                                    <span class="text-3xl font-bold text-yellow-400">10</span>
+                                </div>
+                                <div>
+                                    <input type="range" min="5" max="20" value="10"
+                                           class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                        <span>5 şarkı</span>
+                                        <span>20 şarkı</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 text-xs mt-3">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Şarkılar en az 30 saniye dinlendiğinde sayılır
+                                </p>
+                            </div>
+
+                            <!-- Bilgi Kartları -->
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="bg-slate-800 rounded-lg p-4 text-center">
+                                    <i class="fas fa-music text-2xl text-blue-400 mb-2"></i>
+                                    <p class="text-2xl font-bold text-white">10</p>
+                                    <p class="text-gray-500 text-sm">Şarkıda Bir Anons</p>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg p-4 text-center">
+                                    <i class="fas fa-bullhorn text-2xl text-purple-400 mb-2"></i>
+                                    <p class="text-2xl font-bold text-white">3</p>
+                                    <p class="text-gray-500 text-sm">Aktif Anons</p>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg p-4 text-center">
+                                    <i class="fas fa-chart-line text-2xl text-green-400 mb-2"></i>
+                                    <p class="text-2xl font-bold text-white">1,245</p>
+                                    <p class="text-gray-500 text-sm">Toplam Çalınma</p>
+                                </div>
+                            </div>
+
+                            <!-- Kaydet -->
+                            <div class="flex justify-end">
+                                <button class="px-6 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700">
+                                    <i class="fas fa-save mr-2"></i>Ayarları Kaydet
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Şube Durumları -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-code-branch mr-2 text-yellow-400"></i>Şube Durumları (Ana Şube Görünümü)
+                    </h3>
+
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-left text-gray-500 border-b border-slate-700">
+                                    <th class="pb-3">Şube</th>
+                                    <th class="pb-3">Anons Durumu</th>
+                                    <th class="pb-3">Şarkı Sayacı</th>
+                                    <th class="pb-3">Son Anons</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-3">
+                                        <div class="flex items-center gap-2">
+                                            <i class="fas fa-building text-yellow-400"></i>
+                                            <span class="text-white font-medium">Ana Şube (Merkez)</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="px-2 py-1 bg-green-600/20 text-green-400 text-xs rounded">Aktif</span></td>
+                                    <td>7 / 10</td>
+                                    <td class="text-gray-500">5 dk önce</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-3">
+                                        <div class="flex items-center gap-2">
+                                            <i class="fas fa-code-branch text-green-400"></i>
+                                            <span>Ankara Şubesi</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="px-2 py-1 bg-green-600/20 text-green-400 text-xs rounded">Aktif</span></td>
+                                    <td>3 / 10</td>
+                                    <td class="text-gray-500">12 dk önce</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-3">
+                                        <div class="flex items-center gap-2">
+                                            <i class="fas fa-code-branch text-red-400"></i>
+                                            <span>İzmir Şubesi</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="px-2 py-1 bg-red-600/20 text-red-400 text-xs rounded">Durduruldu</span></td>
+                                    <td>-</td>
+                                    <td class="text-gray-500">2 saat önce</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="text-gray-600 text-xs mt-3">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Şubeler kendi panellerinden anonsu durdurabilir. Ana şube sadece görüntüleyebilir, müdahale edemez.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== BÖLÜM 4: ŞUBE PANELİ ==================== -->
+        <section id="sube-panel" class="pt-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-code-branch"></i>
+                </span>
+                Şube Paneli (Durdur/Devam)
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Kontrol Yeri -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-toggle-on mr-2 text-green-400"></i>Anons Kontrol Butonu Konumu
+                    </h3>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Seçenek 1: Sidebar -->
+                        <div class="bg-slate-900 rounded-lg p-4">
+                            <h5 class="text-green-400 font-medium mb-3">
+                                <i class="fas fa-check-circle mr-1"></i>Seçenek 1: Sol Sidebar (Önerilen)
+                            </h5>
+                            <div class="bg-slate-800 rounded-lg p-3">
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-2 text-gray-400 text-sm p-2">
+                                        <i class="fas fa-home w-5"></i>Ana Sayfa
+                                    </div>
+                                    <div class="flex items-center gap-2 text-gray-400 text-sm p-2">
+                                        <i class="fas fa-music w-5"></i>Müzikler
+                                    </div>
+                                    <div class="flex items-center gap-2 text-gray-400 text-sm p-2">
+                                        <i class="fas fa-list w-5"></i>Playlistler
+                                    </div>
+                                    <hr class="border-slate-700 my-2">
+                                    <div class="bg-gradient-to-r from-purple-900/50 to-pink-900/50 rounded-lg p-3">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center gap-2">
+                                                <i class="fas fa-bullhorn text-purple-400"></i>
+                                                <span class="text-white text-sm font-medium">Anonslar</span>
+                                            </div>
+                                            <button class="px-3 py-1 bg-purple-600 text-white text-xs rounded-full">
+                                                Aktif
+                                            </button>
+                                        </div>
+                                        <p class="text-purple-300 text-xs mt-1">3 şarkı sonra</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-gray-500 text-xs mt-2">Her zaman görünür, kolay erişim</p>
+                        </div>
+
+                        <!-- Seçenek 2: Player -->
+                        <div class="bg-slate-900 rounded-lg p-4">
+                            <h5 class="text-gray-400 font-medium mb-3">
+                                Seçenek 2: Player İçinde
+                            </h5>
+                            <div class="bg-slate-800 rounded-lg p-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 bg-slate-700 rounded"></div>
+                                        <div>
+                                            <p class="text-white text-sm">Şarkı Adı</p>
+                                            <p class="text-gray-500 text-xs">Sanatçı</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4">
+                                        <button class="text-gray-400"><i class="fas fa-backward"></i></button>
+                                        <button class="w-10 h-10 bg-white rounded-full text-black"><i class="fas fa-play"></i></button>
+                                        <button class="text-gray-400"><i class="fas fa-forward"></i></button>
+                                        <div class="border-l border-slate-600 pl-4 ml-2">
+                                            <button class="px-3 py-1 bg-purple-600 text-white text-xs rounded">
+                                                <i class="fas fa-bullhorn mr-1"></i>3
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-gray-500 text-xs mt-2">Player ile entegre, kompakt</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Durdur/Devam UI -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-hand mr-2 text-green-400"></i>Durdur / Devam Arayüzü
+                    </h3>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Aktif Durum -->
+                        <div>
+                            <h5 class="text-gray-400 text-sm mb-3">Anons Aktif</h5>
+                            <div class="bg-gradient-to-r from-purple-900/50 to-pink-900/50 border border-purple-700/50 rounded-xl p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-bullhorn text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-white font-medium">Anons Sistemi</p>
+                                            <p class="text-purple-300 text-sm">Şu an aktif</p>
+                                        </div>
+                                    </div>
+                                    <span class="px-3 py-1 bg-green-500 text-white text-xs rounded-full font-medium">
+                                        <i class="fas fa-check mr-1"></i>AKTİF
+                                    </span>
+                                </div>
+                                <div class="bg-slate-900/50 rounded-lg p-3 mb-3">
+                                    <div class="flex items-center justify-between text-sm">
+                                        <span class="text-gray-400">Sonraki anons:</span>
+                                        <span class="text-white font-medium">3 şarkı sonra</span>
+                                    </div>
+                                    <div class="mt-2 bg-slate-800 rounded-full h-2">
+                                        <div class="bg-purple-500 h-2 rounded-full" style="width: 70%"></div>
+                                    </div>
+                                    <p class="text-gray-500 text-xs mt-1 text-right">7 / 10 şarkı</p>
+                                </div>
+                                <button class="w-full py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm transition-colors">
+                                    <i class="fas fa-pause mr-2"></i>Anonsları Durdur
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Durdurulmuş Durum -->
+                        <div>
+                            <h5 class="text-gray-400 text-sm mb-3">Anons Durdurulmuş</h5>
+                            <div class="bg-slate-800 border border-slate-700 rounded-xl p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 bg-slate-700 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-bullhorn text-xl text-gray-500"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-white font-medium">Anons Sistemi</p>
+                                            <p class="text-gray-500 text-sm">Durduruldu</p>
+                                        </div>
+                                    </div>
+                                    <span class="px-3 py-1 bg-gray-600 text-gray-300 text-xs rounded-full font-medium">
+                                        <i class="fas fa-pause mr-1"></i>DURDU
+                                    </span>
+                                </div>
+                                <div class="bg-slate-900/50 rounded-lg p-3 mb-3">
+                                    <p class="text-gray-500 text-sm text-center">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Anonslar çalmıyor
+                                    </p>
+                                </div>
+                                <button class="w-full py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors">
+                                    <i class="fas fa-play mr-2"></i>Anonsları Başlat
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 bg-blue-900/20 border border-blue-700/50 rounded-lg p-4">
+                        <p class="text-blue-300 text-sm">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Not:</strong> Durdurma sadece bu şubeyi etkiler. Diğer şubeler ve ana şube etkilenmez.
+                            Ana şube ayarları (kaç şarkıda bir) değişmez, sadece bu şubede anons çalmaz.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== BÖLÜM 5: PLAYER ==================== -->
+        <section id="player" class="pt-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 bg-pink-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-play"></i>
+                </span>
+                Player Entegrasyonu
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Akış Diyagramı -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-diagram-project mr-2 text-pink-400"></i>Çalma Akışı
+                    </h3>
+
+                    <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto">
+                        <div class="min-w-max">
+                            <!-- Normal Akış -->
+                            <div class="mb-6">
+                                <h5 class="text-gray-400 text-sm mb-3">Normal Akış (Anons Yok)</h5>
+                                <div class="flex items-center gap-2">
+                                    <div class="bg-blue-600 px-4 py-2 rounded-lg text-sm">Şarkı 1</div>
+                                    <i class="fas fa-arrow-right text-gray-600"></i>
+                                    <div class="bg-blue-600 px-4 py-2 rounded-lg text-sm">Şarkı 2</div>
+                                    <i class="fas fa-arrow-right text-gray-600"></i>
+                                    <div class="bg-blue-600 px-4 py-2 rounded-lg text-sm">Şarkı 3</div>
+                                    <i class="fas fa-arrow-right text-gray-600"></i>
+                                    <span class="text-gray-500">...</span>
+                                </div>
+                            </div>
+
+                            <!-- Anonslu Akış -->
+                            <div>
+                                <h5 class="text-purple-400 text-sm mb-3">Anonslu Akış (Kurumsal)</h5>
+                                <div class="flex items-center gap-2">
+                                    <div class="bg-blue-600 px-3 py-2 rounded-lg text-xs">1</div>
+                                    <div class="bg-blue-600 px-3 py-2 rounded-lg text-xs">2</div>
+                                    <span class="text-gray-500">...</span>
+                                    <div class="bg-blue-600 px-3 py-2 rounded-lg text-xs">9</div>
+                                    <div class="bg-blue-600 px-3 py-2 rounded-lg text-xs">10</div>
+                                    <i class="fas fa-arrow-right text-yellow-500 text-lg mx-1"></i>
+                                    <div class="bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-2 rounded-lg text-sm font-semibold animate-pulse">
+                                        <i class="fas fa-bullhorn mr-1"></i>ANONS
+                                    </div>
+                                    <i class="fas fa-arrow-right text-yellow-500 text-lg mx-1"></i>
+                                    <div class="bg-blue-600 px-3 py-2 rounded-lg text-xs">11</div>
+                                    <div class="bg-blue-600 px-3 py-2 rounded-lg text-xs">12</div>
+                                    <span class="text-gray-500">...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Anons Çalarken UI -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-volume-high mr-2 text-pink-400"></i>Anons Çalarken Player Görünümü
+                    </h3>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Normal Player -->
+                        <div>
+                            <h5 class="text-gray-400 text-sm mb-3">Normal Şarkı Çalarken</h5>
+                            <div class="bg-slate-900 rounded-xl p-4">
+                                <div class="flex items-center gap-4">
+                                    <img src="https://via.placeholder.com/80" class="w-20 h-20 rounded-lg">
+                                    <div class="flex-1">
+                                        <p class="text-white font-medium">Hayal Kahvesi</p>
+                                        <p class="text-gray-400 text-sm">Sezen Aksu</p>
+                                        <div class="mt-2 bg-slate-700 rounded-full h-1">
+                                            <div class="bg-white h-1 rounded-full" style="width: 35%"></div>
+                                        </div>
+                                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                            <span>1:23</span>
+                                            <span>3:45</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Anons Player -->
+                        <div>
+                            <h5 class="text-purple-400 text-sm mb-3">Anons Çalarken</h5>
+                            <div class="bg-gradient-to-r from-purple-900 to-pink-900 rounded-xl p-4 border-2 border-purple-500">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-20 h-20 bg-purple-600 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-bullhorn text-3xl animate-pulse"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <span class="px-2 py-0.5 bg-yellow-500 text-black text-xs font-bold rounded">
+                                                ANONS
+                                            </span>
+                                        </div>
+                                        <p class="text-white font-medium">Yılbaşı Kampanyası</p>
+                                        <p class="text-purple-300 text-sm">Şirket Duyurusu</p>
+                                        <div class="mt-2 bg-purple-800 rounded-full h-1">
+                                            <div class="bg-yellow-400 h-1 rounded-full" style="width: 60%"></div>
+                                        </div>
+                                        <div class="flex justify-between text-xs text-purple-300 mt-1">
+                                            <span>0:27</span>
+                                            <span>0:45</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Önemli Davranışlar -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-cog mr-2 text-pink-400"></i>Anons Sırasında Davranışlar
+                    </h3>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-4">
+                            <h5 class="text-green-400 font-medium mb-2">
+                                <i class="fas fa-check mr-1"></i>İzin Verilenler
+                            </h5>
+                            <ul class="text-gray-300 text-sm space-y-1">
+                                <li>• Ses açma/kapama (volume)</li>
+                                <li>• Mute/unmute</li>
+                                <li>• Tam ekran görünümü</li>
+                            </ul>
+                        </div>
+                        <div class="bg-red-900/20 border border-red-800/50 rounded-lg p-4">
+                            <h5 class="text-red-400 font-medium mb-2">
+                                <i class="fas fa-ban mr-1"></i>Engellenenler
+                            </h5>
+                            <ul class="text-gray-300 text-sm space-y-1">
+                                <li>• İleri/geri atlama (skip) <span class="text-gray-500">- Opsiyonel</span></li>
+                                <li>• Progress bar ile atlama (seek)</li>
+                                <li>• Şarkı değiştirme</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 bg-amber-900/20 border border-amber-700/50 rounded-lg p-4">
+                        <h5 class="text-amber-400 font-medium mb-2">
+                            <i class="fas fa-question-circle mr-1"></i>Karar: Anons Atlanabilir mi?
+                        </h5>
+                        <div class="flex gap-4 text-sm">
+                            <label class="flex items-center gap-2 text-gray-300 cursor-pointer">
+                                <input type="radio" name="skip_option" class="text-purple-600">
+                                <span>Hayır, tam dinlemeli (zorunlu)</span>
+                            </label>
+                            <label class="flex items-center gap-2 text-gray-300 cursor-pointer">
+                                <input type="radio" name="skip_option" class="text-purple-600">
+                                <span>5 saniye sonra atlanabilir</span>
+                            </label>
+                            <label class="flex items-center gap-2 text-gray-300 cursor-pointer">
+                                <input type="radio" name="skip_option" class="text-purple-600">
+                                <span>Her zaman atlanabilir</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- JavaScript Akışı -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-code mr-2 text-pink-400"></i>JavaScript Akış Mantığı
+                    </h3>
+
+                    <div class="bg-slate-900 rounded-lg p-4 text-sm">
+                        <pre class="text-gray-300 overflow-x-auto"><code>// 1. Sayfa yüklendiğinde kurumsal kontrolü
+async initAnnouncementSystem() {
+    const corporate = await this.getCorporateAccount();
+    if (!corporate) return; // Kurumsal değilse çık
+
+    this.announcement = {
+        enabled: corporate.announcement_enabled,
+        paused: await this.getBranchPauseStatus(),
+        counter: await this.getBranchCounter(),
+        triggerAt: corporate.songs_between_announcements, // default: 10
+        currentIndex: 0
+    };
+}
+
+// 2. Şarkı 30 saniye dinlendiğinde (trackHit)
+onTrackHit() {
+    // Normal tracking...
+
+    // Anons sayacı
+    if (this.announcement.enabled && !this.announcement.paused) {
+        this.announcement.counter++;
+        this.syncCounterToServer(); // Backend'e kaydet
+    }
+}
+
+// 3. Şarkı bittiğinde
+onSongEnded() {
+    if (this.shouldPlayAnnouncement()) {
+        this.playAnnouncement();
+    } else {
+        this.playNextSong();
+    }
+}
+
+// 4. Anons gerekli mi?
+shouldPlayAnnouncement() {
+    return this.announcement.enabled
+        && !this.announcement.paused
+        && this.announcement.counter >= this.announcement.triggerAt;
+}
+
+// 5. Anons çal
+async playAnnouncement() {
+    // Sıradaki anonsu al (rotation)
+    const next = await fetch('/api/announcement/next');
+
+    // Player state'i değiştir
+    this.isPlayingAnnouncement = true;
+    this.currentTrack = {
+        type: 'announcement',
+        ...next.data
+    };
+
+    // Audio src değiştir ve çal
+    this.audio.src = next.data.audio_url;
+    this.audio.play();
+
+    // Anons bitince
+    this.audio.onended = () => {
+        this.trackAnnouncementPlay(next.data.id);
+        this.announcement.counter = 0; // Sayaç sıfırla
+        this.isPlayingAnnouncement = false;
+        this.playNextSong(); // Normal akışa dön
+    };
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== BÖLÜM 6: DOSYA YÖNETİMİ ==================== -->
+        <section id="dosya-yonetimi" class="pt-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-folder"></i>
+                </span>
+                Dosya Yönetimi
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Storage Yapısı -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-folder-tree mr-2 text-orange-400"></i>Storage Yapısı
+                    </h3>
+
+                    <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm">
+                        <pre class="text-gray-300"><code>storage/
+└── tenant1001/              # Muzibu tenant
+    └── app/
+        └── public/
+            └── announcements/    # Anons dosyaları
+                ├── 1/
+                │   └── yilbasi-kampanyasi.mp3
+                ├── 2/
+                │   └── happy-hour.mp3
+                └── 3/
+                    └── genel-duyuru.mp3</code></pre>
+                    </div>
+
+                    <div class="mt-4 grid md:grid-cols-2 gap-4 text-sm">
+                        <div class="bg-slate-900 rounded-lg p-4">
+                            <h5 class="text-orange-400 font-medium mb-2">Dosya Adlandırma</h5>
+                            <ul class="text-gray-400 space-y-1">
+                                <li>• Orijinal isim slug'lanır</li>
+                                <li>• Türkçe karakterler dönüştürülür</li>
+                                <li>• Örn: "Yılbaşı Kampanyası.mp3" → "yilbasi-kampanyasi.mp3"</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-4">
+                            <h5 class="text-orange-400 font-medium mb-2">Erişim URL</h5>
+                            <code class="text-gray-300 text-xs block bg-slate-800 p-2 rounded">
+                                /storage/announcements/1/yilbasi-kampanyasi.mp3
+                            </code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Validasyon -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-shield-check mr-2 text-orange-400"></i>Dosya Validasyonu
+                    </h3>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-left text-gray-400 border-b border-slate-700">
+                                    <th class="pb-3">Kural</th>
+                                    <th class="pb-3">Değer</th>
+                                    <th class="pb-3">Açıklama</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-3">Format</td>
+                                    <td><code class="bg-slate-800 px-2 py-1 rounded">mp3, wav, m4a, ogg</code></td>
+                                    <td>MIME type kontrolü yapılır</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-3">Max Boyut</td>
+                                    <td><code class="bg-slate-800 px-2 py-1 rounded">10 MB</code></td>
+                                    <td>Büyük dosyalar reddedilir</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-3">Max Süre</td>
+                                    <td><code class="bg-slate-800 px-2 py-1 rounded">120 saniye</code></td>
+                                    <td>FFprobe ile kontrol</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-3">Min Süre</td>
+                                    <td><code class="bg-slate-800 px-2 py-1 rounded">5 saniye</code></td>
+                                    <td>Çok kısa dosyalar reddedilir</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== BÖLÜM 7: VERİTABANI ==================== -->
+        <section id="veritabani" class="pt-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-database"></i>
+                </span>
+                Veritabanı Tasarımı
+            </h2>
+
+            <div class="space-y-6">
+                <!-- ER Diyagram -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-project-diagram mr-2 text-emerald-400"></i>Tablo İlişkileri
+                    </h3>
+
+                    <div class="bg-slate-900 rounded-lg p-6">
+                        <div class="flex flex-wrap gap-4 justify-center items-start">
+                            <div class="bg-purple-900/30 border border-purple-700 rounded-lg p-4 w-48">
+                                <h5 class="text-purple-400 font-bold text-center mb-2">announcements</h5>
+                                <ul class="text-xs text-gray-400 space-y-1">
+                                    <li>id</li>
+                                    <li>title</li>
+                                    <li>audio_path</li>
+                                    <li>duration</li>
+                                    <li>position</li>
+                                    <li>is_active</li>
+                                </ul>
+                            </div>
+
+                            <div class="flex flex-col items-center justify-center">
+                                <i class="fas fa-arrows-left-right text-gray-600 text-2xl"></i>
+                            </div>
+
+                            <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-4 w-48">
+                                <h5 class="text-yellow-400 font-bold text-center mb-2">corporate_announcement_settings</h5>
+                                <ul class="text-xs text-gray-400 space-y-1">
+                                    <li>id</li>
+                                    <li>corporate_account_id (FK)</li>
+                                    <li>songs_between</li>
+                                    <li>is_enabled</li>
+                                    <li>current_index</li>
+                                </ul>
+                            </div>
+
+                            <div class="flex flex-col items-center justify-center">
+                                <i class="fas fa-arrow-down text-gray-600 text-2xl"></i>
+                            </div>
+
+                            <div class="bg-green-900/30 border border-green-700 rounded-lg p-4 w-48">
+                                <h5 class="text-green-400 font-bold text-center mb-2">branch_announcement_status</h5>
+                                <ul class="text-xs text-gray-400 space-y-1">
+                                    <li>id</li>
+                                    <li>corporate_account_id (FK)</li>
+                                    <li>user_id (FK)</li>
+                                    <li>is_paused</li>
+                                    <li>song_counter</li>
+                                </ul>
+                            </div>
+
+                            <div class="flex flex-col items-center justify-center">
+                                <i class="fas fa-arrow-down text-gray-600 text-2xl"></i>
+                            </div>
+
+                            <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-4 w-48">
+                                <h5 class="text-blue-400 font-bold text-center mb-2">announcement_plays</h5>
+                                <ul class="text-xs text-gray-400 space-y-1">
+                                    <li>id</li>
+                                    <li>announcement_id (FK)</li>
+                                    <li>corporate_account_id (FK)</li>
+                                    <li>user_id (FK)</li>
+                                    <li>listened_duration</li>
+                                    <li>was_skipped</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tablolar Detay -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Tablo 1 -->
+                    <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+                        <h4 class="font-semibold text-purple-400 mb-3">
+                            <i class="fas fa-table mr-2"></i>muzibu_announcements
+                        </h4>
+                        <div class="text-xs overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-gray-500 border-b border-slate-700">
+                                        <th class="text-left pb-2">Kolon</th>
+                                        <th class="text-left pb-2">Tip</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-300">
+                                    <tr><td class="py-1">id</td><td>BIGINT PK</td></tr>
+                                    <tr><td class="py-1">title</td><td>VARCHAR(255)</td></tr>
+                                    <tr><td class="py-1">audio_path</td><td>VARCHAR(500)</td></tr>
+                                    <tr><td class="py-1">duration</td><td>INT (saniye)</td></tr>
+                                    <tr><td class="py-1">file_size</td><td>INT (bytes)</td></tr>
+                                    <tr><td class="py-1">position</td><td>INT</td></tr>
+                                    <tr><td class="py-1">is_active</td><td>BOOLEAN</td></tr>
+                                    <tr><td class="py-1">play_count</td><td>INT default 0</td></tr>
+                                    <tr><td class="py-1">created_at</td><td>TIMESTAMP</td></tr>
+                                    <tr><td class="py-1">updated_at</td><td>TIMESTAMP</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tablo 2 -->
+                    <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+                        <h4 class="font-semibold text-yellow-400 mb-3">
+                            <i class="fas fa-table mr-2"></i>muzibu_corporate_announcement_settings
+                        </h4>
+                        <div class="text-xs overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-gray-500 border-b border-slate-700">
+                                        <th class="text-left pb-2">Kolon</th>
+                                        <th class="text-left pb-2">Tip</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-300">
+                                    <tr><td class="py-1">id</td><td>BIGINT PK</td></tr>
+                                    <tr><td class="py-1">corporate_account_id</td><td>BIGINT FK UNIQUE</td></tr>
+                                    <tr><td class="py-1">songs_between_announcements</td><td>INT default 10</td></tr>
+                                    <tr><td class="py-1">min_listen_duration</td><td>INT default 30</td></tr>
+                                    <tr><td class="py-1">is_enabled</td><td>BOOLEAN default true</td></tr>
+                                    <tr><td class="py-1">current_announcement_index</td><td>INT default 0</td></tr>
+                                    <tr><td class="py-1">created_at</td><td>TIMESTAMP</td></tr>
+                                    <tr><td class="py-1">updated_at</td><td>TIMESTAMP</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tablo 3 -->
+                    <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+                        <h4 class="font-semibold text-green-400 mb-3">
+                            <i class="fas fa-table mr-2"></i>muzibu_branch_announcement_status
+                        </h4>
+                        <div class="text-xs overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-gray-500 border-b border-slate-700">
+                                        <th class="text-left pb-2">Kolon</th>
+                                        <th class="text-left pb-2">Tip</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-300">
+                                    <tr><td class="py-1">id</td><td>BIGINT PK</td></tr>
+                                    <tr><td class="py-1">corporate_account_id</td><td>BIGINT FK</td></tr>
+                                    <tr><td class="py-1">user_id</td><td>BIGINT FK</td></tr>
+                                    <tr><td class="py-1">is_paused</td><td>BOOLEAN default false</td></tr>
+                                    <tr><td class="py-1">song_counter</td><td>INT default 0</td></tr>
+                                    <tr><td class="py-1">last_announcement_at</td><td>TIMESTAMP NULL</td></tr>
+                                    <tr><td class="py-1">created_at</td><td>TIMESTAMP</td></tr>
+                                    <tr><td class="py-1">updated_at</td><td>TIMESTAMP</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-gray-500 text-xs mt-2">UNIQUE: (corporate_account_id, user_id)</p>
+                    </div>
+
+                    <!-- Tablo 4 -->
+                    <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+                        <h4 class="font-semibold text-blue-400 mb-3">
+                            <i class="fas fa-table mr-2"></i>muzibu_announcement_plays
+                        </h4>
+                        <div class="text-xs overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-gray-500 border-b border-slate-700">
+                                        <th class="text-left pb-2">Kolon</th>
+                                        <th class="text-left pb-2">Tip</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-300">
+                                    <tr><td class="py-1">id</td><td>BIGINT PK</td></tr>
+                                    <tr><td class="py-1">announcement_id</td><td>BIGINT FK</td></tr>
+                                    <tr><td class="py-1">corporate_account_id</td><td>BIGINT FK</td></tr>
+                                    <tr><td class="py-1">user_id</td><td>BIGINT FK NULL</td></tr>
+                                    <tr><td class="py-1">listened_duration</td><td>INT</td></tr>
+                                    <tr><td class="py-1">was_skipped</td><td>BOOLEAN</td></tr>
+                                    <tr><td class="py-1">device_type</td><td>VARCHAR(50)</td></tr>
+                                    <tr><td class="py-1">played_at</td><td>TIMESTAMP</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-gray-500 text-xs mt-2">INDEX: (announcement_id, played_at)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== BÖLÜM 8: API ==================== -->
+        <section id="api" class="pt-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-plug"></i>
+                </span>
+                API Endpoints
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Admin API -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-user-shield mr-2 text-red-400"></i>Admin API
+                    </h3>
+                    <div class="space-y-3 font-mono text-sm">
+                        <div class="bg-slate-900 rounded-lg p-3 flex items-start gap-3">
+                            <span class="px-2 py-1 bg-green-600 text-white rounded text-xs shrink-0">GET</span>
+                            <div>
+                                <code class="text-gray-300">/api/admin/announcements</code>
+                                <p class="text-gray-500 text-xs mt-1">Tüm anonsları listele (pagination)</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-3 flex items-start gap-3">
+                            <span class="px-2 py-1 bg-blue-600 text-white rounded text-xs shrink-0">POST</span>
+                            <div>
+                                <code class="text-gray-300">/api/admin/announcements</code>
+                                <p class="text-gray-500 text-xs mt-1">Yeni anons yükle (multipart/form-data)</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-3 flex items-start gap-3">
+                            <span class="px-2 py-1 bg-yellow-600 text-white rounded text-xs shrink-0">PUT</span>
+                            <div>
+                                <code class="text-gray-300">/api/admin/announcements/{id}</code>
+                                <p class="text-gray-500 text-xs mt-1">Anons güncelle (başlık, durum)</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-3 flex items-start gap-3">
+                            <span class="px-2 py-1 bg-red-600 text-white rounded text-xs shrink-0">DEL</span>
+                            <div>
+                                <code class="text-gray-300">/api/admin/announcements/{id}</code>
+                                <p class="text-gray-500 text-xs mt-1">Anons sil (soft delete)</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-3 flex items-start gap-3">
+                            <span class="px-2 py-1 bg-purple-600 text-white rounded text-xs shrink-0">POST</span>
+                            <div>
+                                <code class="text-gray-300">/api/admin/announcements/reorder</code>
+                                <p class="text-gray-500 text-xs mt-1">Sıralama güncelle: {"ids": [3,1,2]}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Corporate API -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-building mr-2 text-yellow-400"></i>Corporate API (Ana Şube)
+                    </h3>
+                    <div class="space-y-3 font-mono text-sm">
+                        <div class="bg-slate-900 rounded-lg p-3 flex items-start gap-3">
+                            <span class="px-2 py-1 bg-green-600 text-white rounded text-xs shrink-0">GET</span>
+                            <div>
+                                <code class="text-gray-300">/api/corporate/announcement-settings</code>
+                                <p class="text-gray-500 text-xs mt-1">Mevcut ayarları getir</p>
+                                <pre class="text-gray-600 text-xs mt-2 bg-slate-800 p-2 rounded">Response: {
+  "is_enabled": true,
+  "songs_between": 10,
+  "total_announcements": 3,
+  "total_plays": 1245
+}</pre>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-3 flex items-start gap-3">
+                            <span class="px-2 py-1 bg-yellow-600 text-white rounded text-xs shrink-0">PUT</span>
+                            <div>
+                                <code class="text-gray-300">/api/corporate/announcement-settings</code>
+                                <p class="text-gray-500 text-xs mt-1">Ayarları güncelle</p>
+                                <pre class="text-gray-600 text-xs mt-2 bg-slate-800 p-2 rounded">Body: {
+  "is_enabled": true,
+  "songs_between": 10
+}</pre>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-3 flex items-start gap-3">
+                            <span class="px-2 py-1 bg-green-600 text-white rounded text-xs shrink-0">GET</span>
+                            <div>
+                                <code class="text-gray-300">/api/corporate/branch-announcement-statuses</code>
+                                <p class="text-gray-500 text-xs mt-1">Tüm şubelerin anons durumlarını getir</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Player API -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-play mr-2 text-pink-400"></i>Player API (Frontend)
+                    </h3>
+                    <div class="space-y-3 font-mono text-sm">
+                        <div class="bg-slate-900 rounded-lg p-3 flex items-start gap-3">
+                            <span class="px-2 py-1 bg-green-600 text-white rounded text-xs shrink-0">GET</span>
+                            <div>
+                                <code class="text-gray-300">/api/announcement/init</code>
+                                <p class="text-gray-500 text-xs mt-1">Anons sistemi başlangıç bilgileri</p>
+                                <pre class="text-gray-600 text-xs mt-2 bg-slate-800 p-2 rounded">Response: {
+  "enabled": true,
+  "paused": false,
+  "counter": 7,
+  "trigger_at": 10,
+  "announcements_count": 3
+}</pre>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-3 flex items-start gap-3">
+                            <span class="px-2 py-1 bg-green-600 text-white rounded text-xs shrink-0">GET</span>
+                            <div>
+                                <code class="text-gray-300">/api/announcement/next</code>
+                                <p class="text-gray-500 text-xs mt-1">Sıradaki anonsu getir (rotation)</p>
+                                <pre class="text-gray-600 text-xs mt-2 bg-slate-800 p-2 rounded">Response: {
+  "id": 2,
+  "title": "Happy Hour",
+  "audio_url": "/storage/announcements/2/happy-hour.mp3",
+  "duration": 30
+}</pre>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-3 flex items-start gap-3">
+                            <span class="px-2 py-1 bg-blue-600 text-white rounded text-xs shrink-0">POST</span>
+                            <div>
+                                <code class="text-gray-300">/api/announcement/increment</code>
+                                <p class="text-gray-500 text-xs mt-1">Şarkı sayacını artır (30sn sonra)</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-3 flex items-start gap-3">
+                            <span class="px-2 py-1 bg-blue-600 text-white rounded text-xs shrink-0">POST</span>
+                            <div>
+                                <code class="text-gray-300">/api/announcement/track-play</code>
+                                <p class="text-gray-500 text-xs mt-1">Anons çalındı bildir</p>
+                                <pre class="text-gray-600 text-xs mt-2 bg-slate-800 p-2 rounded">Body: {
+  "announcement_id": 2,
+  "listened_duration": 30,
+  "was_skipped": false
+}</pre>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-3 flex items-start gap-3">
+                            <span class="px-2 py-1 bg-blue-600 text-white rounded text-xs shrink-0">POST</span>
+                            <div>
+                                <code class="text-gray-300">/api/announcement/pause</code>
+                                <p class="text-gray-500 text-xs mt-1">Bu şube için anonsu durdur</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-3 flex items-start gap-3">
+                            <span class="px-2 py-1 bg-blue-600 text-white rounded text-xs shrink-0">POST</span>
+                            <div>
+                                <code class="text-gray-300">/api/announcement/resume</code>
+                                <p class="text-gray-500 text-xs mt-1">Bu şube için anonsu devam ettir</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== BÖLÜM 9: SENARYOLAR ==================== -->
+        <section id="senaryolar" class="pt-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 bg-cyan-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-route"></i>
+                </span>
+                Kullanım Senaryoları
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Senaryo 1 -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-1 mr-2 text-cyan-400 bg-cyan-900 w-6 h-6 rounded-full inline-flex items-center justify-center text-xs"></i>
+                        Yeni Anons Ekleme (Admin)
+                    </h3>
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <ol class="space-y-3 text-sm text-gray-300">
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs shrink-0">1</span>
+                                <span>Admin panele giriş yap → Muzibu → Anonslar</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs shrink-0">2</span>
+                                <span>"Yeni Anons Yükle" butonuna tıkla</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs shrink-0">3</span>
+                                <span>Başlık gir: "Yılbaşı Kampanyası"</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs shrink-0">4</span>
+                                <span>MP3 dosyasını sürükle-bırak ile yükle</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs shrink-0">5</span>
+                                <span>Sistem otomatik: süre kontrolü, format kontrolü yapar</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs shrink-0">6</span>
+                                <span>Önizleme ile dinle, "Kaydet" tıkla</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center text-xs shrink-0">✓</span>
+                                <span class="text-green-400">Anons listede görünür, rotation'a dahil olur</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Senaryo 2 -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-2 mr-2 text-cyan-400 bg-cyan-900 w-6 h-6 rounded-full inline-flex items-center justify-center text-xs"></i>
+                        Kurumsal Ayarları Değiştirme (Ana Şube)
+                    </h3>
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <ol class="space-y-3 text-sm text-gray-300">
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs shrink-0">1</span>
+                                <span>Kurumsal hesapla giriş yap (ana şube)</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs shrink-0">2</span>
+                                <span>Kurumsal Dashboard → "Anons Ayarları"</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs shrink-0">3</span>
+                                <span>Slider ile "15 şarkıda bir" olarak değiştir</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs shrink-0">4</span>
+                                <span>"Ayarları Kaydet" tıkla</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center text-xs shrink-0">✓</span>
+                                <span class="text-green-400">Tüm şubelerde artık 15 şarkıda bir anons çalar</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Senaryo 3 -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-3 mr-2 text-cyan-400 bg-cyan-900 w-6 h-6 rounded-full inline-flex items-center justify-center text-xs"></i>
+                        Şube Anons Durdurma
+                    </h3>
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <ol class="space-y-3 text-sm text-gray-300">
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs shrink-0">1</span>
+                                <span>Şube hesabıyla giriş yap</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs shrink-0">2</span>
+                                <span>Sol sidebar'da "Anonslar" panelini gör</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs shrink-0">3</span>
+                                <span>"Durdur" butonuna tıkla</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-yellow-600 rounded-full flex items-center justify-center text-xs shrink-0">!</span>
+                                <span class="text-yellow-400">Sadece bu şubede anonslar durur</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs shrink-0">5</span>
+                                <span>Diğer şubeler etkilenmez, normal çalmaya devam</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Senaryo 4 -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">
+                        <i class="fas fa-4 mr-2 text-cyan-400 bg-cyan-900 w-6 h-6 rounded-full inline-flex items-center justify-center text-xs"></i>
+                        Normal Dinleme Akışı (Kullanıcı)
+                    </h3>
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <ol class="space-y-3 text-sm text-gray-300">
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-xs shrink-0">♪</span>
+                                <span>Şarkı 1 çalar → 30sn+ dinlenir → Sayaç: 1</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-xs shrink-0">♪</span>
+                                <span>Şarkı 2 çalar → 30sn+ dinlenir → Sayaç: 2</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center text-xs shrink-0">...</span>
+                                <span class="text-gray-500">... (şarkılar devam eder)</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-xs shrink-0">♪</span>
+                                <span>Şarkı 10 çalar → 30sn+ dinlenir → Sayaç: 10</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs shrink-0">📢</span>
+                                <span class="text-purple-400 font-medium">Şarkı 10 biter → ANONS ÇALAR (45sn)</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-xs shrink-0">↺</span>
+                                <span>Anons biter → Sayaç sıfırlanır → Şarkı 11 başlar</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-xs shrink-0">♪</span>
+                                <span>Döngü devam eder...</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Edge Cases -->
+                <div class="bg-amber-900/20 border border-amber-700/50 rounded-xl p-6">
+                    <h3 class="font-semibold text-amber-400 mb-4">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>Edge Cases (Özel Durumlar)
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <div class="bg-slate-900/50 rounded-lg p-4">
+                            <h5 class="text-white font-medium mb-2">Şarkı 30sn'den az dinlenirse?</h5>
+                            <p class="text-gray-400">Sayaç artmaz. Skip edilen şarkılar sayılmaz.</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded-lg p-4">
+                            <h5 class="text-white font-medium mb-2">Aktif anons yoksa?</h5>
+                            <p class="text-gray-400">Anons sistemi devre dışı kalır, normal çalma devam eder.</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded-lg p-4">
+                            <h5 class="text-white font-medium mb-2">Sayfa yenilenirse?</h5>
+                            <p class="text-gray-400">Sayaç backend'den çekilir, kaldığı yerden devam.</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded-lg p-4">
+                            <h5 class="text-white font-medium mb-2">Kullanıcı çıkış yaparsa?</h5>
+                            <p class="text-gray-400">Sayaç DB'de kalır, tekrar girişte devam.</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded-lg p-4">
+                            <h5 class="text-white font-medium mb-2">Aynı anda birden fazla cihaz?</h5>
+                            <p class="text-gray-400">Her cihaz (session) ayrı sayaç tutar.</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded-lg p-4">
+                            <h5 class="text-white font-medium mb-2">Kurumsal değilse?</h5>
+                            <p class="text-gray-400">Anons sistemi hiç aktif olmaz, JS yüklenmez.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== ÖZET YAPILACAKLAR ==================== -->
+        <section class="pt-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-list-check"></i>
+                </span>
+                Geliştirme Adımları
+            </h2>
+
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="bg-slate-900 rounded-lg p-4 border-l-4 border-blue-500">
+                        <h4 class="font-semibold text-white mb-2">1. Veritabanı</h4>
+                        <ul class="text-sm text-gray-400 space-y-1">
+                            <li>• 4 migration oluştur</li>
+                            <li>• 4 model oluştur</li>
+                            <li>• İlişkileri tanımla</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-4 border-l-4 border-red-500">
+                        <h4 class="font-semibold text-white mb-2">2. Admin Panel</h4>
+                        <ul class="text-sm text-gray-400 space-y-1">
+                            <li>• Livewire component</li>
+                            <li>• Liste + Form view</li>
+                            <li>• Drag-drop sıralama</li>
+                            <li>• Dosya yükleme</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-4 border-l-4 border-yellow-500">
+                        <h4 class="font-semibold text-white mb-2">3. Kurumsal Panel</h4>
+                        <ul class="text-sm text-gray-400 space-y-1">
+                            <li>• Ayarlar sayfası</li>
+                            <li>• Şube durumları</li>
+                            <li>• API endpoints</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-4 border-l-4 border-green-500">
+                        <h4 class="font-semibold text-white mb-2">4. Şube Kontrolü</h4>
+                        <ul class="text-sm text-gray-400 space-y-1">
+                            <li>• Sidebar widget</li>
+                            <li>• Durdur/devam UI</li>
+                            <li>• API endpoints</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-4 border-l-4 border-pink-500">
+                        <h4 class="font-semibold text-white mb-2">5. Player</h4>
+                        <ul class="text-sm text-gray-400 space-y-1">
+                            <li>• Alpine store güncelle</li>
+                            <li>• Sayaç mantığı</li>
+                            <li>• Anons çalma UI</li>
+                            <li>• API entegrasyonu</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-4 border-l-4 border-cyan-500">
+                        <h4 class="font-semibold text-white mb-2">6. Test & Deploy</h4>
+                        <ul class="text-sm text-gray-400 space-y-1">
+                            <li>• Migration çalıştır</li>
+                            <li>• Manuel test</li>
+                            <li>• Cache temizle</li>
+                            <li>• npm run prod</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800/30 border-t border-slate-700 mt-12 py-6">
+        <div class="max-w-7xl mx-auto px-6 text-center text-gray-500 text-sm">
+            <p>
+                <i class="fas fa-robot mr-2"></i>
+                Claude AI tarafından oluşturuldu • 31 Aralık 2025 • Kapsamlı Plan v2
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scroll to section script -->
+    <script>
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                document.querySelectorAll('nav a').forEach(l => l.classList.remove('active', 'bg-purple-600', 'text-white'));
+                this.classList.add('active', 'bg-purple-600', 'text-white');
+            });
+        });
+    </script>
+
+</body>
+</html>

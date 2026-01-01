@@ -48,8 +48,8 @@
                    "
                    class="group bg-muzibu-gray hover:bg-gray-700 rounded-xl p-4 transition-all duration-300 hover:shadow-2xl hover:shadow-muzibu-coral/20">
                     <div class="relative mb-4">
-                        @if($playlist->media_id && $playlist->coverMedia)
-                            <img src="{{ thumb($playlist->coverMedia, 300, 300, ['scale' => 1]) }}"
+                        @if($playlist->getCoverUrl())
+                            <img src="{{ $playlist->getCoverUrl(300, 300) }}"
                                  alt="{{ $playlist->getTranslation('title', app()->getLocale()) }}"
                                  class="w-full aspect-square object-cover rounded-lg shadow-lg"
                                  loading="lazy">

@@ -49,9 +49,13 @@ class CertificateService
      */
     public function getActivePaidSubscription(User $user): ?Subscription
     {
-        return Subscription::where('user_id', $user->id)
+        return Subscription::on('tenant')
+            ->where('user_id', $user->id)
             ->where('status', 'active')
-            ->where('is_trial', false)
+            ->where(function($q) {
+                $q->where('has_trial', false)
+                  ->orWhereNull('has_trial');
+            })
             ->first();
     }
 
@@ -60,12 +64,16 @@ class CertificateService
      */
     public function getFirstPaidSubscriptionDate(User $user): ?\Carbon\Carbon
     {
-        $firstSubscription = Subscription::where('user_id', $user->id)
-            ->where('is_trial', false)
-            ->orderBy('starts_at', 'asc')
+        $firstSubscription = Subscription::on('tenant')
+            ->where('user_id', $user->id)
+            ->where(function($q) {
+                $q->where('has_trial', false)
+                  ->orWhereNull('has_trial');
+            })
+            ->orderBy('started_at', 'asc')
             ->first();
 
-        return $firstSubscription?->starts_at;
+        return $firstSubscription?->started_at;
     }
 
     /**
@@ -73,14 +81,18 @@ class CertificateService
      */
     public function getSubscriptionPeriods(User $user): array
     {
-        $subscriptions = Subscription::where('user_id', $user->id)
-            ->where('is_trial', false)
-            ->orderBy('starts_at', 'asc')
+        $subscriptions = Subscription::on('tenant')
+            ->where('user_id', $user->id)
+            ->where(function($q) {
+                $q->where('has_trial', false)
+                  ->orWhereNull('has_trial');
+            })
+            ->orderBy('started_at', 'asc')
             ->get();
 
         return $subscriptions->map(function ($sub) {
             return [
-                'start' => $sub->starts_at,
+                'start' => $sub->started_at,
                 'end' => $sub->ends_at,
                 'is_active' => $sub->status === 'active',
                 'plan_name' => $sub->plan?->title ?? 'Premium',
@@ -105,9 +117,13 @@ class CertificateService
             throw new Exception('Could not determine first paid subscription date');
         }
 
-        // Apply spelling correction
-        $memberName = Certificate::correctSpelling($data['member_name']);
+        // Check if skip correction is enabled (for member_name only)
+        $skipCorrection = $data['skip_correction'] ?? false;
+
+        // Apply spelling correction (skip for member_name if requested)
+        $memberName = $skipCorrection ? $data['member_name'] : Certificate::correctSpelling($data['member_name']);
         $taxOffice = !empty($data['tax_office']) ? Certificate::correctSpelling($data['tax_office']) : null;
+        $address = !empty($data['address']) ? Certificate::correctSpelling($data['address']) : null;
 
         // Create certificate
         return Certificate::create([
@@ -117,7 +133,7 @@ class CertificateService
             'member_name' => $memberName,
             'tax_office' => $taxOffice,
             'tax_number' => $data['tax_number'] ?? null,
-            'address' => $data['address'] ?? null,
+            'address' => $address,
             'membership_start' => $membershipStart,
             'issued_at' => now(),
             'is_valid' => true,

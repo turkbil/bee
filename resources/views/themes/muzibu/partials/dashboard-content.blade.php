@@ -163,8 +163,7 @@
                     @forelse($recentlyPlayed->take(5) as $play)
                         @php
                             $song = $play->song;
-                            $cover = $song->coverMedia ?? ($song->album ? $song->album->coverMedia : null) ?? null;
-                            $coverUrl = $cover ? thumb($cover, 120, 120) : null;
+                            $coverUrl = $song->getCoverUrl(120, 120);
                         @endphp
                         <div class="flex items-center gap-4 p-4 hover:bg-white/5 transition cursor-pointer group" @click="playSong({{ $song->song_id }})">
                             <div class="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
@@ -210,8 +209,7 @@
                         <div class="grid grid-cols-3 gap-3 mb-4">
                             @foreach($favorites->take(6) as $song)
                                 @php
-                                    $cover = $song->coverMedia ?? ($song->album ? $song->album->coverMedia : null) ?? null;
-                                    $coverUrl = $cover ? thumb($cover, 120, 120) : null;
+                                    $coverUrl = $song->getCoverUrl(120, 120);
                                 @endphp
                                 <div class="relative aspect-square rounded-lg overflow-hidden cursor-pointer group" @click="playSong({{ $song->song_id }})">
                                     @if($coverUrl)
@@ -268,8 +266,7 @@
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                         @foreach($playlists as $playlist)
                             @php
-                                $cover = $playlist->coverMedia;
-                                $coverUrl = $cover ? thumb($cover, 200, 200) : '/images/default-playlist.png';
+                                $coverUrl = $playlist->getCoverUrl(200, 200) ?? '/images/default-playlist.png';
                             @endphp
                             <a href="/playlists/{{ $playlist->slug }}" class="group" data-spa>
                                 <div class="relative aspect-square rounded-lg overflow-hidden mb-2">

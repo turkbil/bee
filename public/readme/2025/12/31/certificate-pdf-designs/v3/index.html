@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>V3 - Minimal Landscape (PDF Uyumlu)</title>
+    <style>
+        @page { margin: 0; size: A4 landscape; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DejaVu Sans', sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            width: 297mm;
+            height: 210mm;
+            margin: 0 auto;
+        }
+        .page {
+            width: 100%;
+            height: 100%;
+            padding: 12mm;
+        }
+        .border-box {
+            border: 2px solid #d4af37;
+            height: 100%;
+            position: relative;
+        }
+        .header-bar {
+            background: linear-gradient(90deg, #16a34a, #059669);
+            padding: 5mm 8mm;
+        }
+        .header-table {
+            width: 100%;
+        }
+        .header-table td {
+            vertical-align: middle;
+        }
+
+        .content {
+            padding: 8mm;
+        }
+        .center { text-align: center; }
+        .gold { color: #d4af37; }
+        .white { color: white; }
+        .gray { color: #94a3b8; }
+        .mono { font-family: 'DejaVu Sans Mono', monospace; }
+
+        .title { font-size: 9mm; font-weight: bold; margin-bottom: 3mm; }
+        .member { font-size: 7mm; font-weight: bold; margin: 6mm 0; }
+
+        .two-col {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .two-col > tbody > tr > td {
+            width: 50%;
+            vertical-align: top;
+            padding: 5mm;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(30, 41, 59, 0.5);
+        }
+        .info-table td {
+            border: 1px solid #334155;
+            padding: 4mm;
+            text-align: center;
+        }
+        .label { font-size: 3mm; color: #64748b; }
+        .value { font-size: 4mm; color: white; margin-top: 1mm; }
+
+        .qr-section {
+            text-align: center;
+            padding: 5mm;
+            background: rgba(30, 41, 59, 0.3);
+            border: 1px solid #334155;
+        }
+        .qr-box {
+            background: white;
+            padding: 3mm;
+            display: inline-block;
+            margin-bottom: 3mm;
+        }
+        .footer {
+            position: absolute;
+            bottom: 3mm;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 2.5mm;
+            color: #475569;
+        }
+    </style>
+</head>
+<body>
+    <div style="text-align:center;padding:6px;background:#16a34a;color:white;font-size:11px;font-weight:bold;">
+        V3 - Minimal Landscape - PDF Uyumlu
+    </div>
+
+    <div class="page">
+        <div class="border-box">
+
+            <!-- Yeşil Header -->
+            <div class="header-bar">
+                <table class="header-table">
+                    <tr>
+                        <td>
+                            <div style="font-size:6mm;font-weight:bold;color:white;">Doğrulanmış Sertifika</div>
+                            <div style="font-size:3mm;color:rgba(255,255,255,0.8);">QR kod ile resmi belge doğrulaması yapıldı</div>
+                        </td>
+                        <td style="text-align:right;">
+                            <div style="background:rgba(255,255,255,0.2);padding:2mm 4mm;display:inline-block;">
+                                <span style="color:white;font-size:3.5mm;">GÜVENLİ</span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- İçerik -->
+            <div class="content">
+                <div class="center">
+                    <div class="title white">Üyelik Sertifikası</div>
+                    <div style="font-size:3.5mm;color:#94a3b8;">Muzibu Kurumsal Premium Üyelik</div>
+                    <div class="member white mono">iXtif İç ve Dış Tic. A.Ş.</div>
+                </div>
+
+                <table class="two-col">
+                    <tr>
+                        <!-- Sol: Bilgiler -->
+                        <td>
+                            <table class="info-table">
+                                <tr>
+                                    <td style="width:50%;">
+                                        <div class="label">SERTİFİKA NO</div>
+                                        <div class="value gold mono">MZB-2025-51A5</div>
+                                    </td>
+                                    <td style="width:50%;">
+                                        <div class="label">ÜYELİK TARİHİ</div>
+                                        <div class="value">23.12.2025</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="label">VERGİ DAİRESİ</div>
+                                        <div class="value mono">Kartal</div>
+                                    </td>
+                                    <td>
+                                        <div class="label">VERGİ NO</div>
+                                        <div class="value mono">4831552951</div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div style="background:rgba(30,41,59,0.3);border:1px solid #334155;padding:4mm;margin-top:4mm;">
+                                <div class="label">KAYITLI ADRES</div>
+                                <div style="font-size:3mm;color:#cbd5e1;margin-top:2mm;">
+                                    Karlıktepe Mah. Çamlık Sk. Manzara Adalar B Blok No: 1 B İç Kapı No: 89 Kartal/İstanbul
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Sağ: QR + İmza -->
+                        <td>
+                            <div class="qr-section">
+                                <div class="qr-box">
+                                    <div style="width:30mm;height:30mm;background:#f1f5f9;border:1px dashed #94a3b8;line-height:30mm;font-size:3mm;color:#64748b;">QR KOD</div>
+                                </div>
+                                <div style="font-size:3mm;color:#64748b;">QR kod ile doğrulayın</div>
+                            </div>
+
+                            <div style="background:rgba(30,58,138,0.2);border:1px solid #1e40af;padding:4mm;margin-top:4mm;">
+                                <div style="color:#60a5fa;font-size:4mm;font-weight:bold;">Benzersiz Dijital İmza</div>
+                                <div style="color:#64748b;font-size:3mm;">Bu belge şifrelenmiş ve değiştirilemez · 256-bit</div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="footer">
+                Bu belge Muzibu A.Ş. tarafından elektronik ortamda düzenlenmiştir. · <span class="gold">muzibu.com.tr</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

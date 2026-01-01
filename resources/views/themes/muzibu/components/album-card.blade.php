@@ -6,8 +6,7 @@
 ])
 
 @php
-    $cover = $album->coverMedia ?? null;
-    $coverUrl = $cover ? thumb($cover, 300, 300) : '/images/default-album.png';
+    $coverUrl = $album->getCoverUrl(300, 300) ?? '/images/default-album.png';
     $artistName = $album->artist->title ?? __('muzibu::front.dashboard.unknown_artist');
     $albumUrl = '/albums/' . ($album->slug ?? $album->album_id);
     $songsCount = $album->songs_count ?? $album->songs()->where('is_active', 1)->count();

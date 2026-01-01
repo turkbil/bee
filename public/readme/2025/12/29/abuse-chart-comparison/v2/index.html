@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abuse Timeline - Zaman Bazlı Görünüm v2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- vis-timeline -->
+    <script src="https://unpkg.com/vis-timeline@7.7.3/standalone/umd/vis-timeline-graph2d.min.js"></script>
+    <link href="https://unpkg.com/vis-timeline@7.7.3/styles/vis-timeline-graph2d.min.css" rel="stylesheet">
+
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .chart-card { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(71, 85, 105, 0.5); }
+
+        /* vis-timeline dark theme */
+        .vis-timeline { border: none !important; background: transparent !important; }
+        .vis-item {
+            background: #3b82f6;
+            border-color: #60a5fa;
+            color: white;
+            border-radius: 4px;
+            font-size: 10px;
+            min-height: 24px;
+        }
+        .vis-item.mobile { background: #10b981; border-color: #34d399; }
+        .vis-item.overlap {
+            background: #ef4444 !important;
+            border-color: #f87171 !important;
+            z-index: 100 !important;
+        }
+        .vis-item.vis-selected { box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
+        .vis-label { color: #94a3b8 !important; }
+        .vis-labelset .vis-label {
+            background: rgba(15, 23, 42, 0.9) !important;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3) !important;
+        }
+        .vis-time-axis .vis-text { color: #64748b !important; fill: #64748b !important; }
+        .vis-time-axis .vis-grid.vis-minor { border-color: rgba(71, 85, 105, 0.2) !important; }
+        .vis-time-axis .vis-grid.vis-major { border-color: rgba(71, 85, 105, 0.4) !important; }
+        .vis-panel.vis-background { background: rgba(15, 23, 42, 0.5) !important; }
+        .vis-panel.vis-center { border-color: rgba(71, 85, 105, 0.3) !important; }
+        .vis-panel.vis-left {
+            background: rgba(15, 23, 42, 0.9) !important;
+            border-right: 1px solid rgba(71, 85, 105, 0.3) !important;
+            min-width: 120px !important;
+        }
+        .vis-foreground .vis-group { border-bottom: 1px solid rgba(71, 85, 105, 0.2) !important; }
+
+        .stat-box { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(71, 85, 105, 0.4); }
+
+        .legend-item { display: inline-flex; align-items: center; gap: 6px; margin-right: 16px; }
+        .legend-color { width: 16px; height: 16px; border-radius: 3px; }
+    </style>
+</head>
+<body class="min-h-screen text-white p-6">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-bold mb-2">
+                <i class="fas fa-clock text-blue-400 mr-2"></i>
+                Abuse Timeline - Zaman Bazlı
+            </h1>
+            <p class="text-slate-400">Saat ekseninde dinleme süreleri ve çakışmalar</p>
+        </div>
+
+        <!-- Doğru Mantık Açıklaması -->
+        <div class="chart-card rounded-lg p-4 mb-6 border-l-4 border-blue-500">
+            <h3 class="text-lg font-semibold text-blue-400 mb-3">
+                <i class="fas fa-info-circle mr-2"></i>Doğru Görünüm Mantığı
+            </h3>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <p class="text-slate-300 mb-2"><strong>X Ekseni:</strong> Saat (10:00, 10:30, 11:00...)</p>
+                    <p class="text-slate-300 mb-2"><strong>Y Ekseni:</strong> Cihaz/Browser grupları</p>
+                    <p class="text-slate-300"><strong>Her Bar:</strong> Bir şarkı, kendi süresi kadar yer kaplar</p>
+                </div>
+                <div>
+                    <p class="text-red-400 mb-2"><strong>ÇAKIŞMA =</strong> Aynı zaman diliminde 2+ şarkı</p>
+                    <p class="text-slate-400 text-xs">Kullanıcı aynı anda birden fazla şarkı dinliyorsa = ABUSE</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real Data Info -->
+        <div class="chart-card rounded-lg p-4 mb-6">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-lg font-semibold mb-1">
+                        <i class="fas fa-database text-blue-400 mr-2"></i>Türk Bilişim - Rapor #3
+                    </h3>
+                    <p class="text-slate-400 text-sm">22 Aralık 2025</p>
+                </div>
+                <div class="flex gap-4 text-center">
+                    <div class="stat-box rounded-lg px-4 py-2">
+                        <div class="text-2xl font-bold text-white">76</div>
+                        <div class="text-xs text-slate-500">Play</div>
+                    </div>
+                    <div class="stat-box rounded-lg px-4 py-2">
+                        <div class="text-2xl font-bold text-red-400">193</div>
+                        <div class="text-xs text-slate-500">Çakışma</div>
+                    </div>
+                    <div class="stat-box rounded-lg px-4 py-2">
+                        <div class="text-2xl font-bold text-orange-400">305dk</div>
+                        <div class="text-xs text-slate-500">Abuse</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="mb-4 text-sm">
+            <span class="legend-item"><span class="legend-color bg-blue-500"></span> Desktop</span>
+            <span class="legend-item"><span class="legend-color bg-green-500"></span> Mobile</span>
+            <span class="legend-item"><span class="legend-color bg-red-500"></span> Çakışma (Overlap)</span>
+        </div>
+
+        <!-- vis-timeline -->
+        <div class="chart-card rounded-lg p-4 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-purple-400">
+                    <i class="fas fa-stream mr-2"></i>vis-timeline
+                    <span class="ml-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">EN UYGUN</span>
+                </h3>
+                <div class="text-xs text-slate-500">
+                    <i class="fas fa-mouse mr-1"></i>Zoom: Scroll | Pan: Drag
+                </div>
+            </div>
+            <div id="visTimeline" style="min-height: 400px;"></div>
+        </div>
+
+        <!-- ApexCharts Timeline -->
+        <div class="chart-card rounded-lg p-4 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-blue-400">
+                    <i class="fas fa-chart-bar mr-2"></i>ApexCharts Timeline
+                </h3>
+            </div>
+            <div id="apexTimeline" style="min-height: 350px;"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-8 text-slate-500 text-sm">
+            <p>Claude AI - Abuse Detection Timeline v2</p>
+            <p>29 Aralık 2025</p>
+        </div>
+    </div>
+
+    <script>
+    // GERÇEK VERİ - Türk Bilişim Raporu #3
+    const realData = {
+        "items": [
+            {"id":311,"group":"desktop","browser":"chrome","content":"Death Of A Bachelor","start":"2025-12-22 10:56:58","end":"2025-12-22 10:59:05","className":"desktop"},
+            {"id":312,"group":"desktop","browser":"chrome","content":"Test Upload","start":"2025-12-22 13:03:08","end":"2025-12-22 13:06:03","className":"desktop overlap"},
+            {"id":313,"group":"desktop","browser":"chrome","content":"Every Step","start":"2025-12-22 13:04:32","end":"2025-12-22 13:07:56","className":"desktop overlap"},
+            {"id":314,"group":"desktop","browser":"chrome","content":"Dancin","start":"2025-12-22 13:40:00","end":"2025-12-22 13:43:36","className":"desktop overlap"},
+            {"id":315,"group":"desktop","browser":"chrome","content":"Cold Love","start":"2025-12-22 13:40:12","end":"2025-12-22 13:42:15","className":"desktop overlap"},
+            {"id":316,"group":"desktop","browser":"chrome","content":"Bulk Upload Test 3","start":"2025-12-22 13:40:50","end":"2025-12-22 13:43:45","className":"desktop overlap"},
+            {"id":317,"group":"desktop","browser":"chrome","content":"Cupid","start":"2025-12-22 13:40:59","end":"2025-12-22 13:43:36","className":"desktop overlap"},
+            {"id":318,"group":"desktop","browser":"chrome","content":"Devil In Your Eyes","start":"2025-12-22 13:42:04","end":"2025-12-22 13:44:07","className":"desktop overlap"},
+            {"id":319,"group":"desktop","browser":"chrome","content":"Don't You Worry","start":"2025-12-22 13:48:18","end":"2025-12-22 13:51:28","className":"desktop overlap"},
+            {"id":320,"group":"desktop","browser":"chrome","content":"DAYDREAMING","start":"2025-12-22 13:49:42","end":"2025-12-22 13:52:10","className":"desktop overlap"},
+            {"id":321,"group":"desktop","browser":"chrome","content":"Cold Love","start":"2025-12-22 13:50:40","end":"2025-12-22 13:52:43","className":"desktop overlap"},
+            {"id":322,"group":"desktop","browser":"chrome","content":"Dancin","start":"2025-12-22 14:45:26","end":"2025-12-22 14:49:02","className":"desktop overlap"},
+            {"id":323,"group":"desktop","browser":"chrome","content":"Enchanted Forest","start":"2025-12-22 14:45:43","end":"2025-12-22 14:48:36","className":"desktop overlap"},
+            {"id":324,"group":"desktop","browser":"chrome","content":"Every Step","start":"2025-12-22 14:46:17","end":"2025-12-22 14:49:41","className":"desktop overlap"},
+            {"id":325,"group":"desktop","browser":"chrome","content":"Don't You Worry","start":"2025-12-22 14:46:40","end":"2025-12-22 14:49:50","className":"desktop overlap"},
+            {"id":326,"group":"desktop","browser":"chrome","content":"Dancin","start":"2025-12-22 14:58:36","end":"2025-12-22 15:02:12","className":"desktop overlap"},
+            {"id":327,"group":"desktop","browser":"chrome","content":"En Su Lugar","start":"2025-12-22 14:58:57","end":"2025-12-22 15:01:35","className":"desktop overlap"},
+            {"id":328,"group":"desktop","browser":"chrome","content":"Enchanted Forest","start":"2025-12-22 14:59:42","end":"2025-12-22 15:02:35","className":"desktop overlap"},
+            {"id":329,"group":"desktop","browser":"chrome","content":"Devil In Your Eyes","start":"2025-12-22 14:59:50","end":"2025-12-22 15:01:53","className":"desktop overlap"},
+            {"id":330,"group":"desktop","browser":"chrome","content":"En Su Lugar","start":"2025-12-22 17:03:36","end":"2025-12-22 17:06:14","className":"desktop"},
+            // Mobile örnekleri
+            {"id":350,"group":"mobile","browser":"safari","content":"Cupid","start":"2025-12-22 13:41:00","end":"2025-12-22 13:43:30","className":"mobile overlap"},
+            {"id":351,"group":"mobile","browser":"safari","content":"Cold Love","start":"2025-12-22 14:46:00","end":"2025-12-22 14:48:30","className":"mobile overlap"},
+            {"id":352,"group":"mobile","browser":"chrome","content":"Dancin","start":"2025-12-22 14:59:00","end":"2025-12-22 15:02:00","className":"mobile overlap"}
+        ]
+    };
+
+    // Helper: Parse date string
+    function parseDate(str) {
+        if (!str) return new Date();
+        return new Date(str.replace(' ', 'T') + '+03:00');
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // 1. vis-timeline - Zaman bazlı, cihaz gruplu
+    // ═══════════════════════════════════════════════════════════
+    const visContainer = document.getElementById('visTimeline');
+
+    // Gruplar: Desktop ve Mobile
+    const visGroups = new vis.DataSet([
+        {
+            id: 'desktop',
+            content: `<div style="padding: 8px; text-align: left;">
+                <i class="fas fa-desktop" style="color: #60a5fa; margin-right: 6px;"></i>
+                <strong>Desktop</strong>
+                <div style="font-size: 10px; color: #64748b;">Chrome</div>
+            </div>`,
+            style: 'min-height: 80px;'
+        },
+        {
+            id: 'mobile',
+            content: `<div style="padding: 8px; text-align: left;">
+                <i class="fas fa-mobile-alt" style="color: #34d399; margin-right: 6px;"></i>
+                <strong>Mobile</strong>
+                <div style="font-size: 10px; color: #64748b;">Safari/Chrome</div>
+            </div>`,
+            style: 'min-height: 80px;'
+        }
+    ]);
+
+    // Items: Her şarkı bir bar
+    const visItems = new vis.DataSet(realData.items.map(item => {
+        const isOverlap = item.className.includes('overlap');
+        const startTime = item.start.split(' ')[1];
+        const endTime = item.end.split(' ')[1];
+
+        return {
+            id: item.id,
+            group: item.group,
+            content: item.content.substring(0, 12),
+            start: parseDate(item.start),
+            end: parseDate(item.end),
+            className: item.className,
+            title: `<div style="padding: 10px; background: #1e293b; border: 1px solid #334155; border-radius: 6px; min-width: 180px;">
+                <div style="font-weight: bold; color: #e2e8f0; margin-bottom: 4px;">${item.content}</div>
+                <div style="color: #94a3b8; font-size: 12px;">
+                    <i class="fas fa-clock" style="margin-right: 4px;"></i>${startTime} - ${endTime}
+                </div>
+                <div style="color: #64748b; font-size: 11px; margin-top: 4px;">
+                    <i class="fas fa-${item.group === 'mobile' ? 'mobile-alt' : 'desktop'}" style="margin-right: 4px;"></i>
+                    ${item.group} / ${item.browser}
+                </div>
+                ${isOverlap ? '<div style="color: #ef4444; font-weight: bold; margin-top: 6px;"><i class="fas fa-exclamation-triangle" style="margin-right: 4px;"></i>ÇAKIŞMA!</div>' : ''}
+            </div>`
+        };
+    }));
+
+    const visOptions = {
+        stack: true,  // Çakışanları üst üste yığ
+        stackSubgroups: true,
+        showMajorLabels: true,
+        showMinorLabels: true,
+        zoomMin: 1000 * 60 * 5,      // Min 5 dakika
+        zoomMax: 1000 * 60 * 60 * 10, // Max 10 saat
+        orientation: 'top',
+        margin: { item: { horizontal: 0, vertical: 3 } },
+        tooltip: { followMouse: true, overflowMethod: 'cap' },
+        // Başlangıç görünümü: 13:30 - 15:30 arası (en yoğun çakışma bölgesi)
+        start: parseDate('2025-12-22 13:30:00'),
+        end: parseDate('2025-12-22 15:30:00')
+    };
+
+    new vis.Timeline(visContainer, visItems, visGroups, visOptions);
+
+    // ═══════════════════════════════════════════════════════════
+    // 2. ApexCharts - Timeline görünümü
+    // ═══════════════════════════════════════════════════════════
+
+    // Verileri cihaza göre grupla
+    const desktopData = realData.items
+        .filter(item => item.group === 'desktop')
+        .map(item => ({
+            x: item.content.substring(0, 15),
+            y: [parseDate(item.start).getTime(), parseDate(item.end).getTime()],
+            fillColor: item.className.includes('overlap') ? '#ef4444' : '#3b82f6'
+        }));
+
+    const mobileData = realData.items
+        .filter(item => item.group === 'mobile')
+        .map(item => ({
+            x: item.content.substring(0, 15),
+            y: [parseDate(item.start).getTime(), parseDate(item.end).getTime()],
+            fillColor: item.className.includes('overlap') ? '#ef4444' : '#10b981'
+        }));
+
+    const apexOptions = {
+        series: [
+            { name: 'Desktop', data: desktopData },
+            { name: 'Mobile', data: mobileData }
+        ],
+        chart: {
+            type: 'rangeBar',
+            height: 350,
+            background: 'transparent',
+            toolbar: { show: true },
+            zoom: { enabled: true }
+        },
+        plotOptions: {
+            bar: {
+                horizontal: true,
+                barHeight: '60%',
+                rangeBarGroupRows: true
+            }
+        },
+        colors: ['#3b82f6', '#10b981'],
+        xaxis: {
+            type: 'datetime',
+            labels: {
+                style: { colors: '#94a3b8' },
+                datetimeFormatter: {
+                    hour: 'HH:mm',
+                    minute: 'HH:mm'
+                }
+            },
+            min: parseDate('2025-12-22 10:00:00').getTime(),
+            max: parseDate('2025-12-22 18:00:00').getTime()
+        },
+        yaxis: {
+            labels: {
+                style: { colors: '#94a3b8', fontSize: '10px' },
+                maxWidth: 120
+            }
+        },
+        tooltip: {
+            theme: 'dark',
+            custom: function({ seriesIndex, dataPointIndex, w }) {
+                const data = w.config.series[seriesIndex].data[dataPointIndex];
+                const start = new Date(data.y[0]).toLocaleTimeString('tr-TR', {hour: '2-digit', minute: '2-digit'});
+                const end = new Date(data.y[1]).toLocaleTimeString('tr-TR', {hour: '2-digit', minute: '2-digit'});
+                const isOverlap = data.fillColor === '#ef4444';
+                return `<div style="padding: 10px;">
+                    <strong>${data.x}</strong><br>
+                    <span style="color: #94a3b8;">${start} - ${end}</span><br>
+                    ${isOverlap ? '<span style="color: #ef4444;">ÇAKIŞMA!</span>' : ''}
+                </div>`;
+            }
+        },
+        grid: {
+            borderColor: 'rgba(71, 85, 105, 0.3)',
+            xaxis: { lines: { show: true } }
+        },
+        legend: {
+            show: true,
+            position: 'top',
+            labels: { colors: '#94a3b8' }
+        },
+        theme: { mode: 'dark' }
+    };
+
+    new ApexCharts(document.querySelector("#apexTimeline"), apexOptions).render();
+    </script>
+</body>
+</html>

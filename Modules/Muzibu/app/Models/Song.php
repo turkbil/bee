@@ -93,6 +93,18 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
+     * Spatie Media Collections - hero ve audio tek dosya (yeni yüklenince eski silinir)
+     */
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('hero')
+            ->singleFile();
+
+        $this->addMediaCollection('audio')
+            ->singleFile();
+    }
+
+    /**
      * Öne çıkan şarkıları getir
      */
     public function scopeFeatured($query)
@@ -173,18 +185,19 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
 
     /**
      * Song cover URL'i (Thumbmaker helper ile)
-     * Önce kendi media_id'sine bakar, yoksa albümün media_id'sini kullanır
+     * Önce kendi hero'su, yoksa albümün hero'su
      */
     public function getCoverUrl(?int $width = 600, ?int $height = 600, int $quality = 90): ?string
     {
-        // Önce kendi görseli var mı kontrol et
-        if ($this->media_id && $this->coverMedia) {
-            return thumb($this->coverMedia, $width, $height, ['quality' => $quality]);
+        // 1. Önce kendi Spatie hero collection kontrol et
+        $heroMedia = $this->getFirstMedia('hero');
+        if ($heroMedia) {
+            return thumb($heroMedia, $width, $height, ['quality' => $quality, 'scale' => 1]);
         }
 
-        // Yoksa albümün görselini kullan
-        if ($this->album && $this->album->media_id && $this->album->coverMedia) {
-            return thumb($this->album->coverMedia, $width, $height, ['quality' => $quality]);
+        // 2. Yoksa albümün görselini kullan (albüm de hero kullanıyor)
+        if ($this->album) {
+            return $this->album->getCoverUrl($width, $height, $quality);
         }
 
         return null;

@@ -121,7 +121,7 @@ module.exports = {
         'bg-muzibu-coral/10', 'bg-muzibu-coral/20',
         'hover:bg-muzibu-coral', 'hover:text-muzibu-coral',
         'ring-muzibu-coral', 'ring-2',
-        'from-muzibu-coral', 'to-pink-500', 'to-pink-600', 'to-orange-600', 'to-purple-600',
+        'from-muzibu-coral', 'from-muzibu-coral/40', 'via-muzibu-coral/20', 'to-pink-500', 'to-pink-600', 'to-orange-600', 'to-purple-600',
         'to-[#ff9966]', 'from-[#ff9966]', 'hover:from-[#ff9966]', 'hover:to-muzibu-coral',
         'border-muzibu-coral/60', 'hover:border-muzibu-coral',
         'shadow-lg', 'shadow-muzibu-coral/30', 'shadow-pink-500/30',

@@ -4,8 +4,8 @@
 <div class="px-4 py-6 sm:px-6 sm:py-8">
     {{-- Sector Header - Responsive --}}
     <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6 mb-6 sm:mb-8">
-        @if($sector->media_id && $sector->iconMedia)
-            <img src="{{ thumb($sector->iconMedia, 300, 300, ['scale' => 1]) }}"
+        @if($sector->getCoverUrl())
+            <img src="{{ $sector->getCoverUrl(300, 300) }}"
                  alt="{{ $sector->getTranslation('title', app()->getLocale()) }}"
                  class="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 object-cover rounded-lg shadow-2xl flex-shrink-0">
         @else

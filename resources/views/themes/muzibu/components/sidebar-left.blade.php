@@ -63,6 +63,38 @@
         </div>
     </div>
 
+    {{-- Reklamlar Toggle - Sadece kurumsal kullanıcılar --}}
+    {{-- @if(auth()->check() && auth()->user()->corporate_account_id) --}}
+    <div x-data="{
+            spotEnabled: localStorage.getItem('muzibu_ads_enabled') !== 'false',
+            toggle() {
+                this.spotEnabled = !this.spotEnabled;
+                localStorage.setItem('muzibu_ads_enabled', this.spotEnabled);
+            }
+         }"
+         class="flex-shrink-0 px-3 pb-2">
+        <div class="flex items-center justify-between py-1.5 px-2.5 bg-white/5 rounded-lg">
+            <div class="flex items-center gap-2">
+                <i class="fas text-[10px] text-white/40" :class="spotEnabled ? 'fa-bullhorn' : 'fa-ban'"></i>
+                <span class="text-xs text-white/40">{{ trans('muzibu::front.sidebar.ads') }}</span>
+            </div>
+            <button
+                @click="toggle()"
+                type="button"
+                class="w-7 h-4 rounded-full transition-colors flex-shrink-0"
+                :class="spotEnabled ? 'bg-white/25' : 'bg-white/10'"
+                style="padding: 2px;"
+            >
+                <div
+                    class="w-3 h-3 rounded-full transition-transform"
+                    :class="spotEnabled ? 'bg-white/70' : 'bg-white/40'"
+                    :style="spotEnabled ? 'transform: translateX(12px)' : ''"
+                ></div>
+            </button>
+        </div>
+    </div>
+    {{-- @endif --}}
+
     {{-- ============================================== --}}
     {{-- DESKTOP User Profile Card - Bottom (Style C) --}}
     {{-- ============================================== --}}

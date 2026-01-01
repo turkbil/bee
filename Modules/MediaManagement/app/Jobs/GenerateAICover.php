@@ -133,23 +133,22 @@ class GenerateAICover implements ShouldQueue
                 ],
             ]);
 
-            // Görseli URL'den ekle
+            // Görseli doğrudan model'in hero koleksiyonuna ekle
             $spatieMedia = null;
             if (!empty($imageData['url'])) {
-                $spatieMedia = $mediaItem->addMediaFromUrl($imageData['url'])
-                    ->toMediaCollection('library');
-            }
+                // Önce mevcut hero görseli varsa sil (tek görsel olsun)
+                $model->clearMediaCollection('hero');
 
-            // Model'e media_id ata (Spatie Media ID - foreign key constraint için)
-            // CRITICAL: update() yerine DB::table kullan - Observer/validation tetiklenmez!
-            if ($spatieMedia) {
-                $primaryKey = $model->getKeyName();
-                $tableName = $model->getTable();
-
-                \DB::table($tableName)->where($primaryKey, $model->{$primaryKey})->update([
-                    'media_id' => $spatieMedia->id,
-                    'updated_at' => now(),
-                ]);
+                // Yeni görseli hero koleksiyonuna ekle
+                $spatieMedia = $model->addMediaFromUrl($imageData['url'])
+                    ->usingFileName('ai-cover-' . time() . '.jpg')
+                    ->withCustomProperties([
+                        'ai_generated' => true,
+                        'generation_id' => $imageData['generation_id'] ?? null,
+                        'prompt' => $enhancedPrompt,
+                        'media_library_item_id' => $mediaItem->id,
+                    ])
+                    ->toMediaCollection('hero');
             }
 
             // AI kredi düş

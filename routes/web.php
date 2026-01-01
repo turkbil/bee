@@ -19,8 +19,8 @@ Route::get('/api/csrf-token', function () {
 })->middleware('web');
 
 // 📱 UNIVERSAL QR GENERATOR
-// /qr/herhangi/path → herhangi/path için QR üretir
-Route::get('/qr/{path}', [QrController::class, 'generate'])
+// /qr/ → homepage QR, /qr/herhangi/path → herhangi/path için QR üretir
+Route::get('/qr/{path?}', [QrController::class, 'generate'])
     ->where('path', '.*')
     ->name('qr.generate');
 
@@ -151,7 +151,10 @@ $muzibuDomains = \Illuminate\Support\Facades\DB::table('domains')
     ->toArray();
 
 foreach ($muzibuDomains as $index => $domain) {
-    Route::middleware([\Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class])
+    Route::middleware([
+        \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class,
+        'site', // Response cache, locale, SEO middleware'leri
+    ])
         ->domain($domain)
         ->name($index === 0 ? '' : "d{$index}.")
         ->group(module_path('Muzibu', 'routes/web.php'));

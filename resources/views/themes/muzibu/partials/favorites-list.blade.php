@@ -52,8 +52,8 @@
                                class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
                                 <div class="relative mb-3">
                                     <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
-                                        @if($item->album && $item->album->media_id && $item->album->coverMedia)
-                                            <img src="{{ thumb($item->album->coverMedia, 200, 200, ['scale' => 1]) }}"
+                                        @if($item->album && $item->album->getCoverUrl())
+                                            <img src="{{ $item->album->getCoverUrl(200, 200) }}"
                                                  alt="{{ $item->getTranslation('title', app()->getLocale()) }}"
                                                  class="w-full h-full object-cover"
                                                  loading="lazy">
@@ -89,8 +89,8 @@
                                class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
                                 <div class="relative mb-3">
                                     <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
-                                        @if($item->media_id && $item->coverMedia)
-                                            <img src="{{ thumb($item->coverMedia, 200, 200, ['scale' => 1]) }}"
+                                        @if($item->getCoverUrl())
+                                            <img src="{{ $item->getCoverUrl(200, 200) }}"
                                                  alt="{{ $item->getTranslation('title', app()->getLocale()) }}"
                                                  class="w-full h-full object-cover"
                                                  loading="lazy">
@@ -126,8 +126,8 @@
                                class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
                                 <div class="relative mb-3">
                                     <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
-                                        @if($item->media_id && $item->coverMedia)
-                                            <img src="{{ thumb($item->coverMedia, 200, 200, ['scale' => 1]) }}"
+                                        @if($item->getCoverUrl())
+                                            <img src="{{ $item->getCoverUrl(200, 200) }}"
                                                  alt="{{ $item->getTranslation('title', app()->getLocale()) }}"
                                                  class="w-full h-full object-cover"
                                                  loading="lazy">

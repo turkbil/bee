@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunucuyu Tasirken Yapilacaklar - Tuufi Multi-Tenant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .checkbox-item:has(input:checked) { background: rgba(34, 197, 94, 0.1); border-color: rgb(34, 197, 94); }
+        .checkbox-item:has(input:checked) .check-text { text-decoration: line-through; opacity: 0.7; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="max-w-5xl mx-auto p-6">
+
+        <!-- Header -->
+        <header class="mb-8 border-b border-slate-700 pb-6">
+            <div class="flex items-center gap-3 mb-2">
+                <span class="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">CHECKLIST</span>
+                <span class="text-slate-400 text-sm">1 Ocak 2026</span>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">Sunucuyu Tasirken Yapilacaklar</h1>
+            <p class="text-slate-400">Tuufi Multi-Tenant Sistemi - Eksiksiz Tasima Rehberi</p>
+            <p class="text-slate-500 text-sm mt-2">Laravel 11 + Stancl Tenancy + Horizon + Redis + Leonardo AI + OpenAI</p>
+        </header>
+
+        <!-- Basit Anlatim -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-green-400 mb-3">Basit Anlatim (Herkes Icin)</h3>
+            <p class="text-slate-300">
+                Bu liste, sistemi baska bir sunucuya tasirken unutulmamasi gereken tum adimlari icerir.
+                Her maddeyi tamamladiginizda isaretleyin. Eksik kalan bir sey olmasin!
+            </p>
+        </div>
+
+        <!-- 1. SISTEM GEREKSINIMLERI -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                <span class="bg-blue-600 text-white text-sm px-2 py-1 rounded">1</span>
+                Sistem Gereksinimleri
+            </h2>
+            <div class="space-y-2">
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">PHP 8.2+ (opcache, redis, gd, imagick, ffmpeg extension)</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">MariaDB 10.6+ veya MySQL 8.0+</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">Redis Server (queue, cache, session icin)</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">FFmpeg + FFprobe (HLS conversion icin)</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">Node.js 18+ ve NPM (asset build icin)</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">Composer 2.x</span>
+                </label>
+            </div>
+        </section>
+
+        <!-- 2. DOSYA TASIMA -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+                <span class="bg-purple-600 text-white text-sm px-2 py-1 rounded">2</span>
+                Dosya Tasima
+            </h2>
+            <div class="space-y-2">
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">Tum proje dosyalari (git clone veya rsync)</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text"><strong class="text-red-400">KRITIK:</strong> storage/ klasoru (medya dosyalari, logs)</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text"><strong class="text-red-400">KRITIK:</strong> storage/tenantX/ klasorleri (tenant medyalari)</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">.env dosyasi (YENİ SUNUCUYA GORE DUZENLE!)</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">public/storage symlink olustur: php artisan storage:link</span>
+                </label>
+            </div>
+        </section>
+
+        <!-- 3. DATABASE -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-yellow-400 mb-4 flex items-center gap-2">
+                <span class="bg-yellow-600 text-white text-sm px-2 py-1 rounded">3</span>
+                Database Tasima
+            </h2>
+            <div class="space-y-2">
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text"><strong>tuufi_4ekim</strong> - Central database (users, tenants, roles)</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text"><strong>tenant_ixtif</strong> - Tenant 2 database</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text"><strong>tenant_muzibu_1528d0</strong> - Tenant 1001 database</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">.env'de DB_DATABASE, DB_USERNAME, DB_PASSWORD guncelle</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">Tenant DB bilgileri tenants tablosunda dogru mu kontrol et</span>
+                </label>
+            </div>
+        </section>
+
+        <!-- 4. SYSTEMD SERVISLER -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                <span class="bg-red-600 text-white text-sm px-2 py-1 rounded">4</span>
+                Systemd Servisler (KRITIK!)
+            </h2>
+            <div class="bg-red-900/20 border border-red-800 rounded-lg p-4 mb-4">
+                <p class="text-red-300 text-sm">Bu servisler sunucu restart olunca otomatik baslamali. Yoksa queue'lar calismaz!</p>
+            </div>
+            <div class="space-y-2">
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text"><strong>horizon.service</strong> - Laravel Horizon (Queue Manager)</span>
+                </label>
+            </div>
+
+            <div class="bg-slate-800 rounded-lg p-4 mt-4">
+                <p class="text-slate-400 text-sm mb-2">Horizon Service Dosyasi: <code class="text-blue-400">/etc/systemd/system/horizon.service</code></p>
+                <pre class="text-xs text-green-400 overflow-x-auto"><code>[Unit]
+Description=Laravel Horizon Queue Manager
+After=redis.service network.target
+
+[Service]
+Type=simple
+User=WEB_USER
+Group=WEB_GROUP
+WorkingDirectory=/path/to/project
+ExecStart=/usr/bin/php artisan horizon
+ExecStop=/usr/bin/php artisan horizon:terminate
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+                <p class="text-slate-400 text-sm mt-2">Komutlar:</p>
+                <pre class="text-xs text-yellow-400"><code>sudo systemctl daemon-reload
+sudo systemctl enable horizon
+sudo systemctl start horizon</code></pre>
+            </div>
+        </section>
+
+        <!-- 5. CRON / SCHEDULER -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-orange-400 mb-4 flex items-center gap-2">
+                <span class="bg-orange-600 text-white text-sm px-2 py-1 rounded">5</span>
+                Cron / Laravel Scheduler
+            </h2>
+            <div class="space-y-2">
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">Laravel Scheduler cron ekle (crontab -e)</span>
+                </label>
+            </div>
+            <div class="bg-slate-800 rounded-lg p-4 mt-4">
+                <pre class="text-xs text-green-400"><code>* * * * * cd /path/to/project && php artisan schedule:run >> /dev/null 2>&1</code></pre>
+            </div>
+        </section>
+
+        <!-- 6. API KEYS & EXTERNAL SERVICES -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-cyan-400 mb-4 flex items-center gap-2">
+                <span class="bg-cyan-600 text-white text-sm px-2 py-1 rounded">6</span>
+                API Keys & Dis Servisler
+            </h2>
+            <div class="space-y-2">
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text"><strong>Leonardo AI</strong> - LEONARDO_API_KEY (gorsel uretimi)</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text"><strong>OpenAI</strong> - OPENAI_API_KEY (prompt enhancement)</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text"><strong>Mail</strong> - SMTP ayarlari (MAIL_HOST, MAIL_USERNAME, vs.)</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text"><strong>PayTR</strong> - Odeme entegrasyonu (varsa)</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text"><strong>Redis</strong> - REDIS_HOST, REDIS_PASSWORD</span>
+                </label>
+            </div>
+        </section>
+
+        <!-- 7. DOMAIN & SSL -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-pink-400 mb-4 flex items-center gap-2">
+                <span class="bg-pink-600 text-white text-sm px-2 py-1 rounded">7</span>
+                Domain & SSL
+            </h2>
+            <div class="space-y-2">
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text"><strong>tuufi.com</strong> - Ana domain DNS guncelle</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text"><strong>ixtif.com</strong> - Tenant 2 DNS guncelle</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text"><strong>muzibu.com.tr</strong> - Tenant 1001 DNS guncelle</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">SSL sertifikalari (Let's Encrypt veya manuel)</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">Nginx/Apache vhost konfigurasyonlari</span>
+                </label>
+            </div>
+        </section>
+
+        <!-- 8. TASIMA SONRASI -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-emerald-400 mb-4 flex items-center gap-2">
+                <span class="bg-emerald-600 text-white text-sm px-2 py-1 rounded">8</span>
+                Tasima Sonrasi Kontroller
+            </h2>
+            <div class="space-y-2">
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">composer install --no-dev --optimize-autoloader</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">npm install && npm run prod</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">php artisan config:cache</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">php artisan route:cache</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">php artisan view:cache</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">php artisan storage:link</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">Dosya izinleri: chown -R webuser:webgroup storage bootstrap/cache</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">chmod -R 775 storage bootstrap/cache</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">php artisan horizon:status (Horizon calisiyor mu?)</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">redis-cli ping (Redis calisiyor mu?)</span>
+                </label>
+            </div>
+        </section>
+
+        <!-- 9. TEST -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-violet-400 mb-4 flex items-center gap-2">
+                <span class="bg-violet-600 text-white text-sm px-2 py-1 rounded">9</span>
+                Fonksiyonel Testler
+            </h2>
+            <div class="space-y-2">
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">Ana sayfa yukluyor mu?</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">Admin panele giris yapilabiliyor mu?</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">Tenant siteleri aciliyor mu? (ixtif.com, muzibu.com.tr)</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">Muzik player calisiyor mu? (Muzibu)</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">Gorsel yukleme calisiyor mu?</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">AI gorsel uretimi calisiyor mu?</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">Mail gonderimi calisiyor mu?</span>
+                </label>
+                <label class="checkbox-item flex items-center gap-3 p-3 bg-slate-800/50 rounded border border-slate-700 cursor-pointer">
+                    <input type="checkbox" class="w-5 h-5 rounded">
+                    <span class="check-text">Horizon dashboard erisilebilir mi? (/horizon)</span>
+                </label>
+            </div>
+        </section>
+
+        <!-- Teknik Ozet -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-blue-400 mb-3">Teknik Ozet</h3>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h4 class="font-bold text-slate-300 mb-2">Databases (3 adet)</h4>
+                    <ul class="text-slate-400 space-y-1">
+                        <li>- tuufi_4ekim (Central)</li>
+                        <li>- tenant_ixtif (Tenant 2)</li>
+                        <li>- tenant_muzibu_1528d0 (Tenant 1001)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-slate-300 mb-2">Servisler</h4>
+                    <ul class="text-slate-400 space-y-1">
+                        <li>- Redis (queue, cache, session)</li>
+                        <li>- Horizon (queue worker)</li>
+                        <li>- FFmpeg (HLS conversion)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-slate-300 mb-2">Kritik Klasorler</h4>
+                    <ul class="text-slate-400 space-y-1">
+                        <li>- storage/app/public/</li>
+                        <li>- storage/tenant1/</li>
+                        <li>- storage/tenant2/</li>
+                        <li>- storage/tenant1001/</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-slate-300 mb-2">API Servisleri</h4>
+                    <ul class="text-slate-400 space-y-1">
+                        <li>- Leonardo AI (gorsel)</li>
+                        <li>- OpenAI (prompt)</li>
+                        <li>- SMTP (mail)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-700 pt-6">
+            <p>Claude AI tarafindan olusturuldu - 1 Ocak 2026</p>
+            <p class="mt-1">Bu checklist'i tasinma oncesi ve sonrasi kullanin!</p>
+        </footer>
+
+    </div>
+</body>
+</html>

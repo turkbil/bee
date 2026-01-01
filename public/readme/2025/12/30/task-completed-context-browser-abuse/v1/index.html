@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tamamlandı: Context Tracking, Browser Detection & Abuse Reports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-border {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 2px;
+            border-radius: 1rem;
+        }
+        .gradient-border > div {
+            background: #0f172a;
+            border-radius: calc(1rem - 2px);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-emerald-900/50 to-green-900/50 border-b border-emerald-800/50">
+        <div class="max-w-6xl mx-auto px-6 py-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-sm font-medium border border-emerald-500/30">
+                    Tamamlandı
+                </span>
+                <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm font-medium border border-blue-500/30">
+                    Muzibu
+                </span>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-2">Context Tracking, Browser Detection & Abuse Reports</h1>
+            <p class="text-gray-400">30 Aralık 2025 - Yapılan Geliştirmeler</p>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-8 space-y-8">
+
+        <!-- Özet Kutusu -->
+        <div class="gradient-border">
+            <div class="p-6">
+                <h2 class="text-xl font-semibold text-emerald-400 mb-4 flex items-center gap-2">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    Özet
+                </h2>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-3xl font-bold text-emerald-400">3</div>
+                        <div class="text-gray-400 text-sm">Ana Sistem Düzeltildi</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-3xl font-bold text-blue-400">12+</div>
+                        <div class="text-gray-400 text-sm">Tarayıcı Tespit Edilebilir</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                        <div class="text-3xl font-bold text-purple-400">%100</div>
+                        <div class="text-gray-400 text-sm">Context Yakalama Oranı</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1. Context Tracking Sistemi -->
+        <section class="bg-slate-800/50 rounded-xl border border-slate-700/50 overflow-hidden">
+            <div class="bg-blue-900/30 px-6 py-4 border-b border-slate-700/50">
+                <h2 class="text-xl font-semibold text-blue-400 flex items-center gap-2">
+                    <span class="text-2xl">1️⃣</span>
+                    Context-Based Play Tracking (source_type / source_id)
+                </h2>
+            </div>
+            <div class="p-6 space-y-6">
+                <!-- Basit Anlatım -->
+                <div class="bg-emerald-900/20 border border-emerald-800/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-emerald-400 mb-3 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>
+                        Basit Anlatım (Herkes İçin)
+                    </h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Artık her şarkı dinlendiğinde <strong>"nereden başlatıldı"</strong> bilgisi kaydediliyor.
+                        Kullanıcı bir türden mi dinledi? Albümden mi? Playlistten mi? Arama sonuçlarından mı?
+                        Bu bilgi abuse (kötüye kullanım) tespiti için kritik öneme sahip.
+                    </p>
+                    <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div class="bg-slate-800/50 rounded-lg p-3 text-center">
+                            <div class="text-lg font-bold text-blue-400">genre</div>
+                            <div class="text-xs text-gray-500">Tür Sayfası</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3 text-center">
+                            <div class="text-lg font-bold text-purple-400">album</div>
+                            <div class="text-xs text-gray-500">Albüm Sayfası</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3 text-center">
+                            <div class="text-lg font-bold text-pink-400">playlist</div>
+                            <div class="text-xs text-gray-500">Playlist</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3 text-center">
+                            <div class="text-lg font-bold text-orange-400">popular</div>
+                            <div class="text-xs text-gray-500">Popüler Liste</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teknik Detaylar -->
+                <div class="bg-blue-900/20 border border-blue-800/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-blue-400 mb-3 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                        Teknik Detaylar
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start gap-3">
+                            <span class="text-gray-500 font-mono shrink-0">Frontend:</span>
+                            <span class="text-gray-300 font-mono">public/themes/muzibu/js/muzibu-store.js</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-gray-500 font-mono shrink-0">Fonksiyon:</span>
+                            <span class="text-gray-300 font-mono">setPlayContext() / getPlayContext()</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-gray-500 font-mono shrink-0">API:</span>
+                            <span class="text-gray-300 font-mono">POST /api/muzibu/songs/{id}/track-start</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-gray-500 font-mono shrink-0">Controller:</span>
+                            <span class="text-gray-300 font-mono">SongStreamController::trackStart()</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-gray-500 font-mono shrink-0">Tablo:</span>
+                            <span class="text-gray-300 font-mono">muzibu_song_plays (source_type, source_id kolonları)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sonuç -->
+                <div class="bg-slate-700/30 rounded-lg p-4">
+                    <h4 class="font-medium text-white mb-2">Sonuç:</h4>
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-gray-400 border-b border-slate-600">
+                                <th class="text-left py-2">Tarih</th>
+                                <th class="text-right py-2">Toplam</th>
+                                <th class="text-right py-2">Context Var</th>
+                                <th class="text-right py-2">Oran</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-slate-700">
+                                <td class="py-2 text-emerald-400 font-medium">30 Aralık (Bugün)</td>
+                                <td class="text-right py-2">30</td>
+                                <td class="text-right py-2 text-emerald-400">30</td>
+                                <td class="text-right py-2 text-emerald-400 font-bold">%100</td>
+                            </tr>
+                            <tr class="border-b border-slate-700 text-gray-500">
+                                <td class="py-2">29 Aralık (Öncesi)</td>
+                                <td class="text-right py-2">126</td>
+                                <td class="text-right py-2">0</td>
+                                <td class="text-right py-2">%0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Browser Detection -->
+        <section class="bg-slate-800/50 rounded-xl border border-slate-700/50 overflow-hidden">
+            <div class="bg-purple-900/30 px-6 py-4 border-b border-slate-700/50">
+                <h2 class="text-xl font-semibold text-purple-400 flex items-center gap-2">
+                    <span class="text-2xl">2️⃣</span>
+                    Gelişmiş Tarayıcı Tespiti (Browser Detection)
+                </h2>
+            </div>
+            <div class="p-6 space-y-6">
+                <!-- Basit Anlatım -->
+                <div class="bg-emerald-900/20 border border-emerald-800/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-emerald-400 mb-3">Basit Anlatım</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Önceden Opera, Brave, Vivaldi gibi tarayıcılar hep <strong>"Chrome"</strong> olarak kaydediliyordu.
+                        Çünkü hepsi Chromium tabanlı ve User-Agent'larında "Chrome" yazıyor.
+                        Şimdi her tarayıcı doğru ismiyle kaydediliyor.
+                    </p>
+                </div>
+
+                <!-- Tespit Edilen Tarayıcılar -->
+                <div class="bg-blue-900/20 border border-blue-800/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-blue-400 mb-3">Tespit Edilen Tarayıcılar</h3>
+                    <div class="grid grid-cols-3 md:grid-cols-6 gap-3">
+                        <div class="bg-slate-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">🔵</div>
+                            <div class="text-xs text-gray-300">Edge</div>
+                        </div>
+                        <div class="bg-slate-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">🔴</div>
+                            <div class="text-xs text-gray-300">Opera</div>
+                        </div>
+                        <div class="bg-slate-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">🦁</div>
+                            <div class="text-xs text-gray-300">Brave</div>
+                        </div>
+                        <div class="bg-slate-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">🟣</div>
+                            <div class="text-xs text-gray-300">Vivaldi</div>
+                        </div>
+                        <div class="bg-slate-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">📱</div>
+                            <div class="text-xs text-gray-300">Samsung</div>
+                        </div>
+                        <div class="bg-slate-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">🟡</div>
+                            <div class="text-xs text-gray-300">Yandex</div>
+                        </div>
+                        <div class="bg-slate-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">🟠</div>
+                            <div class="text-xs text-gray-300">UCBrowser</div>
+                        </div>
+                        <div class="bg-slate-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">🦊</div>
+                            <div class="text-xs text-gray-300">Firefox</div>
+                        </div>
+                        <div class="bg-slate-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">🧭</div>
+                            <div class="text-xs text-gray-300">Safari</div>
+                        </div>
+                        <div class="bg-slate-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">🌐</div>
+                            <div class="text-xs text-gray-300">Chrome</div>
+                        </div>
+                        <div class="bg-slate-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">📘</div>
+                            <div class="text-xs text-gray-300">IE</div>
+                        </div>
+                        <div class="bg-slate-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">❓</div>
+                            <div class="text-xs text-gray-300">Other</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teknik Detaylar -->
+                <div class="bg-blue-900/20 border border-blue-800/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-blue-400 mb-3">Teknik Detaylar</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start gap-3">
+                            <span class="text-gray-500 font-mono shrink-0">Dosya:</span>
+                            <span class="text-gray-300 font-mono">Modules/Muzibu/app/Http/Controllers/Api/SongStreamController.php</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-gray-500 font-mono shrink-0">Metod:</span>
+                            <span class="text-gray-300 font-mono">detectBrowserFromUA(string $userAgent): string</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-gray-500 font-mono shrink-0">Mantık:</span>
+                            <span class="text-gray-300">OPR/, Edg/, Brave, Vivaldi önce kontrol edilir, Chrome en son</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Veri Düzeltmesi -->
+                <div class="bg-amber-900/20 border border-amber-700/50 rounded-lg p-4">
+                    <h4 class="font-medium text-amber-400 mb-2 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                        Geriye Dönük Düzeltme
+                    </h4>
+                    <p class="text-gray-300 text-sm">
+                        Veritabanında yanlış "Chrome" olarak kaydedilen 3 Opera kaydı SQL ile düzeltildi:
+                    </p>
+                    <code class="block mt-2 text-xs bg-slate-800 p-2 rounded text-gray-400">
+                        UPDATE muzibu_song_plays SET browser = 'Opera' WHERE user_agent LIKE '%OPR/%' AND browser = 'Chrome'
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Abuse Reports Timeline -->
+        <section class="bg-slate-800/50 rounded-xl border border-slate-700/50 overflow-hidden">
+            <div class="bg-orange-900/30 px-6 py-4 border-b border-slate-700/50">
+                <h2 class="text-xl font-semibold text-orange-400 flex items-center gap-2">
+                    <span class="text-2xl">3️⃣</span>
+                    Abuse Reports Timeline Düzeltmeleri
+                </h2>
+            </div>
+            <div class="p-6 space-y-6">
+                <!-- Basit Anlatım -->
+                <div class="bg-emerald-900/20 border border-emerald-800/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-emerald-400 mb-3">Basit Anlatım</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Abuse (kötüye kullanım) raporlarında "Dinleme Zaman Çizelgesi" ve "Genel Zaman Çizelgesi"
+                        düzgün çalışmıyordu. Gün sekmelerine tıklayınca chart güncellenmiyor,
+                        saatler yanlış gösteriliyordu. Tüm bunlar düzeltildi.
+                    </p>
+                </div>
+
+                <!-- Yapılan Düzeltmeler -->
+                <div class="bg-blue-900/20 border border-blue-800/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-blue-400 mb-4">Yapılan Düzeltmeler</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            <span class="text-emerald-400">✓</span>
+                            <div>
+                                <div class="text-white font-medium">Timeline Her Zaman Görünür</div>
+                                <div class="text-gray-400 text-sm">Önceden sadece overlap varsa gösteriliyordu, şimdi her zaman görünür</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-emerald-400">✓</span>
+                            <div>
+                                <div class="text-white font-medium">Gün Sekmesi Filtreleme</div>
+                                <div class="text-gray-400 text-sm">27 Ara, 28 Ara gibi sekmelere tıklayınca timeline o güne göre filtreleniyor</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-emerald-400">✓</span>
+                            <div>
+                                <div class="text-white font-medium">"Tümü" Butonu</div>
+                                <div class="text-gray-400 text-sm">Tüm günleri tek seferde görmek için "Tümü" butonu eklendi</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-emerald-400">✓</span>
+                            <div>
+                                <div class="text-white font-medium">Dinamik Zoom</div>
+                                <div class="text-gray-400 text-sm">Her gün seçiminde timeline otomatik fit() yapıyor</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-emerald-400">✓</span>
+                            <div>
+                                <div class="text-white font-medium">Yeni Tarayıcı Renkleri</div>
+                                <div class="text-gray-400 text-sm">Opera, Brave, Vivaldi, Edge için özel renkler eklendi</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teknik Detaylar -->
+                <div class="bg-blue-900/20 border border-blue-800/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-blue-400 mb-3">Teknik Detaylar</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start gap-3">
+                            <span class="text-gray-500 font-mono shrink-0">View:</span>
+                            <span class="text-gray-300 font-mono">Modules/Muzibu/resources/views/admin/abuse-reports/show.blade.php</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-gray-500 font-mono shrink-0">JS Fonksiyon:</span>
+                            <span class="text-gray-300 font-mono">filterTimelineByDate(selectedDate)</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-gray-500 font-mono shrink-0">Kütüphane:</span>
+                            <span class="text-gray-300 font-mono">vis-timeline (vis.js)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Quick Test Script -->
+        <section class="bg-slate-800/50 rounded-xl border border-slate-700/50 overflow-hidden">
+            <div class="bg-cyan-900/30 px-6 py-4 border-b border-slate-700/50">
+                <h2 class="text-xl font-semibold text-cyan-400 flex items-center gap-2">
+                    <span class="text-2xl">4️⃣</span>
+                    Context Quick Test Script
+                </h2>
+            </div>
+            <div class="p-6 space-y-6">
+                <!-- Basit Anlatım -->
+                <div class="bg-emerald-900/20 border border-emerald-800/50 rounded-lg p-5">
+                    <h3 class="font-semibold text-emerald-400 mb-3">Basit Anlatım</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Context-Based Infinite Queue sistemini hızlıca test etmek için bir script oluşturuldu.
+                        Tarayıcı konsolunda çalıştırınca tüm sistemleri kontrol ediyor.
+                    </p>
+                </div>
+
+                <!-- Kullanım -->
+                <div class="bg-slate-700/50 rounded-lg p-4">
+                    <h4 class="font-medium text-white mb-2">Kullanım:</h4>
+                    <code class="block text-sm bg-slate-800 p-3 rounded text-cyan-400 font-mono">
+                        fetch('/testler/context-quick-test.js').then(r=>r.text()).then(eval)
+                    </code>
+                </div>
+
+                <!-- Test Edilen Özellikler -->
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <h4 class="font-medium text-white mb-2">Test Edilen Özellikler:</h4>
+                        <ul class="space-y-1 text-sm text-gray-300">
+                            <li>✓ Store kontrolü (player, muzibu)</li>
+                            <li>✓ ValidTypes kontrolü ('song' dahil)</li>
+                            <li>✓ playContent fonksiyonları</li>
+                            <li>✓ API endpoint'leri</li>
+                            <li>✓ 10 şarkı hızlı geçiş</li>
+                            <li>✓ Context değişim testi</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-700/30 rounded-lg p-4">
+                        <h4 class="font-medium text-white mb-2">Dosya Konumu:</h4>
+                        <code class="text-xs text-gray-400 font-mono">public/testler/context-quick-test.js</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sistem Akış Şeması -->
+        <section class="bg-slate-800/50 rounded-xl border border-slate-700/50 overflow-hidden">
+            <div class="bg-indigo-900/30 px-6 py-4 border-b border-slate-700/50">
+                <h2 class="text-xl font-semibold text-indigo-400 flex items-center gap-2">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+                    Yeni Sistem Akış Şeması
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="bg-slate-900 rounded-lg p-6 font-mono text-sm overflow-x-auto">
+                    <pre class="text-gray-300">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        CONTEXT-BASED PLAY TRACKING                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  KULLANICI                    FRONTEND                      BACKEND
+  ─────────                    ────────                      ───────
+
+  1. Genre/Album/              2. setPlayContext({
+     Playlist tıklar    ───────>  type: 'genre',
+                                  id: 17,
+                                  name: 'Rock'
+                               })
+                                      │
+                                      ▼
+                               localStorage + Alpine Store'a kaydedilir
+                                      │
+  3. Şarkı çalınır      ─────────────┘
+                                      │
+                                      ▼
+                               4. trackSongStart(songId) çağrılır
+                                      │
+                               5. getPlayContext() ile context alınır
+                                      │
+                                      ▼
+                               6. POST /api/muzibu/songs/{id}/track-start
+                                  body: {
+                                    source_type: 'genre',  ────────> 7. DB'ye yazılır:
+                                    source_id: 17                       muzibu_song_plays
+                                  }                                     ├─ source_type
+                                                                        └─ source_id
+                                      │
+                                      ▼
+                               8. detectBrowserFromUA() ile tarayıcı tespiti
+                                  Opera/Brave/Vivaldi/Edge doğru kaydedilir
+                                      │
+                                      ▼
+                               9. Abuse Detection Service bu verileri kullanır
+                                  - Pattern analizi
+                                  - Multi-device tespiti
+                                  - Bot davranışı analizi
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                     ABUSE DETECTION DASHBOARD                               │
+│                                                                             │
+│  /admin/muzibu/abuse-reports/{id}                                          │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │  📊 Dinleme Zaman Çizelgesi (vis-timeline)                          │   │
+│  │  ┌─────────────────────────────────────────────────────────────┐    │   │
+│  │  │  [Tümü] [27 Ara] [28 Ara] [29 Ara] [30 Ara]  ← Gün Filtreleri│   │   │
+│  │  │  ─────────────────────────────────────────────────────────────   │   │
+│  │  │  Chrome   ████████░░░░████████░░░░████████░░░░                   │   │
+│  │  │  Opera    ░░░░████████░░░░░░░░░░░░░░░░░░░░░░░░                   │   │
+│  │  │  Firefox  ░░░░░░░░░░░░████████░░░░░░░░░░░░░░░░                   │   │
+│  │  │           04:00    06:00    08:00    10:00    12:00              │   │
+│  │  └─────────────────────────────────────────────────────────────┘    │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
+                    </pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Değişen Dosyalar -->
+        <section class="bg-slate-800/50 rounded-xl border border-slate-700/50 p-6">
+            <h2 class="text-xl font-semibold text-white mb-4">Değişen Dosyalar</h2>
+            <div class="space-y-2 font-mono text-sm">
+                <div class="flex items-center gap-3 bg-emerald-900/20 px-4 py-2 rounded-lg">
+                    <span class="text-emerald-400">M</span>
+                    <span class="text-gray-300">Modules/Muzibu/app/Http/Controllers/Api/SongStreamController.php</span>
+                </div>
+                <div class="flex items-center gap-3 bg-emerald-900/20 px-4 py-2 rounded-lg">
+                    <span class="text-emerald-400">M</span>
+                    <span class="text-gray-300">Modules/Muzibu/app/Services/AbuseDetectionService.php</span>
+                </div>
+                <div class="flex items-center gap-3 bg-emerald-900/20 px-4 py-2 rounded-lg">
+                    <span class="text-emerald-400">M</span>
+                    <span class="text-gray-300">Modules/Muzibu/resources/views/admin/abuse-reports/show.blade.php</span>
+                </div>
+                <div class="flex items-center gap-3 bg-blue-900/20 px-4 py-2 rounded-lg">
+                    <span class="text-blue-400">A</span>
+                    <span class="text-gray-300">public/testler/context-quick-test.js</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 mt-12">
+        <div class="max-w-6xl mx-auto px-6 py-6 text-center text-gray-500 text-sm">
+            <p>Claude AI tarafından oluşturuldu</p>
+            <p class="mt-1">30 Aralık 2025</p>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -11,6 +11,23 @@
  * - MuzibuSpaRouter (from features/spa-router.js)
  */
 
+// 🧹 SAFE AUDIO CLEANUP - Hata tetiklemeden audio element temizleme
+function safeAudioCleanup(audio) {
+    if (!audio) return;
+    try {
+        // Önce event handler'ları kaldır (hata tetiklemesin)
+        audio.onerror = null;
+        audio.onended = null;
+        audio.ontimeupdate = null;
+        audio.oncanplay = null;
+        audio.onwaiting = null;
+        audio.pause();
+        // src='' yerine removeAttribute kullan (Empty src hatası önlenir)
+        audio.removeAttribute('src');
+        audio.load(); // MediaSource buffer'ı serbest bırak
+    } catch (e) {}
+}
+
 // 🔍 SERVER DEBUG LOG - Kritik bilgileri server'a gönder
 function serverLog(action, data = {}) {
     try {
@@ -1645,10 +1662,7 @@ function muzibuApp() {
                 // Cleanup next audio element
                 const nextAudioEl = document.getElementById(this.nextHlsAudioId);
                 if (nextAudioEl) {
-                    try {
-                        nextAudioEl.pause();
-                        nextAudioEl.src = '';
-                    } catch (e) {}
+                    safeAudioCleanup(nextAudioEl);
                 }
 
                 // 🚀 AUTO-SKIP: Crossfade failed, play next song directly (without fade)
@@ -1790,10 +1804,7 @@ function muzibuApp() {
                             // Cleanup next audio element
                             const failedAudio = document.getElementById(self.nextHlsAudioId);
                             if (failedAudio) {
-                                try {
-                                    failedAudio.pause();
-                                    failedAudio.src = '';
-                                } catch (e) {}
+                                safeAudioCleanup(failedAudio);
                             }
 
                             // 🎯 AUTO-RECOVER: Play next song directly (skip crossfade)
@@ -1842,9 +1853,7 @@ function muzibuApp() {
                 const oldAudio = document.getElementById(currentAudioId);
 
                 if (oldAudio) {
-                    oldAudio.pause();
-                    oldAudio.src = '';
-                    oldAudio.load(); // Reset audio element
+                    safeAudioCleanup(oldAudio);
                 }
                 this.hls.destroy();
                 this.hls = null;
@@ -2023,7 +2032,14 @@ function muzibuApp() {
         // Metadata is handled by Howler.js onload callback
 
         onTrackEnded() {
-            console.log('🟢 onTrackEnded called', { isPlaying: this.isPlaying });
+            console.log('🟢 onTrackEnded called', { isPlaying: this.isPlaying, isPlayingSpot: this._isPlayingSpot });
+
+            // 🎙️ SPOT GUARD: Spot çalıyorsa onTrackEnded'ı atla
+            if (this._isPlayingSpot) {
+                console.log('🟡 onTrackEnded BLOCKED - spot is playing');
+                return;
+            }
+
             // 🛡️ CRITICAL: Kullanıcı pause/stop yaptıysa, otomatik devam ETME!
             // Sadece isPlaying = true iken sonraki şarkıya geç
             if (!this.isPlaying) {
@@ -2055,12 +2071,255 @@ function muzibuApp() {
                 queueIndex: this.queueIndex
             });
 
+            // 🎙️ SPOT PLAYER: Şarkı sayacını kontrol et
+            const self = this;
+            const listenedDuration = this.currentTime || this.duration || 0;
+
+            // 🔍 DEBUG: Spot player durumunu logla
+            console.log('🎙️ Spot check:', {
+                hasMuzibuSpotPlayer: !!window.MuzibuSpotPlayer,
+                isEnabled: window.MuzibuSpotPlayer ? window.MuzibuSpotPlayer.isEnabled() : 'N/A',
+                listenedDuration: listenedDuration
+            });
+
+            if (window.MuzibuSpotPlayer && window.MuzibuSpotPlayer.isEnabled()) {
+                const shouldPlaySpot = window.MuzibuSpotPlayer.onSongListened(listenedDuration);
+
+                if (shouldPlaySpot) {
+                    console.log('🎙️ Spot time! Fetching and playing spot...');
+                    window.MuzibuSpotPlayer.playNextSpot().then(function(spot) {
+                        if (spot && spot.audio_url) {
+                            console.log('🎙️ Playing spot:', spot.title);
+                            self.playSpotAudio(spot);
+                        } else {
+                            console.log('🎙️ No spot available, continuing to next track');
+                            self.nextTrack(true);
+                        }
+                    }).catch(function(err) {
+                        console.error('🎙️ Spot playback error:', err);
+                        self.nextTrack(true);
+                    });
+                    return; // Spot çalacak, nextTrack'i spot bitince çağıracağız
+                }
+            }
+
             // ⚡ GAPLESS: fromNaturalEnd=true ile çağır - stopCurrentPlayback atlanır
             console.log('🟢 Calling nextTrack(true)');
             try {
                 this.nextTrack(true);
             } catch (e) {
                 console.error('🔴 ERROR in nextTrack:', e);
+            }
+        },
+
+        /**
+         * 🎙️ SPOT AUDIO: Kurumsal anons çal
+         * Spot bitince otomatik olarak bir sonraki şarkıya geçer
+         */
+        playSpotAudio(spot) {
+            const self = this;
+
+            // 🚀 GAPLESS: Preloaded audio varsa onu kullan
+            let spotAudio;
+            if (spot._preloadedAudio) {
+                console.log('🎙️ playSpotAudio: Using PRELOADED audio (gapless)');
+                spotAudio = spot._preloadedAudio;
+            } else {
+                spotAudio = document.getElementById('spotAudio') || this.createSpotAudioElement();
+                spotAudio.src = spot.audio_url;
+            }
+
+            console.log('🎙️ playSpotAudio:', spot.title, spot.audio_url);
+
+            // 🎙️ FLAG: Spot çalıyor işareti
+            this._isPlayingSpot = true;
+            // 🎙️ Reset preload flag for next song
+            this._spotPreloaded = false;
+
+            // 🎙️ Mevcut şarkı bilgisini kaydet (spot bitince geri yüklenecek)
+            this._savedCurrentSong = this.currentSong ? { ...this.currentSong } : null;
+            // 🎙️ Önceki duration'ı da kaydet
+            this._savedDuration = this.duration;
+
+            // 🎙️ Progress bar'ı sıfırla (KRITIK!)
+            this.progressPercent = 0;
+            this.currentTime = 0;
+            this.duration = spot.duration || 0;
+
+            // 🎙️ UI'ı spot bilgisiyle güncelle (player song_title/artist_title bekliyor)
+            const spotSongInfo = {
+                song_id: 'spot_' + spot.id,
+                song_title: '📢 ' + spot.title,
+                artist_title: 'Anons',
+                album_cover: null,
+                cover_url: null,
+                duration: spot.duration || 0,
+                isSpot: true
+            };
+            this.currentSong = spotSongInfo;
+
+            // Alpine store'u güncelle (UI reaktif olarak değişir)
+            const store = Alpine.store('player');
+            if (store) {
+                store.currentSong = spotSongInfo;
+            }
+
+            // Mevcut şarkıyı durdur (ama queue'dan çıkarma)
+            this.pauseCurrentAudio();
+
+            // Spot audio volume ayarla
+            spotAudio.volume = this.volume / 100;
+
+            // 🎙️ FLAG: Spot normal bitti mi (error handler'ı engellemek için)
+            let spotEndedNormally = false;
+
+            // 🎙️ PROGRESS: Spot için timeupdate listener (progress bar güncelleme)
+            spotAudio.ontimeupdate = function() {
+                if (self._isPlayingSpot && spotAudio.duration > 0) {
+                    self.currentTime = spotAudio.currentTime;
+                    self.duration = spotAudio.duration;
+                    self.progressPercent = (spotAudio.currentTime / spotAudio.duration) * 100;
+                }
+            };
+
+            // Spot bitince
+            spotAudio.onended = function() {
+                console.log('🎙️ Spot ended, continuing to next track');
+                spotEndedNormally = true; // Error handler'ı engelle
+                if (window.MuzibuSpotPlayer) {
+                    window.MuzibuSpotPlayer.spotEnded();
+                }
+                // 🧹 Safe cleanup (hata tetiklemez)
+                safeAudioCleanup(spotAudio);
+                // 🎙️ FLAG: Spot bitti
+                self._isPlayingSpot = false;
+                // 🎙️ Kaydedilmiş şarkıyı temizle (artık gerekmez)
+                self._savedCurrentSong = null;
+                self._savedDuration = null;
+                // Bir sonraki şarkıya geç (spot sayacını tekrar artırmadan)
+                self.playNextFromQueue();
+            };
+
+            // Spot error - SADECE gerçek hatalarda çalış
+            spotAudio.onerror = function(e) {
+                if (spotEndedNormally) return; // Normal bittiyse ignore
+                console.error('🎙️ Spot audio error:', e);
+                // 🧹 Safe cleanup (hata tetiklemez)
+                safeAudioCleanup(spotAudio);
+                self._isPlayingSpot = false;
+                // 🎙️ Şarkı bilgisini geri yükle
+                self.restoreSavedSong();
+                // Mevcut şarkıyı devam ettir (döngü riski yok)
+                self.resumeCurrentAudio();
+            };
+
+            // Çal
+            spotAudio.play().then(function() {
+                console.log('🎙️ Spot playing...');
+            }).catch(function(err) {
+                console.error('🎙️ Spot play failed:', err);
+                spotAudio.ontimeupdate = null;
+                self._isPlayingSpot = false;
+                // 🎙️ Şarkı bilgisini geri yükle
+                self.restoreSavedSong();
+                // Mevcut şarkıyı devam ettir
+                self.resumeCurrentAudio();
+            });
+        },
+
+        /**
+         * 🎙️ Spot sonrası bir sonraki şarkıyı çal
+         * nextTrack yerine bu kullanılıyor çünkü spot sayacını tekrar artırmamalı
+         */
+        async playNextFromQueue() {
+            console.log('🎙️ playNextFromQueue: Resuming music after spot');
+
+            // 🎙️ Progress bar'ı sıfırla (yeni şarkı için)
+            this.progressPercent = 0;
+            this.currentTime = 0;
+
+            // Queue'da sonraki şarkıya geç
+            if (this.queue && this.queue.length > 0) {
+                const nextIndex = (this.queueIndex + 1) % this.queue.length;
+                this.queueIndex = nextIndex;
+
+                try {
+                    await this.playSongFromQueue(nextIndex);
+                } catch (e) {
+                    console.error('🎙️ playNextFromQueue error:', e);
+                    // Hata durumunda bir sonraki şarkıyı dene
+                    if (nextIndex < this.queue.length - 1) {
+                        console.log('🎙️ Trying next song after error...');
+                        this.queueIndex = nextIndex + 1;
+                        await this.playSongFromQueue(nextIndex + 1);
+                    }
+                }
+            }
+        },
+
+        /**
+         * 🎙️ Mevcut şarkıyı devam ettir (spot hatası durumunda)
+         * Döngü riski olmadan güvenli şekilde müziği sürdürür
+         */
+        resumeCurrentAudio() {
+            console.log('🎙️ resumeCurrentAudio: Resuming current song');
+            const audio = document.getElementById(this.activeHlsAudioId || 'hlsAudio');
+            if (audio && audio.src && audio.paused) {
+                audio.play().catch(function(e) {
+                    console.log('🎙️ Resume failed, staying paused:', e);
+                });
+            } else {
+                console.log('🎙️ No audio to resume, staying paused');
+            }
+        },
+
+        /**
+         * 🎙️ Kaydedilmiş şarkı bilgisini geri yükle (spot sonrası)
+         */
+        restoreSavedSong() {
+            if (this._savedCurrentSong) {
+                this.currentSong = this._savedCurrentSong;
+                const store = Alpine.store('player');
+                if (store) {
+                    store.currentSong = this._savedCurrentSong;
+                }
+                this._savedCurrentSong = null;
+            }
+            // 🎙️ Duration'ı da geri yükle (progress bar için)
+            if (this._savedDuration) {
+                this.duration = this._savedDuration;
+                this._savedDuration = null;
+            }
+        },
+
+        /**
+         * 🎙️ Spot audio element oluştur
+         */
+        createSpotAudioElement() {
+            let audio = document.getElementById('spotAudio');
+            if (!audio) {
+                audio = document.createElement('audio');
+                audio.id = 'spotAudio';
+                audio.preload = 'auto';
+                document.body.appendChild(audio);
+            }
+            return audio;
+        },
+
+        /**
+         * 🎙️ Mevcut audio'yu duraklat (spot için)
+         */
+        pauseCurrentAudio() {
+            try {
+                if (this.howl) {
+                    this.howl.pause();
+                }
+                const hlsAudio = document.getElementById(this.activeHlsAudioId || 'hlsAudio');
+                if (hlsAudio) {
+                    hlsAudio.pause();
+                }
+            } catch (e) {
+                console.warn('🎙️ pauseCurrentAudio error:', e);
             }
         },
 
@@ -2714,6 +2973,12 @@ function muzibuApp() {
             this._firstFragLoaded = false; // 🔄 Reset first fragment flag for new song
             this._safariTrackEndTriggered = false; // 🍎 Reset Safari track end fallback flag
 
+            // 🔧 Alpine store'u da güncelle (spot sonrası senkronizasyon için)
+            const playerStore = Alpine.store('player');
+            if (playerStore) {
+                playerStore.currentSong = song;
+            }
+
             // 📊 TRACK-START: Şarkı başlar başlamaz kayıt oluştur (abuse detection)
             this.trackSongStart(song.song_id);
 
@@ -2768,6 +3033,12 @@ function muzibuApp() {
                         this.progressInterval = null;
                     }
 
+                    // 🔧 FIX: Önceki HLS refresh timeout'u iptal et (eski şarkının timeout'u çalışmasın!)
+                    if (this._hlsRefreshTimeout) {
+                        clearTimeout(this._hlsRefreshTimeout);
+                        this._hlsRefreshTimeout = null;
+                    }
+
                     // 🎯 Duration'ı set et
                     if (preloaded.streamData?.song?.duration_seconds) {
                         this.duration = preloaded.streamData.song.duration_seconds;
@@ -2816,6 +3087,13 @@ function muzibuApp() {
                     };
 
                     preloadedAudio.onerror = function(e) {
+                        // 🛡️ GUARD: Sadece AKTİF audio element'in hatası ise işle
+                        // Preload iptal edildiğinde veya cleanup sırasında oluşan hatalar sessizce yoksayılır
+                        if (preloadedAudio.id !== self.activeHlsAudioId) {
+                            // 🔇 Cleanup sırasında oluşan beklenen hata - sessizce yoksay (log spam önleme)
+                            return;
+                        }
+
                         console.error('🔴 AUDIO ERROR (preloaded)!', {
                             error: preloadedAudio.error,
                             code: preloadedAudio.error?.code,
@@ -2824,21 +3102,11 @@ function muzibuApp() {
                             audioId: preloadedAudio.id,
                             activeAudioId: self.activeHlsAudioId
                         });
-                        // 🛡️ GUARD: Sadece aktif element'in hatası ise state değiştir
-                        if (preloadedAudio.id === self.activeHlsAudioId) {
-                            self.isPlaying = false;
-                        } else {
-                            console.log('🔴 AUDIO ERROR (preloaded) IGNORED - not active');
-                        }
+                        self.isPlaying = false;
                     };
 
                     preloadedAudio.onemptied = function() {
-                        const isActive = preloadedAudio.id === self.activeHlsAudioId;
-                        console.warn('⚠️ EMPTIED (preloaded) - Kaynak boşaltıldı!', {
-                            audioId: preloadedAudio.id,
-                            activeAudioId: self.activeHlsAudioId,
-                            isActiveElement: isActive
-                        });
+                        // Normal geçişlerde beklenen davranış - log gürültüsü yapmıyoruz
                     };
 
                     preloadedAudio.onabort = function() {
@@ -2898,18 +3166,8 @@ function muzibuApp() {
                             const duration = preloadedAudio?.duration || 0;
                             const timeRemaining = duration - currentTime;
 
-                            console.log('🔴 BUFFER_EOS fired (preloaded path)', {
-                                currentTime: currentTime.toFixed(1),
-                                duration: duration.toFixed(1),
-                                timeRemaining: timeRemaining.toFixed(1),
-                                isCrossfading: self.isCrossfading,
-                                isPlaying: self.isPlaying
-                            });
-
                             // 🚫 Eğer şarkının sonuna 5 saniyeden fazla varsa, BUFFER_EOS'u yoksay
-                            // Bu sadece buffer'ın boşaldığı anlamına gelir, şarkı bitmedi
                             if (duration > 0 && timeRemaining > 5) {
-                                console.log('🔴 BUFFER_EOS IGNORED - not near end, timeRemaining:', timeRemaining.toFixed(1));
                                 return;
                             }
 
@@ -2920,15 +3178,8 @@ function muzibuApp() {
                                     const durationNow = preloadedAudio?.duration || 0;
                                     const timeRemainingNow = durationNow - currentTimeNow;
 
-                                    console.log('🔴 BUFFER_EOS timeout check', {
-                                        timeRemaining: timeRemainingNow.toFixed(1),
-                                        isCrossfading: self.isCrossfading,
-                                        isPlaying: self.isPlaying
-                                    });
-
                                     // Hala sona yakın değilsek, yoksay
                                     if (durationNow > 0 && timeRemainingNow > 5) {
-                                        console.log('🔴 BUFFER_EOS timeout IGNORED - still not near end');
                                         return;
                                     }
 
@@ -2936,7 +3187,6 @@ function muzibuApp() {
                                         if (self.crossfadeEnabled && self.getNextSongIndex() !== -1) {
                                             self.startCrossfade();
                                         } else {
-                                            console.log('🔴 Calling onTrackEnded from BUFFER_EOS');
                                             try {
                                                 self.onTrackEnded();
                                             } catch (e) {
@@ -2996,9 +3246,7 @@ function muzibuApp() {
                                         if (oldAudioId && oldAudioId !== currentActiveAudioId) {
                                             const oldAudio = document.getElementById(oldAudioId);
                                             if (oldAudio) {
-                                                oldAudio.pause();
-                                                oldAudio.src = '';
-                                                oldAudio.load();
+                                                safeAudioCleanup(oldAudio);
                                             }
                                         }
                                         oldHls.destroy();
@@ -3142,6 +3390,12 @@ function muzibuApp() {
                 );
 
                 // ⏱️ HLS URL refresh: expires param'ına göre dinamik zamanlama
+                // 🔧 FIX: Önceki refresh timeout'u iptal et (şarkı değiştiğinde eski timeout çalışmasın!)
+                if (this._hlsRefreshTimeout) {
+                    clearTimeout(this._hlsRefreshTimeout);
+                    this._hlsRefreshTimeout = null;
+                }
+
                 if (data.stream_type === 'hls' && data.stream_url) {
                     const expiresParam = Number(new URL(data.stream_url).searchParams.get('expires'));
                     const nowMs = Date.now();
@@ -3149,8 +3403,19 @@ function muzibuApp() {
                     const marginMs = Math.max(120000, Math.floor(ttlMs * 0.5)); // %50 veya min 120s önce yenile (güvenli margin)
                     const delayMs = Math.max(30000, ttlMs - marginMs);
 
-                    setTimeout(() => {
-                        this.refreshHlsUrlForCurrentSong(true);
+                    // 🛡️ Şu anki şarkının ID'sini yakala (closure'da sakla)
+                    const songIdAtSchedule = song.song_id;
+
+                    this._hlsRefreshTimeout = setTimeout(() => {
+                        // 🛡️ GUARD: Sadece aynı şarkı hala çalıyorsa refresh yap
+                        if (this.currentSong?.song_id === songIdAtSchedule && this.isPlaying) {
+                            this.refreshHlsUrlForCurrentSong(true);
+                        } else {
+                            console.log('⏱️ HLS refresh skipped - song changed', {
+                                scheduled: songIdAtSchedule,
+                                current: this.currentSong?.song_id
+                            });
+                        }
                     }, delayMs);
                 }
                 // 🔧 FIX: _autoplayNext artık kullanılmıyor (local variable kullanıyoruz)
@@ -3297,11 +3562,8 @@ function muzibuApp() {
                     if (!audio.paused) {
                         wasStopped = true;
                     }
-                    // 🚀 INSTANT STOP: No fade, immediate pause
-                    audio.pause();
-                    // 🧹 RAM CLEANUP: Audio buffer'ı temizle
-                    audio.src = '';
-                    audio.load(); // MediaSource buffer'ı serbest bırak
+                    // 🧹 Safe cleanup (hata tetiklemez)
+                    safeAudioCleanup(audio);
                 }
                 // 🔧 FIX: Clear instance ID BEFORE destroy to ignore pending error events
                 this._currentHlsInstanceId = null;
@@ -3321,9 +3583,7 @@ function muzibuApp() {
             // 🚀 PRELOAD PROTECTION: Preloaded song hlsAudioNext kullanıyorsa temizleme!
             const nextAudio = document.getElementById('hlsAudioNext');
             if (nextAudio && !(this._preloadedNext && this._preloadedNext.audioId === 'hlsAudioNext')) {
-                nextAudio.pause();
-                nextAudio.src = '';
-                nextAudio.load(); // 🧹 RAM CLEANUP: MediaSource buffer'ı serbest bırak
+                safeAudioCleanup(nextAudio);
             }
 
             // Reset active HLS audio to default
@@ -3693,17 +3953,8 @@ onplay: function() {
                     const duration = audio?.duration || 0;
                     const timeRemaining = duration - currentTime;
 
-                    console.log('🔴 BUFFER_EOS fired (normal path)', {
-                        currentTime: currentTime.toFixed(1),
-                        duration: duration.toFixed(1),
-                        timeRemaining: timeRemaining.toFixed(1),
-                        isCrossfading: self.isCrossfading,
-                        isPlaying: self.isPlaying
-                    });
-
                     // 🚫 Eğer şarkının sonuna 5 saniyeden fazla varsa, BUFFER_EOS'u yoksay
                     if (duration > 0 && timeRemaining > 5) {
-                        console.log('🔴 BUFFER_EOS IGNORED (normal) - not near end, timeRemaining:', timeRemaining.toFixed(1));
                         return;
                     }
 
@@ -3722,7 +3973,6 @@ onplay: function() {
 
                         // Hala sona yakın değilsek, yoksay
                         if (durationNow > 0 && timeRemainingNow > 5) {
-                            console.log('🔴 BUFFER_EOS timeout IGNORED (normal) - still not near end');
                             return;
                         }
 
@@ -3730,7 +3980,6 @@ onplay: function() {
                             if (self.crossfadeEnabled && self.getNextSongIndex() !== -1) {
                                 self.startCrossfade();
                             } else {
-                                console.log('🔴 Calling onTrackEnded from BUFFER_EOS (normal)');
                                 self.onTrackEnded();
                             }
                         }
@@ -3861,9 +4110,7 @@ onplay: function() {
                         if (self.currentSong && self.currentFallbackUrl) {
                             // 🛑 Stop HLS audio element first (prevent AbortError)
                             if (audio) {
-                                audio.pause();
-                                audio.src = '';
-                                audio.load();
+                                safeAudioCleanup(audio);
                             }
 
                             // Cleanup HLS
@@ -3915,6 +4162,14 @@ onplay: function() {
                         self.preloadNextSong();
                     }
 
+                    // 🎙️ SPOT PRELOAD: %70'te spot'u önceden yükle (gapless için)
+                    if (!self._spotPreloaded && progressPercent >= 70 && window.MuzibuSpotPlayer) {
+                        if (window.MuzibuSpotPlayer.shouldPreloadSpot()) {
+                            self._spotPreloaded = true;
+                            window.MuzibuSpotPlayer.preloadSpot();
+                        }
+                    }
+
                     if (self.isCrossfading) return;
 
                     // Son 1.5 saniyede crossfade başlat
@@ -3925,11 +4180,17 @@ onplay: function() {
 
                 // Handle track end
                 audio.onended = function() {
+                    console.log('🔵 onended fired (normal path)', {
+                        isCrossfading: self.isCrossfading,
+                        isPlaying: self.isPlaying,
+                        audioId: audio.id
+                    });
                     if (!self.isCrossfading) {
                         // 🔥 Son şans: Crossfade başlatılamamışsa ve enabled ise, başlat!
                         if (self.crossfadeEnabled && self.getNextSongIndex() !== -1) {
                             self.startCrossfade();
                         } else {
+                            console.log('🔵 Calling onTrackEnded from onended (normal)');
                             self.onTrackEnded();
                         }
                     }
@@ -3996,6 +4257,13 @@ onplay: function() {
                 };
 
                 audio.onerror = function(e) {
+                    // 🛡️ GUARD: Sadece AKTİF audio element'in hatası ise işle
+                    // Temizlenen eski audio element hata verirse sessizce yoksay (cleanup sırasında normal)
+                    if (audio.id !== self.activeHlsAudioId) {
+                        // 🔇 Cleanup sırasında oluşan beklenen hata - sessizce yoksay (log spam önleme)
+                        return;
+                    }
+
                     console.error('🔴 AUDIO ERROR!', {
                         error: audio.error,
                         code: audio.error?.code,
@@ -4005,15 +4273,9 @@ onplay: function() {
                         activeAudioId: self.activeHlsAudioId
                     });
 
-                    // 🛡️ GUARD: Sadece AKTİF audio element'in hatası ise state değiştir
-                    // Temizlenen eski audio element hata verirse YOKSAY!
-                    if (audio.id === self.activeHlsAudioId) {
-                        self.isPlaying = false;
-                        if (self.currentUser?.is_root) {
-                            self.showToast(`🔴 AUDIO ERROR: ${audio.error?.code}`, 'error');
-                        }
-                    } else {
-                        console.log('🔴 AUDIO ERROR IGNORED - not active audio element, cleanup in progress');
+                    self.isPlaying = false;
+                    if (self.currentUser?.is_root) {
+                        self.showToast(`🔴 AUDIO ERROR: ${audio.error?.code}`, 'error');
                     }
                 };
 
@@ -4025,16 +4287,7 @@ onplay: function() {
                 };
 
                 audio.onemptied = function() {
-                    const isActive = audio.id === self.activeHlsAudioId;
-                    console.warn('⚠️ EMPTIED - Audio kaynağı boşaltıldı!', {
-                        audioId: audio.id,
-                        activeAudioId: self.activeHlsAudioId,
-                        isActiveElement: isActive
-                    });
-                    // 🛡️ Sadece aktif element için toast göster
-                    if (isActive && self.currentUser?.is_root) {
-                        self.showToast('⚠️ EMPTIED - Kaynak boşaltıldı!', 'warning');
-                    }
+                    // Normal geçişlerde beklenen davranış - log gürültüsü yapmıyoruz
                 };
 
                 // ⏳ Seek tamamlandı - loading kapat
@@ -4303,9 +4556,7 @@ onplay: function() {
                     if (!startPosition || startPosition <= 0) {
                         startPosition = currentAudio.currentTime || 0;
                     }
-                    currentAudio.pause();
-                    currentAudio.src = '';
-                    currentAudio.load();
+                    safeAudioCleanup(currentAudio);
                 }
                 if (this.hls) {
                     try { this.hls.destroy(); } catch (e) {}
@@ -4326,9 +4577,7 @@ onplay: function() {
 
             // HLS audio element'i temizle
             if (audio) {
-                audio.pause();
-                audio.src = '';
-                audio.load();
+                safeAudioCleanup(audio);
             }
 
             // HLS instance'i temizle
@@ -5662,7 +5911,7 @@ onplay: function() {
                         // 🛡️ GUARD: Sadece paused ise temizle
                         if (nextAudio.paused) {
                             try {
-                                nextAudio.src = '';
+                                nextAudio.removeAttribute('src');
                                 nextAudio.load();
                             } catch (e) {}
                         }
@@ -5733,9 +5982,7 @@ onplay: function() {
                         document.body.appendChild(nextAudio);
                     } else {
                         try {
-                            nextAudio.pause();
-                            nextAudio.src = '';
-                            nextAudio.load();
+                            safeAudioCleanup(nextAudio);
                         } catch (e) {}
                     }
 
@@ -5801,6 +6048,10 @@ onplay: function() {
                     if (audio) {
                         try {
                             audio.pause();
+                            // 🔇 Error handler'ı temizle (Empty src hatası önleme)
+                            audio.onerror = null;
+                            audio.onended = null;
+                            audio.ontimeupdate = null;
                             audio.removeAttribute('src');
                             audio.load(); // MediaSource'u sıfırlar
                         } catch (e) {}
@@ -6260,8 +6511,7 @@ onplay: function() {
                         if (this.hls) {
                             const audio = this.getActiveHlsAudio();
                             if (audio) {
-                                audio.pause();
-                                audio.src = '';
+                                safeAudioCleanup(audio);
                             }
                             this.hls.stopLoad?.();
                             this.hls.destroy?.();

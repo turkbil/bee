@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurumsal Playlist Sistemi - Derin Planlama</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .gradient-border { background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899); }
+        .glass { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(10px); }
+        .timeline-item::before { content: ''; position: absolute; left: -26px; top: 8px; width: 12px; height: 12px; border-radius: 50%; background: #3b82f6; border: 2px solid #1e293b; }
+        .phase-complete::before { background: #22c55e; }
+        .phase-current::before { background: #f59e0b; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); } 50% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); } }
+    </style>
+</head>
+<body class="bg-slate-900 text-gray-100 min-h-screen">
+    <!-- Header -->
+    <div class="gradient-border p-1">
+        <header class="bg-slate-900 px-6 py-8">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="px-3 py-1 bg-blue-600/30 text-blue-400 text-sm font-medium rounded-full">
+                        <i class="fas fa-diagram-project mr-1"></i> Derin Planlama
+                    </span>
+                    <span class="px-3 py-1 bg-purple-600/30 text-purple-400 text-sm font-medium rounded-full">
+                        <i class="fas fa-building mr-1"></i> Muzibu Corporate
+                    </span>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-black mb-3">
+                    <i class="fas fa-list-music text-blue-500 mr-3"></i>
+                    Kurumsal Playlist Sistemi
+                </h1>
+                <p class="text-xl text-gray-400">Ana firma kendi playlistlerini oluşturur, üyelerine dağıtır</p>
+                <div class="mt-4 flex flex-wrap gap-4 text-sm text-gray-500">
+                    <span><i class="fas fa-calendar mr-1"></i> 30 Aralık 2025</span>
+                    <span><i class="fas fa-code-branch mr-1"></i> Tenant: Muzibu (1001)</span>
+                    <span><i class="fas fa-layer-group mr-1"></i> Versiyon: 1.0</span>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <main class="max-w-6xl mx-auto px-6 py-10">
+
+        <!-- Executive Summary -->
+        <section class="mb-12">
+            <div class="glass rounded-2xl p-6 border border-slate-700">
+                <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                    <i class="fas fa-bullseye text-green-500"></i> Hedef Özeti
+                </h2>
+
+                <!-- Basit Anlatım -->
+                <div class="bg-green-900/20 border border-green-800 rounded-xl p-5 mb-4">
+                    <h3 class="font-semibold text-green-400 mb-3"><i class="fas fa-user mr-2"></i>Basit Anlatım (Herkes İçin)</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        <strong>Şu anda:</strong> Kurumsal firmalar sadece abonelik alıp üyelerine dağıtabiliyor.<br><br>
+                        <strong>Hedef:</strong> Kurumsal firma sahibi (örn: Cafe zinciri sahibi) kendi özel çalma listelerini oluşturabilecek.
+                        Bu listeleri tüm şubelerine/üyelerine dağıtabilecek. Üyeler bu listeleri görecek ve dinleyebilecek.
+                        Ayrıca kullanıcılar playlist sayfasında "Sektör" veya "Radyo" seçer gibi "Kurum" da seçebilecek.
+                    </p>
+                </div>
+
+                <!-- Teknik Özet -->
+                <div class="bg-blue-900/20 border border-blue-800 rounded-xl p-5">
+                    <h3 class="font-semibold text-blue-400 mb-3"><i class="fas fa-code mr-2"></i>Teknik Özet (Geliştiriciler İçin)</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><i class="fas fa-check text-blue-500 mr-2"></i><code>corporate_playlists</code> pivot tablosu: Playlist-Corporate bağlantısı</li>
+                        <li><i class="fas fa-check text-blue-500 mr-2"></i><code>is_corporate</code> flag: Playlist modeline ekleme</li>
+                        <li><i class="fas fa-check text-blue-500 mr-2"></i>PlaylistController: Corporate filter ekleme</li>
+                        <li><i class="fas fa-check text-blue-500 mr-2"></i>Frontend: Sektör/Radyo gibi kurum filtresi</li>
+                        <li><i class="fas fa-check text-blue-500 mr-2"></i>Corporate Dashboard: Playlist CRUD yönetimi</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Current State Analysis -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-microscope text-purple-500"></i> Mevcut Durum Analizi
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Corporate System -->
+                <div class="glass rounded-xl p-5 border border-slate-700">
+                    <h3 class="font-semibold text-purple-400 mb-4 flex items-center gap-2">
+                        <i class="fas fa-building"></i> Kurumsal Sistem (Mevcut)
+                    </h3>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                            <span><strong>Hiyerarşik yapı:</strong> Ana firma → Şubeler (parent_id ile)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                            <span><strong>Davet kodu:</strong> 8 haneli unique kod ile üye ekleme</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                            <span><strong>Abonelik paylaşımı:</strong> Firma aboneliği üyelere yansıyor</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-times-circle text-red-500 mt-1"></i>
+                            <span><strong class="text-red-400">Playlist yok:</strong> Kurumsal playlist özelliği mevcut değil</span>
+                        </li>
+                    </ul>
+                    <div class="mt-4 p-3 bg-slate-800 rounded-lg text-xs font-mono">
+                        <span class="text-gray-500">Model:</span> MuzibuCorporateAccount<br>
+                        <span class="text-gray-500">Tablo:</span> muzibu_corporate_accounts
+                    </div>
+                </div>
+
+                <!-- Playlist System -->
+                <div class="glass rounded-xl p-5 border border-slate-700">
+                    <h3 class="font-semibold text-blue-400 mb-4 flex items-center gap-2">
+                        <i class="fas fa-list-music"></i> Playlist Sistemi (Mevcut)
+                    </h3>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                            <span><strong>User playlist:</strong> Her kullanıcı kendi listesini oluşturur</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                            <span><strong>System playlist:</strong> Admin tarafından oluşturulan genel listeler</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                            <span><strong>Sektör & Radyo bağlantısı:</strong> Pivot tablolarla ilişki</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-times-circle text-red-500 mt-1"></i>
+                            <span><strong class="text-red-400">Corporate bağlantısı yok:</strong> Kurumsal ilişki mevcut değil</span>
+                        </li>
+                    </ul>
+                    <div class="mt-4 p-3 bg-slate-800 rounded-lg text-xs font-mono">
+                        <span class="text-gray-500">Model:</span> Playlist<br>
+                        <span class="text-gray-500">Tablo:</span> muzibu_playlists
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture Design -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-sitemap text-cyan-500"></i> Mimari Tasarım
+            </h2>
+
+            <!-- Database Schema -->
+            <div class="glass rounded-xl p-6 border border-slate-700 mb-6">
+                <h3 class="font-semibold text-cyan-400 mb-4"><i class="fas fa-database mr-2"></i>Veritabanı Şeması</h3>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- New Table -->
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h4 class="font-medium text-yellow-400 mb-3 flex items-center gap-2">
+                            <i class="fas fa-plus-circle"></i> YENİ TABLO: muzibu_corporate_playlists
+                        </h4>
+                        <table class="w-full text-sm">
+                            <thead class="text-gray-400 border-b border-slate-600">
+                                <tr><th class="text-left py-2">Kolon</th><th class="text-left py-2">Tip</th><th class="text-left py-2">Açıklama</th></tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-slate-700"><td class="py-2">id</td><td>bigint PK</td><td>Auto increment</td></tr>
+                                <tr class="border-b border-slate-700"><td class="py-2">corporate_id</td><td>bigint FK</td><td>→ corporate_accounts</td></tr>
+                                <tr class="border-b border-slate-700"><td class="py-2">playlist_id</td><td>bigint FK</td><td>→ playlists</td></tr>
+                                <tr class="border-b border-slate-700"><td class="py-2">is_shared</td><td>boolean</td><td>Üyelere paylaşıldı mı?</td></tr>
+                                <tr class="border-b border-slate-700"><td class="py-2">shared_at</td><td>timestamp</td><td>Paylaşım tarihi</td></tr>
+                                <tr><td class="py-2">timestamps</td><td>datetime</td><td>created_at, updated_at</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Modified Table -->
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h4 class="font-medium text-orange-400 mb-3 flex items-center gap-2">
+                            <i class="fas fa-edit"></i> GÜNCELLEME: muzibu_playlists
+                        </h4>
+                        <table class="w-full text-sm">
+                            <thead class="text-gray-400 border-b border-slate-600">
+                                <tr><th class="text-left py-2">Yeni Kolon</th><th class="text-left py-2">Tip</th><th class="text-left py-2">Açıklama</th></tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-slate-700">
+                                    <td class="py-2 text-green-400">is_corporate</td>
+                                    <td>boolean</td>
+                                    <td>Kurumsal playlist mi?</td>
+                                </tr>
+                                <tr class="border-b border-slate-700">
+                                    <td class="py-2 text-green-400">owner_corporate_id</td>
+                                    <td>bigint FK</td>
+                                    <td>Sahibi olan kurum</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 text-green-400">visibility</td>
+                                    <td>enum</td>
+                                    <td>'private', 'corporate', 'public'</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="mt-4 p-3 bg-slate-900 rounded text-xs">
+                            <span class="text-gray-400">Visibility mantığı:</span>
+                            <ul class="mt-2 space-y-1 text-gray-300">
+                                <li><code class="text-blue-400">private</code> → Sadece sahibi görür</li>
+                                <li><code class="text-purple-400">corporate</code> → Kurum üyeleri görür</li>
+                                <li><code class="text-green-400">public</code> → Herkes görür</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Entity Relationships -->
+            <div class="glass rounded-xl p-6 border border-slate-700">
+                <h3 class="font-semibold text-cyan-400 mb-4"><i class="fas fa-project-diagram mr-2"></i>İlişki Diyagramı</h3>
+                <div class="bg-slate-800 rounded-lg p-6 font-mono text-sm overflow-x-auto">
+                    <pre class="text-gray-300">
+┌─────────────────────┐          ┌──────────────────────┐
+│ MuzibuCorporateAccount│          │      Playlist         │
+├─────────────────────┤          ├──────────────────────┤
+│ id                  │◄────┐    │ playlist_id          │
+│ user_id (owner)     │     │    │ user_id              │
+│ parent_id           │     │    │ is_corporate ✨      │
+│ corporate_code      │     │    │ owner_corporate_id ✨│◄──┐
+│ company_name        │     │    │ visibility ✨        │   │
+│ is_active           │     │    │ is_system            │   │
+└─────────────────────┘     │    │ is_public            │   │
+         ▲                  │    └──────────────────────┘   │
+         │                  │              ▲                │
+         │                  │              │                │
+         │    ┌─────────────┴──────────────┴─────┐          │
+         │    │  muzibu_corporate_playlists      │          │
+         │    ├──────────────────────────────────┤          │
+         └────┤ corporate_id (FK)                │──────────┘
+              │ playlist_id (FK)                 │
+              │ is_shared                        │
+              │ shared_at                        │
+              └──────────────────────────────────┘
+
+✨ = Yeni eklenecek alanlar
+                    </pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Implementation Phases -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-tasks text-amber-500"></i> Uygulama Fazları
+            </h2>
+
+            <!-- Phase 1 -->
+            <div class="glass rounded-xl p-6 border border-slate-700 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-bold">1</span>
+                    <div>
+                        <h3 class="text-xl font-bold text-blue-400">Veritabanı & Model Katmanı</h3>
+                        <p class="text-gray-400 text-sm">Temel yapının oluşturulması</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h4 class="font-medium text-green-400 mb-3"><i class="fas fa-database mr-2"></i>Migration</h4>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-file-code text-gray-500"></i>
+                                <span>create_muzibu_corporate_playlists_table</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-file-code text-gray-500"></i>
+                                <span>add_corporate_fields_to_playlists</span>
+                            </li>
+                        </ul>
+                        <div class="mt-3 p-2 bg-slate-900 rounded text-xs">
+                            <span class="text-yellow-400">⚠️ DİKKAT:</span> Hem central hem tenant migration!
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h4 class="font-medium text-purple-400 mb-3"><i class="fas fa-cube mr-2"></i>Model Güncellemeleri</h4>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-plus text-green-500"></i>
+                                <span>Playlist → corporates() relation</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-plus text-green-500"></i>
+                                <span>Playlist → ownerCorporate() relation</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-plus text-green-500"></i>
+                                <span>Corporate → playlists() relation</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-plus text-green-500"></i>
+                                <span>Playlist scopes: corporate(), forCorporate()</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 2 -->
+            <div class="glass rounded-xl p-6 border border-slate-700 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center font-bold">2</span>
+                    <div>
+                        <h3 class="text-xl font-bold text-purple-400">Corporate Dashboard - Playlist Yönetimi</h3>
+                        <p class="text-gray-400 text-sm">Ana kullanıcı (firma sahibi) playlist oluşturabilmeli</p>
+                    </div>
+                </div>
+
+                <div class="bg-green-900/20 border border-green-800 rounded-lg p-4 mb-4">
+                    <h4 class="font-medium text-green-400 mb-2"><i class="fas fa-user mr-2"></i>Kullanıcı Hikayesi</h4>
+                    <p class="text-gray-300 text-sm">
+                        "Cafe zinciri sahibi olarak, tüm şubelerimde çalacak özel playlist'ler oluşturmak istiyorum.
+                        Her şubem benim oluşturduğum listeleri görebilmeli ve dinleyebilmeli."
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h4 class="font-medium text-yellow-400 mb-3"><i class="fas fa-plus-circle mr-2"></i>Oluşturma</h4>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li>• Playlist adı (JSON - çoklu dil)</li>
+                            <li>• Kapak görseli</li>
+                            <li>• Açıklama</li>
+                            <li>• Visibility seçimi</li>
+                            <li>• Şarkı ekleme (mevcut songs)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h4 class="font-medium text-blue-400 mb-3"><i class="fas fa-share-alt mr-2"></i>Paylaşma</h4>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li>• Tüm üyelere paylaş</li>
+                            <li>• Seçili üyelere paylaş</li>
+                            <li>• Paylaşımı geri al</li>
+                            <li>• Paylaşım geçmişi</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h4 class="font-medium text-red-400 mb-3"><i class="fas fa-cog mr-2"></i>Yönetim</h4>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li>• Playlist düzenleme</li>
+                            <li>• Şarkı sırası değiştirme</li>
+                            <li>• Playlist silme</li>
+                            <li>• İstatistik görme</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-4 bg-slate-800 rounded-lg">
+                    <h4 class="font-medium text-cyan-400 mb-2"><i class="fas fa-file-code mr-2"></i>Gerekli Dosyalar</h4>
+                    <div class="grid md:grid-cols-2 gap-2 text-xs font-mono text-gray-400">
+                        <div>• CorporateFrontController.php (genişletme)</div>
+                        <div>• CorporatePlaylistService.php (YENİ)</div>
+                        <div>• corporate/playlists/index.blade.php</div>
+                        <div>• corporate/playlists/manage.blade.php</div>
+                        <div>• components/corporate-playlist-card.blade.php</div>
+                        <div>• API routes (SPA için)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 3 -->
+            <div class="glass rounded-xl p-6 border border-slate-700 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="w-10 h-10 bg-cyan-600 rounded-full flex items-center justify-center font-bold">3</span>
+                    <div>
+                        <h3 class="text-xl font-bold text-cyan-400">Frontend - Kurum Filtresi</h3>
+                        <p class="text-gray-400 text-sm">Playlist sayfasında sektör/radyo gibi kurum seçimi</p>
+                    </div>
+                </div>
+
+                <div class="bg-green-900/20 border border-green-800 rounded-lg p-4 mb-4">
+                    <h4 class="font-medium text-green-400 mb-2"><i class="fas fa-user mr-2"></i>Kullanıcı Hikayesi</h4>
+                    <p class="text-gray-300 text-sm">
+                        "Bir cafede oturuyorum. Playlist sayfasından o cafe'nin özel listelerini seçip dinlemek istiyorum.
+                        Tıpkı sektör veya radyo seçer gibi kurum seçebilmeliyim."
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h4 class="font-medium text-amber-400 mb-3"><i class="fas fa-filter mr-2"></i>Filter Tabs</h4>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-3 p-2 bg-slate-700 rounded">
+                                <i class="fas fa-globe text-blue-400"></i>
+                                <span class="text-sm">Tümü (mevcut)</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 bg-slate-700 rounded">
+                                <i class="fas fa-building text-purple-400"></i>
+                                <span class="text-sm">Sektörler (mevcut)</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 bg-slate-700 rounded">
+                                <i class="fas fa-radio text-green-400"></i>
+                                <span class="text-sm">Radyolar (mevcut)</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 bg-amber-600/30 border border-amber-600 rounded">
+                                <i class="fas fa-briefcase text-amber-400"></i>
+                                <span class="text-sm text-amber-400 font-medium">Kurumlar (YENİ)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h4 class="font-medium text-cyan-400 mb-3"><i class="fas fa-list mr-2"></i>Kurum Dropdown</h4>
+                        <p class="text-gray-400 text-sm mb-3">Kullanıcı "Kurumlar" seçtiğinde:</p>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-search text-gray-500"></i>
+                                <span>Kurum arama (isim ile)</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-building text-gray-500"></i>
+                                <span>Public kurumları listele</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-star text-gray-500"></i>
+                                <span>Üye olunan kurumlar önce</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-gray-500"></i>
+                                <span>Seçince o kurumun playlistleri</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-4 bg-blue-900/20 border border-blue-800 rounded-lg">
+                    <h4 class="font-medium text-blue-400 mb-2"><i class="fas fa-code mr-2"></i>Teknik Detay</h4>
+                    <p class="text-gray-300 text-sm">
+                        PlaylistController'da <code class="bg-slate-700 px-1 rounded">?corporate={id}</code> query parametresi ile filtreleme.
+                        API endpoint: <code class="bg-slate-700 px-1 rounded">/api/playlists?corporate=5</code>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Phase 4 -->
+            <div class="glass rounded-xl p-6 border border-slate-700 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="w-10 h-10 bg-pink-600 rounded-full flex items-center justify-center font-bold">4</span>
+                    <div>
+                        <h3 class="text-xl font-bold text-pink-400">Üye Deneyimi</h3>
+                        <p class="text-gray-400 text-sm">Kurumsal üyelerin playlist erişimi</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h4 class="font-medium text-green-400 mb-3"><i class="fas fa-eye mr-2"></i>Görüntüleme</h4>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li>• My Corporate sayfasında "Kurumsal Playlistler" sekmesi</li>
+                            <li>• Sidebar'da kurumsal playlist bölümü</li>
+                            <li>• Ana sayfada "Kurumunuzdan" section</li>
+                            <li>• Playlist detay sayfasında kurum badge</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h4 class="font-medium text-purple-400 mb-3"><i class="fas fa-headphones mr-2"></i>Dinleme</h4>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li>• Normal playlist gibi çalma</li>
+                            <li>• Queue'ya ekleme</li>
+                            <li>• Favorilere ekleme (opsiyonel)</li>
+                            <li>• Paylaşma (opsiyonel - firma izni)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 5 (Future) -->
+            <div class="glass rounded-xl p-6 border border-dashed border-slate-600 opacity-75">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="w-10 h-10 bg-slate-600 rounded-full flex items-center justify-center font-bold">5</span>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-400">Gelecek Özellikler (İleri Faz)</h3>
+                        <p class="text-gray-500 text-sm">Sonraki geliştirmeler için planlanan</p>
+                    </div>
+                    <span class="px-2 py-1 bg-gray-700 text-gray-400 text-xs rounded">GELECEK</span>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-4 text-sm">
+                    <div class="p-3 bg-slate-800/50 rounded">
+                        <h4 class="font-medium text-gray-400 mb-2"><i class="fas fa-chart-line mr-2"></i>Analytics</h4>
+                        <p class="text-gray-500">Hangi playlist en çok dinleniyor, üye aktiviteleri</p>
+                    </div>
+                    <div class="p-3 bg-slate-800/50 rounded">
+                        <h4 class="font-medium text-gray-400 mb-2"><i class="fas fa-clock mr-2"></i>Zamanlama</h4>
+                        <p class="text-gray-500">Belirli saatlerde otomatik playlist değişimi</p>
+                    </div>
+                    <div class="p-3 bg-slate-800/50 rounded">
+                        <h4 class="font-medium text-gray-400 mb-2"><i class="fas fa-users-cog mr-2"></i>Rol Yönetimi</h4>
+                        <p class="text-gray-500">Şube yöneticilerine playlist düzenleme izni</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Implementation Details -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-cogs text-orange-500"></i> Teknik Uygulama Detayları
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Model Relations -->
+                <div class="glass rounded-xl p-6 border border-slate-700">
+                    <h3 class="font-semibold text-orange-400 mb-4"><i class="fas fa-link mr-2"></i>Model İlişkileri</h3>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-800 rounded-lg p-4">
+                            <h4 class="text-sm font-medium text-blue-400 mb-2">Playlist Model (Eklenecek)</h4>
+                            <pre class="text-xs text-gray-300 overflow-x-auto"><code>// Sahibi olan kurum
+public function ownerCorporate(): BelongsTo
+{
+    return $this->belongsTo(
+        MuzibuCorporateAccount::class,
+        'owner_corporate_id'
+    );
+}
+
+// Paylaşıldığı kurumlar (many-to-many)
+public function corporates(): BelongsToMany
+{
+    return $this->belongsToMany(
+        MuzibuCorporateAccount::class,
+        'muzibu_corporate_playlists',
+        'playlist_id',
+        'corporate_id'
+    )->withPivot('is_shared', 'shared_at')
+     ->withTimestamps();
+}
+
+// Scope: Kurumsal playlistler
+public function scopeCorporate($query)
+{
+    return $query->where('is_corporate', true);
+}
+
+// Scope: Belirli kurumun playlistleri
+public function scopeForCorporate($query, $corporateId)
+{
+    return $query->where('owner_corporate_id', $corporateId)
+                 ->orWhereHas('corporates', fn($q) =>
+                     $q->where('corporate_id', $corporateId)
+                       ->where('is_shared', true)
+                 );
+}</code></pre>
+                        </div>
+
+                        <div class="bg-slate-800 rounded-lg p-4">
+                            <h4 class="text-sm font-medium text-purple-400 mb-2">Corporate Model (Eklenecek)</h4>
+                            <pre class="text-xs text-gray-300 overflow-x-auto"><code>// Kurumun kendi playlistleri
+public function ownedPlaylists(): HasMany
+{
+    return $this->hasMany(
+        Playlist::class,
+        'owner_corporate_id'
+    );
+}
+
+// Paylaşılan playlistler (many-to-many)
+public function sharedPlaylists(): BelongsToMany
+{
+    return $this->belongsToMany(
+        Playlist::class,
+        'muzibu_corporate_playlists',
+        'corporate_id',
+        'playlist_id'
+    )->withPivot('is_shared', 'shared_at')
+     ->wherePivot('is_shared', true)
+     ->withTimestamps();
+}
+
+// Tüm erişilebilir playlistler
+public function allAccessiblePlaylists()
+{
+    $owned = $this->ownedPlaylists()->pluck('playlist_id');
+    $shared = $this->sharedPlaylists()->pluck('playlist_id');
+
+    return Playlist::whereIn('playlist_id',
+        $owned->merge($shared)
+    );
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service Layer -->
+                <div class="glass rounded-xl p-6 border border-slate-700">
+                    <h3 class="font-semibold text-green-400 mb-4"><i class="fas fa-layer-group mr-2"></i>Service Katmanı</h3>
+
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h4 class="text-sm font-medium text-green-400 mb-2">CorporatePlaylistService.php (YENİ)</h4>
+                        <pre class="text-xs text-gray-300 overflow-x-auto"><code>class CorporatePlaylistService
+{
+    // Kurumsal playlist oluştur
+    public function createPlaylist(
+        MuzibuCorporateAccount $corporate,
+        array $data
+    ): Playlist
+
+    // Playlist'i üyelere paylaş
+    public function shareWithMembers(
+        Playlist $playlist,
+        array $memberIds = null // null = tümüne
+    ): void
+
+    // Paylaşımı geri al
+    public function unshare(
+        Playlist $playlist,
+        array $memberIds = null
+    ): void
+
+    // Kullanıcının erişebildiği kurumsal playlistler
+    public function getAccessiblePlaylists(User $user): Collection
+
+    // Kurumun tüm playlistleri (owned + shared)
+    public function getCorporatePlaylists(
+        MuzibuCorporateAccount $corporate
+    ): Collection
+
+    // İstatistikler
+    public function getPlaylistStats(Playlist $playlist): array
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- API Routes -->
+                <div class="glass rounded-xl p-6 border border-slate-700">
+                    <h3 class="font-semibold text-cyan-400 mb-4"><i class="fas fa-route mr-2"></i>API Routes</h3>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="text-gray-400 border-b border-slate-600">
+                                <tr>
+                                    <th class="text-left py-2">Method</th>
+                                    <th class="text-left py-2">Endpoint</th>
+                                    <th class="text-left py-2">Açıklama</th>
+                                    <th class="text-left py-2">Yetki</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-slate-700">
+                                    <td class="py-2"><span class="text-green-400">GET</span></td>
+                                    <td>/api/corporate/playlists</td>
+                                    <td>Kurumun playlistleri</td>
+                                    <td>Corporate Owner</td>
+                                </tr>
+                                <tr class="border-b border-slate-700">
+                                    <td class="py-2"><span class="text-blue-400">POST</span></td>
+                                    <td>/api/corporate/playlists</td>
+                                    <td>Yeni playlist oluştur</td>
+                                    <td>Corporate Owner</td>
+                                </tr>
+                                <tr class="border-b border-slate-700">
+                                    <td class="py-2"><span class="text-yellow-400">PUT</span></td>
+                                    <td>/api/corporate/playlists/{id}</td>
+                                    <td>Playlist güncelle</td>
+                                    <td>Corporate Owner</td>
+                                </tr>
+                                <tr class="border-b border-slate-700">
+                                    <td class="py-2"><span class="text-red-400">DELETE</span></td>
+                                    <td>/api/corporate/playlists/{id}</td>
+                                    <td>Playlist sil</td>
+                                    <td>Corporate Owner</td>
+                                </tr>
+                                <tr class="border-b border-slate-700">
+                                    <td class="py-2"><span class="text-blue-400">POST</span></td>
+                                    <td>/api/corporate/playlists/{id}/share</td>
+                                    <td>Üyelere paylaş</td>
+                                    <td>Corporate Owner</td>
+                                </tr>
+                                <tr class="border-b border-slate-700">
+                                    <td class="py-2"><span class="text-blue-400">POST</span></td>
+                                    <td>/api/corporate/playlists/{id}/unshare</td>
+                                    <td>Paylaşımı kaldır</td>
+                                    <td>Corporate Owner</td>
+                                </tr>
+                                <tr class="border-b border-slate-700">
+                                    <td class="py-2"><span class="text-green-400">GET</span></td>
+                                    <td>/api/my-corporate/playlists</td>
+                                    <td>Üyenin eriştiği playlistler</td>
+                                    <td>Corporate Member</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2"><span class="text-green-400">GET</span></td>
+                                    <td>/api/playlists?corporate={id}</td>
+                                    <td>Public kurumsal playlistler</td>
+                                    <td>Public</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- UI/UX Mockups -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-palette text-pink-500"></i> UI/UX Tasarım Notları
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Corporate Dashboard -->
+                <div class="glass rounded-xl p-6 border border-slate-700">
+                    <h3 class="font-semibold text-pink-400 mb-4"><i class="fas fa-tachometer-alt mr-2"></i>Corporate Dashboard</h3>
+                    <div class="bg-slate-800 rounded-lg p-4 text-sm">
+                        <div class="border-b border-slate-600 pb-2 mb-3">
+                            <span class="text-gray-400">Yeni Tab:</span>
+                            <span class="text-white font-medium ml-2">🎵 Playlistlerim</span>
+                        </div>
+                        <ul class="space-y-2 text-gray-300">
+                            <li>• Grid view (playlist kartları)</li>
+                            <li>• "Yeni Playlist" butonu (sağ üst)</li>
+                            <li>• Her kartta: Düzenle, Paylaş, Sil</li>
+                            <li>• Paylaşım durumu badge (Paylaşıldı/Özel)</li>
+                            <li>• Dinlenme sayısı istatistiği</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Playlist Page Filter -->
+                <div class="glass rounded-xl p-6 border border-slate-700">
+                    <h3 class="font-semibold text-amber-400 mb-4"><i class="fas fa-filter mr-2"></i>Playlist Sayfası Filtre</h3>
+                    <div class="bg-slate-800 rounded-lg p-4 text-sm">
+                        <div class="flex gap-2 mb-4 flex-wrap">
+                            <span class="px-3 py-1 bg-slate-700 rounded-full text-gray-300">Tümü</span>
+                            <span class="px-3 py-1 bg-slate-700 rounded-full text-gray-300">Sektörler</span>
+                            <span class="px-3 py-1 bg-slate-700 rounded-full text-gray-300">Radyolar</span>
+                            <span class="px-3 py-1 bg-amber-600 rounded-full text-white">Kurumlar ✨</span>
+                        </div>
+                        <div class="text-gray-400 text-xs">
+                            "Kurumlar" seçildiğinde → Kurum dropdown/arama açılır
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Member View -->
+                <div class="glass rounded-xl p-6 border border-slate-700">
+                    <h3 class="font-semibold text-green-400 mb-4"><i class="fas fa-user mr-2"></i>Üye Görünümü</h3>
+                    <div class="bg-slate-800 rounded-lg p-4 text-sm">
+                        <div class="border-b border-slate-600 pb-2 mb-3">
+                            <span class="text-gray-400">My Corporate sayfasında:</span>
+                        </div>
+                        <ul class="space-y-2 text-gray-300">
+                            <li>• "Kurumsal Playlistler" section</li>
+                            <li>• Kurum adı + logo header</li>
+                            <li>• Paylaşılan playlistler grid</li>
+                            <li>• Tek tıkla çalma</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Sidebar Integration -->
+                <div class="glass rounded-xl p-6 border border-slate-700">
+                    <h3 class="font-semibold text-blue-400 mb-4"><i class="fas fa-bars mr-2"></i>Sidebar Entegrasyonu</h3>
+                    <div class="bg-slate-800 rounded-lg p-4 text-sm">
+                        <ul class="space-y-2 text-gray-300">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-building text-purple-400"></i>
+                                <span>Kurumsal Listeler (yeni section)</span>
+                            </li>
+                            <li class="pl-6">└ Cafe XYZ Sabah Listesi</li>
+                            <li class="pl-6">└ Cafe XYZ Akşam Listesi</li>
+                            <li class="pl-6">└ Özel Cuma Listesi</li>
+                        </ul>
+                        <div class="mt-3 text-xs text-gray-500">
+                            Sadece üye olduğu kurumun playlistleri görünür
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Risk Analysis -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-exclamation-triangle text-yellow-500"></i> Risk Analizi & Dikkat Noktaları
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-red-900/20 border border-red-800 rounded-xl p-5">
+                    <h3 class="font-semibold text-red-400 mb-3"><i class="fas fa-times-circle mr-2"></i>Potansiyel Riskler</h3>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li>• <strong>Yetki karmaşası:</strong> Kim neyi düzenleyebilir?</li>
+                        <li>• <strong>Veri izolasyonu:</strong> Kurumlar arası veri sızıntısı</li>
+                        <li>• <strong>Performans:</strong> Çok sayıda kurumda N+1 query</li>
+                        <li>• <strong>UX karmaşası:</strong> Çok fazla filtre seçeneği</li>
+                    </ul>
+                </div>
+
+                <div class="bg-green-900/20 border border-green-800 rounded-xl p-5">
+                    <h3 class="font-semibold text-green-400 mb-3"><i class="fas fa-shield-alt mr-2"></i>Çözüm Stratejileri</h3>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li>• <strong>Middleware:</strong> CorporateOwnerMiddleware</li>
+                        <li>• <strong>Policy:</strong> PlaylistPolicy::manageCorporate()</li>
+                        <li>• <strong>Eager loading:</strong> with('corporates')</li>
+                        <li>• <strong>Progressive disclosure:</strong> Basit başla</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Implementation Checklist -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-clipboard-check text-green-500"></i> Uygulama Kontrol Listesi
+            </h2>
+
+            <div class="glass rounded-xl p-6 border border-slate-700">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-semibold text-blue-400 mb-4">Faz 1: Database</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="far fa-square text-gray-500"></i>
+                                Migration: corporate_playlists pivot
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="far fa-square text-gray-500"></i>
+                                Migration: playlists tablosuna alanlar
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="far fa-square text-gray-500"></i>
+                                Index'ler ve foreign key'ler
+                            </li>
+                        </ul>
+
+                        <h3 class="font-semibold text-purple-400 mb-4 mt-6">Faz 2: Backend</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="far fa-square text-gray-500"></i>
+                                Playlist model relations
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="far fa-square text-gray-500"></i>
+                                Corporate model relations
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="far fa-square text-gray-500"></i>
+                                CorporatePlaylistService
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="far fa-square text-gray-500"></i>
+                                API routes & controllers
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="far fa-square text-gray-500"></i>
+                                PlaylistPolicy güncellemesi
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="font-semibold text-cyan-400 mb-4">Faz 3: Frontend - Dashboard</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="far fa-square text-gray-500"></i>
+                                Corporate dashboard playlist tab
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="far fa-square text-gray-500"></i>
+                                Playlist create/edit modal
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="far fa-square text-gray-500"></i>
+                                Song picker component
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="far fa-square text-gray-500"></i>
+                                Share modal
+                            </li>
+                        </ul>
+
+                        <h3 class="font-semibold text-pink-400 mb-4 mt-6">Faz 4: Frontend - Public</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="far fa-square text-gray-500"></i>
+                                Playlist index kurum filtresi
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="far fa-square text-gray-500"></i>
+                                Kurum dropdown component
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="far fa-square text-gray-500"></i>
+                                My Corporate playlist section
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-300">
+                                <i class="far fa-square text-gray-500"></i>
+                                Sidebar kurumsal listeler
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-800 rounded-2xl p-6">
+                <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                    <i class="fas fa-rocket text-blue-400"></i> Sonuç & Öneri
+                </h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-medium text-green-400 mb-2">Önerilen Başlangıç</h3>
+                        <p class="text-gray-300 text-sm">
+                            <strong>Faz 1 + Faz 2</strong> ile başlamak mantıklı. Database ve backend hazır olunca
+                            frontend aşamalı olarak eklenebilir. İlk etapta sadece "Corporate Owner playlist oluşturma"
+                            ve "üyelerin görüntülemesi" yeterli.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="font-medium text-amber-400 mb-2">Tahmini Kapsam</h3>
+                        <ul class="text-sm text-gray-300">
+                            <li>• 2 Migration dosyası</li>
+                            <li>• 1 Service class (yeni)</li>
+                            <li>• 2 Model güncelleme</li>
+                            <li>• 4-5 View dosyası</li>
+                            <li>• 8-10 API endpoint</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 py-6 text-center text-gray-500 text-sm">
+        <p>
+            <i class="fas fa-robot mr-1"></i> Claude AI tarafından hazırlandı
+            <span class="mx-2">|</span>
+            <i class="fas fa-calendar mr-1"></i> 30 Aralık 2025
+            <span class="mx-2">|</span>
+            <i class="fas fa-code-branch mr-1"></i> Muzibu Corporate Playlist System v1.0
+        </p>
+    </footer>
+</body>
+</html>

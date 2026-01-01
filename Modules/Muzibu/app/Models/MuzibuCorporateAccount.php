@@ -13,6 +13,18 @@ class MuzibuCorporateAccount extends Model
     use HasPlaylistDistribution;
     protected $table = 'muzibu_corporate_accounts';
 
+    /**
+     * Dinamik connection resolver
+     * Central tenant ise mysql (default), değilse tenant connection
+     */
+    public function getConnectionName()
+    {
+        if (function_exists('tenant') && tenant() && !tenant()->central) {
+            return 'tenant';
+        }
+        return config('database.default');
+    }
+
     protected $fillable = [
         'user_id',
         'parent_id',
@@ -20,10 +32,20 @@ class MuzibuCorporateAccount extends Model
         'company_name',
         'branch_name',
         'is_active',
+        // Spot sistemi
+        'spot_enabled',
+        'spot_songs_between',
+        'spot_current_index',
+        'spot_is_paused',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        // Spot sistemi
+        'spot_enabled' => 'boolean',
+        'spot_songs_between' => 'integer',
+        'spot_current_index' => 'integer',
+        'spot_is_paused' => 'boolean',
     ];
 
     /**
@@ -100,6 +122,58 @@ class MuzibuCorporateAccount extends Model
     public function members(): HasMany
     {
         return $this->hasMany(self::class, 'parent_id');
+    }
+
+    /**
+     * Kurumun spotları (anonslari)
+     */
+    public function spots(): HasMany
+    {
+        return $this->hasMany(CorporateSpot::class, 'corporate_account_id');
+    }
+
+    /**
+     * Aktif ve şu an geçerli spotları getir
+     */
+    public function activeSpots()
+    {
+        return $this->spots()->currentlyActive()->ordered();
+    }
+
+    /**
+     * Spot dinleme kayıtları
+     */
+    public function spotPlays(): HasMany
+    {
+        return $this->hasMany(CorporateSpotPlay::class, 'corporate_account_id');
+    }
+
+    /**
+     * Bir sonraki spotu getir ve index'i güncelle
+     */
+    public function getNextSpot(): ?CorporateSpot
+    {
+        // Spot sistemi kapalıysa veya durdurulmuşsa null döndür
+        if (!$this->spot_enabled || $this->spot_is_paused) {
+            return null;
+        }
+
+        $spot = CorporateSpot::getNextSpot($this->id, $this->spot_current_index);
+
+        if ($spot) {
+            // Bir sonraki index'e geç
+            $this->increment('spot_current_index');
+        }
+
+        return $spot;
+    }
+
+    /**
+     * Spot rotation index'i sıfırla
+     */
+    public function resetSpotIndex(): void
+    {
+        $this->update(['spot_current_index' => 0]);
     }
 
     /**

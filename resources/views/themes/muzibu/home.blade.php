@@ -25,12 +25,12 @@
                type: 'Playlist',
                id: {{ $playlist->playlist_id }},
                title: '{{ addslashes(getLocaleTitle($playlist->title, 'Playlist')) }}',
-               cover: '{{ $playlist->coverMedia ? thumb($playlist->coverMedia, 300, 300, ['scale' => 1]) : '' }}',
+               cover: '{{ $playlist->getCoverUrl(300, 300) ?? '' }}',
                is_favorite: {{ is_favorited('playlist', $playlist->playlist_id) ? 'true' : 'false' }}
            })">
             <div class="w-16 h-16 flex-shrink-0">
-                @if($playlist->coverMedia)
-                    <img src="{{ thumb($playlist->coverMedia, 64, 64, ['scale' => 1]) }}" alt="{{ getLocaleTitle($playlist->title, 'Playlist') }}" class="w-full h-full object-cover">
+                @if($playlist->getCoverUrl())
+                    <img src="{{ thumb($playlist->getCoverUrl(), 64, 64, ['scale' => 1]) }}" alt="{{ getLocaleTitle($playlist->title, 'Playlist') }}" class="w-full h-full object-cover">
                 @else
                     <div class="w-full h-full bg-gradient-to-br from-muzibu-coral to-pink-600 flex items-center justify-center text-xl">🎵</div>
                 @endif
@@ -121,7 +121,7 @@
                type: 'Playlist',
                id: {{ $playlist->playlist_id }},
                title: '{{ addslashes(getLocaleTitle($playlist->title, 'Playlist')) }}',
-               cover: '{{ $playlist->coverMedia ? thumb($playlist->coverMedia, 300, 300, ['scale' => 1]) : '' }}',
+               cover: '{{ $playlist->getCoverUrl(300, 300) ?? '' }}',
                is_favorite: {{ is_favorited('playlist', $playlist->playlist_id) ? 'true' : 'false' }}
            })">
             {{-- Hover Shimmer/Buz Efekti --}}
@@ -131,8 +131,8 @@
 
             <div class="relative mb-3">
                 <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
-                    @if($playlist->coverMedia)
-                        <img src="{{ thumb($playlist->coverMedia, 200, 200, ['scale' => 1]) }}" alt="{{ getLocaleTitle($playlist->title, 'Playlist') }}" loading="lazy" class="w-full h-full object-cover">
+                    @if($playlist->getCoverUrl())
+                        <img src="{{ thumb($playlist->getCoverUrl(), 200, 200, ['scale' => 1]) }}" alt="{{ getLocaleTitle($playlist->title, 'Playlist') }}" loading="lazy" class="w-full h-full object-cover">
                     @else
                         <div class="w-full h-full bg-gradient-to-br from-muzibu-coral to-pink-600 flex items-center justify-center text-4xl">🎵</div>
                     @endif
@@ -252,7 +252,7 @@
                id: {{ $album->album_id }},
                title: '{{ addslashes(getLocaleTitle($album->title, 'Album')) }}',
                artist: '{{ $album->artist ? addslashes(is_array($album->artist->title) ? ($album->artist->title['tr'] ?? $album->artist->title['en'] ?? 'Artist') : $album->artist->title) : 'Sanatçı' }}',
-               cover: '{{ $album->coverMedia ? thumb($album->coverMedia, 300, 300, ['scale' => 1]) : '' }}',
+               cover: '{{ $album->getCoverUrl(300, 300) ?? '' }}',
                is_favorite: {{ is_favorited('album', $album->album_id) ? 'true' : 'false' }}
            })">
             {{-- Hover Shimmer/Buz Efekti --}}
@@ -262,8 +262,8 @@
 
             <div class="relative mb-3">
                 <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl" class="bg-gradient-to-br from-muzibu-coral to-purple-600">
-                    @if($album->coverMedia)
-                        <img src="{{ thumb($album->coverMedia, 200, 200, ['scale' => 1]) }}" alt="{{ getLocaleTitle($album->title, 'Album') }}" loading="lazy" class="w-full h-full object-cover">
+                    @if($album->getCoverUrl())
+                        <img src="{{ thumb($album->getCoverUrl(), 200, 200, ['scale' => 1]) }}" alt="{{ getLocaleTitle($album->title, 'Album') }}" loading="lazy" class="w-full h-full object-cover">
                     @else
                         <div class="w-full h-full flex items-center justify-center text-4xl">🎸</div>
                     @endif
@@ -543,7 +543,7 @@
                id: {{ $genre->genre_id }},
                title: '{{ addslashes(getLocaleTitle($genre->title, 'Genre')) }}',
                slug: '{{ $genre->getTranslation('slug', app()->getLocale()) }}',
-               cover: '{{ $genre->iconMedia ? thumb($genre->iconMedia, 300, 300, ['scale' => 1]) : '' }}',
+               cover: '{{ $genre->getIconUrl(300, 300) ?? '' }}',
                is_favorite: {{ is_favorited('genre', $genre->genre_id) ? 'true' : 'false' }}
            })">
             {{-- Hover Shimmer/Buz Efekti --}}
@@ -672,8 +672,8 @@
 
             <div class="relative mb-3">
                 <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
-                    @if($radio->media_id && $radio->logoMedia)
-                        <img src="{{ thumb($radio->logoMedia, 200, 200, ['scale' => 1]) }}" alt="{{ $radio->getTranslation('title', app()->getLocale()) }}" loading="lazy" class="w-full h-full object-cover">
+                    @if($radio->getCoverUrl())
+                        <img src="{{ $radio->getCoverUrl(200, 200) }}" alt="{{ $radio->getTranslation('title', app()->getLocale()) }}" loading="lazy" class="w-full h-full object-cover">
                     @else
                         <div class="w-full h-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-4xl">
                             <i class="fas fa-radio text-white opacity-80"></i>
@@ -790,7 +790,7 @@
                id: {{ $sector->sector_id }},
                title: '{{ addslashes($sector->getTranslation('title', app()->getLocale())) }}',
                slug: '{{ $sector->getTranslation('slug', app()->getLocale()) }}',
-               cover: '{{ $sector->iconMedia ? thumb($sector->iconMedia, 300, 300, ['scale' => 1]) : '' }}',
+               cover: '{{ $sector->getCoverUrl(300, 300) ?? '' }}',
                is_favorite: {{ is_favorited('sector', $sector->sector_id) ? 'true' : 'false' }}
            })">
             {{-- Hover Shimmer/Buz Efekti --}}
@@ -800,8 +800,8 @@
 
             <div class="relative mb-3">
                 <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
-                    @if($sector->media_id && $sector->iconMedia)
-                        <img src="{{ thumb($sector->iconMedia, 200, 200, ['scale' => 1]) }}" alt="{{ $sector->getTranslation('title', app()->getLocale()) }}" loading="lazy" class="w-full h-full object-cover">
+                    @if($sector->getCoverUrl())
+                        <img src="{{ $sector->getCoverUrl(200, 200) }}" alt="{{ $sector->getTranslation('title', app()->getLocale()) }}" loading="lazy" class="w-full h-full object-cover">
                     @else
                         <div class="w-full h-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-4xl">
                             🎭

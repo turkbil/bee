@@ -92,6 +92,15 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
+     * Spatie Media Collections - hero tek dosya (yeni yüklenince eski silinir)
+     */
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('hero')
+            ->singleFile();
+    }
+
+    /**
      * Public playlist'leri getir
      */
     public function scopePublic($query)
@@ -527,13 +536,12 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
 
     /**
      * Playlist cover URL'i (Thumbmaker helper ile)
+     * Sadece Spatie hero collection kullanır
      */
     public function getCoverUrl(?int $width = 600, ?int $height = 600, int $quality = 90): ?string
     {
-        if (!$this->media_id) {
-            return null;
-        }
-        return thumb($this->coverMedia, $width, $height, ['quality' => $quality]);
+        $heroMedia = $this->getFirstMedia('hero');
+        return $heroMedia ? thumb($heroMedia, $width, $height, ['quality' => $quality, 'scale' => 1]) : null;
     }
 
     /**
@@ -542,14 +550,8 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
      */
     public function getCoverUrlAttribute(): string
     {
-        $coverUrl = $this->getFirstMediaUrl('hero');
-
-        if (empty($coverUrl)) {
-            return '';
-        }
-
-        // Thumbmaker ile kare cover (200x200, fill/crop mode - ortadan kırpar)
-        return thumb($coverUrl, 200, 200, ['scale' => 1]);
+        $heroMedia = $this->getFirstMedia('hero');
+        return $heroMedia ? thumb($heroMedia, 200, 200, ['scale' => 1]) : '';
     }
 
     /**

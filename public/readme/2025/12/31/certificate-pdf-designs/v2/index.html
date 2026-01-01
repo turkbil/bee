@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>V2 - Landscape A4 (PDF Uyumlu)</title>
+    <style>
+        @page { margin: 0; size: A4 landscape; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DejaVu Sans', sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            width: 297mm;
+            height: 210mm;
+            margin: 0 auto;
+        }
+        .page {
+            width: 100%;
+            height: 100%;
+            padding: 10mm;
+        }
+        .border-box {
+            border: 3px solid #d4af37;
+            padding: 8mm;
+            height: 100%;
+        }
+        .main-table {
+            width: 100%;
+            height: 100%;
+            border-collapse: collapse;
+        }
+        .main-table > tbody > tr > td {
+            vertical-align: middle;
+        }
+        .center { text-align: center; }
+        .gold { color: #d4af37; }
+        .white { color: white; }
+        .gray { color: #94a3b8; }
+        .mono { font-family: 'DejaVu Sans Mono', monospace; }
+
+        .left-col {
+            width: 70mm;
+            text-align: center;
+            border-right: 1px solid rgba(212,175,55,0.3);
+            padding-right: 8mm;
+        }
+        .center-col {
+            padding: 0 10mm;
+        }
+        .right-col {
+            width: 80mm;
+            text-align: center;
+            border-left: 1px solid rgba(212,175,55,0.3);
+            padding-left: 8mm;
+        }
+
+        .logo-circle {
+            width: 20mm;
+            height: 20mm;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            border-radius: 50%;
+            margin: 0 auto 3mm;
+            line-height: 20mm;
+            font-size: 10mm;
+            color: white;
+            font-weight: bold;
+        }
+        .brand { font-size: 7mm; font-weight: bold; }
+        .brand-sub { font-size: 3mm; letter-spacing: 2mm; }
+
+        .title { font-size: 8mm; font-weight: bold; margin-bottom: 2mm; }
+        .member { font-size: 6mm; font-weight: bold; margin: 5mm 0; }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 4mm 0;
+            background: rgba(30, 41, 59, 0.5);
+        }
+        .info-table td {
+            border: 1px solid #334155;
+            padding: 3mm;
+            text-align: center;
+            width: 50%;
+        }
+        .label { font-size: 2.5mm; color: #64748b; }
+        .value { font-size: 3.5mm; color: white; margin-top: 1mm; }
+
+        .qr-box {
+            background: white;
+            padding: 3mm;
+            display: inline-block;
+            margin-bottom: 3mm;
+        }
+        .footer { font-size: 2.5mm; color: #475569; }
+    </style>
+</head>
+<body>
+    <div style="text-align:center;padding:6px;background:#d4af37;color:#0f172a;font-size:11px;font-weight:bold;">
+        V2 - Landscape A4 (Yatay) - PDF Uyumlu
+    </div>
+
+    <div class="page">
+        <div class="border-box">
+            <table class="main-table">
+                <tr>
+                    <!-- Sol: Logo -->
+                    <td class="left-col">
+                        <div class="logo-circle">M</div>
+                        <div class="brand gold">Muzibu</div>
+                        <div class="brand-sub gray">PREMIUM</div>
+                    </td>
+
+                    <!-- Orta: İçerik -->
+                    <td class="center-col">
+                        <div class="center">
+                            <div class="title white">Üyelik Sertifikası</div>
+                            <div class="member white mono">iXtif İç ve Dış Tic. A.Ş.</div>
+                        </div>
+
+                        <table class="info-table">
+                            <tr>
+                                <td>
+                                    <div class="label">SERTİFİKA NO</div>
+                                    <div class="value gold mono">MZB-2025-51A5</div>
+                                </td>
+                                <td>
+                                    <div class="label">ÜYELİK TARİHİ</div>
+                                    <div class="value">23.12.2025</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="label">VERGİ DAİRESİ</div>
+                                    <div class="value mono">Kartal</div>
+                                </td>
+                                <td>
+                                    <div class="label">VERGİ NO</div>
+                                    <div class="value mono">4831552951</div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div style="background:rgba(30,41,59,0.3);border:1px solid #334155;padding:3mm;margin:3mm 0;">
+                            <div class="label">KAYITLI ADRES</div>
+                            <div style="font-size:3mm;color:#cbd5e1;margin-top:1mm;">
+                                Karlıktepe Mah. Çamlık Sk. Manzara Adalar B Blok No: 1 B İç Kapı No: 89 Kartal/İstanbul
+                            </div>
+                        </div>
+                    </td>
+
+                    <!-- Sağ: QR -->
+                    <td class="right-col">
+                        <div class="qr-box">
+                            <div style="width:25mm;height:25mm;background:#f1f5f9;border:1px dashed #94a3b8;line-height:25mm;font-size:3mm;color:#64748b;">QR KOD</div>
+                        </div>
+                        <div style="font-size:2.5mm;color:#64748b;margin-bottom:3mm;">QR kod ile doğrulayın</div>
+
+                        <div style="background:rgba(30,58,138,0.2);border:1px solid #1e40af;padding:3mm;">
+                            <div style="color:#60a5fa;font-size:3mm;font-weight:bold;">Dijital İmza</div>
+                            <div style="color:#64748b;font-size:2.5mm;">256-bit şifrelenmiş</div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="footer center" style="position:absolute;bottom:12mm;left:0;right:0;">
+                <div>Bu belge Muzibu A.Ş. tarafından elektronik ortamda düzenlenmiştir. · <span class="gold">muzibu.com.tr</span></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

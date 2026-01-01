@@ -279,10 +279,13 @@ class LeonardoAIService
         // GPT-4 ile 11 altın kurala göre zenginleştir
         $enhancedPrompt = $this->enhanceWithGPT4FreeMode($title);
 
-        // Random style seç
-        $styles = ['cinematic', 'dynamic', 'film', 'moody', 'vibrant', 'neutral'];
+        // Random style seç - stock_photo AĞIRLIKLI
+        $styles = [
+            'stock_photo', 'stock_photo', 'stock_photo', // 3x ağırlık
+            'neutral', 'hdr', 'vibrant',
+        ];
         $selectedStyle = $styles[array_rand($styles)];
-        $styleUUID = $this->styleUUIDs[$selectedStyle] ?? $this->styleUUIDs['cinematic'];
+        $styleUUID = $this->styleUUIDs[$selectedStyle] ?? $this->styleUUIDs['stock_photo'];
 
         Log::info('🎨 Free Imagination Prompt Built', [
             'original_title' => $title,
@@ -1614,14 +1617,22 @@ Sen profesyonel bir fotoğraf yönetmenisin. Verilen başlığı 11 altın kural
 
 Başlık ne diyorsa ONU hayal et. Tamamen serbest ol. Kendi hayal gücünü kullan.
 
+🚫 İNSAN FİGÜRÜ KURALI (ÇOK ÖNEMLİ!):
+- VARSAYILAN: İnsansız görsel oluştur!
+- İnsansız olabiliyorsa KESİNLİKLE insan ekleme
+- Manzara, atmosfer, soyut şekiller, ışık oyunları, silüetler tercih et
+- SADECE başlık kesinlikle insan gerektiriyorsa insan ekle (örn: "dans eden çift", "portre", "kalabalık")
+- "Aşk", "Özlem", "Huzur" gibi duygular → insan YERİNE sembolik görseller kullan (güneş batımı, yağmur, ışık huzmeleri)
+- Müzik temalı başlıklarda → enstrüman siluetleri, ses dalgaları, ışık efektleri kullan, müzisyen EKLEME
+
 ÖZEL DURUMLAR:
 - Başlık anlamsızsa (örn: "a", "asdf", "xxx", rastgele harfler) → abstract sanat veya müzik temalı görsel üret
 - Başlık müstehcen/uygunsuzsa → abstract sanat veya müzik enstrümanları/sahne/stüdyo temalı görsel üret
 - Bu durumlarda: renkli ışıklar, ses dalgaları, müzik notaları, enstrüman siluetleri, konser atmosferi, stüdyo ekipmanları gibi temalar kullan
 
 11 ALTIN KURAL:
-1. Photo Type (Photo of, Editorial photograph of, Cinematic shot of)
-2. Subject (başlıktan ilham al, anlamsızsa abstract/müzik)
+1. Photo Type (Stock photograph of, Commercial photo of, Editorial image of - SİNEMATİK KULLANMA!)
+2. Subject (insansız olabiliyorsa ASLA insan ekleme! Manzara, obje, atmosfer, soyut tercih et)
 3. Environment (sen seç)
 4. Camera Angle (sen seç)
 5. Composition (sen seç)
@@ -1632,7 +1643,7 @@ Başlık ne diyorsa ONU hayal et. Tamamen serbest ol. Kendi hayal gücünü kull
 10. Mood (sen seç)
 11. Post-Processing (sen seç)
 
-OUTPUT: Tek paragraf İngilizce prompt. Maksimum 150 kelime.
+OUTPUT: Tek paragraf İngilizce prompt. Maksimum 150 kelime. İnsan figürü SADECE kaçınılmazsa ekle!
 SYSTEM;
 
             $response = Http::withHeaders([
@@ -1678,10 +1689,16 @@ SYSTEM;
         // Minimal negative prompt - sadece NSFW yasağı
         $negativePrompt = "nsfw, nude, naked, porn, explicit sexual content";
 
-        // Random style seç - AI'ın yaratıcılığına katkı
-        $styles = ['cinematic', 'dynamic', 'film', 'moody', 'vibrant', 'neutral'];
+        // Random style seç - stock_photo AĞIRLIKLI (insansız görseller için daha uygun)
+        // stock_photo 3x ağırlıklı, diğerleri 1x
+        $styles = [
+            'stock_photo', 'stock_photo', 'stock_photo', // 3x ağırlık - ticari/stok fotoğraf estetiği
+            'neutral',     // nötr, minimal
+            'hdr',         // yüksek dinamik aralık
+            'vibrant',     // canlı renkler
+        ];
         $selectedStyle = $styles[array_rand($styles)];
-        $styleUUID = $this->styleUUIDs[$selectedStyle] ?? $this->styleUUIDs['cinematic'];
+        $styleUUID = $this->styleUUIDs[$selectedStyle] ?? $this->styleUUIDs['stock_photo'];
 
         $response = Http::withHeaders([
             'accept' => 'application/json',

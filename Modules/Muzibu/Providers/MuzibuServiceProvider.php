@@ -158,6 +158,14 @@ class MuzibuServiceProvider extends ServiceProvider
         // Corporate Account Components
         Livewire::component('muzibu::admin.corporate-account-component', \Modules\Muzibu\App\Http\Livewire\Admin\CorporateAccountComponent::class);
 
+        // Spot Components
+        Livewire::component('muzibu::admin.spot-component', \Modules\Muzibu\App\Http\Livewire\Admin\SpotComponent::class);
+        Livewire::component('muzibu::admin.spot-manage-component', \Modules\Muzibu\App\Http\Livewire\Admin\SpotManageComponent::class);
+
+        // Certificate Components
+        Livewire::component('muzibu::admin.certificate-component', \Modules\Muzibu\App\Http\Livewire\Admin\CertificateComponent::class);
+        Livewire::component('muzibu::admin.certificate-manage-component', \Modules\Muzibu\App\Http\Livewire\Admin\CertificateManageComponent::class);
+
         // Frontend Components
         Livewire::component('muzibu::frontend.search-results', \Modules\Muzibu\App\Http\Livewire\Frontend\SearchResults::class);
     }

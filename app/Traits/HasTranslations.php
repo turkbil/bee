@@ -128,6 +128,64 @@ trait HasTranslations
     }
     
     /**
+     * Override setAttribute - Translatable field'lar için otomatik JSON encode
+     * Bu, plain string değerlerin JSON formatında kaydedilmesini sağlar
+     */
+    public function setAttribute($key, $value)
+    {
+        // Eğer translatable field ise
+        if ($this->isTranslatable($key)) {
+            // Zaten array ise (JSON formatında) direkt kaydet
+            if (is_array($value)) {
+                // JSON string olarak kaydet
+                $this->attributes[$key] = json_encode($value, JSON_UNESCAPED_UNICODE);
+                return $this;
+            }
+
+            // Zaten JSON string ise kontrol et
+            if (is_string($value) && !empty($value)) {
+                $decoded = json_decode($value, true);
+
+                // Geçerli JSON ve array ise direkt kaydet
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    $this->attributes[$key] = $value;
+                    return $this;
+                }
+
+                // Plain string ise, mevcut çevirileri koru ve sadece aktif locale'i güncelle
+                $currentValue = $this->getAttributeFromArray($key);
+                $currentTranslations = [];
+
+                if (is_string($currentValue)) {
+                    $decodedCurrent = json_decode($currentValue, true);
+                    if (json_last_error() === JSON_ERROR_NONE && is_array($decodedCurrent)) {
+                        $currentTranslations = $decodedCurrent;
+                    }
+                } elseif (is_array($currentValue)) {
+                    $currentTranslations = $currentValue;
+                }
+
+                // Mevcut locale için değeri güncelle
+                $locale = app()->getLocale() ?: 'tr';
+                $currentTranslations[$locale] = $value;
+
+                // JSON string olarak kaydet
+                $this->attributes[$key] = json_encode($currentTranslations, JSON_UNESCAPED_UNICODE);
+                return $this;
+            }
+
+            // Boş veya null değer
+            if (empty($value)) {
+                $this->attributes[$key] = null;
+                return $this;
+            }
+        }
+
+        // Normal field, parent'a devret
+        return parent::setAttribute($key, $value);
+    }
+
+    /**
      * Override getAttribute - Translatable field'lar için otomatik parse
      */
     public function getAttribute($key)
@@ -393,5 +451,75 @@ trait HasTranslations
     public function getTranslation(string $field, ?string $locale = null): ?string
     {
         return $this->getTranslated($field, $locale);
+    }
+
+    /**
+     * Override originalIsEquivalent - Translatable field'lar için doğru karşılaştırma
+     * Bu, false dirty detection'ı önler
+     */
+    public function originalIsEquivalent($key)
+    {
+        // Translatable field değilse parent'a devret
+        if (!$this->isTranslatable($key)) {
+            return parent::originalIsEquivalent($key);
+        }
+
+        // Original değer
+        $original = $this->getOriginal($key);
+        // Mevcut değer (attributes'dan direkt)
+        $current = $this->attributes[$key] ?? null;
+
+        // Her ikisi de null/boş
+        if (empty($original) && empty($current)) {
+            return true;
+        }
+
+        // Biri null, diğeri dolu
+        if (empty($original) || empty($current)) {
+            return false;
+        }
+
+        // JSON string'leri array'e çevir ve karşılaştır
+        $originalArray = is_string($original) ? json_decode($original, true) : $original;
+        $currentArray = is_string($current) ? json_decode($current, true) : $current;
+
+        // JSON decode başarısız olduysa string karşılaştırma yap
+        if (!is_array($originalArray) || !is_array($currentArray)) {
+            return $original === $current;
+        }
+
+        // Array karşılaştırma (key sırasını görmezden gel)
+        ksort($originalArray);
+        ksort($currentArray);
+
+        return $originalArray === $currentArray;
+    }
+
+    /**
+     * Raw attribute değerini al (accessor'ı atla)
+     * Admin form'ları için JSON formatında veri döndürür
+     */
+    public function getRawTranslations(string $field): array
+    {
+        if (!$this->isTranslatable($field)) {
+            return [];
+        }
+
+        $value = $this->getAttributeFromArray($field);
+
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $decoded;
+            }
+            // Plain string ise mevcut locale'e ata
+            return [app()->getLocale() ?: 'tr' => $value];
+        }
+
+        if (is_array($value)) {
+            return $value;
+        }
+
+        return [];
     }
 }

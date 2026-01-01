@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu - Şarkı Çalma Veri Toplama</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 bg-blue-600/20 border border-blue-500/30 rounded-full px-4 py-2 mb-4">
+                <i class="fas fa-database"></i>
+                <span class="text-sm font-medium">Veri Toplama Planı</span>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">Şarkı Çalma - Veri Toplama</h1>
+            <p class="text-slate-400">Kullanıcı şarkı çaldığında hangi veriler toplanıyor?</p>
+            <p class="text-xs text-slate-500 mt-2">29 Aralık 2025</p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-green-400 mb-4">
+                <i class="fas fa-user mr-2"></i>Basit Anlatım (Herkes İçin)
+            </h3>
+            <p class="text-slate-300 mb-4">
+                Bir kullanıcı şarkı çalmaya başladığında, sistem şu bilgileri kaydeder:
+            </p>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-medium text-white mb-2"><i class="fas fa-music text-purple-400 mr-2"></i>Şarkı Bilgisi</h4>
+                    <p class="text-sm text-slate-400">Hangi şarkı çalındı?</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-medium text-white mb-2"><i class="fas fa-user text-blue-400 mr-2"></i>Kullanıcı</h4>
+                    <p class="text-sm text-slate-400">Kim dinledi?</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-medium text-white mb-2"><i class="fas fa-clock text-yellow-400 mr-2"></i>Zaman</h4>
+                    <p class="text-sm text-slate-400">Ne zaman çaldı?</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-medium text-white mb-2"><i class="fas fa-laptop text-green-400 mr-2"></i>Cihaz</h4>
+                    <p class="text-sm text-slate-400">Hangi cihaz/tarayıcıdan?</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-blue-400 mb-4">
+                <i class="fas fa-cog mr-2"></i>Teknik Detaylar (Geliştiriciler İçin)
+            </h3>
+
+            <p class="text-slate-300 mb-4">
+                <strong>Tablo:</strong> <code class="bg-slate-800 px-2 py-1 rounded">muzibu_song_plays</code>
+            </p>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 px-4 text-slate-400">Field</th>
+                            <th class="text-left py-3 px-4 text-slate-400">Type</th>
+                            <th class="text-left py-3 px-4 text-slate-400">Açıklama</th>
+                            <th class="text-left py-3 px-4 text-slate-400">Örnek</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        <tr>
+                            <td class="py-3 px-4 font-mono text-yellow-400">id</td>
+                            <td class="py-3 px-4 text-slate-500">bigint AUTO_INCREMENT</td>
+                            <td class="py-3 px-4">Primary key</td>
+                            <td class="py-3 px-4 text-slate-500">725</td>
+                        </tr>
+                        <tr class="bg-slate-800/30">
+                            <td class="py-3 px-4 font-mono text-purple-400">song_id</td>
+                            <td class="py-3 px-4 text-slate-500">bigint (FK)</td>
+                            <td class="py-3 px-4">Çalınan şarkının ID'si</td>
+                            <td class="py-3 px-4 text-slate-500">42</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-mono text-blue-400">user_id</td>
+                            <td class="py-3 px-4 text-slate-500">bigint (FK, nullable)</td>
+                            <td class="py-3 px-4">Dinleyen kullanıcı ID'si</td>
+                            <td class="py-3 px-4 text-slate-500">1</td>
+                        </tr>
+                        <tr class="bg-slate-800/30">
+                            <td class="py-3 px-4 font-mono text-green-400">ip_address</td>
+                            <td class="py-3 px-4 text-slate-500">varchar(45)</td>
+                            <td class="py-3 px-4">Kullanıcının IP adresi</td>
+                            <td class="py-3 px-4 text-slate-500">92.44.171.31</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-mono text-orange-400">user_agent</td>
+                            <td class="py-3 px-4 text-slate-500">varchar(255)</td>
+                            <td class="py-3 px-4">Tarayıcı user-agent string</td>
+                            <td class="py-3 px-4 text-slate-500 text-xs">Mozilla/5.0 (Macintosh; Intel Mac OS X...)</td>
+                        </tr>
+                        <tr class="bg-slate-800/30">
+                            <td class="py-3 px-4 font-mono text-red-400">device_type</td>
+                            <td class="py-3 px-4 text-slate-500">varchar(255)</td>
+                            <td class="py-3 px-4">Cihaz tipi</td>
+                            <td class="py-3 px-4 text-slate-500">desktop / mobile / tablet</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-mono text-cyan-400">browser</td>
+                            <td class="py-3 px-4 text-slate-500">varchar(50)</td>
+                            <td class="py-3 px-4">Tarayıcı adı</td>
+                            <td class="py-3 px-4 text-slate-500">Chrome / Safari / Firefox</td>
+                        </tr>
+                        <tr class="bg-slate-800/30">
+                            <td class="py-3 px-4 font-mono text-pink-400">platform</td>
+                            <td class="py-3 px-4 text-slate-500">varchar(50)</td>
+                            <td class="py-3 px-4">İşletim sistemi</td>
+                            <td class="py-3 px-4 text-slate-500">macOS / Windows / iOS / Android</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-mono text-yellow-400">created_at</td>
+                            <td class="py-3 px-4 text-slate-500">timestamp</td>
+                            <td class="py-3 px-4">Çalma başlangıç zamanı</td>
+                            <td class="py-3 px-4 text-slate-500">2025-12-29 21:04:53</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Veri Akışı -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-white mb-4">
+                <i class="fas fa-stream mr-2 text-purple-400"></i>Veri Toplama Akışı
+            </h3>
+
+            <div class="space-y-4">
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-sm font-bold shrink-0">1</div>
+                    <div>
+                        <h4 class="font-medium">Kullanıcı şarkıya tıklar</h4>
+                        <p class="text-sm text-slate-400">Player şarkıyı çalmaya başlar</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-sm font-bold shrink-0">2</div>
+                    <div>
+                        <h4 class="font-medium">HLS stream başlar</h4>
+                        <p class="text-sm text-slate-400 font-mono">/api/song/{id}/stream endpoint'i çağrılır</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-sm font-bold shrink-0">3</div>
+                    <div>
+                        <h4 class="font-medium">Jenssegers Agent cihaz bilgisini parse eder</h4>
+                        <p class="text-sm text-slate-400">User-Agent string'inden browser, platform, device_type çıkarılır</p>
+                        <code class="text-xs bg-slate-900 px-2 py-1 rounded mt-1 inline-block">$agent = new Agent(); $agent->browser(); $agent->platform();</code>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-sm font-bold shrink-0">4</div>
+                    <div>
+                        <h4 class="font-medium">Veritabanına kayıt</h4>
+                        <p class="text-sm text-slate-400 font-mono">INSERT INTO muzibu_song_plays (...)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kaynak Kod -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-white mb-4">
+                <i class="fas fa-code mr-2 text-green-400"></i>Kaynak Kod Konumu
+            </h3>
+
+            <div class="space-y-3 font-mono text-sm">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-file-code text-blue-400 w-5"></i>
+                    <span class="text-slate-300">Modules/Muzibu/app/Http/Controllers/Api/SongStreamController.php</span>
+                    <span class="text-slate-500">:299</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-file-code text-purple-400 w-5"></i>
+                    <span class="text-slate-300">Modules/Muzibu/app/Http/Controllers/Api/SongController.php</span>
+                    <span class="text-slate-500">:204</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Eksik/Öneri -->
+        <div class="bg-yellow-900/20 border border-yellow-800 rounded-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-yellow-400 mb-4">
+                <i class="fas fa-lightbulb mr-2"></i>Şu An Toplanmayan Ama Eklenebilecek Veriler
+            </h3>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-medium text-white mb-2"><i class="fas fa-clock text-red-400 mr-2"></i>Dinleme Süresi</h4>
+                    <p class="text-sm text-slate-400">Şarkının ne kadarı dinlendi? (30 saniye mi, tamamı mı?)</p>
+                    <span class="text-xs text-yellow-500 mt-2 inline-block">Öneri: listened_duration (seconds)</span>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-medium text-white mb-2"><i class="fas fa-stop text-orange-400 mr-2"></i>Bitiş Zamanı</h4>
+                    <p class="text-sm text-slate-400">Şarkı ne zaman durdu/bitti?</p>
+                    <span class="text-xs text-yellow-500 mt-2 inline-block">Öneri: ended_at (timestamp)</span>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-medium text-white mb-2"><i class="fas fa-forward text-blue-400 mr-2"></i>Skip Bilgisi</h4>
+                    <p class="text-sm text-slate-400">Kullanıcı şarkıyı atladı mı?</p>
+                    <span class="text-xs text-yellow-500 mt-2 inline-block">Öneri: was_skipped (boolean)</span>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-medium text-white mb-2"><i class="fas fa-list text-green-400 mr-2"></i>Kaynak</h4>
+                    <p class="text-sm text-slate-400">Şarkı nereden çalındı? (Playlist, Album, Search?)</p>
+                    <span class="text-xs text-yellow-500 mt-2 inline-block">Öneri: source_type, source_id</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Abuse Detection ile İlişki -->
+        <div class="bg-red-900/20 border border-red-800 rounded-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-red-400 mb-4">
+                <i class="fas fa-shield-alt mr-2"></i>Abuse Detection ile İlişki
+            </h3>
+
+            <p class="text-slate-300 mb-4">
+                Bu veriler AbuseDetectionService tarafından analiz edilir:
+            </p>
+
+            <ul class="space-y-2 text-sm">
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check text-green-400 mt-1"></i>
+                    <span><strong>Çakışma tespiti:</strong> Aynı kullanıcı, aynı anda, farklı cihazlardan şarkı çalıyor mu?</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check text-green-400 mt-1"></i>
+                    <span><strong>Cihaz kimliği:</strong> platform + browser + IP son 2 oktet → benzersiz cihaz key</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check text-green-400 mt-1"></i>
+                    <span><strong>Timeline:</strong> Şarkı başlangıç + süre = bitiş zamanı hesaplanır</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-800 pt-8">
+            <p>Claude AI tarafından oluşturuldu</p>
+            <p class="mt-1">Muzibu - B2B Müzik Platformu</p>
+        </footer>
+    </div>
+</body>
+</html>

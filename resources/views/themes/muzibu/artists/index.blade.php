@@ -31,8 +31,8 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
                    data-artist-title="{{ $artist->getTranslation('title', app()->getLocale()) }}"
                    data-is-favorite="{{ is_favorited('artist', $artist->artist_id) ? '1' : '0' }}">
                     <div class="relative mb-4">
-                        @if($artist->media_id && $artist->photoMedia)
-                            <img src="{{ thumb($artist->photoMedia, 300, 300, ['scale' => 1]) }}"
+                        @if($artist->getPhotoUrl())
+                            <img src="{{ $artist->getPhotoUrl(300, 300) }}"
                                  alt="{{ $artist->getTranslation('title', app()->getLocale()) }}"
                                  class="w-full aspect-square object-cover rounded-full shadow-lg"
                                  loading="lazy">

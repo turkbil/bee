@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Player Kritik Buglar Duzeltildi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <span class="px-3 py-1 bg-green-500/20 text-green-400 text-sm rounded-full">Tamamlandi</span>
+            <h1 class="text-3xl font-bold mt-4 mb-2">Muzibu Player - Kritik Buglar Duzeltildi</h1>
+            <p class="text-slate-400">30 Aralik 2025 - Gapless Playback + 401 Loop Fix</p>
+        </header>
+
+        <!-- Basit Anlatim -->
+        <div class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-400 mb-4">Basit Anlatim (Herkes Icin)</h2>
+            <div class="space-y-4 text-slate-300">
+                <p>
+                    <strong>Sorun 1:</strong> Sarkilar erken atliyordu - 3 dakikalik sarki 30 saniyede bitiyordu gibi davraniyordu.
+                </p>
+                <p>
+                    <strong>Sorun 2:</strong> Bazen sarki takiliyor ve sonsuz donguye giriyordu (401 hatasi).
+                </p>
+                <p>
+                    <strong>Sorun 3:</strong> Sesi kapatip actiktan sonra ses gelmiyordu.
+                </p>
+                <div class="bg-slate-800 rounded-lg p-4 mt-4">
+                    <h3 class="font-semibold text-white mb-2">Simdi Ne Oluyor?</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400">+</span>
+                            <span>Sarkilar GERCEKTEN bitene kadar caliniyor</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400">+</span>
+                            <span>401 hatasi olursa 3 deneme sonrasi sonraki sarkiya geciliyor</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-400">+</span>
+                            <span>Mute/unmute duzgun calisiyor</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fix 1: BUFFER_EOS -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-xl p-6 mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center font-bold">1</span>
+                <h2 class="text-xl font-bold text-blue-400">BUFFER_EOS Erken Tetikleme Sorunu</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <!-- Onceki Durum -->
+                <div class="bg-red-900/30 rounded-lg p-4">
+                    <h3 class="font-semibold text-red-300 mb-2">Onceki Durum (BUG)</h3>
+                    <ul class="text-slate-300 text-sm space-y-2">
+                        <li>- HLS buffer bosalinca BUFFER_EOS tetikleniyordu</li>
+                        <li>- Preloaded sarkilar sadece ilk segment yukluydu</li>
+                        <li>- Sarki basladiginda buffer hemen bosaliyordu</li>
+                        <li>- Sistem "sarki bitti" sanip sonrakine atliyordu</li>
+                        <li class="text-red-400">= Sarkilar saniyeler icinde atliyordu!</li>
+                    </ul>
+                </div>
+
+                <!-- Yeni Durum -->
+                <div class="bg-green-900/30 rounded-lg p-4">
+                    <h3 class="font-semibold text-green-300 mb-2">Yeni Durum (COZUM)</h3>
+                    <ul class="text-slate-300 text-sm space-y-2">
+                        <li>+ BUFFER_EOS geldiginde zaman kontrolu yapiliyor</li>
+                        <li>+ <code class="bg-slate-700 px-1 rounded">timeRemaining > 5</code> ise yoksayiliyor</li>
+                        <li>+ Sadece son 5 saniyede gercek bitis kabul ediliyor</li>
+                        <li>+ 300ms sonra tekrar kontrol ediliyor</li>
+                        <li class="text-green-400">= Sarkilar tam suresini caliniyor!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Kod -->
+            <div class="bg-slate-800 rounded-lg p-4 mt-4">
+                <h3 class="font-semibold text-white mb-2">Teknik Detay</h3>
+                <p class="text-slate-400 text-sm mb-2">Dosya: <code>player-core.js</code> - Satir: 2797-2851, 3553-3603</p>
+                <pre class="text-xs text-slate-300 overflow-x-auto"><code>// BUFFER_EOS handler'a eklenen guard
+const timeRemaining = duration - currentTime;
+if (duration > 0 && timeRemaining > 5) {
+    console.log('BUFFER_EOS IGNORED - not near end');
+    return; // Yoksay, sarki bitmedi
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Fix 2: 401 Retry Loop -->
+        <div class="bg-purple-900/20 border border-purple-800 rounded-xl p-6 mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center font-bold">2</span>
+                <h2 class="text-xl font-bold text-purple-400">401 Sonsuz Retry Dongusu</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <!-- Onceki Durum -->
+                <div class="bg-red-900/30 rounded-lg p-4">
+                    <h3 class="font-semibold text-red-300 mb-2">Onceki Durum (BUG)</h3>
+                    <ul class="text-slate-300 text-sm space-y-2">
+                        <li>- Signed URL suresi dolunca 401 hatasi</li>
+                        <li>- HLS.js surekli ayni expired URL'i deniyordu</li>
+                        <li>- refreshHlsUrl cagrilsa da HLS.js retry loop'u durmuyor</li>
+                        <li>- Yuzlerce 401 hatasi uretiliyordu</li>
+                        <li class="text-red-400">= Sarki takiliyor, CPU yukseliyor!</li>
+                    </ul>
+                </div>
+
+                <!-- Yeni Durum -->
+                <div class="bg-green-900/30 rounded-lg p-4">
+                    <h3 class="font-semibold text-green-300 mb-2">Yeni Durum (COZUM)</h3>
+                    <ul class="text-slate-300 text-sm space-y-2">
+                        <li>+ <code class="bg-slate-700 px-1 rounded">_frag401RetryCount</code> sayaci eklendi</li>
+                        <li>+ Her 401 hatasinda sayac artiriliyor</li>
+                        <li>+ 3 denemeden sonra HLS destroy ediliyor</li>
+                        <li>+ Otomatik olarak sonraki sarkiya geciliyor</li>
+                        <li class="text-green-400">= Sonsuz dongu yok, sarki atlanip devam!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Kod -->
+            <div class="bg-slate-800 rounded-lg p-4 mt-4">
+                <h3 class="font-semibold text-white mb-2">Teknik Detay</h3>
+                <p class="text-slate-400 text-sm mb-2">Dosya: <code>player-core.js</code> - Satir: 3663-3701</p>
+                <pre class="text-xs text-slate-300 overflow-x-auto"><code>// Max retry kontrolu
+self._frag401RetryCount++;
+if (self._frag401RetryCount >= 3) {
+    console.error('Max 401 retries exceeded, skipping to next song');
+    self._frag401RetryCount = 0;
+    self.hls.destroy();
+    self.nextTrack(false);
+    return;
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Fix 3: toggleMute -->
+        <div class="bg-yellow-900/20 border border-yellow-800 rounded-xl p-6 mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center font-bold text-black">3</span>
+                <h2 class="text-xl font-bold text-yellow-400">Mute/Unmute Ses Sorunu</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <!-- Onceki Durum -->
+                <div class="bg-red-900/30 rounded-lg p-4">
+                    <h3 class="font-semibold text-red-300 mb-2">Onceki Durum (BUG)</h3>
+                    <ul class="text-slate-300 text-sm space-y-2">
+                        <li>- toggleMute sadece <code class="bg-slate-700 px-1 rounded">audio.muted</code> set ediyordu</li>
+                        <li>- <code class="bg-slate-700 px-1 rounded">audio.volume</code> degismiyordu</li>
+                        <li>- Sarki degisince volume=0 kaliyordu</li>
+                        <li class="text-red-400">= Unmute sonrasi ses gelmiyordu!</li>
+                    </ul>
+                </div>
+
+                <!-- Yeni Durum -->
+                <div class="bg-green-900/30 rounded-lg p-4">
+                    <h3 class="font-semibold text-green-300 mb-2">Yeni Durum (COZUM)</h3>
+                    <ul class="text-slate-300 text-sm space-y-2">
+                        <li>+ Hem <code class="bg-slate-700 px-1 rounded">muted</code> hem <code class="bg-slate-700 px-1 rounded">volume</code> set ediliyor</li>
+                        <li>+ Her iki audio element (hlsAudio, hlsAudioNext) guncelleniyor</li>
+                        <li>+ Mute = volume 0, Unmute = volume restore</li>
+                        <li class="text-green-400">= Ses kontrolu duzgun calisiyor!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Kod -->
+            <div class="bg-slate-800 rounded-lg p-4 mt-4">
+                <h3 class="font-semibold text-white mb-2">Teknik Detay</h3>
+                <p class="text-slate-400 text-sm mb-2">Dosya: <code>player-core.js</code> - Satir: 1443-1462</p>
+                <pre class="text-xs text-slate-300 overflow-x-auto"><code>toggleMute() {
+    this.isMuted = !this.isMuted;
+    const targetVolume = this.isMuted ? 0 : this.volume / 100;
+
+    // Her iki audio element icin
+    [audio1, audio2].forEach(audio => {
+        audio.muted = this.isMuted;
+        audio.volume = targetVolume;  // + EKLENDI
+    });
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Sistem Ozeti -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-white mb-4">Gapless Playback Sistemi - Ozet</h2>
+
+            <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm overflow-x-auto">
+                <pre class="text-slate-300">
+Sarki Oynatilirken:
+  timeupdate -> currentTime >= 2s -> preloadNextSong()
+                                         |
+                                         v
+                                  Sonraki sarki HLS yukleniyor
+                                  (sadece ilk segment)
+
+Sarki Bitince (Gercek Bitis):
+  BUFFER_EOS -> timeRemaining <= 5s -> onTrackEnded()
+                     |                      |
+                     v                      v
+              (> 5s = IGNORE)         nextTrack(true)
+                                           |
+                                           v
+                                    Preloaded audio HEMEN baslar
+                                    Eski HLS 100ms sonra temizlenir
+
+401 Hatasi Olursa:
+  fragLoadError 401 -> retryCount++
+                          |
+         (< 3) -----------+----------- (>= 3)
+           |                              |
+           v                              v
+    refreshHlsUrl()              HLS destroy + nextTrack()
+                </pre>
+            </div>
+        </div>
+
+        <!-- Console Ornekleri -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-white mb-4">Console Ciktilari</h2>
+
+            <div class="space-y-4">
+                <!-- BUFFER_EOS Ignored -->
+                <div class="bg-green-900/30 rounded-lg p-4">
+                    <h3 class="font-semibold text-green-300 mb-2">BUFFER_EOS Yoksayildi (Dogru Davranis)</h3>
+                    <pre class="text-xs text-slate-300 overflow-x-auto"><code>BUFFER_EOS fired {currentTime: '73.6', duration: '161.7', timeRemaining: '88.1'}
+BUFFER_EOS IGNORED (normal) - not near end, timeRemaining: 88.1</code></pre>
+                </div>
+
+                <!-- BUFFER_EOS Accepted -->
+                <div class="bg-blue-900/30 rounded-lg p-4">
+                    <h3 class="font-semibold text-blue-300 mb-2">BUFFER_EOS Kabul Edildi (Gercek Bitis)</h3>
+                    <pre class="text-xs text-slate-300 overflow-x-auto"><code>BUFFER_EOS fired {currentTime: '158.2', duration: '161.7', timeRemaining: '3.5'}
+Calling onTrackEnded from BUFFER_EOS
+nextTrack: has next song, playing index 2</code></pre>
+                </div>
+
+                <!-- 401 Skip -->
+                <div class="bg-purple-900/30 rounded-lg p-4">
+                    <h3 class="font-semibold text-purple-300 mb-2">401 Sonrasi Atlama</h3>
+                    <pre class="text-xs text-slate-300 overflow-x-auto"><code>Fragment 401/403 - Retry count: 1
+Fragment 401/403 - Retry count: 2
+Fragment 401/403 - Retry count: 3
+Max 401 retries exceeded, skipping to next song</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Kontrol Listesi -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-white mb-4">Test Kontrol Listesi</h2>
+            <ul class="space-y-3">
+                <li class="flex items-center gap-3">
+                    <span class="w-6 h-6 rounded bg-green-500 flex items-center justify-center text-xs">OK</span>
+                    <span>Sarki tam suresini caliyor (erken atlama yok)</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-6 h-6 rounded bg-green-500 flex items-center justify-center text-xs">OK</span>
+                    <span>Sonraki sarkiya gecis aninda (gapless)</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-6 h-6 rounded bg-green-500 flex items-center justify-center text-xs">OK</span>
+                    <span>401 hatasinda 3 deneme sonra atlaniyor</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-6 h-6 rounded bg-green-500 flex items-center justify-center text-xs">OK</span>
+                    <span>Mute/Unmute duzgun calisiyor</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-6 h-6 rounded bg-green-500 flex items-center justify-center text-xs">OK</span>
+                    <span>Tab degistirince sarki durmuyor</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Degisiklik Yapilan Dosyalar -->
+        <div class="bg-slate-800 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white mb-4">Degisiklik Yapilan Dosyalar</h2>
+            <div class="space-y-2 font-mono text-sm">
+                <div class="flex items-center gap-2">
+                    <span class="text-yellow-400">M</span>
+                    <span class="text-slate-300">public/themes/muzibu/js/player/core/player-core.js</span>
+                </div>
+            </div>
+            <div class="mt-4 text-slate-400 text-sm">
+                <p>Satirlar: ~100 satir eklendi/degistirildi</p>
+                <p>Yeni state: <code class="bg-slate-700 px-1 rounded">_frag401RetryCount</code></p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 text-center text-slate-500 text-sm">
+            <p>Claude AI - 30 Aralik 2025</p>
+        </footer>
+    </div>
+</body>
+</html>

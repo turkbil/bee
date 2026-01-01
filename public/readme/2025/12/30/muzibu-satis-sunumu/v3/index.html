@@ -1,0 +1,2138 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu - Satış Ekibi Sunumu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            overflow: hidden;
+            height: 100%;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        .slide {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        /* Gradient Texts */
+        .gradient-text-blue {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-text-green {
+            background: linear-gradient(135deg, #34d399, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-text-purple {
+            background: linear-gradient(135deg, #a78bfa, #8b5cf6, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-text-orange {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-text-red {
+            background: linear-gradient(135deg, #f87171, #ef4444, #dc2626);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Navigation */
+        .nav-dots {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-dot.active {
+            background: #10b981;
+            transform: scale(1.3);
+        }
+
+        .nav-dot:hover {
+            background: rgba(255,255,255,0.6);
+        }
+
+        .nav-arrows {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-arrow {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-arrow:hover {
+            background: rgba(16, 185, 129, 0.3);
+            border-color: #10b981;
+        }
+
+        .slide-counter {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            color: rgba(255,255,255,0.5);
+            font-size: 14px;
+            z-index: 100;
+        }
+
+        /* ========================================
+           SLIDE 1: AÇILIŞ - TÜRK BİLİŞİM
+           ======================================== */
+
+        .slide-1 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+        }
+
+        /* Floating Code Particles */
+        .code-particle {
+            position: absolute;
+            font-family: monospace;
+            color: rgba(99, 102, 241, 0.3);
+            font-size: 14px;
+            animation: floatCode 20s infinite linear;
+        }
+
+        @keyframes floatCode {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        .code-particle:nth-child(1) { left: 5%; animation-delay: 0s; }
+        .code-particle:nth-child(2) { left: 15%; animation-delay: 2s; }
+        .code-particle:nth-child(3) { left: 25%; animation-delay: 4s; }
+        .code-particle:nth-child(4) { left: 35%; animation-delay: 6s; }
+        .code-particle:nth-child(5) { left: 55%; animation-delay: 1s; }
+        .code-particle:nth-child(6) { left: 65%; animation-delay: 3s; }
+        .code-particle:nth-child(7) { left: 75%; animation-delay: 5s; }
+        .code-particle:nth-child(8) { left: 85%; animation-delay: 7s; }
+        .code-particle:nth-child(9) { left: 95%; animation-delay: 9s; }
+
+        /* Logo Pulse */
+        .logo-pulse {
+            animation: logoPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.5)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 40px rgba(99, 102, 241, 0.8)); }
+        }
+
+        /* ========================================
+           SLIDE 2: PROBLEM - MESAM BASKINI
+           ======================================== */
+
+        .slide-2 {
+            background: linear-gradient(135deg, #1f1315 0%, #2d1f1f 50%, #1f1315 100%);
+        }
+
+        /* Kafe ve Denetçi Animasyonu */
+        .animation-container {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 50%;
+            height: 100%;
+        }
+
+        .cafe-scene {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .cafe-building-2 {
+            width: 200px;
+            height: 220px;
+            background: linear-gradient(135deg, #92400e 0%, #78350f 100%);
+            border-radius: 12px 12px 0 0;
+            position: relative;
+            animation: cafeShake 15s infinite;
+        }
+
+        @keyframes cafeShake {
+            0%, 20% { transform: none; filter: brightness(1.1); }
+            30%, 60% { transform: translateX(-3px); filter: brightness(0.7); }
+            35%, 55% { transform: translateX(3px); }
+            40%, 50% { transform: translateX(-3px); }
+            70%, 100% { transform: none; filter: brightness(1.1); }
+        }
+
+        .cafe-sign-2 {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fbbf24;
+            padding: 8px 25px;
+            border-radius: 6px;
+            font-weight: bold;
+            color: #78350f;
+            font-size: 16px;
+        }
+
+        .cafe-window-2 {
+            position: absolute;
+            width: 60px;
+            height: 70px;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 4px solid #78350f;
+            border-radius: 6px;
+            animation: windowFlicker 15s infinite;
+        }
+
+        @keyframes windowFlicker {
+            0%, 20% { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); box-shadow: 0 0 20px rgba(251, 191, 36, 0.5); }
+            30%, 60% { background: #6b7280; box-shadow: none; }
+            70%, 100% { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); box-shadow: 0 0 20px rgba(251, 191, 36, 0.5); }
+        }
+
+        .cafe-win-1 { top: 40px; left: 25px; }
+        .cafe-win-2 { top: 40px; right: 25px; }
+
+        .cafe-door-2 {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 90px;
+            background: #451a03;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .cafe-face-2 {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 50px;
+            animation: faceChange 15s infinite;
+        }
+
+        @keyframes faceChange {
+            0%, 20% { content: "😊"; }
+            25% { content: "😰"; }
+            30%, 60% { content: "😱"; }
+            65%, 70% { content: "😢"; }
+            80%, 100% { content: "😊"; }
+        }
+
+        .cafe-face-2::after {
+            content: "😊";
+            animation: faceEmoji 15s infinite;
+        }
+
+        @keyframes faceEmoji {
+            0%, 20% { content: "😊"; }
+            25% { content: "😰"; }
+            30%, 60% { content: "😱"; }
+            65%, 70% { content: "😢"; }
+            80%, 100% { content: "😊"; }
+        }
+
+        /* Denetçi */
+        .inspector-2 {
+            position: absolute;
+            bottom: 100px;
+            right: -100px;
+            animation: inspectorWalk2 15s infinite;
+        }
+
+        @keyframes inspectorWalk2 {
+            0%, 15% { right: -100px; opacity: 0; }
+            20% { opacity: 1; }
+            30%, 55% { right: 280px; }
+            65% { right: 280px; opacity: 1; }
+            75% { opacity: 0; }
+            100% { right: -100px; opacity: 0; }
+        }
+
+        .inspector-body-2 {
+            width: 50px;
+            height: 70px;
+            background: #1f2937;
+            border-radius: 10px 10px 0 0;
+            position: relative;
+        }
+
+        .inspector-head-2 {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: #fcd34d;
+            border-radius: 50%;
+        }
+
+        .inspector-hat-2 {
+            position: absolute;
+            top: -55px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 18px;
+            background: #1f2937;
+            border-radius: 6px;
+        }
+
+        .inspector-badge {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: #fbbf24;
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Ceza Kağıdı */
+        .penalty-2 {
+            position: absolute;
+            top: 150px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background: #fef2f2;
+            border: 4px solid #dc2626;
+            border-radius: 8px;
+            padding: 20px;
+            width: 180px;
+            opacity: 0;
+            animation: penaltyShow 15s infinite;
+            z-index: 10;
+        }
+
+        @keyframes penaltyShow {
+            0%, 35% { opacity: 0; transform: translateX(-50%) scale(0) rotate(-10deg); }
+            40%, 60% { opacity: 1; transform: translateX(-50%) scale(1) rotate(-5deg); }
+            65%, 100% { opacity: 0; transform: translateX(-50%) scale(0) rotate(10deg); }
+        }
+
+        .penalty-title-2 {
+            color: #dc2626;
+            font-weight: bold;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .penalty-amount-2 {
+            color: #991b1b;
+            font-weight: bold;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        /* Uçan Paralar */
+        .money-fly {
+            position: absolute;
+            font-size: 35px;
+            opacity: 0;
+            animation: moneyFlyAway 15s infinite;
+        }
+
+        .money-fly-1 { top: 200px; left: 45%; animation-delay: 0s; }
+        .money-fly-2 { top: 220px; left: 50%; animation-delay: 0.3s; }
+        .money-fly-3 { top: 180px; left: 55%; animation-delay: 0.6s; }
+        .money-fly-4 { top: 240px; left: 48%; animation-delay: 0.9s; }
+
+        @keyframes moneyFlyAway {
+            0%, 45% { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+            50% { opacity: 1; }
+            70% { opacity: 1; transform: translate(150px, -200px) rotate(360deg); }
+            75%, 100% { opacity: 0; transform: translate(200px, -250px) rotate(720deg); }
+        }
+
+        /* ========================================
+           SLIDE 3: ÇÖZÜM - MUZİBU KALKANI
+           ======================================== */
+
+        .slide-3 {
+            background: linear-gradient(135deg, #0f172a 0%, #052e16 50%, #0f172a 100%);
+        }
+
+        /* Kalkan Animasyonu */
+        .shield-scene {
+            position: absolute;
+            right: 10%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 400px;
+            height: 400px;
+        }
+
+        .business-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.4);
+        }
+
+        .business-icon-3 {
+            font-size: 45px;
+        }
+
+        .business-label {
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .shield-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            height: 250px;
+            border: 5px solid transparent;
+            border-radius: 50%;
+            animation: shieldActivate3 10s infinite;
+        }
+
+        @keyframes shieldActivate3 {
+            0%, 15% { border-color: transparent; box-shadow: none; }
+            25%, 100% { border-color: #10b981; box-shadow: 0 0 40px rgba(16, 185, 129, 0.6), inset 0 0 40px rgba(16, 185, 129, 0.2); }
+        }
+
+        .shield-label-3 {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #10b981;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            opacity: 0;
+            animation: labelShow3 10s infinite;
+        }
+
+        @keyframes labelShow3 {
+            0%, 20% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            30%, 100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .threat-3 {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            opacity: 0;
+        }
+
+        .threat-icon-3 {
+            font-size: 28px;
+            margin-bottom: 3px;
+        }
+
+        .threat-3-1 { top: 20px; left: 20px; animation: threatAttack1 10s infinite; }
+        .threat-3-2 { top: 20px; right: 20px; animation: threatAttack2 10s infinite 0.5s; }
+        .threat-3-3 { bottom: 20px; left: 20px; animation: threatAttack3 10s infinite 1s; }
+        .threat-3-4 { bottom: 20px; right: 20px; animation: threatAttack4 10s infinite 1.5s; }
+
+        @keyframes threatAttack1 {
+            0%, 10% { opacity: 0; transform: translate(0, 0); }
+            15% { opacity: 1; }
+            35% { transform: translate(100px, 100px); opacity: 1; }
+            40% { transform: translate(50px, 50px) rotate(45deg); }
+            45%, 100% { opacity: 0; transform: translate(-30px, -30px) rotate(90deg); }
+        }
+
+        @keyframes threatAttack2 {
+            0%, 15% { opacity: 0; transform: translate(0, 0); }
+            20% { opacity: 1; }
+            40% { transform: translate(-100px, 100px); opacity: 1; }
+            45% { transform: translate(-50px, 50px) rotate(-45deg); }
+            50%, 100% { opacity: 0; transform: translate(30px, -30px) rotate(-90deg); }
+        }
+
+        @keyframes threatAttack3 {
+            0%, 20% { opacity: 0; transform: translate(0, 0); }
+            25% { opacity: 1; }
+            45% { transform: translate(100px, -100px); opacity: 1; }
+            50% { transform: translate(50px, -50px) rotate(-45deg); }
+            55%, 100% { opacity: 0; transform: translate(-30px, 30px) rotate(-90deg); }
+        }
+
+        @keyframes threatAttack4 {
+            0%, 25% { opacity: 0; transform: translate(0, 0); }
+            30% { opacity: 1; }
+            50% { transform: translate(-100px, -100px); opacity: 1; }
+            55% { transform: translate(-50px, -50px) rotate(45deg); }
+            60%, 100% { opacity: 0; transform: translate(30px, 30px) rotate(90deg); }
+        }
+
+        .protection-msg {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid #10b981;
+            color: #10b981;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            opacity: 0;
+            animation: msgShow 10s infinite;
+        }
+
+        @keyframes msgShow {
+            0%, 55% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            65%, 90% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; }
+        }
+
+        /* ========================================
+           SLIDE 4: TASARRUF KARŞILAŞTIRMASI
+           ======================================== */
+
+        .slide-4 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+        }
+
+        .piggy-scene {
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 500px;
+            height: 350px;
+        }
+
+        /* Platform */
+        .piggy-platform {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            height: 15px;
+            background: linear-gradient(to right, #4c1d95, #7c3aed, #4c1d95);
+            border-radius: 10px;
+        }
+
+        /* MESAM Kumbara */
+        .piggy-mesam-4 {
+            position: absolute;
+            bottom: 35px;
+            left: 50px;
+        }
+
+        .piggy-body-mesam {
+            width: 140px;
+            height: 100px;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            border-radius: 50px 50px 30px 30px;
+            position: relative;
+            animation: mesamPiggy 12s infinite;
+        }
+
+        @keyframes mesamPiggy {
+            0%, 40% { transform: rotate(0deg); }
+            45%, 65% { transform: rotate(-3deg); }
+            50%, 60% { transform: rotate(3deg); }
+            70% { transform: scale(1.15); filter: brightness(1.5); }
+            75% { transform: scale(1); }
+            80%, 100% { transform: rotate(0deg); }
+        }
+
+        .piggy-ear-mesam {
+            position: absolute;
+            top: -12px;
+            width: 28px;
+            height: 28px;
+            background: #dc2626;
+            border-radius: 50% 50% 0 0;
+        }
+
+        .ear-m-l { left: 25px; transform: rotate(-20deg); }
+        .ear-m-r { right: 25px; transform: rotate(20deg); }
+
+        .piggy-snout-mesam {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 25px;
+            background: #f87171;
+            border-radius: 50%;
+        }
+
+        .piggy-eye-mesam {
+            position: absolute;
+            top: 30px;
+            width: 14px;
+            height: 14px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .eye-m-l { left: 30px; }
+        .eye-m-r { right: 30px; }
+
+        .piggy-slot-mesam {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 8px;
+            background: #7f1d1d;
+            border-radius: 4px;
+        }
+
+        .mesam-tag {
+            position: absolute;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #dc2626;
+            color: white;
+            padding: 6px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        /* Muzibu Kumbara */
+        .piggy-muzibu-4 {
+            position: absolute;
+            bottom: 35px;
+            right: 50px;
+        }
+
+        .piggy-body-muzibu {
+            width: 140px;
+            height: 100px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 50px 50px 30px 30px;
+            position: relative;
+            animation: muzibuPiggy 12s infinite;
+        }
+
+        @keyframes muzibuPiggy {
+            0%, 70% { transform: rotate(0deg); }
+            75%, 95% { transform: rotate(-5deg) scale(1.05); }
+            80%, 90% { transform: rotate(5deg) scale(1.05); }
+            100% { transform: rotate(0deg); }
+        }
+
+        .piggy-ear-muzibu {
+            position: absolute;
+            top: -12px;
+            width: 28px;
+            height: 28px;
+            background: #10b981;
+            border-radius: 50% 50% 0 0;
+        }
+
+        .ear-z-l { left: 25px; transform: rotate(-20deg); }
+        .ear-z-r { right: 25px; transform: rotate(20deg); }
+
+        .piggy-snout-muzibu {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 25px;
+            background: #6ee7b7;
+            border-radius: 50%;
+        }
+
+        .piggy-eye-muzibu {
+            position: absolute;
+            top: 30px;
+            width: 14px;
+            height: 14px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .eye-z-l { left: 30px; }
+        .eye-z-r { right: 30px; }
+
+        .piggy-slot-muzibu {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 8px;
+            background: #065f46;
+            border-radius: 4px;
+        }
+
+        .muzibu-tag {
+            position: absolute;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #10b981;
+            color: white;
+            padding: 6px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        /* Para Düşmesi */
+        .coin-fall-m {
+            position: absolute;
+            font-size: 22px;
+            animation: coinFallMesam 1.5s infinite;
+        }
+
+        .coin-m-1 { left: 100px; animation-delay: 0s; }
+        .coin-m-2 { left: 115px; animation-delay: 0.2s; }
+        .coin-m-3 { left: 90px; animation-delay: 0.4s; }
+        .coin-m-4 { left: 125px; animation-delay: 0.6s; }
+        .coin-m-5 { left: 105px; animation-delay: 0.8s; }
+        .coin-m-6 { left: 95px; animation-delay: 1s; }
+        .coin-m-7 { left: 120px; animation-delay: 1.2s; }
+
+        @keyframes coinFallMesam {
+            0% { top: 80px; opacity: 1; }
+            100% { top: 200px; opacity: 0; }
+        }
+
+        .coin-fall-z {
+            position: absolute;
+            font-size: 22px;
+            animation: coinFallMuzibu 3s infinite;
+        }
+
+        .coin-z-1 { right: 100px; animation-delay: 0s; }
+        .coin-z-2 { right: 115px; animation-delay: 1.5s; }
+
+        @keyframes coinFallMuzibu {
+            0% { top: 80px; opacity: 1; }
+            50% { top: 200px; opacity: 0; }
+            100% { top: 200px; opacity: 0; }
+        }
+
+        /* VS */
+        .vs-badge {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            font-weight: bold;
+            color: #8b5cf6;
+            text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+            animation: vsBeat 2s infinite;
+        }
+
+        @keyframes vsBeat {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.15); }
+        }
+
+        /* Fiyat Etiketleri */
+        .price-tag {
+            position: absolute;
+            bottom: 160px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+            opacity: 0;
+            animation: priceShow 12s infinite;
+        }
+
+        .price-mesam {
+            left: 45px;
+            background: rgba(220, 38, 38, 0.2);
+            border: 2px solid #dc2626;
+            color: #f87171;
+            animation-delay: 2s;
+        }
+
+        .price-muzibu {
+            right: 45px;
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid #10b981;
+            color: #6ee7b7;
+            animation-delay: 2.5s;
+        }
+
+        @keyframes priceShow {
+            0%, 20% { opacity: 0; transform: translateY(20px); }
+            30%, 90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; }
+        }
+
+        /* Tasarruf Rozeti */
+        .savings-badge {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #1f2937;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 22px;
+            opacity: 0;
+            animation: savingsShow 12s infinite;
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+        }
+
+        @keyframes savingsShow {
+            0%, 50% { opacity: 0; transform: translateX(-50%) scale(0.5); }
+            60%, 90% { opacity: 1; transform: translateX(-50%) scale(1); }
+            100% { opacity: 0; }
+        }
+
+        /* ========================================
+           SLIDE 5: ÖZELLİKLER
+           ======================================== */
+
+        .slide-5 {
+            background: linear-gradient(135deg, #0f172a 0%, #164e63 50%, #0f172a 100%);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            padding: 30px;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: featureAppear 0.6s forwards;
+        }
+
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.3s; }
+        .feature-card:nth-child(4) { animation-delay: 0.4s; }
+        .feature-card:nth-child(5) { animation-delay: 0.5s; }
+        .feature-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes featureAppear {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        .feature-card:nth-child(odd) .feature-icon { animation-delay: 0s; }
+        .feature-card:nth-child(even) .feature-icon { animation-delay: 1.5s; }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .feature-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .feature-desc {
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.4;
+        }
+
+        /* ========================================
+           SLIDE 6: FİYATLANDIRMA
+           ======================================== */
+
+        .slide-6 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+        }
+
+        .pricing-container {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .price-card {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            width: 320px;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .price-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .price-card.featured {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+            border-color: #10b981;
+            transform: scale(1.05);
+        }
+
+        .price-card.featured:hover {
+            transform: scale(1.08) translateY(-10px);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 8px 25px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .price-period {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .price-value {
+            font-size: 56px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .price-vat {
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 20px;
+        }
+
+        .price-features {
+            text-align: left;
+            margin: 25px 0;
+        }
+
+        .price-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+        }
+
+        .price-feature i {
+            color: #10b981;
+        }
+
+        /* Floating Stars */
+        .star-float {
+            position: absolute;
+            color: #fbbf24;
+            animation: starFloat 5s infinite;
+        }
+
+        .star-1 { top: 10%; left: 10%; font-size: 20px; animation-delay: 0s; }
+        .star-2 { top: 20%; right: 15%; font-size: 16px; animation-delay: 1s; }
+        .star-3 { bottom: 30%; left: 8%; font-size: 24px; animation-delay: 2s; }
+        .star-4 { bottom: 15%; right: 10%; font-size: 18px; animation-delay: 3s; }
+
+        @keyframes starFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.5; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+        }
+
+        /* ========================================
+           SLIDE 7: SATIŞ STRATEJİLERİ
+           ======================================== */
+
+        .slide-7 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%);
+        }
+
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .strategy-card {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 30px;
+            opacity: 0;
+            animation: strategySlide 0.5s forwards;
+        }
+
+        .strategy-card:nth-child(1) { animation-delay: 0.1s; }
+        .strategy-card:nth-child(2) { animation-delay: 0.2s; }
+        .strategy-card:nth-child(3) { animation-delay: 0.3s; }
+        .strategy-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes strategySlide {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .strategy-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .strategy-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 12px;
+        }
+
+        .strategy-points {
+            list-style: none;
+        }
+
+        .strategy-points li {
+            padding: 8px 0;
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .strategy-points li::before {
+            content: "→";
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        /* ========================================
+           SLIDE 8: İTİRAZ KARŞILAMA
+           ======================================== */
+
+        .slide-8 {
+            background: linear-gradient(135deg, #0f172a 0%, #581c87 50%, #0f172a 100%);
+        }
+
+        .objection-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 900px;
+        }
+
+        .objection-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            overflow: hidden;
+            opacity: 0;
+            animation: objectionFade 0.5s forwards;
+        }
+
+        .objection-item:nth-child(1) { animation-delay: 0.1s; }
+        .objection-item:nth-child(2) { animation-delay: 0.3s; }
+        .objection-item:nth-child(3) { animation-delay: 0.5s; }
+
+        @keyframes objectionFade {
+            to { opacity: 1; }
+        }
+
+        .objection-q {
+            background: rgba(239, 68, 68, 0.2);
+            border-left: 4px solid #ef4444;
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .objection-q-icon {
+            font-size: 28px;
+        }
+
+        .objection-q-text {
+            color: #fca5a5;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .objection-a {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 20px 25px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .objection-a-icon {
+            font-size: 28px;
+        }
+
+        .objection-a-text {
+            color: #6ee7b7;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ========================================
+           SLIDE 9: MOTİVASYON
+           ======================================== */
+
+        .slide-9 {
+            background: linear-gradient(135deg, #0f172a 0%, #065f46 50%, #0f172a 100%);
+        }
+
+        .motivation-content {
+            text-align: center;
+            max-width: 900px;
+        }
+
+        .motivation-quote {
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            line-height: 1.4;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .motivation-quote::before,
+        .motivation-quote::after {
+            content: '"';
+            font-size: 80px;
+            color: rgba(16, 185, 129, 0.3);
+            position: absolute;
+        }
+
+        .motivation-quote::before {
+            top: -30px;
+            left: -40px;
+        }
+
+        .motivation-quote::after {
+            bottom: -60px;
+            right: -40px;
+        }
+
+        .motivation-stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 50px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 64px;
+            font-weight: bold;
+            animation: statPulse 2s infinite;
+        }
+
+        @keyframes statPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: rgba(255,255,255,0.7);
+            margin-top: 10px;
+        }
+
+        /* Success Confetti */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            animation: confettiFall 4s infinite;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .confetti:nth-child(1) { left: 10%; background: #ef4444; animation-delay: 0s; }
+        .confetti:nth-child(2) { left: 20%; background: #f59e0b; animation-delay: 0.5s; }
+        .confetti:nth-child(3) { left: 30%; background: #10b981; animation-delay: 1s; }
+        .confetti:nth-child(4) { left: 40%; background: #3b82f6; animation-delay: 1.5s; }
+        .confetti:nth-child(5) { left: 50%; background: #8b5cf6; animation-delay: 2s; }
+        .confetti:nth-child(6) { left: 60%; background: #ec4899; animation-delay: 2.5s; }
+        .confetti:nth-child(7) { left: 70%; background: #fbbf24; animation-delay: 3s; }
+        .confetti:nth-child(8) { left: 80%; background: #14b8a6; animation-delay: 3.5s; }
+        .confetti:nth-child(9) { left: 90%; background: #f43f5e; animation-delay: 4s; }
+
+        /* ========================================
+           SLIDE 10: KAPANIŞ
+           ======================================== */
+
+        .slide-10 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+        }
+
+        .closing-logo {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 30px;
+            animation: logoFloat 3s ease-in-out infinite;
+            box-shadow: 0 0 50px rgba(16, 185, 129, 0.4);
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .closing-title {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .closing-subtitle {
+            font-size: 24px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 40px;
+        }
+
+        .contact-info {
+            display: flex;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255,255,255,0.8);
+            font-size: 18px;
+        }
+
+        .contact-item i {
+            color: #10b981;
+            font-size: 24px;
+        }
+
+        /* Pulse Ring Animation */
+        .pulse-ring {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            border-radius: 50%;
+            animation: pulseRing 3s infinite;
+        }
+
+        .pulse-ring:nth-child(1) { animation-delay: 0s; }
+        .pulse-ring:nth-child(2) { animation-delay: 1s; }
+        .pulse-ring:nth-child(3) { animation-delay: 2s; }
+
+        @keyframes pulseRing {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white">
+
+    <!-- Navigation Dots -->
+    <div class="nav-dots">
+        <div class="nav-dot active" onclick="goToSlide(0)"></div>
+        <div class="nav-dot" onclick="goToSlide(1)"></div>
+        <div class="nav-dot" onclick="goToSlide(2)"></div>
+        <div class="nav-dot" onclick="goToSlide(3)"></div>
+        <div class="nav-dot" onclick="goToSlide(4)"></div>
+        <div class="nav-dot" onclick="goToSlide(5)"></div>
+        <div class="nav-dot" onclick="goToSlide(6)"></div>
+        <div class="nav-dot" onclick="goToSlide(7)"></div>
+        <div class="nav-dot" onclick="goToSlide(8)"></div>
+        <div class="nav-dot" onclick="goToSlide(9)"></div>
+    </div>
+
+    <!-- Navigation Arrows -->
+    <div class="nav-arrows">
+        <div class="nav-arrow" onclick="prevSlide()">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+        <div class="nav-arrow" onclick="nextSlide()">
+            <i class="fas fa-chevron-right"></i>
+        </div>
+    </div>
+
+    <!-- Slide Counter -->
+    <div class="slide-counter">
+        <span id="currentSlide">1</span> / 10
+    </div>
+
+    <!-- ========================================
+         SLIDE 1: AÇILIŞ
+         ======================================== -->
+    <div class="slide slide-1 active" data-slide="0">
+        <!-- Code Particles -->
+        <div class="code-particle">&lt;/&gt;</div>
+        <div class="code-particle">{...}</div>
+        <div class="code-particle">[ ]</div>
+        <div class="code-particle">( )</div>
+        <div class="code-particle">=&gt;</div>
+        <div class="code-particle">&lt;?php</div>
+        <div class="code-particle">function</div>
+        <div class="code-particle">class</div>
+        <div class="code-particle">return</div>
+
+        <div class="flex items-center justify-center w-full h-full">
+            <div class="text-center px-8">
+                <!-- Türk Bilişim Logo -->
+                <div class="logo-pulse inline-block mb-8">
+                    <div class="w-32 h-32 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl flex items-center justify-center mx-auto">
+                        <span class="text-5xl font-bold">TB</span>
+                    </div>
+                </div>
+
+                <h1 class="text-6xl font-bold mb-6">
+                    <span class="gradient-text-purple">Türk Bilişim</span>
+                </h1>
+
+                <p class="text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+                    Yazılım & Teknoloji Çözümleri
+                </p>
+
+                <div class="flex items-center justify-center gap-8 text-gray-400 mb-12">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-globe text-indigo-400"></i>
+                        turkbilisim.com.tr
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-code text-purple-400"></i>
+                        Kurumsal Yazılım
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-server text-blue-400"></i>
+                        Multi-Tenant Sistemler
+                    </div>
+                </div>
+
+                <div class="inline-flex items-center gap-3 bg-white/5 border border-white/10 rounded-full px-8 py-4">
+                    <span class="text-gray-400">Sunan:</span>
+                    <span class="text-white font-semibold">Muzibu Satış Ekibi Eğitimi</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         SLIDE 2: PROBLEM - MESAM BASKINI
+         ======================================== -->
+    <div class="slide slide-2" data-slide="1">
+        <!-- Sol İçerik -->
+        <div class="w-1/2 flex items-center px-16">
+            <div>
+                <div class="inline-block bg-red-500/20 text-red-400 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>PROBLEM
+                </div>
+
+                <h2 class="text-5xl font-bold mb-6">
+                    <span class="gradient-text-red">MESAM / MÜ-YAP</span><br>
+                    <span class="text-white">Korkusu</span>
+                </h2>
+
+                <p class="text-xl text-gray-300 mb-8 leading-relaxed">
+                    İşletmeler lisanssız müzik çaldığında ağır cezalarla karşılaşıyor.
+                    Denetimler habersiz geliyor, cezalar katlanıyor.
+                </p>
+
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4 bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+                        <div class="text-3xl">⚠️</div>
+                        <div>
+                            <div class="font-bold text-red-400">Tek Seferlik Ceza</div>
+                            <div class="text-gray-400">₺50.000 - ₺100.000+</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4 bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+                        <div class="text-3xl">📋</div>
+                        <div>
+                            <div class="font-bold text-red-400">Yıllık Lisans Ücreti</div>
+                            <div class="text-gray-400">₺6.000 - ₺12.000+ / yıl</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4 bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+                        <div class="text-3xl">⚖️</div>
+                        <div>
+                            <div class="font-bold text-red-400">Dava Riski</div>
+                            <div class="text-gray-400">Hukuki süreç + itibar kaybı</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Animasyon -->
+        <div class="animation-container">
+            <div class="cafe-scene">
+                <div class="cafe-building-2">
+                    <div class="cafe-sign-2">☕ KAFE</div>
+                    <div class="cafe-window-2 cafe-win-1"></div>
+                    <div class="cafe-window-2 cafe-win-2"></div>
+                    <div class="cafe-door-2"></div>
+                    <div class="cafe-face-2"></div>
+                </div>
+            </div>
+
+            <div class="inspector-2">
+                <div class="inspector-hat-2"></div>
+                <div class="inspector-head-2"></div>
+                <div class="inspector-body-2">
+                    <div class="inspector-badge">👮</div>
+                </div>
+            </div>
+
+            <div class="penalty-2">
+                <div class="penalty-title-2">⚠️ CEZA TUTANAĞI</div>
+                <div class="penalty-amount-2">₺85.000</div>
+            </div>
+
+            <div class="money-fly money-fly-1">💸</div>
+            <div class="money-fly money-fly-2">💰</div>
+            <div class="money-fly money-fly-3">💸</div>
+            <div class="money-fly money-fly-4">💰</div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         SLIDE 3: ÇÖZÜM - MUZİBU KALKANI
+         ======================================== -->
+    <div class="slide slide-3" data-slide="2">
+        <!-- Sol İçerik -->
+        <div class="w-1/2 flex items-center px-16">
+            <div>
+                <div class="inline-block bg-emerald-500/20 text-emerald-400 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+                    <i class="fas fa-shield-alt mr-2"></i>ÇÖZÜM
+                </div>
+
+                <h2 class="text-5xl font-bold mb-6">
+                    <span class="gradient-text-green">Muzibu</span><br>
+                    <span class="text-white">Koruma Kalkanı</span>
+                </h2>
+
+                <p class="text-xl text-gray-300 mb-8 leading-relaxed">
+                    Tüm lisanslar dahil, yasal ve güvenli müzik yayını.
+                    Denetimden korkmadan, huzurla müzik çalın.
+                </p>
+
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4">
+                        <div class="text-3xl">✅</div>
+                        <div>
+                            <div class="font-bold text-emerald-400">MESAM Lisansı Dahil</div>
+                            <div class="text-gray-400">Eser sahipleri hakları korunuyor</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4">
+                        <div class="text-3xl">✅</div>
+                        <div>
+                            <div class="font-bold text-emerald-400">MÜ-YAP Lisansı Dahil</div>
+                            <div class="text-gray-400">Yapımcı ve icracı hakları</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4">
+                        <div class="text-3xl">🛡️</div>
+                        <div>
+                            <div class="font-bold text-emerald-400">Yasal Koruma Belgesi</div>
+                            <div class="text-gray-400">Denetçiye gösterebileceğiniz resmi belge</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Animasyon -->
+        <div class="w-1/2 flex items-center justify-center">
+            <div class="shield-scene">
+                <div class="shield-ring"></div>
+                <div class="shield-label-3"><span>🛡️ Muzibu Koruması</span></div>
+
+                <div class="business-box">
+                    <div class="business-icon-3">🏪</div>
+                    <div class="business-label">İşletmeniz</div>
+                </div>
+
+                <div class="threat-3 threat-3-1">
+                    <div class="threat-icon-3">👮</div>
+                    Denetçi
+                </div>
+                <div class="threat-3 threat-3-2">
+                    <div class="threat-icon-3">📋</div>
+                    Ceza
+                </div>
+                <div class="threat-3 threat-3-3">
+                    <div class="threat-icon-3">⚖️</div>
+                    Dava
+                </div>
+                <div class="threat-3 threat-3-4">
+                    <div class="threat-icon-3">💸</div>
+                    Kayıp
+                </div>
+
+                <div class="protection-msg">✅ İşletmeniz güvende!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         SLIDE 4: TASARRUF KARŞILAŞTIRMASI
+         ======================================== -->
+    <div class="slide slide-4" data-slide="3">
+        <!-- Sol İçerik -->
+        <div class="w-1/2 flex items-center px-16">
+            <div>
+                <div class="inline-block bg-purple-500/20 text-purple-400 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+                    <i class="fas fa-calculator mr-2"></i>KARŞILAŞTIRMA
+                </div>
+
+                <h2 class="text-5xl font-bold mb-6">
+                    <span class="gradient-text-purple">%90+ </span>
+                    <span class="text-white">Tasarruf</span>
+                </h2>
+
+                <p class="text-xl text-gray-300 mb-8 leading-relaxed">
+                    MESAM + MÜ-YAP ücretlerine kıyasla Muzibu ile
+                    yılda binlerce lira tasarruf edin.
+                </p>
+
+                <div class="space-y-6">
+                    <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-5">
+                        <div class="text-red-400 font-bold mb-2">MESAM + MÜ-YAP (Geleneksel)</div>
+                        <div class="text-3xl font-bold text-red-300">₺7.200+ / yıl</div>
+                        <div class="text-gray-500 text-sm mt-1">+ Başvuru ücreti + Bürokratik işlemler</div>
+                    </div>
+
+                    <div class="text-center text-4xl">⬇️</div>
+
+                    <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-5">
+                        <div class="text-emerald-400 font-bold mb-2">Muzibu (Hepsi Dahil)</div>
+                        <div class="text-3xl font-bold text-emerald-300">₺600 / yıl</div>
+                        <div class="text-gray-500 text-sm mt-1">Her şey dahil, anında aktif</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Animasyon -->
+        <div class="w-1/2 flex items-center justify-center">
+            <div class="piggy-scene">
+                <div class="piggy-platform"></div>
+
+                <div class="savings-badge">🎉 %90+ TASARRUF!</div>
+
+                <!-- MESAM Kumbara -->
+                <div class="piggy-mesam-4">
+                    <div class="mesam-tag">MESAM/MÜ-YAP</div>
+                    <div class="piggy-body-mesam">
+                        <div class="piggy-ear-mesam ear-m-l"></div>
+                        <div class="piggy-ear-mesam ear-m-r"></div>
+                        <div class="piggy-slot-mesam"></div>
+                        <div class="piggy-eye-mesam eye-m-l"></div>
+                        <div class="piggy-eye-mesam eye-m-r"></div>
+                        <div class="piggy-snout-mesam"></div>
+                    </div>
+                </div>
+
+                <!-- Muzibu Kumbara -->
+                <div class="piggy-muzibu-4">
+                    <div class="muzibu-tag">Muzibu</div>
+                    <div class="piggy-body-muzibu">
+                        <div class="piggy-ear-muzibu ear-z-l"></div>
+                        <div class="piggy-ear-muzibu ear-z-r"></div>
+                        <div class="piggy-slot-muzibu"></div>
+                        <div class="piggy-eye-muzibu eye-z-l"></div>
+                        <div class="piggy-eye-muzibu eye-z-r"></div>
+                        <div class="piggy-snout-muzibu"></div>
+                    </div>
+                </div>
+
+                <!-- Düşen Paralar -->
+                <div class="coin-fall-m coin-m-1">🪙</div>
+                <div class="coin-fall-m coin-m-2">🪙</div>
+                <div class="coin-fall-m coin-m-3">🪙</div>
+                <div class="coin-fall-m coin-m-4">🪙</div>
+                <div class="coin-fall-m coin-m-5">🪙</div>
+                <div class="coin-fall-m coin-m-6">🪙</div>
+                <div class="coin-fall-m coin-m-7">🪙</div>
+
+                <div class="coin-fall-z coin-z-1">🪙</div>
+                <div class="coin-fall-z coin-z-2">🪙</div>
+
+                <div class="vs-badge">VS</div>
+
+                <div class="price-tag price-mesam">₺7.200+/yıl</div>
+                <div class="price-tag price-muzibu">₺600/yıl</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         SLIDE 5: ÖZELLİKLER
+         ======================================== -->
+    <div class="slide slide-5" data-slide="4">
+        <div class="w-full h-full flex flex-col justify-center px-16">
+            <div class="text-center mb-12">
+                <div class="inline-block bg-cyan-500/20 text-cyan-400 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                    <i class="fas fa-star mr-2"></i>ÖZELLİKLER
+                </div>
+                <h2 class="text-5xl font-bold">
+                    <span class="gradient-text-blue">Rakiplerden</span>
+                    <span class="text-white">Farkımız</span>
+                </h2>
+            </div>
+
+            <div class="feature-grid max-w-6xl mx-auto">
+                <div class="feature-card">
+                    <div class="feature-icon">📢</div>
+                    <div class="feature-title">Anons Sistemi</div>
+                    <div class="feature-desc">Müşterilerinize özel duyurular yapın. İndirim, kampanya, hoşgeldin anonsu.</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🏢</div>
+                    <div class="feature-title">Şube Yönetimi</div>
+                    <div class="feature-desc">Tüm şubelerinizi tek panelden kontrol edin. Her şubeye farklı playlist.</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎵</div>
+                    <div class="feature-title">Sektörel Playlistler</div>
+                    <div class="feature-desc">Kafe, restoran, mağaza... Her sektöre özel hazır listeler.</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <div class="feature-title">Güvenli Yayın</div>
+                    <div class="feature-desc">HLS şifreli akış, 3 sunucu mimarisi. Kesintisiz müzik garantisi.</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-title">Detaylı Raporlar</div>
+                    <div class="feature-desc">Dinlenme istatistikleri, en popüler şarkılar, kullanım analizi.</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <div class="feature-title">AI Öneri Sistemi</div>
+                    <div class="feature-desc">Yapay zeka ile müşteri profilinize uygun müzik önerileri.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         SLIDE 6: FİYATLANDIRMA
+         ======================================== -->
+    <div class="slide slide-6" data-slide="5">
+        <!-- Floating Stars -->
+        <div class="star-float star-1">⭐</div>
+        <div class="star-float star-2">✨</div>
+        <div class="star-float star-3">⭐</div>
+        <div class="star-float star-4">✨</div>
+
+        <div class="w-full h-full flex flex-col justify-center items-center px-16">
+            <div class="text-center mb-12">
+                <div class="inline-block bg-amber-500/20 text-amber-400 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                    <i class="fas fa-tags mr-2"></i>FİYATLANDIRMA
+                </div>
+                <h2 class="text-5xl font-bold">
+                    <span class="gradient-text-orange">Uygun</span>
+                    <span class="text-white">Fiyatlar</span>
+                </h2>
+            </div>
+
+            <div class="pricing-container">
+                <!-- Aylık Paket -->
+                <div class="price-card">
+                    <div class="price-period">Aylık Paket</div>
+                    <div class="price-value gradient-text-blue">₺600</div>
+                    <div class="price-vat">+ KDV / ay</div>
+
+                    <div class="price-features">
+                        <div class="price-feature">
+                            <i class="fas fa-check"></i>
+                            Tüm özellikler dahil
+                        </div>
+                        <div class="price-feature">
+                            <i class="fas fa-check"></i>
+                            MESAM + MÜ-YAP lisansı
+                        </div>
+                        <div class="price-feature">
+                            <i class="fas fa-check"></i>
+                            Sınırsız müzik erişimi
+                        </div>
+                        <div class="price-feature">
+                            <i class="fas fa-check"></i>
+                            7/24 teknik destek
+                        </div>
+                        <div class="price-feature">
+                            <i class="fas fa-check"></i>
+                            İstediğiniz zaman iptal
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yıllık Paket -->
+                <div class="price-card featured">
+                    <div class="popular-badge">🔥 EN POPÜLER</div>
+                    <div class="price-period">Yıllık Paket</div>
+                    <div class="price-value gradient-text-green">₺4.000</div>
+                    <div class="price-vat">+ KDV / yıl (₺333/ay)</div>
+
+                    <div class="price-features">
+                        <div class="price-feature">
+                            <i class="fas fa-check"></i>
+                            Aylık paketteki her şey
+                        </div>
+                        <div class="price-feature">
+                            <i class="fas fa-check"></i>
+                            <strong>%45 indirim</strong>
+                        </div>
+                        <div class="price-feature">
+                            <i class="fas fa-check"></i>
+                            Öncelikli destek
+                        </div>
+                        <div class="price-feature">
+                            <i class="fas fa-check"></i>
+                            Yeni özellikler önce sizde
+                        </div>
+                        <div class="price-feature">
+                            <i class="fas fa-check"></i>
+                            Özel hesap yöneticisi
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         SLIDE 7: SATIŞ STRATEJİLERİ
+         ======================================== -->
+    <div class="slide slide-7" data-slide="6">
+        <div class="w-full h-full flex flex-col justify-center px-16">
+            <div class="text-center mb-10">
+                <div class="inline-block bg-blue-500/20 text-blue-400 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                    <i class="fas fa-lightbulb mr-2"></i>SATIŞ STRATEJİLERİ
+                </div>
+                <h2 class="text-5xl font-bold">
+                    <span class="gradient-text-blue">Başarılı</span>
+                    <span class="text-white">Satış Taktikleri</span>
+                </h2>
+            </div>
+
+            <div class="strategy-grid max-w-5xl mx-auto">
+                <div class="strategy-card">
+                    <div class="strategy-icon">🎯</div>
+                    <div class="strategy-title">Hedef Kitleyi Belirle</div>
+                    <ul class="strategy-points">
+                        <li>Kafeler, restoranlar, mağazalar öncelikli</li>
+                        <li>Zincir markalar = çoklu şube satışı</li>
+                        <li>Yeni açılan işletmeler = acil ihtiyaç</li>
+                        <li>Denetim geçirmiş yerler = bilinçli müşteri</li>
+                    </ul>
+                </div>
+
+                <div class="strategy-card">
+                    <div class="strategy-icon">💬</div>
+                    <div class="strategy-title">Açılış Cümlesi</div>
+                    <ul class="strategy-points">
+                        <li>"MESAM denetimi geçirdiniz mi?"</li>
+                        <li>"Müzik lisansınız var mı?"</li>
+                        <li>"Yılda ne kadar müzik ücreti ödüyorsunuz?"</li>
+                        <li>"Size %90 tasarruf yaptırsam?"</li>
+                    </ul>
+                </div>
+
+                <div class="strategy-card">
+                    <div class="strategy-icon">📈</div>
+                    <div class="strategy-title">Değer Önerisi Sun</div>
+                    <ul class="strategy-points">
+                        <li>Korku değil, tasarruf vurgula</li>
+                        <li>Rakam ver: "Yılda ₺6.600 cebinizde kalır"</li>
+                        <li>Özellikleri faydaya çevir</li>
+                        <li>Demo göster, deneyimlet</li>
+                    </ul>
+                </div>
+
+                <div class="strategy-card">
+                    <div class="strategy-icon">🤝</div>
+                    <div class="strategy-title">Kapanış Teknikleri</div>
+                    <ul class="strategy-points">
+                        <li>"Hemen başlayalım mı?" - direkt kapanış</li>
+                        <li>"Aylık mı yıllık mı tercih edersiniz?"</li>
+                        <li>"Bu hafta başlarsanız %10 ekstra indirim"</li>
+                        <li>Referans ver: "X kafe de kullanıyor"</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         SLIDE 8: İTİRAZ KARŞILAMA
+         ======================================== -->
+    <div class="slide slide-8" data-slide="7">
+        <div class="w-full h-full flex flex-col justify-center items-center px-16">
+            <div class="text-center mb-10">
+                <div class="inline-block bg-purple-500/20 text-purple-400 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                    <i class="fas fa-comments mr-2"></i>İTİRAZ KARŞILAMA
+                </div>
+                <h2 class="text-5xl font-bold">
+                    <span class="gradient-text-purple">Müşteri</span>
+                    <span class="text-white">İtirazları</span>
+                </h2>
+            </div>
+
+            <div class="objection-container">
+                <div class="objection-item">
+                    <div class="objection-q">
+                        <div class="objection-q-icon">🤔</div>
+                        <div class="objection-q-text">"Zaten YouTube/Spotify açıyoruz, niye para verelim?"</div>
+                    </div>
+                    <div class="objection-a">
+                        <div class="objection-a-icon">💡</div>
+                        <div class="objection-a-text">
+                            YouTube ve Spotify kişisel kullanım lisansıdır. Ticari mekanda çalmak yasadışı ve cezası ₺50.000+.
+                            Üstelik reklamlar ve kesintiler müşteri deneyimini bozar. Muzibu tamamen yasal, reklamsız ve profesyonel.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="objection-item">
+                    <div class="objection-q">
+                        <div class="objection-q-icon">💰</div>
+                        <div class="objection-q-text">"Şu an bütçemiz yok, sonra bakarız."</div>
+                    </div>
+                    <div class="objection-a">
+                        <div class="objection-a-icon">💡</div>
+                        <div class="objection-a-text">
+                            Günlük ₺2 bile değil! Bir çay fiyatına tüm yıl güvence. Denetim gelirse tek seferde ₺85.000 ödeyebilirsiniz.
+                            Hangisi daha mantıklı? Üstelik ilk ay deneme fırsatı var.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="objection-item">
+                    <div class="objection-q">
+                        <div class="objection-q-icon">🎵</div>
+                        <div class="objection-q-text">"Bizim sektöre uygun müzik var mı?"</div>
+                    </div>
+                    <div class="objection-a">
+                        <div class="objection-a-icon">💡</div>
+                        <div class="objection-a-text">
+                            Kesinlikle! Kafe, restoran, spor salonu, mağaza, otel... Her sektöre özel profesyonel playlistlerimiz var.
+                            Hatta kendi listelerinizi de oluşturabilirsiniz. Demo göstereyim mi?
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         SLIDE 9: MOTİVASYON
+         ======================================== -->
+    <div class="slide slide-9" data-slide="8">
+        <!-- Confetti -->
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+
+        <div class="w-full h-full flex items-center justify-center">
+            <div class="motivation-content">
+                <div class="inline-block bg-emerald-500/20 text-emerald-400 px-4 py-2 rounded-full text-sm font-semibold mb-8">
+                    <i class="fas fa-rocket mr-2"></i>MOTİVASYON
+                </div>
+
+                <div class="motivation-quote">
+                    Her işletme bir potansiyel müşteri.<br>
+                    Her gün yüzlerce kafe, restoran, mağaza<br>
+                    yasadışı müzik çalıyor ve bunun farkında değil.
+                </div>
+
+                <p class="text-2xl text-gray-300 mb-8">
+                    Siz onlara hem yasal koruma hem de tasarruf sunuyorsunuz.<br>
+                    Bu bir satış değil, bir <span class="text-emerald-400 font-bold">çözüm ortaklığı</span>!
+                </p>
+
+                <div class="motivation-stats">
+                    <div class="stat-item">
+                        <div class="stat-value gradient-text-green">%90+</div>
+                        <div class="stat-label">Tasarruf Oranı</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value gradient-text-blue">7/24</div>
+                        <div class="stat-label">Destek</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value gradient-text-purple">∞</div>
+                        <div class="stat-label">Potansiyel</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         SLIDE 10: KAPANIŞ
+         ======================================== -->
+    <div class="slide slide-10" data-slide="9">
+        <!-- Pulse Rings -->
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring"></div>
+        </div>
+
+        <div class="w-full h-full flex items-center justify-center">
+            <div class="text-center relative z-10">
+                <div class="closing-logo">M</div>
+
+                <h2 class="closing-title">
+                    <span class="gradient-text-green">Muzibu</span>
+                </h2>
+
+                <p class="closing-subtitle">
+                    Yasal Müzik, Uygun Fiyat, Huzurlu İşletme
+                </p>
+
+                <div class="inline-block bg-white/5 border border-white/10 rounded-2xl px-10 py-6 mb-8">
+                    <p class="text-xl text-gray-300 mb-4">Sorularınız için:</p>
+                    <div class="contact-info justify-center">
+                        <div class="contact-item">
+                            <i class="fas fa-globe"></i>
+                            muzibu.com.tr
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            info@muzibu.com.tr
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <p class="text-gray-500 text-sm">
+                        Yazılım: <span class="text-gray-400">Türk Bilişim</span> | turkbilisim.com.tr
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.nav-dot');
+        const totalSlides = slides.length;
+
+        function goToSlide(index) {
+            slides[currentSlideIndex].classList.remove('active');
+            dots[currentSlideIndex].classList.remove('active');
+
+            currentSlideIndex = index;
+            if (currentSlideIndex < 0) currentSlideIndex = totalSlides - 1;
+            if (currentSlideIndex >= totalSlides) currentSlideIndex = 0;
+
+            slides[currentSlideIndex].classList.add('active');
+            dots[currentSlideIndex].classList.add('active');
+            document.getElementById('currentSlide').textContent = currentSlideIndex + 1;
+        }
+
+        function nextSlide() {
+            goToSlide(currentSlideIndex + 1);
+        }
+
+        function prevSlide() {
+            goToSlide(currentSlideIndex - 1);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            } else if (e.key >= '1' && e.key <= '9') {
+                goToSlide(parseInt(e.key) - 1);
+            } else if (e.key === '0') {
+                goToSlide(9);
+            }
+        });
+
+        // Touch/Swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+            }
+        }
+
+        // Click to advance
+        document.querySelectorAll('.slide').forEach(slide => {
+            slide.addEventListener('click', (e) => {
+                if (!e.target.closest('.nav-arrow') && !e.target.closest('.nav-dot')) {
+                    nextSlide();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

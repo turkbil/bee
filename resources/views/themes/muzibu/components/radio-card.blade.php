@@ -4,8 +4,7 @@
 ])
 
 @php
-    $cover = $radio->coverMedia ?? null;
-    $coverUrl = $cover ? thumb($cover, 300, 300) : '/images/default-radio.png';
+    $coverUrl = $radio->getCoverUrl(300, 300) ?? '/images/default-radio.png';
     $radioId = $radio->radio_id ?? $radio->id;
     $songsCount = $radio->songs_count ?? 0;
     $isLive = $radio->is_live ?? false;

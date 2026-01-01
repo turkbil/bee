@@ -504,6 +504,7 @@
     {{-- ❌ REMOVED: keyboard.js (klavye kısayolları kaldırıldı) --}}
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/api.js') }}"></script>
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/session.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/player/features/spot-player.js') }}"></script>
     <script src="{{ asset('themes/muzibu/js/player/features/spa-router.js') }}?v={{ filemtime(public_path('themes/muzibu/js/player/features/spa-router.js')) }}"></script>
     {{-- ❌ REMOVED: play-helpers.js (already loaded in HEAD) --}}
     <script src="{{ versioned_asset('themes/muzibu/js/global-helpers.js') }}"></script>

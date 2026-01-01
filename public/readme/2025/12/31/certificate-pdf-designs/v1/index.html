@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>V1 - Portrait A4 (PDF Uyumlu)</title>
+    <style>
+        @page { margin: 0; size: A4 portrait; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DejaVu Sans', sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            width: 210mm;
+            height: 297mm;
+            margin: 0 auto;
+        }
+        .page {
+            width: 100%;
+            height: 100%;
+            padding: 15mm;
+        }
+        .border-box {
+            border: 3px solid #d4af37;
+            padding: 10mm;
+            height: 100%;
+        }
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .content-table td {
+            vertical-align: top;
+            padding: 3mm;
+        }
+        .center { text-align: center; }
+        .gold { color: #d4af37; }
+        .white { color: white; }
+        .gray { color: #94a3b8; }
+        .mono { font-family: 'DejaVu Sans Mono', monospace; }
+
+        .title { font-size: 10mm; font-weight: bold; }
+        .subtitle { font-size: 4mm; }
+        .member { font-size: 7mm; font-weight: bold; }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 5mm 0;
+            background: rgba(30, 41, 59, 0.5);
+        }
+        .info-table td {
+            border: 1px solid #334155;
+            padding: 4mm;
+            text-align: center;
+            width: 50%;
+        }
+        .label { font-size: 3mm; color: #64748b; }
+        .value { font-size: 4mm; color: white; margin-top: 1mm; }
+
+        .address-box {
+            background: rgba(30, 41, 59, 0.3);
+            border: 1px solid #334155;
+            padding: 4mm;
+            margin: 5mm 0;
+        }
+        .signature-box {
+            background: rgba(30, 58, 138, 0.2);
+            border: 1px solid #1e40af;
+            padding: 4mm;
+            margin: 5mm 0;
+        }
+        .qr-box {
+            background: white;
+            padding: 3mm;
+            display: inline-block;
+        }
+        .footer { font-size: 3mm; color: #475569; margin-top: 5mm; }
+    </style>
+</head>
+<body>
+    <div style="text-align:center;padding:8px;background:#d4af37;color:#0f172a;font-size:12px;font-weight:bold;">
+        V1 - Portrait A4 (Dikey) - PDF Uyumlu
+    </div>
+
+    <div class="page">
+        <div class="border-box">
+
+            <!-- Başlık -->
+            <table class="content-table">
+                <tr>
+                    <td class="center" style="padding-bottom:8mm;border-bottom:1px solid rgba(212,175,55,0.3);">
+                        <div class="title white">Üyelik Sertifikası</div>
+                        <div class="subtitle gray">Muzibu Kurumsal Premium Üyelik</div>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Firma Adı -->
+            <table class="content-table">
+                <tr>
+                    <td class="center" style="padding:10mm 0;">
+                        <div class="member white mono">iXtif İç ve Dış Tic. A.Ş.</div>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Bilgiler Grid -->
+            <table class="info-table">
+                <tr>
+                    <td>
+                        <div class="label">SERTİFİKA NO</div>
+                        <div class="value gold mono">MZB-2025-51A5</div>
+                    </td>
+                    <td>
+                        <div class="label">ÜYELİK TARİHİ</div>
+                        <div class="value">23.12.2025</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="label">VERGİ DAİRESİ</div>
+                        <div class="value mono">Kartal</div>
+                    </td>
+                    <td>
+                        <div class="label">VERGİ NO</div>
+                        <div class="value mono">4831552951</div>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Adres -->
+            <div class="address-box">
+                <div class="label">KAYITLI ADRES</div>
+                <div class="value" style="font-size:3.5mm;color:#cbd5e1;margin-top:2mm;">
+                    Karlıktepe Mah. Çamlık Sk. Manzara Adalar B Blok No: 1 B İç Kapı No: 89 Kartal/İstanbul
+                </div>
+            </div>
+
+            <!-- Dijital İmza -->
+            <div class="signature-box">
+                <div style="color:#60a5fa;font-size:4mm;font-weight:bold;">Benzersiz Dijital İmza</div>
+                <div style="color:#64748b;font-size:3mm;">Bu belge şifrelenmiş ve değiştirilemez · 256-bit</div>
+            </div>
+
+            <!-- QR Kod -->
+            <table class="content-table">
+                <tr>
+                    <td class="center" style="padding:8mm 0;">
+                        <div class="qr-box">
+                            <div style="width:25mm;height:25mm;background:#f1f5f9;border:1px dashed #94a3b8;line-height:25mm;font-size:3mm;color:#64748b;">QR KOD</div>
+                        </div>
+                        <div style="font-size:3mm;color:#64748b;margin-top:2mm;">QR kod ile doğrulayın</div>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Footer -->
+            <div class="footer center">
+                <div>Bu belge Muzibu A.Ş. tarafından elektronik ortamda düzenlenmiştir.</div>
+                <div style="color:#d4af37;">muzibu.com.tr</div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

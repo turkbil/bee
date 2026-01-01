@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hikayeli Animasyonlar - İçerikle Örtüşen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: #030712; color: white; overflow-x: hidden; }
+
+        .demo-section {
+            min-height: 100vh; padding: 60px 40px;
+            border-bottom: 2px solid rgba(139, 92, 246, 0.2);
+            position: relative; overflow: hidden;
+        }
+
+        /* =============================================
+           ÖRNEK 1: 3 SUNUCU ANİMASYONU
+           1 kutudan 3 kutu çıkıyor, bağlantılar oluşuyor
+           ============================================= */
+        .server-story {
+            position: relative; width: 100%; max-width: 900px;
+            margin: 0 auto; height: 500px;
+        }
+
+        .main-server {
+            position: absolute; left: 50%; top: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px; height: 120px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            border-radius: 20px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            box-shadow: 0 0 40px rgba(139, 92, 246, 0.5);
+            animation: mainPulse 2s ease-in-out infinite;
+            z-index: 10;
+        }
+        @keyframes mainPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        .child-server {
+            position: absolute; width: 100px; height: 100px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 16px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            opacity: 0; transform: scale(0);
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);
+        }
+
+        .child-server.s1 { left: 10%; top: 20%; animation: serverAppear1 1s ease-out 1s forwards; }
+        .child-server.s2 { right: 10%; top: 20%; animation: serverAppear2 1s ease-out 1.5s forwards; }
+        .child-server.s3 { left: 50%; bottom: 10%; transform: translateX(-50%) scale(0); animation: serverAppear3 1s ease-out 2s forwards; }
+
+        @keyframes serverAppear1 {
+            0% { opacity: 0; transform: scale(0) translate(200%, 100%); }
+            100% { opacity: 1; transform: scale(1) translate(0, 0); }
+        }
+        @keyframes serverAppear2 {
+            0% { opacity: 0; transform: scale(0) translate(-200%, 100%); }
+            100% { opacity: 1; transform: scale(1) translate(0, 0); }
+        }
+        @keyframes serverAppear3 {
+            0% { opacity: 0; transform: translateX(-50%) scale(0) translateY(-200%); }
+            100% { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); }
+        }
+
+        /* Bağlantı çizgileri */
+        .connection-line {
+            position: absolute; height: 4px;
+            background: linear-gradient(90deg, #8b5cf6, #10b981);
+            transform-origin: left center;
+            opacity: 0;
+            border-radius: 2px;
+        }
+        .line1 { left: 50%; top: 35%; width: 0; transform: rotate(-35deg); animation: lineGrow 0.8s ease-out 2.5s forwards; }
+        .line2 { left: 50%; top: 35%; width: 0; transform: rotate(35deg); animation: lineGrow 0.8s ease-out 2.8s forwards; }
+        .line3 { left: 50%; top: 60%; width: 0; transform: rotate(90deg); animation: lineGrow 0.8s ease-out 3.1s forwards; }
+
+        @keyframes lineGrow {
+            0% { width: 0; opacity: 0; }
+            100% { width: 150px; opacity: 1; }
+        }
+
+        /* Etiketler kayarak geliyor */
+        .server-label {
+            position: absolute; padding: 8px 16px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 2px solid; border-radius: 20px;
+            font-size: 14px; font-weight: 600;
+            opacity: 0; transform: translateY(20px);
+            white-space: nowrap;
+        }
+        .label1 { left: 5%; top: 5%; border-color: #f59e0b; color: #f59e0b; animation: labelSlide 0.6s ease-out 3.5s forwards; }
+        .label2 { right: 5%; top: 5%; border-color: #ec4899; color: #ec4899; animation: labelSlide 0.6s ease-out 3.8s forwards; }
+        .label3 { left: 50%; bottom: 0%; transform: translateX(-50%) translateY(20px); border-color: #06b6d4; color: #06b6d4; animation: labelSlide2 0.6s ease-out 4.1s forwards; }
+
+        @keyframes labelSlide {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes labelSlide2 {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* Data paketleri animasyonu */
+        .data-packet {
+            position: absolute; width: 12px; height: 12px;
+            background: #fbbf24; border-radius: 50%;
+            opacity: 0;
+        }
+        .packet1 { animation: packetMove1 2s ease-in-out 4.5s infinite; }
+        .packet2 { animation: packetMove2 2s ease-in-out 5s infinite; }
+        .packet3 { animation: packetMove3 2s ease-in-out 5.5s infinite; }
+
+        @keyframes packetMove1 {
+            0% { left: 50%; top: 45%; opacity: 1; }
+            100% { left: 15%; top: 25%; opacity: 0; }
+        }
+        @keyframes packetMove2 {
+            0% { left: 50%; top: 45%; opacity: 1; }
+            100% { left: 85%; top: 25%; opacity: 0; }
+        }
+        @keyframes packetMove3 {
+            0% { left: 50%; top: 55%; opacity: 1; }
+            100% { left: 50%; top: 85%; opacity: 0; }
+        }
+
+
+        /* =============================================
+           ÖRNEK 2: MESAM CEZA ANİMASYONU
+           Denetçi geliyor, ceza yazılıyor, para uçuyor
+           ============================================= */
+        .mesam-story {
+            position: relative; width: 100%; max-width: 900px;
+            margin: 0 auto; height: 500px;
+        }
+
+        .cafe-building {
+            position: absolute; left: 20%; bottom: 20%;
+            width: 150px; height: 180px;
+            background: linear-gradient(to top, #374151, #4b5563);
+            border-radius: 10px 10px 0 0;
+        }
+        .cafe-building::before {
+            content: 'KAFE'; position: absolute; top: -30px; left: 50%;
+            transform: translateX(-50%);
+            background: #f59e0b; padding: 5px 20px; border-radius: 5px;
+            font-weight: bold; font-size: 14px; color: #000;
+        }
+        .cafe-window {
+            position: absolute; width: 40px; height: 40px;
+            background: #fbbf24; border-radius: 5px;
+        }
+        .cafe-window.w1 { top: 30px; left: 20px; }
+        .cafe-window.w2 { top: 30px; right: 20px; }
+        .cafe-window.w3 { top: 90px; left: 20px; }
+        .cafe-window.w4 { top: 90px; right: 20px; }
+
+        /* Müzik notu - çalıyor */
+        .playing-music {
+            position: absolute; left: 25%; bottom: 45%;
+            font-size: 24px; color: #8b5cf6;
+            animation: musicFloat 1s ease-in-out infinite;
+        }
+        @keyframes musicFloat {
+            0%, 100% { transform: translateY(0) rotate(-10deg); opacity: 1; }
+            50% { transform: translateY(-15px) rotate(10deg); opacity: 0.7; }
+        }
+
+        /* Denetçi figürü */
+        .inspector {
+            position: absolute; right: -100px; bottom: 25%;
+            width: 60px; height: 100px;
+            animation: inspectorWalk 2s ease-out 1s forwards;
+        }
+        .inspector-body {
+            width: 40px; height: 50px; background: #1e293b;
+            border-radius: 10px; margin: 0 auto;
+        }
+        .inspector-head {
+            width: 30px; height: 30px; background: #fcd34d;
+            border-radius: 50%; margin: 0 auto 5px;
+        }
+        .inspector-badge {
+            position: absolute; top: 20px; left: 50%;
+            transform: translateX(-50%);
+            background: #ef4444; color: white;
+            padding: 2px 8px; border-radius: 10px;
+            font-size: 10px; font-weight: bold;
+        }
+        @keyframes inspectorWalk {
+            0% { right: -100px; }
+            100% { right: 55%; }
+        }
+
+        /* Ceza kağıdı */
+        .penalty-paper {
+            position: absolute; right: 20%; top: 20%;
+            width: 120px; padding: 15px;
+            background: white; color: #000;
+            border-radius: 5px; transform: scale(0) rotate(-10deg);
+            animation: paperAppear 0.5s ease-out 3.5s forwards;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .penalty-paper h4 {
+            color: #ef4444; font-size: 12px; margin-bottom: 5px;
+            border-bottom: 2px solid #ef4444; padding-bottom: 3px;
+        }
+        .penalty-paper p { font-size: 10px; margin: 3px 0; }
+        .penalty-paper .amount {
+            font-size: 18px; font-weight: 900; color: #ef4444;
+            margin-top: 10px;
+        }
+        @keyframes paperAppear {
+            0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+            100% { transform: scale(1) rotate(-5deg); opacity: 1; }
+        }
+
+        /* Para uçuyor */
+        .flying-money {
+            position: absolute; font-size: 24px; color: #10b981;
+            opacity: 0;
+        }
+        .money1 { left: 25%; bottom: 40%; animation: moneyFlyAway 1.5s ease-out 4.5s forwards; }
+        .money2 { left: 30%; bottom: 35%; animation: moneyFlyAway 1.5s ease-out 4.8s forwards; }
+        .money3 { left: 28%; bottom: 45%; animation: moneyFlyAway 1.5s ease-out 5.1s forwards; }
+        .money4 { left: 32%; bottom: 38%; animation: moneyFlyAway 1.5s ease-out 5.4s forwards; }
+
+        @keyframes moneyFlyAway {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-200px) translateX(100px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Üzgün emoji */
+        .sad-face {
+            position: absolute; left: 25%; bottom: 55%;
+            font-size: 40px; opacity: 0;
+            animation: sadAppear 0.5s ease-out 5.5s forwards;
+        }
+        @keyframes sadAppear {
+            0% { opacity: 0; transform: scale(0); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+
+        /* =============================================
+           ÖRNEK 3: TASARRUF KARŞILAŞTIRMA
+           İki kutu: MESAM büyük para, Muzibu küçük para
+           ============================================= */
+        .savings-story {
+            position: relative; width: 100%; max-width: 900px;
+            margin: 0 auto; height: 500px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .compare-box {
+            width: 200px; padding: 30px;
+            border-radius: 20px; text-align: center;
+            opacity: 0; transform: translateY(50px);
+        }
+        .compare-box.mesam-box {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
+            border: 3px solid #ef4444;
+            animation: boxAppearLeft 0.8s ease-out 0.5s forwards;
+            margin-right: 50px;
+        }
+        .compare-box.muzibu-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+            border: 3px solid #10b981;
+            animation: boxAppearRight 0.8s ease-out 1s forwards;
+            margin-left: 50px;
+        }
+
+        @keyframes boxAppearLeft {
+            0% { opacity: 0; transform: translateX(-100px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes boxAppearRight {
+            0% { opacity: 0; transform: translateX(100px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .box-title {
+            font-size: 18px; font-weight: 700; margin-bottom: 15px;
+        }
+        .mesam-box .box-title { color: #ef4444; }
+        .muzibu-box .box-title { color: #10b981; }
+
+        .money-stack {
+            position: relative; height: 150px;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: flex-end;
+        }
+
+        .money-bill {
+            width: 80px; height: 20px;
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+            border-radius: 3px; margin-bottom: 3px;
+            opacity: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* MESAM para yığını - çok */
+        .mesam-box .money-bill:nth-child(1) { animation: billStack 0.3s ease-out 1.5s forwards; }
+        .mesam-box .money-bill:nth-child(2) { animation: billStack 0.3s ease-out 1.7s forwards; }
+        .mesam-box .money-bill:nth-child(3) { animation: billStack 0.3s ease-out 1.9s forwards; }
+        .mesam-box .money-bill:nth-child(4) { animation: billStack 0.3s ease-out 2.1s forwards; }
+        .mesam-box .money-bill:nth-child(5) { animation: billStack 0.3s ease-out 2.3s forwards; }
+        .mesam-box .money-bill:nth-child(6) { animation: billStack 0.3s ease-out 2.5s forwards; }
+
+        /* Muzibu para yığını - az */
+        .muzibu-box .money-bill:nth-child(1) { animation: billStack 0.3s ease-out 2.8s forwards; }
+
+        @keyframes billStack {
+            0% { opacity: 0; transform: translateY(-30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .price-tag {
+            margin-top: 15px; font-size: 24px; font-weight: 900;
+            opacity: 0;
+        }
+        .mesam-box .price-tag { color: #ef4444; animation: priceAppear 0.5s ease-out 3s forwards; }
+        .muzibu-box .price-tag { color: #10b981; animation: priceAppear 0.5s ease-out 3.3s forwards; }
+
+        @keyframes priceAppear {
+            0% { opacity: 0; transform: scale(0.5); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Ok ve tasarruf yazısı */
+        .savings-arrow {
+            position: absolute; left: 50%; top: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            animation: arrowAppear 0.8s ease-out 3.8s forwards;
+        }
+        .savings-arrow i {
+            font-size: 60px;
+            background: linear-gradient(135deg, #ef4444, #10b981);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .savings-text {
+            position: absolute; left: 50%; top: 65%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 32px; font-weight: 900;
+            opacity: 0;
+            animation: savingsTextAppear 0.8s ease-out 4.3s forwards;
+        }
+        @keyframes arrowAppear {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        @keyframes savingsTextAppear {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+
+        /* =============================================
+           ÖRNEK 4: ÖZELLİKLER AÇILIYOR
+           Merkez logo, etrafında özellikler beliriyor
+           ============================================= */
+        .features-story {
+            position: relative; width: 100%; max-width: 900px;
+            margin: 0 auto; height: 500px;
+        }
+
+        .center-logo {
+            position: absolute; left: 50%; top: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px; height: 100px;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            border-radius: 25px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 40px; color: white;
+            box-shadow: 0 0 50px rgba(139, 92, 246, 0.5);
+            z-index: 10;
+            animation: logoPulse 2s ease-in-out infinite;
+        }
+        @keyframes logoPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 50px rgba(139, 92, 246, 0.5); }
+            50% { transform: translate(-50%, -50%) scale(1.05); box-shadow: 0 0 70px rgba(139, 92, 246, 0.7); }
+        }
+
+        .feature-item {
+            position: absolute;
+            display: flex; align-items: center; gap: 10px;
+            opacity: 0;
+        }
+        .feature-icon {
+            width: 50px; height: 50px; border-radius: 15px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; color: white;
+        }
+        .feature-text {
+            font-size: 14px; font-weight: 600;
+            padding: 8px 15px; border-radius: 20px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 2px solid;
+        }
+
+        /* Bağlantı çizgileri - merkezden dışarı */
+        .feature-line {
+            position: absolute; left: 50%; top: 50%;
+            height: 3px; width: 0;
+            transform-origin: left center;
+            opacity: 0;
+        }
+
+        .f1 { top: 15%; left: 15%; animation: featureAppear 0.6s ease-out 1s forwards; }
+        .f1 .feature-icon { background: #8b5cf6; }
+        .f1 .feature-text { border-color: #8b5cf6; color: #8b5cf6; }
+        .fl1 { transform: rotate(-45deg); background: linear-gradient(90deg, #8b5cf6, transparent); animation: lineExtend 0.4s ease-out 0.6s forwards; }
+
+        .f2 { top: 15%; right: 15%; flex-direction: row-reverse; animation: featureAppear 0.6s ease-out 1.4s forwards; }
+        .f2 .feature-icon { background: #ec4899; }
+        .f2 .feature-text { border-color: #ec4899; color: #ec4899; }
+        .fl2 { transform: rotate(45deg); background: linear-gradient(90deg, #ec4899, transparent); animation: lineExtend 0.4s ease-out 1s forwards; }
+
+        .f3 { top: 45%; left: 5%; animation: featureAppear 0.6s ease-out 1.8s forwards; }
+        .f3 .feature-icon { background: #10b981; }
+        .f3 .feature-text { border-color: #10b981; color: #10b981; }
+        .fl3 { transform: rotate(-90deg); background: linear-gradient(90deg, #10b981, transparent); animation: lineExtend 0.4s ease-out 1.4s forwards; }
+
+        .f4 { top: 45%; right: 5%; flex-direction: row-reverse; animation: featureAppear 0.6s ease-out 2.2s forwards; }
+        .f4 .feature-icon { background: #f59e0b; }
+        .f4 .feature-text { border-color: #f59e0b; color: #f59e0b; }
+        .fl4 { transform: rotate(90deg); background: linear-gradient(90deg, #f59e0b, transparent); animation: lineExtend 0.4s ease-out 1.8s forwards; }
+
+        .f5 { bottom: 15%; left: 15%; animation: featureAppear 0.6s ease-out 2.6s forwards; }
+        .f5 .feature-icon { background: #06b6d4; }
+        .f5 .feature-text { border-color: #06b6d4; color: #06b6d4; }
+        .fl5 { transform: rotate(-135deg); background: linear-gradient(90deg, #06b6d4, transparent); animation: lineExtend 0.4s ease-out 2.2s forwards; }
+
+        .f6 { bottom: 15%; right: 15%; flex-direction: row-reverse; animation: featureAppear 0.6s ease-out 3s forwards; }
+        .f6 .feature-icon { background: #ef4444; }
+        .f6 .feature-text { border-color: #ef4444; color: #ef4444; }
+        .fl6 { transform: rotate(135deg); background: linear-gradient(90deg, #ef4444, transparent); animation: lineExtend 0.4s ease-out 2.6s forwards; }
+
+        @keyframes featureAppear {
+            0% { opacity: 0; transform: scale(0.5); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes lineExtend {
+            0% { width: 0; opacity: 0; }
+            100% { width: 120px; opacity: 1; }
+        }
+
+        /* Demo başlıkları */
+        .demo-title {
+            text-align: center; margin-bottom: 40px;
+        }
+        .demo-title h2 {
+            font-size: 2.5rem; font-weight: 800;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .demo-title p {
+            color: #94a3b8; font-size: 1.1rem;
+        }
+        .demo-number {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 40px; height: 40px; border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            font-weight: 800; margin-right: 10px;
+        }
+
+        /* Yeniden oynat butonu */
+        .replay-btn {
+            position: absolute; bottom: 20px; right: 20px;
+            padding: 10px 20px; border-radius: 25px;
+            background: rgba(139, 92, 246, 0.2);
+            border: 2px solid #8b5cf6; color: #8b5cf6;
+            cursor: pointer; font-weight: 600;
+            transition: all 0.3s;
+        }
+        .replay-btn:hover {
+            background: #8b5cf6; color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ÖRNEK 1: 3 SUNUCU -->
+    <section class="demo-section" id="demo1">
+        <div class="demo-title">
+            <h2><span class="demo-number">1</span> 3 Sunucu Hikayesi</h2>
+            <p>Ana sunucudan 3 çocuk sunucu doğuyor, aralarında bağlantılar oluşuyor, veri akışı başlıyor</p>
+        </div>
+
+        <div class="server-story">
+            <!-- Ana sunucu -->
+            <div class="main-server">
+                <i class="fas fa-server text-3xl"></i>
+                <span class="text-xs mt-1 font-bold">ANA</span>
+            </div>
+
+            <!-- Çocuk sunucular -->
+            <div class="child-server s1">
+                <i class="fas fa-database text-2xl"></i>
+                <span class="text-xs mt-1">DB</span>
+            </div>
+            <div class="child-server s2">
+                <i class="fas fa-music text-2xl"></i>
+                <span class="text-xs mt-1">CDN</span>
+            </div>
+            <div class="child-server s3">
+                <i class="fas fa-shield-alt text-2xl"></i>
+                <span class="text-xs mt-1">YEDEK</span>
+            </div>
+
+            <!-- Bağlantı çizgileri -->
+            <div class="connection-line line1"></div>
+            <div class="connection-line line2"></div>
+            <div class="connection-line line3"></div>
+
+            <!-- Etiketler -->
+            <div class="server-label label1"><i class="fas fa-bolt mr-1"></i> Hızlı Erişim</div>
+            <div class="server-label label2"><i class="fas fa-music mr-1"></i> Kesintisiz Müzik</div>
+            <div class="server-label label3"><i class="fas fa-sync mr-1"></i> Otomatik Yedekleme</div>
+
+            <!-- Veri paketleri -->
+            <div class="data-packet packet1"></div>
+            <div class="data-packet packet2"></div>
+            <div class="data-packet packet3"></div>
+        </div>
+
+        <button class="replay-btn" onclick="location.reload()">
+            <i class="fas fa-redo mr-2"></i> Tekrar Oynat
+        </button>
+    </section>
+
+
+    <!-- ÖRNEK 2: MESAM CEZA -->
+    <section class="demo-section" id="demo2">
+        <div class="demo-title">
+            <h2><span class="demo-number">2</span> MESAM Denetimi Hikayesi</h2>
+            <p>Kafe müzik çalıyor, denetçi geliyor, ceza yazılıyor, paralar uçuyor</p>
+        </div>
+
+        <div class="mesam-story">
+            <!-- Kafe binası -->
+            <div class="cafe-building">
+                <div class="cafe-window w1"></div>
+                <div class="cafe-window w2"></div>
+                <div class="cafe-window w3"></div>
+                <div class="cafe-window w4"></div>
+            </div>
+
+            <!-- Müzik çalıyor -->
+            <div class="playing-music">
+                <i class="fas fa-music"></i>
+            </div>
+            <div class="playing-music" style="left: 30%; animation-delay: 0.3s;">
+                <i class="fas fa-music"></i>
+            </div>
+
+            <!-- Denetçi -->
+            <div class="inspector">
+                <div class="inspector-head"></div>
+                <div class="inspector-body"></div>
+                <div class="inspector-badge">MESAM</div>
+            </div>
+
+            <!-- Ceza kağıdı -->
+            <div class="penalty-paper">
+                <h4><i class="fas fa-exclamation-triangle"></i> CEZA</h4>
+                <p>Lisanssız Yayın</p>
+                <p>3 Yıllık Geriye Dönük</p>
+                <div class="amount">₺105.000</div>
+            </div>
+
+            <!-- Uçan paralar -->
+            <div class="flying-money money1"><i class="fas fa-money-bill-wave"></i></div>
+            <div class="flying-money money2"><i class="fas fa-lira-sign"></i></div>
+            <div class="flying-money money3"><i class="fas fa-money-bill-wave"></i></div>
+            <div class="flying-money money4"><i class="fas fa-lira-sign"></i></div>
+
+            <!-- Üzgün yüz -->
+            <div class="sad-face">😢</div>
+        </div>
+
+        <button class="replay-btn" onclick="location.reload()">
+            <i class="fas fa-redo mr-2"></i> Tekrar Oynat
+        </button>
+    </section>
+
+
+    <!-- ÖRNEK 3: TASARRUF KARŞILAŞTIRMA -->
+    <section class="demo-section" id="demo3">
+        <div class="demo-title">
+            <h2><span class="demo-number">3</span> Tasarruf Hikayesi</h2>
+            <p>MESAM'a giden para vs Muzibu'ya giden para - görsel karşılaştırma</p>
+        </div>
+
+        <div class="savings-story">
+            <!-- MESAM kutusu -->
+            <div class="compare-box mesam-box">
+                <div class="box-title">MESAM + MÜ-YAP</div>
+                <div class="money-stack">
+                    <div class="money-bill"></div>
+                    <div class="money-bill"></div>
+                    <div class="money-bill"></div>
+                    <div class="money-bill"></div>
+                    <div class="money-bill"></div>
+                    <div class="money-bill"></div>
+                </div>
+                <div class="price-tag">₺45.000+</div>
+            </div>
+
+            <!-- Ok -->
+            <div class="savings-arrow">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+
+            <!-- Muzibu kutusu -->
+            <div class="compare-box muzibu-box">
+                <div class="box-title">Muzibu</div>
+                <div class="money-stack">
+                    <div class="money-bill"></div>
+                </div>
+                <div class="price-tag">₺4.000</div>
+            </div>
+
+            <!-- Tasarruf yazısı -->
+            <div class="savings-text">₺41.000+ TASARRUF!</div>
+        </div>
+
+        <button class="replay-btn" onclick="location.reload()">
+            <i class="fas fa-redo mr-2"></i> Tekrar Oynat
+        </button>
+    </section>
+
+
+    <!-- ÖRNEK 4: ÖZELLİKLER AÇILIYOR -->
+    <section class="demo-section" id="demo4">
+        <div class="demo-title">
+            <h2><span class="demo-number">4</span> Özellikler Hikayesi</h2>
+            <p>Merkez logodan özellikler dışarı doğru açılıyor, bağlantılar oluşuyor</p>
+        </div>
+
+        <div class="features-story">
+            <!-- Merkez logo -->
+            <div class="center-logo">
+                <i class="fas fa-music"></i>
+            </div>
+
+            <!-- Bağlantı çizgileri -->
+            <div class="feature-line fl1"></div>
+            <div class="feature-line fl2"></div>
+            <div class="feature-line fl3"></div>
+            <div class="feature-line fl4"></div>
+            <div class="feature-line fl5"></div>
+            <div class="feature-line fl6"></div>
+
+            <!-- Özellikler -->
+            <div class="feature-item f1">
+                <div class="feature-icon"><i class="fas fa-bullhorn"></i></div>
+                <div class="feature-text">Anons Sistemi</div>
+            </div>
+
+            <div class="feature-item f2">
+                <div class="feature-icon"><i class="fas fa-building"></i></div>
+                <div class="feature-text">Şube Yönetimi</div>
+            </div>
+
+            <div class="feature-item f3">
+                <div class="feature-icon"><i class="fas fa-clock"></i></div>
+                <div class="feature-text">7/24 Kesintisiz</div>
+            </div>
+
+            <div class="feature-item f4">
+                <div class="feature-icon"><i class="fas fa-gavel"></i></div>
+                <div class="feature-text">Yasal Koruma</div>
+            </div>
+
+            <div class="feature-item f5">
+                <div class="feature-icon"><i class="fas fa-headset"></i></div>
+                <div class="feature-text">7/24 Destek</div>
+            </div>
+
+            <div class="feature-item f6">
+                <div class="feature-icon"><i class="fas fa-chart-bar"></i></div>
+                <div class="feature-text">Raporlama</div>
+            </div>
+        </div>
+
+        <button class="replay-btn" onclick="location.reload()">
+            <i class="fas fa-redo mr-2"></i> Tekrar Oynat
+        </button>
+    </section>
+
+
+    <!-- SEÇİM ALANI -->
+    <section class="demo-section" style="min-height: auto; padding: 60px 40px;">
+        <div class="max-w-3xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-4" style="background: linear-gradient(135deg, #8b5cf6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                <i class="fas fa-hand-pointer mr-2"></i> Hangisi Hoşuna Gitti?
+            </h2>
+            <p class="text-slate-400 mb-6">
+                Bu tarz hikayeli, içerikle örtüşen animasyonlar. Her sayfa için konuya özel animasyon yaparım.
+            </p>
+            <div class="grid md:grid-cols-2 gap-4 text-left text-sm">
+                <div class="p-4 bg-slate-800/50 rounded-xl">
+                    <p class="font-bold text-purple-400 mb-2">Sunumdaki Sayfalar:</p>
+                    <ul class="space-y-1 text-slate-400">
+                        <li>• Kapak - Logo animasyonu</li>
+                        <li>• 3 Sunucu - Sunucu doğum hikayesi</li>
+                        <li>• MESAM Riski - Denetim hikayesi</li>
+                        <li>• Fiyat - Tasarruf karşılaştırma</li>
+                        <li>• Özellikler - Açılan özellikler</li>
+                        <li>• Satış Süreci - Adım adım yol</li>
+                    </ul>
+                </div>
+                <div class="p-4 bg-slate-800/50 rounded-xl">
+                    <p class="font-bold text-green-400 mb-2">Animasyon Özellikleri:</p>
+                    <ul class="space-y-1 text-slate-400">
+                        <li>• Hikaye anlatıyor</li>
+                        <li>• Öğretici / bilgilendirici</li>
+                        <li>• Çizgi film tadında</li>
+                        <li>• Boş değil, anlamlı</li>
+                        <li>• Her sayfa farklı</li>
+                        <li>• Sonsuz döngü veya tek sefer</li>
+                    </ul>
+                </div>
+            </div>
+            <p class="text-slate-500 mt-6">
+                Beğendiysen "tamam bu tarza" de, her sayfaya özel animasyon hazırlayayım.
+            </p>
+        </div>
+    </section>
+
+</body>
+</html>

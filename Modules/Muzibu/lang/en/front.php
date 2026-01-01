@@ -310,6 +310,12 @@ return [
         // Library
         'my_library' => 'My Library',
         'my_playlists' => 'My Playlists',
+        'corporate_playlists' => 'Corporate Playlists',
+        'spots' => 'Spots',
+        'spots_active' => 'Active',
+        'spots_paused' => 'Paused',
+        'ads' => 'Ads',
+        'my_certificate' => 'My Certificate',
         'create_playlist' => 'Create Playlist',
 
         // Membership

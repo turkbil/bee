@@ -37,16 +37,25 @@ class PlaylistSongsManageComponent extends Component
             ->with(['album.artist', 'genre', 'coverMedia'])
             ->orderBy('title');
 
-        // Arama filtresi
+        // Arama filtresi (title, artist, album, genre, lyrics)
         if ($this->search) {
             $searchTerm = '%' . $this->search . '%';
             $query->where(function ($q) use ($searchTerm) {
+                // Şarkı adı (JSON translatable)
                 $q->where('title', 'like', $searchTerm)
+                  // Şarkı sözleri (JSON translatable)
+                  ->orWhere('lyrics', 'like', $searchTerm)
+                  // Sanatçı adı
                   ->orWhereHas('album.artist', function ($artistQuery) use ($searchTerm) {
                       $artistQuery->where('title', 'like', $searchTerm);
                   })
+                  // Albüm adı
                   ->orWhereHas('album', function ($albumQuery) use ($searchTerm) {
                       $albumQuery->where('title', 'like', $searchTerm);
+                  })
+                  // Tür (Genre) adı
+                  ->orWhereHas('genre', function ($genreQuery) use ($searchTerm) {
+                      $genreQuery->where('title', 'like', $searchTerm);
                   });
             });
         }

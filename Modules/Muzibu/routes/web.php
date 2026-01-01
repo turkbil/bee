@@ -102,6 +102,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/create', [CorporateFrontController::class, 'createCorporate'])->name('create');
         Route::post('/check-code', [CorporateFrontController::class, 'checkCodeAvailability'])->name('check-code');
 
+        // Spot (Anons) Management (Ana Şube Only)
+        Route::get('/spots', [CorporateFrontController::class, 'spots'])->name('spots');
+        Route::get('/api/spots', [CorporateFrontController::class, 'apiSpots'])->name('spots.api');
+        Route::post('/spots/{id}/update', [CorporateFrontController::class, 'updateSpot'])->name('spots.update');
+        Route::post('/spots/reorder', [CorporateFrontController::class, 'reorderSpots'])->name('spots.reorder');
+        Route::post('/spots/settings', [CorporateFrontController::class, 'updateSpotSettings'])->name('spots.settings');
+
         // Corporate Subscription Management (Üyelikleri Yönet)
         Route::get('/subscriptions', [CorporateFrontController::class, 'subscriptions'])->name('subscriptions');
         Route::get('/api/subscriptions', [CorporateFrontController::class, 'apiSubscriptions'])->name('subscriptions.api');
@@ -119,6 +126,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/join', [CorporateFrontController::class, 'apiJoin'])->name('api.corporate.join');
         Route::get('/my-corporate', [CorporateFrontController::class, 'apiMyCorporate'])->name('api.corporate.my');
         Route::get('/subscriptions', [CorporateFrontController::class, 'apiSubscriptions'])->name('api.corporate.subscriptions');
+        Route::get('/spots', [CorporateFrontController::class, 'apiSpots'])->name('api.corporate.spots');
         Route::get('/member/{id}/history', [CorporateFrontController::class, 'apiMemberHistory'])->name('api.corporate.member-history');
     });
 

@@ -442,7 +442,7 @@
                 {{-- Gradient Background Layer (Fixed Height, Behind Content) --}}
                 <div class="absolute top-0 left-0 right-0 h-[120px] rounded-t-lg pointer-events-none overflow-hidden">
                     {{-- Color Layer (Dynamic based on active tab) --}}
-                    <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-green-500/40 via-green-500/20 to-transparent"
+                    <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-muzibu-coral/40 via-muzibu-coral/20 to-transparent"
                          x-show="songsTab === 'new'"></div>
                     <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-orange-500/40 via-orange-500/20 to-transparent"
                          x-show="songsTab === 'popular'"></div>
@@ -461,7 +461,7 @@
                         </template>
                         <template x-if="songsTab === 'new'">
                             <span class="flex items-center gap-2">
-                                <i class="fas fa-star text-green-400"></i>
+                                <i class="fas fa-star text-muzibu-coral"></i>
                                 {{ trans('muzibu::front.general.new_songs') }}
                             </span>
                         </template>
@@ -479,7 +479,7 @@
                     <div class="flex gap-2 pt-3 px-3">
                         <button @click="songsTab = 'new'"
                                 class="flex-1 py-2 px-3 text-xs font-medium transition-all rounded-full"
-                                :class="songsTab === 'new' ? 'bg-green-500/20 text-green-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
+                                :class="songsTab === 'new' ? 'bg-muzibu-coral/20 text-muzibu-coral font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'">
                             <i class="fas fa-star mr-1"></i>{{ trans('muzibu::front.sidebar.new') }}
                         </button>
                         <button @click="songsTab = 'popular'"

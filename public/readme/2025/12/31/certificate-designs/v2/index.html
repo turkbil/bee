@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V2 - Premium Özel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Roboto', system-ui, sans-serif; }
+        .font-mono { font-family: 'Roboto Mono', monospace; }
+        .gold-text { color: #d4af37; }
+        .gold-border { border-color: #d4af37; }
+        .gold-bg { background-color: rgba(212, 175, 55, 0.1); }
+    </style>
+</head>
+<body class="bg-slate-950 min-h-screen py-10">
+    <div class="max-w-2xl mx-auto px-4">
+
+        <!-- Tasarım Etiketi -->
+        <div class="text-center mb-4">
+            <span class="px-3 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">V2 - Premium Özel</span>
+        </div>
+
+        <!-- Doğrulanmış Sertifika Header -->
+        <div class="bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl p-5 mb-4 shadow-lg shadow-green-900/30">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-certificate text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white">Doğrulanmış Sertifika</h1>
+                        <p class="text-green-100 text-sm">QR kod ile resmi belge doğrulaması yapıldı</p>
+                    </div>
+                </div>
+                <div class="hidden sm:flex items-center gap-2 px-4 py-2 bg-white/20 rounded-lg">
+                    <i class="fas fa-shield-alt text-white"></i>
+                    <span class="text-white text-sm font-medium">GÜVENLİ</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ana Belge -->
+        <div class="relative bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border gold-border rounded-lg shadow-2xl overflow-hidden">
+
+            <!-- Dekoratif Köşeler -->
+            <div class="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 gold-border rounded-tl-lg"></div>
+            <div class="absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 gold-border rounded-tr-lg"></div>
+            <div class="absolute bottom-0 left-0 w-16 h-16 border-b-2 border-l-2 gold-border rounded-bl-lg"></div>
+            <div class="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 gold-border rounded-br-lg"></div>
+
+            <!-- Header -->
+            <div class="px-8 pt-8 pb-8">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <h1 class="text-4xl font-semibold text-white mb-2 tracking-wide">Üyelik Sertifikası</h1>
+                        <p class="text-slate-400 text-sm">Muzibu Kurumsal Premium Üyelik</p>
+                    </div>
+                    <!-- Crown Badge -->
+                    <div class="w-16 h-16 rounded-full gold-bg border gold-border flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-crown gold-text text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ayırıcı -->
+            <div class="mx-8 h-px bg-gradient-to-r from-transparent via-amber-600/50 to-transparent"></div>
+
+            <!-- Firma Bilgisi -->
+            <div class="px-8 py-8">
+                <h2 class="text-3xl font-mono font-semibold text-white tracking-wide text-center">iXtif İç ve Dış Tic. A.Ş.</h2>
+            </div>
+
+            <!-- Bilgiler -->
+            <div class="mx-8 mb-8 bg-slate-800/50 border border-slate-700 rounded-lg overflow-hidden">
+                <div class="grid grid-cols-2 divide-x divide-slate-700">
+                    <div class="p-4 text-center">
+                        <div class="text-xs text-slate-500 mb-1">SERTİFİKA NO</div>
+                        <div class="font-mono gold-text font-semibold text-lg">MZB-2025-51A5</div>
+                    </div>
+                    <div class="p-4 text-center">
+                        <div class="text-xs text-slate-500 mb-1">ÜYELİK TARİHİ</div>
+                        <div class="text-white text-lg">23.12.2025</div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-700 grid grid-cols-2 divide-x divide-slate-700">
+                    <div class="p-4 text-center">
+                        <div class="text-xs text-slate-500 mb-1">VERGİ DAİRESİ</div>
+                        <div class="font-mono text-white">Kartal</div>
+                    </div>
+                    <div class="p-4 text-center">
+                        <div class="text-xs text-slate-500 mb-1">VERGİ NO</div>
+                        <div class="font-mono text-white tracking-wider">4831552951</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adres -->
+            <div class="mx-8 mb-6">
+                <div class="text-xs text-slate-500 mb-2 tracking-widest">KAYITLI ADRES</div>
+                <div class="p-4 bg-slate-800/30 border border-slate-700 rounded-lg">
+                    <p class="text-slate-300 leading-relaxed">
+                        Karlıktepe Mah. Çamlık Sk. Manzara Adalar B Blok No: 1 B İç Kapı No: 89 Kartal/İstanbul
+                    </p>
+                </div>
+            </div>
+
+            <!-- Dijital İmza -->
+            <div class="mx-8 mb-6 p-4 bg-blue-900/20 border border-blue-800 rounded-lg">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-fingerprint text-blue-400 text-2xl"></i>
+                    <div class="flex-1">
+                        <div class="text-blue-400 text-sm font-semibold">Benzersiz Dijital İmza</div>
+                        <div class="text-xs text-slate-500">Bu belge şifrelenmiş ve değiştirilemez</div>
+                    </div>
+                    <div class="text-xs text-slate-500">
+                        <i class="fas fa-lock mr-1"></i>256-bit
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Üyelik Geçmişi - Minimal -->
+        <div class="mt-4 flex items-center justify-between px-4 py-3 bg-slate-900/50 border border-slate-800 rounded-lg">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-check-circle text-green-400"></i>
+                <div>
+                    <span class="text-slate-400 text-sm">Kesintisiz Üyelik</span>
+                    <span class="text-slate-500 text-sm mx-2">·</span>
+                    <span class="text-white text-sm">23.12.2025 — Devam Ediyor</span>
+                </div>
+            </div>
+            <span class="text-green-400 text-xs font-medium px-2 py-1 bg-green-900/30 rounded">AKTİF</span>
+        </div>
+
+        <!-- Yasal Bilgilendirme -->
+        <div class="mt-4 bg-slate-900/50 border border-slate-800 rounded-lg p-6">
+            <div class="text-xs text-slate-500 tracking-widest mb-4">YASAL BİLGİLENDİRME</div>
+            <div class="space-y-3 text-sm text-slate-400 leading-relaxed">
+                <p>I. İşbu sertifika münhasıran <strong class="font-mono text-slate-300">iXtif İç ve Dış Tic. A.Ş.</strong> adına düzenlenmiş olup üçüncü şahıslara devredilemez.</p>
+                <p>II. Sertifika yalnızca yukarıda belirtilen adresteki işletme için geçerlidir.</p>
+                <p>III. Üyelik sona erdiğinde veya iptal edildiğinde sertifika geçerliliğini kaybeder.</p>
+                <p>IV. Muzibu A.Ş., önceden bildirimde bulunmaksızın sertifikayı iptal etme hakkını saklı tutar.</p>
+            </div>
+        </div>
+
+        <!-- Alt Bilgi -->
+        <div class="mt-6 text-center text-xs text-slate-600 space-y-2">
+            <div class="flex items-center justify-center gap-4 text-slate-500">
+                <span><i class="fas fa-eye mr-1"></i> 8 görüntülenme</span>
+                <span><i class="fas fa-clock mr-1"></i> 31.12.2025 09:30</span>
+            </div>
+            <p>Bu belge Muzibu A.Ş. tarafından elektronik ortamda düzenlenmiştir.</p>
+            <p>Sorularınız için: <span class="gold-text">destek@muzibu.com.tr</span></p>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migration Taşıma Planı - Detaylı Tablo Analizi (v4)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen p-8">
+    <div class="max-w-6xl mx-auto">
+
+        <!-- Header -->
+        <header class="mb-8">
+            <span class="inline-block px-3 py-1 bg-blue-600 rounded-full text-sm mb-4">📋 Detaylı Analiz v4</span>
+            <h1 class="text-3xl font-bold mb-2">Migration Taşıma Planı - Tablo Bazlı</h1>
+            <p class="text-slate-400">29 Aralık 2025</p>
+        </header>
+
+        <!-- Özet -->
+        <div class="bg-purple-900/30 border border-purple-700 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">📊 Özet</h2>
+            <div class="grid grid-cols-3 gap-4 text-center">
+                <div class="bg-slate-800 p-4 rounded">
+                    <div class="text-3xl font-bold text-green-400">35</div>
+                    <div class="text-sm text-slate-400">Taşınacak (Tek Modül)</div>
+                </div>
+                <div class="bg-slate-800 p-4 rounded">
+                    <div class="text-3xl font-bold text-yellow-400">3</div>
+                    <div class="text-sm text-slate-400">Cross-Module (Kalacak)</div>
+                </div>
+                <div class="bg-slate-800 p-4 rounded">
+                    <div class="text-3xl font-bold text-red-400">1</div>
+                    <div class="text-sm text-slate-400">Duplicate (Silinecek)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SHOP MODÜLÜ -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <span class="text-blue-400">🛒</span> Modules/Shop (8 dosya)
+            </h2>
+            <p class="text-sm text-slate-400 mb-3">Tablolar: <code>shop_products, shop_carts, shop_cart_items, shop_currencies, shop_categories</code></p>
+            <div class="bg-slate-900 p-4 rounded text-sm font-mono space-y-2">
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_10_14_000000_create_shop_product_chat_placeholders_table.php</div>
+                        <div class="text-slate-500 text-xs">→ shop_product_chat_placeholders</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_10_30_142400_add_soft_deletes_to_shop_carts_table.php</div>
+                        <div class="text-slate-500 text-xs">→ shop_carts, shop_cart_items</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_10_30_144439_create_shop_currencies_table.php</div>
+                        <div class="text-slate-500 text-xs">→ shop_currencies</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_10_30_144543_add_currency_id_to_shop_tables.php</div>
+                        <div class="text-slate-500 text-xs">→ shop_products, shop_carts, shop_cart_items</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_10_30_185655_rename_currency_to_currency_code_in_shop_carts_table.php</div>
+                        <div class="text-slate-500 text-xs">→ shop_carts</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_10_30_200601_add_is_auto_update_to_shop_currencies_table.php</div>
+                        <div class="text-slate-500 text-xs">→ shop_currencies</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_10_30_211814_add_last_updated_at_to_shop_currencies_table.php</div>
+                        <div class="text-slate-500 text-xs">→ shop_currencies</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2 bg-yellow-900/30 p-2 rounded">
+                    <span class="text-yellow-400">⚠</span>
+                    <div>
+                        <div>2025_11_23_000001_rename_shop_tables_to_universal.php</div>
+                        <div class="text-yellow-400 text-xs">→ CROSS-MODULE: subscription_plans, subscriptions, coupons, coupon_usages, customer_addresses</div>
+                        <div class="text-slate-400 text-xs">Karar: Shop'ta kalabilir (eski shop_ tablolarını rename ediyor)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CART MODÜLÜ -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <span class="text-green-400">🛍️</span> Modules/Cart (3 dosya)
+            </h2>
+            <p class="text-sm text-slate-400 mb-3">Tablolar: <code>carts, cart_items, orders, addresses, cart_addresses</code></p>
+            <p class="text-sm text-yellow-400 mb-3">⚠️ NOT: shop_carts ≠ carts (farklı tablolar!)</p>
+            <div class="bg-slate-900 p-4 rounded text-sm font-mono space-y-2">
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_11_14_060949_add_display_and_currency_fields_to_cart_items.php</div>
+                        <div class="text-slate-500 text-xs">→ cart_items (Cart modülü tablosu)</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_11_14_062634_add_address_fields_to_carts.php</div>
+                        <div class="text-slate-500 text-xs">→ carts (Cart modülü tablosu)</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_12_12_041443_add_indexes_for_slow_queries_cart_addresses.php</div>
+                        <div class="text-slate-500 text-xs">→ cart_addresses (Cart modülü tablosu)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MUZIBU MODÜLÜ -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <span class="text-orange-400">🎵</span> Modules/Muzibu (10 dosya)
+            </h2>
+            <p class="text-sm text-slate-400 mb-3">Tablolar: <code>muzibu_*, songs, albums, artists, playlists, genres, sectors, radios, song_plays</code></p>
+            <div class="bg-slate-900 p-4 rounded text-sm font-mono space-y-2">
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_11_10_223740_add_description_to_muzibu_sectors_table.php</div>
+                        <div class="text-slate-500 text-xs">→ muzibu_sectors</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_11_11_050254_add_hls_fields_to_muzibu_songs_table.php</div>
+                        <div class="text-slate-500 text-xs">→ muzibu_songs</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_11_12_001526_add_search_indexes_to_muzibu_tables.php</div>
+                        <div class="text-slate-500 text-xs">→ muzibu_songs, muzibu_artists, muzibu_albums, vb.</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_11_24_000001_create_muzibu_corporate_accounts_table.php</div>
+                        <div class="text-slate-500 text-xs">→ muzibu_corporate_accounts</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_11_29_040130_add_encryption_to_songs.php</div>
+                        <div class="text-slate-500 text-xs">→ muzibu_songs</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2 bg-blue-900/30 p-2 rounded">
+                    <span class="text-blue-400">ℹ</span>
+                    <div>
+                        <div>2025_12_05_201240_add_last_played_song_to_users_table.php</div>
+                        <div class="text-blue-400 text-xs">→ users tablosu AMA Muzibu feature (last_played_song_id)</div>
+                        <div class="text-slate-400 text-xs">Karar: Muzibu'ya git (feature-specific)</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_12_06_042550_drop_metadata_from_muzibu_songs_table.php</div>
+                        <div class="text-slate-500 text-xs">→ muzibu_songs</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_12_06_044035_drop_redundant_fields_from_muzibu_songs.php</div>
+                        <div class="text-slate-500 text-xs">→ muzibu_songs</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_12_06_044715_drop_virtual_search_columns_from_muzibu_tables.php</div>
+                        <div class="text-slate-500 text-xs">→ muzibu_songs, muzibu_artists, vb.</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_12_29_203727_add_browser_platform_to_song_plays.php</div>
+                        <div class="text-slate-500 text-xs">→ song_plays</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEO MODÜLÜ -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <span class="text-pink-400">🔍</span> Modules/SeoManagement (3 dosya)
+            </h2>
+            <p class="text-sm text-slate-400 mb-3">Tablolar: <code>seo_settings</code></p>
+            <div class="bg-slate-900 p-4 rounded text-sm font-mono space-y-2">
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_07_19_000001_create_seo_settings_table.php</div>
+                        <div class="text-slate-500 text-xs">→ seo_settings</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_07_19_000002_create_tenant_seo_settings_table.php</div>
+                        <div class="text-slate-500 text-xs">→ seo_settings (tenant version)</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_11_15_163014_add_author_fields_to_seo_settings_table.php</div>
+                        <div class="text-slate-500 text-xs">→ seo_settings</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MEDIA MODÜLÜ -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <span class="text-purple-400">🖼️</span> Modules/MediaManagement (3 dosya)
+            </h2>
+            <p class="text-sm text-slate-400 mb-3">Tablolar: <code>media</code></p>
+            <div class="bg-slate-900 p-4 rounded text-sm font-mono space-y-2">
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_02_15_192501_create_media_table.php</div>
+                        <div class="text-slate-500 text-xs">→ media</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2 bg-red-900/30 p-2 rounded">
+                    <span class="text-red-400">✗</span>
+                    <div>
+                        <div>2025_02_15_192502_create_media_table.php</div>
+                        <div class="text-red-400 text-xs">→ DUPLICATE - SİLİNECEK</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_10_18_200441_fix_media_table_id_auto_increment.php</div>
+                        <div class="text-slate-500 text-xs">→ media</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_11_15_004152_add_ai_generation_fields_to_media_library_items_table.php</div>
+                        <div class="text-slate-500 text-xs">→ media</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEARCH MODÜLÜ -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <span class="text-cyan-400">🔎</span> Modules/Search (5 dosya)
+            </h2>
+            <p class="text-sm text-slate-400 mb-3">Tablolar: <code>search_queries</code></p>
+            <div class="bg-slate-900 p-4 rounded text-sm font-mono space-y-2">
+                <div class="flex items-start gap-2"><span class="text-green-400">✓</span><div>2025_10_18_210135_create_search_queries_table.php</div></div>
+                <div class="flex items-start gap-2"><span class="text-green-400">✓</span><div>2025_10_18_215152_add_is_visible_to_search_queries.php</div></div>
+                <div class="flex items-start gap-2"><span class="text-green-400">✓</span><div>2025_10_22_035611_add_popular_and_hidden_columns_to_search_queries_table.php</div></div>
+                <div class="flex items-start gap-2"><span class="text-green-400">✓</span><div>2025_10_22_041315_add_indexes_to_search_queries_new_columns.php</div></div>
+                <div class="flex items-start gap-2"><span class="text-green-400">✓</span><div>2025_10_29_031319_add_slug_to_search_queries_table.php</div></div>
+            </div>
+        </div>
+
+        <!-- WIDGET MODÜLÜ -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <span class="text-yellow-400">📦</span> Modules/WidgetManagement (2 dosya)
+            </h2>
+            <p class="text-sm text-slate-400 mb-3">Tablolar: <code>tenant_widgets, widget_items</code></p>
+            <div class="bg-slate-900 p-4 rounded text-sm font-mono space-y-2">
+                <div class="flex items-start gap-2"><span class="text-green-400">✓</span><div>2025_12_04_024730_add_position_and_indexes_to_tenant_widgets_table.php</div></div>
+                <div class="flex items-start gap-2"><span class="text-green-400">✓</span><div>2025_12_04_024805_add_indexes_to_widget_items_table.php</div></div>
+            </div>
+        </div>
+
+        <!-- BLOG MODÜLÜ -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <span class="text-red-400">📝</span> Modules/Blog (1 dosya)
+            </h2>
+            <p class="text-sm text-slate-400 mb-3">Tablolar: <code>blogs, blog_ai_drafts</code></p>
+            <div class="bg-slate-900 p-4 rounded text-sm font-mono space-y-2">
+                <div class="flex items-start gap-2"><span class="text-green-400">✓</span><div>2025_11_14_050744_create_blog_ai_drafts_table.php</div></div>
+            </div>
+        </div>
+
+        <!-- MAIL MODÜLÜ -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <span class="text-indigo-400">📧</span> Modules/Mail (1 dosya)
+            </h2>
+            <p class="text-sm text-slate-400 mb-3">Tablolar: <code>mail_templates</code></p>
+            <div class="bg-slate-900 p-4 rounded text-sm font-mono space-y-2">
+                <div class="flex items-start gap-2"><span class="text-green-400">✓</span><div>2025_11_24_061210_add_display_order_to_mail_templates_table.php</div></div>
+            </div>
+        </div>
+
+        <!-- SUBSCRIPTION MODÜLÜ -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <span class="text-emerald-400">💳</span> Modules/Subscription (3 dosya)
+            </h2>
+            <p class="text-sm text-slate-400 mb-3">Tablolar: <code>subscriptions, subscription_plans</code></p>
+            <div class="bg-slate-900 p-4 rounded text-sm font-mono space-y-2">
+                <div class="flex items-start gap-2 bg-blue-900/30 p-2 rounded">
+                    <span class="text-blue-400">ℹ</span>
+                    <div>
+                        <div>2025_12_23_050000_add_subscription_expires_at_to_users_table.php</div>
+                        <div class="text-blue-400 text-xs">→ users tablosu AMA Subscription feature</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_12_23_050001_update_subscriptions_status_column.php</div>
+                        <div class="text-slate-500 text-xs">→ subscriptions</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <div>
+                        <div>2025_12_23_060000_add_subscription_expires_at_to_tenant_users_table.php</div>
+                        <div class="text-slate-500 text-xs">→ users (tenant)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CROSS-MODULE (KALACAK) -->
+        <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <span class="text-yellow-400">⚠️</span> KALACAK - Cross-Module (3 dosya)
+            </h2>
+            <p class="text-slate-400 mb-4">Birden fazla modülü etkileyen dosyalar database/migrations'da kalacak:</p>
+            <div class="bg-slate-800 p-4 rounded text-sm font-mono space-y-3">
+                <div class="border-b border-slate-700 pb-2">
+                    <div>2025_11_30_000258_add_performance_indexes_to_shop_products_and_blogs.php</div>
+                    <div class="text-yellow-400 text-xs mt-1">→ shop_products (Shop) + blogs (Blog) + sessions (Core)</div>
+                </div>
+                <div class="border-b border-slate-700 pb-2">
+                    <div>2025_11_23_000001_rename_shop_tables_to_universal.php</div>
+                    <div class="text-yellow-400 text-xs mt-1">→ subscription_plans, subscriptions, coupons, coupon_usages, customer_addresses</div>
+                    <div class="text-slate-400 text-xs">Alternatif: Shop'a taşınabilir (eski shop_ tablolarını rename)</div>
+                </div>
+                <div>
+                    <div>2025_12_12_041445_add_indexes_for_slow_queries_activity_log.php</div>
+                    <div class="text-yellow-400 text-xs mt-1">→ activity_log (Core tablo)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÖZET TABLO -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">📋 Final Özet Tablosu</h2>
+            <table class="w-full text-sm">
+                <thead class="bg-slate-700">
+                    <tr>
+                        <th class="p-2 text-left">Modül</th>
+                        <th class="p-2 text-center">Dosya</th>
+                        <th class="p-2 text-left">Tablolar</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-700">
+                    <tr><td class="p-2">🛒 Shop</td><td class="p-2 text-center">8</td><td class="p-2 text-xs">shop_products, shop_carts, shop_cart_items, shop_currencies</td></tr>
+                    <tr><td class="p-2">🛍️ Cart</td><td class="p-2 text-center">3</td><td class="p-2 text-xs">carts, cart_items, cart_addresses</td></tr>
+                    <tr><td class="p-2">🎵 Muzibu</td><td class="p-2 text-center">10</td><td class="p-2 text-xs">muzibu_*, song_plays, users (feature)</td></tr>
+                    <tr><td class="p-2">🔍 SeoManagement</td><td class="p-2 text-center">3</td><td class="p-2 text-xs">seo_settings</td></tr>
+                    <tr><td class="p-2">🖼️ MediaManagement</td><td class="p-2 text-center">3</td><td class="p-2 text-xs">media</td></tr>
+                    <tr><td class="p-2">🔎 Search</td><td class="p-2 text-center">5</td><td class="p-2 text-xs">search_queries</td></tr>
+                    <tr><td class="p-2">📦 WidgetManagement</td><td class="p-2 text-center">2</td><td class="p-2 text-xs">tenant_widgets, widget_items</td></tr>
+                    <tr><td class="p-2">📝 Blog</td><td class="p-2 text-center">1</td><td class="p-2 text-xs">blog_ai_drafts</td></tr>
+                    <tr><td class="p-2">📧 Mail</td><td class="p-2 text-center">1</td><td class="p-2 text-xs">mail_templates</td></tr>
+                    <tr><td class="p-2">💳 Subscription</td><td class="p-2 text-center">3</td><td class="p-2 text-xs">subscriptions, users (feature)</td></tr>
+                    <tr class="bg-yellow-900/20"><td class="p-2">⚠️ Cross-Module</td><td class="p-2 text-center">3</td><td class="p-2 text-xs">Kalacak</td></tr>
+                    <tr class="bg-red-900/20"><td class="p-2">🗑️ Duplicate</td><td class="p-2 text-center">1</td><td class="p-2 text-xs">Silinecek</td></tr>
+                    <tr class="bg-slate-700 font-bold"><td class="p-2">TOPLAM</td><td class="p-2 text-center">43</td><td class="p-2"></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Onay -->
+        <div class="bg-green-900/30 border border-green-700 rounded-lg p-6">
+            <h2 class="text-xl font-semibold mb-4">✅ Onay</h2>
+            <p class="mb-4">Plan doğru mu? "UYGUNDUR" dersen taşımaya başlayalım.</p>
+            <p class="text-yellow-400">Dikkat: Her dosya hem ana klasöre hem tenant/ klasörüne kopyalanacak.</p>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-8 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından hazırlandı</p>
+        </footer>
+    </div>
+</body>
+</html>

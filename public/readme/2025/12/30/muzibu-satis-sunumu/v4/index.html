@@ -1,0 +1,2120 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu - Satış Ekibi Eğitimi | Türk Bilişim</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
+        html, body { background: #030712; color: #e2e8f0; overflow-x: hidden; min-height: 100vh; }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background:
+                radial-gradient(ellipse at 10% 10%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 90%, rgba(16, 185, 129, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(236, 72, 153, 0.08) 0%, transparent 60%),
+                linear-gradient(180deg, #030712 0%, #0f172a 50%, #030712 100%);
+            animation: bgPulse 20s ease-in-out infinite;
+        }
+        @keyframes bgPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.85; } }
+
+        /* FULL WIDTH Slide System */
+        .slide {
+            position: absolute; top: 0; left: 0; width: 100vw; min-height: 100vh;
+            padding: 30px 40px 100px 40px; opacity: 0; transform: translateX(100%);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto; display: none; background: transparent;
+        }
+        .slide.active { opacity: 1; transform: translateX(0); display: block; z-index: 2; }
+        .slide.prev { transform: translateX(-100%); }
+
+        /* Full Width Content */
+        .full-width { max-width: 100%; padding: 0 20px; }
+        .content-wide { max-width: 1600px; margin: 0 auto; }
+
+        /* Gradient Texts */
+        .gradient-text-purple {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 50%, #c4b5fd 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-size: 200% 200%; animation: gradientShift 6s ease infinite;
+        }
+        .gradient-text-green {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 50%, #6ee7b7 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .gradient-text-pink {
+            background: linear-gradient(135deg, #ec4899 0%, #f472b6 50%, #f9a8d4 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .gradient-text-gold {
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #fcd34d 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .gradient-text-fire {
+            background: linear-gradient(135deg, #ef4444 0%, #f97316 50%, #fbbf24 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .title-animated {
+            background: linear-gradient(90deg, #8b5cf6, #ec4899, #10b981, #8b5cf6);
+            background-size: 300% 100%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: titleGradient 4s ease-in-out infinite;
+        }
+        @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        @keyframes titleGradient { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+        /* Music Wave Animation */
+        .music-wave { display: flex; align-items: flex-end; gap: 4px; height: 60px; }
+        .music-wave span {
+            width: 8px; background: linear-gradient(to top, #8b5cf6, #ec4899);
+            border-radius: 4px; animation: wave 1.2s ease-in-out infinite;
+        }
+        .music-wave span:nth-child(1) { height: 20px; animation-delay: 0s; }
+        .music-wave span:nth-child(2) { height: 35px; animation-delay: 0.1s; }
+        .music-wave span:nth-child(3) { height: 50px; animation-delay: 0.2s; }
+        .music-wave span:nth-child(4) { height: 30px; animation-delay: 0.3s; }
+        .music-wave span:nth-child(5) { height: 45px; animation-delay: 0.4s; }
+        .music-wave span:nth-child(6) { height: 25px; animation-delay: 0.5s; }
+        .music-wave span:nth-child(7) { height: 40px; animation-delay: 0.6s; }
+        @keyframes wave { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.4); } }
+
+        /* Floating Animations */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        @keyframes floatRotate { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-15px) rotate(5deg); } }
+        .float { animation: float 4s ease-in-out infinite; }
+        .float-slow { animation: float 6s ease-in-out infinite; }
+        .float-rotate { animation: floatRotate 5s ease-in-out infinite; }
+
+        /* Pulse Animations */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
+            50% { box-shadow: 0 0 50px rgba(139, 92, 246, 0.6); }
+        }
+        @keyframes pulse-scale { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+        .pulse-scale { animation: pulse-scale 2s ease-in-out infinite; }
+
+        /* Rotating Animation */
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes rotateReverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+        .rotate { animation: rotate 20s linear infinite; }
+        .rotate-slow { animation: rotate 40s linear infinite; }
+        .rotate-reverse { animation: rotateReverse 30s linear infinite; }
+
+        /* Shine Animation */
+        @keyframes shine {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        .shine-text {
+            background: linear-gradient(90deg, #fff 0%, #8b5cf6 25%, #ec4899 50%, #8b5cf6 75%, #fff 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+        }
+
+        /* Bounce */
+        @keyframes bounce-soft { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .bounce-soft { animation: bounce-soft 2s ease-in-out infinite; }
+
+        /* Content Boxes */
+        .content-box {
+            background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 1.5rem; padding: 2rem; backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+        }
+        .content-box:hover { border-color: rgba(139, 92, 246, 0.4); transform: translateY(-4px); }
+
+        .feature-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.15); border-radius: 1.25rem;
+            padding: 1.5rem; transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-6px); border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.15);
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            border: 2px solid rgba(139, 92, 246, 0.3); border-radius: 1rem;
+            padding: 2rem; margin: 1.5rem 0;
+        }
+
+        .fire-box {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(249, 115, 22, 0.1) 100%);
+            border: 2px solid rgba(249, 115, 22, 0.4); border-radius: 1rem;
+            padding: 1.5rem; position: relative; overflow: hidden;
+        }
+        .fire-box::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, #ef4444, #f97316, #fbbf24);
+            animation: shine 2s linear infinite;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(34, 197, 94, 0.1) 100%);
+            border: 2px solid rgba(16, 185, 129, 0.4); border-radius: 1rem;
+            padding: 1.5rem;
+        }
+
+        /* Badge */
+        .section-badge {
+            display: inline-flex; align-items: center; gap: 0.75rem;
+            padding: 0.6rem 1.25rem; border-radius: 2rem; font-size: 0.9rem;
+            font-weight: 600; margin-bottom: 1.25rem; text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* VS Table */
+        .vs-table { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .vs-bad { background: rgba(239, 68, 68, 0.08); border: 2px solid rgba(239, 68, 68, 0.3); }
+        .vs-good { background: rgba(16, 185, 129, 0.08); border: 2px solid rgba(16, 185, 129, 0.3); }
+
+        /* Price Card */
+        .price-card {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
+            border: 2px solid rgba(139, 92, 246, 0.4); border-radius: 2rem;
+            padding: 2rem; position: relative; overflow: hidden;
+        }
+        .price-card::before {
+            content: ''; position: absolute; top: -50%; right: -50%;
+            width: 100%; height: 100%; background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+        .price-popular {
+            border-color: rgba(16, 185, 129, 0.6);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+        }
+
+        /* Money Rain */
+        .money-icon {
+            position: absolute; font-size: 2rem; opacity: 0.1; color: #10b981;
+            animation: moneyFall 10s linear infinite;
+        }
+        @keyframes moneyFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.15; }
+            90% { opacity: 0.15; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Navigation */
+        .nav-buttons { position: fixed; bottom: 2rem; right: 2rem; display: flex; gap: 1rem; z-index: 1000; }
+        .nav-btn {
+            background: rgba(139, 92, 246, 0.2); backdrop-filter: blur(10px);
+            border: 2px solid rgba(139, 92, 246, 0.4); color: white;
+            width: 52px; height: 52px; border-radius: 50%; font-size: 1.2rem;
+            cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-btn:hover:not(:disabled) {
+            background: rgba(139, 92, 246, 0.4); transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
+        }
+        .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        .counter {
+            position: fixed; bottom: 2rem; left: 2rem;
+            background: rgba(10, 15, 30, 0.9); backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            padding: 0.75rem 1.5rem; border-radius: 2rem;
+            font-size: 0.9rem; color: #94a3b8; z-index: 1000;
+        }
+        .counter span { color: #8b5cf6; font-weight: 600; }
+
+        /* Text Styles */
+        .slogan { font-size: 1.5rem; font-weight: 300; color: #94a3b8; margin-bottom: 2rem; letter-spacing: 0.02em; line-height: 1.5; }
+        .slogan strong { color: #a78bfa; font-weight: 600; }
+        .text-readable { font-size: 1.1rem; line-height: 1.8; color: #cbd5e1; }
+
+        /* Big Quote */
+        .big-quote {
+            font-size: 2.5rem; font-weight: 700; line-height: 1.3;
+            text-align: center; padding: 2rem;
+        }
+
+        /* Corner Decorations */
+        .corner-decoration {
+            position: absolute; width: 300px; height: 300px; pointer-events: none; opacity: 0.15;
+        }
+        .corner-top-right { top: 0; right: 0; }
+        .corner-bottom-left { bottom: 100px; left: 0; }
+
+        /* Step Number */
+        .step-circle {
+            width: 50px; height: 50px; border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: 800; color: white;
+            flex-shrink: 0;
+        }
+
+        /* Stat Number */
+        .stat-number {
+            font-size: 3.5rem; font-weight: 800; line-height: 1;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); }
+        ::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.3); border-radius: 3px; }
+
+        /* Responsive */
+        @media (max-width: 1280px) { .slide { padding: 30px 30px 100px 30px; } .slogan { font-size: 1.3rem; } .big-quote { font-size: 2rem; } }
+        @media (max-width: 768px) { .slide { padding: 20px 15px 90px 15px; } .vs-table { grid-template-columns: 1fr; } }
+
+        /* Checklist */
+        .checklist-item {
+            display: flex; align-items: flex-start; gap: 1rem;
+            padding: 1rem; background: rgba(16, 185, 129, 0.05);
+            border-radius: 0.75rem; border-left: 4px solid #10b981;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Script Box */
+        .script-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 1rem;
+            padding: 1.5rem; position: relative;
+        }
+        .script-box::before {
+            content: '"'; position: absolute; top: -10px; left: 20px;
+            font-size: 4rem; color: rgba(59, 130, 246, 0.3); font-family: Georgia, serif;
+        }
+
+        /* Trophy Animation */
+        @keyframes trophy-bounce {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+        .trophy-bounce { animation: trophy-bounce 2s ease-in-out infinite; }
+
+        /* ============================================
+           KAFE BASKINI ANİMASYONU
+           ============================================ */
+        .story-cafe-container {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            background: linear-gradient(to bottom, #1e3a5f 0%, #0f172a 100%);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .cafe-ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(to bottom, #374151 0%, #1f2937 100%);
+        }
+
+        .cafe-sidewalk {
+            position: absolute;
+            bottom: 50px;
+            width: 100%;
+            height: 15px;
+            background: #6b7280;
+        }
+
+        .cafe-building {
+            position: absolute;
+            bottom: 65px;
+            left: 40px;
+            width: 160px;
+            height: 180px;
+            background: linear-gradient(135deg, #92400e 0%, #78350f 100%);
+            border-radius: 8px 8px 0 0;
+            animation: cafeEmotions 20s infinite;
+        }
+
+        @keyframes cafeEmotions {
+            0%, 15% { filter: brightness(1.1); transform: scale(1); }
+            25%, 45% { filter: brightness(0.8); transform: scale(0.98); }
+            55%, 75% { filter: brightness(0.6) saturate(0.5); transform: scale(0.95); }
+            85%, 100% { filter: brightness(1.1); transform: scale(1); }
+        }
+
+        .cafe-sign {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fbbf24;
+            padding: 4px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #78350f;
+            font-size: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .cafe-window {
+            position: absolute;
+            width: 40px;
+            height: 50px;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 3px solid #78350f;
+            border-radius: 4px;
+            animation: cafeWindowGlow 20s infinite;
+        }
+
+        @keyframes cafeWindowGlow {
+            0%, 15% { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); box-shadow: 0 0 15px rgba(251, 191, 36, 0.5); }
+            25%, 75% { background: linear-gradient(135deg, #d1d5db 0%, #9ca3af 100%); box-shadow: none; }
+            85%, 100% { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); box-shadow: 0 0 15px rgba(251, 191, 36, 0.5); }
+        }
+
+        .cafe-window-1 { top: 25px; left: 15px; }
+        .cafe-window-2 { top: 25px; right: 15px; }
+
+        .cafe-door {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 70px;
+            background: linear-gradient(135deg, #451a03 0%, #78350f 100%);
+            border-radius: 4px 4px 0 0;
+            border: 3px solid #92400e;
+        }
+
+        .cafe-face {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 35px;
+        }
+
+        .cafe-face::after {
+            content: "😊";
+            animation: cafeFaceChange 20s infinite;
+        }
+
+        @keyframes cafeFaceChange {
+            0%, 15% { content: "😊"; }
+            20%, 25% { content: "😰"; }
+            30%, 50% { content: "😨"; }
+            55%, 75% { content: "😢"; }
+            80%, 85% { content: "🙂"; }
+            90%, 100% { content: "😊"; }
+        }
+
+        .inspector {
+            position: absolute;
+            bottom: 65px;
+            right: -70px;
+            width: 50px;
+            height: 90px;
+            animation: inspectorWalk 20s infinite;
+        }
+
+        @keyframes inspectorWalk {
+            0%, 10% { right: -70px; opacity: 0; }
+            15% { opacity: 1; }
+            25%, 50% { right: 250px; opacity: 1; }
+            55%, 70% { right: 250px; opacity: 1; }
+            75% { opacity: 0; right: 250px; }
+            80%, 100% { right: -70px; opacity: 0; }
+        }
+
+        .inspector-body {
+            position: absolute;
+            bottom: 25px;
+            width: 35px;
+            height: 45px;
+            background: #1f2937;
+            border-radius: 8px 8px 0 0;
+            left: 8px;
+        }
+
+        .inspector-head {
+            position: absolute;
+            bottom: 65px;
+            left: 12px;
+            width: 25px;
+            height: 25px;
+            background: #fcd34d;
+            border-radius: 50%;
+        }
+
+        .inspector-hat {
+            position: absolute;
+            bottom: 87px;
+            left: 8px;
+            width: 35px;
+            height: 12px;
+            background: #1f2937;
+            border-radius: 4px;
+        }
+
+        .penalty-paper {
+            position: absolute;
+            top: 60px;
+            left: 160px;
+            width: 100px;
+            padding: 12px;
+            background: #fef2f2;
+            border: 3px solid #dc2626;
+            border-radius: 4px;
+            opacity: 0;
+            transform: scale(0) rotate(-10deg);
+            animation: penaltyAppear 20s infinite;
+            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.3);
+        }
+
+        @keyframes penaltyAppear {
+            0%, 30% { opacity: 0; transform: scale(0) rotate(-10deg); }
+            35%, 70% { opacity: 1; transform: scale(1) rotate(-5deg); }
+            75%, 100% { opacity: 0; transform: scale(0) rotate(10deg); }
+        }
+
+        .penalty-title {
+            color: #dc2626;
+            font-weight: bold;
+            font-size: 10px;
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .penalty-amount {
+            color: #991b1b;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .flying-money {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0;
+            animation: moneyFlyAway 20s infinite;
+        }
+
+        .money-1 { left: 90px; top: 130px; animation-delay: 0s; }
+        .money-2 { left: 110px; top: 100px; animation-delay: 0.3s; }
+        .money-3 { left: 70px; top: 160px; animation-delay: 0.6s; }
+        .money-4 { left: 130px; top: 120px; animation-delay: 0.9s; }
+
+        @keyframes moneyFlyAway {
+            0%, 40% { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+            45% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
+            70% { opacity: 1; transform: translate(180px, -130px) rotate(360deg); }
+            75%, 100% { opacity: 0; transform: translate(220px, -180px) rotate(720deg); }
+        }
+
+        .cafe-sun {
+            position: absolute;
+            top: 25px;
+            right: 35px;
+            width: 40px;
+            height: 40px;
+            background: #fbbf24;
+            border-radius: 50%;
+            box-shadow: 0 0 25px rgba(251, 191, 36, 0.6);
+            animation: sunMood 20s infinite;
+        }
+
+        @keyframes sunMood {
+            0%, 15% { opacity: 1; background: #fbbf24; }
+            25%, 75% { opacity: 0.3; background: #9ca3af; }
+            85%, 100% { opacity: 1; background: #fbbf24; }
+        }
+
+        /* ============================================
+           KUMBARA ANİMASYONU
+           ============================================ */
+        .story-piggy-container {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            background: linear-gradient(to bottom, #1e1b4b 0%, #0f172a 100%);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .piggy-platform {
+            position: absolute;
+            bottom: 35px;
+            width: 100%;
+            height: 15px;
+            background: linear-gradient(to right, #4c1d95, #7c3aed, #4c1d95);
+        }
+
+        .piggy-mesam {
+            position: absolute;
+            bottom: 50px;
+            left: 60px;
+            width: 120px;
+            height: 100px;
+        }
+
+        .piggy-mesam-body {
+            position: absolute;
+            bottom: 0;
+            width: 120px;
+            height: 85px;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            border-radius: 45px 45px 25px 25px;
+            animation: mesamShake 20s infinite;
+        }
+
+        @keyframes mesamShake {
+            0%, 30% { transform: rotate(0deg); }
+            35%, 55% { transform: rotate(-2deg); }
+            40%, 50% { transform: rotate(2deg); }
+            45% { transform: rotate(-2deg); }
+            60% { transform: scale(1.1); }
+            65% { transform: scale(1); filter: brightness(2); }
+            70%, 100% { transform: rotate(0deg); }
+        }
+
+        .piggy-mesam-ear {
+            position: absolute;
+            top: -12px;
+            width: 25px;
+            height: 25px;
+            background: #dc2626;
+            border-radius: 50% 50% 0 0;
+        }
+
+        .piggy-ear-left { left: 20px; transform: rotate(-20deg); }
+        .piggy-ear-right { right: 20px; transform: rotate(20deg); }
+
+        .piggy-mesam-snout {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 35px;
+            height: 20px;
+            background: #f87171;
+            border-radius: 50%;
+        }
+
+        .piggy-mesam-eye {
+            position: absolute;
+            top: 30px;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .piggy-mesam-eye::after {
+            content: "";
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 6px;
+            height: 6px;
+            background: #1f2937;
+            border-radius: 50%;
+        }
+
+        .piggy-eye-left { left: 25px; }
+        .piggy-eye-right { right: 25px; }
+
+        .piggy-mesam-slot {
+            position: absolute;
+            top: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 35px;
+            height: 6px;
+            background: #7f1d1d;
+            border-radius: 3px;
+        }
+
+        .mesam-label {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #dc2626;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .piggy-muzibu {
+            position: absolute;
+            bottom: 50px;
+            right: 60px;
+            width: 120px;
+            height: 100px;
+        }
+
+        .piggy-muzibu-body {
+            position: absolute;
+            bottom: 0;
+            width: 120px;
+            height: 85px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 45px 45px 25px 25px;
+            animation: muzibuHappy 20s infinite;
+        }
+
+        @keyframes muzibuHappy {
+            0%, 60% { transform: rotate(0deg); }
+            70%, 100% { transform: rotate(0deg) scale(1.05); }
+            75% { transform: rotate(-3deg) scale(1.05); }
+            80% { transform: rotate(3deg) scale(1.05); }
+            85% { transform: rotate(-3deg) scale(1.05); }
+            90% { transform: rotate(0deg) scale(1.05); }
+        }
+
+        .piggy-muzibu-ear {
+            position: absolute;
+            top: -12px;
+            width: 25px;
+            height: 25px;
+            background: #10b981;
+            border-radius: 50% 50% 0 0;
+        }
+
+        .muzibu-ear-left { left: 20px; transform: rotate(-20deg); }
+        .muzibu-ear-right { right: 20px; transform: rotate(20deg); }
+
+        .piggy-muzibu-snout {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 35px;
+            height: 20px;
+            background: #6ee7b7;
+            border-radius: 50%;
+        }
+
+        .piggy-muzibu-eye {
+            position: absolute;
+            top: 30px;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .piggy-muzibu-eye::after {
+            content: "";
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 6px;
+            height: 6px;
+            background: #1f2937;
+            border-radius: 50%;
+        }
+
+        .muzibu-eye-left { left: 25px; }
+        .muzibu-eye-right { right: 25px; }
+
+        .piggy-muzibu-slot {
+            position: absolute;
+            top: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 35px;
+            height: 6px;
+            background: #065f46;
+            border-radius: 3px;
+        }
+
+        .muzibu-label {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .coin-drop-mesam {
+            position: absolute;
+            font-size: 20px;
+            animation: coinDropM 2s infinite;
+        }
+
+        .coin-m-1 { left: 110px; animation-delay: 0s; }
+        .coin-m-2 { left: 125px; animation-delay: 0.3s; }
+        .coin-m-3 { left: 105px; animation-delay: 0.6s; }
+        .coin-m-4 { left: 135px; animation-delay: 0.9s; }
+        .coin-m-5 { left: 115px; animation-delay: 1.2s; }
+        .coin-m-6 { left: 120px; animation-delay: 1.5s; }
+
+        @keyframes coinDropM {
+            0% { top: 40px; opacity: 1; }
+            100% { top: 160px; opacity: 0; }
+        }
+
+        .coin-drop-muzibu {
+            position: absolute;
+            font-size: 20px;
+            animation: coinDropZ 4s infinite;
+        }
+
+        .coin-z-1 { right: 110px; animation-delay: 0s; }
+        .coin-z-2 { right: 125px; animation-delay: 2s; }
+
+        @keyframes coinDropZ {
+            0% { top: 40px; opacity: 1; }
+            50% { top: 160px; opacity: 0; }
+            100% { top: 160px; opacity: 0; }
+        }
+
+        .money-counter {
+            position: absolute;
+            top: 25px;
+            padding: 8px 16px;
+            background: rgba(0,0,0,0.8);
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .counter-mesam-box {
+            left: 40px;
+            border: 2px solid #dc2626;
+        }
+
+        .counter-muzibu-box {
+            right: 40px;
+            border: 2px solid #10b981;
+        }
+
+        .counter-value-box {
+            font-size: 20px;
+            font-family: monospace;
+        }
+
+        .counter-mesam-box .counter-value-box { color: #f87171; }
+        .counter-muzibu-box .counter-value-box { color: #6ee7b7; }
+
+        .vs-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 42px;
+            font-weight: bold;
+            color: #6366f1;
+            text-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+            animation: vsPulse 2s infinite;
+        }
+
+        @keyframes vsPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        .piggy-happy-face {
+            position: absolute;
+            right: 85px;
+            bottom: 180px;
+            font-size: 40px;
+            opacity: 0;
+            animation: happyAppear 20s infinite;
+        }
+
+        @keyframes happyAppear {
+            0%, 65% { opacity: 0; transform: scale(0); }
+            70%, 90% { opacity: 1; transform: scale(1); }
+            95%, 100% { opacity: 0; transform: scale(0); }
+        }
+
+        /* ============================================
+           KALKAN ANİMASYONU
+           ============================================ */
+        .story-shield-container {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            background: linear-gradient(to bottom, #1e1b4b 0%, #0f172a 100%);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .business-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .business-icon { font-size: 32px; }
+        .business-text {
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+
+        .shield {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 180px;
+            height: 180px;
+            border: 4px solid transparent;
+            border-radius: 50%;
+            animation: shieldPulse 3s infinite, shieldActivate 12s infinite;
+            z-index: 5;
+        }
+
+        @keyframes shieldActivate {
+            0%, 20% { border-color: transparent; box-shadow: none; }
+            30%, 100% { border-color: #10b981; box-shadow: 0 0 30px rgba(16, 185, 129, 0.5), inset 0 0 30px rgba(16, 185, 129, 0.2); }
+        }
+
+        @keyframes shieldPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        .shield-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 8px;
+            opacity: 0;
+            animation: shieldLabelAppear 12s infinite;
+        }
+
+        @keyframes shieldLabelAppear {
+            0%, 25% { opacity: 0; }
+            35%, 100% { opacity: 1; }
+        }
+
+        .shield-label span {
+            background: #10b981;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .threat {
+            position: absolute;
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 7px;
+            font-weight: bold;
+            opacity: 0;
+        }
+
+        .threat-icon { font-size: 20px; margin-bottom: 2px; }
+
+        .threat-1 {
+            top: 40px;
+            left: 40px;
+            animation: threatMove1 12s infinite;
+        }
+
+        .threat-2 {
+            top: 40px;
+            right: 40px;
+            animation: threatMove2 12s infinite 1s;
+        }
+
+        .threat-3 {
+            bottom: 40px;
+            left: 40px;
+            animation: threatMove3 12s infinite 2s;
+        }
+
+        .threat-4 {
+            bottom: 40px;
+            right: 40px;
+            animation: threatMove4 12s infinite 3s;
+        }
+
+        @keyframes threatMove1 {
+            0%, 10% { opacity: 0; transform: translate(0, 0); }
+            15% { opacity: 1; transform: translate(0, 0); }
+            35% { opacity: 1; transform: translate(70px, 70px); }
+            40% { opacity: 1; transform: translate(35px, 35px) rotate(45deg); }
+            45%, 100% { opacity: 0; transform: translate(-45px, -45px) rotate(90deg); }
+        }
+
+        @keyframes threatMove2 {
+            0%, 15% { opacity: 0; transform: translate(0, 0); }
+            20% { opacity: 1; transform: translate(0, 0); }
+            40% { opacity: 1; transform: translate(-70px, 70px); }
+            45% { opacity: 1; transform: translate(-35px, 35px) rotate(-45deg); }
+            50%, 100% { opacity: 0; transform: translate(45px, -45px) rotate(-90deg); }
+        }
+
+        @keyframes threatMove3 {
+            0%, 20% { opacity: 0; transform: translate(0, 0); }
+            25% { opacity: 1; transform: translate(0, 0); }
+            45% { opacity: 1; transform: translate(70px, -70px); }
+            50% { opacity: 1; transform: translate(35px, -35px) rotate(-45deg); }
+            55%, 100% { opacity: 0; transform: translate(-45px, 45px) rotate(-90deg); }
+        }
+
+        @keyframes threatMove4 {
+            0%, 25% { opacity: 0; transform: translate(0, 0); }
+            30% { opacity: 1; transform: translate(0, 0); }
+            50% { opacity: 1; transform: translate(-70px, -70px); }
+            55% { opacity: 1; transform: translate(-35px, -35px) rotate(45deg); }
+            60%, 100% { opacity: 0; transform: translate(45px, 45px) rotate(90deg); }
+        }
+
+        .protection-success {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid #10b981;
+            color: #10b981;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 12px;
+            opacity: 0;
+            animation: successAppear 12s infinite;
+        }
+
+        @keyframes successAppear {
+            0%, 60% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            70%, 90% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="animated-bg"></div>
+
+<!-- ========== SLIDE 1: KAPAK - MOTİVASYON ========== -->
+<div class="slide active">
+    <div class="corner-decoration corner-top-right rotate-slow" style="opacity: 0.08;">
+        <svg viewBox="0 0 200 200" fill="none">
+            <circle cx="100" cy="100" r="90" stroke="#8b5cf6" stroke-width="1" fill="none"/>
+            <circle cx="100" cy="100" r="70" stroke="#ec4899" stroke-width="1" fill="none"/>
+            <circle cx="100" cy="100" r="50" stroke="#10b981" stroke-width="1" fill="none"/>
+        </svg>
+    </div>
+
+    <div class="flex flex-col justify-center items-center text-center full-width" style="min-height: 85vh;">
+        <div class="music-wave mb-8 float">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+
+        <h1 class="text-[5.5rem] font-black mb-4 leading-none tracking-tight">
+            <span class="title-animated">MUZİBU</span>
+        </h1>
+        <h2 class="text-3xl font-bold text-white/90 mb-6">İşletmeler İçin Müzik Platformu</h2>
+
+        <div class="w-32 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-green-500 rounded-full mb-8"></div>
+
+        <div class="big-quote max-w-5xl mb-8">
+            <span class="gradient-text-gold">"Satış yapmıyorsunuz,</span><br>
+            <span class="text-white">işletmelere <span class="gradient-text-green">para kazandırıyorsunuz!"</span></span>
+        </div>
+
+        <p class="text-xl text-slate-400 max-w-3xl leading-relaxed mb-6">
+            Bu eğitimde öğrenecekleriniz sizi sektörün <strong class="text-purple-400">en başarılı satış temsilcisi</strong> yapacak.
+        </p>
+
+        <div class="flex items-center gap-4 text-slate-500 mt-4">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-building text-purple-400"></i>
+                <span class="font-medium">Türk Bilişim</span>
+            </div>
+        </div>
+
+        <div class="absolute bottom-24 left-1/2 -translate-x-1/2 text-slate-500 animate-bounce">
+            <p class="text-sm mb-2">Hadi başlayalım!</p>
+            <i class="fas fa-chevron-down text-xl"></i>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 2: TÜRK BİLİŞİM - KİM BU ADAMLAR? ========== -->
+<div class="slide">
+    <div class="corner-decoration corner-top-right float-slow" style="opacity: 0.06;">
+        <i class="fas fa-laptop-code text-[200px] text-purple-500"></i>
+    </div>
+
+    <div class="content-wide">
+        <div class="section-badge bg-purple-500/20 text-purple-400 border border-purple-500/30">
+            <i class="fas fa-building"></i> Arkamızdaki Güç
+        </div>
+
+        <h2 class="text-5xl font-black mb-4">
+            <span class="gradient-text-purple">Türk Bilişim</span> Kimdir?
+        </h2>
+        <p class="slogan">Müşteriniz soracak: <strong>"Bu firmayı tanıyor muyum?"</strong> İşte cevabınız...</p>
+
+        <div class="grid lg:grid-cols-2 gap-8 mb-6">
+            <div class="content-box">
+                <h3 class="text-2xl font-bold text-purple-400 mb-5 flex items-center gap-3">
+                    <i class="fas fa-history"></i> Deneyim & Uzmanlık
+                </h3>
+                <div class="text-readable space-y-4">
+                    <p>Türk Bilişim, <strong class="text-white">kurumsal yazılım çözümleri</strong> konusunda uzmanlaşmış bir teknoloji şirketi.</p>
+
+                    <div class="space-y-3 mt-4">
+                        <div class="flex items-center gap-3 p-3 bg-slate-800/40 rounded-lg">
+                            <i class="fas fa-check-circle text-green-400 text-xl"></i>
+                            <span>E-ticaret platformları geliştirme</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-slate-800/40 rounded-lg">
+                            <i class="fas fa-check-circle text-green-400 text-xl"></i>
+                            <span>Kurumsal web sistemleri</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-slate-800/40 rounded-lg">
+                            <i class="fas fa-check-circle text-green-400 text-xl"></i>
+                            <span>Multi-tenant SaaS uygulamaları</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-slate-800/40 rounded-lg">
+                            <i class="fas fa-check-circle text-green-400 text-xl"></i>
+                            <span>Ödeme sistemleri entegrasyonu</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box border-pink-500/30">
+                <h3 class="text-2xl font-bold text-pink-400 mb-5 flex items-center gap-3">
+                    <i class="fas fa-rocket"></i> Muzibu Nasıl Doğdu?
+                </h3>
+                <div class="text-readable space-y-4">
+                    <p>Bir müşterimiz sordu: <em class="text-pink-300">"İşletmemde yasal müzik çalmak için ne yapmalıyım?"</em></p>
+
+                    <p>Araştırdık. MESAM, MÜ-YAP, MSG derken <strong class="text-red-400">binlerce lira</strong> ve <strong class="text-red-400">bürokratik kaos</strong> ile karşılaştık.</p>
+
+                    <p><strong class="text-white">Gece gündüz demeden, uzun ve yoğun çalışmalar sonucunda</strong> Muzibu'yu geliştirdik.</p>
+
+                    <div class="fire-box mt-4">
+                        <p class="text-orange-300 font-semibold">
+                            <i class="fas fa-fire mr-2"></i>
+                            Sonuç: İşletmelerin <strong>%90 tasarruf</strong> ettiği, <strong>tam yasal</strong> bir platform!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <div class="flex items-center gap-4">
+                <i class="fas fa-shield-alt text-4xl text-green-400"></i>
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-1">Müşterinize Söyleyin:</h3>
+                    <p class="text-lg text-slate-300">
+                        "Biz <strong class="text-purple-400">start-up</strong> değiliz. Kurumsal projelerde deneyimli, <strong class="text-green-400">güvenilir bir teknoloji şirketiyiz</strong>. Sisteminiz bizimle güvende."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 3: PAZAR FIRSATI - ALTIN MADENİ ========== -->
+<div class="slide">
+    <div class="corner-decoration corner-top-right trophy-bounce" style="opacity: 0.12;">
+        <i class="fas fa-gem text-[180px] text-yellow-500"></i>
+    </div>
+
+    <div class="content-wide">
+        <div class="section-badge bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">
+            <i class="fas fa-chart-line"></i> Pazar Fırsatı
+        </div>
+
+        <h2 class="text-5xl font-black mb-4">
+            <span class="gradient-text-gold">Altın Madeni</span>nin Üstündesiniz!
+        </h2>
+        <p class="slogan">Bu pazar neden <strong>devasa</strong> bir fırsat? Rakamlarla görelim...</p>
+
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <div class="feature-card text-center pulse-scale">
+                <div class="stat-number mb-2">500K+</div>
+                <p class="text-lg font-semibold text-white">Potansiyel Müşteri</p>
+                <p class="text-sm text-slate-400 mt-2">Türkiye'deki kafe, restoran, otel, mağaza sayısı</p>
+            </div>
+            <div class="feature-card text-center pulse-scale" style="animation-delay: 0.2s;">
+                <div class="stat-number mb-2">%95</div>
+                <p class="text-lg font-semibold text-white">Lisanssız Çalıyor</p>
+                <p class="text-sm text-slate-400 mt-2">Çoğu işletme yasal risk altında</p>
+            </div>
+            <div class="feature-card text-center pulse-scale" style="animation-delay: 0.4s;">
+                <div class="stat-number mb-2">₺0</div>
+                <p class="text-lg font-semibold text-white">Rakip Yok</p>
+                <p class="text-sm text-slate-400 mt-2">Türkiye'de bu segmentte tek platform</p>
+            </div>
+        </div>
+
+        <div class="fire-box mb-6">
+            <h3 class="text-2xl font-bold text-orange-400 mb-4 flex items-center gap-3">
+                <i class="fas fa-fire"></i> Neden Şimdi?
+            </h3>
+            <div class="grid md:grid-cols-2 gap-4 text-readable">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-gavel text-red-400 mt-1"></i>
+                    <div>
+                        <p class="font-semibold text-white">MESAM Denetimleri Artıyor</p>
+                        <p class="text-sm text-slate-400">Her geçen gün daha fazla işletme ceza yiyor</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-coins text-yellow-400 mt-1"></i>
+                    <div>
+                        <p class="font-semibold text-white">Fiyatlar Sürekli Artıyor</p>
+                        <p class="text-sm text-slate-400">MESAM/MÜ-YAP ücretleri her yıl zamlanıyor</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-users text-blue-400 mt-1"></i>
+                    <div>
+                        <p class="font-semibold text-white">Farkındalık Artıyor</p>
+                        <p class="text-sm text-slate-400">İşletmeler artık "yasal müzik" arıyor</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-trophy text-purple-400 mt-1"></i>
+                    <div>
+                        <p class="font-semibold text-white">İlk Giren Kazanır</p>
+                        <p class="text-sm text-slate-400">Pazar boş, kapan kaparı!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="success-box">
+            <p class="text-xl text-center text-green-300">
+                <i class="fas fa-lightbulb mr-2"></i>
+                Her köşe başında bir <strong>kafe</strong>, her caddede bir <strong>restoran</strong>, her AVM'de onlarca <strong>mağaza</strong>...
+                <br><strong class="text-white">Hepsi sizin potansiyel müşteriniz!</strong>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 4: PROBLEM - ACI NOKTASI (KAFE BASKINI ANİMASYONU) ========== -->
+<div class="slide">
+    <div class="content-wide">
+        <div class="section-badge bg-red-500/20 text-red-400 border border-red-500/30">
+            <i class="fas fa-heart-broken"></i> Müşterinin Acısı
+        </div>
+
+        <h2 class="text-5xl font-black mb-4">
+            İşletmelerin <span class="gradient-text-fire">Kabusu</span>
+        </h2>
+        <p class="slogan">Satış yapmanın sırrı: <strong>Problemi hissettirmek!</strong> İşte müşterinizin yaşadıkları...</p>
+
+        <div class="grid lg:grid-cols-2 gap-8 mb-6">
+            <!-- ANİMASYON ALANI -->
+            <div class="story-cafe-container">
+                <div class="cafe-sun"></div>
+                <div class="cafe-sidewalk"></div>
+                <div class="cafe-ground"></div>
+
+                <div class="cafe-building">
+                    <div class="cafe-sign">☕ KAFE</div>
+                    <div class="cafe-window cafe-window-1"></div>
+                    <div class="cafe-window cafe-window-2"></div>
+                    <div class="cafe-door"></div>
+                    <div class="cafe-face"></div>
+                </div>
+
+                <div class="inspector">
+                    <div class="inspector-hat"></div>
+                    <div class="inspector-head"></div>
+                    <div class="inspector-body"></div>
+                </div>
+
+                <div class="penalty-paper">
+                    <div class="penalty-title">⚠️ CEZA</div>
+                    <div class="penalty-amount">₺85.000</div>
+                </div>
+
+                <div class="flying-money money-1">💸</div>
+                <div class="flying-money money-2">💰</div>
+                <div class="flying-money money-3">💸</div>
+                <div class="flying-money money-4">💰</div>
+            </div>
+
+            <!-- DETAYLI BİLGİ -->
+            <div class="content-box vs-bad">
+                <h3 class="text-2xl font-bold text-red-400 mb-4">
+                    <i class="fas fa-bomb mr-2"></i> Senaryo: MESAM Denetimi Geldi!
+                </h3>
+                <div class="text-readable space-y-3">
+                    <div class="p-3 bg-red-900/20 rounded-xl">
+                        <p class="font-bold text-red-300 mb-1">Salı Öğleni, Saat 14:00</p>
+                        <p class="text-slate-300 text-sm">Kafeye iki kişi giriyor. "MESAM denetimi" diyorlar. Müzik çalıyor. Spotify.</p>
+                    </div>
+                    <div class="p-3 bg-red-900/20 rounded-xl">
+                        <p class="font-bold text-red-300 mb-1">İlk Şok</p>
+                        <p class="text-slate-300 text-sm">"Ticari lisansınız var mı?" - "Spotify var işte?" - "O bireysel kullanım için."</p>
+                    </div>
+                    <div class="p-3 bg-red-900/30 rounded-xl border border-red-500/50">
+                        <p class="font-bold text-red-300 mb-1">FATURA:</p>
+                        <ul class="space-y-1 text-slate-300 text-sm">
+                            <li class="flex justify-between"><span>MESAM (3 yıl):</span> <span class="text-red-400 font-bold">₺45.000</span></li>
+                            <li class="flex justify-between"><span>MÜ-YAP (3 yıl):</span> <span class="text-red-400 font-bold">₺35.000</span></li>
+                            <li class="flex justify-between"><span>Gecikme faizi:</span> <span class="text-red-400 font-bold">₺15.000</span></li>
+                            <li class="border-t border-red-500/30 pt-1 flex justify-between">
+                                <span class="font-bold">TOPLAM:</span>
+                                <span class="text-red-400 font-black">₺105.000+</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="highlight-box bg-gradient-to-r from-purple-500/10 to-green-500/10 border-green-500/30">
+            <h3 class="text-xl font-bold text-white mb-3 flex items-center gap-2">
+                <i class="fas fa-key text-green-400"></i> Satış Taktiği
+            </h3>
+            <p class="text-lg text-slate-300">
+                Bu hikayeyi <strong class="text-purple-400">korkutmak için değil</strong>, gerçeği göstermek için anlatın.
+                Sonra deyin ki: <strong class="text-green-400">"Peki ya yılda sadece ₺4.000'e tüm bu risklerden kurtulsanız?"</strong>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 5: ÇÖZÜM - KAHRAMAN GİRİŞİ (KALKAN ANİMASYONU) ========== -->
+<div class="slide">
+    <div class="content-wide">
+        <div class="section-badge bg-green-500/20 text-green-400 border border-green-500/30">
+            <i class="fas fa-magic"></i> Çözüm
+        </div>
+
+        <h2 class="text-5xl font-black mb-4">
+            İşte <span class="gradient-text-green">Muzibu</span> Devreye Giriyor!
+        </h2>
+        <p class="slogan">Siz sadece müzik satmıyorsunuz. <strong>Huzur, güvenlik ve tasarruf</strong> satıyorsunuz!</p>
+
+        <div class="grid lg:grid-cols-2 gap-8 mb-6">
+            <!-- ANİMASYON ALANI -->
+            <div class="story-shield-container">
+                <div class="business-center">
+                    <div class="business-icon">🏪</div>
+                    <div class="business-text">İşletmeniz</div>
+                </div>
+
+                <div class="shield"></div>
+                <div class="shield-label">
+                    <span>🛡️ Muzibu Koruması</span>
+                </div>
+
+                <div class="threat threat-1">
+                    <div class="threat-icon">👮</div>
+                    Denetçi
+                </div>
+                <div class="threat threat-2">
+                    <div class="threat-icon">📋</div>
+                    MESAM Ceza
+                </div>
+                <div class="threat threat-3">
+                    <div class="threat-icon">⚖️</div>
+                    Dava Riski
+                </div>
+                <div class="threat threat-4">
+                    <div class="threat-icon">💸</div>
+                    Yüksek Ücret
+                </div>
+
+                <div class="protection-success">
+                    ✅ Tüm tehditler savuşturuldu!
+                </div>
+            </div>
+
+            <!-- ÖZELLİKLER -->
+            <div class="space-y-4">
+                <div class="big-quote p-4 bg-gradient-to-r from-green-500/10 to-purple-500/10 rounded-2xl border border-green-500/30 text-xl">
+                    <span class="text-green-400">"₺105.000 ceza riski"</span><br>
+                    <span class="text-slate-400 text-lg">yerine</span><br>
+                    <span class="text-white">Yılda <span class="gradient-text-gold">₺4.000</span> ile tam koruma!</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="feature-card text-center p-3">
+                        <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-gavel text-lg text-green-400"></i>
+                        </div>
+                        <h4 class="font-bold text-green-400 text-sm mb-1">%100 Yasal</h4>
+                        <p class="text-xs text-slate-400">Tüm telif bedelleri dahil</p>
+                    </div>
+                    <div class="feature-card text-center p-3">
+                        <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-infinity text-lg text-purple-400"></i>
+                        </div>
+                        <h4 class="font-bold text-purple-400 text-sm mb-1">Sınırsız Müzik</h4>
+                        <p class="text-xs text-slate-400">7/24 kesintisiz yayın</p>
+                    </div>
+                    <div class="feature-card text-center p-3">
+                        <div class="w-10 h-10 rounded-lg bg-pink-500/20 flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-bullhorn text-lg text-pink-400"></i>
+                        </div>
+                        <h4 class="font-bold text-pink-400 text-sm mb-1">Anons Sistemi</h4>
+                        <p class="text-xs text-slate-400">Kendi duyurularınız</p>
+                    </div>
+                    <div class="feature-card text-center p-3">
+                        <div class="w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-headset text-lg text-cyan-400"></i>
+                        </div>
+                        <h4 class="font-bold text-cyan-400 text-sm mb-1">7/24 Destek</h4>
+                        <p class="text-xs text-slate-400">Asla yalnız değilsiniz</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="success-box">
+            <div class="flex items-center gap-4">
+                <i class="fas fa-hand-holding-usd text-4xl text-green-400"></i>
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-1">Satış Formülü:</h3>
+                    <p class="text-lg text-slate-300">
+                        <strong class="text-red-400">Problem</strong> (MESAM riski) +
+                        <strong class="text-green-400">Çözüm</strong> (Muzibu) +
+                        <strong class="text-yellow-400">Tasarruf</strong> (₺40.000+/yıl) =
+                        <strong class="text-purple-400">SATIŞ!</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 6: REKABET ANALİZİ ========== -->
+<div class="slide">
+    <div class="corner-decoration corner-top-right rotate-reverse" style="opacity: 0.06;">
+        <svg viewBox="0 0 200 200" fill="none">
+            <circle cx="100" cy="100" r="90" stroke="#ec4899" stroke-width="1" stroke-dasharray="10 5" fill="none"/>
+        </svg>
+    </div>
+
+    <div class="content-wide">
+        <div class="section-badge bg-pink-500/20 text-pink-400 border border-pink-500/30">
+            <i class="fas fa-balance-scale"></i> Rekabet
+        </div>
+
+        <h2 class="text-5xl font-black mb-4">
+            <span class="text-green-400">Spotify?</span> <span class="text-slate-500">YouTube?</span> <span class="gradient-text-purple">Biz!</span>
+        </h2>
+        <p class="slogan">Müşteri karşılaştırma yapacak. <strong>Hazırlıklı olun!</strong></p>
+
+        <div class="overflow-x-auto mb-6">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="border-b border-slate-700">
+                        <th class="p-4 text-slate-400">Özellik</th>
+                        <th class="p-4 text-center"><span class="text-green-400"><i class="fab fa-spotify mr-2"></i>Spotify</span></th>
+                        <th class="p-4 text-center"><span class="text-red-400"><i class="fab fa-youtube mr-2"></i>YouTube</span></th>
+                        <th class="p-4 text-center"><span class="text-purple-400"><i class="fas fa-music mr-2"></i>Muzibu</span></th>
+                    </tr>
+                </thead>
+                <tbody class="text-readable">
+                    <tr class="border-b border-slate-800">
+                        <td class="p-4 font-semibold">Ticari Kullanım</td>
+                        <td class="p-4 text-center"><i class="fas fa-times text-red-400 text-xl"></i></td>
+                        <td class="p-4 text-center"><i class="fas fa-times text-red-400 text-xl"></i></td>
+                        <td class="p-4 text-center"><i class="fas fa-check text-green-400 text-xl"></i></td>
+                    </tr>
+                    <tr class="border-b border-slate-800">
+                        <td class="p-4 font-semibold">Telif Dahil</td>
+                        <td class="p-4 text-center"><i class="fas fa-times text-red-400 text-xl"></i></td>
+                        <td class="p-4 text-center"><i class="fas fa-times text-red-400 text-xl"></i></td>
+                        <td class="p-4 text-center"><i class="fas fa-check text-green-400 text-xl"></i></td>
+                    </tr>
+                    <tr class="border-b border-slate-800">
+                        <td class="p-4 font-semibold">Reklam</td>
+                        <td class="p-4 text-center text-yellow-400">Premium'da yok</td>
+                        <td class="p-4 text-center text-red-400">Sürekli var</td>
+                        <td class="p-4 text-center text-green-400">Asla yok</td>
+                    </tr>
+                    <tr class="border-b border-slate-800">
+                        <td class="p-4 font-semibold">Anons Sistemi</td>
+                        <td class="p-4 text-center"><i class="fas fa-times text-red-400 text-xl"></i></td>
+                        <td class="p-4 text-center"><i class="fas fa-times text-red-400 text-xl"></i></td>
+                        <td class="p-4 text-center"><i class="fas fa-check text-green-400 text-xl"></i></td>
+                    </tr>
+                    <tr class="border-b border-slate-800">
+                        <td class="p-4 font-semibold">Şube Yönetimi</td>
+                        <td class="p-4 text-center"><i class="fas fa-times text-red-400 text-xl"></i></td>
+                        <td class="p-4 text-center"><i class="fas fa-times text-red-400 text-xl"></i></td>
+                        <td class="p-4 text-center"><i class="fas fa-check text-green-400 text-xl"></i></td>
+                    </tr>
+                    <tr>
+                        <td class="p-4 font-semibold">MESAM Koruması</td>
+                        <td class="p-4 text-center"><i class="fas fa-times text-red-400 text-xl"></i></td>
+                        <td class="p-4 text-center"><i class="fas fa-times text-red-400 text-xl"></i></td>
+                        <td class="p-4 text-center"><i class="fas fa-check text-green-400 text-xl"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="script-box">
+            <h3 class="text-lg font-bold text-blue-400 mb-3 ml-8">Müşteriye Ne Dersiniz?</h3>
+            <p class="text-lg text-slate-300 ml-8">
+                "Spotify harika bir uygulama, ben de kullanıyorum - <strong class="text-white">evde!</strong>
+                Ama ticari kullanım için <strong class="text-red-400">lisanssız</strong>.
+                MESAM geldiğinde Spotify size <strong class="text-red-400">koruma sağlamaz</strong>.
+                Biz ise size <strong class="text-green-400">yasal belge</strong> veriyoruz."
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 7: ÖZELLİKLER - SATIŞ SİLAHLARI ========== -->
+<div class="slide">
+    <div class="corner-decoration corner-top-right float-rotate" style="opacity: 0.08;">
+        <i class="fas fa-cogs text-[180px] text-purple-500"></i>
+    </div>
+
+    <div class="content-wide">
+        <div class="section-badge bg-purple-500/20 text-purple-400 border border-purple-500/30">
+            <i class="fas fa-toolbox"></i> Silahlarınız
+        </div>
+
+        <h2 class="text-5xl font-black mb-4">
+            <span class="gradient-text-purple">Satış Silahlarınız</span>
+        </h2>
+        <p class="slogan">Her özellik bir <strong>satış argümanı.</strong> Bunları ezberleyin!</p>
+
+        <div class="grid lg:grid-cols-2 gap-6 mb-6">
+            <!-- Anons Sistemi -->
+            <div class="content-box border-pink-500/30">
+                <div class="flex items-start gap-4">
+                    <div class="step-circle flex-shrink-0">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-pink-400 mb-2">Anons Sistemi</h3>
+                        <p class="text-slate-300 mb-3">İşletmenin kendi sesini duyurması.</p>
+                        <div class="script-box text-sm">
+                            <p class="ml-6 text-slate-300">
+                                <strong class="text-blue-300">Senaryo:</strong> "Happy hour başladı!", "İndirim!", "Özel gün kutlaması" -
+                                bunları <strong class="text-white">müzik arasında otomatik</strong> yayınlayın.
+                                Garson koşturmak yok, hoparlörle bağırmak yok!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Şube Yönetimi -->
+            <div class="content-box border-green-500/30">
+                <div class="flex items-start gap-4">
+                    <div class="step-circle flex-shrink-0" style="background: linear-gradient(135deg, #10b981, #34d399);">
+                        <i class="fas fa-sitemap"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-green-400 mb-2">Kurumsal Şube Yönetimi</h3>
+                        <p class="text-slate-300 mb-3">Tek panelden tüm lokasyonlar.</p>
+                        <div class="script-box text-sm">
+                            <p class="ml-6 text-slate-300">
+                                <strong class="text-blue-300">Senaryo:</strong> 10 şubeli bir restoran zinciri.
+                                Her şubeye <strong class="text-white">farklı playlist</strong>,
+                                merkezi <strong class="text-white">istatistik takibi</strong>,
+                                tek fatura. Kaos yok, kontrol sizde!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sektörel Playlistler -->
+            <div class="content-box border-cyan-500/30">
+                <div class="flex items-start gap-4">
+                    <div class="step-circle flex-shrink-0" style="background: linear-gradient(135deg, #06b6d4, #22d3ee);">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-cyan-400 mb-2">Sektöre Özel Müzik</h3>
+                        <p class="text-slate-300 mb-3">Her işletme tipine uygun atmosfer.</p>
+                        <div class="script-box text-sm">
+                            <p class="ml-6 text-slate-300">
+                                <strong class="text-blue-300">Senaryo:</strong> Spa sakinleştirici,
+                                spor salonu enerjik, kafe lounge, restoran akşam yemeği...
+                                <strong class="text-white">Hazır playlistler</strong> ile anında başlayın!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7/24 Kesintisiz -->
+            <div class="content-box border-yellow-500/30">
+                <div class="flex items-start gap-4">
+                    <div class="step-circle flex-shrink-0" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-yellow-400 mb-2">7/24 Kesintisiz</h3>
+                        <p class="text-slate-300 mb-3">Reklam yok, kesinti yok, sorun yok.</p>
+                        <div class="script-box text-sm">
+                            <p class="ml-6 text-slate-300">
+                                <strong class="text-blue-300">Senaryo:</strong> Otel lobisi gece 3'te,
+                                kafe sabah 6'da... Müzik <strong class="text-white">hiç susmaz</strong>.
+                                YouTube reklamı gibi utanç verici anlar yok!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="fire-box">
+            <p class="text-lg text-center text-orange-300">
+                <i class="fas fa-lightbulb mr-2"></i>
+                <strong>Pro Tip:</strong> Müşterinin işletme tipine göre ilgili özelliği öne çıkarın.
+                Zincir mağazaya <strong>"şube yönetimi"</strong>, kafeye <strong>"anons sistemi"</strong> vurgulayın!
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 8: FİYATLANDIRMA - PARA KONUŞUYOR (KUMBARA ANİMASYONU) ========== -->
+<div class="slide">
+    <div class="content-wide">
+        <div class="section-badge bg-green-500/20 text-green-400 border border-green-500/30">
+            <i class="fas fa-tags"></i> Fiyatlandırma
+        </div>
+
+        <h2 class="text-5xl font-black mb-4">
+            <span class="gradient-text-gold">Paketler</span> ve <span class="gradient-text-green">Kazanç</span>
+        </h2>
+        <p class="slogan">Bu fiyatları gördüklerinde <strong>"Çok ucuz!"</strong> diyecekler. Öyle de!</p>
+
+        <div class="grid lg:grid-cols-3 gap-6 mb-6">
+            <!-- ANİMASYON ALANI -->
+            <div class="story-piggy-container lg:col-span-1">
+                <div class="piggy-platform"></div>
+
+                <div class="money-counter counter-mesam-box">
+                    <div class="text-xs text-gray-400 mb-1">MESAM/MÜ-YAP</div>
+                    <div class="counter-value-box">₺45K+/yıl</div>
+                </div>
+
+                <div class="money-counter counter-muzibu-box">
+                    <div class="text-xs text-gray-400 mb-1">Muzibu</div>
+                    <div class="counter-value-box">₺4K/yıl</div>
+                </div>
+
+                <div class="vs-text">VS</div>
+
+                <div class="piggy-mesam">
+                    <div class="mesam-label">MESAM</div>
+                    <div class="piggy-mesam-body">
+                        <div class="piggy-mesam-ear piggy-ear-left"></div>
+                        <div class="piggy-mesam-ear piggy-ear-right"></div>
+                        <div class="piggy-mesam-slot"></div>
+                        <div class="piggy-mesam-eye piggy-eye-left"></div>
+                        <div class="piggy-mesam-eye piggy-eye-right"></div>
+                        <div class="piggy-mesam-snout"></div>
+                    </div>
+                </div>
+
+                <div class="piggy-muzibu">
+                    <div class="muzibu-label">Muzibu</div>
+                    <div class="piggy-muzibu-body">
+                        <div class="piggy-muzibu-ear muzibu-ear-left"></div>
+                        <div class="piggy-muzibu-ear muzibu-ear-right"></div>
+                        <div class="piggy-muzibu-slot"></div>
+                        <div class="piggy-muzibu-eye muzibu-eye-left"></div>
+                        <div class="piggy-muzibu-eye muzibu-eye-right"></div>
+                        <div class="piggy-muzibu-snout"></div>
+                    </div>
+                </div>
+
+                <div class="coin-drop-mesam coin-m-1">🪙</div>
+                <div class="coin-drop-mesam coin-m-2">🪙</div>
+                <div class="coin-drop-mesam coin-m-3">🪙</div>
+                <div class="coin-drop-mesam coin-m-4">🪙</div>
+                <div class="coin-drop-mesam coin-m-5">🪙</div>
+                <div class="coin-drop-mesam coin-m-6">🪙</div>
+
+                <div class="coin-drop-muzibu coin-z-1">🪙</div>
+                <div class="coin-drop-muzibu coin-z-2">🪙</div>
+
+                <div class="piggy-happy-face">😊</div>
+            </div>
+
+            <!-- FİYAT KARTLARI -->
+            <div class="lg:col-span-2 grid md:grid-cols-2 gap-6">
+                <!-- Aylık -->
+                <div class="price-card">
+                    <div class="relative z-10">
+                        <p class="text-sm font-semibold text-purple-400 uppercase tracking-wider mb-2">Aylık Paket</p>
+                        <div class="flex items-baseline gap-2 mb-1">
+                            <span class="text-4xl font-black text-white">₺600</span>
+                            <span class="text-slate-400">+ KDV</span>
+                        </div>
+                        <p class="text-slate-400 mb-4">Aylık: ₺708 (KDV dahil)</p>
+
+                        <div class="space-y-2 mb-4">
+                            <div class="flex items-center gap-2 text-slate-300 text-sm">
+                                <i class="fas fa-check text-green-400"></i> Tüm özellikler dahil
+                            </div>
+                            <div class="flex items-center gap-2 text-slate-300 text-sm">
+                                <i class="fas fa-check text-green-400"></i> Sınırsız müzik
+                            </div>
+                            <div class="flex items-center gap-2 text-slate-300 text-sm">
+                                <i class="fas fa-check text-green-400"></i> 7/24 destek
+                            </div>
+                        </div>
+
+                        <div class="p-2 bg-purple-900/30 rounded-lg text-center">
+                            <p class="text-sm text-purple-300">Günlük sadece <strong class="text-white">₺23</strong></p>
+                            <p class="text-xs text-slate-400">Bir kahveden ucuz!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yıllık -->
+                <div class="price-card price-popular pulse-glow">
+                    <div class="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full z-20 animate-bounce">
+                        ÖNERİLEN
+                    </div>
+                    <div class="relative z-10">
+                        <p class="text-sm font-semibold text-green-400 uppercase tracking-wider mb-2">Yıllık Paket</p>
+                        <div class="flex items-baseline gap-2 mb-1">
+                            <span class="text-4xl font-black text-white">₺4.000</span>
+                            <span class="text-slate-400">+ KDV</span>
+                        </div>
+                        <p class="text-green-400 font-bold mb-4">
+                            <i class="fas fa-gift mr-1"></i> 2 AY HEDİYE!
+                        </p>
+
+                        <div class="space-y-2 mb-4">
+                            <div class="flex items-center gap-2 text-slate-300 text-sm">
+                                <i class="fas fa-check text-green-400"></i> Tüm özellikler dahil
+                            </div>
+                            <div class="flex items-center gap-2 text-slate-300 text-sm">
+                                <i class="fas fa-check text-green-400"></i> Ayda sadece ₺333
+                            </div>
+                            <div class="flex items-center gap-2 text-slate-300 text-sm">
+                                <i class="fas fa-check text-green-400"></i> ₺3.200 tasarruf
+                            </div>
+                        </div>
+
+                        <div class="p-2 bg-green-900/30 rounded-lg text-center">
+                            <p class="text-sm text-green-300">Günlük sadece <strong class="text-white">₺11</strong></p>
+                            <p class="text-xs text-slate-400">Bir şişe sudan ucuz!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <h3 class="text-xl font-bold text-white mb-4 text-center">MESAM/MÜ-YAP ile Karşılaştırma</h3>
+            <div class="grid md:grid-cols-3 gap-4 text-center">
+                <div class="p-4 bg-red-900/20 rounded-xl border border-red-500/20">
+                    <p class="text-sm text-red-400 mb-1">MESAM + MÜ-YAP</p>
+                    <p class="text-3xl font-black text-red-400">₺45.000+</p>
+                    <p class="text-xs text-slate-500">Yıllık minimum</p>
+                </div>
+                <div class="flex items-center justify-center">
+                    <div class="text-4xl text-purple-400">→</div>
+                </div>
+                <div class="p-4 bg-green-900/20 rounded-xl border border-green-500/20">
+                    <p class="text-sm text-green-400 mb-1">Muzibu</p>
+                    <p class="text-3xl font-black text-green-400">₺4.000</p>
+                    <p class="text-xs text-slate-500">Yıllık tamamı</p>
+                </div>
+            </div>
+            <p class="text-2xl text-center mt-4 font-bold">
+                <span class="gradient-text-gold">₺41.000+ TASARRUF!</span>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 9: İTİRAZ YÖNETİMİ ========== -->
+<div class="slide">
+    <div class="corner-decoration corner-top-right float" style="opacity: 0.08;">
+        <i class="fas fa-comments text-[180px] text-blue-500"></i>
+    </div>
+
+    <div class="content-wide">
+        <div class="section-badge bg-blue-500/20 text-blue-400 border border-blue-500/30">
+            <i class="fas fa-shield-alt"></i> İtiraz Yönetimi
+        </div>
+
+        <h2 class="text-5xl font-black mb-4">
+            <span class="gradient-text-purple">İtirazları</span> Fırsata Çevirin!
+        </h2>
+        <p class="slogan">Her "hayır" bir <strong>"evet"e</strong> dönüşebilir. İşte formüller...</p>
+
+        <div class="grid lg:grid-cols-2 gap-4 mb-6">
+            <!-- İtiraz 1 -->
+            <div class="content-box border-l-4 border-l-red-500">
+                <p class="text-lg font-bold text-red-400 mb-1">
+                    <i class="fas fa-user-tie mr-2"></i>Müşteri: "Spotify zaten var, neden para vereyim?"
+                </p>
+                <p class="text-lg font-bold text-green-400 mb-2 mt-3">
+                    <i class="fas fa-user-check mr-2"></i>Siz:
+                </p>
+                <p class="text-slate-300">
+                    "Haklısınız, Spotify harika - <strong class="text-white">bireysel kullanım için</strong>.
+                    Ama ticari lisansı yok. MESAM geldiğinde <strong class="text-red-400">₺50.000+ ceza</strong> keserler.
+                    Bizimle <strong class="text-green-400">yılda ₺4.000'e</strong> hem müzik hem koruma."
+                </p>
+            </div>
+
+            <!-- İtiraz 2 -->
+            <div class="content-box border-l-4 border-l-red-500">
+                <p class="text-lg font-bold text-red-400 mb-1">
+                    <i class="fas fa-user-tie mr-2"></i>Müşteri: "Bütçemiz yok, çok pahalı."
+                </p>
+                <p class="text-lg font-bold text-green-400 mb-2 mt-3">
+                    <i class="fas fa-user-check mr-2"></i>Siz:
+                </p>
+                <p class="text-slate-300">
+                    "Anlıyorum. Günlük maliyeti <strong class="text-green-400">₺11</strong> -
+                    bir şişe sudan ucuz! Üstelik MESAM cezası <strong class="text-red-400">tek seferde ₺20.000+</strong>.
+                    <strong class="text-yellow-400">Aslında tasarruf ediyorsunuz.</strong>"
+                </p>
+            </div>
+
+            <!-- İtiraz 3 -->
+            <div class="content-box border-l-4 border-l-red-500">
+                <p class="text-lg font-bold text-red-400 mb-1">
+                    <i class="fas fa-user-tie mr-2"></i>Müşteri: "Düşüneyim, sonra ararım."
+                </p>
+                <p class="text-lg font-bold text-green-400 mb-2 mt-3">
+                    <i class="fas fa-user-check mr-2"></i>Siz:
+                </p>
+                <p class="text-slate-300">
+                    "Tabii. Ama MESAM denetimleri <strong class="text-red-400">habersiz</strong> geliyor.
+                    <strong class="text-yellow-400">Şu an kampanyamız var</strong> -
+                    yıllık pakette 2 ay hediye. <strong class="text-green-400">Korumayı hemen başlatmak istemez misiniz?</strong>"
+                </p>
+            </div>
+
+            <!-- İtiraz 4 -->
+            <div class="content-box border-l-4 border-l-red-500">
+                <p class="text-lg font-bold text-red-400 mb-1">
+                    <i class="fas fa-user-tie mr-2"></i>Müşteri: "Yıllardır böyle çalıyoruz, sorun olmadı."
+                </p>
+                <p class="text-lg font-bold text-green-400 mb-2 mt-3">
+                    <i class="fas fa-user-check mr-2"></i>Siz:
+                </p>
+                <p class="text-slate-300">
+                    "Şanslısınız! Ama denetimler <strong class="text-red-400">son dönemde çok arttı</strong>.
+                    Geçen ay bir kafeden <strong class="text-red-400">₺80.000</strong> aldılar.
+                    <strong class="text-yellow-400">Sigorta gibi düşünün</strong> - kaza olmadan yaptırırsınız."
+                </p>
+            </div>
+        </div>
+
+        <div class="success-box">
+            <p class="text-lg text-center text-green-300">
+                <i class="fas fa-key mr-2"></i>
+                <strong>Altın Kural:</strong> İtirazı dinleyin, anlayış gösterin, sonra <strong class="text-white">rakamlarla</strong> konuşun!
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 10: SATIŞ SÜRECİ ========== -->
+<div class="slide">
+    <div class="corner-decoration corner-top-right rotate" style="opacity: 0.06;">
+        <svg viewBox="0 0 200 200" fill="none">
+            <path d="M100,10 L190,100 L100,190 L10,100 Z" stroke="#10b981" stroke-width="2" fill="none"/>
+        </svg>
+    </div>
+
+    <div class="content-wide">
+        <div class="section-badge bg-green-500/20 text-green-400 border border-green-500/30">
+            <i class="fas fa-route"></i> Satış Süreci
+        </div>
+
+        <h2 class="text-5xl font-black mb-4">
+            <span class="gradient-text-green">5 Adımda</span> Satış
+        </h2>
+        <p class="slogan">Bu formülü uygulayın, <strong>satış kapanır!</strong></p>
+
+        <div class="grid lg:grid-cols-5 gap-4 mb-6">
+            <div class="checklist-item flex-col text-center">
+                <div class="step-circle mx-auto mb-2" style="background: linear-gradient(135deg, #8b5cf6, #a78bfa);">1</div>
+                <h4 class="text-lg font-bold text-purple-400 mb-1">BAĞLANTI KUR</h4>
+                <p class="text-slate-300 text-sm">Samimi ol, işletmeyi öv, sohbet aç.</p>
+                <p class="text-xs text-slate-500 mt-1"><i class="fas fa-clock mr-1"></i> 2-3 dk</p>
+            </div>
+
+            <div class="checklist-item flex-col text-center" style="border-left-color: #ec4899;">
+                <div class="step-circle mx-auto mb-2" style="background: linear-gradient(135deg, #ec4899, #f472b6);">2</div>
+                <h4 class="text-lg font-bold text-pink-400 mb-1">PROBLEMİ HİSSETTİR</h4>
+                <p class="text-slate-300 text-sm">"Müziği nereden çalıyorsunuz?" - Riski anlat.</p>
+                <p class="text-xs text-slate-500 mt-1"><i class="fas fa-clock mr-1"></i> 3-4 dk</p>
+            </div>
+
+            <div class="checklist-item flex-col text-center" style="border-left-color: #f59e0b;">
+                <div class="step-circle mx-auto mb-2" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">3</div>
+                <h4 class="text-lg font-bold text-yellow-400 mb-1">ÇÖZÜMÜ SUN</h4>
+                <p class="text-slate-300 text-sm">Muzibu'yu tanıt. "Günde ₺11'e kurtulun."</p>
+                <p class="text-xs text-slate-500 mt-1"><i class="fas fa-clock mr-1"></i> 4-5 dk</p>
+            </div>
+
+            <div class="checklist-item flex-col text-center" style="border-left-color: #06b6d4;">
+                <div class="step-circle mx-auto mb-2" style="background: linear-gradient(135deg, #06b6d4, #22d3ee);">4</div>
+                <h4 class="text-lg font-bold text-cyan-400 mb-1">İTİRAZLARI KARŞILA</h4>
+                <p class="text-slate-300 text-sm">Dinle, anla, cevapla. Formülleri kullan.</p>
+                <p class="text-xs text-slate-500 mt-1"><i class="fas fa-clock mr-1"></i> 3-5 dk</p>
+            </div>
+
+            <div class="checklist-item flex-col text-center" style="border-left-color: #10b981;">
+                <div class="step-circle mx-auto mb-2" style="background: linear-gradient(135deg, #10b981, #34d399);">5</div>
+                <h4 class="text-lg font-bold text-green-400 mb-1">KAPANIŞ YAP</h4>
+                <p class="text-slate-300 text-sm">"Yıllık mı aylık mı?" - Seçenek sun.</p>
+                <p class="text-xs text-slate-500 mt-1"><i class="fas fa-clock mr-1"></i> 2-3 dk</p>
+            </div>
+        </div>
+
+        <div class="fire-box">
+            <div class="flex items-center gap-4">
+                <i class="fas fa-fire text-4xl text-orange-400"></i>
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-1">Kapanış Cümleleri:</h3>
+                    <ul class="text-slate-300 space-y-1">
+                        <li>• "Hemen başlayalım mı? 5 dakikada aktif olursunuz."</li>
+                        <li>• "Yıllık pakette 2 ay hediye - bu fırsat bu ay."</li>
+                        <li>• "Yarın MESAM gelirse, bugün başlamış olmak istemez misiniz?"</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 11: MOTİVASYON ========== -->
+<div class="slide">
+    <div class="corner-decoration corner-top-right trophy-bounce" style="opacity: 0.15;">
+        <i class="fas fa-trophy text-[180px] text-yellow-500"></i>
+    </div>
+
+    <div class="content-wide">
+        <div class="section-badge bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">
+            <i class="fas fa-fire-alt"></i> Motivasyon
+        </div>
+
+        <h2 class="text-5xl font-black mb-6 text-center">
+            <span class="shine-text">SİZ KAZANDIRACAKSINIZ!</span>
+        </h2>
+
+        <div class="big-quote mb-8 p-8 bg-gradient-to-r from-yellow-500/10 to-purple-500/10 rounded-3xl border border-yellow-500/30">
+            <p class="text-slate-400 text-xl mb-4">Unutmayın:</p>
+            <p class="text-white">
+                Siz bir ürün <span class="gradient-text-fire">satmıyorsunuz.</span><br>
+                İşletmeleri <span class="gradient-text-green">cezadan kurtarıyorsunuz.</span><br>
+                Onlara <span class="gradient-text-gold">para kazandırıyorsunuz.</span><br>
+                <span class="gradient-text-purple">Kahramansınız!</span>
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <div class="feature-card text-center">
+                <i class="fas fa-hand-holding-usd text-5xl text-green-400 mb-4 bounce-soft"></i>
+                <h4 class="text-xl font-bold text-white mb-2">₺41.000+</h4>
+                <p class="text-slate-400">Her müşteriye yıllık tasarruf</p>
+            </div>
+            <div class="feature-card text-center">
+                <i class="fas fa-shield-alt text-5xl text-purple-400 mb-4 bounce-soft" style="animation-delay: 0.2s;"></i>
+                <h4 class="text-xl font-bold text-white mb-2">%100</h4>
+                <p class="text-slate-400">Yasal koruma sağlıyorsunuz</p>
+            </div>
+            <div class="feature-card text-center">
+                <i class="fas fa-heart text-5xl text-pink-400 mb-4 bounce-soft" style="animation-delay: 0.4s;"></i>
+                <h4 class="text-xl font-bold text-white mb-2">Huzur</h4>
+                <p class="text-slate-400">MESAM korkusu bitiyor</p>
+            </div>
+        </div>
+
+        <div class="success-box text-center">
+            <p class="text-2xl text-white mb-2">
+                <i class="fas fa-quote-left text-green-400 mr-2"></i>
+                Her "EVET" bir işletmeyi kurtarır.
+                <i class="fas fa-quote-right text-green-400 ml-2"></i>
+            </p>
+            <p class="text-lg text-green-300">Çıkın ve kazandırın!</p>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 12: KAPANIŞ ========== -->
+<div class="slide">
+    <div class="flex flex-col justify-center items-center text-center full-width" style="min-height: 85vh;">
+        <div class="music-wave mb-8 float">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+
+        <h2 class="text-5xl font-black mb-6">
+            <span class="title-animated">Haydi, Sahaya!</span>
+        </h2>
+
+        <p class="text-2xl text-slate-300 max-w-3xl mb-8 leading-relaxed">
+            Artık <strong class="text-purple-400">Muzibu'yu</strong> tanıyorsunuz,<br>
+            <strong class="text-pink-400">itirazları</strong> biliyorsunuz,<br>
+            <strong class="text-green-400">satış formülünü</strong> öğrendiniz.
+        </p>
+
+        <div class="text-6xl mb-8 bounce-soft">
+            <span class="gradient-text-gold">Başarılar!</span>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 max-w-3xl mb-10">
+            <div class="p-4 bg-slate-800/30 rounded-xl text-center">
+                <i class="fas fa-phone text-2xl text-green-400 mb-2"></i>
+                <p class="text-sm text-slate-400">Destek</p>
+                <p class="text-white font-semibold">7/24 Aktif</p>
+            </div>
+            <div class="p-4 bg-slate-800/30 rounded-xl text-center">
+                <i class="fas fa-globe text-2xl text-purple-400 mb-2"></i>
+                <p class="text-sm text-slate-400">Platform</p>
+                <p class="text-white font-semibold">Muzibu</p>
+            </div>
+            <div class="p-4 bg-slate-800/30 rounded-xl text-center">
+                <i class="fas fa-building text-2xl text-pink-400 mb-2"></i>
+                <p class="text-sm text-slate-400">Geliştirici</p>
+                <p class="text-white font-semibold">Türk Bilişim</p>
+            </div>
+        </div>
+
+        <div class="w-32 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-green-500 rounded-full mb-6"></div>
+
+        <p class="text-slate-500 text-sm">
+            <i class="fas fa-code mr-2"></i> Türk Bilişim © 2025
+        </p>
+    </div>
+</div>
+
+<!-- Navigation -->
+<div class="nav-buttons">
+    <button class="nav-btn" id="prevBtn" disabled><i class="fas fa-chevron-left"></i></button>
+    <button class="nav-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+</div>
+
+<div class="counter">
+    Sayfa <span id="currentSlide">1</span> / <span id="totalSlides">12</span>
+</div>
+
+<script>
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const currentSlideEl = document.getElementById('currentSlide');
+    const totalSlidesEl = document.getElementById('totalSlides');
+
+    let currentIndex = 0;
+    totalSlidesEl.textContent = slides.length;
+
+    function updateSlides() {
+        slides.forEach((slide, index) => {
+            slide.classList.remove('active', 'prev');
+            if (index === currentIndex) {
+                slide.classList.add('active');
+            } else if (index < currentIndex) {
+                slide.classList.add('prev');
+            }
+        });
+
+        currentSlideEl.textContent = currentIndex + 1;
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.disabled = currentIndex === slides.length - 1;
+    }
+
+    function nextSlide() {
+        if (currentIndex < slides.length - 1) {
+            currentIndex++;
+            updateSlides();
+        }
+    }
+
+    function prevSlide() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateSlides();
+        }
+    }
+
+    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', nextSlide);
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') {
+            e.preventDefault();
+            nextSlide();
+        } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            prevSlide();
+        }
+    });
+
+    // Touch/swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+
+    function handleSwipe() {
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) nextSlide();
+            else prevSlide();
+        }
+    }
+</script>
+</body>
+</html>

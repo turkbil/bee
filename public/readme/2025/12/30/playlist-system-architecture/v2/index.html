@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Playlist Sistem Mimarisi - TAMAMLANDI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .card { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(10px); }
+        .glow { box-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-gray-100">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-green-600/20 border border-green-500/30 rounded-full text-green-400 text-sm mb-4">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                TAMAMLANDI
+            </div>
+            <h1 class="text-4xl font-bold mb-4">Muzibu Playlist Sistemi</h1>
+            <p class="text-gray-400 text-lg">Polymorphic Sistem + Corporate Destegi</p>
+            <p class="text-gray-500 text-sm mt-2">30 Aralik 2025 - v2 (Guncellendi)</p>
+        </header>
+
+        <!-- Success Alert -->
+        <div class="card border border-green-500/50 rounded-xl p-6 mb-8 glow">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">&#9989;</div>
+                <div>
+                    <h2 class="text-xl font-bold text-green-400 mb-2">TUM GUNCELLEMELER TAMAMLANDI!</h2>
+                    <p class="text-gray-300 mb-4">
+                        Playlist sistemi artik <strong>playlistables</strong> polymorphic tablosunu kullaniyor.
+                        Sector, Radio ve Corporate modelleri guncellendi. Admin panele Corporate secimi eklendi.
+                    </p>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-4">
+                            <h4 class="font-semibold text-green-400 mb-2">&#10003; Modeller</h4>
+                            <ul class="text-sm space-y-1">
+                                <li>&#10003; Sector.php</li>
+                                <li>&#10003; Radio.php</li>
+                                <li>&#10003; MuzibuCorporateAccount.php</li>
+                                <li>&#10003; Playlist.php</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-4">
+                            <h4 class="font-semibold text-green-400 mb-2">&#10003; Admin Panel</h4>
+                            <ul class="text-sm space-y-1">
+                                <li>&#10003; PlaylistManageComponent</li>
+                                <li>&#10003; Corporate secimi UI</li>
+                                <li>&#10003; Dual listbox calisiyor</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-4">
+                            <h4 class="font-semibold text-green-400 mb-2">&#10003; Veritabani</h4>
+                            <ul class="text-sm space-y-1">
+                                <li>&#10003; playlistables tablosu</li>
+                                <li>&#10003; 161 kayit mevcut</li>
+                                <li>&#10003; morphMap tanimli</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 1: Playlist Types -->
+        <section class="card border border-slate-700 rounded-xl p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="text-3xl">&#127925;</span> Playlist Turleri
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-800/50">
+                        <tr>
+                            <th class="px-4 py-3 rounded-tl-lg">Tur</th>
+                            <th class="px-4 py-3">Sahiplik</th>
+                            <th class="px-4 py-3">Dagitim</th>
+                            <th class="px-4 py-3">Gizlilik</th>
+                            <th class="px-4 py-3 rounded-tr-lg">Kullanim</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="px-4 py-4 font-semibold text-purple-400">Sistem Playlist</td>
+                            <td class="px-4 py-4"><code>user_id = NULL</code><br><code>is_system = 1</code></td>
+                            <td class="px-4 py-4">&#10003; playlistables ile<br>Sector, Radio, Corporate</td>
+                            <td class="px-4 py-4">&#10003; Public</td>
+                            <td class="px-4 py-4">Admin olusturur<br>Herkes gorur</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="px-4 py-4 font-semibold text-blue-400">Kisisel Playlist<br>(My Playlists)</td>
+                            <td class="px-4 py-4"><code>user_id = X</code><br><code>is_system = 0</code></td>
+                            <td class="px-4 py-4">&#10007; Dagitilmaz<br>Sadece sahibine ait</td>
+                            <td class="px-4 py-4">&#10003; Ayarlanabilir<br><code>is_public</code></td>
+                            <td class="px-4 py-4">Kullanici olusturur<br>Kendi listesi</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="px-4 py-4 font-semibold text-orange-400">Kurumsal Playlist</td>
+                            <td class="px-4 py-4"><code>user_id = NULL</code><br><code>is_system = 1</code></td>
+                            <td class="px-4 py-4">&#10003; playlistables ile<br>Corporate'a ozel</td>
+                            <td class="px-4 py-4">&#10007; Private<br>Sadece o firma</td>
+                            <td class="px-4 py-4">Admin olusturur<br>Firma gorur</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 2: What Was Done -->
+        <section class="card border border-slate-700 rounded-xl p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="text-3xl">&#128736;</span> Yapilan Degisiklikler
+            </h2>
+
+            <div class="space-y-4">
+                <div class="flex gap-4 items-start">
+                    <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center font-bold shrink-0">&#10003;</div>
+                    <div class="flex-1 bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-bold text-green-400 mb-2">Sector.php Guncellendi</h4>
+                        <p class="text-sm text-gray-400 mb-2"><code>HasPlaylistDistribution</code> trait eklendi, eski <code>playlists()</code> metodu kaldirildi.</p>
+                        <code class="text-xs text-gray-500">Modules/Muzibu/app/Models/Sector.php</code>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start">
+                    <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center font-bold shrink-0">&#10003;</div>
+                    <div class="flex-1 bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-bold text-green-400 mb-2">Radio.php Guncellendi</h4>
+                        <p class="text-sm text-gray-400 mb-2"><code>HasPlaylistDistribution</code> trait eklendi, eski <code>playlists()</code> metodu kaldirildi.</p>
+                        <code class="text-xs text-gray-500">Modules/Muzibu/app/Models/Radio.php</code>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start">
+                    <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center font-bold shrink-0">&#10003;</div>
+                    <div class="flex-1 bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-bold text-green-400 mb-2">MuzibuCorporateAccount.php Guncellendi</h4>
+                        <p class="text-sm text-gray-400 mb-2"><code>HasPlaylistDistribution</code> trait eklendi. Artik kurumsal hesaplara playlist dagitilabilir.</p>
+                        <code class="text-xs text-gray-500">Modules/Muzibu/app/Models/MuzibuCorporateAccount.php</code>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start">
+                    <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center font-bold shrink-0">&#10003;</div>
+                    <div class="flex-1 bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-bold text-green-400 mb-2">Playlist.php Guncellendi</h4>
+                        <p class="text-sm text-gray-400 mb-2">
+                            <code>sectors()</code>, <code>radios()</code> metodlari polymorphic yapiya cevirildi.
+                            Yeni <code>corporates()</code> metodu eklendi.
+                        </p>
+                        <code class="text-xs text-gray-500">Modules/Muzibu/app/Models/Playlist.php</code>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start">
+                    <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center font-bold shrink-0">&#10003;</div>
+                    <div class="flex-1 bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-bold text-green-400 mb-2">PlaylistManageComponent.php Guncellendi</h4>
+                        <p class="text-sm text-gray-400 mb-2">
+                            <code>corporate_ids</code> input eklendi. <code>activeCorporates</code> computed property eklendi.
+                            <code>loadPageData</code> ve <code>save</code> metodlari guncellendi.
+                        </p>
+                        <code class="text-xs text-gray-500">Modules/Muzibu/app/Http/Livewire/Admin/PlaylistManageComponent.php</code>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start">
+                    <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center font-bold shrink-0">&#10003;</div>
+                    <div class="flex-1 bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-bold text-green-400 mb-2">Playlist Admin UI Guncellendi</h4>
+                        <p class="text-sm text-gray-400 mb-2">
+                            Kurumsal Hesaplar secimi icin dual listbox eklendi. Arama ozelligi calisiyor.
+                        </p>
+                        <code class="text-xs text-gray-500">Modules/Muzibu/resources/views/admin/livewire/playlist-manage-component.blade.php</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Database Architecture -->
+        <section class="card border border-slate-700 rounded-xl p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="text-3xl">&#128451;</span> Veritabani Mimarisi
+            </h2>
+
+            <div class="bg-slate-900 rounded-lg p-6 mb-6">
+                <pre class="text-sm overflow-x-auto"><code class="text-gray-300">
+&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+&#9474;                           MUZIBU PLAYLISTS                                    &#9474;
+&#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9508;
+&#9474; playlist_id | user_id | title      | is_system | is_public | is_radio    &#9474;
+&#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9508;
+&#9474;      1      &#9474;  NULL   &#9474; Pop Hits   &#9474;     1     &#9474;     1     &#9474;      0      &#9474;  &#8592; Sistem
+&#9474;      2      &#9474;  NULL   &#9474; Chill Mix  &#9474;     1     &#9474;     1     &#9474;      0      &#9474;  &#8592; Sistem
+&#9474;      3      &#9474;   5    &#9474; Gym Music  &#9474;     0     &#9474;     0     &#9474;      0      &#9474;  &#8592; Kisisel (User 5)
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9524;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9524;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9524;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9524;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9524;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+                                &#9474;
+              &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9532;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+              &#9474;                                   &#9474;
+              &#9660;                                   &#9660;
+&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;   &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+&#9474;   PLAYLISTABLES (DAGITIM)      &#9474;   &#9474;   PLAYLIST_SONG (SARKILAR)    &#9474;
+&#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9508;   &#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9508;
+&#9474; playlist_id &#9474; type     &#9474; id   &#9474;   &#9474; playlist_id &#9474; song_id &#9474; pos &#9474;
+&#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9532;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9532;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9508;   &#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9532;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9532;&#9472;&#9472;&#9472;&#9472;&#9472;&#9508;
+&#9474;      1      &#9474; sector   &#9474;  2   &#9474;   &#9474;      1      &#9474;   101   &#9474;  1  &#9474;
+&#9474;      1      &#9474; sector   &#9474;  5   &#9474;   &#9474;      1      &#9474;   102   &#9474;  2  &#9474;
+&#9474;      1      &#9474; radio    &#9474;  3   &#9474;   &#9474;      1      &#9474;   103   &#9474;  3  &#9474;
+&#9474;      2      &#9474; corporate&#9474;  1   &#9474;   &#9474;      3      &#9474;   201   &#9474;  1  &#9474;
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9524;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9524;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;   &#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9524;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9524;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+
+Sistem playlist (1,2) &#8594; playlistables ile DAGITILIR
+Kisisel playlist (3) &#8594; user_id ile SAHIPLIK belirlenir
+                </code></pre>
+            </div>
+
+            <div class="bg-blue-900/20 border border-blue-700 rounded-lg p-4">
+                <h4 class="font-semibold text-blue-400 mb-2">&#128161; morphMap Tanimlari</h4>
+                <pre class="bg-slate-900 rounded p-4 overflow-x-auto text-sm"><code>// MuzibuServiceProvider.php
+Relation::morphMap([
+    'sector' => Sector::class,
+    'radio' => Radio::class,
+    'corporate' => MuzibuCorporateAccount::class,
+]);</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 4: Personal Playlists -->
+        <section class="card border border-slate-700 rounded-xl p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="text-3xl">&#128100;</span> Kisisel Playlist Stratejisi
+            </h2>
+
+            <div class="bg-green-900/20 border border-green-700 rounded-lg p-6 mb-6">
+                <h3 class="text-xl font-bold text-green-400 mb-3">&#10003; KARAR: user_id Kullan</h3>
+                <p class="text-gray-300 mb-4">
+                    Kisisel playlist'ler icin <code class="bg-slate-700 px-2 py-1 rounded">user_id</code> kullanmak DOGRU yaklasim.
+                    playlistable sistemi <strong>DAGITIM</strong> icindir, sahiplik icin degil.
+                </p>
+            </div>
+
+            <div class="bg-blue-900/20 border border-blue-700 rounded-lg p-4">
+                <h4 class="font-semibold text-blue-400 mb-2">&#128161; Kisisel Playlist Ornegi</h4>
+                <pre class="bg-slate-900 rounded p-4 overflow-x-auto text-sm"><code>// Kisisel playlist olusturma
+$playlist = Playlist::create([
+    'user_id' => auth()->id(),  // SAHIPLIK
+    'title' => ['tr' => 'Benim Listem'],
+    'is_system' => false,
+    'is_public' => false,       // Gizli
+]);
+
+// Kullanicinin playlist'lerini cekme
+$myPlaylists = Playlist::where('user_id', auth()->id())->get();</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 5: Future Entities -->
+        <section class="card border border-slate-700 rounded-xl p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="text-3xl">&#128302;</span> Gelecek Entity'ler (Eklenebilir)
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-gradient-to-br from-purple-900/30 to-slate-800 border border-purple-700/50 rounded-lg p-5">
+                    <div class="text-3xl mb-3">&#128156;</div>
+                    <h4 class="font-bold text-purple-400 mb-2">Mood</h4>
+                    <p class="text-sm text-gray-400">Mutlu, Huzunlu, Enerjik, Romantik</p>
+                </div>
+                <div class="bg-gradient-to-br from-orange-900/30 to-slate-800 border border-orange-700/50 rounded-lg p-5">
+                    <div class="text-3xl mb-3">&#127926;</div>
+                    <h4 class="font-bold text-orange-400 mb-2">Genre</h4>
+                    <p class="text-sm text-gray-400">Pop, Rock, Jazz, Elektronik</p>
+                </div>
+                <div class="bg-gradient-to-br from-cyan-900/30 to-slate-800 border border-cyan-700/50 rounded-lg p-5">
+                    <div class="text-3xl mb-3">&#9200;</div>
+                    <h4 class="font-bold text-cyan-400 mb-2">Time Slot</h4>
+                    <p class="text-sm text-gray-400">Sabah, Ogle, Aksam, Gece</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Git Commit Info -->
+        <section class="card border border-slate-700 rounded-xl p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="text-3xl">&#128187;</span> Git Commit
+            </h2>
+            <div class="bg-slate-900 rounded-lg p-4">
+                <code class="text-green-400">a99e41e0e</code>
+                <p class="text-gray-400 mt-2">Playlist polymorphic system: Update models and admin UI</p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 text-sm py-8 border-t border-slate-800">
+            <p>Guncelleme: 30 Aralik 2025 | Claude AI - Muzibu Playlist Sistem</p>
+            <p class="mt-2">
+                <a href="https://muzibu.com.tr/readme/2025/12/30/playlistables-migration-guide/" class="text-blue-400 hover:underline">
+                    Playlistables Migration Dokumantasyonu &#8594;
+                </a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

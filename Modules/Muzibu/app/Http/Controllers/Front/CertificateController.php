@@ -68,6 +68,7 @@ class CertificateController extends Controller
             'tax_number' => 'nullable|string|max:50',
             'address' => 'nullable|string|max:500',
             'confirmed' => 'required|accepted',
+            'skip_correction' => 'nullable',
         ]);
 
         $user = auth()->user();
@@ -77,18 +78,26 @@ class CertificateController extends Controller
             return back()->withErrors(['error' => 'Sertifika oluşturmaya yetkiniz yok.']);
         }
 
-        // Apply spelling correction for preview
+        // Check if skip correction is enabled (for member_name only)
+        $skipCorrection = $request->boolean('skip_correction');
+
+        // Apply spelling correction for preview (skip for member_name if checked)
         $previewData = [
-            'member_name' => Certificate::correctSpelling($validated['member_name']),
+            'member_name' => $skipCorrection ? $validated['member_name'] : Certificate::correctSpelling($validated['member_name']),
             'tax_office' => !empty($validated['tax_office']) ? Certificate::correctSpelling($validated['tax_office']) : null,
             'tax_number' => $validated['tax_number'],
-            'address' => $validated['address'],
+            'address' => !empty($validated['address']) ? Certificate::correctSpelling($validated['address']) : null,
             'membership_start' => $eligibility['first_paid_date'],
         ];
 
+        // Store form data in session for "go back" functionality
+        $formData = $validated;
+        $formData['skip_correction'] = $skipCorrection;
+        session(['certificate_form' => $formData]);
+
         return view('themes.muzibu.certificate.preview', [
             'previewData' => $previewData,
-            'formData' => $validated,
+            'formData' => $formData,
         ]);
     }
 
@@ -106,12 +115,20 @@ class CertificateController extends Controller
             'tax_office' => 'nullable|string|max:255',
             'tax_number' => 'nullable|string|max:50',
             'address' => 'nullable|string|max:500',
+            'skip_correction' => 'nullable',
         ]);
 
         $user = auth()->user();
 
+        // Check if skip correction is enabled
+        $skipCorrection = $request->boolean('skip_correction');
+        $validated['skip_correction'] = $skipCorrection;
+
         try {
             $certificate = $this->certificateService->createCertificate($user, $validated);
+
+            // Clear form session
+            session()->forget('certificate_form');
 
             return redirect()
                 ->route('muzibu.certificate.index')

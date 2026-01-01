@@ -10,26 +10,24 @@ class MuzibuCacheProfile implements ModuleCacheProfileInterface
 {
     public function getDynamicPaths(): array
     {
+        // Muzibu'ya özel path'ler (muzibu/ prefix'li olanlar)
+        // NOT: dashboard, corporate, favorites vb. CoreCacheProfile'da zaten tanımlı
         return [
-            // Favoriler
+            // Favoriler (muzibu/ prefix'li)
             'muzibu/favorites',
             'muzibu/favorites/*',
 
-            // Çalma listeleri
+            // Çalma listeleri (muzibu/ prefix'li)
             'muzibu/my-playlists',
             'muzibu/my-playlists/*',
             'muzibu/playlist/*/edit',
 
-            // Dashboard
-            'muzibu/dashboard',
-            'muzibu/dashboard/*',
-
-            // Dinleme geçmişi
+            // Dinleme geçmişi (muzibu/ prefix'li)
             'muzibu/listening-history',
             'muzibu/listening-history/*',
 
-            // Kurumsal müzik
-            'muzibu/corporate/*',
+            // Playlist detay düzenleme
+            'playlists/*/edit',
         ];
     }
 

@@ -374,8 +374,8 @@ class AlbumManageComponent extends Component implements AIContentGeneratable
             $this->albumId = $album->album_id;
             log_activity($album, 'eklendi');
 
-            // 🎨 MUZIBU: Media yoksa otomatik görsel üret (Universal Helper - Tercihen)
-            if (!$album->media_id) {
+            // 🎨 MUZIBU: Hero yoksa otomatik görsel üret (Universal Helper - Tercihen)
+            if (!$album->hasMedia('hero')) {
                 \muzibu_generate_ai_cover($album, $album->title, 'album');
             }
 

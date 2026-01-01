@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Corporate Spots - Final Plan v5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-gray-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-emerald-900/50 to-teal-900/50 border-b border-emerald-800/30">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <div class="flex items-center gap-3 mb-2">
+                <span class="px-3 py-1 bg-emerald-600 text-white text-xs font-bold rounded-full">
+                    <i class="fas fa-check mr-1"></i>FINAL v5
+                </span>
+                <span class="text-gray-400 text-sm">31 Aralık 2025</span>
+            </div>
+            <h1 class="text-2xl md:text-3xl font-bold text-white">
+                <i class="fas fa-bullhorn text-emerald-400 mr-2"></i>
+                Muzibu Corporate Spots Sistemi
+            </h1>
+            <p class="text-emerald-200/70 mt-1">Kurumsal hesaplar için şarkı arası sesli spot yayın sistemi</p>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-slate-800/80 border-b border-slate-700 sticky top-0 z-50 backdrop-blur-sm overflow-x-auto">
+        <div class="max-w-7xl mx-auto px-6 py-2 flex gap-2 text-sm">
+            <a href="#kararlar" class="px-3 py-1.5 rounded text-gray-300 hover:bg-slate-700">Kararlar</a>
+            <a href="#veritabani" class="px-3 py-1.5 rounded text-gray-300 hover:bg-slate-700">Veritabanı</a>
+            <a href="#kontrol" class="px-3 py-1.5 rounded text-gray-300 hover:bg-slate-700">Kontrol Yapısı</a>
+            <a href="#admin" class="px-3 py-1.5 rounded text-gray-300 hover:bg-slate-700">Admin Panel</a>
+            <a href="#kurumsal" class="px-3 py-1.5 rounded text-gray-300 hover:bg-slate-700">Kurumsal Panel</a>
+            <a href="#player" class="px-3 py-1.5 rounded text-gray-300 hover:bg-slate-700">Player</a>
+            <a href="#istatistik" class="px-3 py-1.5 rounded text-gray-300 hover:bg-slate-700">İstatistik</a>
+            <a href="#api" class="px-3 py-1.5 rounded text-gray-300 hover:bg-slate-700">API</a>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 py-8 space-y-12">
+
+        <!-- ==================== TÜM KARARLAR ==================== -->
+        <section id="kararlar">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-check-double"></i>
+                </span>
+                Tüm Kararlar (Final)
+            </h2>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-slate-800 rounded-xl p-4 border-l-4 border-emerald-500">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-forward text-green-400"></i>
+                        <span class="font-semibold text-white">Spot Atlanabilir</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Skip serbest, zorlama yok.</p>
+                </div>
+
+                <div class="bg-slate-800 rounded-xl p-4 border-l-4 border-emerald-500">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-calendar-days text-blue-400"></i>
+                        <span class="font-semibold text-white">Tarih Aralığı</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Admin + Ana şube tarih belirler.</p>
+                </div>
+
+                <div class="bg-slate-800 rounded-xl p-4 border-l-4 border-emerald-500">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-arrow-down-1-9 text-purple-400"></i>
+                        <span class="font-semibold text-white">Özel Sıralama</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Admin + Ana şube sıralama belirler.</p>
+                </div>
+
+                <div class="bg-slate-800 rounded-xl p-4 border-l-4 border-emerald-500">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-bolt text-yellow-400"></i>
+                        <span class="font-semibold text-white">localStorage Sayaç</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Performans öncelikli.</p>
+                </div>
+
+                <div class="bg-slate-800 rounded-xl p-4 border-l-4 border-emerald-500">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-file text-orange-400"></i>
+                        <span class="font-semibold text-white">Max 30 MB</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Dosya boyutu limiti.</p>
+                </div>
+
+                <div class="bg-slate-800 rounded-xl p-4 border-l-4 border-emerald-500">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-clock text-cyan-400"></i>
+                        <span class="font-semibold text-white">Süre Limiti Yok</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Admin ne yüklerse o.</p>
+                </div>
+
+                <div class="bg-slate-800 rounded-xl p-4 border-l-4 border-emerald-500">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-layer-group text-pink-400"></i>
+                        <span class="font-semibold text-white">Override Sistemi</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Kurum Admin'i override edebilir.</p>
+                </div>
+
+                <div class="bg-slate-800 rounded-xl p-4 border-l-4 border-emerald-500">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-toggle-on text-red-400"></i>
+                        <span class="font-semibold text-white">3 Katman Kontrol</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Admin → Corporate → Şube</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== VERİTABANI ==================== -->
+        <section id="veritabani">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-database"></i>
+                </span>
+                Veritabanı Yapısı
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Tablo 1: Spots -->
+                <div class="bg-emerald-900/20 border border-emerald-700/50 rounded-xl p-5">
+                    <h3 class="font-semibold text-emerald-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-plus"></i>
+                        YENİ: muzibu_corporate_spots
+                        <span class="text-gray-500 text-xs font-normal">(Admin'in yüklediği spotlar)</span>
+                    </h3>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-left text-gray-400 border-b border-slate-700">
+                                    <th class="pb-2 pr-4">Kolon</th>
+                                    <th class="pb-2 pr-4">Tip</th>
+                                    <th class="pb-2">Açıklama</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-emerald-400">id</td>
+                                    <td>BIGINT PK</td>
+                                    <td>Auto increment</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-emerald-400">title</td>
+                                    <td>VARCHAR(255)</td>
+                                    <td>Spot başlığı</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-emerald-400">audio_path</td>
+                                    <td>VARCHAR(500)</td>
+                                    <td>Dosya yolu</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-emerald-400">duration</td>
+                                    <td>INT</td>
+                                    <td>Saniye</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-emerald-400">file_size</td>
+                                    <td>INT</td>
+                                    <td>Bytes</td>
+                                </tr>
+                                <tr class="border-b border-slate-800 bg-yellow-900/20">
+                                    <td class="py-2 font-mono text-yellow-400">position</td>
+                                    <td>INT DEFAULT 0</td>
+                                    <td><strong>Admin sıralaması</strong> (global default)</td>
+                                </tr>
+                                <tr class="border-b border-slate-800 bg-yellow-900/20">
+                                    <td class="py-2 font-mono text-yellow-400">starts_at</td>
+                                    <td>TIMESTAMP NULL</td>
+                                    <td><strong>Admin başlangıç tarihi</strong> (NULL = her zaman)</td>
+                                </tr>
+                                <tr class="border-b border-slate-800 bg-yellow-900/20">
+                                    <td class="py-2 font-mono text-yellow-400">ends_at</td>
+                                    <td>TIMESTAMP NULL</td>
+                                    <td><strong>Admin bitiş tarihi</strong> (NULL = süresiz)</td>
+                                </tr>
+                                <tr class="border-b border-slate-800 bg-red-900/20">
+                                    <td class="py-2 font-mono text-red-400">is_active</td>
+                                    <td>BOOLEAN DEFAULT TRUE</td>
+                                    <td><strong>Admin kontrolü</strong> (false = hiçbir yerde çalmaz)</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-emerald-400">play_count</td>
+                                    <td>INT DEFAULT 0</td>
+                                    <td>Toplam çalınma</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 font-mono text-emerald-400">timestamps</td>
+                                    <td>TIMESTAMP</td>
+                                    <td>created_at, updated_at</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tablo 2: Schedules (Kurum Override) -->
+                <div class="bg-yellow-900/20 border border-yellow-700/50 rounded-xl p-5">
+                    <h3 class="font-semibold text-yellow-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-plus"></i>
+                        YENİ: muzibu_corporate_spot_schedules
+                        <span class="text-gray-500 text-xs font-normal">(Kurum bazlı override)</span>
+                    </h3>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-left text-gray-400 border-b border-slate-700">
+                                    <th class="pb-2 pr-4">Kolon</th>
+                                    <th class="pb-2 pr-4">Tip</th>
+                                    <th class="pb-2">Açıklama</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-yellow-400">id</td>
+                                    <td>BIGINT PK</td>
+                                    <td>Auto increment</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-yellow-400">spot_id</td>
+                                    <td>BIGINT FK</td>
+                                    <td>Hangi spot</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-yellow-400">corporate_account_id</td>
+                                    <td>BIGINT FK</td>
+                                    <td>Hangi kurum (ana şube)</td>
+                                </tr>
+                                <tr class="border-b border-slate-800 bg-purple-900/20">
+                                    <td class="py-2 font-mono text-purple-400">position</td>
+                                    <td>INT NULL</td>
+                                    <td><strong>Kurum sıralaması</strong> (NULL = Admin'inki)</td>
+                                </tr>
+                                <tr class="border-b border-slate-800 bg-purple-900/20">
+                                    <td class="py-2 font-mono text-purple-400">starts_at</td>
+                                    <td>TIMESTAMP NULL</td>
+                                    <td><strong>Kurum başlangıç</strong> (NULL = Admin'inki)</td>
+                                </tr>
+                                <tr class="border-b border-slate-800 bg-purple-900/20">
+                                    <td class="py-2 font-mono text-purple-400">ends_at</td>
+                                    <td>TIMESTAMP NULL</td>
+                                    <td><strong>Kurum bitiş</strong> (NULL = Admin'inki)</td>
+                                </tr>
+                                <tr class="border-b border-slate-800 bg-green-900/20">
+                                    <td class="py-2 font-mono text-green-400">is_enabled</td>
+                                    <td>BOOLEAN DEFAULT TRUE</td>
+                                    <td><strong>Kurum kontrolü</strong> (false = bu kurumda çalmaz)</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 font-mono text-yellow-400">timestamps</td>
+                                    <td>TIMESTAMP</td>
+                                    <td>created_at, updated_at</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-4 bg-slate-900 rounded-lg p-3 font-mono text-xs text-gray-400">
+                        UNIQUE (spot_id, corporate_account_id)<br>
+                        INDEX (corporate_account_id)
+                    </div>
+                </div>
+
+                <!-- Tablo 3: Plays -->
+                <div class="bg-blue-900/20 border border-blue-700/50 rounded-xl p-5">
+                    <h3 class="font-semibold text-blue-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-plus"></i>
+                        YENİ: muzibu_corporate_spot_plays
+                        <span class="text-gray-500 text-xs font-normal">(Çalınma logları)</span>
+                    </h3>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-left text-gray-400 border-b border-slate-700">
+                                    <th class="pb-2 pr-4">Kolon</th>
+                                    <th class="pb-2 pr-4">Tip</th>
+                                    <th class="pb-2">Açıklama</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-blue-400">id</td>
+                                    <td>BIGINT PK</td>
+                                    <td></td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-blue-400">spot_id</td>
+                                    <td>BIGINT FK</td>
+                                    <td>Hangi spot</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-blue-400">corporate_account_id</td>
+                                    <td>BIGINT FK</td>
+                                    <td>Hangi şube</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-blue-400">user_id</td>
+                                    <td>BIGINT FK NULL</td>
+                                    <td>Kim dinledi</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 font-mono text-blue-400">was_skipped</td>
+                                    <td>BOOLEAN DEFAULT FALSE</td>
+                                    <td>Atlandı mı?</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 font-mono text-blue-400">played_at</td>
+                                    <td>TIMESTAMP</td>
+                                    <td>Ne zaman</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tablo 4: Corporate Accounts Güncelleme -->
+                <div class="bg-orange-900/20 border border-orange-700/50 rounded-xl p-5">
+                    <h3 class="font-semibold text-orange-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-pen"></i>
+                        GÜNCELLEME: muzibu_corporate_accounts
+                        <span class="text-gray-500 text-xs font-normal">(4 kolon ekleme)</span>
+                    </h3>
+
+                    <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm">
+                        <pre class="text-gray-300"><code>spot_enabled BOOLEAN DEFAULT TRUE       -- Ana şube: Sistem açık mı?
+spot_songs_between INT DEFAULT 10       -- Ana şube: Kaç şarkıda bir?
+spot_current_index INT DEFAULT 0        -- Rotation index
+spot_is_paused BOOLEAN DEFAULT FALSE    -- Her şube: Durduruldu mu?</code></pre>
+                    </div>
+                </div>
+
+                <!-- Özet -->
+                <div class="bg-slate-800 rounded-xl p-5">
+                    <h3 class="font-semibold text-white mb-3">Veritabanı Özeti</h3>
+                    <div class="grid grid-cols-4 gap-4 text-center">
+                        <div class="bg-emerald-900/30 rounded-lg p-3">
+                            <p class="text-2xl font-bold text-emerald-400">3</p>
+                            <p class="text-gray-400 text-xs">Yeni Tablo</p>
+                        </div>
+                        <div class="bg-orange-900/30 rounded-lg p-3">
+                            <p class="text-2xl font-bold text-orange-400">+4</p>
+                            <p class="text-gray-400 text-xs">Kolon</p>
+                        </div>
+                        <div class="bg-purple-900/30 rounded-lg p-3">
+                            <p class="text-2xl font-bold text-purple-400">Override</p>
+                            <p class="text-gray-400 text-xs">Sistem</p>
+                        </div>
+                        <div class="bg-blue-900/30 rounded-lg p-3">
+                            <p class="text-2xl font-bold text-blue-400">Esnek</p>
+                            <p class="text-gray-400 text-xs">Yapı</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== KONTROL YAPISI ==================== -->
+        <section id="kontrol">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-sitemap"></i>
+                </span>
+                Kontrol & Override Yapısı
+            </h2>
+
+            <div class="space-y-6">
+                <!-- 3 Katman -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h4 class="font-semibold text-white mb-4">3 Katmanlı Kontrol Hiyerarşisi</h4>
+
+                    <div class="bg-slate-900 rounded-lg p-6">
+                        <div class="flex flex-col md:flex-row items-center justify-center gap-4">
+                            <div class="bg-red-900/30 border-2 border-red-600 rounded-xl p-4 text-center w-56">
+                                <i class="fas fa-user-shield text-3xl text-red-400 mb-2"></i>
+                                <h5 class="font-bold text-white">1. Admin</h5>
+                                <p class="text-gray-400 text-xs mt-2">Global kontrol</p>
+                                <div class="mt-3 text-left text-xs space-y-1">
+                                    <p class="text-red-300">• is_active (spot bazlı)</p>
+                                    <p class="text-red-300">• position (global sıra)</p>
+                                    <p class="text-red-300">• starts_at / ends_at</p>
+                                </div>
+                            </div>
+
+                            <i class="fas fa-arrow-right text-gray-600 text-2xl hidden md:block"></i>
+                            <i class="fas fa-arrow-down text-gray-600 text-2xl md:hidden"></i>
+
+                            <div class="bg-yellow-900/30 border-2 border-yellow-600 rounded-xl p-4 text-center w-56">
+                                <i class="fas fa-building text-3xl text-yellow-400 mb-2"></i>
+                                <h5 class="font-bold text-white">2. Ana Şube</h5>
+                                <p class="text-gray-400 text-xs mt-2">Kurum bazlı override</p>
+                                <div class="mt-3 text-left text-xs space-y-1">
+                                    <p class="text-yellow-300">• spot_enabled (kurum)</p>
+                                    <p class="text-yellow-300">• is_enabled (spot bazlı)</p>
+                                    <p class="text-yellow-300">• position (kurum sırası)</p>
+                                    <p class="text-yellow-300">• starts_at / ends_at</p>
+                                </div>
+                            </div>
+
+                            <i class="fas fa-arrow-right text-gray-600 text-2xl hidden md:block"></i>
+                            <i class="fas fa-arrow-down text-gray-600 text-2xl md:hidden"></i>
+
+                            <div class="bg-green-900/30 border-2 border-green-600 rounded-xl p-4 text-center w-56">
+                                <i class="fas fa-code-branch text-3xl text-green-400 mb-2"></i>
+                                <h5 class="font-bold text-white">3. Şube</h5>
+                                <p class="text-gray-400 text-xs mt-2">Şube bazlı durdur</p>
+                                <div class="mt-3 text-left text-xs space-y-1">
+                                    <p class="text-green-300">• spot_is_paused</p>
+                                    <p class="text-gray-500">(sadece durdur/devam)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Override Mantığı -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h4 class="font-semibold text-white mb-4">Override Mantığı</h4>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-slate-900 rounded-lg p-4">
+                            <h5 class="text-purple-400 font-medium mb-3">Tarih Override</h5>
+                            <div class="text-sm space-y-2 text-gray-300">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                                    <span>Kurum tarihi varsa → Kurum tarihi geçerli</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                                    <span>Kurum tarihi NULL → Admin tarihi geçerli</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span>Her ikisi NULL → Her zaman aktif</span>
+                                </div>
+                            </div>
+                            <div class="mt-3 bg-slate-800 rounded p-2 font-mono text-xs text-gray-400">
+                                COALESCE(schedule.starts_at, spot.starts_at)
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900 rounded-lg p-4">
+                            <h5 class="text-purple-400 font-medium mb-3">Sıralama Override</h5>
+                            <div class="text-sm space-y-2 text-gray-300">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                                    <span>Kurum sırası varsa → Kurum sırası geçerli</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                                    <span>Kurum sırası NULL → Admin sırası geçerli</span>
+                                </div>
+                            </div>
+                            <div class="mt-3 bg-slate-800 rounded p-2 font-mono text-xs text-gray-400">
+                                COALESCE(schedule.position, spot.position)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Çalma Koşulu -->
+                <div class="bg-emerald-900/20 border border-emerald-700/50 rounded-xl p-6">
+                    <h4 class="font-semibold text-emerald-400 mb-4">
+                        <i class="fas fa-play mr-2"></i>
+                        Spot Çalması İçin Tüm Koşullar
+                    </h4>
+
+                    <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm">
+                        <pre class="text-gray-300"><code>-- Spot çalabilir mi?
+WHERE spot.is_active = TRUE                                    -- Admin aktif
+  AND corporate.spot_enabled = TRUE                            -- Kurum aktif
+  AND branch.spot_is_paused = FALSE                            -- Şube durdurulmamış
+  AND (schedule.is_enabled IS NULL OR schedule.is_enabled = TRUE)  -- Kurum spot'u kapatmamış
+  AND (
+    COALESCE(schedule.starts_at, spot.starts_at) IS NULL
+    OR COALESCE(schedule.starts_at, spot.starts_at) <= NOW()
+  )
+  AND (
+    COALESCE(schedule.ends_at, spot.ends_at) IS NULL
+    OR COALESCE(schedule.ends_at, spot.ends_at) >= NOW()
+  )
+ORDER BY COALESCE(schedule.position, spot.position)</code></pre>
+                    </div>
+                </div>
+
+                <!-- Kontrol Matrisi -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                    <h4 class="font-semibold text-white mb-4">Kontrol Matrisi</h4>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-left border-b border-slate-700">
+                                    <th class="pb-2 text-red-400">Admin</th>
+                                    <th class="pb-2 text-yellow-400">Corporate</th>
+                                    <th class="pb-2 text-yellow-400">Spot (Kurum)</th>
+                                    <th class="pb-2 text-green-400">Şube</th>
+                                    <th class="pb-2 text-blue-400">Tarih</th>
+                                    <th class="pb-2 text-white">Sonuç</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 text-red-400">❌ Pasif</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td class="text-red-400 font-bold">ÇALMAZ</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 text-green-400">✓</td>
+                                    <td class="text-red-400">❌ Kapalı</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td class="text-red-400 font-bold">ÇALMAZ</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 text-green-400">✓</td>
+                                    <td class="text-green-400">✓</td>
+                                    <td class="text-red-400">❌ Devre dışı</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td class="text-red-400 font-bold">ÇALMAZ</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 text-green-400">✓</td>
+                                    <td class="text-green-400">✓</td>
+                                    <td class="text-green-400">✓</td>
+                                    <td class="text-yellow-400">⏸ Durdu</td>
+                                    <td>-</td>
+                                    <td class="text-yellow-400 font-bold">ÇALMAZ</td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 text-green-400">✓</td>
+                                    <td class="text-green-400">✓</td>
+                                    <td class="text-green-400">✓</td>
+                                    <td class="text-green-400">✓</td>
+                                    <td class="text-red-400">Geçmemiş/Geçmiş</td>
+                                    <td class="text-red-400 font-bold">ÇALMAZ</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 text-green-400">✓</td>
+                                    <td class="text-green-400">✓</td>
+                                    <td class="text-green-400">✓</td>
+                                    <td class="text-green-400">✓</td>
+                                    <td class="text-green-400">Tarih OK</td>
+                                    <td class="text-green-400 font-bold">ÇALAR ✓</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== ADMIN PANEL ==================== -->
+        <section id="admin">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-user-shield"></i>
+                </span>
+                Admin Panel
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Liste -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <h4 class="font-semibold text-white mb-4">Spot Listesi</h4>
+
+                    <div class="bg-slate-900 rounded-xl overflow-hidden">
+                        <div class="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700">
+                            <div>
+                                <h5 class="text-white font-medium">Corporate Spots</h5>
+                            </div>
+                            <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm">
+                                <i class="fas fa-plus mr-2"></i>Yeni Spot
+                            </button>
+                        </div>
+
+                        <div class="p-4">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="text-left text-gray-500 border-b border-slate-700">
+                                        <th class="pb-2 w-8"></th>
+                                        <th class="pb-2 w-12">Sıra</th>
+                                        <th class="pb-2">Spot</th>
+                                        <th class="pb-2 w-28">Tarih Aralığı</th>
+                                        <th class="pb-2 w-20">Süre</th>
+                                        <th class="pb-2 w-20">Durum</th>
+                                        <th class="pb-2 w-24 text-right">İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-slate-800">
+                                        <td class="py-3"><i class="fas fa-grip-vertical text-gray-600 cursor-move"></i></td>
+                                        <td><span class="w-6 h-6 bg-indigo-600 rounded-full inline-flex items-center justify-center text-xs">1</span></td>
+                                        <td>
+                                            <p class="text-white font-medium">Yılbaşı Kampanyası</p>
+                                            <p class="text-gray-500 text-xs">1.2 MB</p>
+                                        </td>
+                                        <td class="text-xs">
+                                            <p class="text-green-400">25 Ara - 05 Oca</p>
+                                        </td>
+                                        <td>0:45</td>
+                                        <td>
+                                            <span class="px-2 py-1 bg-green-600/20 text-green-400 text-xs rounded">Aktif</span>
+                                        </td>
+                                        <td class="text-right">
+                                            <button class="p-1.5 text-gray-400 hover:text-white"><i class="fas fa-play"></i></button>
+                                            <button class="p-1.5 text-gray-400 hover:text-white"><i class="fas fa-pen"></i></button>
+                                            <button class="p-1.5 text-gray-400 hover:text-red-400"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b border-slate-800">
+                                        <td class="py-3"><i class="fas fa-grip-vertical text-gray-600 cursor-move"></i></td>
+                                        <td><span class="w-6 h-6 bg-indigo-600 rounded-full inline-flex items-center justify-center text-xs">2</span></td>
+                                        <td>
+                                            <p class="text-white font-medium">Genel Duyuru</p>
+                                            <p class="text-gray-500 text-xs">0.8 MB</p>
+                                        </td>
+                                        <td class="text-xs">
+                                            <p class="text-gray-400">Süresiz</p>
+                                        </td>
+                                        <td>0:30</td>
+                                        <td>
+                                            <span class="px-2 py-1 bg-green-600/20 text-green-400 text-xs rounded">Aktif</span>
+                                        </td>
+                                        <td class="text-right">
+                                            <button class="p-1.5 text-gray-400 hover:text-white"><i class="fas fa-play"></i></button>
+                                            <button class="p-1.5 text-gray-400 hover:text-white"><i class="fas fa-pen"></i></button>
+                                            <button class="p-1.5 text-gray-400 hover:text-red-400"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <h4 class="font-semibold text-white mb-4">Spot Yükleme / Düzenleme Formu</h4>
+
+                    <div class="bg-slate-900 rounded-xl p-5">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-gray-400 text-sm mb-2">Spot Başlığı *</label>
+                                    <input type="text" placeholder="Örn: Yılbaşı Kampanyası"
+                                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white">
+                                </div>
+
+                                <div>
+                                    <label class="block text-gray-400 text-sm mb-2">Ses Dosyası *</label>
+                                    <div class="border-2 border-dashed border-slate-700 rounded-lg p-6 text-center cursor-pointer hover:border-indigo-500">
+                                        <i class="fas fa-cloud-arrow-up text-3xl text-gray-500 mb-2"></i>
+                                        <p class="text-gray-400 text-sm">Dosyayı sürükle veya tıkla</p>
+                                        <p class="text-gray-600 text-xs mt-1">Max 30 MB</p>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-gray-400 text-sm mb-2">Başlangıç Tarihi</label>
+                                        <input type="datetime-local"
+                                               class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm">
+                                        <p class="text-gray-600 text-xs mt-1">Boş = Her zaman</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-400 text-sm mb-2">Bitiş Tarihi</label>
+                                        <input type="datetime-local"
+                                               class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm">
+                                        <p class="text-gray-600 text-xs mt-1">Boş = Süresiz</p>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-gray-400 text-sm mb-2">Durum</label>
+                                    <div class="flex gap-4">
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="status" checked class="text-indigo-600">
+                                            <span class="text-gray-300">Aktif</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="status" class="text-indigo-600">
+                                            <span class="text-gray-300">Pasif</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="flex gap-3 pt-2">
+                                    <button class="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                                        <i class="fas fa-save mr-2"></i>Kaydet
+                                    </button>
+                                    <button class="px-5 py-2 bg-slate-700 text-gray-300 rounded-lg hover:bg-slate-600">
+                                        İptal
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-400 text-sm mb-2">Önizleme</label>
+                                <div class="bg-slate-800 rounded-xl p-4">
+                                    <div class="flex items-center gap-4 mb-4">
+                                        <div class="w-14 h-14 bg-indigo-900 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-bullhorn text-xl text-indigo-400"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-white font-medium">Yılbaşı Kampanyası</p>
+                                            <p class="text-gray-500 text-sm">kampanya.mp3</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-slate-900 rounded-lg p-3">
+                                        <div class="flex items-center gap-3">
+                                            <button class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center">
+                                                <i class="fas fa-play text-white"></i>
+                                            </button>
+                                            <div class="flex-1">
+                                                <div class="bg-slate-700 rounded-full h-2">
+                                                    <div class="bg-indigo-500 h-2 rounded-full" style="width: 0%"></div>
+                                                </div>
+                                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                                    <span>0:00</span>
+                                                    <span>0:45</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+                                        <div class="bg-slate-900 rounded p-2">
+                                            <p class="text-gray-500">Süre</p>
+                                            <p class="text-white">0:45</p>
+                                        </div>
+                                        <div class="bg-slate-900 rounded p-2">
+                                            <p class="text-gray-500">Boyut</p>
+                                            <p class="text-white">1.2 MB</p>
+                                        </div>
+                                        <div class="bg-slate-900 rounded p-2">
+                                            <p class="text-gray-500">Format</p>
+                                            <p class="text-white">MP3</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== KURUMSAL PANEL ==================== -->
+        <section id="kurumsal">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 bg-yellow-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-building"></i>
+                </span>
+                Kurumsal Panel (Ana Şube)
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Spot Yönetimi -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <h4 class="font-semibold text-white mb-4">Spot Yönetimi (Ana Şube)</h4>
+
+                    <div class="bg-slate-900 rounded-xl overflow-hidden">
+                        <div class="bg-gradient-to-r from-yellow-900/30 to-orange-900/30 px-5 py-4 border-b border-yellow-800/30">
+                            <h5 class="text-white font-medium">Kurumsal Spot Ayarları</h5>
+                            <p class="text-yellow-200/60 text-sm">Spotları kurum için özelleştirin</p>
+                        </div>
+
+                        <div class="p-5">
+                            <!-- Genel Ayarlar -->
+                            <div class="grid md:grid-cols-2 gap-4 mb-6">
+                                <div class="bg-slate-800 rounded-lg p-4 flex items-center justify-between">
+                                    <div>
+                                        <h6 class="text-white font-medium">Spot Sistemi</h6>
+                                        <p class="text-gray-500 text-sm">Tüm şubelerde</p>
+                                    </div>
+                                    <button class="w-14 h-7 bg-green-600 rounded-full relative">
+                                        <span class="absolute right-1 top-1 w-5 h-5 bg-white rounded-full"></span>
+                                    </button>
+                                </div>
+                                <div class="bg-slate-800 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-white font-medium">Kaç şarkıda bir?</span>
+                                        <span class="text-xl font-bold text-yellow-400">10</span>
+                                    </div>
+                                    <input type="range" min="5" max="20" value="10" class="w-full">
+                                </div>
+                            </div>
+
+                            <!-- Spot Listesi -->
+                            <h6 class="text-gray-400 text-sm mb-3">Spotları Yönet</h6>
+                            <div class="space-y-3">
+                                <!-- Spot 1 -->
+                                <div class="bg-slate-800 rounded-lg p-4">
+                                    <div class="flex items-center gap-4">
+                                        <i class="fas fa-grip-vertical text-gray-600 cursor-move"></i>
+                                        <span class="w-6 h-6 bg-yellow-600 rounded-full flex items-center justify-center text-xs">1</span>
+                                        <div class="flex-1">
+                                            <p class="text-white font-medium">Yılbaşı Kampanyası</p>
+                                            <p class="text-gray-500 text-xs">Admin tarihi: 25 Ara - 05 Oca</p>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <div class="text-right">
+                                                <p class="text-green-400 text-xs">Özel tarih</p>
+                                                <p class="text-gray-400 text-xs">28 Ara - 02 Oca</p>
+                                            </div>
+                                            <button class="px-3 py-1 bg-green-600/20 text-green-400 text-xs rounded">Aktif</button>
+                                            <button class="p-1.5 text-gray-400 hover:text-white"><i class="fas fa-pen"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Spot 2 -->
+                                <div class="bg-slate-800 rounded-lg p-4">
+                                    <div class="flex items-center gap-4">
+                                        <i class="fas fa-grip-vertical text-gray-600 cursor-move"></i>
+                                        <span class="w-6 h-6 bg-yellow-600 rounded-full flex items-center justify-center text-xs">2</span>
+                                        <div class="flex-1">
+                                            <p class="text-white font-medium">Genel Duyuru</p>
+                                            <p class="text-gray-500 text-xs">Admin tarihi: Süresiz</p>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <div class="text-right">
+                                                <p class="text-gray-500 text-xs">Admin tarihi</p>
+                                            </div>
+                                            <button class="px-3 py-1 bg-green-600/20 text-green-400 text-xs rounded">Aktif</button>
+                                            <button class="p-1.5 text-gray-400 hover:text-white"><i class="fas fa-pen"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Spot 3 (Devre dışı) -->
+                                <div class="bg-slate-800 rounded-lg p-4 opacity-50">
+                                    <div class="flex items-center gap-4">
+                                        <i class="fas fa-grip-vertical text-gray-600 cursor-move"></i>
+                                        <span class="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center text-xs">3</span>
+                                        <div class="flex-1">
+                                            <p class="text-gray-400 font-medium">Happy Hour</p>
+                                            <p class="text-gray-600 text-xs">Admin tarihi: Süresiz</p>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <button class="px-3 py-1 bg-gray-600/20 text-gray-400 text-xs rounded">Devre Dışı</button>
+                                            <button class="p-1.5 text-gray-500 hover:text-white"><i class="fas fa-pen"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p class="text-gray-600 text-xs mt-4">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Sıralamayı değiştirmek için sürükle-bırak yapın. Tarih/durum düzenlemek için kalem ikonuna tıklayın.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spot Düzenleme Modal -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <h4 class="font-semibold text-white mb-4">Spot Düzenleme (Kurum Override)</h4>
+
+                    <div class="bg-slate-900 rounded-xl p-5">
+                        <div class="flex items-center gap-4 mb-6 pb-4 border-b border-slate-700">
+                            <div class="w-14 h-14 bg-indigo-900 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-bullhorn text-xl text-indigo-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium text-lg">Yılbaşı Kampanyası</p>
+                                <p class="text-gray-500 text-sm">0:45 • Admin tarihi: 25 Ara - 05 Oca</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-gray-400 text-sm mb-2">Bu Kurumda Durum</label>
+                                <div class="flex gap-4">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="corp_status" checked class="text-yellow-600">
+                                        <span class="text-gray-300">Aktif</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="corp_status" class="text-yellow-600">
+                                        <span class="text-gray-300">Devre Dışı</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-gray-400 text-sm mb-2">
+                                        Başlangıç Tarihi
+                                        <span class="text-gray-600">(Boş = Admin tarihi)</span>
+                                    </label>
+                                    <input type="datetime-local" value="2025-12-28T00:00"
+                                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-400 text-sm mb-2">
+                                        Bitiş Tarihi
+                                        <span class="text-gray-600">(Boş = Admin tarihi)</span>
+                                    </label>
+                                    <input type="datetime-local" value="2026-01-02T23:59"
+                                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm">
+                                </div>
+                            </div>
+
+                            <div class="bg-yellow-900/20 border border-yellow-700/50 rounded-lg p-3">
+                                <p class="text-yellow-300 text-sm">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Bu ayarlar sadece sizin kurumunuzu etkiler. Diğer kurumlar Admin tarihlerini kullanmaya devam eder.
+                                </p>
+                            </div>
+
+                            <div class="flex gap-3 pt-2">
+                                <button class="px-5 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700">
+                                    <i class="fas fa-save mr-2"></i>Kaydet
+                                </button>
+                                <button class="px-5 py-2 bg-slate-700 text-gray-300 rounded-lg hover:bg-slate-600">
+                                    İptal
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Şube Widget -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <h4 class="font-semibold text-white mb-4">
+                        <i class="fas fa-code-branch mr-2 text-green-400"></i>
+                        Şube Sidebar Widget
+                    </h4>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-gray-400 text-sm mb-2">Aktif</p>
+                            <div class="bg-gradient-to-r from-indigo-900/50 to-purple-900/50 rounded-xl p-4 border border-indigo-700/50">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-bullhorn"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-white font-medium text-sm">Spotlar</p>
+                                            <p class="text-indigo-300 text-xs">3 şarkı sonra</p>
+                                        </div>
+                                    </div>
+                                    <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">Açık</span>
+                                </div>
+                                <button class="w-full py-2 bg-red-600/80 hover:bg-red-600 text-white rounded-lg text-sm">
+                                    <i class="fas fa-pause mr-2"></i>Durdur
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-gray-400 text-sm mb-2">Durdurulmuş</p>
+                            <div class="bg-slate-800 rounded-xl p-4 border border-slate-700">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-slate-700 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-bullhorn text-gray-500"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-white font-medium text-sm">Spotlar</p>
+                                            <p class="text-gray-500 text-xs">Durduruldu</p>
+                                        </div>
+                                    </div>
+                                    <span class="px-2 py-1 bg-gray-600/20 text-gray-400 text-xs rounded-full">Durdu</span>
+                                </div>
+                                <button class="w-full py-2 bg-green-600/80 hover:bg-green-600 text-white rounded-lg text-sm">
+                                    <i class="fas fa-play mr-2"></i>Başlat
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PLAYER ==================== -->
+        <section id="player">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 bg-pink-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-play"></i>
+                </span>
+                Player
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Spot Çalarken -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <h4 class="font-semibold text-white mb-4">Spot Çalarken Player Görünümü</h4>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-gray-400 text-sm mb-2">Normal Şarkı</p>
+                            <div class="bg-slate-900 rounded-xl p-4">
+                                <div class="flex items-center gap-4">
+                                    <img src="https://via.placeholder.com/64" class="w-16 h-16 rounded-lg">
+                                    <div class="flex-1">
+                                        <p class="text-white font-medium">Hayal Kahvesi</p>
+                                        <p class="text-gray-400 text-sm">Sezen Aksu</p>
+                                        <div class="mt-2 bg-slate-700 rounded-full h-1">
+                                            <div class="bg-white h-1 rounded-full" style="width: 35%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-pink-400 text-sm mb-2">Spot Çalarken</p>
+                            <div class="bg-gradient-to-r from-indigo-900 to-purple-900 rounded-xl p-4 border-2 border-indigo-500">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-16 h-16 bg-indigo-600 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-bullhorn text-2xl animate-pulse"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <span class="px-2 py-0.5 bg-yellow-500 text-black text-xs font-bold rounded">SPOT</span>
+                                            <button class="px-2 py-0.5 bg-slate-700 text-gray-300 text-xs rounded hover:bg-slate-600">
+                                                <i class="fas fa-forward mr-1"></i>Atla
+                                            </button>
+                                        </div>
+                                        <p class="text-white font-medium">Yılbaşı Kampanyası</p>
+                                        <div class="mt-2 flex items-center gap-2">
+                                            <div class="flex-1 bg-indigo-800 rounded-full h-1">
+                                                <div class="bg-yellow-400 h-1 rounded-full" style="width: 60%"></div>
+                                            </div>
+                                            <span class="text-indigo-300 text-xs">0:27</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 bg-green-900/20 border border-green-700/50 rounded-lg p-3">
+                        <p class="text-green-300 text-sm">
+                            <i class="fas fa-forward mr-2"></i>
+                            <strong>Atla butonu:</strong> Kullanıcı isterse spotu atlayabilir. Atlama "was_skipped=true" olarak loglanır.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== İSTATİSTİK ==================== -->
+        <section id="istatistik">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 bg-cyan-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-chart-bar"></i>
+                </span>
+                İstatistik Sayfaları
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Admin Stats -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <h4 class="font-semibold text-white mb-4">
+                        <i class="fas fa-user-shield mr-2 text-red-400"></i>Admin İstatistikleri
+                    </h4>
+                    <div class="bg-slate-900 rounded-lg p-4 space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-slate-800 rounded p-3 text-center">
+                                <p class="text-xl font-bold text-white">2,456</p>
+                                <p class="text-gray-500 text-xs">Toplam Çalınma</p>
+                            </div>
+                            <div class="bg-slate-800 rounded p-3 text-center">
+                                <p class="text-xl font-bold text-red-400">18%</p>
+                                <p class="text-gray-500 text-xs">Atlama Oranı</p>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs mb-2">Kurum Bazlı</p>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-300">Başkan Holding</span>
+                                    <span class="text-white">524</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-300">ABC Restoranlar</span>
+                                    <span class="text-white">412</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kurumsal Stats -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5">
+                    <h4 class="font-semibold text-white mb-4">
+                        <i class="fas fa-building mr-2 text-yellow-400"></i>Kurumsal İstatistikler
+                    </h4>
+                    <div class="bg-slate-900 rounded-lg p-4 space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-slate-800 rounded p-3 text-center">
+                                <p class="text-xl font-bold text-white">524</p>
+                                <p class="text-gray-500 text-xs">Toplam</p>
+                            </div>
+                            <div class="bg-slate-800 rounded p-3 text-center">
+                                <p class="text-xl font-bold text-green-400">187</p>
+                                <p class="text-gray-500 text-xs">Bu Hafta</p>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs mb-2">Şube Bazlı</p>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-300">Merkez</span>
+                                    <span class="text-white">215</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-300">Ankara</span>
+                                    <span class="text-white">156</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== API ==================== -->
+        <section id="api">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-plug"></i>
+                </span>
+                API Endpoints
+            </h2>
+
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 font-mono text-sm space-y-4">
+                <div>
+                    <p class="text-red-400 font-bold mb-2 font-sans">Admin</p>
+                    <div class="bg-slate-900 rounded-lg p-3 space-y-1">
+                        <div><span class="text-green-400">GET</span> /api/admin/corporate-spots</div>
+                        <div><span class="text-blue-400">POST</span> /api/admin/corporate-spots</div>
+                        <div><span class="text-yellow-400">PUT</span> /api/admin/corporate-spots/{id}</div>
+                        <div><span class="text-red-400">DELETE</span> /api/admin/corporate-spots/{id}</div>
+                        <div><span class="text-purple-400">POST</span> /api/admin/corporate-spots/reorder</div>
+                        <div><span class="text-green-400">GET</span> /api/admin/corporate-spots/stats</div>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-yellow-400 font-bold mb-2 font-sans">Corporate</p>
+                    <div class="bg-slate-900 rounded-lg p-3 space-y-1">
+                        <div><span class="text-green-400">GET</span> /api/corporate/spot-settings</div>
+                        <div><span class="text-yellow-400">PUT</span> /api/corporate/spot-settings</div>
+                        <div><span class="text-green-400">GET</span> /api/corporate/spots <span class="text-gray-500">← Kurum spotları + schedule</span></div>
+                        <div><span class="text-yellow-400">PUT</span> /api/corporate/spots/{id}/schedule <span class="text-gray-500">← Override</span></div>
+                        <div><span class="text-purple-400">POST</span> /api/corporate/spots/reorder</div>
+                        <div><span class="text-green-400">GET</span> /api/corporate/spot-stats</div>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-purple-400 font-bold mb-2 font-sans">Player</p>
+                    <div class="bg-slate-900 rounded-lg p-3 space-y-1">
+                        <div><span class="text-green-400">GET</span> /api/spot/init</div>
+                        <div><span class="text-green-400">GET</span> /api/spot/next</div>
+                        <div><span class="text-blue-400">POST</span> /api/spot/played</div>
+                        <div><span class="text-blue-400">POST</span> /api/spot/pause</div>
+                        <div><span class="text-blue-400">POST</span> /api/spot/resume</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== GELİŞTİRME ADIMLARI ==================== -->
+        <section>
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-list-check"></i>
+                </span>
+                Geliştirme Sırası
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-blue-500">
+                    <span class="w-7 h-7 bg-blue-600 rounded-full inline-flex items-center justify-center font-bold text-sm mr-2">1</span>
+                    <span class="text-white font-medium">Veritabanı</span>
+                    <p class="text-gray-400 text-sm mt-1">4 migration + 2 model + ilişkiler</p>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-red-500">
+                    <span class="w-7 h-7 bg-red-600 rounded-full inline-flex items-center justify-center font-bold text-sm mr-2">2</span>
+                    <span class="text-white font-medium">Admin Panel</span>
+                    <p class="text-gray-400 text-sm mt-1">CRUD + tarih + sıralama + istatistik</p>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-yellow-500">
+                    <span class="w-7 h-7 bg-yellow-600 rounded-full inline-flex items-center justify-center font-bold text-sm mr-2">3</span>
+                    <span class="text-white font-medium">Kurumsal Panel</span>
+                    <p class="text-gray-400 text-sm mt-1">Ayarlar + override + sıralama + istatistik</p>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-green-500">
+                    <span class="w-7 h-7 bg-green-600 rounded-full inline-flex items-center justify-center font-bold text-sm mr-2">4</span>
+                    <span class="text-white font-medium">Şube Widget</span>
+                    <p class="text-gray-400 text-sm mt-1">Sidebar + durdur/devam</p>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-purple-500">
+                    <span class="w-7 h-7 bg-purple-600 rounded-full inline-flex items-center justify-center font-bold text-sm mr-2">5</span>
+                    <span class="text-white font-medium">Player</span>
+                    <p class="text-gray-400 text-sm mt-1">JS logic + UI + skip button</p>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-cyan-500">
+                    <span class="w-7 h-7 bg-cyan-600 rounded-full inline-flex items-center justify-center font-bold text-sm mr-2">6</span>
+                    <span class="text-white font-medium">Test & Deploy</span>
+                    <p class="text-gray-400 text-sm mt-1">Migration + test + build</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800/30 border-t border-slate-700 mt-12 py-6">
+        <div class="max-w-7xl mx-auto px-6 text-center text-gray-500 text-sm">
+            <p>
+                <i class="fas fa-robot mr-2"></i>
+                Claude AI • 31 Aralık 2025 • Final v5
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>

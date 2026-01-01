@@ -17,7 +17,7 @@ document.addEventListener('alpine:init', () => {
                 {
                     type: 'Playlist',
                     title: @json($playlist->getTranslation('title', app()->getLocale())),
-                    cover: @json($playlist->media_id && $playlist->coverMedia ? thumb($playlist->coverMedia, 100, 100, ['scale' => 1]) : null),
+                    cover: @json($playlist->getCoverUrl(100, 100)),
                     id: {{ $playlist->playlist_id }}
                 }
             );
@@ -57,8 +57,8 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
         <div class="flex flex-col sm:flex-row items-center sm:items-end gap-6 sm:gap-8 mb-8">
             {{-- Cover with Shadow --}}
             <div class="relative flex-shrink-0 group">
-                @if($playlist->media_id && $playlist->coverMedia)
-                    <img src="{{ thumb($playlist->coverMedia, 300, 300, ['scale' => 1]) }}"
+                @if($playlist->getCoverUrl())
+                    <img src="{{ $playlist->getCoverUrl(300, 300) }}"
                          alt="{{ $playlist->getTranslation('title', app()->getLocale()) }}"
                          class="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 object-cover rounded-xl shadow-2xl shadow-black/50">
                 @else

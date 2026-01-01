@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V3 - Güvenlik Odaklı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+    </style>
+</head>
+<body class="bg-slate-950 min-h-screen py-10">
+    <div class="max-w-2xl mx-auto px-4">
+
+        <!-- Tasarım Etiketi -->
+        <div class="text-center mb-4">
+            <span class="px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full font-mono">V3 - Güvenlik Odaklı</span>
+        </div>
+
+        <!-- Güvenlik Header -->
+        <div class="bg-green-900/30 border border-green-700 rounded-t-xl p-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-shield-alt text-white"></i>
+                    </div>
+                    <div>
+                        <div class="font-mono text-green-400 font-semibold">GÜVENLİ DOĞRULAMA</div>
+                        <div class="text-xs text-slate-400">QR kod ile şifreli belge doğrulaması</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 px-3 py-1.5 bg-green-800/50 rounded-full">
+                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                    <span class="font-mono text-xs text-green-400">ONAYLANMIŞ</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ana Kart -->
+        <div class="bg-slate-900 border-x border-b border-slate-700 rounded-b-xl overflow-hidden">
+
+            <!-- Başlık -->
+            <div class="px-8 py-8 text-center border-b border-slate-800">
+                <div class="font-mono text-xs text-amber-500 tracking-[0.3em] mb-2">MUZİBU PREMİUM</div>
+                <h1 class="text-2xl font-bold text-white mb-1">Kurumsal Üyelik Sertifikası</h1>
+                <p class="text-slate-500 text-sm">Resmi üyelik doğrulama belgesi</p>
+            </div>
+
+            <!-- Firma Kartı -->
+            <div class="m-6 bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <div class="font-mono text-xs text-slate-500 mb-1">BELGE SAHİBİ</div>
+                        <h2 class="text-xl font-bold text-white">iXtif İç ve Dış Tic. A.Ş.</h2>
+                    </div>
+                    <div class="px-3 py-1 bg-green-900/50 border border-green-700 rounded">
+                        <span class="font-mono text-xs text-green-400">AKTİF</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-700">
+                    <div>
+                        <div class="font-mono text-xs text-slate-500 mb-1">SERTİFİKA NO</div>
+                        <div class="font-mono text-amber-400 font-semibold">MZB-2025-51A5</div>
+                    </div>
+                    <div>
+                        <div class="font-mono text-xs text-slate-500 mb-1">KAYIT TARİHİ</div>
+                        <div class="font-mono text-white">23.12.2025</div>
+                    </div>
+                    <div>
+                        <div class="font-mono text-xs text-slate-500 mb-1">VERGİ DAİRESİ</div>
+                        <div class="font-mono text-white">Kartal</div>
+                    </div>
+                    <div>
+                        <div class="font-mono text-xs text-slate-500 mb-1">VERGİ NO</div>
+                        <div class="font-mono text-white">4831552951</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adres -->
+            <div class="mx-6 mb-6">
+                <div class="font-mono text-xs text-slate-500 mb-2">KAYITLI ADRES</div>
+                <div class="p-4 bg-slate-800/30 border border-slate-700 rounded-lg font-mono text-sm text-slate-300">
+                    Karlıktepe Mah. Çamlık Sk. Manzara Adalar B Blok No: 1 B İç Kapı No: 89 Kartal/İstanbul
+                </div>
+            </div>
+
+            <!-- Güvenlik Bilgisi -->
+            <div class="mx-6 mb-6 p-4 bg-blue-900/20 border border-blue-800 rounded-lg">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-fingerprint text-blue-400 text-2xl"></i>
+                    <div class="flex-1">
+                        <div class="font-mono text-blue-400 text-sm font-semibold">Benzersiz Dijital İmza</div>
+                        <div class="text-xs text-slate-500">Bu belge şifrelenmiş ve değiştirilemez</div>
+                    </div>
+                    <div class="font-mono text-xs text-slate-500">
+                        <i class="fas fa-lock mr-1"></i>256-bit
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="px-6 py-4 bg-slate-800/30 border-t border-slate-700 flex items-center justify-between font-mono text-xs text-slate-500">
+                <span><i class="fas fa-eye mr-1"></i> 8 görüntülenme</span>
+                <span><i class="fas fa-clock mr-1"></i> 31.12.2025 06:30</span>
+            </div>
+
+        </div>
+
+        <!-- Üyelik Geçmişi -->
+        <div class="mt-4 bg-slate-900 border border-slate-700 rounded-xl overflow-hidden">
+            <div class="px-6 py-3 border-b border-slate-700 bg-slate-800/50">
+                <span class="font-mono text-xs text-slate-400 tracking-widest">ÜYELİK GEÇMİŞİ</span>
+            </div>
+            <div class="p-4">
+                <div class="flex items-center justify-between p-4 bg-green-900/20 border border-green-800 rounded-lg">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-green-800/50 rounded-full flex items-center justify-center">
+                            <i class="fas fa-check text-green-400"></i>
+                        </div>
+                        <div>
+                            <div class="font-mono text-xs text-slate-500">KESİNTİSİZ</div>
+                            <div class="font-mono text-white">23.12.2025 — Devam Ediyor</div>
+                        </div>
+                    </div>
+                    <span class="font-mono text-green-400 text-sm">AKTİF</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Yasal Bilgilendirme -->
+        <div class="mt-4 bg-slate-900/50 border border-slate-800 rounded-xl p-6">
+            <div class="font-mono text-xs text-slate-500 tracking-widest mb-4">ŞARTLAR VE KOŞULLAR</div>
+            <div class="space-y-2 text-sm text-slate-400">
+                <div class="flex gap-3">
+                    <span class="font-mono text-slate-600 w-6">1.</span>
+                    <p>İşbu sertifika münhasıran <strong class="text-slate-300">iXtif İç ve Dış Tic. A.Ş.</strong> adına düzenlenmiş olup devredilemez.</p>
+                </div>
+                <div class="flex gap-3">
+                    <span class="font-mono text-slate-600 w-6">2.</span>
+                    <p>Sertifika yalnızca kayıtlı adresteki işletme için geçerlidir.</p>
+                </div>
+                <div class="flex gap-3">
+                    <span class="font-mono text-slate-600 w-6">3.</span>
+                    <p>Üyelik sona erdiğinde sertifika geçerliliğini kaybeder.</p>
+                </div>
+                <div class="flex gap-3">
+                    <span class="font-mono text-slate-600 w-6">4.</span>
+                    <p>Muzibu A.Ş. sertifikayı iptal etme hakkını saklı tutar.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alt Bilgi -->
+        <div class="mt-6 text-center font-mono text-xs text-slate-600 space-y-1">
+            <p>Muzibu A.Ş. — Elektronik Belge Sistemi</p>
+            <p>destek@muzibu.com.tr</p>
+        </div>
+
+    </div>
+</body>
+</html>

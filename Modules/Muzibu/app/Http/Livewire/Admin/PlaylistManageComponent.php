@@ -441,8 +441,8 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
             $this->playlistId = $playlist->playlist_id;
             log_activity($playlist, 'eklendi');
 
-            // 🎨 MUZIBU: Media yoksa otomatik görsel üret (Universal Helper - Tercihen)
-            if (!$playlist->media_id) {
+            // 🎨 MUZIBU: Hero yoksa otomatik görsel üret (Universal Helper - Tercihen)
+            if (!$playlist->hasMedia('hero')) {
                 \muzibu_generate_ai_cover($playlist, $playlist->title, 'playlist');
             }
 

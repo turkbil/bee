@@ -239,8 +239,8 @@
                     <i class="fas fa-list-music text-purple-400"></i>
                     {{ __('muzibu::front.dashboard.my_playlists') }}
                 </h2>
-                <a href="/muzibu/my-playlists" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/70 hover:text-white transition-all" title="{{ __('muzibu::front.dashboard.view_all') }}" data-spa>
-                    <i class="fas fa-chevron-right text-sm"></i>
+                <a href="/muzibu/my-playlists" class="text-sm text-muzibu-coral hover:text-white transition" data-spa>
+                    {{ __('muzibu::front.dashboard.view_all') }} <i class="fas fa-arrow-right ml-1"></i>
                 </a>
             </div>
 
@@ -397,10 +397,10 @@
                 <h3 class="text-white font-semibold">Aboneliklerim</h3>
                 <p class="text-gray-400 text-sm">Geçmiş & Ödemeler</p>
             </a>
-            <a href="/genres" class="block p-5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-green-500/50 rounded-xl transition group" data-spa>
-                <i class="fas fa-music text-2xl text-green-400 mb-3"></i>
-                <h3 class="text-white font-semibold">{{ __('muzibu::front.dashboard.genres') }}</h3>
-                <p class="text-gray-400 text-sm">{{ __('muzibu::front.dashboard.music_genres') }}</p>
+            <a href="/my-certificate" class="block p-5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-500/50 rounded-xl transition group" data-spa>
+                <i class="fas fa-certificate text-2xl text-amber-400 mb-3"></i>
+                <h3 class="text-white font-semibold">{{ __('muzibu::front.certificate.title') }}</h3>
+                <p class="text-gray-400 text-sm">{{ __('muzibu::front.sidebar.my_certificate') }}</p>
             </a>
         </div>
 

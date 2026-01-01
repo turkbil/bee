@@ -80,21 +80,36 @@
         </a>
         @endhasmoduleaccess
 
-        {{-- Suistimal Raporları --}}
-        @hasmoduleaccess('muzibu', 'view')
-        <a href="{{ route('admin.muzibu.abuse.index') }}" class="btn btn-ghost-primary">
-            <i class="fas fa-shield-alt me-1"></i>
-            Suistimal
-        </a>
-        @endhasmoduleaccess
-
-        {{-- Toplu HLS Dönüştür --}}
-        @hasmoduleaccess('muzibu', 'create')
-        <a href="{{ route('admin.muzibu.song.bulk-convert') }}" class="btn btn-ghost-primary">
-            <i class="fas fa-cog me-1"></i>
-            HLS Dönüştür
-        </a>
-        @endhasmoduleaccess
+        {{-- Yardımcı Araçlar --}}
+        <div class="dropdown">
+            <button type="button" class="btn btn-ghost-primary dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="fas fa-tools me-1"></i>
+                Araçlar
+            </button>
+            <div class="dropdown-menu dropdown-menu-arrow">
+                @hasmoduleaccess('muzibu', 'view')
+                <a class="dropdown-item" href="{{ route('admin.muzibu.certificate.index') }}">
+                    <i class="fas fa-certificate me-2 text-warning"></i>Sertifikalar
+                </a>
+                @endhasmoduleaccess
+                @hasmoduleaccess('muzibu', 'view')
+                <a class="dropdown-item" href="{{ route('admin.muzibu.abuse.index') }}">
+                    <i class="fas fa-shield-alt me-2 text-danger"></i>Suistimal
+                </a>
+                @endhasmoduleaccess
+                @hasmoduleaccess('muzibu', 'view')
+                <a class="dropdown-item" href="{{ route('admin.muzibu.spot.index') }}">
+                    <i class="fas fa-bullhorn me-2 text-purple"></i>Spotlar
+                </a>
+                @endhasmoduleaccess
+                @hasmoduleaccess('muzibu', 'create')
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{ route('admin.muzibu.song.bulk-convert') }}">
+                    <i class="fas fa-cog me-2 text-info"></i>HLS Dönüştür
+                </a>
+                @endhasmoduleaccess
+            </div>
+        </div>
 
         {{-- Hızlı Ekle --}}
         @hasmoduleaccess('muzibu', 'create')
@@ -190,8 +205,26 @@
                 <a class="dropdown-item" href="{{ route('admin.muzibu.corporate.index') }}">
                     <i class="fas fa-building me-2 text-blue"></i>Kurumsal Hesaplar
                 </a>
+                @endhasmoduleaccess
+
+                <div class="dropdown-divider"></div>
+
+                {{-- Araçlar --}}
+                <h6 class="dropdown-header">
+                    <i class="fas fa-tools me-1"></i> Araçlar
+                </h6>
+                @hasmoduleaccess('muzibu', 'view')
+                <a class="dropdown-item" href="{{ route('admin.muzibu.certificate.index') }}">
+                    <i class="fas fa-certificate me-2 text-warning"></i>Sertifikalar
+                </a>
                 <a class="dropdown-item" href="{{ route('admin.muzibu.abuse.index') }}">
                     <i class="fas fa-shield-alt me-2 text-danger"></i>Suistimal Raporları
+                </a>
+                <a class="dropdown-item" href="{{ route('admin.muzibu.spot.index') }}">
+                    <i class="fas fa-bullhorn me-2 text-purple"></i>Spotlar
+                </a>
+                <a class="dropdown-item" href="{{ route('admin.muzibu.song.bulk-convert') }}">
+                    <i class="fas fa-cog me-2 text-info"></i>HLS Dönüştür
                 </a>
                 @endhasmoduleaccess
 

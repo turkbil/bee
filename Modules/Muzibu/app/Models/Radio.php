@@ -82,6 +82,15 @@ class Radio extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
+     * Spatie Media Collections - hero tek dosya (yeni yüklenince eski silinir)
+     */
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('hero')
+            ->singleFile();
+    }
+
+    /**
      * Sektörler ilişkisi (many-to-many)
      */
     public function sectors()
@@ -152,13 +161,12 @@ class Radio extends BaseModel implements TranslatableEntity, HasMedia
 
     /**
      * Radio logo URL'i (Thumbmaker helper ile)
+     * Sadece Spatie hero collection kullanır
      */
     public function getLogoUrl(?int $width = 400, ?int $height = 400): ?string
     {
-        if (!$this->media_id) {
-            return null;
-        }
-        return thumb($this->logoMedia, $width, $height);
+        $heroMedia = $this->getFirstMedia('hero');
+        return $heroMedia ? thumb($heroMedia, $width, $height, ['scale' => 1]) : null;
     }
 
     /**

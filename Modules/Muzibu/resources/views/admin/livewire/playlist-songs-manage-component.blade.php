@@ -2,6 +2,7 @@
     View::share('pretitle', 'Playlist Şarkı Yönetimi');
 @endphp
 
+<!-- TEST-2026-01-01-CACHE-CHECK -->
 <div class="playlist-songs-manage-wrapper">
     <!-- Header: Playlist Title + Back Button -->
     <div class="page-header d-print-none mb-4">
@@ -69,7 +70,7 @@
                                         <div class="row align-items-center">
                                             <!-- Şarkı Bilgisi -->
                                             <div class="col">
-                                                <div class="d-flex align-items-center">
+                                                <div class="d-flex align-items-start">
                                                     <!-- Cover Image -->
                                                     @if($song->media_id)
                                                         <img src="{{ thumb($song->coverMedia, 40, 40) }}"
@@ -82,17 +83,68 @@
                                                         </div>
                                                     @endif
 
-                                                    <!-- Title + Artist -->
+                                                    <!-- Title + Details -->
                                                     <div>
-                                                        <strong class="d-block">
+                                                        {{-- 1. Satır: Şarkı Adı --}}
+                                                        <div class="fw-bold">
                                                             {{ $song->getTranslated('title', app()->getLocale()) ?? $song->getTranslated('title', 'tr') }}
-                                                        </strong>
-                                                        <small class="">
-                                                            {{ $song->album?->artist?->getTranslated('title') ?? __('admin.unknown') }}
-                                                            @if($song->duration)
-                                                                · {{ $song->getFormattedDuration() }}
+                                                        </div>
+                                                        {{-- 2. Satır: Sanatçı --}}
+                                                        <div class="text-muted" style="font-size: 12px;">
+                                                            <i class="fas fa-user fa-xs text-green"></i> {{ $song->album?->artist?->getTranslated('title') ?? '-' }}
+                                                        </div>
+                                                        {{-- 3. Satır: Albüm + Tür --}}
+                                                        <div class="text-muted" style="font-size: 11px;">
+                                                            @if($song->album)
+                                                                <i class="fas fa-compact-disc fa-xs text-azure"></i> {{ $song->album->getTranslated('title') }}
                                                             @endif
-                                                        </small>
+                                                            @if($song->genre)
+                                                                <span class="mx-1">·</span>
+                                                                <i class="fas fa-tag fa-xs text-purple"></i> {{ $song->genre->getTranslated('title') }}
+                                                            @endif
+                                                            @if($song->duration)
+                                                                <span class="mx-1">·</span>
+                                                                {{ $song->getFormattedDuration() }}
+                                                            @endif
+                                                        </div>
+
+                                                        {{-- 3. Satır: Arama eşleşme bilgisi --}}
+                                                        @if($search)
+                                                            @php
+                                                                $searchLower = mb_strtolower($search);
+                                                                $matchBadges = [];
+
+                                                                // Şarkı sözlerinde eşleşme
+                                                                $lyrics = $song->getTranslated('lyrics');
+                                                                if ($lyrics && str_contains(mb_strtolower(strip_tags($lyrics)), $searchLower)) {
+                                                                    $matchBadges[] = '<span class="badge bg-yellow-lt text-yellow"><i class="fas fa-file-alt me-1"></i>Şarkı sözünde</span>';
+                                                                }
+
+                                                                // Albümde eşleşme (şarkı adında yoksa göster)
+                                                                $songTitle = $song->getTranslated('title') ?? '';
+                                                                $albumTitle = $song->album?->getTranslated('title') ?? '';
+                                                                if ($albumTitle && str_contains(mb_strtolower($albumTitle), $searchLower) && !str_contains(mb_strtolower($songTitle), $searchLower)) {
+                                                                    $matchBadges[] = '<span class="badge bg-azure-lt text-azure"><i class="fas fa-compact-disc me-1"></i>Albüm eşleşmesi</span>';
+                                                                }
+
+                                                                // Türde eşleşme
+                                                                $genreTitle = $song->genre?->getTranslated('title') ?? '';
+                                                                if ($genreTitle && str_contains(mb_strtolower($genreTitle), $searchLower) && !str_contains(mb_strtolower($songTitle), $searchLower)) {
+                                                                    $matchBadges[] = '<span class="badge bg-purple-lt text-purple"><i class="fas fa-tag me-1"></i>Tür eşleşmesi</span>';
+                                                                }
+
+                                                                // Sanatçıda eşleşme
+                                                                $artistTitle = $song->album?->artist?->getTranslated('title') ?? '';
+                                                                if ($artistTitle && str_contains(mb_strtolower($artistTitle), $searchLower) && !str_contains(mb_strtolower($songTitle), $searchLower)) {
+                                                                    $matchBadges[] = '<span class="badge bg-green-lt text-green"><i class="fas fa-user me-1"></i>Sanatçı eşleşmesi</span>';
+                                                                }
+                                                            @endphp
+                                                            @if(count($matchBadges) > 0)
+                                                                <div class="mt-1">
+                                                                    {!! implode(' ', $matchBadges) !!}
+                                                                </div>
+                                                            @endif
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>

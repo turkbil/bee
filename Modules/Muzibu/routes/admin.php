@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Route;
 
 // Admin rotaları - Livewire Pattern
-Route::middleware(['admin', 'tenant'])
+// 'muzibu.admin' middleware: Central domain'den erişildiğinde Muzibu tenant context'ini başlatır
+Route::middleware(['admin', 'tenant', \Modules\Muzibu\App\Http\Middleware\InitializeMuzibuAdmin::class])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -162,6 +163,32 @@ Route::middleware(['admin', 'tenant'])
                             ->name('index');
 
                         Route::get('/manage/{id?}', [\Modules\Muzibu\App\Http\Controllers\Admin\CorporateController::class, 'manage'])
+                            ->middleware('module.permission:muzibu,create')
+                            ->name('manage');
+                    });
+
+                // Corporate Spots - Kurumsal Anonslari
+                Route::prefix('spot')
+                    ->name('spot.')
+                    ->group(function () {
+                        Route::get('/', [\Modules\Muzibu\App\Http\Controllers\Admin\SpotController::class, 'index'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('index');
+
+                        Route::get('/manage/{id?}', [\Modules\Muzibu\App\Http\Controllers\Admin\SpotController::class, 'manage'])
+                            ->middleware('module.permission:muzibu,create')
+                            ->name('manage');
+                    });
+
+                // Certificates - Sertifikalar
+                Route::prefix('certificate')
+                    ->name('certificate.')
+                    ->group(function () {
+                        Route::get('/', [\Modules\Muzibu\App\Http\Controllers\Admin\CertificateController::class, 'index'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('index');
+
+                        Route::get('/manage/{id?}', [\Modules\Muzibu\App\Http\Controllers\Admin\CertificateController::class, 'manage'])
                             ->middleware('module.permission:muzibu,create')
                             ->name('manage');
                     });

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>V4 - Diploma Tarzı Sertifika (PDF Uyumlu)</title>
+    <style>
+        @page { margin: 0; size: A4 landscape; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DejaVu Sans', sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            width: 297mm;
+            height: 210mm;
+            margin: 0 auto;
+        }
+        .page {
+            width: 100%;
+            height: 100%;
+            padding: 8mm;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+        }
+
+        /* Dış Dekoratif Çerçeve */
+        .outer-border {
+            border: 4px solid #d4af37;
+            height: 100%;
+            padding: 3mm;
+            position: relative;
+        }
+
+        /* İç Dekoratif Çerçeve */
+        .inner-border {
+            border: 2px solid #d4af37;
+            height: 100%;
+            padding: 2mm;
+            position: relative;
+        }
+
+        /* En İç Çerçeve */
+        .content-border {
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            height: 100%;
+            position: relative;
+        }
+
+        /* Köşe Süslemeleri */
+        .corner {
+            position: absolute;
+            width: 25mm;
+            height: 25mm;
+            border: 3px solid #d4af37;
+        }
+        .corner-tl { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+        .corner-tr { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+        .corner-bl { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+        .corner-br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+        /* Köşe İç Süsler */
+        .corner-inner {
+            position: absolute;
+            width: 15mm;
+            height: 15mm;
+        }
+        .corner-inner-tl { top: 3mm; left: 3mm; border-top: 2px solid #b8860b; border-left: 2px solid #b8860b; }
+        .corner-inner-tr { top: 3mm; right: 3mm; border-top: 2px solid #b8860b; border-right: 2px solid #b8860b; }
+        .corner-inner-bl { bottom: 3mm; left: 3mm; border-bottom: 2px solid #b8860b; border-left: 2px solid #b8860b; }
+        .corner-inner-br { bottom: 3mm; right: 3mm; border-bottom: 2px solid #b8860b; border-right: 2px solid #b8860b; }
+
+        .main-table {
+            width: 100%;
+            height: 100%;
+            border-collapse: collapse;
+        }
+        .main-table > tbody > tr > td {
+            vertical-align: middle;
+        }
+
+        .center { text-align: center; }
+        .gold { color: #d4af37; }
+        .dark-gold { color: #b8860b; }
+        .white { color: white; }
+        .gray { color: #94a3b8; }
+        .mono { font-family: 'DejaVu Sans Mono', monospace; }
+
+        .left-col {
+            width: 65mm;
+            text-align: center;
+            padding: 5mm;
+        }
+        .center-col {
+            padding: 0 8mm;
+        }
+        .right-col {
+            width: 70mm;
+            text-align: center;
+            padding: 5mm;
+        }
+
+        /* Logo Alanı */
+        .logo-area {
+            padding: 5mm;
+        }
+        .logo-circle {
+            width: 22mm;
+            height: 22mm;
+            background: linear-gradient(135deg, #d4af37, #b8860b);
+            border-radius: 50%;
+            margin: 0 auto 3mm;
+            line-height: 22mm;
+            font-size: 12mm;
+            color: #0f172a;
+            font-weight: bold;
+            border: 2px solid #fff;
+        }
+        .brand { font-size: 7mm; font-weight: bold; letter-spacing: 1mm; }
+        .brand-sub { font-size: 2.5mm; letter-spacing: 3mm; margin-top: 1mm; }
+
+        /* Başlık Dekoratif */
+        .title-area {
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            padding-bottom: 4mm;
+            margin-bottom: 4mm;
+        }
+        .title-decoration {
+            font-size: 4mm;
+            letter-spacing: 5mm;
+            margin-bottom: 2mm;
+        }
+        .title { font-size: 9mm; font-weight: bold; letter-spacing: 2mm; }
+        .subtitle { font-size: 3.5mm; margin-top: 2mm; letter-spacing: 1mm; }
+
+        /* Firma */
+        .member { font-size: 7mm; font-weight: bold; margin: 5mm 0; letter-spacing: 0.5mm; }
+
+        /* Bilgi Tablosu */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 4mm 0;
+            background: rgba(30, 41, 59, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        .info-table td {
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 3mm;
+            text-align: center;
+            width: 50%;
+        }
+        .label { font-size: 2.5mm; color: #64748b; letter-spacing: 1mm; }
+        .value { font-size: 3.5mm; color: white; margin-top: 1mm; }
+
+        /* Adres */
+        .address-box {
+            background: rgba(30, 41, 59, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 3mm;
+            margin-top: 3mm;
+        }
+
+        /* QR Alanı */
+        .qr-area {
+            background: rgba(30, 41, 59, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 4mm;
+        }
+        .qr-box {
+            background: white;
+            padding: 3mm;
+            display: inline-block;
+            margin-bottom: 3mm;
+            border: 2px solid #d4af37;
+        }
+
+        /* Dijital İmza */
+        .signature-box {
+            background: rgba(30, 58, 138, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 3mm;
+            margin-top: 3mm;
+        }
+
+        /* Ayırıcı Çizgi Dekoratif */
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            margin: 3mm 0;
+        }
+        .divider-vertical {
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(180deg, transparent 10%, rgba(212, 175, 55, 0.5) 50%, transparent 90%);
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 3mm;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 2.5mm;
+            color: #475569;
+        }
+    </style>
+</head>
+<body>
+    <div style="text-align:center;padding:6px;background:linear-gradient(90deg, #b8860b, #d4af37, #b8860b);color:#0f172a;font-size:11px;font-weight:bold;">
+        V4 - Diploma Tarzı Sertifika - PDF Uyumlu
+    </div>
+
+    <div class="page">
+        <div class="outer-border">
+            <div class="inner-border">
+                <div class="content-border">
+
+                    <!-- Köşe Süslemeleri -->
+                    <div class="corner corner-tl"></div>
+                    <div class="corner corner-tr"></div>
+                    <div class="corner corner-bl"></div>
+                    <div class="corner corner-br"></div>
+
+                    <div class="corner-inner corner-inner-tl"></div>
+                    <div class="corner-inner corner-inner-tr"></div>
+                    <div class="corner-inner corner-inner-bl"></div>
+                    <div class="corner-inner corner-inner-br"></div>
+
+                    <table class="main-table">
+                        <tr>
+                            <!-- Sol: Logo -->
+                            <td class="left-col">
+                                <div class="logo-area">
+                                    <div class="logo-circle">M</div>
+                                    <div class="brand gold">MUZIBU</div>
+                                    <div class="brand-sub gray">PREMIUM</div>
+                                    <div class="divider" style="margin-top:4mm;"></div>
+                                    <div style="font-size:2.5mm;color:#64748b;margin-top:2mm;">Kurumsal Üyelik</div>
+                                    <div style="font-size:2.5mm;color:#64748b;">Programı</div>
+                                </div>
+                            </td>
+
+                            <!-- Dikey Ayırıcı -->
+                            <td style="width:1px;padding:0;">
+                                <div class="divider-vertical"></div>
+                            </td>
+
+                            <!-- Orta: İçerik -->
+                            <td class="center-col">
+                                <div class="title-area center">
+                                    <div class="title-decoration gold">✦ ✦ ✦</div>
+                                    <div class="title white">ÜYELİK SERTİFİKASI</div>
+                                    <div class="subtitle gray">MEMBERSHIP CERTIFICATE</div>
+                                </div>
+
+                                <div class="center">
+                                    <div style="font-size:2.5mm;color:#64748b;letter-spacing:2mm;">BU BELGE</div>
+                                    <div class="member white mono">iXtif İç ve Dış Tic. A.Ş.</div>
+                                    <div style="font-size:2.5mm;color:#64748b;letter-spacing:2mm;">ADINA DÜZENLENMİŞTİR</div>
+                                </div>
+
+                                <div class="divider"></div>
+
+                                <table class="info-table">
+                                    <tr>
+                                        <td>
+                                            <div class="label">SERTİFİKA NO</div>
+                                            <div class="value gold mono">MZB-2025-51A5</div>
+                                        </td>
+                                        <td>
+                                            <div class="label">ÜYELİK TARİHİ</div>
+                                            <div class="value">23.12.2025</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="label">VERGİ DAİRESİ</div>
+                                            <div class="value mono">Kartal</div>
+                                        </td>
+                                        <td>
+                                            <div class="label">VERGİ NO</div>
+                                            <div class="value mono">4831552951</div>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <div class="address-box">
+                                    <div class="label">KAYITLI ADRES</div>
+                                    <div style="font-size:2.8mm;color:#cbd5e1;margin-top:1mm;">
+                                        Karlıktepe Mah. Çamlık Sk. Manzara Adalar B Blok No: 1 B İç Kapı No: 89 Kartal/İstanbul
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Dikey Ayırıcı -->
+                            <td style="width:1px;padding:0;">
+                                <div class="divider-vertical"></div>
+                            </td>
+
+                            <!-- Sağ: QR + İmza -->
+                            <td class="right-col">
+                                <div class="qr-area">
+                                    <div style="font-size:2.5mm;color:#64748b;margin-bottom:2mm;letter-spacing:1mm;">DOĞRULAMA KODU</div>
+                                    <div class="qr-box">
+                                        <div style="width:28mm;height:28mm;background:#f8fafc;border:1px dashed #94a3b8;line-height:28mm;font-size:3mm;color:#64748b;">QR KOD</div>
+                                    </div>
+                                    <div style="font-size:2.5mm;color:#64748b;">Tarayarak doğrulayın</div>
+                                </div>
+
+                                <div class="signature-box">
+                                    <div style="color:#60a5fa;font-size:3mm;font-weight:bold;">Dijital İmza</div>
+                                    <div style="color:#64748b;font-size:2.5mm;margin-top:1mm;">256-bit şifrelenmiş</div>
+                                    <div style="color:#64748b;font-size:2mm;margin-top:1mm;">Değiştirilemez belge</div>
+                                </div>
+
+                                <div style="margin-top:3mm;padding:2mm;border:1px solid rgba(34,197,94,0.3);background:rgba(34,197,94,0.1);">
+                                    <div style="color:#22c55e;font-size:3mm;font-weight:bold;">● AKTİF</div>
+                                    <div style="color:#64748b;font-size:2mm;">Üyelik devam ediyor</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="footer">
+                        Bu belge Muzibu A.Ş. tarafından elektronik ortamda düzenlenmiştir. · <span class="gold">muzibu.com.tr</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

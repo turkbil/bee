@@ -7,7 +7,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Services\Media\LeonardoAIService;
-use Modules\MediaManagement\App\Models\MediaLibraryItem;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -96,38 +95,28 @@ class GenerateGenericMuzibyCover implements ShouldQueue
                 throw new \Exception('Leonardo AI görsel üretemedi');
             }
 
-            // MediaLibraryItem oluştur
-            $mediaItem = MediaLibraryItem::create([
-                'name' => ucfirst($this->type) . ' Cover - ' . $this->title,
-                'type' => 'image',
-                'created_by' => $this->userId,
-                'generation_source' => 'ai_generated',
-                'generation_prompt' => $prompt,
-                'generation_params' => [
-                    'model' => 'leonardo-lucid-origin',
-                    'size' => '1472x832',
-                    'style' => 'free_imagination',
-                    'provider' => 'leonardo',
-                    'generation_id' => $imageData['generation_id'] ?? null,
-                    'tenant_id' => tenant('id'),
-                    'purpose' => $this->type . '_cover',
-                    'content_type' => $this->type,
-                    'content_id' => $this->modelId,
-                ],
-            ]);
-
-            // Görseli URL'den ekle
+            // ✅ Görseli doğrudan model'in "hero" collection'ına yükle
+            // Artık MediaLibraryItem ve media_id kullanılmıyor
             $spatieMedia = null;
             if (!empty($imageData['url'])) {
-                $spatieMedia = $mediaItem->addMediaFromUrl($imageData['url'])
-                    ->toMediaCollection('library');
-            }
-
-            // Model'e media ID'yi ata (Spatie Media ID - foreign key constraint için)
-            if ($spatieMedia) {
-                $model->update([
-                    'media_id' => $spatieMedia->id, // ✅ Spatie media.id (NOT media_library_items.id)
-                ]);
+                $spatieMedia = $model->addMediaFromUrl($imageData['url'])
+                    ->usingName(ucfirst($this->type) . ' Cover - ' . $this->title)
+                    ->withCustomProperties([
+                        'generation_source' => 'ai_generated',
+                        'generation_prompt' => $prompt,
+                        'generation_params' => [
+                            'model' => 'leonardo-lucid-origin',
+                            'size' => '1472x832',
+                            'style' => 'free_imagination',
+                            'provider' => 'leonardo',
+                            'generation_id' => $imageData['generation_id'] ?? null,
+                            'tenant_id' => tenant('id'),
+                            'purpose' => $this->type . '_cover',
+                            'content_type' => $this->type,
+                            'content_id' => $this->modelId,
+                        ],
+                    ])
+                    ->toMediaCollection('hero');
             }
 
             // Kredi düş
@@ -137,17 +126,18 @@ class GenerateGenericMuzibyCover implements ShouldQueue
                 'model' => 'lucid-origin',
                 'prompt' => $prompt,
                 'operation_type' => $this->type . '_cover_free_imagination',
-                'media_id' => $mediaItem->id,
+                'spatie_media_id' => $spatieMedia?->id,
                 'content_type' => $this->type,
                 'content_id' => $this->modelId,
                 'quality' => 'hd',
                 'credit_cost' => 1,
             ]);
 
-            Log::info('🎨 Generic Cover Job: AI Generation Successful!', [
+            Log::info('🎨 Generic Cover Job: AI Generation Successful! (hero collection)', [
                 'type' => $this->type,
                 'model_id' => $this->modelId,
-                'media_id' => $mediaItem->id,
+                'spatie_media_id' => $spatieMedia?->id,
+                'collection' => 'hero',
                 'generation_id' => $imageData['generation_id'] ?? null,
             ]);
 

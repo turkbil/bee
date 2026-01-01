@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animasyon Örnekleri - Seçim Yap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: #0f172a; color: white; }
+
+        .demo-box {
+            height: 400px; border-radius: 1.5rem; overflow: hidden;
+            position: relative; background: #030712;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+        }
+
+        /* ============================================
+           1. FLOATING MUSIC NOTES
+           ============================================ */
+        .music-notes-container {
+            position: absolute; width: 100%; height: 100%; overflow: hidden;
+        }
+        .music-note {
+            position: absolute; font-size: 2rem; opacity: 0.6;
+            animation: floatUp 8s ease-in-out infinite;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(400px) rotate(0deg) scale(0.5); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-50px) rotate(360deg) scale(1); opacity: 0; }
+        }
+
+        /* ============================================
+           2. PARTICLE WAVE
+           ============================================ */
+        .particles-container {
+            position: absolute; width: 100%; height: 100%; overflow: hidden;
+        }
+        .particle {
+            position: absolute; width: 6px; height: 6px;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            border-radius: 50%;
+            animation: particleFloat 6s ease-in-out infinite;
+        }
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+            25% { transform: translateY(-30px) translateX(20px); opacity: 0.8; }
+            50% { transform: translateY(-50px) translateX(-10px); opacity: 0.5; }
+            75% { transform: translateY(-20px) translateX(30px); opacity: 0.9; }
+        }
+
+        /* ============================================
+           3. GEOMETRIC SHAPES
+           ============================================ */
+        .shapes-container {
+            position: absolute; width: 100%; height: 100%; overflow: hidden;
+        }
+        .geo-shape {
+            position: absolute; border: 2px solid;
+            animation: geoFloat 10s ease-in-out infinite;
+        }
+        .geo-circle { border-radius: 50%; }
+        .geo-square { transform: rotate(45deg); }
+        .geo-triangle {
+            width: 0 !important; height: 0 !important;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-bottom: 50px solid rgba(139, 92, 246, 0.3);
+            background: none !important;
+        }
+        @keyframes geoFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-40px) rotate(90deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+            75% { transform: translateY(-60px) rotate(270deg); }
+        }
+
+        /* ============================================
+           4. WAVE LINES (Sound Wave Style)
+           ============================================ */
+        .wave-container {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .wave-bar {
+            width: 8px; background: linear-gradient(to top, #8b5cf6, #ec4899, #f59e0b);
+            border-radius: 4px;
+            animation: waveBar 1s ease-in-out infinite;
+        }
+        @keyframes waveBar {
+            0%, 100% { height: 20px; }
+            50% { height: 100px; }
+        }
+
+        /* ============================================
+           5. FLOATING BUBBLES
+           ============================================ */
+        .bubbles-container {
+            position: absolute; width: 100%; height: 100%; overflow: hidden;
+        }
+        .bubble {
+            position: absolute; border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), rgba(139, 92, 246, 0.2));
+            animation: bubbleRise 10s ease-in-out infinite;
+        }
+        @keyframes bubbleRise {
+            0% { transform: translateY(400px) scale(0.5); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-100px) scale(1.2); opacity: 0; }
+        }
+
+        /* ============================================
+           6. NEON PULSE CIRCLES
+           ============================================ */
+        .neon-container {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .neon-circle {
+            position: absolute; border-radius: 50%; border: 2px solid;
+            animation: neonPulse 3s ease-out infinite;
+        }
+        @keyframes neonPulse {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        /* ============================================
+           7. MATRIX RAIN
+           ============================================ */
+        .matrix-container {
+            position: absolute; width: 100%; height: 100%; overflow: hidden;
+            font-family: monospace;
+        }
+        .matrix-column {
+            position: absolute; top: -100%; font-size: 14px; line-height: 1.2;
+            color: #10b981; text-shadow: 0 0 10px #10b981;
+            animation: matrixFall 8s linear infinite;
+        }
+        @keyframes matrixFall {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(500px); }
+        }
+
+        /* ============================================
+           8. ORBITING ICONS
+           ============================================ */
+        .orbit-container {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .orbit-ring {
+            position: absolute; border: 1px dashed rgba(139, 92, 246, 0.3);
+            border-radius: 50%;
+            animation: orbitSpin 20s linear infinite;
+        }
+        .orbit-icon {
+            position: absolute; font-size: 1.5rem;
+        }
+        @keyframes orbitSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* ============================================
+           9. GRADIENT BLOBS
+           ============================================ */
+        .blobs-container {
+            position: absolute; width: 100%; height: 100%; overflow: hidden;
+            filter: blur(40px);
+        }
+        .blob {
+            position: absolute; border-radius: 50%;
+            animation: blobMove 15s ease-in-out infinite;
+        }
+        @keyframes blobMove {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -30px) scale(1.1); }
+            50% { transform: translate(-20px, 50px) scale(0.9); }
+            75% { transform: translate(30px, 20px) scale(1.05); }
+        }
+
+        /* ============================================
+           10. LIGHTNING / ELECTRIC
+           ============================================ */
+        .electric-container {
+            position: absolute; width: 100%; height: 100%;
+        }
+        .electric-bolt {
+            position: absolute; width: 3px; height: 100px;
+            background: linear-gradient(to bottom, transparent, #8b5cf6, #ec4899, transparent);
+            animation: electricFlash 0.5s ease-out infinite;
+            opacity: 0;
+        }
+        @keyframes electricFlash {
+            0%, 90%, 100% { opacity: 0; transform: scaleY(0); }
+            5%, 10% { opacity: 1; transform: scaleY(1); }
+        }
+
+        /* ============================================
+           11. COIN RAIN (Para Yağmuru)
+           ============================================ */
+        .coins-container {
+            position: absolute; width: 100%; height: 100%; overflow: hidden;
+        }
+        .coin {
+            position: absolute; font-size: 1.5rem;
+            animation: coinFall 5s ease-in infinite;
+        }
+        @keyframes coinFall {
+            0% { transform: translateY(-50px) rotateY(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(450px) rotateY(720deg); opacity: 0; }
+        }
+
+        /* ============================================
+           12. DNA HELIX
+           ============================================ */
+        .helix-container {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .helix-dot {
+            position: absolute; width: 12px; height: 12px;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            border-radius: 50%;
+            animation: helixSpin 4s linear infinite;
+        }
+        @keyframes helixSpin {
+            0% { transform: rotateY(0deg) translateX(50px); }
+            100% { transform: rotateY(360deg) translateX(50px); }
+        }
+    </style>
+</head>
+<body class="p-8">
+    <h1 class="text-4xl font-bold text-center mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+        Animasyon Örnekleri
+    </h1>
+    <p class="text-center text-slate-400 mb-8">Beğendiğin stilleri söyle, sunuma uygulayayım</p>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+
+        <!-- 1. FLOATING MUSIC NOTES -->
+        <div>
+            <div class="demo-box">
+                <div class="music-notes-container">
+                    <div class="music-note text-purple-400" style="left: 10%; animation-delay: 0s;"><i class="fas fa-music"></i></div>
+                    <div class="music-note text-pink-400" style="left: 25%; animation-delay: 1s;"><i class="fas fa-music"></i></div>
+                    <div class="music-note text-green-400" style="left: 40%; animation-delay: 2s;"><i class="fas fa-music"></i></div>
+                    <div class="music-note text-yellow-400" style="left: 55%; animation-delay: 3s;"><i class="fas fa-music"></i></div>
+                    <div class="music-note text-cyan-400" style="left: 70%; animation-delay: 4s;"><i class="fas fa-music"></i></div>
+                    <div class="music-note text-purple-400" style="left: 85%; animation-delay: 5s;"><i class="fas fa-music"></i></div>
+                    <div class="music-note text-pink-400" style="left: 15%; animation-delay: 6s;"><i class="fas fa-music"></i></div>
+                    <div class="music-note text-green-400" style="left: 60%; animation-delay: 7s;"><i class="fas fa-music"></i></div>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-2xl font-bold text-white/50">İçerik Alanı</span>
+                </div>
+            </div>
+            <p class="text-center mt-3 font-semibold text-purple-400">1. Müzik Notaları</p>
+            <p class="text-center text-sm text-slate-500">Yükselen notalar - müzik teması</p>
+        </div>
+
+        <!-- 2. PARTICLE WAVE -->
+        <div>
+            <div class="demo-box">
+                <div class="particles-container">
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const container = document.querySelectorAll('.particles-container')[0];
+                            for(let i = 0; i < 50; i++) {
+                                const p = document.createElement('div');
+                                p.className = 'particle';
+                                p.style.left = Math.random() * 100 + '%';
+                                p.style.top = Math.random() * 100 + '%';
+                                p.style.animationDelay = Math.random() * 6 + 's';
+                                p.style.animationDuration = (4 + Math.random() * 4) + 's';
+                                container.appendChild(p);
+                            }
+                        });
+                    </script>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-2xl font-bold text-white/50">İçerik Alanı</span>
+                </div>
+            </div>
+            <p class="text-center mt-3 font-semibold text-pink-400">2. Parçacık Dalgası</p>
+            <p class="text-center text-sm text-slate-500">Rastgele hareket eden parçacıklar</p>
+        </div>
+
+        <!-- 3. GEOMETRIC SHAPES -->
+        <div>
+            <div class="demo-box">
+                <div class="shapes-container">
+                    <div class="geo-shape geo-circle" style="width: 60px; height: 60px; left: 10%; top: 20%; border-color: rgba(139, 92, 246, 0.4); animation-delay: 0s;"></div>
+                    <div class="geo-shape geo-square" style="width: 40px; height: 40px; left: 70%; top: 15%; border-color: rgba(236, 72, 153, 0.4); animation-delay: 1s;"></div>
+                    <div class="geo-shape geo-circle" style="width: 80px; height: 80px; left: 50%; top: 60%; border-color: rgba(16, 185, 129, 0.4); animation-delay: 2s;"></div>
+                    <div class="geo-shape geo-square" style="width: 50px; height: 50px; left: 20%; top: 70%; border-color: rgba(245, 158, 11, 0.4); animation-delay: 3s;"></div>
+                    <div class="geo-shape geo-circle" style="width: 45px; height: 45px; left: 80%; top: 50%; border-color: rgba(6, 182, 212, 0.4); animation-delay: 4s;"></div>
+                    <div class="geo-shape geo-triangle" style="left: 40%; top: 30%; animation-delay: 2.5s;"></div>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-2xl font-bold text-white/50">İçerik Alanı</span>
+                </div>
+            </div>
+            <p class="text-center mt-3 font-semibold text-green-400">3. Geometrik Şekiller</p>
+            <p class="text-center text-sm text-slate-500">Dönen ve süzülen şekiller</p>
+        </div>
+
+        <!-- 4. WAVE BARS (Sound Wave) -->
+        <div>
+            <div class="demo-box">
+                <div class="wave-container" style="opacity: 0.3;">
+                    <div class="wave-bar" style="animation-delay: 0s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.1s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.2s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.3s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.4s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.5s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.6s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.7s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.8s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.9s;"></div>
+                    <div class="wave-bar" style="animation-delay: 1.0s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.9s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.8s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.7s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.6s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.5s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.4s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.3s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.2s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.1s;"></div>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-2xl font-bold text-white/50">İçerik Alanı</span>
+                </div>
+            </div>
+            <p class="text-center mt-3 font-semibold text-yellow-400">4. Ses Dalgası</p>
+            <p class="text-center text-sm text-slate-500">Equalizer tarzı dalga</p>
+        </div>
+
+        <!-- 5. FLOATING BUBBLES -->
+        <div>
+            <div class="demo-box">
+                <div class="bubbles-container">
+                    <div class="bubble" style="width: 40px; height: 40px; left: 10%; animation-delay: 0s;"></div>
+                    <div class="bubble" style="width: 60px; height: 60px; left: 25%; animation-delay: 2s;"></div>
+                    <div class="bubble" style="width: 30px; height: 30px; left: 40%; animation-delay: 4s;"></div>
+                    <div class="bubble" style="width: 50px; height: 50px; left: 55%; animation-delay: 1s;"></div>
+                    <div class="bubble" style="width: 35px; height: 35px; left: 70%; animation-delay: 3s;"></div>
+                    <div class="bubble" style="width: 45px; height: 45px; left: 85%; animation-delay: 5s;"></div>
+                    <div class="bubble" style="width: 55px; height: 55px; left: 15%; animation-delay: 6s;"></div>
+                    <div class="bubble" style="width: 25px; height: 25px; left: 60%; animation-delay: 7s;"></div>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-2xl font-bold text-white/50">İçerik Alanı</span>
+                </div>
+            </div>
+            <p class="text-center mt-3 font-semibold text-cyan-400">5. Yükselen Balonlar</p>
+            <p class="text-center text-sm text-slate-500">Cam baloncuklar</p>
+        </div>
+
+        <!-- 6. NEON PULSE -->
+        <div>
+            <div class="demo-box">
+                <div class="neon-container">
+                    <div class="neon-circle" style="width: 100px; height: 100px; border-color: #8b5cf6; animation-delay: 0s;"></div>
+                    <div class="neon-circle" style="width: 100px; height: 100px; border-color: #ec4899; animation-delay: 0.5s;"></div>
+                    <div class="neon-circle" style="width: 100px; height: 100px; border-color: #10b981; animation-delay: 1s;"></div>
+                    <div class="neon-circle" style="width: 100px; height: 100px; border-color: #f59e0b; animation-delay: 1.5s;"></div>
+                    <div class="neon-circle" style="width: 100px; height: 100px; border-color: #06b6d4; animation-delay: 2s;"></div>
+                    <div class="neon-circle" style="width: 100px; height: 100px; border-color: #8b5cf6; animation-delay: 2.5s;"></div>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-2xl font-bold text-white/50">İçerik Alanı</span>
+                </div>
+            </div>
+            <p class="text-center mt-3 font-semibold text-purple-400">6. Neon Pulse</p>
+            <p class="text-center text-sm text-slate-500">Merkezden yayılan halkalar</p>
+        </div>
+
+        <!-- 7. MATRIX RAIN -->
+        <div>
+            <div class="demo-box">
+                <div class="matrix-container">
+                    <div class="matrix-column" style="left: 5%; animation-delay: 0s; animation-duration: 5s;">1<br>0<br>1<br>1<br>0<br>0<br>1</div>
+                    <div class="matrix-column" style="left: 15%; animation-delay: 1s; animation-duration: 7s;">0<br>1<br>0<br>1<br>1<br>0<br>1</div>
+                    <div class="matrix-column" style="left: 25%; animation-delay: 2s; animation-duration: 6s;">1<br>1<br>0<br>0<br>1<br>1<br>0</div>
+                    <div class="matrix-column" style="left: 35%; animation-delay: 0.5s; animation-duration: 8s;">0<br>0<br>1<br>1<br>0<br>1<br>1</div>
+                    <div class="matrix-column" style="left: 45%; animation-delay: 3s; animation-duration: 5s;">1<br>0<br>1<br>0<br>1<br>0<br>1</div>
+                    <div class="matrix-column" style="left: 55%; animation-delay: 1.5s; animation-duration: 7s;">0<br>1<br>1<br>0<br>0<br>1<br>0</div>
+                    <div class="matrix-column" style="left: 65%; animation-delay: 2.5s; animation-duration: 6s;">1<br>1<br>0<br>1<br>1<br>0<br>1</div>
+                    <div class="matrix-column" style="left: 75%; animation-delay: 0s; animation-duration: 8s;">0<br>0<br>1<br>0<br>1<br>1<br>0</div>
+                    <div class="matrix-column" style="left: 85%; animation-delay: 3.5s; animation-duration: 5s;">1<br>0<br>0<br>1<br>0<br>0<br>1</div>
+                    <div class="matrix-column" style="left: 95%; animation-delay: 2s; animation-duration: 7s;">0<br>1<br>1<br>1<br>0<br>1<br>0</div>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-2xl font-bold text-white/50">İçerik Alanı</span>
+                </div>
+            </div>
+            <p class="text-center mt-3 font-semibold text-green-400">7. Matrix Yağmuru</p>
+            <p class="text-center text-sm text-slate-500">Teknoloji/Kod teması</p>
+        </div>
+
+        <!-- 8. ORBITING ICONS -->
+        <div>
+            <div class="demo-box">
+                <div class="orbit-container">
+                    <div class="orbit-ring" style="width: 150px; height: 150px; animation-duration: 10s;">
+                        <span class="orbit-icon text-purple-400" style="top: -15px; left: 50%; transform: translateX(-50%);"><i class="fas fa-music"></i></span>
+                    </div>
+                    <div class="orbit-ring" style="width: 220px; height: 220px; animation-duration: 15s; animation-direction: reverse;">
+                        <span class="orbit-icon text-pink-400" style="top: -15px; left: 50%; transform: translateX(-50%);"><i class="fas fa-headphones"></i></span>
+                        <span class="orbit-icon text-green-400" style="bottom: -15px; left: 50%; transform: translateX(-50%);"><i class="fas fa-volume-up"></i></span>
+                    </div>
+                    <div class="orbit-ring" style="width: 290px; height: 290px; animation-duration: 20s;">
+                        <span class="orbit-icon text-yellow-400" style="top: -15px; left: 50%; transform: translateX(-50%);"><i class="fas fa-microphone"></i></span>
+                        <span class="orbit-icon text-cyan-400" style="top: 50%; right: -15px; transform: translateY(-50%);"><i class="fas fa-compact-disc"></i></span>
+                        <span class="orbit-icon text-red-400" style="bottom: -15px; left: 50%; transform: translateX(-50%);"><i class="fas fa-guitar"></i></span>
+                    </div>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-2xl font-bold text-white/50">İçerik Alanı</span>
+                </div>
+            </div>
+            <p class="text-center mt-3 font-semibold text-pink-400">8. Yörünge İkonları</p>
+            <p class="text-center text-sm text-slate-500">Dönen ikonlar - güneş sistemi</p>
+        </div>
+
+        <!-- 9. GRADIENT BLOBS -->
+        <div>
+            <div class="demo-box">
+                <div class="blobs-container">
+                    <div class="blob" style="width: 200px; height: 200px; top: 10%; left: 10%; background: rgba(139, 92, 246, 0.4); animation-delay: 0s;"></div>
+                    <div class="blob" style="width: 180px; height: 180px; top: 50%; left: 60%; background: rgba(236, 72, 153, 0.4); animation-delay: 2s;"></div>
+                    <div class="blob" style="width: 150px; height: 150px; top: 70%; left: 20%; background: rgba(16, 185, 129, 0.4); animation-delay: 4s;"></div>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-2xl font-bold text-white/50">İçerik Alanı</span>
+                </div>
+            </div>
+            <p class="text-center mt-3 font-semibold text-purple-400">9. Gradient Blob</p>
+            <p class="text-center text-sm text-slate-500">Yumuşak lav lambası efekti</p>
+        </div>
+
+        <!-- 10. ELECTRIC BOLTS -->
+        <div>
+            <div class="demo-box">
+                <div class="electric-container">
+                    <div class="electric-bolt" style="left: 15%; top: 20%; animation-delay: 0s;"></div>
+                    <div class="electric-bolt" style="left: 30%; top: 50%; animation-delay: 0.3s;"></div>
+                    <div class="electric-bolt" style="left: 50%; top: 10%; animation-delay: 0.6s;"></div>
+                    <div class="electric-bolt" style="left: 65%; top: 60%; animation-delay: 0.9s;"></div>
+                    <div class="electric-bolt" style="left: 80%; top: 30%; animation-delay: 1.2s;"></div>
+                    <div class="electric-bolt" style="left: 25%; top: 70%; animation-delay: 1.5s;"></div>
+                    <div class="electric-bolt" style="left: 70%; top: 15%; animation-delay: 1.8s;"></div>
+                    <div class="electric-bolt" style="left: 45%; top: 80%; animation-delay: 2.1s;"></div>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-2xl font-bold text-white/50">İçerik Alanı</span>
+                </div>
+            </div>
+            <p class="text-center mt-3 font-semibold text-yellow-400">10. Elektrik Çakması</p>
+            <p class="text-center text-sm text-slate-500">Enerji/Güç teması</p>
+        </div>
+
+        <!-- 11. COIN RAIN -->
+        <div>
+            <div class="demo-box">
+                <div class="coins-container">
+                    <div class="coin text-yellow-400" style="left: 10%; animation-delay: 0s;"><i class="fas fa-lira-sign"></i></div>
+                    <div class="coin text-yellow-500" style="left: 20%; animation-delay: 0.5s;"><i class="fas fa-coins"></i></div>
+                    <div class="coin text-yellow-400" style="left: 30%; animation-delay: 1s;"><i class="fas fa-lira-sign"></i></div>
+                    <div class="coin text-green-400" style="left: 40%; animation-delay: 1.5s;"><i class="fas fa-money-bill-wave"></i></div>
+                    <div class="coin text-yellow-400" style="left: 50%; animation-delay: 2s;"><i class="fas fa-lira-sign"></i></div>
+                    <div class="coin text-yellow-500" style="left: 60%; animation-delay: 2.5s;"><i class="fas fa-coins"></i></div>
+                    <div class="coin text-yellow-400" style="left: 70%; animation-delay: 3s;"><i class="fas fa-lira-sign"></i></div>
+                    <div class="coin text-green-400" style="left: 80%; animation-delay: 3.5s;"><i class="fas fa-money-bill-wave"></i></div>
+                    <div class="coin text-yellow-400" style="left: 90%; animation-delay: 4s;"><i class="fas fa-lira-sign"></i></div>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-2xl font-bold text-white/50">İçerik Alanı</span>
+                </div>
+            </div>
+            <p class="text-center mt-3 font-semibold text-yellow-400">11. Para Yağmuru</p>
+            <p class="text-center text-sm text-slate-500">Fiyat/Kazanç sayfaları için</p>
+        </div>
+
+        <!-- 12. COMBINED: Music + Particles -->
+        <div>
+            <div class="demo-box">
+                <!-- Background particles -->
+                <div class="particles-container" id="combo-particles"></div>
+                <!-- Floating notes -->
+                <div class="music-notes-container" style="opacity: 0.4;">
+                    <div class="music-note text-purple-400" style="left: 20%; animation-delay: 0s;"><i class="fas fa-music"></i></div>
+                    <div class="music-note text-pink-400" style="left: 50%; animation-delay: 2s;"><i class="fas fa-music"></i></div>
+                    <div class="music-note text-green-400" style="left: 80%; animation-delay: 4s;"><i class="fas fa-music"></i></div>
+                </div>
+                <!-- Center pulse -->
+                <div class="neon-container" style="opacity: 0.2;">
+                    <div class="neon-circle" style="width: 80px; height: 80px; border-color: #8b5cf6; animation-delay: 0s;"></div>
+                    <div class="neon-circle" style="width: 80px; height: 80px; border-color: #ec4899; animation-delay: 1s;"></div>
+                    <div class="neon-circle" style="width: 80px; height: 80px; border-color: #10b981; animation-delay: 2s;"></div>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-2xl font-bold text-white/50">İçerik Alanı</span>
+                </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const container = document.getElementById('combo-particles');
+                        for(let i = 0; i < 30; i++) {
+                            const p = document.createElement('div');
+                            p.className = 'particle';
+                            p.style.left = Math.random() * 100 + '%';
+                            p.style.top = Math.random() * 100 + '%';
+                            p.style.animationDelay = Math.random() * 6 + 's';
+                            p.style.animationDuration = (4 + Math.random() * 4) + 's';
+                            p.style.opacity = '0.2';
+                            container.appendChild(p);
+                        }
+                    });
+                </script>
+            </div>
+            <p class="text-center mt-3 font-semibold text-purple-400">12. Kombine (Önerilen)</p>
+            <p class="text-center text-sm text-slate-500">Nota + Parçacık + Pulse birlikte</p>
+        </div>
+
+    </div>
+
+    <div class="max-w-4xl mx-auto mt-12 p-6 bg-slate-800/50 rounded-2xl border border-purple-500/30">
+        <h2 class="text-2xl font-bold text-purple-400 mb-4 text-center">
+            <i class="fas fa-hand-pointer mr-2"></i> Seçim Yap!
+        </h2>
+        <p class="text-center text-slate-300 mb-4">
+            Beğendiğin animasyonların <strong>numaralarını</strong> söyle.
+            Birden fazla seçebilirsin, farklı sayfalara farklı animasyonlar koyarım.
+        </p>
+        <div class="text-center text-slate-400 text-sm">
+            <p>Örnek: "1, 4, 11 ve 12 güzel olmuş" gibi</p>
+            <p>veya "Hepsi çok sade, daha çılgın bir şey istiyorum" gibi</p>
+        </div>
+    </div>
+
+    <p class="text-center text-slate-500 text-sm mt-8">
+        <i class="fas fa-code mr-1"></i> Türk Bilişim - Animasyon Katalog
+    </p>
+</body>
+</html>

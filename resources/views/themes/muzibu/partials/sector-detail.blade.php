@@ -8,8 +8,8 @@
         <div class="flex flex-col sm:flex-row items-center sm:items-end gap-6 sm:gap-8 mb-8">
             {{-- Sector Cover with Shadow --}}
             <div class="relative flex-shrink-0 group">
-                @if($sector->media_id && $sector->iconMedia)
-                    <img src="{{ thumb($sector->iconMedia, 300, 300, ['scale' => 1]) }}"
+                @if($sector->getCoverUrl())
+                    <img src="{{ $sector->getCoverUrl(300, 300) }}"
                          alt="{{ $sector->getTranslation('title', app()->getLocale()) }}"
                          class="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 object-cover rounded-xl shadow-2xl shadow-black/50">
                 @else

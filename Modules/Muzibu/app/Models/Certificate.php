@@ -41,11 +41,20 @@ class Certificate extends Model
     ];
 
     /**
-     * User relationship (Central DB)
+     * User relationship (Tenant DB)
+     * Note: User::on('tenant') kullanılmalı, relationship tenant context'te çalışır
      */
     public function user()
     {
         return $this->belongsTo(User::class)->withDefault();
+    }
+
+    /**
+     * Get user from tenant DB explicitly
+     */
+    public function getTenantUser()
+    {
+        return User::on('tenant')->find($this->user_id);
     }
 
     /**
@@ -79,17 +88,59 @@ class Certificate extends Model
      */
     public function getVerificationUrl(): string
     {
-        return url('/muzibu/certificate/' . $this->qr_hash);
+        // Tenant'ın birincil domain'ini kullan
+        $domain = tenant()->domains->first()?->domain ?? 'muzibu.com.tr';
+        return 'https://' . $domain . '/muzibu/certificate/' . $this->qr_hash;
     }
 
     /**
      * Apply Turkish title case spelling correction
      * İlk harf büyük, devamı küçük
+     * Nokta (.) ve iki nokta (:) ve slash (/) sonrası büyük harf
+     * Slash etrafındaki boşluklar temizlenir
      */
     public static function correctSpelling(string $text): string
     {
-        // Türkçe karakterleri destekleyen mb_convert_case kullan
-        return mb_convert_case(mb_strtolower($text, 'UTF-8'), MB_CASE_TITLE, 'UTF-8');
+        // Slash etrafindaki bosluklari temizle (  /  -> /)
+        $text = preg_replace('/\s*\/\s*/', '/', $text);
+
+        // Title case uygula - karakter karakter isle
+        $result = '';
+        $capitalizeNext = true;
+
+        for ($i = 0; $i < mb_strlen($text, 'UTF-8'); $i++) {
+            $char = mb_substr($text, $i, 1, 'UTF-8');
+
+            // Bosluk, yeni satir, nokta, iki nokta, slash sonrasi buyuk harf
+            if ($char === ' ' || $char === "\n" || $char === "\r") {
+                $result .= $char;
+                $capitalizeNext = true;
+            } elseif ($char === '.' || $char === ':' || $char === '/') {
+                $result .= $char;
+                $capitalizeNext = true;
+            } elseif ($capitalizeNext) {
+                $result .= self::toUpperTR($char);
+                $capitalizeNext = false;
+            } else {
+                $result .= self::toLowerTR($char);
+            }
+        }
+
+        return $result;
+    }
+
+    private static function toUpperTR(string $char): string
+    {
+        if ($char === 'i') return 'İ';
+        if ($char === 'ı') return 'I';
+        return mb_strtoupper($char, 'UTF-8');
+    }
+
+    private static function toLowerTR(string $char): string
+    {
+        if ($char === 'I') return 'ı';
+        if ($char === 'İ') return 'i';
+        return mb_strtolower($char, 'UTF-8');
     }
 
     /**

@@ -84,6 +84,15 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
+     * Spatie Media Collections - hero tek dosya (yeni yüklenince eski silinir)
+     */
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('hero')
+            ->singleFile();
+    }
+
+    /**
      * Albüm ilişkisi
      */
     public function albums()
@@ -147,13 +156,12 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
 
     /**
      * Artist photo URL'i (Thumbmaker helper ile)
+     * Sadece Spatie hero collection kullanır
      */
     public function getPhotoUrl(?int $width = 400, ?int $height = 400): ?string
     {
-        if (!$this->media_id) {
-            return null;
-        }
-        return thumb($this->photoMedia, $width, $height, ['scale' => 1]);
+        $heroMedia = $this->getFirstMedia('hero');
+        return $heroMedia ? thumb($heroMedia, $width, $height, ['scale' => 1]) : null;
     }
 
     /**
@@ -170,18 +178,8 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
      */
     public function getPhotoUrlAttribute(): string
     {
-        $photoUrl = $this->getFirstMediaUrl('photo');
-
-        if (empty($photoUrl)) {
-            // Eğer Spatie photo yoksa, media_id kullan
-            if ($this->media_id && $this->photoMedia) {
-                return thumb($this->photoMedia, 200, 200, ['scale' => 1]);
-            }
-            return '';
-        }
-
-        // Thumbmaker ile kare photo (200x200, fill/crop mode - ortadan kırpar)
-        return thumb($photoUrl, 200, 200, ['scale' => 1]);
+        $heroMedia = $this->getFirstMedia('hero');
+        return $heroMedia ? thumb($heroMedia, 200, 200, ['scale' => 1]) : '';
     }
 
     /**

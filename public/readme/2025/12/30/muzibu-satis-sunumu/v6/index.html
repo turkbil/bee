@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu - İşletmeler İçin Dijital Müzik Platformu | Satış Eğitimi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
+        html, body { background: #030712; color: #e2e8f0; overflow-x: hidden; min-height: 100vh; }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background:
+                radial-gradient(ellipse at 10% 10%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 90%, rgba(16, 185, 129, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 60%),
+                linear-gradient(180deg, #030712 0%, #0f172a 50%, #030712 100%);
+            animation: bgPulse 20s ease-in-out infinite;
+        }
+        @keyframes bgPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.85; } }
+
+        /* Slide System */
+        .slide {
+            position: absolute; top: 0; left: 0; width: 100vw; min-height: 100vh;
+            padding: 60px 80px 140px 80px; opacity: 0; transform: translateX(100%);
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto; display: none; background: transparent;
+        }
+        .slide.active { opacity: 1; transform: translateX(0); display: block; z-index: 2; }
+        .slide.prev { transform: translateX(-100%); }
+
+        /* Gradient Texts */
+        .gradient-text {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 50%, #c4b5fd 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-size: 200% 200%; animation: gradientShift 6s ease infinite;
+        }
+        .gradient-text-green {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 50%, #6ee7b7 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .gradient-text-blue {
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .gradient-text-orange {
+            background: linear-gradient(135deg, #f97316 0%, #fb923c 50%, #fdba74 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .gradient-text-pink {
+            background: linear-gradient(135deg, #ec4899 0%, #f472b6 50%, #f9a8d4 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .title-animated {
+            background: linear-gradient(90deg, #8b5cf6, #10b981, #3b82f6, #8b5cf6);
+            background-size: 300% 100%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: titleGradient 4s ease-in-out infinite;
+        }
+        @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        @keyframes titleGradient { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+        /* Typography */
+        .slogan { font-size: 2rem; font-weight: 300; color: #94a3b8; margin-bottom: 3rem; letter-spacing: 0.05em; line-height: 1.4; }
+        .slogan strong { color: #8b5cf6; font-weight: 600; }
+        .text-readable { font-size: 1.15rem; line-height: 1.7; color: #cbd5e1; }
+
+        /* Content Boxes */
+        .content-box {
+            background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(139, 92, 246, 0.15);
+            border-radius: 1.5rem; padding: 2rem; margin-bottom: 1.5rem;
+            backdrop-filter: blur(20px); transition: all 0.3s ease;
+        }
+        .content-box:hover { border-color: rgba(139, 92, 246, 0.3); background: rgba(15, 23, 42, 0.75); }
+
+        /* Feature Card - NEW HIERARCHY: Visual Top, Title, Subtitle, Content */
+        .feature-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.15); border-radius: 1.25rem;
+            padding: 2rem; transition: all 0.3s ease; text-align: center;
+        }
+        .feature-card:hover { transform: translateY(-4px); border-color: rgba(139, 92, 246, 0.4); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); }
+        .feature-card .card-visual { min-height: 100px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; }
+        .feature-card .card-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .feature-card .card-subtitle { font-size: 0.9rem; color: #94a3b8; margin-bottom: 1rem; }
+        .feature-card .card-content { text-align: left; }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%);
+            border: 2px solid rgba(139, 92, 246, 0.25); border-radius: 1rem;
+            padding: 2rem; margin: 2rem 0;
+        }
+
+        .section-badge {
+            display: inline-flex; align-items: center; gap: 0.75rem;
+            padding: 0.75rem 1.5rem; border-radius: 2rem; font-size: 1rem;
+            font-weight: 600; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.1em;
+        }
+
+        /* VS Tables */
+        .vs-table { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .vs-old { background: rgba(239, 68, 68, 0.08); border: 2px solid rgba(239, 68, 68, 0.3); }
+        .vs-new { background: rgba(16, 185, 129, 0.08); border: 2px solid rgba(16, 185, 129, 0.3); }
+
+        /* Navigation */
+        .nav-buttons { position: fixed; bottom: 2rem; right: 2.5rem; display: flex; gap: 1rem; z-index: 1000; }
+        .nav-btn {
+            background: rgba(139, 92, 246, 0.2); backdrop-filter: blur(10px);
+            border: 2px solid rgba(139, 92, 246, 0.4); color: white;
+            width: 56px; height: 56px; border-radius: 50%; font-size: 1.3rem;
+            cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-btn:hover:not(:disabled) { background: rgba(139, 92, 246, 0.4); transform: scale(1.1); box-shadow: 0 0 30px rgba(139, 92, 246, 0.4); }
+        .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .counter {
+            position: fixed; bottom: 2rem; left: 2.5rem;
+            background: rgba(10, 15, 30, 0.9); backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            padding: 1rem 2rem; border-radius: 2rem; font-size: 1rem; color: #94a3b8; z-index: 1000;
+        }
+        .counter span { color: #8b5cf6; font-weight: 600; }
+
+        /* Animations */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .float { animation: float 4s ease-in-out infinite; }
+
+        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); } 50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.6); } }
+        .pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+
+        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .spin-slow { animation: spin-slow 20s linear infinite; }
+
+        @keyframes bounce-soft { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .bounce-soft { animation: bounce-soft 2s ease-in-out infinite; }
+
+        /* Corner Decorations */
+        .corner-decoration { position: absolute; pointer-events: none; opacity: 0.15; z-index: 0; }
+        .corner-tl { top: 40px; left: 40px; }
+        .corner-tr { top: 40px; right: 40px; }
+        .corner-bl { bottom: 140px; left: 40px; }
+        .corner-br { bottom: 140px; right: 40px; }
+
+        /* ============ STORY ANIMATIONS ============ */
+
+        /* Music Wave Animation */
+        .music-wave { display: flex; gap: 4px; align-items: flex-end; height: 50px; justify-content: center; }
+        .music-bar {
+            width: 8px; background: linear-gradient(to top, #8b5cf6, #c4b5fd);
+            border-radius: 4px; animation: wave 1s ease-in-out infinite;
+        }
+        .music-bar:nth-child(1) { animation-delay: 0s; height: 25px; }
+        .music-bar:nth-child(2) { animation-delay: 0.1s; height: 40px; }
+        .music-bar:nth-child(3) { animation-delay: 0.2s; height: 20px; }
+        .music-bar:nth-child(4) { animation-delay: 0.3s; height: 45px; }
+        .music-bar:nth-child(5) { animation-delay: 0.4s; height: 30px; }
+        @keyframes wave { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.5); } }
+
+        /* Cafe Raid Animation */
+        .cafe-scene { position: relative; width: 280px; height: 160px; margin: 0 auto; }
+        .cafe-building {
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100px; height: 80px; background: linear-gradient(135deg, #4a3728, #2d1f15);
+            border-radius: 8px 8px 0 0; border: 2px solid #8b5cf6;
+        }
+        .cafe-sign {
+            position: absolute; top: -25px; left: 50%; transform: translateX(-50%);
+            background: #10b981; color: white; padding: 4px 12px; border-radius: 4px;
+            font-size: 10px; font-weight: bold; white-space: nowrap;
+        }
+        .inspector {
+            position: absolute; bottom: 8px; left: 15px; font-size: 32px;
+            animation: inspector-walk 4s ease-in-out infinite;
+        }
+        @keyframes inspector-walk {
+            0%, 100% { left: 15px; transform: scaleX(1); }
+            50% { left: 180px; transform: scaleX(-1); }
+        }
+        .warning-icon {
+            position: absolute; top: 15px; right: 25px; font-size: 40px; color: #ef4444;
+            animation: warning-pulse 1s ease-in-out infinite;
+        }
+        @keyframes warning-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.1); } }
+
+        /* Piggy Bank Animation */
+        .savings-container { position: relative; width: 200px; height: 140px; margin: 0 auto; }
+        .piggy {
+            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+            font-size: 60px; animation: piggy-bounce 2s ease-in-out infinite;
+        }
+        @keyframes piggy-bounce { 0%, 100% { transform: translateX(-50%) rotate(-5deg); } 50% { transform: translateX(-50%) rotate(5deg); } }
+        .coin {
+            position: absolute; font-size: 22px; color: #fbbf24;
+            animation: coin-fall 3s ease-in-out infinite;
+        }
+        .coin:nth-child(1) { left: 35%; top: -10px; animation-delay: 0s; }
+        .coin:nth-child(2) { left: 50%; top: -10px; animation-delay: 1s; }
+        .coin:nth-child(3) { left: 65%; top: -10px; animation-delay: 2s; }
+        @keyframes coin-fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100px) rotate(720deg); opacity: 0; }
+        }
+
+        /* Shield Animation */
+        .shield-container { position: relative; width: 120px; height: 120px; margin: 0 auto; }
+        .shield-icon {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 60px; color: #10b981;
+            animation: shield-pulse 3s ease-in-out infinite;
+        }
+        @keyframes shield-pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.3)); }
+            50% { transform: translate(-50%, -50%) scale(1.1); filter: drop-shadow(0 0 30px rgba(16, 185, 129, 0.6)); }
+        }
+        .shield-ring {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 110px; height: 110px; border: 2px solid rgba(16, 185, 129, 0.3);
+            border-radius: 50%; animation: ring-rotate 10s linear infinite;
+        }
+        @keyframes ring-rotate { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        /* Server Animation */
+        .server-rack { display: flex; gap: 12px; justify-content: center; align-items: flex-end; }
+        .server-unit {
+            width: 50px; height: 80px; background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 2px solid #3b82f6; border-radius: 6px; position: relative;
+            display: flex; flex-direction: column; justify-content: space-around; padding: 8px;
+        }
+        .server-light {
+            width: 8px; height: 8px; background: #10b981; border-radius: 50%;
+            animation: blink 1s ease-in-out infinite;
+        }
+        .server-light:nth-child(2) { animation-delay: 0.3s; background: #3b82f6; }
+        .server-light:nth-child(3) { animation-delay: 0.6s; background: #8b5cf6; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* AI Brain Animation */
+        .ai-brain { position: relative; width: 100px; height: 100px; margin: 0 auto; }
+        .brain-icon {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 50px; color: #8b5cf6;
+        }
+        .neural-pulse {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 70px; height: 70px; border: 2px solid rgba(139, 92, 246, 0.5);
+            border-radius: 50%; animation: neural 2s ease-out infinite;
+        }
+        .neural-pulse:nth-child(2) { animation-delay: 0.5s; }
+        .neural-pulse:nth-child(3) { animation-delay: 1s; }
+        @keyframes neural {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+        }
+
+        /* Megaphone Animation */
+        .megaphone-container { position: relative; width: 100px; height: 100px; margin: 0 auto; }
+        .megaphone-icon {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 50px; color: #3b82f6; animation: megaphone-shake 0.5s ease-in-out infinite;
+        }
+        @keyframes megaphone-shake {
+            0%, 100% { transform: translate(-50%, -50%) rotate(-5deg); }
+            50% { transform: translate(-50%, -50%) rotate(5deg); }
+        }
+        .sound-wave {
+            position: absolute; top: 50%; right: -10px; transform: translateY(-50%);
+            width: 30px; height: 30px; border: 2px solid rgba(59, 130, 246, 0.5);
+            border-radius: 50%; border-left: none; animation: sound-emit 1s ease-out infinite;
+        }
+        .sound-wave:nth-child(2) { animation-delay: 0.3s; right: -20px; width: 40px; height: 40px; }
+        .sound-wave:nth-child(3) { animation-delay: 0.6s; right: -30px; width: 50px; height: 50px; }
+        @keyframes sound-emit { 0% { opacity: 1; } 100% { opacity: 0; } }
+
+        /* Lock Animation */
+        .lock-container { position: relative; width: 80px; height: 100px; margin: 0 auto; }
+        .lock-body {
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 60px; height: 50px; background: linear-gradient(135deg, #f97316, #ea580c);
+            border-radius: 8px;
+        }
+        .lock-shackle {
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 40px; height: 40px; border: 6px solid #f97316; border-bottom: none;
+            border-radius: 20px 20px 0 0; animation: lock-bounce 2s ease-in-out infinite;
+        }
+        @keyframes lock-bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-5px); } }
+
+        /* Responsive */
+        @media (max-width: 1280px) { .slide { padding: 40px 40px 120px 40px; } .slogan { font-size: 1.5rem; } }
+        @media (max-width: 768px) { .slide { padding: 30px 20px 100px 20px; } .vs-table { grid-template-columns: 1fr; } }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); }
+        ::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.3); border-radius: 4px; }
+    </style>
+</head>
+<body>
+<div class="animated-bg"></div>
+
+<!-- ========== SLIDE 1: KAPAK ========== -->
+<div class="slide active">
+    <div class="corner-decoration corner-tl">
+        <div class="music-wave" style="transform: scale(1.5);">
+            <div class="music-bar"></div><div class="music-bar"></div><div class="music-bar"></div><div class="music-bar"></div><div class="music-bar"></div>
+        </div>
+    </div>
+    <div class="corner-decoration corner-br">
+        <i class="fas fa-headphones text-[100px] spin-slow" style="opacity: 0.1;"></i>
+    </div>
+
+    <div class="flex flex-col justify-center items-center text-center relative z-10" style="min-height: 85vh;">
+        <div class="float mb-8">
+            <i class="fas fa-music text-[140px] text-purple-400/40"></i>
+        </div>
+        <h1 class="text-[7rem] font-black mb-4 leading-none tracking-tight">
+            <span class="title-animated">MUZİBU</span>
+        </h1>
+        <h2 class="text-4xl font-bold text-white/90 mb-6 tracking-wide">İşletmeler İçin Dijital Müzik Platformu</h2>
+        <div class="w-40 h-1.5 bg-gradient-to-r from-purple-500 via-green-500 to-blue-500 rounded-full mb-8"></div>
+
+        <p class="text-3xl text-slate-200 mb-4 font-light">
+            <span class="gradient-text font-semibold">Satış Ekibi</span> Eğitim Sunumu
+        </p>
+
+        <p class="text-xl text-slate-400 max-w-4xl leading-relaxed mt-6 mb-8">
+            Değerli satış temsilcilerimiz,<br>
+            Bu sunumda <span class="text-purple-400 font-semibold">Muzibu platformunun teknik üstünlüklerini</span>,<br>
+            <span class="text-green-400 font-semibold">müşterilerinize sunacağınız değer önerilerini</span> ve<br>
+            <span class="text-blue-400 font-semibold">satış sürecinde kullanacağınız argümanları</span> bulacaksınız.
+        </p>
+
+        <div class="flex items-center gap-6 text-lg text-slate-500 mt-6">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-building text-purple-400"></i>
+                <span>Türk Bilişim</span>
+            </div>
+            <div class="w-1 h-1 bg-slate-600 rounded-full"></div>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-globe text-green-400"></i>
+                <span>muzibu.com.tr</span>
+            </div>
+        </div>
+
+        <div class="absolute bottom-32 left-1/2 -translate-x-1/2 text-slate-500 animate-bounce">
+            <i class="fas fa-chevron-down text-2xl"></i>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 2: PROBLEM - MESAM/MÜ-YAP ========== -->
+<div class="slide">
+    <div class="corner-decoration corner-tr">
+        <i class="fas fa-exclamation-triangle text-[80px] text-red-500/30 bounce-soft"></i>
+    </div>
+    <div class="corner-decoration corner-bl">
+        <i class="fas fa-gavel text-[60px] text-red-500/20 float"></i>
+    </div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+        <div class="section-badge bg-red-500/20 text-red-400 border border-red-500/30">
+            <i class="fas fa-exclamation-circle"></i> Problem Tanımı
+        </div>
+
+        <h2 class="text-6xl font-black mb-4">
+            İşletmelerin <span class="text-red-400">Müzik Krizi</span>
+        </h2>
+        <p class="slogan">Türkiye'deki her işletme bu riskle karşı karşıya: <strong>MESAM ve MÜ-YAP denetimleri!</strong></p>
+
+        <!-- Cafe Raid Animation - Center Stage -->
+        <div class="cafe-scene mb-10">
+            <div class="cafe-building">
+                <div class="cafe-sign">☕ KAFE</div>
+            </div>
+            <div class="inspector">🕵️</div>
+            <div class="warning-icon">⚠️</div>
+        </div>
+
+        <div class="grid lg:grid-cols-4 gap-4 mb-8">
+            <!-- Card 1: Denetim -->
+            <div class="feature-card border-red-500/30">
+                <div class="card-visual">
+                    <i class="fas fa-user-secret text-5xl text-red-400 bounce-soft"></i>
+                </div>
+                <h3 class="card-title text-red-400">Ani Denetimler</h3>
+                <p class="card-subtitle">Habersiz geliyorlar</p>
+                <div class="card-content text-readable text-sm">
+                    <p>MESAM/MÜ-YAP denetçileri <strong>habersiz</strong> işletmelere geliyor ve anında tutanak tutuyorlar.</p>
+                </div>
+            </div>
+
+            <!-- Card 2: Maliyet -->
+            <div class="feature-card border-red-500/30">
+                <div class="card-visual">
+                    <i class="fas fa-money-bill-wave text-5xl text-red-400 float"></i>
+                </div>
+                <h3 class="card-title text-red-400">Yüksek Maliyetler</h3>
+                <p class="card-subtitle">Yıllık 15-30 bin TL</p>
+                <div class="card-content text-readable text-sm">
+                    <p>Her iki kuruma ayrı ödeme. Küçük kafe için bile <strong>15.000-30.000₺</strong> yıllık maliyet!</p>
+                </div>
+            </div>
+
+            <!-- Card 3: Hukuki Risk -->
+            <div class="feature-card border-red-500/30">
+                <div class="card-visual">
+                    <i class="fas fa-balance-scale text-5xl text-red-400 pulse-glow"></i>
+                </div>
+                <h3 class="card-title text-red-400">Hukuki Riskler</h3>
+                <p class="card-subtitle">5846 sayılı FSEK</p>
+                <div class="card-content text-readable text-sm">
+                    <p>Lisanssız müzik kullanımı suç! Para cezasının ötesinde <strong>hapis riski</strong> bile var.</p>
+                </div>
+            </div>
+
+            <!-- Card 4: Karmaşa -->
+            <div class="feature-card border-red-500/30">
+                <div class="card-visual">
+                    <i class="fas fa-random text-5xl text-red-400 spin-slow"></i>
+                </div>
+                <h3 class="card-title text-red-400">Bürokratik Kaos</h3>
+                <p class="card-subtitle">Spotify çözüm değil!</p>
+                <div class="card-content text-readable text-sm">
+                    <p>Hangi şarkıyı kime bildireceğiniz belirsiz. <strong>Spotify ticari kullanımda yasak!</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="highlight-box bg-red-500/10 border-red-500/30">
+            <h3 class="text-2xl font-bold text-red-400 mb-4 flex items-center gap-3">
+                <i class="fas fa-calculator"></i> Maliyet Karşılaştırması
+            </h3>
+            <div class="grid md:grid-cols-3 gap-6 text-center">
+                <div class="p-4 bg-red-900/20 rounded-xl border border-red-500/30">
+                    <div class="text-3xl font-black text-red-400 mb-2">15.000₺ - 30.000₺</div>
+                    <p class="text-slate-400">MESAM + MÜ-YAP Yıllık</p>
+                    <p class="text-xs text-red-300 mt-2">+ Her yıl zam</p>
+                </div>
+                <div class="p-4 bg-slate-800/40 rounded-xl flex items-center justify-center">
+                    <span class="text-4xl">VS</span>
+                </div>
+                <div class="p-4 bg-green-900/20 rounded-xl border border-green-500/30">
+                    <div class="text-3xl font-black text-green-400 mb-2">4.000₺</div>
+                    <p class="text-slate-400">Muzibu Yıllık</p>
+                    <p class="text-xs text-green-300 mt-2">%70-80 Tasarruf!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 3: NEDEN MUZİBU - 4 ANA ÖZELLİK ========== -->
+<div class="slide">
+    <div class="corner-decoration corner-tl">
+        <i class="fas fa-star text-[70px] text-yellow-500/30 pulse-glow"></i>
+    </div>
+    <div class="corner-decoration corner-br">
+        <i class="fas fa-trophy text-[80px] text-yellow-500/20 float"></i>
+    </div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+        <div class="section-badge bg-purple-500/20 text-purple-400 border border-purple-500/30">
+            <i class="fas fa-star"></i> Değer Önerimiz
+        </div>
+
+        <h2 class="text-6xl font-black mb-4">
+            Neden <span class="gradient-text">Muzibu</span>?
+        </h2>
+        <p class="slogan">Türkiye'nin <strong>ilk ve en kapsamlı</strong> B2B müzik platformu. Rakiplerimizden farkımız:</p>
+
+        <div class="grid lg:grid-cols-4 gap-6 mb-8">
+            <!-- Card 1: 3 Sunucu -->
+            <div class="feature-card border-purple-500/30">
+                <div class="card-visual">
+                    <div class="server-rack">
+                        <div class="server-unit">
+                            <div class="server-light"></div>
+                            <div class="server-light"></div>
+                            <div class="server-light"></div>
+                        </div>
+                        <div class="server-unit">
+                            <div class="server-light"></div>
+                            <div class="server-light"></div>
+                            <div class="server-light"></div>
+                        </div>
+                        <div class="server-unit">
+                            <div class="server-light"></div>
+                            <div class="server-light"></div>
+                            <div class="server-light"></div>
+                        </div>
+                    </div>
+                </div>
+                <h3 class="card-title text-purple-400">3 Sunucu Mimarisi</h3>
+                <p class="card-subtitle">Kesintisiz Yayın Garantisi</p>
+                <div class="card-content text-readable text-sm">
+                    <ul class="space-y-1 text-slate-300">
+                        <li><i class="fas fa-check text-green-400 mr-1"></i>%99.9 uptime</li>
+                        <li><i class="fas fa-check text-green-400 mr-1"></i>Load Balancing</li>
+                        <li><i class="fas fa-check text-green-400 mr-1"></i>CDN desteği</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Card 2: Yapay Zeka -->
+            <div class="feature-card border-green-500/30">
+                <div class="card-visual">
+                    <div class="ai-brain">
+                        <div class="neural-pulse"></div>
+                        <div class="neural-pulse"></div>
+                        <div class="neural-pulse"></div>
+                        <i class="brain-icon fas fa-brain"></i>
+                    </div>
+                </div>
+                <h3 class="card-title text-green-400">Yapay Zeka</h3>
+                <p class="card-subtitle">Akıllı Müzik Yönetimi</p>
+                <div class="card-content text-readable text-sm">
+                    <ul class="space-y-1 text-slate-300">
+                        <li><i class="fas fa-robot text-purple-400 mr-1"></i>Müzik Asistanı</li>
+                        <li><i class="fas fa-clock text-blue-400 mr-1"></i>Oto. Programlama</li>
+                        <li><i class="fas fa-chart-line text-green-400 mr-1"></i>Dinleme Analizi</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Card 3: Anons Sistemi -->
+            <div class="feature-card border-blue-500/30">
+                <div class="card-visual">
+                    <div class="megaphone-container">
+                        <i class="megaphone-icon fas fa-bullhorn"></i>
+                        <div class="sound-wave"></div>
+                        <div class="sound-wave"></div>
+                        <div class="sound-wave"></div>
+                    </div>
+                </div>
+                <h3 class="card-title text-blue-400">Anons Sistemi</h3>
+                <p class="card-subtitle">Profesyonel İletişim</p>
+                <div class="card-content text-readable text-sm">
+                    <ul class="space-y-1 text-slate-300">
+                        <li><i class="fas fa-volume-up text-blue-400 mr-1"></i>Sesli duyurular</li>
+                        <li><i class="fas fa-clock text-blue-400 mr-1"></i>Zamanlı çalma</li>
+                        <li><i class="fas fa-store text-blue-400 mr-1"></i>Kampanya tanıtımı</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Card 4: Güvenlik -->
+            <div class="feature-card border-orange-500/30">
+                <div class="card-visual">
+                    <div class="shield-container">
+                        <div class="shield-ring"></div>
+                        <i class="shield-icon fas fa-shield-alt"></i>
+                    </div>
+                </div>
+                <h3 class="card-title text-orange-400">Güvenlik Sistemi</h3>
+                <p class="card-subtitle">Korsan Paylaşım Önleme</p>
+                <div class="card-content text-readable text-sm">
+                    <ul class="space-y-1 text-slate-300">
+                        <li><i class="fas fa-lock text-orange-400 mr-1"></i>HLS Şifreleme</li>
+                        <li><i class="fas fa-user-lock text-orange-400 mr-1"></i>Cihaz Limiti</li>
+                        <li><i class="fas fa-fingerprint text-orange-400 mr-1"></i>Session Tracking</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <h3 class="text-2xl font-bold text-purple-400 mb-4 flex items-center gap-3">
+                <i class="fas fa-lightbulb text-yellow-400"></i> Neden Bu Özellikler Önemli?
+            </h3>
+            <p class="text-xl text-slate-200 leading-relaxed">
+                <strong>3 Sunucu:</strong> Müşterinizin işletmesinde müzik asla kesilmez.<br>
+                <strong>Yapay Zeka:</strong> Müşteri uğraşmaz, sistem her şeyi otomatik yapar.<br>
+                <strong>Anons:</strong> Müzik arasında kampanya duyurusu - ekstra gelir!<br>
+                <strong>Güvenlik:</strong> Müzik indirilemez, paylaşılamaz - telif koruması.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 4: SPOTİFY vs MUZİBU ========== -->
+<div class="slide">
+    <div class="corner-decoration corner-tl">
+        <i class="fab fa-spotify text-[80px] text-green-500/20"></i>
+    </div>
+    <div class="corner-decoration corner-br">
+        <i class="fas fa-store text-[70px] text-purple-500/20 float"></i>
+    </div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+        <div class="section-badge bg-green-500/20 text-green-400 border border-green-500/30">
+            <i class="fas fa-balance-scale"></i> Karşılaştırma
+        </div>
+
+        <h2 class="text-6xl font-black mb-4">
+            <span class="text-green-500">Spotify</span> vs <span class="gradient-text">Muzibu</span>
+        </h2>
+        <p class="slogan">"<strong>Spotify kullanıyoruz zaten</strong>" diyen müşterilere ne diyeceksiniz?</p>
+
+        <!-- Warning Banner -->
+        <div class="highlight-box bg-red-500/10 border-red-500/30 mb-8">
+            <div class="flex items-center gap-4">
+                <i class="fas fa-exclamation-triangle text-5xl text-red-400"></i>
+                <div>
+                    <h3 class="text-2xl font-bold text-red-400 mb-2">Kritik Bilgi: Spotify Ticari Kullanımda YASAK!</h3>
+                    <p class="text-lg text-slate-200">
+                        Spotify'ın kullanım şartları: <strong>"Kişisel kullanım dışında YASAKTIR."</strong><br>
+                        Premium abonelik bile ticari kullanım hakkı vermez. Denetimde ceza kesilir!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-8 mb-8">
+            <!-- Spotify Card -->
+            <div class="feature-card border-red-500/30">
+                <div class="card-visual">
+                    <i class="fab fa-spotify text-7xl text-green-500"></i>
+                </div>
+                <h3 class="card-title text-green-500">Spotify</h3>
+                <p class="card-subtitle">Bireysel Platform</p>
+                <div class="card-content">
+                    <div class="space-y-3 text-sm">
+                        <div class="p-3 bg-red-900/20 rounded-lg border border-red-500/30">
+                            <span class="text-red-400 font-bold">❌ Ticari Kullanım Yasak</span>
+                            <p class="text-slate-400 mt-1">Kullanım sözleşmesi açıkça yasaklıyor</p>
+                        </div>
+                        <div class="p-3 bg-red-900/20 rounded-lg border border-red-500/30">
+                            <span class="text-red-400 font-bold">❌ Telif Sorunu Çözmez</span>
+                            <p class="text-slate-400 mt-1">MESAM/MÜ-YAP yükümlülüğü devam eder</p>
+                        </div>
+                        <div class="p-3 bg-red-900/20 rounded-lg border border-red-500/30">
+                            <span class="text-red-400 font-bold">❌ Reklam Sorunu</span>
+                            <p class="text-slate-400 mt-1">Free'de reklam, Premium'da algoritma</p>
+                        </div>
+                        <div class="p-3 bg-red-900/20 rounded-lg border border-red-500/30">
+                            <span class="text-red-400 font-bold">❌ Anons Yok</span>
+                            <p class="text-slate-400 mt-1">Kendi duyurularınızı ekleyemezsiniz</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Muzibu Card -->
+            <div class="feature-card border-green-500/30">
+                <div class="card-visual">
+                    <div class="music-wave">
+                        <div class="music-bar"></div><div class="music-bar"></div><div class="music-bar"></div><div class="music-bar"></div><div class="music-bar"></div>
+                    </div>
+                </div>
+                <h3 class="card-title text-purple-400">Muzibu</h3>
+                <p class="card-subtitle">B2B Platform</p>
+                <div class="card-content">
+                    <div class="space-y-3 text-sm">
+                        <div class="p-3 bg-green-900/20 rounded-lg border border-green-500/30">
+                            <span class="text-green-400 font-bold">✅ Ticari Kullanım İçin Tasarlandı</span>
+                            <p class="text-slate-400 mt-1">Baştan sona işletmeler için geliştirildi</p>
+                        </div>
+                        <div class="p-3 bg-green-900/20 rounded-lg border border-green-500/30">
+                            <span class="text-green-400 font-bold">✅ Telif Hakları Dahil</span>
+                            <p class="text-slate-400 mt-1">Tüm müzikler telif hakları temizlenmiş</p>
+                        </div>
+                        <div class="p-3 bg-green-900/20 rounded-lg border border-green-500/30">
+                            <span class="text-green-400 font-bold">✅ Reklamsız, Kontrollü</span>
+                            <p class="text-slate-400 mt-1">Hiç reklam yok, tam kontrol sizde</p>
+                        </div>
+                        <div class="p-3 bg-green-900/20 rounded-lg border border-green-500/30">
+                            <span class="text-green-400 font-bold">✅ Anons Sistemi Dahil</span>
+                            <p class="text-slate-400 mt-1">Sesli duyurularınızı yükleyin, çalın!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <h3 class="text-2xl font-bold text-purple-400 mb-4 flex items-center gap-3">
+                <i class="fas fa-lightbulb text-yellow-400"></i> Satış İpucu
+            </h3>
+            <p class="text-xl text-slate-200 leading-relaxed">
+                Müşteri "Spotify kullanıyorum" dediğinde şunu sorun:<br>
+                <strong class="text-purple-300">"MESAM/MÜ-YAP denetimi geldiğinde Spotify faturasını mı göstereceksiniz?
+                Bu sizi korumaz, aksine ceza yersiniz!"</strong>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 5: TEKNİK ALTYAPI ========== -->
+<div class="slide">
+    <div class="corner-decoration corner-tr">
+        <i class="fas fa-cogs text-[80px] text-blue-500/20 spin-slow"></i>
+    </div>
+    <div class="corner-decoration corner-bl">
+        <i class="fas fa-microchip text-[70px] text-blue-500/20 pulse-glow"></i>
+    </div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+        <div class="section-badge bg-blue-500/20 text-blue-400 border border-blue-500/30">
+            <i class="fas fa-server"></i> Teknik Altyapı
+        </div>
+
+        <h2 class="text-6xl font-black mb-4">
+            <span class="gradient-text-blue">Kurumsal Düzeyde</span> Teknoloji
+        </h2>
+        <p class="slogan">Türk Bilişim olarak <strong>10+ yıllık deneyimimizi</strong> Muzibu'ya aktardık.</p>
+
+        <div class="grid lg:grid-cols-3 gap-6 mb-8">
+            <!-- HLS Streaming -->
+            <div class="feature-card border-blue-500/30">
+                <div class="card-visual">
+                    <i class="fas fa-broadcast-tower text-6xl text-blue-400 float"></i>
+                </div>
+                <h3 class="card-title text-blue-400">HLS Streaming</h3>
+                <p class="card-subtitle">Netflix/Spotify Teknolojisi</p>
+                <div class="card-content text-readable text-sm">
+                    <p class="mb-3">Apple'ın geliştirdiği, Netflix ve Spotify'ın da kullandığı teknoloji.</p>
+                    <ul class="space-y-1 text-slate-400">
+                        <li><i class="fas fa-check text-green-400 mr-1"></i>Adaptif bit rate</li>
+                        <li><i class="fas fa-check text-green-400 mr-1"></i>Düşük gecikme</li>
+                        <li><i class="fas fa-check text-green-400 mr-1"></i>Buffer yönetimi</li>
+                        <li><i class="fas fa-check text-green-400 mr-1"></i>MP3 fallback</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Redis Cache -->
+            <div class="feature-card border-purple-500/30">
+                <div class="card-visual">
+                    <i class="fas fa-database text-6xl text-purple-400 pulse-glow"></i>
+                </div>
+                <h3 class="card-title text-purple-400">Redis Cache</h3>
+                <p class="card-subtitle">In-Memory Database</p>
+                <div class="card-content text-readable text-sm">
+                    <p class="mb-3">Sık kullanılan veriler bellekte tutulur, anında erişim.</p>
+                    <ul class="space-y-1 text-slate-400">
+                        <li><i class="fas fa-check text-green-400 mr-1"></i>Mikrosaniye yanıt</li>
+                        <li><i class="fas fa-check text-green-400 mr-1"></i>Playlist caching</li>
+                        <li><i class="fas fa-check text-green-400 mr-1"></i>Session management</li>
+                        <li><i class="fas fa-check text-green-400 mr-1"></i>Real-time analytics</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- SSL/TLS -->
+            <div class="feature-card border-green-500/30">
+                <div class="card-visual">
+                    <div class="lock-container">
+                        <div class="lock-shackle"></div>
+                        <div class="lock-body"></div>
+                    </div>
+                </div>
+                <h3 class="card-title text-green-400">SSL/TLS Güvenlik</h3>
+                <p class="card-subtitle">256-bit Şifreleme</p>
+                <div class="card-content text-readable text-sm">
+                    <p class="mb-3">Bankacılık düzeyinde güvenlik standartları.</p>
+                    <ul class="space-y-1 text-slate-400">
+                        <li><i class="fas fa-check text-green-400 mr-1"></i>HTTPS zorunlu</li>
+                        <li><i class="fas fa-check text-green-400 mr-1"></i>Token-based auth</li>
+                        <li><i class="fas fa-check text-green-400 mr-1"></i>CSRF koruması</li>
+                        <li><i class="fas fa-check text-green-400 mr-1"></i>Rate limiting</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Platform Support -->
+        <div class="content-box border-cyan-500/30">
+            <h3 class="text-2xl font-bold text-cyan-400 mb-6 text-center">
+                <i class="fas fa-mobile-alt mr-2"></i>Çoklu Platform Desteği
+            </h3>
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="feature-card border-blue-500/20 py-6">
+                    <div class="card-visual" style="min-height: 60px;">
+                        <i class="fas fa-desktop text-4xl text-blue-400"></i>
+                    </div>
+                    <h4 class="card-title text-lg text-white">Web Tarayıcı</h4>
+                    <p class="card-subtitle">Chrome, Firefox, Safari</p>
+                </div>
+                <div class="feature-card border-green-500/20 py-6">
+                    <div class="card-visual" style="min-height: 60px;">
+                        <i class="fas fa-mobile-alt text-4xl text-green-400"></i>
+                    </div>
+                    <h4 class="card-title text-lg text-white">Mobil Web</h4>
+                    <p class="card-subtitle">Responsive tasarım</p>
+                </div>
+                <div class="feature-card border-purple-500/20 py-6">
+                    <div class="card-visual" style="min-height: 60px;">
+                        <i class="fas fa-tablet-alt text-4xl text-purple-400"></i>
+                    </div>
+                    <h4 class="card-title text-lg text-white">Tablet</h4>
+                    <p class="card-subtitle">iPad & Android</p>
+                </div>
+                <div class="feature-card border-orange-500/20 py-6">
+                    <div class="card-visual" style="min-height: 60px;">
+                        <i class="fas fa-tv text-4xl text-orange-400"></i>
+                    </div>
+                    <h4 class="card-title text-lg text-white">Smart TV</h4>
+                    <p class="card-subtitle">Web browser</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="highlight-box bg-blue-500/10 border-blue-500/30">
+            <h3 class="text-2xl font-bold text-blue-400 mb-4 text-center"><i class="fas fa-chart-bar mr-2"></i>Performans Metrikleri</h3>
+            <div class="grid md:grid-cols-4 gap-6 text-center">
+                <div>
+                    <div class="text-4xl font-black text-green-400 mb-2">99.9%</div>
+                    <p class="text-slate-400">Uptime Garantisi</p>
+                </div>
+                <div>
+                    <div class="text-4xl font-black text-blue-400 mb-2">&lt;100ms</div>
+                    <p class="text-slate-400">Yanıt Süresi</p>
+                </div>
+                <div>
+                    <div class="text-4xl font-black text-purple-400 mb-2">3x</div>
+                    <p class="text-slate-400">Yedekli Sunucu</p>
+                </div>
+                <div>
+                    <div class="text-4xl font-black text-orange-400 mb-2">24/7</div>
+                    <p class="text-slate-400">Monitoring</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 6: İÇERİK KATALoğU ========== -->
+<div class="slide">
+    <div class="corner-decoration corner-tl">
+        <div class="music-wave" style="transform: scale(1.2);">
+            <div class="music-bar"></div><div class="music-bar"></div><div class="music-bar"></div><div class="music-bar"></div><div class="music-bar"></div>
+        </div>
+    </div>
+    <div class="corner-decoration corner-br">
+        <i class="fas fa-compact-disc text-[80px] text-purple-500/20 spin-slow"></i>
+    </div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+        <div class="section-badge bg-purple-500/20 text-purple-400 border border-purple-500/30">
+            <i class="fas fa-music"></i> İçerik Kataloğu
+        </div>
+
+        <h2 class="text-6xl font-black mb-4">
+            <span class="gradient-text">Zengin Müzik</span> Kütüphanesi
+        </h2>
+        <p class="slogan">Her sektör, her zevk, her ortam için <strong>özenle seçilmiş</strong> içerikler.</p>
+
+        <!-- Stats Cards -->
+        <div class="grid md:grid-cols-4 gap-6 mb-8">
+            <div class="feature-card border-purple-500/30">
+                <div class="card-visual">
+                    <i class="fas fa-music text-5xl text-purple-400 float"></i>
+                </div>
+                <div class="text-5xl font-black text-purple-400 mb-2">500+</div>
+                <h4 class="card-title text-white">Şarkı</h4>
+                <p class="card-subtitle">Telif hakları temiz</p>
+            </div>
+            <div class="feature-card border-green-500/30">
+                <div class="card-visual">
+                    <i class="fas fa-list text-5xl text-green-400 bounce-soft"></i>
+                </div>
+                <div class="text-5xl font-black text-green-400 mb-2">130+</div>
+                <h4 class="card-title text-white">Playlist</h4>
+                <p class="card-subtitle">Özenle hazırlanmış</p>
+            </div>
+            <div class="feature-card border-blue-500/30">
+                <div class="card-visual">
+                    <i class="fas fa-compact-disc text-5xl text-blue-400 spin-slow"></i>
+                </div>
+                <div class="text-5xl font-black text-blue-400 mb-2">54</div>
+                <h4 class="card-title text-white">Albüm</h4>
+                <p class="card-subtitle">Tam koleksiyon</p>
+            </div>
+            <div class="feature-card border-orange-500/30">
+                <div class="card-visual">
+                    <i class="fas fa-broadcast-tower text-5xl text-orange-400 pulse-glow"></i>
+                </div>
+                <div class="text-5xl font-black text-orange-400 mb-2">8</div>
+                <h4 class="card-title text-white">Radyo</h4>
+                <p class="card-subtitle">7/24 yayın</p>
+            </div>
+        </div>
+
+        <!-- Genres & Sectors -->
+        <div class="grid lg:grid-cols-2 gap-6 mb-8">
+            <div class="content-box border-pink-500/30">
+                <h3 class="text-xl font-bold text-pink-400 mb-4 text-center"><i class="fas fa-layer-group mr-2"></i>Türlere Göre</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="p-2 bg-slate-800/40 rounded-lg flex items-center gap-2 text-sm">
+                        <i class="fas fa-guitar text-orange-400"></i><span>Türk Halk</span>
+                    </div>
+                    <div class="p-2 bg-slate-800/40 rounded-lg flex items-center gap-2 text-sm">
+                        <i class="fas fa-piano text-blue-400"></i><span>Klasik</span>
+                    </div>
+                    <div class="p-2 bg-slate-800/40 rounded-lg flex items-center gap-2 text-sm">
+                        <i class="fas fa-bolt text-yellow-400"></i><span>Elektronik</span>
+                    </div>
+                    <div class="p-2 bg-slate-800/40 rounded-lg flex items-center gap-2 text-sm">
+                        <i class="fas fa-saxophone text-purple-400"></i><span>Jazz</span>
+                    </div>
+                    <div class="p-2 bg-slate-800/40 rounded-lg flex items-center gap-2 text-sm">
+                        <i class="fas fa-drum text-red-400"></i><span>Pop</span>
+                    </div>
+                    <div class="p-2 bg-slate-800/40 rounded-lg flex items-center gap-2 text-sm">
+                        <i class="fas fa-fire text-orange-400"></i><span>Rock</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box border-cyan-500/30">
+                <h3 class="text-xl font-bold text-cyan-400 mb-4 text-center"><i class="fas fa-store mr-2"></i>Sektörlere Göre</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="p-2 bg-slate-800/40 rounded-lg flex items-center gap-2 text-sm">
+                        <i class="fas fa-coffee text-amber-400"></i><span>Kafe</span>
+                    </div>
+                    <div class="p-2 bg-slate-800/40 rounded-lg flex items-center gap-2 text-sm">
+                        <i class="fas fa-hotel text-blue-400"></i><span>Otel</span>
+                    </div>
+                    <div class="p-2 bg-slate-800/40 rounded-lg flex items-center gap-2 text-sm">
+                        <i class="fas fa-shopping-bag text-pink-400"></i><span>AVM</span>
+                    </div>
+                    <div class="p-2 bg-slate-800/40 rounded-lg flex items-center gap-2 text-sm">
+                        <i class="fas fa-dumbbell text-red-400"></i><span>Spor Salonu</span>
+                    </div>
+                    <div class="p-2 bg-slate-800/40 rounded-lg flex items-center gap-2 text-sm">
+                        <i class="fas fa-briefcase text-slate-400"></i><span>Ofis</span>
+                    </div>
+                    <div class="p-2 bg-slate-800/40 rounded-lg flex items-center gap-2 text-sm">
+                        <i class="fas fa-spa text-green-400"></i><span>Spa</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Time-based Playlists -->
+        <div class="highlight-box">
+            <h3 class="text-xl font-bold text-purple-400 mb-4 text-center"><i class="fas fa-clock mr-2"></i>Zamana Göre Akıllı Playlist</h3>
+            <div class="grid md:grid-cols-4 gap-4">
+                <div class="feature-card border-yellow-500/20 py-4">
+                    <div class="card-visual" style="min-height: 50px;">
+                        <i class="fas fa-sun text-3xl text-yellow-400"></i>
+                    </div>
+                    <h4 class="card-title text-lg text-yellow-300">Sabah</h4>
+                    <p class="card-subtitle">06:00 - 10:00</p>
+                </div>
+                <div class="feature-card border-blue-500/20 py-4">
+                    <div class="card-visual" style="min-height: 50px;">
+                        <i class="fas fa-cloud-sun text-3xl text-blue-400"></i>
+                    </div>
+                    <h4 class="card-title text-lg text-blue-300">Öğle</h4>
+                    <p class="card-subtitle">10:00 - 14:00</p>
+                </div>
+                <div class="feature-card border-orange-500/20 py-4">
+                    <div class="card-visual" style="min-height: 50px;">
+                        <i class="fas fa-sunset text-3xl text-orange-400"></i>
+                    </div>
+                    <h4 class="card-title text-lg text-orange-300">Akşam</h4>
+                    <p class="card-subtitle">14:00 - 20:00</p>
+                </div>
+                <div class="feature-card border-purple-500/20 py-4">
+                    <div class="card-visual" style="min-height: 50px;">
+                        <i class="fas fa-moon text-3xl text-purple-400"></i>
+                    </div>
+                    <h4 class="card-title text-lg text-purple-300">Gece</h4>
+                    <p class="card-subtitle">20:00 - 06:00</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 7: FİYATLANDIRMA ========== -->
+<div class="slide">
+    <div class="corner-decoration corner-tl">
+        <div class="savings-container" style="transform: scale(0.5);">
+            <div class="coin"><i class="fas fa-coins"></i></div>
+            <div class="coin"><i class="fas fa-coins"></i></div>
+            <div class="coin"><i class="fas fa-coins"></i></div>
+            <div class="piggy">🐷</div>
+        </div>
+    </div>
+    <div class="corner-decoration corner-br">
+        <i class="fas fa-tags text-[70px] text-green-500/20 float"></i>
+    </div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+        <div class="section-badge bg-green-500/20 text-green-400 border border-green-500/30">
+            <i class="fas fa-tag"></i> Fiyatlandırma
+        </div>
+
+        <h2 class="text-6xl font-black mb-4">
+            <span class="gradient-text-green">Uygun Fiyat</span>, Üstün Değer
+        </h2>
+        <p class="slogan">MESAM/MÜ-YAP'a kıyasla <strong>%70-80 tasarruf</strong> sağlayın!</p>
+
+        <!-- Piggy Bank Animation Center -->
+        <div class="savings-container mb-8">
+            <div class="coin"><i class="fas fa-coins"></i></div>
+            <div class="coin"><i class="fas fa-coins"></i></div>
+            <div class="coin"><i class="fas fa-coins"></i></div>
+            <div class="piggy">🐷</div>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-8 mb-8">
+            <!-- Monthly Plan -->
+            <div class="feature-card border-blue-500/30 relative">
+                <div class="absolute top-4 right-4 bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm">Esnek</div>
+                <div class="card-visual">
+                    <i class="fas fa-calendar-alt text-6xl text-blue-400 float"></i>
+                </div>
+                <h3 class="card-title text-blue-400">Aylık Plan</h3>
+                <p class="card-subtitle">İstediğiniz zaman iptal</p>
+                <div class="my-6">
+                    <div class="text-5xl font-black text-white">600₺</div>
+                    <p class="text-slate-400">+ KDV / ay</p>
+                </div>
+                <div class="card-content text-sm">
+                    <ul class="space-y-2 text-slate-300">
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Tüm müzik kataloğu</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Sınırsız dinleme</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Anons sistemi</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Resmi lisans belgesi</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Yearly Plan -->
+            <div class="feature-card border-green-500/30 relative pulse-glow">
+                <div class="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">⭐ EN POPÜLER</div>
+                <div class="card-visual">
+                    <i class="fas fa-crown text-6xl text-yellow-400 bounce-soft"></i>
+                </div>
+                <h3 class="card-title text-green-400">Yıllık Plan</h3>
+                <p class="card-subtitle">%45 tasarruf!</p>
+                <div class="my-6">
+                    <div class="text-5xl font-black text-white">4.000₺</div>
+                    <p class="text-slate-400">+ KDV / yıl</p>
+                    <p class="text-green-400 text-sm mt-1">Aylık 333₺'ye denk!</p>
+                </div>
+                <div class="card-content text-sm">
+                    <ul class="space-y-2 text-slate-300">
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Tüm aylık plan özellikleri</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Öncelikli destek</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Yeni özellikler önce sizde</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Fiyat garantisi (1 yıl)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Savings Calculation -->
+        <div class="highlight-box">
+            <h3 class="text-xl font-bold text-green-400 mb-4 text-center"><i class="fas fa-calculator mr-2"></i>Tasarruf Hesaplaması</h3>
+            <div class="grid md:grid-cols-3 gap-6 text-center">
+                <div class="p-4 bg-red-900/20 rounded-xl border border-red-500/30">
+                    <p class="text-sm text-slate-400 mb-1">MESAM + MÜ-YAP</p>
+                    <div class="text-2xl font-black text-red-400">~20.000₺</div>
+                    <p class="text-xs text-red-300">Ort. yıllık</p>
+                </div>
+                <div class="p-4 bg-slate-800/40 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-minus text-3xl text-slate-500"></i>
+                </div>
+                <div class="p-4 bg-green-900/20 rounded-xl border border-green-500/30">
+                    <p class="text-sm text-slate-400 mb-1">Muzibu Yıllık</p>
+                    <div class="text-2xl font-black text-green-400">4.000₺</div>
+                    <p class="text-xs text-green-300">Sabit fiyat</p>
+                </div>
+            </div>
+            <div class="text-center mt-6">
+                <div class="inline-block p-4 bg-green-500/20 rounded-xl border border-green-500/40">
+                    <p class="text-xl font-bold text-green-400">= <span class="text-3xl">16.000₺</span> TASARRUF!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 8: SATIŞ ARGÜMANLARI ========== -->
+<div class="slide">
+    <div class="corner-decoration corner-tl">
+        <i class="fas fa-comments text-[70px] text-purple-500/20 bounce-soft"></i>
+    </div>
+    <div class="corner-decoration corner-br">
+        <i class="fas fa-handshake text-[60px] text-green-500/20 float"></i>
+    </div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+        <div class="section-badge bg-purple-500/20 text-purple-400 border border-purple-500/30">
+            <i class="fas fa-bullseye"></i> Satış Teknikleri
+        </div>
+
+        <h2 class="text-6xl font-black mb-4">
+            <span class="gradient-text">Satış Argümanları</span>
+        </h2>
+        <p class="slogan">Müşterilerin sık sorduğu sorular ve <strong>etkili cevaplar</strong>.</p>
+
+        <div class="grid gap-4">
+            <!-- Objection 1 -->
+            <div class="content-box border-slate-700">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-question text-red-400"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-lg font-bold text-red-400 mb-2">"Zaten Spotify kullanıyorum"</h4>
+                        <div class="p-3 bg-green-900/20 rounded-lg border border-green-500/30">
+                            <p class="text-sm text-slate-200">
+                                <i class="fas fa-check-circle text-green-400 mr-1"></i>
+                                <strong>Cevap:</strong> "Spotify'ın kullanım şartları ticari kullanımı açıkça yasaklıyor.
+                                Denetim geldiğinde Spotify faturası sizi korumaz, aksine 'lisanssız kullanım' suçlamasıyla
+                                karşılaşırsınız. Muzibu ile <strong>resmi lisans belgeniz</strong> oluyor."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Objection 2 -->
+            <div class="content-box border-slate-700">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-question text-red-400"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-lg font-bold text-red-400 mb-2">"Çok pahalı, bütçemiz yok"</h4>
+                        <div class="p-3 bg-green-900/20 rounded-lg border border-green-500/30">
+                            <p class="text-sm text-slate-200">
+                                <i class="fas fa-check-circle text-green-400 mr-1"></i>
+                                <strong>Cevap:</strong> "MESAM ve MÜ-YAP'a ayrı ayrı ödeme yapsanız yıllık 15-30 bin lira.
+                                Muzibu ile sadece <strong>4.000₺</strong>. Bir denetim cezası ise bunun 5-10 katı olabilir.
+                                Aslında Muzibu <strong>en ekonomik</strong> çözüm."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Objection 3 -->
+            <div class="content-box border-slate-700">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-question text-red-400"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-lg font-bold text-red-400 mb-2">"Müzik bizim için önemli değil"</h4>
+                        <div class="p-3 bg-green-900/20 rounded-lg border border-green-500/30">
+                            <p class="text-sm text-slate-200">
+                                <i class="fas fa-check-circle text-green-400 mr-1"></i>
+                                <strong>Cevap:</strong> "Araştırmalar gösteriyor ki doğru müzik ortamı müşteri memnuniyetini
+                                <strong>%30 artırıyor</strong>. Müşteriler daha uzun kalıyor, daha çok harcıyor.
+                                <strong>Anons sistemi</strong> ile kampanyalarınızı da duyurabilirsiniz."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Objection 4 -->
+            <div class="content-box border-slate-700">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-question text-red-400"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-lg font-bold text-red-400 mb-2">"Denetim hiç gelmedi, gelmez de"</h4>
+                        <div class="p-3 bg-green-900/20 rounded-lg border border-green-500/30">
+                            <p class="text-sm text-slate-200">
+                                <i class="fas fa-check-circle text-green-400 mr-1"></i>
+                                <strong>Cevap:</strong> "MESAM ve MÜ-YAP denetimleri <strong>habersiz</strong> yapılıyor
+                                ve son yıllarda <strong>çok yoğunlaştı</strong>. Özellikle AVM, kafe ve restoranlar hedefte.
+                                Bir kez ceza kesildiğinde mali yük çok ağır."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 9: 7 GÜN DENEME ========== -->
+<div class="slide">
+    <div class="corner-decoration corner-tl">
+        <i class="fas fa-gift text-[70px] text-green-500/20 bounce-soft"></i>
+    </div>
+    <div class="corner-decoration corner-br">
+        <i class="fas fa-rocket text-[60px] text-purple-500/20 float"></i>
+    </div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+        <div class="section-badge bg-green-500/20 text-green-400 border border-green-500/30">
+            <i class="fas fa-gift"></i> Deneme Süreci
+        </div>
+
+        <h2 class="text-6xl font-black mb-4">
+            <span class="gradient-text-green">7 Gün Ücretsiz</span> Deneyin!
+        </h2>
+        <p class="slogan">Risk yok, taahhüt yok. Beğenmezseniz <strong>hiçbir ücret ödemezsiniz</strong>.</p>
+
+        <div class="grid lg:grid-cols-4 gap-6 mb-8">
+            <div class="feature-card border-green-500/30">
+                <div class="card-visual">
+                    <i class="fas fa-unlock text-5xl text-green-400 float"></i>
+                </div>
+                <h3 class="card-title text-green-400">Tam Erişim</h3>
+                <p class="card-subtitle">Kısıtlama yok</p>
+                <div class="card-content text-sm text-slate-400">
+                    <p>Tüm müzik kataloğu, tüm özellikler - hiçbir kısıtlama yok</p>
+                </div>
+            </div>
+
+            <div class="feature-card border-blue-500/30">
+                <div class="card-visual">
+                    <i class="fas fa-credit-card text-5xl text-blue-400 bounce-soft"></i>
+                </div>
+                <h3 class="card-title text-blue-400">Kart Gerekmez</h3>
+                <p class="card-subtitle">Güvenle deneyin</p>
+                <div class="card-content text-sm text-slate-400">
+                    <p>Kayıt için kart bilgisi almıyoruz - sürpriz fatura yok</p>
+                </div>
+            </div>
+
+            <div class="feature-card border-purple-500/30">
+                <div class="card-visual">
+                    <i class="fas fa-headset text-5xl text-purple-400 pulse-glow"></i>
+                </div>
+                <h3 class="card-title text-purple-400">Destek Dahil</h3>
+                <p class="card-subtitle">Yanınızdayız</p>
+                <div class="card-content text-sm text-slate-400">
+                    <p>Deneme sürecinde de teknik destek alırsınız</p>
+                </div>
+            </div>
+
+            <div class="feature-card border-orange-500/30">
+                <div class="card-visual">
+                    <i class="fas fa-hourglass-end text-5xl text-orange-400 float"></i>
+                </div>
+                <h3 class="card-title text-orange-400">Oto. Sonlanma</h3>
+                <p class="card-subtitle">Otomatik kapanır</p>
+                <div class="card-content text-sm text-slate-400">
+                    <p>7 gün sonunda otomatik kapanır - takip etmenize gerek yok</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conversion Stats -->
+        <div class="highlight-box bg-green-500/10 border-green-500/30">
+            <h3 class="text-xl font-bold text-green-400 mb-4 text-center"><i class="fas fa-chart-line mr-2"></i>Dönüşüm Oranları</h3>
+            <div class="grid md:grid-cols-3 gap-6 text-center">
+                <div class="p-4 bg-slate-800/40 rounded-xl">
+                    <div class="text-4xl font-black text-green-400 mb-2">75%</div>
+                    <p class="text-slate-400">Demo sonrası deneme</p>
+                </div>
+                <div class="p-4 bg-slate-800/40 rounded-xl">
+                    <div class="text-4xl font-black text-blue-400 mb-2">60%</div>
+                    <p class="text-slate-400">Deneme sonrası satın alma</p>
+                </div>
+                <div class="p-4 bg-slate-800/40 rounded-xl">
+                    <div class="text-4xl font-black text-purple-400 mb-2">85%</div>
+                    <p class="text-slate-400">Yıllık yenileme oranı</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SLIDE 10: TEŞEKKÜR ========== -->
+<div class="slide">
+    <div class="corner-decoration corner-tl">
+        <div class="music-wave" style="transform: scale(1.5);">
+            <div class="music-bar"></div><div class="music-bar"></div><div class="music-bar"></div><div class="music-bar"></div><div class="music-bar"></div>
+        </div>
+    </div>
+    <div class="corner-decoration corner-tr">
+        <i class="fas fa-award text-[70px] text-yellow-500/20 pulse-glow"></i>
+    </div>
+    <div class="corner-decoration corner-bl">
+        <i class="fas fa-heart text-[50px] text-pink-500/20 bounce-soft"></i>
+    </div>
+    <div class="corner-decoration corner-br">
+        <i class="fas fa-rocket text-[60px] text-purple-500/20 float"></i>
+    </div>
+
+    <div class="flex flex-col justify-center items-center text-center relative z-10" style="min-height: 85vh;">
+        <div class="float mb-8">
+            <i class="fas fa-hands-clapping text-[100px] text-yellow-400/40"></i>
+        </div>
+
+        <h1 class="text-6xl font-black mb-6">
+            <span class="title-animated">Teşekkürler!</span>
+        </h1>
+
+        <p class="text-2xl text-slate-200 mb-8 max-w-3xl leading-relaxed">
+            Bu sunumu dikkatle dinlediğiniz için teşekkür ederiz.
+        </p>
+
+        <div class="w-40 h-1.5 bg-gradient-to-r from-purple-500 via-green-500 to-blue-500 rounded-full mb-10"></div>
+
+        <div class="content-box border-purple-500/30 max-w-lg">
+            <h3 class="text-xl font-bold text-purple-400 mb-4">Hatırlatma</h3>
+            <div class="text-lg text-slate-300 space-y-2">
+                <p><i class="fas fa-check text-green-400 mr-2"></i>Aylık: <strong class="text-white">600₺+KDV</strong></p>
+                <p><i class="fas fa-check text-green-400 mr-2"></i>Yıllık: <strong class="text-white">4.000₺+KDV</strong></p>
+                <p><i class="fas fa-check text-green-400 mr-2"></i>Deneme: <strong class="text-white">7 gün ücretsiz</strong></p>
+            </div>
+        </div>
+
+        <div class="mt-8 text-slate-500">
+            <p class="text-lg mb-4">Sorularınız için:</p>
+            <div class="flex items-center gap-6 justify-center">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-globe text-purple-400"></i>
+                    <span>muzibu.com.tr</span>
+                </div>
+                <div class="w-1 h-1 bg-slate-600 rounded-full"></div>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-building text-blue-400"></i>
+                    <span>turkbilisim.com.tr</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-32 text-slate-600 text-sm">
+            <p>© 2025 Türk Bilişim - Tüm hakları saklıdır.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation Buttons -->
+<div class="nav-buttons">
+    <button class="nav-btn" id="prevBtn" disabled><i class="fas fa-chevron-left"></i></button>
+    <button class="nav-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+</div>
+
+<!-- Slide Counter -->
+<div class="counter">
+    <span id="currentSlide">1</span> / <span id="totalSlides">10</span>
+</div>
+
+<script>
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const currentSlideEl = document.getElementById('currentSlide');
+    const totalSlidesEl = document.getElementById('totalSlides');
+
+    let currentSlide = 0;
+    totalSlidesEl.textContent = slides.length;
+
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.classList.remove('active', 'prev');
+            if (i < index) slide.classList.add('prev');
+            if (i === index) slide.classList.add('active');
+        });
+        currentSlide = index;
+        currentSlideEl.textContent = index + 1;
+        prevBtn.disabled = index === 0;
+        nextBtn.disabled = index === slides.length - 1;
+    }
+
+    function nextSlide() { if (currentSlide < slides.length - 1) showSlide(currentSlide + 1); }
+    function prevSlide() { if (currentSlide > 0) showSlide(currentSlide - 1); }
+
+    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', nextSlide);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+        if (e.key === 'ArrowLeft') prevSlide();
+        if (e.key === 'Home') showSlide(0);
+        if (e.key === 'End') showSlide(slides.length - 1);
+    });
+
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+    document.addEventListener('touchend', (e) => {
+        const diff = touchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 50) { diff > 0 ? nextSlide() : prevSlide(); }
+    });
+</script>
+</body>
+</html>

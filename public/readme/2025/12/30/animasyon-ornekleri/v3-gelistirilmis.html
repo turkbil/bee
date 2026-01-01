@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geliştirilmiş Hikayeli Animasyonlar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* ========================================
+           1. KAFE BASKINI HİKAYESİ (Geliştirilmiş)
+           Sahne: Mutlu kafe → Denetçi gelir → Ceza keser → Para uçar → Kafe üzgün
+           ======================================== */
+
+        .story-1-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(to bottom, #1e3a5f 0%, #0f172a 100%);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        /* Zemin/Yol */
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(to bottom, #374151 0%, #1f2937 100%);
+        }
+
+        .sidewalk {
+            position: absolute;
+            bottom: 60px;
+            width: 100%;
+            height: 20px;
+            background: #6b7280;
+        }
+
+        /* Kafe Binası */
+        .cafe-building {
+            position: absolute;
+            bottom: 80px;
+            left: 50px;
+            width: 180px;
+            height: 200px;
+            background: linear-gradient(135deg, #92400e 0%, #78350f 100%);
+            border-radius: 8px 8px 0 0;
+            animation: cafeEmotions 20s infinite;
+        }
+
+        @keyframes cafeEmotions {
+            0%, 15% { filter: brightness(1.1); transform: scale(1); }
+            25%, 45% { filter: brightness(0.8); transform: scale(0.98); }
+            55%, 75% { filter: brightness(0.6) saturate(0.5); transform: scale(0.95); }
+            85%, 100% { filter: brightness(1.1); transform: scale(1); }
+        }
+
+        .cafe-sign {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fbbf24;
+            padding: 5px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #78350f;
+            font-size: 14px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .cafe-window {
+            position: absolute;
+            width: 50px;
+            height: 60px;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 3px solid #78350f;
+            border-radius: 4px;
+            animation: windowGlow 20s infinite;
+        }
+
+        @keyframes windowGlow {
+            0%, 15% { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); box-shadow: 0 0 20px rgba(251, 191, 36, 0.5); }
+            25%, 75% { background: linear-gradient(135deg, #d1d5db 0%, #9ca3af 100%); box-shadow: none; }
+            85%, 100% { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); box-shadow: 0 0 20px rgba(251, 191, 36, 0.5); }
+        }
+
+        .cafe-window-1 { top: 30px; left: 20px; }
+        .cafe-window-2 { top: 30px; right: 20px; }
+
+        .cafe-door {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 80px;
+            background: linear-gradient(135deg, #451a03 0%, #78350f 100%);
+            border-radius: 4px 4px 0 0;
+            border: 3px solid #92400e;
+        }
+
+        /* Mutlu/Üzgün Yüz */
+        .cafe-face {
+            position: absolute;
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 40px;
+            animation: cafeMood 20s infinite;
+        }
+
+        @keyframes cafeMood {
+            0%, 15% { content: "😊"; }
+            25%, 45% { content: "😰"; }
+            55%, 75% { content: "😢"; }
+            85%, 100% { content: "😊"; }
+        }
+
+        .cafe-face::after {
+            content: "😊";
+            animation: cafeFaceChange 20s infinite;
+        }
+
+        @keyframes cafeFaceChange {
+            0%, 15% { content: "😊"; }
+            20%, 25% { content: "😰"; }
+            30%, 50% { content: "😨"; }
+            55%, 75% { content: "😢"; }
+            80%, 85% { content: "🙂"; }
+            90%, 100% { content: "😊"; }
+        }
+
+        /* Denetçi Figürü */
+        .inspector {
+            position: absolute;
+            bottom: 80px;
+            right: -80px;
+            width: 60px;
+            height: 100px;
+            animation: inspectorWalk 20s infinite;
+        }
+
+        @keyframes inspectorWalk {
+            0%, 10% { right: -80px; opacity: 0; }
+            15% { opacity: 1; }
+            25%, 50% { right: 280px; opacity: 1; }
+            55%, 70% { right: 280px; opacity: 1; }
+            75% { opacity: 0; right: 280px; }
+            80%, 100% { right: -80px; opacity: 0; }
+        }
+
+        .inspector-body {
+            position: absolute;
+            bottom: 30px;
+            width: 40px;
+            height: 50px;
+            background: #1f2937;
+            border-radius: 8px 8px 0 0;
+            left: 10px;
+        }
+
+        .inspector-head {
+            position: absolute;
+            bottom: 75px;
+            left: 15px;
+            width: 30px;
+            height: 30px;
+            background: #fcd34d;
+            border-radius: 50%;
+        }
+
+        .inspector-hat {
+            position: absolute;
+            bottom: 100px;
+            left: 10px;
+            width: 40px;
+            height: 15px;
+            background: #1f2937;
+            border-radius: 4px;
+        }
+
+        .inspector-legs {
+            position: absolute;
+            bottom: 0;
+            left: 15px;
+            width: 10px;
+            height: 35px;
+            background: #374151;
+            animation: walking 0.4s infinite;
+        }
+
+        .inspector-legs-2 {
+            left: 35px;
+            animation: walking 0.4s infinite 0.2s;
+        }
+
+        @keyframes walking {
+            0%, 100% { height: 35px; }
+            50% { height: 30px; }
+        }
+
+        .inspector-clipboard {
+            position: absolute;
+            bottom: 45px;
+            left: -5px;
+            width: 25px;
+            height: 30px;
+            background: #f3f4f6;
+            border: 2px solid #9ca3af;
+            border-radius: 2px;
+        }
+
+        /* Ceza Kağıdı */
+        .penalty-paper {
+            position: absolute;
+            top: 80px;
+            left: 180px;
+            width: 120px;
+            padding: 15px;
+            background: #fef2f2;
+            border: 3px solid #dc2626;
+            border-radius: 4px;
+            opacity: 0;
+            transform: scale(0) rotate(-10deg);
+            animation: penaltyAppear 20s infinite;
+            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.3);
+        }
+
+        @keyframes penaltyAppear {
+            0%, 30% { opacity: 0; transform: scale(0) rotate(-10deg); }
+            35%, 70% { opacity: 1; transform: scale(1) rotate(-5deg); }
+            75%, 100% { opacity: 0; transform: scale(0) rotate(10deg); }
+        }
+
+        .penalty-title {
+            color: #dc2626;
+            font-weight: bold;
+            font-size: 12px;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .penalty-amount {
+            color: #991b1b;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .penalty-stamp {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #dc2626;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #dc2626;
+            font-size: 8px;
+            font-weight: bold;
+            transform: rotate(-15deg);
+        }
+
+        /* Uçan Paralar */
+        .flying-money {
+            position: absolute;
+            font-size: 28px;
+            opacity: 0;
+            animation: moneyFly 20s infinite;
+        }
+
+        .money-1 { left: 100px; top: 150px; animation-delay: 0s; }
+        .money-2 { left: 130px; top: 120px; animation-delay: 0.3s; }
+        .money-3 { left: 80px; top: 180px; animation-delay: 0.6s; }
+        .money-4 { left: 150px; top: 140px; animation-delay: 0.9s; }
+        .money-5 { left: 110px; top: 160px; animation-delay: 1.2s; }
+
+        @keyframes moneyFly {
+            0%, 40% { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+            45% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
+            70% { opacity: 1; transform: translate(200px, -150px) rotate(360deg); }
+            75%, 100% { opacity: 0; transform: translate(250px, -200px) rotate(720deg); }
+        }
+
+        /* Sahne Yazıları */
+        .scene-text {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            padding: 8px 16px;
+            background: rgba(0,0,0,0.7);
+            border-radius: 20px;
+            white-space: nowrap;
+            animation: sceneTextChange 20s infinite;
+        }
+
+        @keyframes sceneTextChange {
+            0%, 15% { opacity: 1; content: "🎵 Mutlu kafe, müzik çalıyor..."; }
+            16%, 17% { opacity: 0; }
+            18%, 35% { opacity: 1; }
+            36%, 37% { opacity: 0; }
+            38%, 55% { opacity: 1; }
+            56%, 57% { opacity: 0; }
+            58%, 75% { opacity: 1; }
+            76%, 100% { opacity: 1; }
+        }
+
+        .scene-text::after {
+            animation: textContent 20s infinite;
+        }
+
+        /* Güneş / Bulut */
+        .sun {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            width: 50px;
+            height: 50px;
+            background: #fbbf24;
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
+            animation: sunMood 20s infinite;
+        }
+
+        @keyframes sunMood {
+            0%, 15% { opacity: 1; background: #fbbf24; }
+            25%, 75% { opacity: 0.3; background: #9ca3af; }
+            85%, 100% { opacity: 1; background: #fbbf24; }
+        }
+
+        .cloud {
+            position: absolute;
+            top: 20px;
+            background: #e5e7eb;
+            border-radius: 50px;
+            opacity: 0;
+            animation: cloudAppear 20s infinite;
+        }
+
+        .cloud-1 { left: 30px; width: 80px; height: 30px; animation-delay: 0s; }
+        .cloud-2 { left: 150px; width: 60px; height: 25px; top: 40px; animation-delay: 0.5s; }
+
+        @keyframes cloudAppear {
+            0%, 15% { opacity: 0; }
+            25%, 75% { opacity: 0.8; }
+            85%, 100% { opacity: 0; }
+        }
+
+        /* ========================================
+           2. TASARRUF YARIŞI HİKAYESİ (Geliştirilmiş)
+           Sahne: İki kumbara → Para doluyor → MESAM patlıyor → Muzibu mutlu
+           ======================================== */
+
+        .story-2-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(to bottom, #1e1b4b 0%, #0f172a 100%);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        /* Platform */
+        .platform {
+            position: absolute;
+            bottom: 40px;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(to right, #4c1d95, #7c3aed, #4c1d95);
+        }
+
+        /* MESAM Kumbara */
+        .piggy-mesam {
+            position: absolute;
+            bottom: 60px;
+            left: 80px;
+            width: 140px;
+            height: 120px;
+        }
+
+        .piggy-mesam-body {
+            position: absolute;
+            bottom: 0;
+            width: 140px;
+            height: 100px;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            border-radius: 50px 50px 30px 30px;
+            animation: mesamShake 20s infinite;
+        }
+
+        @keyframes mesamShake {
+            0%, 30% { transform: rotate(0deg); }
+            35%, 55% { transform: rotate(-2deg); }
+            40%, 50% { transform: rotate(2deg); }
+            45% { transform: rotate(-2deg); }
+            60% { transform: scale(1.1); }
+            65% { transform: scale(1); filter: brightness(2); }
+            70%, 100% { transform: rotate(0deg); }
+        }
+
+        .piggy-mesam-ear {
+            position: absolute;
+            top: -15px;
+            width: 30px;
+            height: 30px;
+            background: #dc2626;
+            border-radius: 50% 50% 0 0;
+        }
+
+        .ear-left { left: 25px; transform: rotate(-20deg); }
+        .ear-right { right: 25px; transform: rotate(20deg); }
+
+        .piggy-mesam-snout {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 25px;
+            background: #f87171;
+            border-radius: 50%;
+        }
+
+        .piggy-mesam-eye {
+            position: absolute;
+            top: 35px;
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .piggy-mesam-eye::after {
+            content: "";
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 8px;
+            height: 8px;
+            background: #1f2937;
+            border-radius: 50%;
+            animation: mesamEyes 20s infinite;
+        }
+
+        @keyframes mesamEyes {
+            0%, 55% { transform: scale(1); }
+            60%, 70% { transform: scale(1.5); top: 3px; left: 3px; }
+            75%, 100% { transform: scale(1); }
+        }
+
+        .eye-left { left: 30px; }
+        .eye-right { right: 30px; }
+
+        .piggy-mesam-slot {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 8px;
+            background: #7f1d1d;
+            border-radius: 4px;
+        }
+
+        .mesam-label {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #dc2626;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* Muzibu Kumbara */
+        .piggy-muzibu {
+            position: absolute;
+            bottom: 60px;
+            right: 80px;
+            width: 140px;
+            height: 120px;
+        }
+
+        .piggy-muzibu-body {
+            position: absolute;
+            bottom: 0;
+            width: 140px;
+            height: 100px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 50px 50px 30px 30px;
+            animation: muzibuHappy 20s infinite;
+        }
+
+        @keyframes muzibuHappy {
+            0%, 60% { transform: rotate(0deg); }
+            70%, 100% { transform: rotate(0deg) scale(1.05); }
+            75% { transform: rotate(-3deg) scale(1.05); }
+            80% { transform: rotate(3deg) scale(1.05); }
+            85% { transform: rotate(-3deg) scale(1.05); }
+            90% { transform: rotate(0deg) scale(1.05); }
+        }
+
+        .piggy-muzibu-ear {
+            position: absolute;
+            top: -15px;
+            width: 30px;
+            height: 30px;
+            background: #10b981;
+            border-radius: 50% 50% 0 0;
+        }
+
+        .muzibu-ear-left { left: 25px; transform: rotate(-20deg); }
+        .muzibu-ear-right { right: 25px; transform: rotate(20deg); }
+
+        .piggy-muzibu-snout {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 25px;
+            background: #6ee7b7;
+            border-radius: 50%;
+        }
+
+        .piggy-muzibu-eye {
+            position: absolute;
+            top: 35px;
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .piggy-muzibu-eye::after {
+            content: "";
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 8px;
+            height: 8px;
+            background: #1f2937;
+            border-radius: 50%;
+        }
+
+        .muzibu-eye-left { left: 30px; }
+        .muzibu-eye-right { right: 30px; }
+
+        .piggy-muzibu-slot {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 8px;
+            background: #065f46;
+            border-radius: 4px;
+        }
+
+        .muzibu-label {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #10b981;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* Para Animasyonları */
+        .coin-drop-mesam {
+            position: absolute;
+            font-size: 24px;
+            animation: coinDropMesam 2s infinite;
+        }
+
+        .coin-m-1 { left: 130px; animation-delay: 0s; }
+        .coin-m-2 { left: 145px; animation-delay: 0.3s; }
+        .coin-m-3 { left: 125px; animation-delay: 0.6s; }
+        .coin-m-4 { left: 155px; animation-delay: 0.9s; }
+        .coin-m-5 { left: 135px; animation-delay: 1.2s; }
+        .coin-m-6 { left: 140px; animation-delay: 1.5s; }
+
+        @keyframes coinDropMesam {
+            0% { top: 50px; opacity: 1; }
+            100% { top: 180px; opacity: 0; }
+        }
+
+        .coin-drop-muzibu {
+            position: absolute;
+            font-size: 24px;
+            animation: coinDropMuzibu 4s infinite;
+        }
+
+        .coin-z-1 { right: 130px; animation-delay: 0s; }
+        .coin-z-2 { right: 145px; animation-delay: 2s; }
+
+        @keyframes coinDropMuzibu {
+            0% { top: 50px; opacity: 1; }
+            50% { top: 180px; opacity: 0; }
+            100% { top: 180px; opacity: 0; }
+        }
+
+        /* Para Sayacı */
+        .money-counter {
+            position: absolute;
+            top: 30px;
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.8);
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .counter-mesam {
+            left: 60px;
+            border: 2px solid #dc2626;
+        }
+
+        .counter-muzibu {
+            right: 60px;
+            border: 2px solid #10b981;
+        }
+
+        .counter-value {
+            font-size: 24px;
+            font-family: monospace;
+        }
+
+        .counter-mesam .counter-value {
+            color: #f87171;
+            animation: countUpMesam 20s infinite;
+        }
+
+        .counter-muzibu .counter-value {
+            color: #6ee7b7;
+            animation: countUpMuzibu 20s infinite;
+        }
+
+        /* Patlama Efekti */
+        .explosion {
+            position: absolute;
+            left: 80px;
+            bottom: 60px;
+            width: 140px;
+            height: 120px;
+            opacity: 0;
+            animation: explode 20s infinite;
+        }
+
+        @keyframes explode {
+            0%, 58% { opacity: 0; transform: scale(0); }
+            60%, 65% { opacity: 1; transform: scale(1.5); }
+            70%, 100% { opacity: 0; transform: scale(2); }
+        }
+
+        .explosion-particle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #fbbf24;
+            border-radius: 50%;
+        }
+
+        .exp-1 { top: 50%; left: 50%; animation: expOut 0.5s ease-out forwards; }
+        .exp-2 { top: 50%; left: 50%; animation: expOut 0.5s ease-out 0.1s forwards; transform: rotate(45deg); }
+        .exp-3 { top: 50%; left: 50%; animation: expOut 0.5s ease-out 0.2s forwards; transform: rotate(90deg); }
+        .exp-4 { top: 50%; left: 50%; animation: expOut 0.5s ease-out 0.3s forwards; transform: rotate(135deg); }
+
+        @keyframes expOut {
+            to { transform: translate(50px, -50px) scale(0); }
+        }
+
+        /* Mutlu Yüz Muzibu */
+        .happy-face {
+            position: absolute;
+            right: 100px;
+            bottom: 200px;
+            font-size: 50px;
+            opacity: 0;
+            animation: happyAppear 20s infinite;
+        }
+
+        @keyframes happyAppear {
+            0%, 65% { opacity: 0; transform: scale(0); }
+            70%, 90% { opacity: 1; transform: scale(1); }
+            95%, 100% { opacity: 0; transform: scale(0); }
+        }
+
+        /* VS Yazısı */
+        .vs-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: bold;
+            color: #6366f1;
+            text-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+            animation: vsPulse 2s infinite;
+        }
+
+        @keyframes vsPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        /* ========================================
+           3. ÖZELLİKLER AĞACI HİKAYESİ (Geliştirilmiş)
+           Sahne: Tohum → Ağaç büyür → Dallar → Meyveler (özellikler)
+           ======================================== */
+
+        .story-3-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(to bottom, #164e63 0%, #0f172a 100%);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        /* Toprak */
+        .soil {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(to bottom, #78350f 0%, #451a03 100%);
+        }
+
+        /* Tohum */
+        .seed {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 20px;
+            background: linear-gradient(135deg, #a16207 0%, #78350f 100%);
+            border-radius: 50%;
+            animation: seedGrow 15s infinite;
+        }
+
+        @keyframes seedGrow {
+            0%, 5% { opacity: 1; transform: translateX(-50%) scale(1); }
+            10%, 100% { opacity: 0; transform: translateX(-50%) scale(0); }
+        }
+
+        /* Ana Gövde */
+        .trunk {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 0;
+            background: linear-gradient(to right, #65a30d, #4d7c0f, #65a30d);
+            border-radius: 4px;
+            animation: trunkGrow 15s infinite;
+        }
+
+        @keyframes trunkGrow {
+            0%, 5% { height: 0; }
+            20% { height: 150px; }
+            100% { height: 150px; }
+        }
+
+        /* Logo Merkezi */
+        .tree-logo {
+            position: absolute;
+            bottom: 200px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            animation: logoAppear 15s infinite;
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+        }
+
+        @keyframes logoAppear {
+            0%, 20% { transform: translateX(-50%) scale(0); }
+            30%, 100% { transform: translateX(-50%) scale(1); }
+        }
+
+        /* Dallar */
+        .branch {
+            position: absolute;
+            bottom: 240px;
+            left: 50%;
+            height: 4px;
+            background: #65a30d;
+            transform-origin: left center;
+            animation: branchGrow 15s infinite;
+        }
+
+        .branch-1 { transform: translateX(-50%) rotate(-45deg); animation-delay: 0.5s; }
+        .branch-2 { transform: translateX(-50%) rotate(-90deg); animation-delay: 0.7s; }
+        .branch-3 { transform: translateX(-50%) rotate(-135deg); animation-delay: 0.9s; }
+        .branch-4 { transform: translateX(-50%) rotate(45deg); animation-delay: 1.1s; }
+        .branch-5 { transform: translateX(-50%) rotate(90deg); animation-delay: 1.3s; }
+        .branch-6 { transform: translateX(-50%) rotate(135deg); animation-delay: 1.5s; }
+
+        @keyframes branchGrow {
+            0%, 35% { width: 0; }
+            50%, 100% { width: 80px; }
+        }
+
+        /* Meyve/Özellik Kutuları */
+        .fruit {
+            position: absolute;
+            width: 100px;
+            padding: 8px;
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid #10b981;
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        .fruit-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .fruit-1 { top: 50px; left: calc(50% - 150px); animation: fruitAppear 15s infinite 2s; }
+        .fruit-2 { top: 100px; left: calc(50% - 180px); animation: fruitAppear 15s infinite 2.2s; }
+        .fruit-3 { top: 180px; left: calc(50% - 160px); animation: fruitAppear 15s infinite 2.4s; }
+        .fruit-4 { top: 50px; right: calc(50% - 150px); animation: fruitAppear 15s infinite 2.6s; }
+        .fruit-5 { top: 100px; right: calc(50% - 180px); animation: fruitAppear 15s infinite 2.8s; }
+        .fruit-6 { top: 180px; right: calc(50% - 160px); animation: fruitAppear 15s infinite 3s; }
+
+        @keyframes fruitAppear {
+            0%, 40% { opacity: 0; transform: scale(0); }
+            50%, 90% { opacity: 1; transform: scale(1); }
+            95%, 100% { opacity: 0; transform: scale(0); }
+        }
+
+        /* Bağlantı Çizgileri */
+        .fruit-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #10b981, transparent);
+            transform-origin: left center;
+            opacity: 0;
+        }
+
+        .line-1 { bottom: 220px; left: 50%; width: 100px; transform: rotate(-30deg); animation: lineAppear 15s infinite 1.8s; }
+        .line-2 { bottom: 200px; left: 50%; width: 120px; transform: rotate(-60deg); animation: lineAppear 15s infinite 2s; }
+        .line-3 { bottom: 170px; left: 50%; width: 100px; transform: rotate(-100deg); animation: lineAppear 15s infinite 2.2s; }
+        .line-4 { bottom: 220px; left: 50%; width: 100px; transform: rotate(30deg); animation: lineAppear 15s infinite 2.4s; }
+        .line-5 { bottom: 200px; left: 50%; width: 120px; transform: rotate(60deg); animation: lineAppear 15s infinite 2.6s; }
+        .line-6 { bottom: 170px; left: 50%; width: 100px; transform: rotate(100deg); animation: lineAppear 15s infinite 2.8s; }
+
+        @keyframes lineAppear {
+            0%, 35% { opacity: 0; width: 0; }
+            45%, 90% { opacity: 1; width: 100px; }
+            95%, 100% { opacity: 0; }
+        }
+
+        /* Yapraklar */
+        .leaf {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #22c55e;
+            border-radius: 0 50% 0 50%;
+            opacity: 0;
+            animation: leafFall 15s infinite;
+        }
+
+        .leaf-1 { left: 30%; animation-delay: 3s; }
+        .leaf-2 { left: 45%; animation-delay: 4s; }
+        .leaf-3 { left: 60%; animation-delay: 5s; }
+        .leaf-4 { left: 70%; animation-delay: 6s; }
+
+        @keyframes leafFall {
+            0%, 40% { top: 100px; opacity: 0; transform: rotate(0deg); }
+            45% { opacity: 1; }
+            90% { top: 350px; opacity: 0.5; transform: rotate(360deg); }
+            100% { top: 400px; opacity: 0; }
+        }
+
+        /* ========================================
+           4. KORUMA KALKANI HİKAYESİ (Yeni)
+           Sahne: İşletme → Tehditler geliyor → Kalkan aktif → Tehditler yansıyor
+           ======================================== */
+
+        .story-4-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(to bottom, #1e1b4b 0%, #0f172a 100%);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        /* Merkez İşletme */
+        .business-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .business-icon {
+            font-size: 36px;
+        }
+
+        .business-text {
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+
+        /* Koruma Kalkanı */
+        .shield {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            border: 4px solid transparent;
+            border-radius: 50%;
+            animation: shieldPulse 3s infinite, shieldActivate 12s infinite;
+            z-index: 5;
+        }
+
+        @keyframes shieldActivate {
+            0%, 20% { border-color: transparent; box-shadow: none; }
+            30%, 100% { border-color: #10b981; box-shadow: 0 0 30px rgba(16, 185, 129, 0.5), inset 0 0 30px rgba(16, 185, 129, 0.2); }
+        }
+
+        @keyframes shieldPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        .shield-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 10px;
+            opacity: 0;
+            animation: shieldLabelAppear 12s infinite;
+        }
+
+        @keyframes shieldLabelAppear {
+            0%, 25% { opacity: 0; }
+            35%, 100% { opacity: 1; }
+        }
+
+        .shield-label span {
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Tehditler */
+        .threat {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 8px;
+            font-weight: bold;
+            opacity: 0;
+        }
+
+        .threat-icon {
+            font-size: 24px;
+            margin-bottom: 2px;
+        }
+
+        .threat-1 {
+            top: 50px;
+            left: 50px;
+            animation: threatMove1 12s infinite;
+        }
+
+        .threat-2 {
+            top: 50px;
+            right: 50px;
+            animation: threatMove2 12s infinite 1s;
+        }
+
+        .threat-3 {
+            bottom: 50px;
+            left: 50px;
+            animation: threatMove3 12s infinite 2s;
+        }
+
+        .threat-4 {
+            bottom: 50px;
+            right: 50px;
+            animation: threatMove4 12s infinite 3s;
+        }
+
+        @keyframes threatMove1 {
+            0%, 10% { opacity: 0; transform: translate(0, 0); }
+            15% { opacity: 1; transform: translate(0, 0); }
+            35% { opacity: 1; transform: translate(80px, 80px); }
+            40% { opacity: 1; transform: translate(40px, 40px) rotate(45deg); }
+            45%, 100% { opacity: 0; transform: translate(-50px, -50px) rotate(90deg); }
+        }
+
+        @keyframes threatMove2 {
+            0%, 15% { opacity: 0; transform: translate(0, 0); }
+            20% { opacity: 1; transform: translate(0, 0); }
+            40% { opacity: 1; transform: translate(-80px, 80px); }
+            45% { opacity: 1; transform: translate(-40px, 40px) rotate(-45deg); }
+            50%, 100% { opacity: 0; transform: translate(50px, -50px) rotate(-90deg); }
+        }
+
+        @keyframes threatMove3 {
+            0%, 20% { opacity: 0; transform: translate(0, 0); }
+            25% { opacity: 1; transform: translate(0, 0); }
+            45% { opacity: 1; transform: translate(80px, -80px); }
+            50% { opacity: 1; transform: translate(40px, -40px) rotate(-45deg); }
+            55%, 100% { opacity: 0; transform: translate(-50px, 50px) rotate(-90deg); }
+        }
+
+        @keyframes threatMove4 {
+            0%, 25% { opacity: 0; transform: translate(0, 0); }
+            30% { opacity: 1; transform: translate(0, 0); }
+            50% { opacity: 1; transform: translate(-80px, -80px); }
+            55% { opacity: 1; transform: translate(-40px, -40px) rotate(45deg); }
+            60%, 100% { opacity: 0; transform: translate(50px, 50px) rotate(90deg); }
+        }
+
+        /* Koruma Başarılı Mesajı */
+        .protection-success {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid #10b981;
+            color: #10b981;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            opacity: 0;
+            animation: successAppear 12s infinite;
+        }
+
+        @keyframes successAppear {
+            0%, 60% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            70%, 90% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; }
+        }
+
+        /* Genel Stiller */
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        .animation-title {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold animation-title mb-4">Geliştirilmiş Hikayeli Animasyonlar</h1>
+            <p class="text-gray-400">Her animasyon bir hikaye anlatıyor - Çizgi film tadında, öğretici</p>
+            <p class="text-sm text-gray-500 mt-2">v3 - 1 numaralı hariç, 2 ve 3 tarzında geliştirilmiş versiyonlar</p>
+        </div>
+
+        <!-- Animasyon 1: Kafe Baskını -->
+        <div class="mb-16">
+            <h2 class="text-2xl font-bold mb-2 text-red-400">1. MESAM Baskını Hikayesi</h2>
+            <p class="text-gray-400 mb-4 text-sm">Mutlu kafe → Denetçi gelir → Ceza keser → Para uçar → Kafe üzgün olur → Tekrar mutlu (Muzibu ile)</p>
+
+            <div class="story-1-container">
+                <!-- Gökyüzü Elementleri -->
+                <div class="sun"></div>
+                <div class="cloud cloud-1"></div>
+                <div class="cloud cloud-2"></div>
+
+                <!-- Zemin -->
+                <div class="sidewalk"></div>
+                <div class="ground"></div>
+
+                <!-- Kafe -->
+                <div class="cafe-building">
+                    <div class="cafe-sign">☕ KAFE</div>
+                    <div class="cafe-window cafe-window-1"></div>
+                    <div class="cafe-window cafe-window-2"></div>
+                    <div class="cafe-door"></div>
+                    <div class="cafe-face"></div>
+                </div>
+
+                <!-- Denetçi -->
+                <div class="inspector">
+                    <div class="inspector-hat"></div>
+                    <div class="inspector-head"></div>
+                    <div class="inspector-body"></div>
+                    <div class="inspector-legs"></div>
+                    <div class="inspector-legs inspector-legs-2"></div>
+                    <div class="inspector-clipboard"></div>
+                </div>
+
+                <!-- Ceza Kağıdı -->
+                <div class="penalty-paper">
+                    <div class="penalty-title">⚠️ CEZA TUTANAĞI</div>
+                    <div class="penalty-amount">₺85.000</div>
+                    <div class="penalty-stamp">MESAM</div>
+                </div>
+
+                <!-- Uçan Paralar -->
+                <div class="flying-money money-1">💸</div>
+                <div class="flying-money money-2">💰</div>
+                <div class="flying-money money-3">💸</div>
+                <div class="flying-money money-4">💰</div>
+                <div class="flying-money money-5">💸</div>
+            </div>
+
+            <div class="mt-4 p-4 bg-slate-800 rounded-lg">
+                <p class="text-sm text-gray-300">
+                    <strong>Hikaye:</strong> Kafe mutlu bir şekilde müzik çalıyor. Denetçi gelip ceza yazıyor.
+                    Para uçup gidiyor, kafe üzülüyor. Sonra Muzibu ile tekrar mutlu oluyor.
+                </p>
+            </div>
+        </div>
+
+        <!-- Animasyon 2: Tasarruf Yarışı -->
+        <div class="mb-16">
+            <h2 class="text-2xl font-bold mb-2 text-purple-400">2. Tasarruf Yarışı - Kumbara Savaşı</h2>
+            <p class="text-gray-400 mb-4 text-sm">İki kumbara para biriktiriyor → MESAM dolup taşıyor/patlıyor → Muzibu mutlu kalıyor</p>
+
+            <div class="story-2-container">
+                <!-- Platform -->
+                <div class="platform"></div>
+
+                <!-- Para Sayaçları -->
+                <div class="money-counter counter-mesam">
+                    <div class="text-xs text-gray-400 mb-1">MESAM/MÜ-YAP</div>
+                    <div class="counter-value">₺7.200/yıl</div>
+                </div>
+
+                <div class="money-counter counter-muzibu">
+                    <div class="text-xs text-gray-400 mb-1">Muzibu</div>
+                    <div class="counter-value">₺600/yıl</div>
+                </div>
+
+                <!-- VS -->
+                <div class="vs-text">VS</div>
+
+                <!-- MESAM Kumbara -->
+                <div class="piggy-mesam">
+                    <div class="mesam-label">MESAM</div>
+                    <div class="piggy-mesam-body">
+                        <div class="piggy-mesam-ear ear-left"></div>
+                        <div class="piggy-mesam-ear ear-right"></div>
+                        <div class="piggy-mesam-slot"></div>
+                        <div class="piggy-mesam-eye eye-left"></div>
+                        <div class="piggy-mesam-eye eye-right"></div>
+                        <div class="piggy-mesam-snout"></div>
+                    </div>
+                </div>
+
+                <!-- Muzibu Kumbara -->
+                <div class="piggy-muzibu">
+                    <div class="muzibu-label">Muzibu</div>
+                    <div class="piggy-muzibu-body">
+                        <div class="piggy-muzibu-ear muzibu-ear-left"></div>
+                        <div class="piggy-muzibu-ear muzibu-ear-right"></div>
+                        <div class="piggy-muzibu-slot"></div>
+                        <div class="piggy-muzibu-eye muzibu-eye-left"></div>
+                        <div class="piggy-muzibu-eye muzibu-eye-right"></div>
+                        <div class="piggy-muzibu-snout"></div>
+                    </div>
+                </div>
+
+                <!-- Düşen Paralar - MESAM (çok) -->
+                <div class="coin-drop-mesam coin-m-1">🪙</div>
+                <div class="coin-drop-mesam coin-m-2">🪙</div>
+                <div class="coin-drop-mesam coin-m-3">🪙</div>
+                <div class="coin-drop-mesam coin-m-4">🪙</div>
+                <div class="coin-drop-mesam coin-m-5">🪙</div>
+                <div class="coin-drop-mesam coin-m-6">🪙</div>
+
+                <!-- Düşen Paralar - Muzibu (az) -->
+                <div class="coin-drop-muzibu coin-z-1">🪙</div>
+                <div class="coin-drop-muzibu coin-z-2">🪙</div>
+
+                <!-- Patlama Efekti -->
+                <div class="explosion">
+                    <div class="explosion-particle exp-1"></div>
+                    <div class="explosion-particle exp-2"></div>
+                    <div class="explosion-particle exp-3"></div>
+                    <div class="explosion-particle exp-4"></div>
+                </div>
+
+                <!-- Mutlu Yüz -->
+                <div class="happy-face">😊</div>
+            </div>
+
+            <div class="mt-4 p-4 bg-slate-800 rounded-lg">
+                <p class="text-sm text-gray-300">
+                    <strong>Hikaye:</strong> İki kumbara yarışıyor. MESAM'a sürekli para giriyor (yüksek ücret),
+                    Muzibu'ya az para (uygun fiyat). MESAM dolup patlıyor, Muzibu mutlu kalıyor.
+                </p>
+            </div>
+        </div>
+
+        <!-- Animasyon 3: Özellikler Ağacı -->
+        <div class="mb-16">
+            <h2 class="text-2xl font-bold mb-2 text-emerald-400">3. Özellikler Ağacı - Büyüme Hikayesi</h2>
+            <p class="text-gray-400 mb-4 text-sm">Tohum ekilir → Gövde büyür → Dallar uzar → Meyve/özellikler açılır</p>
+
+            <div class="story-3-container">
+                <!-- Toprak -->
+                <div class="soil"></div>
+
+                <!-- Tohum -->
+                <div class="seed"></div>
+
+                <!-- Gövde -->
+                <div class="trunk"></div>
+
+                <!-- Merkez Logo -->
+                <div class="tree-logo">M</div>
+
+                <!-- Dallar -->
+                <div class="branch branch-1"></div>
+                <div class="branch branch-2"></div>
+                <div class="branch branch-3"></div>
+                <div class="branch branch-4"></div>
+                <div class="branch branch-5"></div>
+                <div class="branch branch-6"></div>
+
+                <!-- Bağlantı Çizgileri -->
+                <div class="fruit-line line-1"></div>
+                <div class="fruit-line line-2"></div>
+                <div class="fruit-line line-3"></div>
+                <div class="fruit-line line-4"></div>
+                <div class="fruit-line line-5"></div>
+                <div class="fruit-line line-6"></div>
+
+                <!-- Meyveler/Özellikler -->
+                <div class="fruit fruit-1">
+                    <div class="fruit-icon">📢</div>
+                    Anons Sistemi
+                </div>
+                <div class="fruit fruit-2">
+                    <div class="fruit-icon">🏢</div>
+                    Şube Yönetimi
+                </div>
+                <div class="fruit fruit-3">
+                    <div class="fruit-icon">🎵</div>
+                    Sektörel Listeler
+                </div>
+                <div class="fruit fruit-4">
+                    <div class="fruit-icon">🔒</div>
+                    Güvenli Yayın
+                </div>
+                <div class="fruit fruit-5">
+                    <div class="fruit-icon">📊</div>
+                    Raporlama
+                </div>
+                <div class="fruit fruit-6">
+                    <div class="fruit-icon">🤖</div>
+                    AI Öneri
+                </div>
+
+                <!-- Yapraklar -->
+                <div class="leaf leaf-1"></div>
+                <div class="leaf leaf-2"></div>
+                <div class="leaf leaf-3"></div>
+                <div class="leaf leaf-4"></div>
+            </div>
+
+            <div class="mt-4 p-4 bg-slate-800 rounded-lg">
+                <p class="text-sm text-gray-300">
+                    <strong>Hikaye:</strong> Bir tohum ekilir (Muzibu başlangıcı). Gövde büyür, dallar uzar.
+                    Her dalın ucunda bir özellik meyvesi açılır. Platform büyüdükçe özellikler de çoğalır.
+                </p>
+            </div>
+        </div>
+
+        <!-- Animasyon 4: Koruma Kalkanı -->
+        <div class="mb-16">
+            <h2 class="text-2xl font-bold mb-2 text-blue-400">4. Koruma Kalkanı - Tehdit Savuşturma</h2>
+            <p class="text-gray-400 mb-4 text-sm">İşletme merkez → Tehditler yaklaşır → Kalkan aktif → Tehditler yansır</p>
+
+            <div class="story-4-container">
+                <!-- Merkez İşletme -->
+                <div class="business-center">
+                    <div class="business-icon">🏪</div>
+                    <div class="business-text">İşletmeniz</div>
+                </div>
+
+                <!-- Koruma Kalkanı -->
+                <div class="shield"></div>
+                <div class="shield-label">
+                    <span>🛡️ Muzibu Koruması</span>
+                </div>
+
+                <!-- Tehditler -->
+                <div class="threat threat-1">
+                    <div class="threat-icon">👮</div>
+                    Denetçi
+                </div>
+                <div class="threat threat-2">
+                    <div class="threat-icon">📋</div>
+                    MESAM Ceza
+                </div>
+                <div class="threat threat-3">
+                    <div class="threat-icon">⚖️</div>
+                    Dava Riski
+                </div>
+                <div class="threat threat-4">
+                    <div class="threat-icon">💸</div>
+                    Yüksek Ücret
+                </div>
+
+                <!-- Başarı Mesajı -->
+                <div class="protection-success">
+                    ✅ Tüm tehditler savuşturuldu!
+                </div>
+            </div>
+
+            <div class="mt-4 p-4 bg-slate-800 rounded-lg">
+                <p class="text-sm text-gray-300">
+                    <strong>Hikaye:</strong> İşletme ortada, çevreden tehditler (denetçi, ceza, dava) yaklaşıyor.
+                    Muzibu kalkanı aktif olunca tehditler yansıyıp geri gidiyor. İşletme güvende kalıyor.
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-gray-500 text-sm border-t border-slate-700 pt-8">
+            <p>Sunum için animasyon örnekleri - Onaylandıktan sonra sayfalara entegre edilecek</p>
+            <p class="mt-2">🎬 Her animasyon sonsuz döngüde, sayfa açık kaldığı sürece devam eder</p>
+        </div>
+    </div>
+</body>
+</html>

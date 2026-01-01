@@ -274,7 +274,7 @@ class PlaylistService
 
             DB::commit();
 
-            // 🎨 MUZIBU: Otomatik playlist kapağı oluştur (Universal Helper - Queue)
+            // 🎨 MUZIBU: Otomatik playlist kapağı oluştur (Muzibu'ya özel job - insansız görseller)
             // İlk şarkı başlığını da ekle (AI için daha iyi context)
             $firstSong = $playlist->songs()->first();
             $titleContext = $data['title'];
@@ -283,7 +283,14 @@ class PlaylistService
                 $titleContext .= " featuring " . $firstSong->title;
             }
 
-            muzibu_generate_ai_cover($playlist, $titleContext, 'playlist');
+            // Muzibu'ya özel job kullan (GenerateGenericMuzibyCover - insansız prompt kuralları)
+            \Modules\Muzibu\App\Jobs\GenerateGenericMuzibyCover::dispatch(
+                'playlist',
+                $playlist->playlist_id,
+                $titleContext,
+                $userId,
+                tenant('id')
+            );
 
             Log::info('Playlist created with songs', [
                 'playlist_id' => $playlist->playlist_id,

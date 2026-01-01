@@ -75,6 +75,15 @@ class Genre extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
+     * Spatie Media Collections - hero tek dosya (yeni yüklenince eski silinir)
+     */
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('hero')
+            ->singleFile();
+    }
+
+    /**
      * Aktif kayıtları getir
      */
     public function scopeActive($query)
@@ -147,13 +156,12 @@ class Genre extends BaseModel implements TranslatableEntity, HasMedia
 
     /**
      * Genre icon URL'i (Thumbmaker helper ile)
+     * Sadece Spatie hero collection kullanır
      */
     public function getIconUrl(?int $width = 300, ?int $height = 300): ?string
     {
-        if (!$this->media_id) {
-            return null;
-        }
-        return thumb($this->iconMedia, $width, $height);
+        $heroMedia = $this->getFirstMedia('hero');
+        return $heroMedia ? thumb($heroMedia, $width, $height, ['scale' => 1]) : null;
     }
 
     /**
@@ -162,14 +170,8 @@ class Genre extends BaseModel implements TranslatableEntity, HasMedia
      */
     public function getCoverUrlAttribute(): string
     {
-        $coverUrl = $this->getFirstMediaUrl('hero');
-
-        if (empty($coverUrl)) {
-            return '';
-        }
-
-        // Thumbmaker ile kare cover (200x200, fill/crop mode - ortadan kırpar)
-        return thumb($coverUrl, 200, 200, ['scale' => 1]);
+        $heroMedia = $this->getFirstMedia('hero');
+        return $heroMedia ? thumb($heroMedia, 200, 200, ['scale' => 1]) : '';
     }
 
     /**

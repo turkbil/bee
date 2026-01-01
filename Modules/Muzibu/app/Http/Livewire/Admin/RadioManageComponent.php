@@ -401,8 +401,8 @@ class RadioManageComponent extends Component implements AIContentGeneratable
             $this->radioId = $radio->radio_id;
             log_activity($radio, 'eklendi');
 
-            // 🎨 MUZIBU: Media yoksa otomatik görsel üret (Universal Helper - Tercihen)
-            if (!$radio->media_id) {
+            // 🎨 MUZIBU: Hero yoksa otomatik görsel üret (Universal Helper - Tercihen)
+            if (!$radio->hasMedia('hero')) {
                 \muzibu_generate_ai_cover($radio, $radio->title, 'radio');
             }
 

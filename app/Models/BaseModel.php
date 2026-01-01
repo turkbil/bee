@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\NotifiesSearchEngines;
+use App\Traits\ClearsResponseCache;
 
 class BaseModel extends Model
 {
-    use HasFactory, SoftDeletes, Sluggable, SluggableScopeHelpers, NotifiesSearchEngines;
+    use HasFactory, SoftDeletes, Sluggable, SluggableScopeHelpers, NotifiesSearchEngines, ClearsResponseCache;
 
     /**
      * Varsayılan $fillable Alanları

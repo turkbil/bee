@@ -24,8 +24,19 @@ class CoreCacheProfile implements ModuleCacheProfileInterface
             'dashboard',
             'dashboard/*',
 
-            // Kurumsal üyelik
+            // Kurumsal üyelik (ana sayfa + alt sayfalar)
+            'corporate',
             'corporate/*',
+
+            // Abonelik (Subscription) - Ödeme içerir
+            'subscription',
+            'subscription/*',
+            'subscriptions',
+            'subscriptions/*',
+            'pricing',
+            'pricing/*',
+            'plans',
+            'plans/*',
 
             // Favoriler (genel)
             'favorites',
@@ -38,6 +49,28 @@ class CoreCacheProfile implements ModuleCacheProfileInterface
             // Dinleme geçmişi
             'listening-history',
             'listening-history/*',
+
+            // Profil ve hesap ayarları
+            'profile',
+            'profile/*',
+            'account',
+            'account/*',
+            'settings',
+            'settings/*',
+
+            // Siparişler ve faturalar
+            'orders',
+            'orders/*',
+            'invoices',
+            'invoices/*',
+
+            // Bildirimler
+            'notifications',
+            'notifications/*',
+
+            // İstek listesi
+            'wishlist',
+            'wishlist/*',
         ];
     }
 
@@ -65,6 +98,17 @@ class CoreCacheProfile implements ModuleCacheProfileInterface
             '*/reset-password/*',
             '*/password/*',
             '*/verify-email/*',
+
+            // Payment callback'leri (ASLA cache'lenmemeli!)
+            'payment/*',
+            'payment/callback/*',
+            'webhook/*',
+            'webhooks/*',
+            'ipn/*',
+
+            // Download linkleri (kullanıcıya özel)
+            'download/*',
+            'downloads/*',
         ];
     }
 

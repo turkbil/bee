@@ -80,6 +80,15 @@ class Sector extends BaseModel implements HasMedia
         return $query->where('is_active', true);
     }
 
+    /**
+     * Spatie Media Collections - hero tek dosya (yeni yüklenince eski silinir)
+     */
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('hero')
+            ->singleFile();
+    }
+
     // playlists() metodu artık HasPlaylistDistribution trait'inden geliyor
     // Eski tablo: muzibu_playlist_sector → Yeni tablo: muzibu_playlistables
 
@@ -109,13 +118,12 @@ class Sector extends BaseModel implements HasMedia
 
     /**
      * Sector icon URL'i (Thumbmaker helper ile)
+     * Sadece Spatie hero collection kullanır
      */
     public function getIconUrl(?int $width = 200, ?int $height = 200): ?string
     {
-        if (!$this->media_id) {
-            return null;
-        }
-        return thumb($this->iconMedia, $width, $height);
+        $heroMedia = $this->getFirstMedia('hero');
+        return $heroMedia ? thumb($heroMedia, $width, $height, ['scale' => 1]) : null;
     }
 
     /**

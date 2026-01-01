@@ -5,8 +5,7 @@
 ])
 
 @php
-    $cover = $playlist->coverMedia ?? null;
-    $coverUrl = $cover ? thumb($cover, 300, 300) : '/images/default-playlist.png';
+    $coverUrl = $playlist->getCoverUrl(300, 300) ?? '/images/default-playlist.png';
     $songsCount = $playlist->songs_count ?? $playlist->songs()->count();
     $playlistUrl = '/playlists/' . ($playlist->slug ?? $playlist->playlist_id);
     $playlistId = $playlist->playlist_id ?? $playlist->id;

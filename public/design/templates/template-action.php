@@ -6,8 +6,8 @@
 
 header('Content-Type: application/json');
 
-// Silme şifresi - sadece sen biliyorsun
-define('DELETE_PASSWORD', 'nn');
+// Silme şifresi - hash ile korunuyor
+define('DELETE_PASSWORD_HASH', '$2y$10$yfVqtNkw3aNQrlLGJ5i18ekhDZv94reeaQ.yZOrK/Fu9xB1Oq.JBq');
 
 // POST kontrolü
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -21,8 +21,8 @@ $input = json_decode(file_get_contents('php://input'), true);
 $password = $input['password'] ?? '';
 $templateId = $input['templateId'] ?? '';
 
-// Şifre kontrolü
-if ($password !== DELETE_PASSWORD) {
+// Şifre kontrolü (hash ile)
+if (!password_verify($password, DELETE_PASSWORD_HASH)) {
     http_response_code(403);
     die(json_encode(['success' => false, 'error' => 'Yanlis sifre!']));
 }

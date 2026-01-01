@@ -136,7 +136,8 @@ module.exports = {
         // Tailwind default color opacity variants (used throughout the app)
         'bg-gray-700', 'bg-gray-800', 'bg-gray-800/50', 'bg-gray-900', 'bg-gray-900/95',
         'bg-blue-500/20', 'bg-blue-600',
-        'bg-green-400', 'bg-green-500', 'bg-green-500/10', 'bg-green-500/20', 'bg-green-600',
+        'bg-green-400', 'bg-green-400/60', 'bg-green-500', 'bg-green-500/10', 'bg-green-500/20', 'bg-green-600',
+        'bg-red-400/60',
         'bg-purple-600/30', 'bg-purple-600/90',
         'bg-orange-500', 'bg-orange-500/20', 'bg-orange-600',
         'bg-red-500/20', 'bg-red-600',

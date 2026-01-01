@@ -73,12 +73,29 @@
         </div>
 
         {{-- Kurumsal --}}
-        @hasmoduleaccess('muzibu', 'view')
-        <a href="{{ route('admin.muzibu.corporate.index') }}" class="btn btn-ghost-primary">
-            <i class="fas fa-building me-1"></i>
-            Kurumsal
-        </a>
-        @endhasmoduleaccess
+        <div class="dropdown">
+            <button type="button" class="btn btn-ghost-primary dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="fas fa-building me-1"></i>
+                Kurumsal
+            </button>
+            <div class="dropdown-menu dropdown-menu-arrow">
+                @hasmoduleaccess('muzibu', 'view')
+                <a class="dropdown-item" href="{{ route('admin.muzibu.corporate.index') }}">
+                    <i class="fas fa-building me-2 text-primary"></i>Hesaplar
+                </a>
+                @endhasmoduleaccess
+                @hasmoduleaccess('muzibu', 'view')
+                <a class="dropdown-item" href="{{ route('admin.muzibu.corporate.subscription') }}">
+                    <i class="fas fa-credit-card me-2 text-green"></i>Abonelikler
+                </a>
+                @endhasmoduleaccess
+                @hasmoduleaccess('muzibu', 'view')
+                <a class="dropdown-item" href="{{ route('admin.muzibu.corporate.usage') }}">
+                    <i class="fas fa-chart-line me-2 text-info"></i>Kullanım Raporları
+                </a>
+                @endhasmoduleaccess
+            </div>
+        </div>
 
         {{-- Yardımcı Araçlar --}}
         <div class="dropdown">
@@ -87,6 +104,27 @@
                 Araçlar
             </button>
             <div class="dropdown-menu dropdown-menu-arrow">
+                @hasmoduleaccess('muzibu', 'view')
+                <a class="dropdown-item" href="{{ route('admin.muzibu.stats.index') }}">
+                    <i class="fas fa-chart-bar me-2 text-primary"></i>İstatistikler
+                </a>
+                @endhasmoduleaccess
+                @hasmoduleaccess('muzibu', 'view')
+                <a class="dropdown-item" href="{{ route('admin.muzibu.ai-cover.index') }}">
+                    <i class="fas fa-magic me-2 text-purple"></i>AI Görsel Üret
+                </a>
+                @endhasmoduleaccess
+                @hasmoduleaccess('muzibu', 'create')
+                <a class="dropdown-item" href="{{ route('admin.muzibu.bulk.index') }}">
+                    <i class="fas fa-upload me-2 text-cyan"></i>Toplu İşlemler
+                </a>
+                @endhasmoduleaccess
+                @hasmoduleaccess('muzibu', 'view')
+                <a class="dropdown-item" href="{{ route('admin.muzibu.user-playlist.index') }}">
+                    <i class="fas fa-list me-2 text-green"></i>Kullanıcı Listeleri
+                </a>
+                @endhasmoduleaccess
+                <div class="dropdown-divider"></div>
                 @hasmoduleaccess('muzibu', 'view')
                 <a class="dropdown-item" href="{{ route('admin.muzibu.certificate.index') }}">
                     <i class="fas fa-certificate me-2 text-warning"></i>Sertifikalar
@@ -99,7 +137,7 @@
                 @endhasmoduleaccess
                 @hasmoduleaccess('muzibu', 'view')
                 <a class="dropdown-item" href="{{ route('admin.muzibu.spot.index') }}">
-                    <i class="fas fa-bullhorn me-2 text-purple"></i>Spotlar
+                    <i class="fas fa-bullhorn me-2 text-orange"></i>Anonslar
                 </a>
                 @endhasmoduleaccess
                 @hasmoduleaccess('muzibu', 'create')
@@ -205,6 +243,12 @@
                 <a class="dropdown-item" href="{{ route('admin.muzibu.corporate.index') }}">
                     <i class="fas fa-building me-2 text-blue"></i>Kurumsal Hesaplar
                 </a>
+                <a class="dropdown-item" href="{{ route('admin.muzibu.corporate.subscription') }}">
+                    <i class="fas fa-credit-card me-2 text-green"></i>Abonelikler
+                </a>
+                <a class="dropdown-item" href="{{ route('admin.muzibu.corporate.usage') }}">
+                    <i class="fas fa-chart-line me-2 text-info"></i>Kullanım Raporları
+                </a>
                 @endhasmoduleaccess
 
                 <div class="dropdown-divider"></div>
@@ -214,6 +258,19 @@
                     <i class="fas fa-tools me-1"></i> Araçlar
                 </h6>
                 @hasmoduleaccess('muzibu', 'view')
+                <a class="dropdown-item" href="{{ route('admin.muzibu.stats.index') }}">
+                    <i class="fas fa-chart-bar me-2 text-primary"></i>İstatistikler
+                </a>
+                <a class="dropdown-item" href="{{ route('admin.muzibu.ai-cover.index') }}">
+                    <i class="fas fa-magic me-2 text-purple"></i>AI Görsel Üret
+                </a>
+                <a class="dropdown-item" href="{{ route('admin.muzibu.bulk.index') }}">
+                    <i class="fas fa-upload me-2 text-cyan"></i>Toplu İşlemler
+                </a>
+                <a class="dropdown-item" href="{{ route('admin.muzibu.user-playlist.index') }}">
+                    <i class="fas fa-list me-2 text-green"></i>Kullanıcı Listeleri
+                </a>
+                <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="{{ route('admin.muzibu.certificate.index') }}">
                     <i class="fas fa-certificate me-2 text-warning"></i>Sertifikalar
                 </a>
@@ -221,7 +278,7 @@
                     <i class="fas fa-shield-alt me-2 text-danger"></i>Suistimal Raporları
                 </a>
                 <a class="dropdown-item" href="{{ route('admin.muzibu.spot.index') }}">
-                    <i class="fas fa-bullhorn me-2 text-purple"></i>Spotlar
+                    <i class="fas fa-bullhorn me-2 text-orange"></i>Anonslar
                 </a>
                 <a class="dropdown-item" href="{{ route('admin.muzibu.song.bulk-convert') }}">
                     <i class="fas fa-cog me-2 text-info"></i>HLS Dönüştür

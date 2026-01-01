@@ -48,7 +48,7 @@ $pageData = [
                 <span class="text-gray-600">•</span>
                 <span class="text-gray-500" x-text="'Her ' + settings.spot_songs_between + ' şarkıda'"></span>
             </div>
-            <span class="text-gray-500" x-text="spots.length + ' spot'"></span>
+            <span class="text-gray-500" x-text="spots.length + ' anons'"></span>
         </div>
 
         {{-- Spot List --}}
@@ -137,7 +137,7 @@ $pageData = [
         <div class="absolute inset-0 bg-black/70" @click="settingsModal = false"></div>
         <div class="relative bg-slate-800 rounded-2xl w-full max-w-sm border border-white/10 shadow-2xl">
             <div class="flex items-center justify-between p-5 border-b border-white/10">
-                <h3 class="text-lg font-semibold text-white">Spot Ayarları</h3>
+                <h3 class="text-lg font-semibold text-white">Anons Ayarları</h3>
                 <button @click="settingsModal = false" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
             </div>
             <div class="p-5 space-y-5">
@@ -148,7 +148,7 @@ $pageData = [
                             <i class="fas fa-bullhorn" :class="settings.spot_enabled ? 'text-green-400' : 'text-gray-500'"></i>
                         </div>
                         <div>
-                            <h4 class="text-white font-medium">Spot Sistemi</h4>
+                            <h4 class="text-white font-medium">Anons Sistemi</h4>
                             <p class="text-xs" :class="settings.spot_enabled ? 'text-green-400' : 'text-gray-500'" x-text="settings.spot_enabled ? 'Aktif - Anonslar çalınıyor' : 'Pasif - Anonslar kapalı'"></p>
                         </div>
                     </div>
@@ -161,7 +161,7 @@ $pageData = [
                 <div class="flex items-center justify-between p-4 bg-slate-700/50 rounded-xl" x-show="settings.spot_enabled">
                     <div>
                         <h4 class="text-white font-medium">Çalma Aralığı</h4>
-                        <p class="text-xs text-gray-500">Kaç şarkıda bir spot çalsın?</p>
+                        <p class="text-xs text-gray-500">Kaç şarkıda bir anons çalsın?</p>
                     </div>
                     <div class="flex items-center gap-3">
                         <div class="flex items-center bg-slate-800 rounded-full border border-white/10">
@@ -189,7 +189,7 @@ $pageData = [
         <div class="absolute inset-0 bg-black/70" @click="closeEditModal()"></div>
         <div class="relative bg-slate-800 rounded-2xl w-full max-w-md border border-white/10 shadow-2xl">
             <div class="flex items-center justify-between p-5 border-b border-white/10">
-                <h3 class="text-lg font-semibold text-white">Spot Düzenle</h3>
+                <h3 class="text-lg font-semibold text-white">Anons Düzenle</h3>
                 <button @click="closeEditModal()" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
             </div>
             <div class="p-5 space-y-4">

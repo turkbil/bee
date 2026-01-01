@@ -988,26 +988,39 @@ sudo chmod 755 /path/to/dir/  # Klasör
 curl -s -k https://ixtif.com/opcache-reset.php > /dev/null  # PHP için
 ```
 
-**3. HTML rapor oluşturduysan (ZORUNLU TEST!):**
+**3. HTML rapor oluşturduysan (ZORUNLU 403 KONTROLÜ!):**
 ```bash
-# İzinleri düzelt
+# 1. İzinleri düzelt
 sudo chown tuufi.com_:psaserv /path/index.html
 sudo chmod 644 /path/index.html
 
-# Test et (trailing slash ile!)
-curl -s -k -I https://ixtif.com/path/v1/ | head -n 1
+# 2. ZORUNLU TEST - 200 OK ALMADAN LİNK VERME!
+curl -s -k -I https://domain.com/path/ | head -n 1
 # Beklenen: HTTP/2 200
 
-# 403 hatası → Toplu düzelt:
+# 3. 403 hatası alırsan → DURMA, TOPLU DÜZELT:
 sudo chown -R tuufi.com_:psaserv /path/
 sudo find /path/ -type f -exec chmod 644 {} \;
 sudo find /path/ -type d -exec chmod 755 {} \;
+
+# 4. TEKNİK DÜZELT VE TEKRAR TEST ET!
+curl -s -k -I https://domain.com/path/ | head -n 1
+# 200 OK gelene kadar devam et!
 ```
 
+**🔴 403 HATA PROTOKOLÜ (ZORUNLU!):**
+
+1. **Write/Edit tool kullandın** → root:root oluşturur → **HEMEN chown yap!**
+2. **Link vermeden ÖNCE** → curl ile test et → **200 OK görmeden link VERME!**
+3. **403 aldın mı?** → Kullanıcıya hata gösterme → **Önce düzelt, sonra link ver!**
+4. **Symlink oluşturdun mu?** → `sudo -u tuufi.com_` ile oluştur, root ile DEĞİL!
+
 **⚠️ KRİTİK:**
-- ❌ **200 OK almadan link verme!**
-- ❌ Root kullanırsan → Nginx okuyamaz → 500/403 hatası!
+- ❌ **200 OK almadan link verme! YASAK!**
+- ❌ Root ownership → Nginx okuyamaz → 403 hatası!
+- ❌ Kullanıcıya 403 gösteren link verme!
 - ✅ **Doğru izinler:** tuufi.com_:psaserv, 644 (dosya), 755 (klasör)
+- ✅ **Symlink:** `sudo -u tuufi.com_ ln -sf` kullan
 
 ---
 

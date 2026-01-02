@@ -543,6 +543,9 @@
     {{-- AI Chat --}}
     <script src="{{ versioned_asset('themes/muzibu/js/ai/tenant1001-ai-chat.js') }}"></script>
 
+    {{-- Corporate Spots Manager (SPA Compatible) --}}
+    <script src="{{ versioned_asset('themes/muzibu/js/corporate-spots.js') }}"></script>
+
     {{-- 7. 🚀 SPA Router - MODULAR VERSION USED (loaded in line 211 as player feature) --}}
     {{-- OLD STANDALONE ROUTER REMOVED - Duplicate initialization fixed --}}
     @endonce

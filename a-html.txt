@@ -1,0 +1,1559 @@
+spot-player.js?v=1767284776:483 🎙️ SpotPlayer: Script loaded! MuzibuSpotPlayer: object
+spot-player.js?v=1767284776:487 🎙️ SpotPlayer: DOM loading, waiting for DOMContentLoaded...
+spot-player.js?v=1767284776:489 🎙️ SpotPlayer: DOMContentLoaded fired, calling init()...
+spot-player.js?v=1767284776:51 🎙️ SpotPlayer: Initializing...
+spot-player.js?v=1767284776:75 🎙️ SpotPlayer: Fetching settings from /api/spot/settings...
+spot-player.js?v=1767284776:85 🎙️ SpotPlayer: Settings response: {enabled: true, songs_between: 3, corporate_id: 1, branch_id: 1, spot_is_paused: false}
+spot-player.js?v=1767284776:64 🎙️ SpotPlayer: Enabled. Songs between: 3, Current count: 1
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: spotManager is not defined
+
+Expression: "spotManager()"
+
+ <div x-data=​"spotManager()​" x-init=​"init()​" class=​"min-h-screen pb-24">​…​</div>​<div class=​"relative">​…​</div>​<div class=​"max-w-4xl mx-auto px-4 sm:​px-6 lg:​px-8 py-6">​…​</div>​<div x-show=​"settingsModal" class=​"fixed inset-0 z-50 flex items-center justify-center p-4" style=​"display:​ none;​">​…​</div>​<div x-show=​"editModal" class=​"fixed inset-0 z-50 flex items-center justify-center p-4" style=​"display:​ none;​">​…​</div>​<div class=​"absolute inset-0 bg-black/​70" @click=​"closeEditModal()​">​</div>​<div class=​"relative bg-slate-800 rounded-2xl w-full max-w-md border border-white/​10 shadow-2xl">​…​</div>​<div class=​"flex items-center justify-between p-5 border-b border-white/​10">​…​</div>​flex<div class=​"p-5 space-y-4">​…​</div>​<div>​…​</div>​<label class=​"block text-sm text-gray-400 mb-1.5">​Başlık​</label>​<input type=​"text" x-model=​"editData.title" class=​"w-full bg-slate-900 border border-white/​10 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:​outline-none focus:​border-amber-500/​50 focus:​ring-1 focus:​ring-amber-500/​20">​</div>​<div class=​"grid grid-cols-2 gap-4">​…​</div>​grid<div>​…​</div>​<label class=​"block text-sm text-gray-400 mb-1.5">​Başlangıç​</label>​<input type=​"datetime-local" x-model=​"editData.starts_at" class=​"w-full bg-slate-900 border border-white/​10 rounded-lg px-3 py-2.5 text-white text-sm focus:​outline-none focus:​border-amber-500/​50 focus:​ring-1 focus:​ring-amber-500/​20 [color-scheme:​dark]​">​</div>​<div>​…​</div>​<label class=​"block text-sm text-gray-400 mb-1.5">​Bitiş​</label>​<input type=​"datetime-local" x-model=​"editData.ends_at" class=​"w-full bg-slate-900 border border-white/​10 rounded-lg px-3 py-2.5 text-white text-sm focus:​outline-none focus:​border-amber-500/​50 focus:​ring-1 focus:​ring-amber-500/​20 [color-scheme:​dark]​">​</div>​</div>​<div class=​"flex items-center justify-between">​…​</div>​flex<div class=​"flex items-center justify-between">​…​</div>​flex</div>​<div class=​"flex gap-3 p-5 border-t border-white/​10">​…​</div>​flex</div>​</div>​<audio x-ref=​"audioPlayer" @ended=​"currentPlaying = null" class=​"hidden">​</audio>​media</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3564
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: settings is not defined
+
+Expression: "settings.spot_enabled ? 'bg-green-500' : 'bg-gray-500'"
+
+ <span class=​"w-2 h-2 rounded-full" :class=​"settings.spot_enabled ? 'bg-green-500' :​ 'bg-gray-500'">​</span>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: settings is not defined
+
+Expression: "settings.spot_enabled ? 'Aktif' : 'Kapalı'"
+
+ <span class=​"text-gray-400" x-text=​"settings.spot_enabled ? 'Aktif' :​ 'Kapalı'">​</span>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3496
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3495
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: settings is not defined
+
+Expression: "'Her ' + settings.spot_songs_between + ' şarkıda'"
+
+ <span class=​"text-gray-500" x-text=​"'Her ' + settings.spot_songs_between + ' şarkıda'">​</span>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3496
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3495
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: spots is not defined
+
+Expression: "spots.length + ' anons'"
+
+ <span class=​"text-gray-500" x-text=​"spots.length + ' anons'">​</span>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3496
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3495
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: spots is not defined
+
+Expression: "spots.length === 0"
+
+ <template x-if=​"spots.length === 0">​…​</template>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3856
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3856
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: spots is not defined
+
+Expression: "spots"
+
+ <template x-for=​"(spot, index)​ in spots" :key=​"spot.id">​…​</template>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+loop @ livewire.js?id=df3a17f2:3655
+(anonymous) @ livewire.js?id=df3a17f2:3642
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3642
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: settingsModal is not defined
+
+Expression: "settingsModal"
+
+ <div x-show=​"settingsModal" class=​"fixed inset-0 z-50 flex items-center justify-center p-4" style=​"display:​ none;​">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3626
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3626
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: settings is not defined
+
+Expression: "settings.spot_enabled ? 'bg-green-500/10 border border-green-500/30' : 'bg-slate-700/50 border border-white/5'"
+
+ <div class=​"flex items-center justify-between p-4 rounded-xl" :class=​"settings.spot_enabled ? 'bg-green-500/​10 border border-green-500/​30' :​ 'bg-slate-700/​50 border border-white/​5'">​…​</div>​flex
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: settings is not defined
+
+Expression: "settings.spot_enabled ? 'bg-green-500/20' : 'bg-slate-600'"
+
+ <div class=​"w-10 h-10 rounded-lg flex items-center justify-center" :class=​"settings.spot_enabled ? 'bg-green-500/​20' :​ 'bg-slate-600'">​…​</div>​flex
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: settings is not defined
+
+Expression: "settings.spot_enabled ? 'text-green-400' : 'text-gray-500'"
+
+ <i class=​"fas fa-bullhorn" :class=​"settings.spot_enabled ? 'text-green-400' :​ 'text-gray-500'">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: settings is not defined
+
+Expression: "settings.spot_enabled ? 'text-green-400' : 'text-gray-500'"
+
+ <p class=​"text-xs" :class=​"settings.spot_enabled ? 'text-green-400' :​ 'text-gray-500'" x-text=​"settings.spot_enabled ? 'Aktif - Anonslar çalınıyor' :​ 'Pasif - Anonslar kapalı'">​</p>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: settings is not defined
+
+Expression: "settings.spot_enabled ? 'Aktif - Anonslar çalınıyor' : 'Pasif - Anonslar kapalı'"
+
+ <p class=​"text-xs" :class=​"settings.spot_enabled ? 'text-green-400' :​ 'text-gray-500'" x-text=​"settings.spot_enabled ? 'Aktif - Anonslar çalınıyor' :​ 'Pasif - Anonslar kapalı'">​</p>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3496
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3495
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: settings is not defined
+
+Expression: "settings.spot_enabled ? 'bg-green-500' : 'bg-slate-600'"
+
+ <button @click=​"toggleSystem()​" class=​"w-14 h-7 rounded-full transition-colors" :class=​"settings.spot_enabled ? 'bg-green-500' :​ 'bg-slate-600'">​…​</button>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: settings is not defined
+
+Expression: "settings.spot_enabled && 'translate-x-7'"
+
+ <span class=​"block w-5 h-5 bg-white rounded-full shadow transition-transform ml-1" :class=​"settings.spot_enabled && 'translate-x-7'">​</span>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: settings is not defined
+
+Expression: "settings.spot_enabled"
+
+ <div class=​"flex items-center justify-between p-4 bg-slate-700/​50 rounded-xl" x-show=​"settings.spot_enabled" style=​"display:​ none;​">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3626
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3626
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: settings is not defined
+
+Expression: "settings.spot_songs_between"
+
+ <span class=​"w-10 text-center text-white font-semibold tabular-nums" x-text=​"settings.spot_songs_between">​</span>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3496
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3495
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: editModal is not defined
+
+Expression: "editModal"
+
+ <div x-show=​"editModal" class=​"fixed inset-0 z-50 flex items-center justify-center p-4" style=​"display:​ none;​">​…​</div>​<div class=​"absolute inset-0 bg-black/​70" @click=​"closeEditModal()​">​</div>​<div class=​"relative bg-slate-800 rounded-2xl w-full max-w-md border border-white/​10 shadow-2xl">​…​</div>​<div class=​"flex items-center justify-between p-5 border-b border-white/​10">​…​</div>​flex<div class=​"p-5 space-y-4">​…​</div>​<div>​…​</div>​<label class=​"block text-sm text-gray-400 mb-1.5">​Başlık​</label>​<input type=​"text" x-model=​"editData.title" class=​"w-full bg-slate-900 border border-white/​10 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:​outline-none focus:​border-amber-500/​50 focus:​ring-1 focus:​ring-amber-500/​20">​</div>​<div class=​"grid grid-cols-2 gap-4">​…​</div>​grid<div>​…​</div>​<label class=​"block text-sm text-gray-400 mb-1.5">​Başlangıç​</label>​<input type=​"datetime-local" x-model=​"editData.starts_at" class=​"w-full bg-slate-900 border border-white/​10 rounded-lg px-3 py-2.5 text-white text-sm focus:​outline-none focus:​border-amber-500/​50 focus:​ring-1 focus:​ring-amber-500/​20 [color-scheme:​dark]​">​</div>​<div>​…​</div>​<label class=​"block text-sm text-gray-400 mb-1.5">​Bitiş​</label>​<input type=​"datetime-local" x-model=​"editData.ends_at" class=​"w-full bg-slate-900 border border-white/​10 rounded-lg px-3 py-2.5 text-white text-sm focus:​outline-none focus:​border-amber-500/​50 focus:​ring-1 focus:​ring-amber-500/​20 [color-scheme:​dark]​">​</div>​</div>​<div class=​"flex items-center justify-between">​…​</div>​flex<div class=​"flex items-center justify-between">​…​</div>​flex</div>​<div class=​"flex gap-3 p-5 border-t border-white/​10">​…​</div>​flex</div>​</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3626
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3626
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: editData is not defined
+
+Expression: "editData.title"
+
+ <input type=​"text" x-model=​"editData.title" class=​"w-full bg-slate-900 border border-white/​10 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:​outline-none focus:​border-amber-500/​50 focus:​ring-1 focus:​ring-amber-500/​20">​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+getValue @ livewire.js?id=df3a17f2:3353
+(anonymous) @ livewire.js?id=df3a17f2:3410
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3409
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: editData is not defined
+
+Expression: "editData.starts_at"
+
+ <input type=​"datetime-local" x-model=​"editData.starts_at" class=​"w-full bg-slate-900 border border-white/​10 rounded-lg px-3 py-2.5 text-white text-sm focus:​outline-none focus:​border-amber-500/​50 focus:​ring-1 focus:​ring-amber-500/​20 [color-scheme:​dark]​">​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+getValue @ livewire.js?id=df3a17f2:3353
+(anonymous) @ livewire.js?id=df3a17f2:3410
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3409
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: editData is not defined
+
+Expression: "editData.ends_at"
+
+ <input type=​"datetime-local" x-model=​"editData.ends_at" class=​"w-full bg-slate-900 border border-white/​10 rounded-lg px-3 py-2.5 text-white text-sm focus:​outline-none focus:​border-amber-500/​50 focus:​ring-1 focus:​ring-amber-500/​20 [color-scheme:​dark]​">​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+getValue @ livewire.js?id=df3a17f2:3353
+(anonymous) @ livewire.js?id=df3a17f2:3410
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3409
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: editData is not defined
+
+Expression: "editData.is_enabled ? 'bg-green-500' : 'bg-slate-600'"
+
+ <button @click=​"editData.is_enabled = !editData.is_enabled" class=​"w-11 h-6 rounded-full transition-colors" :class=​"editData.is_enabled ? 'bg-green-500' :​ 'bg-slate-600'">​…​</button>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: editData is not defined
+
+Expression: "editData.is_enabled && 'translate-x-5'"
+
+ <span class=​"block w-4 h-4 bg-white rounded-full shadow transition-transform ml-1" :class=​"editData.is_enabled && 'translate-x-5'">​</span>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: editData is not defined
+
+Expression: "editData.is_archived ? 'bg-amber-500' : 'bg-slate-600'"
+
+ <button @click=​"editData.is_archived = !editData.is_archived" class=​"w-11 h-6 rounded-full transition-colors" :class=​"editData.is_archived ? 'bg-amber-500' :​ 'bg-slate-600'">​…​</button>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: editData is not defined
+
+Expression: "editData.is_archived && 'translate-x-5'"
+
+ <span class=​"block w-4 h-4 bg-white rounded-full shadow transition-transform ml-1" :class=​"editData.is_archived && 'translate-x-5'">​</span>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: saving is not defined
+
+Expression: "saving"
+
+ <button @click=​"saveEdit()​" class=​"flex-1 px-4 py-2.5 bg-amber-500 hover:​bg-amber-600 text-white rounded-lg transition-colors font-medium" :disabled=​"saving">​…​</button>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: saving is not defined
+
+Expression: "!saving"
+
+ <span x-show=​"!saving" style=​"display:​ none;​">​Kaydet​</span>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3626
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3626
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: saving is not defined
+
+Expression: "saving"
+
+ <span x-show=​"saving" style=​"display:​ none;​">​…​</span>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3626
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3626
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: spotManager is not defined
+    at [Alpine] spotManager() (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:16)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at evaluate (livewire.js?id=df3a17f2:1140:34)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3564:17)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+    at stopDeferring (livewire.js?id=df3a17f2:1286:7)
+    at deferHandlingDirectives (livewire.js?id=df3a17f2:1289:5)
+    at initTree (livewire.js?id=df3a17f2:1479:5)
+    at livewire.js?id=df3a17f2:1421:23
+[Alpine] spotManager() @ VM26602:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3564
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: settings is not defined
+    at [Alpine] settings.spot_enabled ? 'bg-green-500' : 'bg-gray-500' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] settings.spot_enabled ? 'bg-green-500' : 'bg-gray-500' @ VM26604:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: settings is not defined
+    at [Alpine] settings.spot_enabled ? 'Aktif' : 'Kapalı' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3496:7
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] settings.spot_enabled ? 'Aktif' : 'Kapalı' @ VM26605:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3496
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3495
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: settings is not defined
+    at [Alpine] 'Her ' + settings.spot_songs_between + ' şarkıda' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:41)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3496:7
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] 'Her ' + settings.spot_songs_between + ' şarkıda' @ VM26606:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3496
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3495
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: spots is not defined
+    at [Alpine] spots.length + ' anons' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3496:7
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] spots.length + ' anons' @ VM26607:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3496
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3495
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: spots is not defined
+    at [Alpine] spots.length === 0 (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3856:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3856:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] spots.length === 0 @ VM26608:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3856
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3856
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: spots is not defined
+    at [Alpine] spots (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at loop (livewire.js?id=df3a17f2:3655:5)
+    at livewire.js?id=df3a17f2:3642:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3642:5)
+[Alpine] spots @ VM26609:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+loop @ livewire.js?id=df3a17f2:3655
+(anonymous) @ livewire.js?id=df3a17f2:3642
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3642
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: settingsModal is not defined
+    at [Alpine] settingsModal (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] settingsModal @ VM26611:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3626
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3626
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: settings is not defined
+    at [Alpine] settings.spot_enabled ? 'bg-green-500/10 border border-green-500/30' : 'bg-slate-700/50 border border-white/5' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] settings.spot_enabled ? 'bg-green-500/10 border border-green-500/30' : 'bg-slate-700/50 border border-white/5' @ VM26613:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: settings is not defined
+    at [Alpine] settings.spot_enabled ? 'bg-green-500/20' : 'bg-slate-600' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] settings.spot_enabled ? 'bg-green-500/20' : 'bg-slate-600' @ VM26614:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: settings is not defined
+    at [Alpine] settings.spot_enabled ? 'text-green-400' : 'text-gray-500' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] settings.spot_enabled ? 'text-green-400' : 'text-gray-500' @ VM26615:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: settings is not defined
+    at [Alpine] settings.spot_enabled ? 'text-green-400' : 'text-gray-500' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] settings.spot_enabled ? 'text-green-400' : 'text-gray-500' @ VM26615:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: settings is not defined
+    at [Alpine] settings.spot_enabled ? 'Aktif - Anonslar çalınıyor' : 'Pasif - Anonslar kapalı' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3496:7
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] settings.spot_enabled ? 'Aktif - Anonslar çalınıyor' : 'Pasif - Anonslar kapalı' @ VM26616:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3496
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3495
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: settings is not defined
+    at [Alpine] settings.spot_enabled ? 'bg-green-500' : 'bg-slate-600' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] settings.spot_enabled ? 'bg-green-500' : 'bg-slate-600' @ VM26617:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: settings is not defined
+    at [Alpine] settings.spot_enabled && 'translate-x-7' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] settings.spot_enabled && 'translate-x-7' @ VM26619:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: settings is not defined
+    at [Alpine] settings.spot_enabled (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] settings.spot_enabled @ VM26620:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3626
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3626
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: settings is not defined
+    at [Alpine] settings.spot_songs_between (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3496:7
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] settings.spot_songs_between @ VM26622:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3496
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3495
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: editModal is not defined
+    at [Alpine] editModal (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] editModal @ VM26624:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3626
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3626
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: editData is not defined
+    at [Alpine] editData.title (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at getValue (livewire.js?id=df3a17f2:3353:7)
+    at livewire.js?id=df3a17f2:3410:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3409:5)
+[Alpine] editData.title @ VM26626:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+getValue @ livewire.js?id=df3a17f2:3353
+(anonymous) @ livewire.js?id=df3a17f2:3410
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3409
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: editData is not defined
+    at [Alpine] editData.starts_at (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at getValue (livewire.js?id=df3a17f2:3353:7)
+    at livewire.js?id=df3a17f2:3410:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3409:5)
+[Alpine] editData.starts_at @ VM26628:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+getValue @ livewire.js?id=df3a17f2:3353
+(anonymous) @ livewire.js?id=df3a17f2:3410
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3409
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: editData is not defined
+    at [Alpine] editData.ends_at (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at getValue (livewire.js?id=df3a17f2:3353:7)
+    at livewire.js?id=df3a17f2:3410:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3409:5)
+[Alpine] editData.ends_at @ VM26630:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+getValue @ livewire.js?id=df3a17f2:3353
+(anonymous) @ livewire.js?id=df3a17f2:3410
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3409
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: editData is not defined
+    at [Alpine] editData.is_enabled ? 'bg-green-500' : 'bg-slate-600' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] editData.is_enabled ? 'bg-green-500' : 'bg-slate-600' @ VM26632:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: editData is not defined
+    at [Alpine] editData.is_enabled && 'translate-x-5' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] editData.is_enabled && 'translate-x-5' @ VM26634:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: editData is not defined
+    at [Alpine] editData.is_archived ? 'bg-amber-500' : 'bg-slate-600' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] editData.is_archived ? 'bg-amber-500' : 'bg-slate-600' @ VM26635:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: editData is not defined
+    at [Alpine] editData.is_archived && 'translate-x-5' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] editData.is_archived && 'translate-x-5' @ VM26637:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: saving is not defined
+    at [Alpine] saving (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] saving @ VM26501:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: saving is not defined
+    at [Alpine] !saving (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:33)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] !saving @ VM26503:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3626
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3626
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: saving is not defined
+    at [Alpine] saving (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] saving @ VM26501:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3626
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3626
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1421
+(anonymous) @ livewire.js?id=df3a17f2:970
+onMutate @ livewire.js?id=df3a17f2:970
+(anonymous) @ livewire.js?id=df3a17f2:873
+(anonymous) @ livewire.js?id=df3a17f2:878
+player-core.js?v=1767290043:4276 ⚠️ WAITING - Veri bekleniyor! {currentTime: '0.0', readyState: 0, networkState: 2}
+audio.onwaiting @ player-core.js?v=1767290043:4276
+waiting
+(anonymous) @ player-core.js?v=1767290043:3903
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.filterAndSortMediaOptions @ level-controller.ts:291
+r.onManifestLoaded @ level-controller.ts:152
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.handleTrackOrLevelPlaylist @ playlist-loader.ts:478
+onSuccess @ playlist-loader.ts:314
+e.readystatechange @ xhr-loader.ts:231
+XMLHttpRequest.send
+e.openAndSendXhr @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+e.loadInternal @ xhr-loader.ts:102
+e.load @ xhr-loader.ts:76
+e.load @ playlist-loader.ts:347
+e.onManifestLoading @ playlist-loader.ts:154
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.loadSource @ hls.ts:389
+playHlsStream @ player-core.js?v=1767290043:3845
+loadAndPlaySong @ player-core.js?v=1767290043:3544
+await in loadAndPlaySong
+playSongFromQueue @ player-core.js?v=1767290043:3412
+await in playSongFromQueue
+togglePlayPause @ player-core.js?v=1767290043:774
+[Alpine] togglePlayPause() @ VM26236:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+(anonymous) @ livewire.js?id=df3a17f2:3185

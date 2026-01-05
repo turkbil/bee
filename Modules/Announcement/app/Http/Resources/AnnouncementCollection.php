@@ -116,10 +116,6 @@ class AnnouncementCollection extends ResourceCollection
             $ttl = config('announcement.cache.ttl.list', 3600);
             $response->header('Cache-Control', "public, max-age={$ttl}");
         }
-
-        // Add CORS headers
-        $response->header('Access-Control-Allow-Origin', '*');
-        $response->header('Access-Control-Allow-Methods', 'GET, OPTIONS');
     }
 
     /**

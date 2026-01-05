@@ -1,5 +1,32 @@
 <?php
 // README Index - Otomatik Rapor Listesi
+
+// Handle AJAX preference save/load
+$prefsFile = __DIR__ . '/prefs.json';
+
+if (isset($_GET['action']) && $_GET['action'] === 'get_prefs') {
+    header('Content-Type: application/json');
+    if (!file_exists($prefsFile)) {
+        file_put_contents($prefsFile, json_encode(['favorites' => [], 'hidden' => []], JSON_PRETTY_PRINT));
+    }
+    echo file_get_contents($prefsFile);
+    exit;
+}
+
+if (isset($_GET['action']) && $_GET['action'] === 'save_prefs') {
+    header('Content-Type: application/json');
+    $input = file_get_contents('php://input');
+    $data = json_decode($input, true);
+    if ($data && isset($data['favorites']) && isset($data['hidden'])) {
+        file_put_contents($prefsFile, json_encode($data, JSON_PRETTY_PRINT));
+        echo json_encode(['success' => true]);
+    } else {
+        http_response_code(400);
+        echo json_encode(['error' => 'Invalid data']);
+    }
+    exit;
+}
+
 $baseDir = __DIR__;
 $reports = [];
 
@@ -341,18 +368,46 @@ foreach ($reports as $index => $report) {
     <div id="noResults" class="hidden text-center py-20 text-slate-600">🔍 Sonuç bulunamadı</div>
 
     <script>
-        // LocalStorage Helpers
+        // Global preferences (shared across all browsers/PCs)
+        let globalPrefs = { favorites: [], hidden: [] };
+
+        // Load preferences from server
+        async function loadPrefs() {
+            try {
+                const response = await fetch('/readme/?action=get_prefs');
+                globalPrefs = await response.json();
+            } catch (error) {
+                console.error('Failed to load preferences:', error);
+            }
+        }
+
+        // Save preferences to server
+        async function savePrefs() {
+            try {
+                await fetch('/readme/?action=save_prefs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(globalPrefs)
+                });
+            } catch (error) {
+                console.error('Failed to save preferences:', error);
+            }
+        }
+
+        // Helpers
         function getFavorites() {
-            return JSON.parse(localStorage.getItem('readme_favorites') || '[]');
+            return globalPrefs.favorites || [];
         }
         function saveFavorites(favorites) {
-            localStorage.setItem('readme_favorites', JSON.stringify(favorites));
+            globalPrefs.favorites = favorites;
+            savePrefs();
         }
         function getHidden() {
-            return JSON.parse(localStorage.getItem('readme_hidden') || '[]');
+            return globalPrefs.hidden || [];
         }
         function saveHidden(hidden) {
-            localStorage.setItem('readme_hidden', JSON.stringify(hidden));
+            globalPrefs.hidden = hidden;
+            savePrefs();
         }
 
         // Favori Ekle/Çıkar
@@ -545,8 +600,57 @@ foreach ($reports as $index => $report) {
             sessionStorage.scrollPos = window.scrollY;
         });
 
+        // Migrate localStorage to server (one-time)
+        async function migrateLocalStorage() {
+            // Check if localStorage has old data
+            const oldFavorites = localStorage.getItem('readme_favorites');
+            const oldHidden = localStorage.getItem('readme_hidden');
+
+            if (oldFavorites || oldHidden) {
+                console.log('📦 Migrating localStorage to server...');
+
+                // Parse old data
+                const favorites = oldFavorites ? JSON.parse(oldFavorites) : [];
+                const hidden = oldHidden ? JSON.parse(oldHidden) : [];
+
+                // Load current server data
+                await loadPrefs();
+
+                // Merge with existing server data (union, no duplicates)
+                const mergedFavorites = [...new Set([...globalPrefs.favorites, ...favorites])];
+                const mergedHidden = [...new Set([...globalPrefs.hidden, ...hidden])];
+
+                // Save to server
+                globalPrefs.favorites = mergedFavorites;
+                globalPrefs.hidden = mergedHidden;
+                await savePrefs();
+
+                // Clear localStorage (no longer needed)
+                localStorage.removeItem('readme_favorites');
+                localStorage.removeItem('readme_hidden');
+
+                console.log('✅ Migration complete!', {
+                    favorites: mergedFavorites.length,
+                    hidden: mergedHidden.length
+                });
+
+                return true;
+            }
+
+            return false;
+        }
+
         // Sayfa yüklendiğinde
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            // First, try to migrate localStorage
+            const migrated = await migrateLocalStorage();
+
+            // Load preferences from server
+            if (!migrated) {
+                await loadPrefs();
+            }
+
+            // Update display
             updateDisplay();
         });
     </script>

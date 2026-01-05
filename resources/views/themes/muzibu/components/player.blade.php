@@ -227,9 +227,6 @@
                  class="absolute inset-0 w-full h-full object-cover">
             <i x-show="!currentSong?.cover_url && !currentSong?.album_cover" class="fas fa-music text-white/80 text-lg"></i>
         </div>
-        {{-- Time Badge - Kalan süre --}}
-        <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-zinc-800 text-white text-[10px] px-1.5 py-0.5 rounded-full border border-zinc-700"
-             x-text="duration > 0 ? formatTime(Math.max(0, duration - currentTime)) : '0:00'">0:00</div>
     </div>
 
     {{-- Heart Button (önce) --}}
@@ -268,38 +265,58 @@
     </div>
 
     {{-- Progress Bar (Linear - Dynamic Gradient) --}}
-    <div class="flex items-center gap-2 w-64">
+    <div class="flex items-center gap-2 w-80">
+        {{-- Geçen Süre (Desktop) - Spotify Standard --}}
+        <span class="text-xs text-zinc-400 w-10 text-right tabular-nums" x-text="formatTime(currentTime)">0:00</span>
         <div class="flex-1 h-1.5 bg-white/20 rounded-full cursor-pointer group" @click="seekTo($event)">
             <div class="h-full rounded-full relative transition-all progress-bar-gradient"
                  :style="`width: ${progressPercent}%; background: linear-gradient(90deg, hsl(${currentSong?.color_hues?.[0] || 30}, 80%, 55%), hsl(${currentSong?.color_hues?.[1] || 350}, 80%, 55%), hsl(${currentSong?.color_hues?.[2] || 320}, 80%, 55%))`">
                 <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 shadow-lg transition-opacity"></div>
             </div>
         </div>
-        <span class="text-xs text-zinc-400 w-10" x-text="formatTime(duration)">0:00</span>
+        {{-- Toplam Süre (Desktop) - Animated --}}
+        <span class="text-xs text-zinc-400 w-10 tabular-nums" x-text="formatTime(animatedDuration)">0:00</span>
     </div>
 
-    {{-- Volume Control --}}
-    <div class="flex items-center gap-2" x-data="{ showVolumeTooltip: false, tooltipX: 0, isDragging: false }">
+    {{-- Volume Control - Twitter Style (Vertical Hover) --}}
+    <div class="relative" x-data="{ showVolumeSlider: false, isDragging: false }">
+        {{-- Volume Button --}}
         <button class="w-8 h-8 text-white/60 hover:text-white flex items-center justify-center transition-colors"
-                @click="toggleMute()">
+                @click="toggleMute()"
+                @mouseenter="showVolumeSlider = true">
             <i :class="isMuted ? 'fas fa-volume-mute' : (volume > 50 ? 'fas fa-volume-up' : 'fas fa-volume-down')"></i>
         </button>
-        <div class="w-20 py-3 cursor-pointer group relative"
-             @mousedown="isDragging = true; setVolume($event); showVolumeTooltip = true"
-             @mouseenter="showVolumeTooltip = true"
-             @mousemove="tooltipX = $event.offsetX; if (isDragging) setVolume($event)"
-             @mouseleave="showVolumeTooltip = false; isDragging = false"
-             @mouseup="isDragging = false">
-            <div class="h-1.5 bg-white/20 rounded-full relative">
-                <div class="h-full bg-white rounded-full relative group-hover:bg-orange-500 transition-colors"
-                     :style="`width: ${volume}%`">
-                    <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 shadow-lg transition-opacity"></div>
-                </div>
+
+        {{-- Vertical Volume Slider (Hover) --}}
+        <div x-show="showVolumeSlider"
+             x-cloak
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+             x-transition:leave-end="opacity-0 scale-95 translate-y-2"
+             @mouseenter="showVolumeSlider = true"
+             @mouseleave="showVolumeSlider = false; isDragging = false"
+             class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-800 border border-slate-600 rounded-lg p-3 shadow-2xl z-50 select-none flex flex-col items-center"
+             @mousedown="isDragging = true"
+             @mouseup="isDragging = false; $el.querySelector('.volume-track').releasePointerCapture && $el.querySelector('.volume-track').releasePointerCapture($event.pointerId)"
+             @click="const track = $el.querySelector('.volume-track'); const rect = track.getBoundingClientRect(); const clickY = $event.clientY - rect.top; const percent = Math.max(0, Math.min(100, 100 - (clickY / rect.height * 100))); volume = Math.round(percent); if (isMuted) isMuted = false; if (audioElement) audioElement.volume = volume / 100;"
+             @mousemove="if (isDragging) { const track = $el.querySelector('.volume-track'); const rect = track.getBoundingClientRect(); const moveY = $event.clientY - rect.top; const percent = Math.max(0, Math.min(100, 100 - (moveY / rect.height * 100))); volume = Math.round(percent); if (isMuted) isMuted = false; if (audioElement) audioElement.volume = volume / 100; }">
+
+            {{-- Vertical Track --}}
+            <div class="volume-track h-32 w-2 bg-slate-700 rounded-full relative cursor-pointer select-none">
+                {{-- Fill (bottom to top) --}}
+                <div class="absolute bottom-0 w-full bg-white rounded-full transition-all pointer-events-none"
+                     :style="`height: ${volume}%`"></div>
+
+                {{-- Handle --}}
+                <div class="absolute left-1/2 -translate-x-1/2 w-4 h-4 bg-white rounded-full shadow-lg pointer-events-none"
+                     :style="`bottom: calc(${volume}% - 8px)`"></div>
             </div>
-            <div x-show="showVolumeTooltip" x-transition :style="`left: ${tooltipX}px`"
-                 class="absolute -top-8 transform -translate-x-1/2 bg-black/80 text-white px-1.5 py-0.5 rounded text-xs font-medium pointer-events-none z-30">
-                <span x-text="volume >= 95 ? 'MAX' : Math.round(volume)"></span>
-            </div>
+
+            {{-- Percentage Display (Fixed Width, Centered) --}}
+            <p class="w-8 mx-auto text-xs text-center mt-2 text-slate-400 tabular-nums select-none" x-text="Math.round(volume)"></p>
         </div>
     </div>
 

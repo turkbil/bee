@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spot Ayarları ve İçerik Dinamik Senkronizasyon v3 - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        .badge { @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium; }
+        .badge-blue { @apply bg-blue-500/20 text-blue-300 border border-blue-500/30; }
+        .badge-green { @apply bg-green-500/20 text-green-300 border border-green-500/30; }
+        .badge-purple { @apply bg-purple-500/20 text-purple-300 border border-purple-500/30; }
+        .badge-orange { @apply bg-orange-500/20 text-orange-300 border border-orange-500/30; }
+        pre { @apply overflow-x-auto; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+
+    <!-- Header -->
+    <header class="relative border-b border-white/10">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/10 to-transparent"></div>
+        <div class="relative max-w-6xl mx-auto px-6 py-8">
+            <div class="flex items-center gap-3 mb-2">
+                <span class="badge badge-blue"><i class="fas fa-sync-alt mr-1.5"></i>Dinamik Senkronizasyon</span>
+                <span class="badge badge-purple"><i class="fas fa-power-off mr-1.5"></i>Global Kapatma</span>
+                <span class="badge badge-orange"><i class="fas fa-list mr-1.5"></i>İçerik Sync</span>
+                <span class="text-gray-500">•</span>
+                <span class="text-gray-500 text-sm">5 Ocak 2026 • v3</span>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">Spot Ayarları ve İçerik Dinamik Senkronizasyon v3</h1>
+            <p class="text-gray-400">Ayarlar + Anons İçeriği + Sıralama + Aktif/Pasif + Arşiv - Tam Otomatik Senkronizasyon</p>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-8 space-y-8">
+
+        <!-- 📝 Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-800 rounded-xl p-6">
+            <div class="flex items-center gap-2 mb-4">
+                <i class="fas fa-book-open text-green-400"></i>
+                <h2 class="text-xl font-semibold text-green-300">Basit Anlatım (Herkes İçin)</h2>
+            </div>
+
+            <div class="space-y-4 text-gray-200">
+                <p class="text-lg font-medium">v2'ye ek olarak ne sorun var?</p>
+                <ul class="space-y-2 ml-4">
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-times text-red-400 mt-1"></i>
+                        <span>Ana şube anonsun ismini değiştiriyor → Şubeler eski ismi görüyor</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-times text-red-400 mt-1"></i>
+                        <span>Anons sıralaması değişiyor → Şubeler eski sırayla çalıyor</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-times text-red-400 mt-1"></i>
+                        <span>Anons aktif/pasif yapılıyor → Şubeler eski durumu kullanıyor</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-times text-red-400 mt-1"></i>
+                        <span>Anons arşivleniyor → Şubeler hala çalmaya çalışıyor</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-times text-red-400 mt-1"></i>
+                        <span>Başlangıç/bitiş tarihi değişiyor → Şubeler eski tarihe göre çalıyor</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-times text-red-400 mt-1"></i>
+                        <span>Yeni anons ekleniyor → Şubeler görmüyor</span>
+                    </li>
+                </ul>
+
+                <p class="text-lg font-medium mt-6">v3'te ne yapacağız?</p>
+                <ul class="space-y-2 ml-4">
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>Anons içeriği değişince → Tüm şubeler <strong>otomatik</strong> günceller</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>Sıralama değişince → Rotation sırası yeniden hesaplanır</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>Aktif/Pasif/Arşiv → Player anında uyarlanır</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>Preload'lı spot değişirse → İptal edilir, yenisi yüklenir</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>Yeni anons → 30 saniye içinde tüm şubeler görür</span>
+                    </li>
+                </ul>
+
+                <div class="bg-orange-900/30 border border-orange-700 rounded-lg p-4 mt-4">
+                    <p class="text-orange-200"><strong>Örnek Senaryo 3:</strong></p>
+                    <p class="text-gray-300 mt-2">
+                        Ana şube "Yılbaşı Kampanyası" anonsunu arşivler.
+                        30 saniye içinde tüm şubelerin player'ları bu anosu atlayıp bir sonrakine geçer.
+                        Preload'da bu anons varsa iptal edilir!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🎯 Tetikleyici Olaylar -->
+        <section class="bg-orange-900/20 border border-orange-800 rounded-xl p-6">
+            <div class="flex items-center gap-2 mb-4">
+                <i class="fas fa-bolt text-orange-400"></i>
+                <h2 class="text-xl font-semibold text-orange-300">Version Artırıcı Olaylar (10 Tetikleyici)</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <!-- Ayar Değişiklikleri -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold mb-3 text-blue-300"><i class="fas fa-cog mr-2"></i>Ayar Değişiklikleri (3)</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded bg-blue-500 flex items-center justify-center text-xs font-bold">1</span>
+                            <code class="text-amber-400">spot_enabled</code>
+                            <span class="text-gray-400">değişir</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded bg-blue-500 flex items-center justify-center text-xs font-bold">2</span>
+                            <code class="text-amber-400">spot_songs_between</code>
+                            <span class="text-gray-400">değişir</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded bg-blue-500 flex items-center justify-center text-xs font-bold">3</span>
+                            <code class="text-amber-400">spot_current_index</code>
+                            <span class="text-gray-400">sıfırlanır</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Anons İçerik Değişiklikleri -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold mb-3 text-orange-300"><i class="fas fa-edit mr-2"></i>Anons İçerik (4)</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded bg-orange-500 flex items-center justify-center text-xs font-bold">4</span>
+                            <code class="text-amber-400">title</code>
+                            <span class="text-gray-400">değişir</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded bg-orange-500 flex items-center justify-center text-xs font-bold">5</span>
+                            <code class="text-amber-400">starts_at / ends_at</code>
+                            <span class="text-gray-400">değişir</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded bg-orange-500 flex items-center justify-center text-xs font-bold">6</span>
+                            <code class="text-amber-400">is_enabled</code>
+                            <span class="text-gray-400">değişir</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded bg-orange-500 flex items-center justify-center text-xs font-bold">7</span>
+                            <code class="text-amber-400">is_archived</code>
+                            <span class="text-gray-400">değişir</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- CRUD İşlemleri -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold mb-3 text-green-300"><i class="fas fa-plus-circle mr-2"></i>CRUD İşlemleri (2)</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded bg-green-500 flex items-center justify-center text-xs font-bold">8</span>
+                            <span class="text-gray-400">Yeni anons eklenir</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded bg-green-500 flex items-center justify-center text-xs font-bold">9</span>
+                            <span class="text-gray-400">Anons silinir</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Sıralama -->
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h3 class="font-semibold mb-3 text-purple-300"><i class="fas fa-arrows-alt-v mr-2"></i>Sıralama (1)</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded bg-purple-500 flex items-center justify-center text-xs font-bold">10</span>
+                            <code class="text-amber-400">position</code>
+                            <span class="text-gray-400">değişir (reorder)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-amber-900/20 border border-amber-700 rounded-lg p-4 mt-4">
+                <p class="text-amber-200"><strong>⚡ Otomatik Tetikleme:</strong></p>
+                <p class="text-gray-300 text-sm mt-2">
+                    Bu 10 olaydan herhangi biri gerçekleşince <code class="text-amber-400">spot_settings_version</code> otomatik artırılır.
+                    Laravel Observer kullanarak tüm değişiklikler yakalanır.
+                </p>
+            </div>
+        </section>
+
+        <!-- 🔧 Teknik Detaylar -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-xl p-6">
+            <div class="flex items-center gap-2 mb-4">
+                <i class="fas fa-cogs text-blue-400"></i>
+                <h2 class="text-xl font-semibold text-blue-300">Teknik Detaylar (Geliştiriciler İçin)</h2>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Observer Pattern -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-3 text-green-300"><i class="fas fa-eye mr-2"></i>Observer Pattern (Otomatik)</h3>
+
+                    <div class="space-y-4">
+                        <!-- CorporateSpotObserver -->
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h4 class="font-semibold mb-2 text-blue-300">1. CorporateSpotObserver Oluştur</h4>
+                            <p class="text-gray-400 text-sm mb-3">Dosya: <code class="text-amber-400">Modules/Muzibu/app/Observers/CorporateSpotObserver.php</code></p>
+                            <pre class="text-xs text-gray-300 bg-slate-900 p-3 rounded"><code>&lt;?php
+
+namespace Modules\Muzibu\App\Observers;
+
+use Modules\Muzibu\App\Models\CorporateSpot;
+use Illuminate\Support\Facades\DB;
+
+class CorporateSpotObserver
+{
+    /**
+     * Anons oluşturulduğunda
+     */
+    public function created(CorporateSpot $spot)
+    {
+        $this->incrementVersion($spot);
+    }
+
+    /**
+     * Anons güncellendiğinde
+     * İzlenen field'ler: title, starts_at, ends_at, is_enabled, is_archived, position
+     */
+    public function updated(CorporateSpot $spot)
+    {
+        // Sadece önemli field'ler değiştiyse version artır
+        $trackedFields = ['title', 'starts_at', 'ends_at', 'is_enabled', 'is_archived', 'position'];
+
+        foreach ($trackedFields as $field) {
+            if ($spot->isDirty($field)) {
+                $this->incrementVersion($spot);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Anons silindiğinde
+     */
+    public function deleted(CorporateSpot $spot)
+    {
+        $this->incrementVersion($spot);
+    }
+
+    /**
+     * Version'ı artır
+     */
+    protected function incrementVersion(CorporateSpot $spot)
+    {
+        DB::table('muzibu_corporate_accounts')
+            ->where('id', $spot->corporate_account_id)
+            ->update([
+                'spot_settings_version' => DB::raw('spot_settings_version + 1'),
+                'updated_at' => now()
+            ]);
+    }
+}</code></pre>
+                        </div>
+
+                        <!-- ServiceProvider -->
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h4 class="font-semibold mb-2 text-blue-300">2. Observer'ı Kaydet</h4>
+                            <p class="text-gray-400 text-sm mb-3">Dosya: <code class="text-amber-400">Modules/Muzibu/Providers/MuzibuServiceProvider.php</code></p>
+                            <pre class="text-xs text-gray-300 bg-slate-900 p-3 rounded"><code>use Modules\Muzibu\App\Models\CorporateSpot;
+use Modules\Muzibu\App\Observers\CorporateSpotObserver;
+
+public function boot()
+{
+    // ...
+
+    // ✅ Observer kaydet
+    CorporateSpot::observe(CorporateSpotObserver::class);
+}</code></pre>
+                        </div>
+
+                        <!-- Controller (Reorder) -->
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h4 class="font-semibold mb-2 text-blue-300">3. Reorder İşleminde Version Artır</h4>
+                            <p class="text-gray-400 text-sm mb-3">Dosya: <code class="text-amber-400">CorporateFrontController::reorderSpots()</code></p>
+                            <pre class="text-xs text-gray-300 bg-slate-900 p-3 rounded"><code>public function reorderSpots(Request $request)
+{
+    // ... (mevcut sıralama kodu)
+
+    // ✅ YENİ: Sıralama değişti, version artır
+    $account->update([
+        'spot_settings_version' => DB::raw('spot_settings_version + 1')
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Sıralama güncellendi.',
+        'spot_settings_version' => $account->fresh()->spot_settings_version
+    ]);
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API Response -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-3 text-green-300"><i class="fas fa-code mr-2"></i>API Response (Spot Listesi Ekle)</h3>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-semibold mb-2 text-blue-300">API: Spot Listesini Dön</h4>
+                        <p class="text-gray-400 text-sm mb-3">Dosya: <code class="text-amber-400">Modules/Muzibu/app/Http/Controllers/Api/SpotController.php</code></p>
+                        <pre class="text-xs text-gray-300 bg-slate-900 p-3 rounded"><code>public function settings(Request $request)
+{
+    // ... (mevcut kod)
+
+    // ✅ YENİ: Spot listesini de dön (aktif, sıralı)
+    $spots = CorporateSpot::where('corporate_account_id', $parentAccount->id)
+        ->currentlyActive()  // is_enabled=true, is_archived=false, tarih kontrolü
+        ->ordered()          // position ASC
+        ->get(['id', 'title', 'slug', 'audio_url', 'duration', 'position', 'starts_at', 'ends_at'])
+        ->map(function($spot) {
+            return [
+                'id' => $spot->id,
+                'title' => $spot->title,
+                'slug' => $spot->slug,
+                'audio_url' => $spot->getAudioUrl(),
+                'duration' => $spot->duration,
+                'position' => $spot->position,
+                'starts_at' => $spot->starts_at?->toISOString(),
+                'ends_at' => $spot->ends_at?->toISOString(),
+            ];
+        });
+
+    return response()->json([
+        'enabled' => $effectiveEnabled,
+        'spot_enabled' => $parentAccount->spot_enabled,
+        'spot_is_paused' => $account->spot_is_paused,
+        'songs_between' => $parentAccount->spot_songs_between ?? 10,
+        'corporate_id' => $parentAccount->id,
+        'branch_id' => $account->id,
+        'spot_settings_version' => $parentAccount->spot_settings_version ?? 1,
+        'spots' => $spots,  // ✅ YENİ: Spot listesi
+    ]);
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- JavaScript Update -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-3 text-green-300"><i class="fas fa-code mr-2"></i>JavaScript: Spot Listesi + Preload İptali</h3>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-semibold mb-2 text-blue-300">JavaScript: checkSettingsUpdate() Genişlet</h4>
+                        <p class="text-gray-400 text-sm mb-3">Dosya: <code class="text-amber-400">public/themes/muzibu/js/player/features/spot-player.js</code></p>
+                        <pre class="text-xs text-gray-300 bg-slate-900 p-3 rounded"><code>const state = {
+    enabled: false,
+    spotEnabled: true,
+    isPaused: false,
+    songsBetween: 10,
+    songsPlayed: 0,
+    currentVersion: 1,
+    checkInterval: null,
+    spotsList: [],               // ✅ YENİ: Spot listesi
+    preloadedSpot: null,
+    preloadedAudio: null,
+};
+
+async function checkSettingsUpdate() {
+    try {
+        const response = await fetch('/api/spot/settings');
+        const data = await response.json();
+
+        // Version farklıysa güncelle!
+        if (data.spot_settings_version !== state.currentVersion) {
+            console.log('🎙️ SpotPlayer: Settings/Spots updated! Version:', data.spot_settings_version);
+
+            // ✅ Ayarları güncelle
+            state.songsBetween = data.songs_between || 10;
+            state.spotEnabled = data.spot_enabled;
+            state.isPaused = data.spot_is_paused;
+            state.enabled = data.enabled;
+            state.currentVersion = data.spot_settings_version;
+
+            // ✅ YENİ: Spot listesini güncelle
+            state.spotsList = data.spots || [];
+
+            // ✅ Preloaded spot geçersiz mi kontrol et
+            if (state.preloadedSpot) {
+                const stillValid = state.spotsList.find(s => s.id === state.preloadedSpot.id);
+                if (!stillValid) {
+                    console.log('🎙️ SpotPlayer: Preloaded spot is no longer valid, clearing...');
+                    clearPreload(true);  // src'yi de sil
+                }
+            }
+
+            // Sayacı sıfırla
+            resetCounter();
+
+            // UI güncelle
+            window.dispatchEvent(new CustomEvent('spot-settings-updated', {
+                detail: {
+                    songsBetween: state.songsBetween,
+                    spotEnabled: state.spotEnabled,
+                    isPaused: state.isPaused,
+                    enabled: state.enabled,
+                    spots: state.spotsList  // ✅ YENİ
+                }
+            }));
+        }
+    } catch (e) {
+        console.error('🎙️ SpotPlayer: Failed to check settings', e);
+    }
+}
+
+// ✅ YENİ: playNextSpot() - Liste kullan
+async function playNextSpot() {
+    if (!state.enabled || state.spotsList.length === 0) {
+        console.log('🎙️ SpotPlayer: No spots available');
+        resetCounter();
+        return null;
+    }
+
+    // Rotation: Sıradaki spot
+    const currentIndex = state.currentSpot ?
+        state.spotsList.findIndex(s => s.id === state.currentSpot.id) : -1;
+    const nextIndex = (currentIndex + 1) % state.spotsList.length;
+    const spot = state.spotsList[nextIndex];
+
+    state.currentSpot = spot;
+    state.wasSkipped = false;
+    state.spotStartTime = Date.now();
+
+    await logPlayStart(spot.id);
+    resetCounter();
+
+    console.log('🎙️ SpotPlayer: Playing spot:', spot.title);
+    return spot;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🎯 Uygulama Adımları -->
+        <section class="bg-slate-800/30 border border-white/10 rounded-xl p-6">
+            <h2 class="text-xl font-semibold mb-4"><i class="fas fa-list-check text-amber-400 mr-2"></i>Uygulama Adımları</h2>
+
+            <div class="space-y-4">
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 font-bold">1</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mb-1">CorporateSpotObserver Oluştur</h3>
+                        <p class="text-gray-400 text-sm">Anons değişikliklerini otomatik yakala</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 font-bold">2</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mb-1">Observer'ı ServiceProvider'a Kaydet</h3>
+                        <p class="text-gray-400 text-sm">MuzibuServiceProvider::boot()</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 font-bold">3</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mb-1">Reorder İşleminde Version Artır</h3>
+                        <p class="text-gray-400 text-sm">CorporateFrontController::reorderSpots()</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 font-bold">4</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mb-1">API'ye Spot Listesi Ekle</h3>
+                        <p class="text-gray-400 text-sm">SpotController::settings() - Aktif spot listesini dön</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 font-bold">5</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mb-1">JavaScript'i Güncelle</h3>
+                        <p class="text-gray-400 text-sm">spot-player.js - Spot listesi sync + preload invalidation</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 font-bold">6</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mb-1">Test Et (10 Senaryo)</h3>
+                        <ul class="text-gray-400 text-sm space-y-1 ml-4">
+                            <li>• Anons ekle → 30s içinde tüm şubeler görür</li>
+                            <li>• Anons sil → 30s içinde kaldırılır</li>
+                            <li>• İsim değiştir → 30s içinde yeni isim görünür</li>
+                            <li>• Sıralama değiştir → 30s içinde yeni sıra uygulanır</li>
+                            <li>• Aktif/Pasif → 30s içinde anons atlanır/eklenir</li>
+                            <li>• Arşivle → 30s içinde anons kaldırılır</li>
+                            <li>• Tarih değiştir → 30s içinde tarih kontrolü güncellenir</li>
+                            <li>• Preloaded spot'u sil → Preload iptal edilir</li>
+                            <li>• Global kapat → Tüm şubeler durur</li>
+                            <li>• Çalma aralığı değiştir → Sayaç sıfırlanır</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ⚠️ Önemli Notlar -->
+        <section class="bg-amber-900/20 border border-amber-700 rounded-xl p-6">
+            <h2 class="text-xl font-semibold mb-4"><i class="fas fa-exclamation-triangle text-amber-400 mr-2"></i>Önemli Notlar</h2>
+
+            <ul class="space-y-3">
+                <li class="flex items-start gap-3">
+                    <i class="fas fa-eye text-amber-400 mt-1"></i>
+                    <div>
+                        <strong>Observer Pattern:</strong>
+                        <p class="text-gray-400 text-sm">Tüm değişiklikler otomatik yakalanır, manuel version++ yapmaya gerek kalmaz.</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="fas fa-list text-amber-400 mt-1"></i>
+                    <div>
+                        <strong>Spot Listesi:</strong>
+                        <p class="text-gray-400 text-sm">API her istekte aktif spot listesini döner, player client-side filter yapmaz.</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="fas fa-ban text-amber-400 mt-1"></i>
+                    <div>
+                        <strong>Preload Invalidation:</strong>
+                        <p class="text-gray-400 text-sm">Preload'lı spot silinir/arşivlenir/pasif olursa otomatik iptal edilir.</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="fas fa-sync text-amber-400 mt-1"></i>
+                    <div>
+                        <strong>Rotation Senkronizasyonu:</strong>
+                        <p class="text-gray-400 text-sm">Spot listesi güncellenince rotation sırası yeniden hesaplanır.</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="fas fa-database text-amber-400 mt-1"></i>
+                    <div>
+                        <strong>Cache Stratejisi:</strong>
+                        <p class="text-gray-400 text-sm">API response 30 saniye cache'lenebilir (version değişince cache clear).</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="fas fa-bolt text-amber-400 mt-1"></i>
+                    <div>
+                        <strong>10 Tetikleyici:</strong>
+                        <p class="text-gray-400 text-sm">Ayar (3) + İçerik (4) + CRUD (2) + Sıralama (1) = Toplam 10 olay version artırır.</p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- 📊 v1 → v2 → v3 Karşılaştırması -->
+        <section class="bg-slate-800/30 border border-white/10 rounded-xl p-6">
+            <h2 class="text-xl font-semibold mb-4"><i class="fas fa-layer-group text-purple-400 mr-2"></i>Versiyon Karşılaştırması</h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-700/50">
+                        <tr>
+                            <th class="text-left p-3 border border-white/10">Özellik</th>
+                            <th class="text-center p-3 border border-white/10">v1</th>
+                            <th class="text-center p-3 border border-white/10">v2</th>
+                            <th class="text-center p-3 border border-white/10">v3</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-300">
+                        <tr>
+                            <td class="p-3 border border-white/10">Çalma Aralığı Sync</td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-check text-green-400"></i></td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-check text-green-400"></i></td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-check text-green-400"></i></td>
+                        </tr>
+                        <tr class="bg-slate-700/20">
+                            <td class="p-3 border border-white/10">Aktif/Pasif Sync</td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-check text-green-400"></i></td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-check text-green-400"></i></td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-check text-green-400"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 border border-white/10">Ana Şube Global Kapatma</td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-times text-red-400"></i></td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-check text-green-400"></i></td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-check text-green-400"></i></td>
+                        </tr>
+                        <tr class="bg-green-900/10 border-l-4 border-green-500">
+                            <td class="p-3 border border-white/10 font-semibold">Anons İçerik Sync</td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-times text-red-400"></i></td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-times text-red-400"></i></td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-check text-green-400"></i></td>
+                        </tr>
+                        <tr class="bg-green-900/10 border-l-4 border-green-500">
+                            <td class="p-3 border border-white/10 font-semibold">Sıralama Sync</td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-times text-red-400"></i></td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-times text-red-400"></i></td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-check text-green-400"></i></td>
+                        </tr>
+                        <tr class="bg-green-900/10 border-l-4 border-green-500">
+                            <td class="p-3 border border-white/10 font-semibold">Anons Ekle/Sil Sync</td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-times text-red-400"></i></td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-times text-red-400"></i></td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-check text-green-400"></i></td>
+                        </tr>
+                        <tr class="bg-green-900/10 border-l-4 border-green-500">
+                            <td class="p-3 border border-white/10 font-semibold">Preload Invalidation</td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-times text-red-400"></i></td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-times text-red-400"></i></td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-check text-green-400"></i></td>
+                        </tr>
+                        <tr class="bg-green-900/10 border-l-4 border-green-500">
+                            <td class="p-3 border border-white/10 font-semibold">Observer Pattern</td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-times text-red-400"></i></td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-times text-red-400"></i></td>
+                            <td class="p-3 border border-white/10 text-center"><i class="fas fa-check text-green-400"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="bg-green-900/20 border border-green-700 rounded-lg p-4 mt-4">
+                <p class="text-green-200 font-semibold"><i class="fas fa-star mr-2"></i>v3 = Tam Dinamik Senkronizasyon</p>
+                <p class="text-gray-300 text-sm mt-2">
+                    Ayarlar, anons içeriği, sıralama, CRUD - Her şey otomatik, 30 saniyede senkronize!
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 bg-slate-800/30 mt-12">
+        <div class="max-w-6xl mx-auto px-6 py-6 text-center text-gray-500 text-sm">
+            <p>🤖 Generated with <a href="https://claude.com/claude-code" class="text-blue-400 hover:text-blue-300">Claude Code</a></p>
+            <p class="mt-1">Co-Authored-By: Claude Sonnet 4.5</p>
+        </div>
+    </footer>
+
+</body>
+</html>

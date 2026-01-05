@@ -7,6 +7,7 @@ $pageData = [
     'spots' => $spotsJson,
     'settings' => [
         'spot_enabled' => $account->spot_enabled ? true : false,
+        'spot_is_paused' => $account->spot_is_paused ? true : false,
         'spot_songs_between' => $account->spot_songs_between ?: 10,
         'songs_played' => $songsPlayed ?? 0,
     ]
@@ -48,6 +49,7 @@ $pageData = [
                 <span class="text-gray-600">•</span>
                 <span class="text-gray-500" x-text="'Her ' + settings.spot_songs_between + ' şarkıda'"></span>
             </div>
+
             <span class="text-gray-500" x-text="spots.length + ' anons'"></span>
         </div>
 
@@ -69,7 +71,11 @@ $pageData = [
             <div class="divide-y divide-white/5">
                 <template x-for="(spot, index) in spots" :key="spot.id">
                     <div class="flex items-center gap-3 p-4 hover:bg-white/5 transition-colors"
-                         :class="[spot.is_archived && 'opacity-40', dropTargetIndex === index && 'bg-amber-500/10 border-t-2 border-amber-500']"
+                         :class="[
+                             spot.is_archived && 'opacity-40',
+                             settings.spot_is_paused && !spot.is_archived && 'opacity-60',
+                             dropTargetIndex === index && 'bg-amber-500/10 border-t-2 border-amber-500'
+                         ]"
                          draggable="true"
                          @dragstart="dragStart($event, index)"
                          @dragover.prevent="dragOver(index)"
@@ -141,7 +147,7 @@ $pageData = [
                 <button @click="settingsModal = false" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
             </div>
             <div class="p-5 space-y-5">
-                {{-- System Toggle with Status --}}
+                {{-- System Toggle (Global - Ana Şube + Tüm Alt Şubeler) --}}
                 <div class="flex items-center justify-between p-4 rounded-xl" :class="settings.spot_enabled ? 'bg-green-500/10 border border-green-500/30' : 'bg-slate-700/50 border border-white/5'">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-lg flex items-center justify-center" :class="settings.spot_enabled ? 'bg-green-500/20' : 'bg-slate-600'">
@@ -149,7 +155,7 @@ $pageData = [
                         </div>
                         <div>
                             <h4 class="text-white font-medium">Anons Sistemi</h4>
-                            <p class="text-xs" :class="settings.spot_enabled ? 'text-green-400' : 'text-gray-500'" x-text="settings.spot_enabled ? 'Aktif - Anonslar çalınıyor' : 'Pasif - Anonslar kapalı'"></p>
+                            <p class="text-xs" :class="settings.spot_enabled ? 'text-green-400' : 'text-gray-500'" x-text="settings.spot_enabled ? 'Aktif - Tüm şubeler için açık' : 'Pasif - Anons özelliği kapalı'"></p>
                         </div>
                     </div>
                     <button @click="toggleSystem()" class="w-14 h-7 rounded-full transition-colors" :class="settings.spot_enabled ? 'bg-green-500' : 'bg-slate-600'">
@@ -157,7 +163,7 @@ $pageData = [
                     </button>
                 </div>
 
-                {{-- Interval Setting --}}
+                {{-- Interval Setting (Global) --}}
                 <div class="flex items-center justify-between p-4 bg-slate-700/50 rounded-xl" x-show="settings.spot_enabled">
                     <div>
                         <h4 class="text-white font-medium">Çalma Aralığı</h4>

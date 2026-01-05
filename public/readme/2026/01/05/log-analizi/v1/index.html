@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Dosyası Analizi - 5 Ocak 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1a202e',
+                            950: '#0f1419'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .error-card { border-left: 4px solid #ef4444; }
+        .warning-card { border-left: 4px solid #f59e0b; }
+        .info-card { border-left: 4px solid #3b82f6; }
+        .success-card { border-left: 4px solid #10b981; }
+    </style>
+</head>
+<body class="bg-slate-950 text-white antialiased">
+
+    <!-- Header -->
+    <header class="gradient-bg py-8 px-6 shadow-2xl">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">🚨 KRİTİK</span>
+                        <span class="bg-slate-900/50 backdrop-blur-sm text-white/90 text-xs px-3 py-1 rounded-full">Log Analizi</span>
+                    </div>
+                    <h1 class="text-4xl font-bold text-white mb-2">Log Dosyası Analizi</h1>
+                    <p class="text-white/80 text-lg">5 Ocak 2026 - Sistem Log İncelemesi</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-white/60 text-sm">Oluşturulma</p>
+                    <p class="text-white font-semibold">5 Ocak 2026, 21:12</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-12">
+
+        <!-- Özet İstatistikler -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div class="bg-gradient-to-br from-red-900/40 to-red-800/20 border border-red-800/50 rounded-xl p-6 backdrop-blur-sm">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-red-300 text-sm font-semibold uppercase tracking-wider">Log Boyutu</h3>
+                    <span class="text-3xl">💾</span>
+                </div>
+                <p class="text-4xl font-bold text-white mb-1">34 MB</p>
+                <p class="text-red-300/70 text-sm">227,590 satır</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-orange-900/40 to-orange-800/20 border border-orange-800/50 rounded-xl p-6 backdrop-blur-sm">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-orange-300 text-sm font-semibold uppercase tracking-wider">Toplam Log</h3>
+                    <span class="text-3xl">📊</span>
+                </div>
+                <p class="text-4xl font-bold text-white mb-1">32,933</p>
+                <p class="text-orange-300/70 text-sm">Adet log entry</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-red-900/40 to-pink-800/20 border border-red-800/50 rounded-xl p-6 backdrop-blur-sm">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-red-300 text-sm font-semibold uppercase tracking-wider">Kritik Hata</h3>
+                    <span class="text-3xl">🔥</span>
+                </div>
+                <p class="text-4xl font-bold text-white mb-1">12,021</p>
+                <p class="text-red-300/70 text-sm">Permission denied hatası</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-yellow-900/40 to-amber-800/20 border border-yellow-800/50 rounded-xl p-6 backdrop-blur-sm">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-yellow-300 text-sm font-semibold uppercase tracking-wider">Diğer Hatalar</h3>
+                    <span class="text-3xl">⚠️</span>
+                </div>
+                <p class="text-4xl font-bold text-white mb-1">104</p>
+                <p class="text-yellow-300/70 text-sm">Çeşitli hata tipleri</p>
+            </div>
+        </div>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-8 mb-8 backdrop-blur-sm">
+            <h3 class="text-2xl font-bold text-green-400 mb-6 flex items-center gap-3">
+                <span>📝</span>
+                Basit Anlatım (Herkes İçin)
+            </h3>
+            <div class="space-y-4 text-green-100/90">
+                <p class="text-lg leading-relaxed">
+                    <strong class="text-green-300">Bugün sistem log dosyası çok büyümüş (34MB).</strong> Normal bir gün için bu boyut fazla.
+                    Bunun sebebi, bazı dosyaların "açılamıyor" hatası veriyor olması. Bir dosya <strong>12,021 kez</strong>
+                    aynı hatayı üretmiş! Sistem bu dosyayı sürekli okumaya çalışıyor ama başarısız oluyor.
+                </p>
+                <p class="text-lg leading-relaxed">
+                    <strong class="text-green-300">Sorun nedir?</strong>
+                    Sistem dosyayı okumak için gerekli izne sahip olmasına rağmen, opcache (PHP'nin hızlandırma mekanizması)
+                    dosyayı "eski haliyle" hatırlıyor ve hata veriyor. Çözüm çok basit: opcache'i temizlemek veya
+                    Apache/PHP'yi yeniden başlatmak.
+                </p>
+                <p class="text-lg leading-relaxed">
+                    <strong class="text-green-300">Kullanıcıyı nasıl etkiler?</strong>
+                    Şu anda ciddi bir sorun yok. Sistem çalışıyor, ama log dosyası gereksiz yere şişiyor ve
+                    disk alanı tüketiyor. Eğer bu devam ederse, log dosyası birkaç GB'a ulaşabilir.
+                </p>
+                <p class="text-lg leading-relaxed">
+                    <strong class="text-green-300">Ne yapılmalı?</strong>
+                    PHP/Apache yeniden başlatılmalı veya composer autoload dump yapılmalı.
+                    Bu işlem 30 saniye sürer ve sorun çözülür.
+                </p>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800/50 rounded-xl p-8 mb-8 backdrop-blur-sm">
+            <h3 class="text-2xl font-bold text-blue-400 mb-6 flex items-center gap-3">
+                <span>🔧</span>
+                Teknik Detaylar (Geliştiriciler İçin)
+            </h3>
+
+            <div class="space-y-6">
+                <div class="bg-slate-900/50 rounded-lg p-6 border border-slate-800">
+                    <h4 class="text-xl font-semibold text-blue-300 mb-4">📁 Dosya Bilgileri</h4>
+                    <ul class="space-y-2 text-blue-100/80 font-mono text-sm">
+                        <li><strong class="text-blue-300">Log Dosyası:</strong> storage/logs/laravel-2026-01-05.log</li>
+                        <li><strong class="text-blue-300">Dosya Boyutu:</strong> 34 MB (35,651,584 bytes)</li>
+                        <li><strong class="text-blue-300">Satır Sayısı:</strong> 227,590 satır</li>
+                        <li><strong class="text-blue-300">Log Entry:</strong> 32,933 adet</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-6 border border-slate-800">
+                    <h4 class="text-xl font-semibold text-blue-300 mb-4">🔴 Kritik Hata #1: RecalculateCountsCommand.php</h4>
+                    <ul class="space-y-3 text-blue-100/80">
+                        <li><strong class="text-red-400">Hata Sayısı:</strong> <span class="text-2xl font-bold text-red-500">12,021 kez</span></li>
+                        <li><strong class="text-blue-300">Hata Mesajı:</strong>
+                            <code class="bg-slate-950 px-2 py-1 rounded text-red-400 text-xs">
+                                include(/var/www/vhosts/tuufi.com/httpdocs/vendor/composer/../../Modules/Muzibu/app/Console/Commands/RecalculateCountsCommand.php): Failed to open stream: Permission denied
+                            </code>
+                        </li>
+                        <li><strong class="text-blue-300">Dosya:</strong>
+                            <code class="bg-slate-950 px-2 py-1 rounded text-xs">
+                                Modules/Muzibu/app/Console/Commands/RecalculateCountsCommand.php
+                            </code>
+                        </li>
+                        <li><strong class="text-blue-300">Dosya İzinleri:</strong>
+                            <code class="bg-slate-950 px-2 py-1 rounded text-green-400 text-xs">
+                                644 tuufi.com_:psaserv (DOĞRU)
+                            </code>
+                        </li>
+                        <li><strong class="text-blue-300">Tetikleyen:</strong> Composer ClassLoader (vendor/composer/ClassLoader.php:576)</li>
+                        <li><strong class="text-yellow-400">Neden Oluyor?</strong>
+                            Dosya izinleri doğru olmasına rağmen opcache eski (hatalı) bilgiyi cache'te tutuyor.
+                            PHP dosyayı okumak istediğinde opcache "erişilemez" diyor.
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-6 border border-slate-800">
+                    <h4 class="text-xl font-semibold text-blue-300 mb-4">🔴 Kritik Hata #2: Authentication User Provider [legacy]</h4>
+                    <ul class="space-y-3 text-blue-100/80">
+                        <li><strong class="text-orange-400">Hata Sayısı:</strong> <span class="text-xl font-bold text-orange-500">59 kez</span></li>
+                        <li><strong class="text-blue-300">Hata Mesajı:</strong>
+                            <code class="bg-slate-950 px-2 py-1 rounded text-orange-400 text-xs">
+                                Authentication user provider [legacy] is not defined.
+                            </code>
+                        </li>
+                        <li><strong class="text-yellow-400">Neden Oluyor?</strong>
+                            <code>config/auth.php</code> dosyasında <code>legacy</code> provider tanımlı değil.
+                            Eski kodda kullanılan provider kaldırılmış ama bazı yerler hala çağırıyor.
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-6 border border-slate-800">
+                    <h4 class="text-xl font-semibold text-blue-300 mb-4">🔴 Kritik Hata #3: Class "Stancl\Tenancy\Tenant" not found</h4>
+                    <ul class="space-y-3 text-blue-100/80">
+                        <li><strong class="text-orange-400">Hata Sayısı:</strong> <span class="text-xl font-bold text-orange-500">20 kez</span></li>
+                        <li><strong class="text-blue-300">Hata Mesajı:</strong>
+                            <code class="bg-slate-950 px-2 py-1 rounded text-orange-400 text-xs">
+                                Class "Stancl\Tenancy\Tenant" not found
+                            </code>
+                        </li>
+                        <li><strong class="text-blue-300">Dosya:</strong>
+                            <code class="bg-slate-950 px-2 py-1 rounded text-xs">
+                                app/Console/Commands/ProcessSubscriptionTransitions.php:37
+                            </code>
+                        </li>
+                        <li><strong class="text-yellow-400">Neden Oluyor?</strong>
+                            <code>ProcessSubscriptionTransitions</code> command'i <code>Stancl\Tenancy\Tenant</code>
+                            class'ını kullanmaya çalışıyor ama bu class yüklenemiyor. Muhtemelen namespace yanlış
+                            veya use statement eksik.
+                        </li>
+                        <li><strong class="text-red-400">Etkilenen:</strong> Scheduler (saatlik cron job)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-6 border border-slate-800">
+                    <h4 class="text-xl font-semibold text-blue-300 mb-4">⚠️ Diğer Hatalar</h4>
+                    <ul class="space-y-3 text-blue-100/80 text-sm">
+                        <li>
+                            <strong class="text-orange-400">MuzibuCorporateAccountObserver.php:</strong>
+                            Permission denied (4 kez) - Aynı opcache sorunu
+                        </li>
+                        <li>
+                            <strong class="text-yellow-400">PayTR Taksit Oranları:</strong>
+                            "Mağaza API yetkisi bulunmuyor" (4 kez) - Test modu API hatası
+                        </li>
+                        <li>
+                            <strong class="text-red-400">Subscriptions Tablosu:</strong>
+                            <code class="bg-slate-950 px-2 py-1 rounded text-xs">auto_renewal</code> kolonu yok (1 kez) - Migration eksik
+                        </li>
+                        <li>
+                            <strong class="text-orange-400">subscription:send-reminders:</strong>
+                            Failed with exit code 1 (1 kez) - Command hatası
+                        </li>
+                        <li>
+                            <strong class="text-orange-400">subscription:process-recurring:</strong>
+                            Failed with exit code 1 (1 kez) - Command hatası
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Çözüm Önerileri -->
+        <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/20 border border-purple-800/50 rounded-xl p-8 mb-8 backdrop-blur-sm">
+            <h3 class="text-2xl font-bold text-purple-400 mb-6 flex items-center gap-3">
+                <span>💡</span>
+                Çözüm Önerileri (Öncelik Sırasıyla)
+            </h3>
+
+            <div class="space-y-6">
+                <!-- Öncelik 1 -->
+                <div class="bg-slate-900/70 rounded-lg p-6 border-l-4 border-red-500">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full">ÖNCELİK 1</span>
+                        <h4 class="text-xl font-semibold text-red-400">RecalculateCountsCommand.php Permission Fix</h4>
+                    </div>
+                    <p class="text-slate-300 mb-4">
+                        <strong>Sorun:</strong> 12,021 kez aynı hata tekrar ediyor. Log dosyasını şişiriyor.
+                    </p>
+                    <div class="bg-slate-950/50 rounded p-4 mb-4">
+                        <p class="text-xs text-slate-400 mb-2">Terminal Komutları:</p>
+                        <pre class="text-green-400 text-sm font-mono overflow-x-auto">composer dump-autoload
+php artisan config:clear
+php artisan cache:clear
+sudo systemctl reload php8.3-fpm
+# VEYA
+sudo /usr/local/psa/admin/bin/php_handler_ctl --reread</pre>
+                    </div>
+                    <p class="text-slate-400 text-sm">
+                        <strong>Beklenen Sonuç:</strong> Opcache temizlenir, dosya tekrar okunabilir hale gelir,
+                        hata kaybolur.
+                    </p>
+                </div>
+
+                <!-- Öncelik 2 -->
+                <div class="bg-slate-900/70 rounded-lg p-6 border-l-4 border-orange-500">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-orange-600 text-white text-xs font-bold px-3 py-1 rounded-full">ÖNCELİK 2</span>
+                        <h4 class="text-xl font-semibold text-orange-400">ProcessSubscriptionTransitions.php Düzeltme</h4>
+                    </div>
+                    <p class="text-slate-300 mb-4">
+                        <strong>Sorun:</strong> <code>Stancl\Tenancy\Tenant</code> class bulunamıyor (20 kez).
+                    </p>
+                    <div class="bg-slate-950/50 rounded p-4 mb-4">
+                        <p class="text-xs text-slate-400 mb-2">Düzeltme:</p>
+                        <pre class="text-green-400 text-sm font-mono overflow-x-auto">// app/Console/Commands/ProcessSubscriptionTransitions.php
+// Satır 1-10 arası use statement'lara ekle:
+use App\Models\Tenant; // VEYA
+use Stancl\Tenancy\Database\Models\Tenant;
+
+// Satır 37'de:
+// $tenant = Stancl\Tenancy\Tenant::find(...); // YANLIŞ
+$tenant = Tenant::find(...); // DOĞRU</pre>
+                    </div>
+                    <p class="text-slate-400 text-sm">
+                        <strong>Beklenen Sonuç:</strong> Scheduler command'i çalışır, hata kaybolur.
+                    </p>
+                </div>
+
+                <!-- Öncelik 3 -->
+                <div class="bg-slate-900/70 rounded-lg p-6 border-l-4 border-yellow-500">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">ÖNCELİK 3</span>
+                        <h4 class="text-xl font-semibold text-yellow-400">Authentication Provider [legacy] Kaldırma</h4>
+                    </div>
+                    <p class="text-slate-300 mb-4">
+                        <strong>Sorun:</strong> <code>legacy</code> provider tanımlı değil ama bazı yerler çağırıyor (59 kez).
+                    </p>
+                    <div class="bg-slate-950/50 rounded p-4 mb-4">
+                        <p class="text-xs text-slate-400 mb-2">Çözüm Adımları:</p>
+                        <pre class="text-green-400 text-sm font-mono overflow-x-auto"># 1. Nerede kullanıldığını bul:
+grep -r "auth.*legacy" --include="*.php" app/ Modules/
+
+# 2. Bulunan yerlerde 'users' provider kullan:
+# Auth::guard('legacy')  → Auth::guard('web')
+# config('auth.providers.legacy') → config('auth.providers.users')</pre>
+                    </div>
+                    <p class="text-slate-400 text-sm">
+                        <strong>Beklenen Sonuç:</strong> Auth hatası kaybolur.
+                    </p>
+                </div>
+
+                <!-- Öncelik 4 -->
+                <div class="bg-slate-900/70 rounded-lg p-6 border-l-4 border-blue-500">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">ÖNCELİK 4</span>
+                        <h4 class="text-xl font-semibold text-blue-400">Subscriptions Tablosu: auto_renewal Kolonu Ekle</h4>
+                    </div>
+                    <p class="text-slate-300 mb-4">
+                        <strong>Sorun:</strong> <code>subscriptions</code> tablosunda <code>auto_renewal</code> kolonu yok.
+                    </p>
+                    <div class="bg-slate-950/50 rounded p-4 mb-4">
+                        <p class="text-xs text-slate-400 mb-2">Migration Oluştur:</p>
+                        <pre class="text-green-400 text-sm font-mono overflow-x-auto">php artisan make:migration add_auto_renewal_to_subscriptions
+
+// Migration içeriği:
+Schema::table('subscriptions', function (Blueprint $table) {
+    $table->boolean('auto_renewal')->default(true)->after('status');
+});
+
+php artisan migrate</pre>
+                    </div>
+                    <p class="text-slate-400 text-sm">
+                        <strong>Beklenen Sonuç:</strong> Subscription sorgularında hata almaz.
+                    </p>
+                </div>
+
+                <!-- Öncelik 5 -->
+                <div class="bg-slate-900/70 rounded-lg p-6 border-l-4 border-green-500">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full">ÖNCELİK 5</span>
+                        <h4 class="text-xl font-semibold text-green-400">Log Rotasyon ve Temizlik</h4>
+                    </div>
+                    <p class="text-slate-300 mb-4">
+                        <strong>Sorun:</strong> Log dosyası çok büyümüş (34MB). Günlük log dosyası max 10-20MB olmalı.
+                    </p>
+                    <div class="bg-slate-950/50 rounded p-4 mb-4">
+                        <p class="text-xs text-slate-400 mb-2">Eski Log Temizleme:</p>
+                        <pre class="text-green-400 text-sm font-mono overflow-x-auto"># 7 günden eski logları sil:
+find storage/logs/ -name "laravel-*.log" -mtime +7 -delete
+
+# Bugünkü logu truncate et (şimdilik):
+truncate -s 0 storage/logs/laravel-2026-01-05.log
+
+# Monolog config ayarı (config/logging.php):
+'daily' => [
+    'driver' => 'daily',
+    'days' => 7,        // 7 gün sakla
+    'level' => 'debug',
+]</pre>
+                    </div>
+                    <p class="text-slate-400 text-sm">
+                        <strong>Beklenen Sonuç:</strong> Disk alanı temizlenir, eski loglar silinir.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Risk Analizi -->
+        <div class="bg-gradient-to-br from-red-900/30 to-orange-900/20 border border-red-800/50 rounded-xl p-8 backdrop-blur-sm">
+            <h3 class="text-2xl font-bold text-red-400 mb-6 flex items-center gap-3">
+                <span>⚠️</span>
+                Risk Analizi
+            </h3>
+
+            <div class="space-y-4">
+                <div class="bg-slate-900/50 rounded-lg p-5 border-l-4 border-red-600">
+                    <h4 class="text-lg font-semibold text-red-400 mb-2">🔴 Yüksek Risk</h4>
+                    <ul class="space-y-2 text-red-200/80 text-sm">
+                        <li><strong>12,021 Permission Hatası:</strong> Her birkaç saniyede bir artıyor. Log dosyası saatte 5-10MB büyüyebilir.</li>
+                        <li><strong>Disk Alanı:</strong> Eğer düzeltilmezse, 1-2 gün içinde log dosyası 100MB+ olabilir.</li>
+                        <li><strong>Cron Job Hatası:</strong> <code>subscription:process-transitions</code> çalışmıyor. Otomatik abonelik yenilemeleri durabilir.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-5 border-l-4 border-yellow-600">
+                    <h4 class="text-lg font-semibold text-yellow-400 mb-2">🟡 Orta Risk</h4>
+                    <ul class="space-y-2 text-yellow-200/80 text-sm">
+                        <li><strong>Auth Provider Hatası:</strong> Bazı kullanıcılar login olamayabilir (legacy guard kullanıyorlarsa).</li>
+                        <li><strong>auto_renewal Kolonu:</strong> Abonelik otomatik yenileme sorguları başarısız oluyor.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-5 border-l-4 border-green-600">
+                    <h4 class="text-lg font-semibold text-green-400 mb-2">🟢 Düşük Risk</h4>
+                    <ul class="space-y-2 text-green-200/80 text-sm">
+                        <li><strong>PayTR API Hatası:</strong> Test modunda olduğu için gerçek ödemeyi etkilemiyor.</li>
+                        <li><strong>Observer Permission:</strong> Sadece 4 kez oluşmuş, kritik değil.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900/50 border-t border-slate-800 py-6 px-6 mt-12">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-slate-400 text-sm">
+                🤖 Bu rapor <strong>Claude Code (Sonnet 4.5)</strong> tarafından otomatik oluşturulmuştur.
+            </p>
+            <p class="text-slate-500 text-xs mt-2">
+                5 Ocak 2026, 21:12 - Sistem Log Analizi v1
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>

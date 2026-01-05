@@ -49,7 +49,8 @@ class PayTRCallbackController extends Controller
                 Log::error('❌ PayTR callback: Tenant ID parse edilemedi', [
                     'merchant_oid' => $merchantOid
                 ]);
-                return response('FAIL: Invalid merchant_oid format', 400);
+                return response('FAIL: Invalid merchant_oid format', 400)
+                    ->header('Content-Type', 'text/plain');
             }
 
             // Tenant context'e gir
@@ -60,7 +61,8 @@ class PayTRCallbackController extends Controller
                     'tenant_id' => $tenantId,
                     'merchant_oid' => $merchantOid
                 ]);
-                return response('FAIL: Tenant not found', 404);
+                return response('FAIL: Tenant not found', 404)
+                    ->header('Content-Type', 'text/plain');
             }
 
             tenancy()->initialize($tenant);
@@ -75,11 +77,14 @@ class PayTRCallbackController extends Controller
                 'result' => $result,
             ]);
 
-            // PayTR'ye cevap dön (ZORUNLU!)
+            // PayTR'ye cevap dön (ZORUNLU - plain text "OK")
+            // PayTR dokümantasyonu: "text (düz yazı) formatında ve yalnızca OK değeri olmalıdır"
             if ($result['success']) {
-                return response('OK', 200);
+                return response('OK', 200)
+                    ->header('Content-Type', 'text/plain');
             } else {
-                return response('FAIL: ' . $result['message'], 400);
+                return response('FAIL: ' . $result['message'], 400)
+                    ->header('Content-Type', 'text/plain');
             }
 
         } catch (\Exception $e) {
@@ -88,7 +93,8 @@ class PayTRCallbackController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
 
-            return response('FAIL: Internal error', 500);
+            return response('FAIL: Internal error', 500)
+                ->header('Content-Type', 'text/plain');
         }
     }
 

@@ -1259,13 +1259,29 @@ Modules/Page/database/migrations/tenant/2024_02_17_000001_create_pages_table.php
 **❌ YANLIŞ:** `database/migrations/` (ana klasör) - KULLANMA!
 **✅ DOĞRU:** `Modules/[Modül]/database/migrations/` (modül içi)
 
-**Migration çalıştır:**
-```bash
-php artisan migrate           # Central
-php artisan tenants:migrate   # Tüm tenant'lar
+**🔴 KRİTİK HATA - ASLA YAPMA:**
+```
+❌ Sadece tenant/ klasörüne migration oluşturmak
+❌ Central migration'ı unutmak
+❌ İkisinden birini yazmayı atlamak
 ```
 
-**UNUTMA:** Tenant'a eklenen her migration, Central'a da eklenmeli!
+**✅ DOĞRU WORKFLOW:**
+1. **İLK ÖNCE:** Tenant migration oluştur (`migrations/tenant/YYYY_MM_DD_xxx.php`)
+2. **HEMEN ARDINDAN:** Aynı dosyayı central'a kopyala (`migrations/YYYY_MM_DD_xxx.php`)
+3. **HER İKİSİNİ DE KONTROL ET:** İki dosya da mevcut mu?
+4. **ÇALIŞTIR:** Hem central hem tenant migration'ları
+
+**Migration çalıştır:**
+```bash
+php artisan migrate --force                    # Central
+php artisan tenants:migrate --force            # Tüm tenant'lar
+```
+
+**⚠️ UNUTMA:**
+- Migration = **MUTLAKA** iki yerde (Central + Tenant)
+- Birini unutursan → Database uyumsuz → Sistem çöker!
+- Her migration'dan sonra **HER İKİSİNİ DE** çalıştır!
 
 ### YENİ TENANT EKLEME
 

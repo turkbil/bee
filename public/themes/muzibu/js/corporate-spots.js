@@ -12,7 +12,7 @@ if (typeof window.spotManagerRegistered === 'undefined') {
         if (!Alpine.data('spotManager')) {
             Alpine.data('spotManager', () => ({
                 spots: [],
-                settings: { spot_enabled: false, spot_songs_between: 10, songs_played: 0 },
+                settings: { spot_enabled: false, spot_is_paused: false, spot_songs_between: 10, songs_played: 0 },
                 currentPlaying: null,
                 settingsModal: false,
                 editModal: false,
@@ -27,7 +27,7 @@ if (typeof window.spotManagerRegistered === 'undefined') {
                         try {
                             const data = JSON.parse(el.textContent);
                             this.spots = data.spots || [];
-                            this.settings = { ...{ spot_enabled: false, spot_songs_between: 10, songs_played: 0 }, ...data.settings };
+                            this.settings = { ...{ spot_enabled: false, spot_is_paused: false, spot_songs_between: 10, songs_played: 0 }, ...data.settings };
                         } catch(e) { console.error(e); }
                     }
                 },
@@ -139,27 +139,68 @@ if (typeof window.spotManagerRegistered === 'undefined') {
                 },
 
                 async toggleSystem() {
+                    // ✅ OPTIMISTIC UPDATE: ANINDA göster, API arka planda
+                    const previousState = this.settings.spot_enabled;
+                    this.settings.spot_enabled = !previousState;
+
                     try {
                         const res = await fetch('/corporate/spots/settings', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
-                            body: JSON.stringify({ spot_enabled: !this.settings.spot_enabled })
+                            body: JSON.stringify({ spot_enabled: this.settings.spot_enabled })
                         });
                         const data = await res.json();
-                        if (data.success) this.settings.spot_enabled = data.settings.spot_enabled;
+
+                        // API başarısızsa geri al
+                        if (!data.success) {
+                            this.settings.spot_enabled = previousState;
+                        }
+                    } catch(e) {
+                        console.error(e);
+                        // Hata olursa geri al
+                        this.settings.spot_enabled = previousState;
+                    }
+                },
+
+                async togglePause() {
+                    try {
+                        const res = await fetch('/api/spot/toggle-pause', {
+                            method: 'POST',
+                            credentials: 'include',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            this.settings.spot_is_paused = data.spot_is_paused;
+                        }
                     } catch(e) { console.error(e); }
                 },
 
                 async updateSettings() {
+                    // ✅ Blade'de zaten optimistic (buton state'i önce değiştiriyor)
+                    const previousValue = parseInt(this.settings.spot_songs_between);
+
                     try {
                         const res = await fetch('/corporate/spots/settings', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
-                            body: JSON.stringify({ spot_songs_between: parseInt(this.settings.spot_songs_between) })
+                            body: JSON.stringify({ spot_songs_between: previousValue })
                         });
                         const data = await res.json();
-                        if (data.success) this.settings.spot_songs_between = data.settings.spot_songs_between;
-                    } catch(e) { console.error(e); }
+
+                        // API başarısızsa geri al
+                        if (!data.success) {
+                            this.settings.spot_songs_between = previousValue;
+                        }
+                    } catch(e) {
+                        console.error(e);
+                        // Hata olursa geri al
+                        this.settings.spot_songs_between = previousValue;
+                    }
                 },
 
                 async updateSongsPlayed() {

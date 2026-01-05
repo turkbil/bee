@@ -366,7 +366,7 @@
             <div class="flex items-center gap-4">
                 <div class="w-1.5 h-12 bg-gradient-to-b from-blue-600 via-purple-600 to-pink-600 rounded-full"></div>
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
-                    Efsane Yılsonu Fırsatları İXTİF'te Başladı! <span class="fire-emoji inline-block">🔥</span>
+                    Kış Fırsatları İXTİF'te Devam Ediyor! <span class="fire-emoji inline-block">❄️</span>
                 </h2>
             </div>
 

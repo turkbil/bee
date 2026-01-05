@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Root Ownership Fixer - Otomatik Düzeltme Aracı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1a2332',
+                            950: '#0f1419'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .code-block { background: #1e293b; border-left: 4px solid #3b82f6; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 dark">
+
+    <!-- Header -->
+    <header class="gradient-bg border-b border-slate-700/50 sticky top-0 z-50 backdrop-blur-sm bg-opacity-90">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+                        <span class="text-2xl">🔧</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white">Root Ownership Fixer</h1>
+                        <p class="text-sm text-white/70">Otomatik Düzeltme Aracı</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-white/90 font-mono">tuufi.com</div>
+                    <div class="text-xs text-white/60">5 Ocak 2026</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Ana İçerik -->
+    <main class="max-w-6xl mx-auto px-6 py-8">
+
+        <!-- Sorun Açıklaması -->
+        <section class="mb-8">
+            <div class="bg-red-900/20 border border-red-800 rounded-lg p-6">
+                <div class="flex items-start gap-3">
+                    <span class="text-3xl">🚨</span>
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold text-red-400 mb-2">Sorun: Root-Owned Dosyalar</h2>
+                        <p class="text-slate-300 mb-3">
+                            Laravel uygulamasında Claude Code ile yapılan dosya işlemleri (Write/Edit tool)
+                            <strong class="text-red-400">root:root</strong> ownership ile oluşturuluyor.
+                            Bu da PHP-FPM'in bu dosyalara erişememesine neden oluyor.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                            <div class="bg-slate-800/50 rounded p-3">
+                                <div class="text-red-400 font-semibold mb-1">❌ Sorunlar</div>
+                                <ul class="text-sm text-slate-300 space-y-1">
+                                    <li>• Permission Denied hataları</li>
+                                    <li>• Composer autoload erişilemiyor</li>
+                                    <li>• Config cache oluşturulamıyor</li>
+                                    <li>• Console komutları çalışmıyor</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-800/50 rounded p-3">
+                                <div class="text-green-400 font-semibold mb-1">✅ Çözüm</div>
+                                <ul class="text-sm text-slate-300 space-y-1">
+                                    <li>• Tüm dosyalar → tuufi.com_:psaserv</li>
+                                    <li>• Dosya izinleri → 644</li>
+                                    <li>• Klasör izinleri → 755</li>
+                                    <li>• Storage özel izinler → 777</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Basit Anlatım -->
+        <section class="mb-8">
+            <div class="bg-green-900/20 border border-green-800 rounded-lg p-6">
+                <h3 class="text-lg font-bold text-green-400 mb-3 flex items-center gap-2">
+                    <span>📝</span> Basit Anlatım (Herkes İçin)
+                </h3>
+                <div class="text-slate-300 space-y-3">
+                    <p>
+                        <strong class="text-green-400">Ne yapıyor bu script?</strong><br>
+                        Sistemde "root" kullanıcısı tarafından oluşturulmuş dosyaları bulup,
+                        doğru kullanıcıya (tuufi.com_) çeviriyor. Böylece web sunucusu ve PHP
+                        bu dosyalara sorunsuz erişebiliyor.
+                    </p>
+                    <p>
+                        <strong class="text-green-400">Neden önemli?</strong><br>
+                        Root kullanıcısının dosyalarına normal kullanıcı (PHP) erişemez.
+                        Bu da sitenin bazı özelliklerinin çalışmamasına neden olur.
+                        Bu script sayesinde tek komutla tüm izinler düzeltilebiliyor.
+                    </p>
+                    <p>
+                        <strong class="text-green-400">Ne zaman kullanmalı?</strong><br>
+                        Claude Code ile dosya oluşturduktan sonra veya "Permission Denied"
+                        hatası aldığınızda çalıştırın. Script otomatik olarak sorunları tespit
+                        edip düzeltir.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="mb-8">
+            <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6">
+                <h3 class="text-lg font-bold text-blue-400 mb-3 flex items-center gap-2">
+                    <span>🔧</span> Teknik Detaylar (Geliştiriciler İçin)
+                </h3>
+                <div class="space-y-4">
+                    <div>
+                        <div class="text-blue-300 font-semibold mb-2">Script Özellikleri:</div>
+                        <ul class="text-slate-300 space-y-2 text-sm">
+                            <li>✅ <strong>Otomatik Kullanıcı Tespiti:</strong> composer.json dosyasının owner'ından doğru kullanıcıyı bulur</li>
+                            <li>✅ <strong>Manuel Kullanıcı Desteği:</strong> İsteğe bağlı kullanıcı:grup parametresi</li>
+                            <li>✅ <strong>Git Koruması:</strong> .git klasörü hiç dokunulmaz (git için root gerekli)</li>
+                            <li>✅ <strong>Paralel İşlem:</strong> xargs -P 4 ile hızlı toplu düzeltme</li>
+                            <li>✅ <strong>İzin Düzeltme:</strong> Dosya 644, klasör 755, storage 777</li>
+                            <li>✅ <strong>Renkli Çıktı:</strong> Terminal'de görsel feedback</li>
+                            <li>✅ <strong>Onay Mekanizması:</strong> İşlem öncesi kullanıcı onayı</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="text-blue-300 font-semibold mb-2">Script Konumu:</div>
+                        <div class="code-block rounded p-3 font-mono text-sm text-slate-300">
+                            /var/www/vhosts/tuufi.com/httpdocs/public/readme/2026/01/05/root-ownership-fixer/v1/fix-root-ownership.sh
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-blue-300 font-semibold mb-2">İşlem Adımları:</div>
+                        <ol class="text-slate-300 space-y-2 text-sm list-decimal list-inside">
+                            <li>Doğru kullanıcıyı tespit et (composer.json owner'ı)</li>
+                            <li>Root-owned dosyaları say (.git hariç)</li>
+                            <li>Kullanıcıdan onay al</li>
+                            <li>Tüm dosya ownership'lerini düzelt (tuufi.com_:psaserv)</li>
+                            <li>Tüm klasör ownership'lerini düzelt</li>
+                            <li>Dosya izinlerini düzelt (644)</li>
+                            <li>Klasör izinlerini düzelt (755)</li>
+                            <li>Storage özel izinleri uygula (777/775)</li>
+                            <li>Symlink ownership düzelt</li>
+                            <li>Sonuç raporu göster</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kullanım Kılavuzu -->
+        <section class="mb-8">
+            <div class="bg-purple-900/20 border border-purple-800 rounded-lg p-6">
+                <h3 class="text-lg font-bold text-purple-400 mb-4 flex items-center gap-2">
+                    <span>📖</span> Kullanım Kılavuzu
+                </h3>
+
+                <!-- Yöntem 1: Otomatik -->
+                <div class="mb-6">
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-2xl">🤖</span>
+                            <h4 class="text-lg font-semibold text-purple-300">Yöntem 1: Otomatik Kullanıcı Tespiti (Önerilen)</h4>
+                        </div>
+                        <p class="text-slate-300 mb-3 text-sm">
+                            Script otomatik olarak doğru kullanıcıyı tespit eder (composer.json owner'ı).
+                        </p>
+                        <div class="code-block rounded p-4 font-mono text-sm">
+                            <div class="text-slate-500 mb-2"># Script'i çalıştırılabilir yap</div>
+                            <div class="text-green-400">chmod +x public/readme/2026/01/05/root-ownership-fixer/v1/fix-root-ownership.sh</div>
+
+                            <div class="text-slate-500 mt-4 mb-2"># Script'i çalıştır</div>
+                            <div class="text-green-400">./public/readme/2026/01/05/root-ownership-fixer/v1/fix-root-ownership.sh</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yöntem 2: Manuel Kullanıcı -->
+                <div class="mb-6">
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-2xl">👤</span>
+                            <h4 class="text-lg font-semibold text-purple-300">Yöntem 2: Manuel Kullanıcı Belirtme</h4>
+                        </div>
+                        <p class="text-slate-300 mb-3 text-sm">
+                            Kullanıcı ve grubu manuel olarak belirlemek isterseniz:
+                        </p>
+                        <div class="code-block rounded p-4 font-mono text-sm">
+                            <div class="text-green-400">./public/readme/2026/01/05/root-ownership-fixer/v1/fix-root-ownership.sh tuufi.com_ psaserv</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yöntem 3: Kısa Yol -->
+                <div>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-2xl">⚡</span>
+                            <h4 class="text-lg font-semibold text-purple-300">Yöntem 3: Kısa Yol (Alias)</h4>
+                        </div>
+                        <p class="text-slate-300 mb-3 text-sm">
+                            Hızlı kullanım için alias oluşturun:
+                        </p>
+                        <div class="code-block rounded p-4 font-mono text-sm">
+                            <div class="text-slate-500 mb-2"># .bashrc veya .zshrc dosyanıza ekleyin</div>
+                            <div class="text-yellow-400">alias fix-root='sudo /var/www/vhosts/tuufi.com/httpdocs/public/readme/2026/01/05/root-ownership-fixer/v1/fix-root-ownership.sh'</div>
+
+                            <div class="text-slate-500 mt-4 mb-2"># Kullanım</div>
+                            <div class="text-green-400">fix-root</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Örnek Çıktı -->
+        <section class="mb-8">
+            <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+                <h3 class="text-lg font-bold text-slate-300 mb-4 flex items-center gap-2">
+                    <span>📺</span> Örnek Çıktı
+                </h3>
+                <div class="bg-slate-950 rounded p-4 font-mono text-xs overflow-x-auto">
+                    <div class="text-blue-400">╔════════════════════════════════════════════════════════════════╗</div>
+                    <div class="text-blue-400">║         Root Ownership Fixer - Laravel Multi-Tenant           ║</div>
+                    <div class="text-blue-400">╚════════════════════════════════════════════════════════════════╝</div>
+                    <div class="mt-2"></div>
+                    <div class="text-yellow-400">🔍 Otomatik kullanıcı tespiti yapılıyor...</div>
+                    <div class="text-green-400">✅ Tespit edilen kullanıcı: tuufi.com_:psaserv</div>
+                    <div class="mt-2"></div>
+                    <div class="text-yellow-400">📊 Root-owned dosyalar taranıyor...</div>
+                    <div class="text-red-400">🔴 Toplam 4442 root-owned dosya bulundu!</div>
+                    <div class="mt-2"></div>
+                    <div class="text-yellow-400">Tüm root-owned dosyalar tuufi.com_:psaserv olarak değiştirilsin mi? [E/h]: </div>
+                    <div class="text-white">E</div>
+                    <div class="mt-2"></div>
+                    <div class="text-blue-400">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+                    <div class="text-yellow-400">🔧 DÜZELTİLİYOR...</div>
+                    <div class="text-blue-400">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+                    <div class="mt-2"></div>
+                    <div class="text-yellow-400">📁 [1/6] Dosya ownership düzeltiliyor...</div>
+                    <div class="text-green-400">✅ Dosyalar düzeltildi</div>
+                    <div class="text-yellow-400">📂 [2/6] Klasör ownership düzeltiliyor...</div>
+                    <div class="text-green-400">✅ Klasörler düzeltildi</div>
+                    <div class="text-yellow-400">🔐 [3/6] Dosya izinleri düzeltiliyor (644)...</div>
+                    <div class="text-green-400">✅ Dosya izinleri düzeltildi</div>
+                    <div class="text-yellow-400">🔓 [4/6] Klasör izinleri düzeltiliyor (755)...</div>
+                    <div class="text-green-400">✅ Klasör izinleri düzeltildi</div>
+                    <div class="text-yellow-400">💾 [5/6] Storage klasörü özel izinleri...</div>
+                    <div class="text-green-400">✅ Storage izinleri düzeltildi</div>
+                    <div class="text-yellow-400">🔗 [6/6] Symlink ownership düzeltiliyor...</div>
+                    <div class="text-green-400">✅ Symlink'ler düzeltildi</div>
+                    <div class="mt-2"></div>
+                    <div class="text-blue-400">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+                    <div class="text-green-400">✅ TÜM İŞLEMLER TAMAMLANDI!</div>
+                    <div class="text-blue-400">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+                    <div class="mt-2"></div>
+                    <div class="text-green-400">🎉 Hiç root-owned dosya kalmadı!</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- İşlem Sonrası -->
+        <section class="mb-8">
+            <div class="bg-amber-900/20 border border-amber-800 rounded-lg p-6">
+                <h3 class="text-lg font-bold text-amber-400 mb-3 flex items-center gap-2">
+                    <span>⚙️</span> İşlem Sonrası Öneriler
+                </h3>
+                <div class="text-slate-300 space-y-3">
+                    <p>
+                        <strong class="text-amber-400">1. Cache Temizleme:</strong>
+                    </p>
+                    <div class="code-block rounded p-3 font-mono text-sm">
+                        <div class="text-green-400">composer dump-autoload</div>
+                        <div class="text-green-400">php artisan config:clear</div>
+                        <div class="text-green-400">php artisan cache:clear</div>
+                        <div class="text-green-400">php artisan view:clear</div>
+                    </div>
+
+                    <p class="pt-3">
+                        <strong class="text-amber-400">2. Site Testi:</strong>
+                    </p>
+                    <div class="code-block rounded p-3 font-mono text-sm">
+                        <div class="text-green-400">curl -I https://ixtif.com/</div>
+                        <div class="text-green-400">curl -I https://muzibu.com.tr/</div>
+                    </div>
+
+                    <p class="pt-3">
+                        <strong class="text-amber-400">3. Log Kontrolü:</strong>
+                    </p>
+                    <div class="code-block rounded p-3 font-mono text-sm">
+                        <div class="text-green-400">tail -50 storage/logs/laravel.log | grep -i error</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Önemli Notlar -->
+        <section class="mb-8">
+            <div class="bg-slate-800 border border-slate-700 rounded-lg p-6">
+                <h3 class="text-lg font-bold text-slate-300 mb-4 flex items-center gap-2">
+                    <span>⚠️</span> Önemli Notlar
+                </h3>
+                <div class="space-y-3 text-sm text-slate-300">
+                    <div class="flex gap-3">
+                        <span class="text-yellow-400 text-lg">💡</span>
+                        <div>
+                            <strong>Git Klasörü Korunur:</strong> .git klasörü hiç dokunulmaz.
+                            Git komutları için root ownership gerekli olabilir.
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <span class="text-blue-400 text-lg">🔒</span>
+                        <div>
+                            <strong>Güvenli İşlem:</strong> Script sadece ownership ve izinleri değiştirir,
+                            hiçbir dosya içeriği değiştirilmez veya silinmez.
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <span class="text-green-400 text-lg">⚡</span>
+                        <div>
+                            <strong>Paralel İşlem:</strong> xargs -P 4 ile 4 paralel process çalışır,
+                            büyük projelerde hızlı sonuç alırsınız.
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <span class="text-purple-400 text-lg">🔄</span>
+                        <div>
+                            <strong>Tekrar Çalıştırılabilir:</strong> İstediğiniz kadar çalıştırabilirsiniz,
+                            zarar vermez. Her Claude Code işleminden sonra çalıştırmanız önerilir.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hızlı Başvuru -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-indigo-900/30 to-purple-900/30 border border-indigo-700/50 rounded-lg p-6">
+                <h3 class="text-lg font-bold text-indigo-300 mb-4 flex items-center gap-2">
+                    <span>⚡</span> Hızlı Başvuru Komutları
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-900/50 rounded p-4">
+                        <div class="text-indigo-400 font-semibold mb-2">🔧 Tek Komutla Düzelt</div>
+                        <div class="code-block rounded p-2 font-mono text-xs">
+                            <div class="text-green-400">chmod +x public/readme/2026/01/05/root-ownership-fixer/v1/fix-root-ownership.sh && ./public/readme/2026/01/05/root-ownership-fixer/v1/fix-root-ownership.sh</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/50 rounded p-4">
+                        <div class="text-indigo-400 font-semibold mb-2">📊 Root Dosya Sayısı</div>
+                        <div class="code-block rounded p-2 font-mono text-xs">
+                            <div class="text-green-400">find . -user root -not -path "*/.git/*" | wc -l</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/50 rounded p-4">
+                        <div class="text-indigo-400 font-semibold mb-2">👤 Mevcut Kullanıcı</div>
+                        <div class="code-block rounded p-2 font-mono text-xs">
+                            <div class="text-green-400">stat -c '%U:%G' composer.json</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/50 rounded p-4">
+                        <div class="text-indigo-400 font-semibold mb-2">🧹 Cache Temizle</div>
+                        <div class="code-block rounded p-2 font-mono text-xs">
+                            <div class="text-green-400">php artisan optimize:clear</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 mt-12 py-6">
+        <div class="max-w-6xl mx-auto px-6 text-center text-slate-500 text-sm">
+            <p>🤖 Generated with <a href="https://claude.com/claude-code" class="text-blue-400 hover:text-blue-300">Claude Code</a></p>
+            <p class="mt-1">Co-Authored-By: Claude Sonnet 4.5</p>
+        </div>
+    </footer>
+
+</body>
+</html>

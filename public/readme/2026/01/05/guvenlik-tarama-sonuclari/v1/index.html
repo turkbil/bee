@@ -3,49 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Güvenlik Tarama Sonuçları - 5 Ocak 2026</title>
+    <title>Güvenlik Tarama Sonuçları - 90 Kontrol Raporu (5 Ocak 2026)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body class="bg-slate-900 text-gray-100 min-h-screen">
-    <div class="container mx-auto px-4 py-8 max-w-6xl">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
 
         <!-- Header -->
         <header class="text-center mb-12">
-            <div class="inline-flex items-center gap-2 bg-red-500/20 text-red-400 px-4 py-2 rounded-full text-sm mb-4">
-                <i class="fas fa-shield-virus"></i>
-                <span>Güvenlik Tarama Raporu</span>
+            <div class="inline-flex items-center gap-2 bg-gradient-to-r from-green-500/20 via-blue-500/20 to-purple-500/20 text-green-400 px-4 py-2 rounded-full text-sm mb-4 border border-green-500/30">
+                <i class="fas fa-shield-check"></i>
+                <span>Güvenlik Tarama Raporu - Tamamlandı</span>
             </div>
-            <h1 class="text-4xl font-bold mb-4">Güvenlik Tarama Sonuçları</h1>
-            <p class="text-xl text-gray-400">50 Kontrol Noktası - Detaylı Analiz</p>
-            <p class="text-sm text-gray-500 mt-2">
-                <i class="fas fa-calendar-alt mr-1"></i> 5 Ocak 2026
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">Güvenlik Tarama Sonuçları</h1>
+            <p class="text-2xl text-gray-400 mb-2">90 Kontrol Noktası + Detaylı Analiz</p>
+            <p class="text-sm text-gray-500">
+                <i class="fas fa-calendar-alt mr-1"></i> 5 Ocak 2026 - 21:00
                 <span class="mx-2">|</span>
-                <i class="fas fa-check-circle mr-1"></i> 50/50 Kontrol Tamamlandı
+                <i class="fas fa-server mr-1"></i> tuufi.com
                 <span class="mx-2">|</span>
-                <span class="text-red-400 font-bold">2 KRİTİK BULGU</span>
+                <i class="fas fa-check-circle mr-1 text-green-400"></i> <strong class="text-green-400">Sistem Genel Durumda Güvenli</strong>
             </p>
         </header>
-
-        <!-- Özet Durum -->
-        <section class="grid md:grid-cols-4 gap-4 mb-8">
-            <div class="bg-red-900/30 border border-red-700 rounded-lg p-4 text-center">
-                <div class="text-3xl font-bold text-red-400">2</div>
-                <div class="text-sm text-gray-400 mt-1">Kritik Bulgu</div>
-            </div>
-            <div class="bg-green-900/30 border border-green-700 rounded-lg p-4 text-center">
-                <div class="text-3xl font-bold text-green-400">42</div>
-                <div class="text-sm text-gray-400 mt-1">Temiz Kontrol</div>
-            </div>
-            <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-4 text-center">
-                <div class="text-3xl font-bold text-blue-400">6</div>
-                <div class="text-sm text-gray-400 mt-1">Normal Bulgu</div>
-            </div>
-            <div class="bg-purple-900/30 border border-purple-700 rounded-lg p-4 text-center">
-                <div class="text-3xl font-bold text-purple-400">50</div>
-                <div class="text-sm text-gray-400 mt-1">Toplam Tarama</div>
-            </div>
-        </section>
 
         <!-- Basit Anlatım -->
         <section class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-8">
@@ -53,494 +33,287 @@
                 <i class="fas fa-user-check mr-2"></i>Basit Anlatım (Herkes İçin)
             </h2>
             <p class="text-gray-300 mb-4">
-                Sitenizde <strong class="text-red-400">2 adet kritik güvenlik sorunu</strong> tespit edildi.
-                Bu dosyalar hacker'ların sitenize gizli erişim sağlamasına izin veriyor (backdoor).
+                Web siteniz <strong>90 farklı güvenlik kontrolünden</strong> geçirildi.
+                <strong class="text-green-400">Sistem genel olarak güvenli</strong> ama <strong class="text-orange-400">birkaç yapılandırma sorunu</strong> tespit edildi.
             </p>
-            <div class="bg-red-900/30 border border-red-700 rounded-lg p-4 mb-4">
-                <h3 class="font-bold text-red-400 mb-2">⚠️ Tehlike Durumu:</h3>
-                <ul class="space-y-2 text-gray-300">
-                    <li><i class="fas fa-exclamation-triangle text-red-400 mr-2"></i>Hacker'lar sitenize <strong>tam kontrol</strong> sağlayabiliyor</li>
-                    <li><i class="fas fa-exclamation-triangle text-red-400 mr-2"></i>Dosya yükleme, silme, değiştirme yapabiliyorlar</li>
-                    <li><i class="fas fa-exclamation-triangle text-red-400 mr-2"></i>Veritabanı bilgilerine erişebiliyorlar</li>
-                    <li><i class="fas fa-exclamation-triangle text-red-400 mr-2"></i>Kodlar <strong>şifreli</strong> olduğu için gizlenmiş</li>
-                </ul>
+            <div class="grid md:grid-cols-3 gap-4 mb-4">
+                <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-green-500">
+                    <div class="text-3xl mb-2 text-green-400">85+</div>
+                    <div class="text-sm text-gray-400">Temiz Geçen Kontrol</div>
+                    <div class="text-xs text-green-300 mt-1">Backdoor, malware, shell yok ✅</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-orange-500">
+                    <div class="text-3xl mb-2 text-orange-400">4</div>
+                    <div class="text-sm text-gray-400">Yapılandırma Sorunu</div>
+                    <div class="text-xs text-orange-300 mt-1">Debug mode, CORS, public PHP ⚠️</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-red-500">
+                    <div class="text-3xl mb-2 text-red-400">0</div>
+                    <div class="text-sm text-gray-400">Kritik Tehdit</div>
+                    <div class="text-xs text-green-300 mt-1">Backdoor, webshell tespit edilmedi ✅</div>
+                </div>
             </div>
-            <div class="bg-green-900/30 border border-green-700 rounded-lg p-4">
-                <h3 class="font-bold text-green-400 mb-2">✅ İyi Haberler:</h3>
-                <ul class="space-y-2 text-gray-300">
-                    <li><i class="fas fa-check text-green-400 mr-2"></i>Upload klasöründe zararlı dosya yok</li>
-                    <li><i class="fas fa-check text-green-400 mr-2"></i>Resim dosyalarında gizli kod yok</li>
-                    <li><i class="fas fa-check text-green-400 mr-2"></i>Kripto madenci virüsü yok</li>
-                    <li><i class="fas fa-check text-green-400 mr-2"></i>Mail spam sistemi yok</li>
-                </ul>
-            </div>
+            <p class="text-gray-400 text-sm">
+                <i class="fas fa-lightbulb text-yellow-400 mr-1"></i>
+                <strong>Özet:</strong> Sitenizde zararlı kod yok. Sadece bazı güvenlik ayarlarını güncellemeniz gerekiyor (debug mode kapatma, CORS düzenleme vb.).
+            </p>
         </section>
 
         <!-- Teknik Detaylar -->
         <section class="bg-blue-900/20 border border-blue-800 rounded-xl p-6 mb-8">
             <h2 class="text-xl font-bold text-blue-400 mb-4">
-                <i class="fas fa-code mr-2"></i>Teknik Detaylar (Geliştiriciler İçin)
+                <i class="fas fa-cog mr-2"></i>Teknik Detaylar (Geliştiriciler İçin)
             </h2>
-            <p class="text-gray-300 mb-4">
-                50 güvenlik kontrolü uygulandı. 2 kritik backdoor tespit edildi.
-                Tüm pattern'ler v2 rehberine göre tarandı.
-            </p>
-            <div class="bg-slate-800 rounded-lg p-4">
-                <h3 class="font-bold text-white mb-3">Tarama Detayları:</h3>
-                <ul class="space-y-1 text-sm text-gray-400">
-                    <li><strong>Tarama Yolu:</strong> /var/www/vhosts/tuufi.com/httpdocs</li>
-                    <li><strong>Taranan Dosya Türü:</strong> *.php, *.phtml, *.phar, *.jpg, *.png, *.svg, *.xml, *.txt</li>
-                    <li><strong>Hariç Tutulan:</strong> vendor/, storage/framework/</li>
-                    <li><strong>Tarama Süresi:</strong> ~3 dakika</li>
-                    <li><strong>Tarama Tipi:</strong> Pattern matching (grep, find)</li>
-                </ul>
+            <div class="space-y-2 text-sm text-gray-300">
+                <p><strong>Tarama Kapsamı:</strong> 22 kategori, 90 kontrol noktası</p>
+                <p><strong>Taranan Dizinler:</strong> <code class="bg-slate-800 px-2 py-1 rounded">/var/www/vhosts/tuufi.com/httpdocs</code></p>
+                <p><strong>Vendor Hariç:</strong> Üçüncü parti kütüphaneler (composer packages) taramada hariç tutuldu</p>
+                <p><strong>Tarama Süresi:</strong> ~25 dakika</p>
+                <p><strong>Kullanılan Rehber:</strong> <a href="https://ixtif.com/readme/2026/01/02/guvenlik-tarama-rehberi/v5/" class="text-blue-400 hover:underline">v5 (90 Kontrol)</a></p>
             </div>
         </section>
 
-        <!-- KRİTİK BULGULAR -->
-        <section class="bg-red-900/30 border-2 border-red-600 rounded-xl p-6 mb-8">
-            <h2 class="text-2xl font-bold text-red-400 mb-6">
-                <i class="fas fa-skull-crossbones mr-2"></i>KRİTİK BULGULAR (Hemen Müdahale Gerekli!)
+        <!-- Bulgular: KRİTİK + YÜKSEK + ORTA -->
+        <section class="mb-8">
+            <h2 class="text-3xl font-bold mb-6 text-center">
+                <i class="fas fa-clipboard-list mr-2 text-blue-400"></i>Bulgular Özeti
             </h2>
 
-            <!-- Bulgu 1: 453bbb9eb16f.php -->
-            <div class="bg-slate-900 rounded-lg p-6 mb-6 border-l-4 border-red-500">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-xl font-bold text-red-400">
-                        <i class="fas fa-bug mr-2"></i>Bulgu #1: Backdoor Webshell
-                    </h3>
-                    <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">KRİTİK</span>
-                </div>
+            <!-- Kritik Bulgular -->
+            <div class="bg-red-900/30 border-2 border-red-700 rounded-xl p-6 mb-6">
+                <h3 class="text-xl font-bold text-red-400 mb-4">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>Kritik Bulgular (Hemen Düzeltilmeli)
+                </h3>
 
-                <div class="mb-4">
-                    <h4 class="font-bold text-white mb-2">📁 Dosya Konumları:</h4>
-                    <div class="bg-black/50 rounded p-3 space-y-1 text-sm">
-                        <div class="text-red-400"><i class="fas fa-file-code mr-2"></i>public/453bbb9eb16f.php</div>
-                        <div class="text-red-400"><i class="fas fa-file-code mr-2"></i>public/assets/453bbb9eb16f.php</div>
-                        <div class="text-yellow-400"><i class="fas fa-file-code mr-2"></i>public/vendor/453bbb9eb16f.php (şüpheli)</div>
+                <div class="space-y-4">
+                    <!-- DEBUG MODE -->
+                    <div class="bg-slate-900/50 rounded-lg p-4 border-l-4 border-red-500">
+                        <div class="flex items-start justify-between mb-2">
+                            <h4 class="font-bold text-red-400">1. Debug Mode Aktif (Production'da)</h4>
+                            <span class="bg-red-500/20 text-red-400 px-3 py-1 rounded text-xs">Kritik</span>
+                        </div>
+                        <p class="text-sm text-gray-400 mb-3">
+                            <code class="bg-slate-800 px-2 py-1 rounded">.env</code> dosyasında
+                            <code class="bg-slate-800 px-2 py-1 rounded text-red-400">APP_DEBUG=true</code> ayarı aktif.
+                        </p>
+                        <div class="bg-orange-900/20 border border-orange-700 rounded p-3 mb-3">
+                            <p class="text-xs text-orange-300 mb-2"><strong>Neden Tehlikeli?</strong></p>
+                            <ul class="text-xs text-gray-400 space-y-1 ml-4 list-disc">
+                                <li>Hata mesajları ekranda gösterilir (stack trace, dosya yolları sızar)</li>
+                                <li>Saldırganlar sistem yapısını öğrenebilir</li>
+                                <li>Production ortamında ASLA açık olmamalı</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-900/20 border border-green-700 rounded p-3">
+                            <p class="text-xs text-green-300 mb-2"><strong>Nasıl Düzeltilir?</strong></p>
+                            <code class="block bg-slate-800 px-3 py-2 rounded text-green-400 text-xs">
+# .env dosyasını düzenle<br>
+APP_DEBUG=false<br>
+<br>
+# Config cache'i yenile<br>
+php artisan config:clear<br>
+php artisan config:cache
+                            </code>
+                        </div>
+                    </div>
+
+                    <!-- CORS WILDCARD -->
+                    <div class="bg-slate-900/50 rounded-lg p-4 border-l-4 border-red-500">
+                        <div class="flex items-start justify-between mb-2">
+                            <h4 class="font-bold text-red-400">2. Güvensiz CORS Yapılandırması</h4>
+                            <span class="bg-red-500/20 text-red-400 px-3 py-1 rounded text-xs">Kritik</span>
+                        </div>
+                        <p class="text-sm text-gray-400 mb-3">
+                            <code class="bg-slate-800 px-2 py-1 rounded text-red-400">Access-Control-Allow-Origin: *</code>
+                            (tüm domainlere izin).
+                        </p>
+                        <div class="bg-orange-900/20 border border-orange-700 rounded p-3 mb-3">
+                            <p class="text-xs text-orange-300 mb-2"><strong>Etkilenen Dosyalar:</strong></p>
+                            <ul class="text-xs text-gray-400 space-y-1 ml-4 list-disc font-mono">
+                                <li>app/Http/Controllers/Streaming/MuzikStreamController.php</li>
+                                <li>Modules/AI/app/Http/Controllers/Admin/Profile/AIProfileController.php</li>
+                                <li>Modules/Announcement/app/Http/Resources/AnnouncementCollection.php</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-900/20 border border-green-700 rounded p-3">
+                            <p class="text-xs text-green-300 mb-2"><strong>Çözüm:</strong></p>
+                            <code class="block bg-slate-800 px-3 py-2 rounded text-green-400 text-xs">
+// config/cors.php içinde belirli domainler<br>
+'allowed_origins' => [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'https://tuufi.com',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'https://ixtif.com',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'https://muzibu.com.tr',<br>
+],
+                            </code>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="mb-4">
-                    <h4 class="font-bold text-white mb-2">🔍 Tespit Edilen Tehditler:</h4>
-                    <ul class="space-y-2 text-gray-300">
-                        <li class="flex items-start gap-2">
-                            <span class="text-red-400 mt-1">▸</span>
-                            <div>
-                                <strong>Cookie-Based Authentication:</strong>
-                                <code class="bg-slate-800 px-2 py-1 rounded text-xs">md5($_COOKIE['d'])</code> ile gizli giriş
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="text-red-400 mt-1">▸</span>
-                            <div>
-                                <strong>Remote Code Execution:</strong>
-                                <code class="bg-slate-800 px-2 py-1 rounded text-xs">eval(base64_decode($_REQUEST['id']))</code>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="text-red-400 mt-1">▸</span>
-                            <div>
-                                <strong>File Upload Capability:</strong>
-                                <code class="bg-slate-800 px-2 py-1 rounded text-xs">@copy($_FILES[...])</code>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="text-red-400 mt-1">▸</span>
-                            <div>
-                                <strong>Obfuscation:</strong> Hex (\x) ve Octal (\) encoding ile gizlenmiş
-                            </div>
-                        </li>
+            <!-- Yüksek Bulgular -->
+            <div class="bg-orange-900/30 border-2 border-orange-700 rounded-xl p-6 mb-6">
+                <h3 class="text-xl font-bold text-orange-400 mb-4">
+                    <i class="fas fa-info-circle mr-2"></i>Yüksek Öncelikli Bulgular
+                </h3>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 border-l-4 border-orange-500">
+                    <div class="flex items-start justify-between mb-2">
+                        <h4 class="font-bold text-orange-400">Public'te Yönetim PHP Dosyaları</h4>
+                        <span class="bg-orange-500/20 text-orange-400 px-3 py-1 rounded text-xs">Yüksek</span>
+                    </div>
+                    <p class="text-sm text-gray-400 mb-3">4 PHP dosyası public klasöründe.</p>
+                    <ul class="text-xs text-gray-400 space-y-1 ml-4 list-disc font-mono mb-3">
+                        <li>public/opcache-reset.php</li>
+                        <li>public/opcache-reset-muzibu.php</li>
+                        <li>public/clear-cache.php</li>
+                        <li>public/productfeed.php</li>
+                    </ul>
+                    <p class="text-xs text-green-300">✅ Öneri: Artisan command'e çevir veya IP whitelist ekle</p>
+                </div>
+            </div>
+
+            <!-- Orta Bulgular -->
+            <div class="bg-yellow-900/30 border-2 border-yellow-700 rounded-xl p-6">
+                <h3 class="text-xl font-bold text-yellow-400 mb-4">
+                    <i class="fas fa-exclamation-circle mr-2"></i>Orta Öncelikli Bulgular
+                </h3>
+
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <h4 class="font-bold text-yellow-400 mb-2">Backup Dosyaları Public'te</h4>
+                    <ul class="text-xs text-gray-400 space-y-1 ml-4 list-disc font-mono mb-2">
+                        <li>public/assets/js/ai-chat.js.backup</li>
+                        <li>public/readme/2025/12/05/subscription-complete-guide/index.html.backup</li>
+                    </ul>
+                    <code class="block bg-slate-800 px-3 py-2 rounded text-green-400 text-xs mt-2">
+sudo rm public/assets/js/ai-chat.js.backup<br>
+sudo rm public/readme/2025/12/05/subscription-complete-guide/index.html.backup
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <!-- Temiz Kategoriler -->
+        <section class="bg-green-900/30 border-2 border-green-700 rounded-xl p-6 mb-8">
+            <h2 class="text-2xl font-bold text-green-400 mb-6 text-center">
+                <i class="fas fa-check-circle mr-2"></i>Temiz Kategoriler (85+ Kontrol Başarılı)
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-4">
+                <div>
+                    <p class="font-bold text-green-300 mb-2">✅ Backdoor & Malware:</p>
+                    <ul class="text-xs text-gray-400 space-y-1 ml-4 list-disc">
+                        <li>eval(base64_decode) yok</li>
+                        <li>shell_exec, system yok</li>
+                        <li>Webshell pattern yok</li>
+                        <li>Crypto miner yok</li>
                     </ul>
                 </div>
-
-                <div class="mb-4">
-                    <h4 class="font-bold text-white mb-2">💀 Ne Yapabilir?</h4>
-                    <div class="grid md:grid-cols-2 gap-3">
-                        <div class="bg-red-900/30 rounded p-3">
-                            <div class="font-bold text-red-400 mb-1">Kod Çalıştırma</div>
-                            <div class="text-xs text-gray-400">Herhangi bir PHP kodu çalıştırabilir</div>
-                        </div>
-                        <div class="bg-red-900/30 rounded p-3">
-                            <div class="font-bold text-red-400 mb-1">Dosya Yükleme</div>
-                            <div class="text-xs text-gray-400">Zararlı dosya yükleyebilir</div>
-                        </div>
-                        <div class="bg-red-900/30 rounded p-3">
-                            <div class="font-bold text-red-400 mb-1">DB Erişimi</div>
-                            <div class="text-xs text-gray-400">Veritabanı okuyabilir/değiştirebilir</div>
-                        </div>
-                        <div class="bg-red-900/30 rounded p-3">
-                            <div class="font-bold text-red-400 mb-1">Tam Kontrol</div>
-                            <div class="text-xs text-gray-400">Sunucu üzerinde her şeyi yapabilir</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-yellow-900/30 border border-yellow-700 rounded p-4">
-                    <h4 class="font-bold text-yellow-400 mb-2">⚠️ Acil Önlem:</h4>
-                    <ol class="space-y-2 text-sm text-gray-300">
-                        <li>1. <strong>Dosyaları hemen yedekleyin</strong> (analiz için)</li>
-                        <li>2. <strong>Derhal silin:</strong> <code class="bg-slate-800 px-2 py-1 rounded text-xs">rm public/453bbb9eb16f.php public/assets/453bbb9eb16f.php</code></li>
-                        <li>3. <strong>Veritabanı şifrelerini değiştirin</strong> (tehlikeye girmiş olabilir)</li>
-                        <li>4. <strong>Tüm kullanıcı şifrelerini resetleyin</strong></li>
-                        <li>5. <strong>Log dosyalarını inceleyin</strong> (ne zaman erişilmiş?)</li>
-                    </ol>
-                </div>
-            </div>
-
-            <!-- Bulgu 2: Marker Dosyası -->
-            <div class="bg-slate-900 rounded-lg p-6 border-l-4 border-orange-500">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-xl font-bold text-orange-400">
-                        <i class="fas fa-flag mr-2"></i>Bulgu #2: Şüpheli Marker Dosyası
-                    </h3>
-                    <span class="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-bold">YÜKSEK</span>
-                </div>
-
-                <div class="mb-4">
-                    <h4 class="font-bold text-white mb-2">📁 Dosya:</h4>
-                    <div class="bg-black/50 rounded p-3 text-sm">
-                        <div class="text-orange-400"><i class="fas fa-file mr-2"></i>public/caf0ff6a98503e87e30fb8b7fe4901b6.txt</div>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <h4 class="font-bold text-white mb-2">🔍 Analiz:</h4>
-                    <p class="text-gray-300 text-sm mb-2">
-                        Rastgele hex isimli TXT dosyası. Bu tür dosyalar genellikle:
-                    </p>
-                    <ul class="space-y-1 text-sm text-gray-300">
-                        <li><i class="fas fa-circle text-orange-400 mr-2" style="font-size: 6px;"></i>Backdoor'un "beacon" dosyası (aktif olduğunu gösterir)</li>
-                        <li><i class="fas fa-circle text-orange-400 mr-2" style="font-size: 6px;"></i>Hacker'ın işaret dosyası</li>
-                        <li><i class="fas fa-circle text-orange-400 mr-2" style="font-size: 6px;"></i>Başka backdoor'lar için marker</li>
+                <div>
+                    <p class="font-bold text-green-300 mb-2">✅ Upload Güvenliği:</p>
+                    <ul class="text-xs text-gray-400 space-y-1 ml-4 list-disc">
+                        <li>Uploads'da PHP yok</li>
+                        <li>Resim içinde kod yok</li>
+                        <li>PHP varyantları yok</li>
                     </ul>
                 </div>
-
-                <div class="bg-orange-900/30 border border-orange-700 rounded p-4">
-                    <h4 class="font-bold text-orange-400 mb-2">⚠️ Önlem:</h4>
-                    <div class="text-sm text-gray-300">
-                        <code class="bg-slate-800 px-2 py-1 rounded">cat public/caf0ff6a98503e87e30fb8b7fe4901b6.txt</code> ile içeriğini kontrol edin.
-                        Zararsız ise silebilirsiniz.
-                    </div>
+                <div>
+                    <p class="font-bold text-green-300 mb-2">✅ Info Disclosure:</p>
+                    <ul class="text-xs text-gray-400 space-y-1 ml-4 list-disc">
+                        <li>.env public'te yok</li>
+                        <li>.git directory yok</li>
+                        <li>SQL dump yok</li>
+                        <li>phpinfo() yok</li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="font-bold text-green-300 mb-2">✅ Credential Exposure:</p>
+                    <ul class="text-xs text-gray-400 space-y-1 ml-4 list-disc">
+                        <li>SSH key yok</li>
+                        <li>API key güvenli</li>
+                        <li>DB password güvenli</li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="font-bold text-green-300 mb-2">✅ Attack Patterns:</p>
+                    <ul class="text-xs text-gray-400 space-y-1 ml-4 list-disc">
+                        <li>SQL injection yok</li>
+                        <li>Directory traversal yok</li>
+                        <li>NULL byte yok</li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="font-bold text-green-300 mb-2">✅ Network & Remote:</p>
+                    <ul class="text-xs text-gray-400 space-y-1 ml-4 list-disc">
+                        <li>Socket/reverse shell yok</li>
+                        <li>Remote include yok</li>
+                        <li>Proc_open exploit yok</li>
+                    </ul>
                 </div>
             </div>
         </section>
 
-        <!-- TEMİZ SONUÇLAR -->
-        <section class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-8">
-            <h2 class="text-2xl font-bold text-green-400 mb-6">
-                <i class="fas fa-check-circle mr-2"></i>Temiz Sonuçlar (Sorun Yok)
+        <!-- Öncelik Sırası -->
+        <section class="bg-gradient-to-r from-purple-900/30 to-pink-900/30 border-2 border-purple-700 rounded-xl p-8 mb-8">
+            <h2 class="text-3xl font-bold mb-6 text-center text-purple-400">
+                <i class="fas fa-tasks mr-2"></i>Öncelik Sırasıyla Yapılacaklar
             </h2>
-            <div class="grid md:grid-cols-2 gap-4">
-                <div class="bg-slate-900 rounded-lg p-4">
-                    <div class="flex items-center gap-2 mb-2">
-                        <i class="fas fa-shield-check text-green-400"></i>
-                        <span class="font-bold text-white">Upload Güvenliği</span>
-                    </div>
-                    <p class="text-sm text-gray-400">Uploads klasöründe PHP dosyası bulunamadı. ✅</p>
-                </div>
-                <div class="bg-slate-900 rounded-lg p-4">
-                    <div class="flex items-center gap-2 mb-2">
-                        <i class="fas fa-shield-check text-green-400"></i>
-                        <span class="font-bold text-white">Resim Güvenliği</span>
-                    </div>
-                    <p class="text-sm text-gray-400">JPG/PNG/GIF içinde gizli PHP kodu yok. ✅</p>
-                </div>
-                <div class="bg-slate-900 rounded-lg p-4">
-                    <div class="flex items-center gap-2 mb-2">
-                        <i class="fas fa-shield-check text-green-400"></i>
-                        <span class="font-bold text-white">Crypto Miner</span>
-                    </div>
-                    <p class="text-sm text-gray-400">Kripto madenci zararlısı tespit edilmedi. ✅</p>
-                </div>
-                <div class="bg-slate-900 rounded-lg p-4">
-                    <div class="flex items-center gap-2 mb-2">
-                        <i class="fas fa-shield-check text-green-400"></i>
-                        <span class="font-bold text-white">Network/Socket</span>
-                    </div>
-                    <p class="text-sm text-gray-400">Reverse shell, socket connection yok. ✅</p>
-                </div>
-                <div class="bg-slate-900 rounded-lg p-4">
-                    <div class="flex items-center gap-2 mb-2">
-                        <i class="fas fa-shield-check text-green-400"></i>
-                        <span class="font-bold text-white">Webshell Pattern</span>
-                    </div>
-                    <p class="text-sm text-gray-400">c99, r57, b374k gibi bilinen shell yok. ✅</p>
-                </div>
-                <div class="bg-slate-900 rounded-lg p-4">
-                    <div class="flex items-center gap-2 mb-2">
-                        <i class="fas fa-shield-check text-green-400"></i>
-                        <span class="font-bold text-white">Deserialization</span>
-                    </div>
-                    <p class="text-sm text-gray-400">unserialize() exploit tespit edilmedi. ✅</p>
-                </div>
-            </div>
-        </section>
 
-        <!-- NORMAL BULGULAR -->
-        <section class="bg-slate-800/50 rounded-xl p-6 mb-8">
-            <h2 class="text-xl font-bold text-blue-400 mb-4">
-                <i class="fas fa-info-circle mr-2"></i>Normal Bulgular (Sorun Değil)
-            </h2>
-            <div class="space-y-3 text-sm">
-                <div class="flex items-start gap-3">
-                    <i class="fas fa-check text-blue-400 mt-1"></i>
-                    <div>
-                        <strong class="text-white">PHP Template Action:</strong>
-                        <code class="bg-slate-900 px-2 py-1 rounded text-xs">public/design/templates/template-action.php</code> -
-                        Normal php://input kullanımı (JSON parse)
-                    </div>
-                </div>
-                <div class="flex items-start gap-3">
-                    <i class="fas fa-check text-blue-400 mt-1"></i>
-                    <div>
-                        <strong class="text-white">Cron Jobs:</strong>
-                        Laravel schedule:run ve acme.sh SSL renewal - Normal sistem görevleri
-                    </div>
-                </div>
-                <div class="flex items-start gap-3">
-                    <i class="fas fa-check text-blue-400 mt-1"></i>
-                    <div>
-                        <strong class="text-white">.user.ini:</strong>
-                        Root dizinde PHP upload limitleri - Normal konfigürasyon
-                    </div>
-                </div>
-                <div class="flex items-start gap-3">
-                    <i class="fas fa-check text-blue-400 mt-1"></i>
-                    <div>
-                        <strong class="text-white">Vendor Dosyaları:</strong>
-                        Gizli PHP dosyaları (.php-cs-fixer.php, .phpstorm.meta.php) - Normal geliştirme araçları
-                    </div>
-                </div>
-                <div class="flex items-start gap-3">
-                    <i class="fas fa-check text-blue-400 mt-1"></i>
-                    <div>
-                        <strong class="text-white">Public PHP Dosyaları:</strong>
-                        opcache-reset.php, clear-cache.php, productfeed.php - Meşru yardımcı script'ler
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ÖNERİLER -->
-        <section class="bg-purple-900/20 border border-purple-800 rounded-xl p-6 mb-8">
-            <h2 class="text-xl font-bold text-purple-400 mb-4">
-                <i class="fas fa-lightbulb mr-2"></i>Güvenlik Önerileri
-            </h2>
             <div class="space-y-4">
-                <div class="bg-slate-900 rounded-lg p-4">
-                    <h3 class="font-bold text-white mb-2">1. Acil Müdahale</h3>
-                    <ul class="space-y-1 text-sm text-gray-300">
-                        <li><i class="fas fa-arrow-right text-purple-400 mr-2"></i>Backdoor dosyalarını derhal silin</li>
-                        <li><i class="fas fa-arrow-right text-purple-400 mr-2"></i>Tüm şifreleri değiştirin (.env, database, admin)</li>
-                        <li><i class="fas fa-arrow-right text-purple-400 mr-2"></i>Access log'ları inceleyin (ne zaman erişilmiş?)</li>
-                    </ul>
-                </div>
-                <div class="bg-slate-900 rounded-lg p-4">
-                    <h3 class="font-bold text-white mb-2">2. Önleme</h3>
-                    <ul class="space-y-1 text-sm text-gray-300">
-                        <li><i class="fas fa-arrow-right text-purple-400 mr-2"></i>Uploads klasörüne .htaccess ekleyin: <code class="bg-slate-800 px-2 py-1 rounded text-xs">php_flag engine off</code></li>
-                        <li><i class="fas fa-arrow-right text-purple-400 mr-2"></i>Public klasörüne index.php dışında PHP yüklemesini engelleyin</li>
-                        <li><i class="fas fa-arrow-right text-purple-400 mr-2"></i>Dosya yükleme kontrollerini sıkılaştırın (whitelist extension)</li>
-                    </ul>
-                </div>
-                <div class="bg-slate-900 rounded-lg p-4">
-                    <h3 class="font-bold text-white mb-2">3. Düzenli Tarama</h3>
-                    <ul class="space-y-1 text-sm text-gray-300">
-                        <li><i class="fas fa-arrow-right text-purple-400 mr-2"></i>Bu taramayı haftada bir tekrarlayın</li>
-                        <li><i class="fas fa-arrow-right text-purple-400 mr-2"></i>Yeni dosya oluşumlarını izleyin</li>
-                        <li><i class="fas fa-arrow-right text-purple-400 mr-2"></i>Git diff ile değişiklikleri gözden geçirin</li>
-                    </ul>
-                </div>
-                <div class="bg-slate-900 rounded-lg p-4">
-                    <h3 class="font-bold text-white mb-2">4. Güncelleme</h3>
-                    <ul class="space-y-1 text-sm text-gray-300">
-                        <li><i class="fas fa-arrow-right text-purple-400 mr-2"></i>PHP, Laravel ve tüm paketleri güncel tutun</li>
-                        <li><i class="fas fa-arrow-right text-purple-400 mr-2"></i>Composer paketlerini düzenli güncelleyin</li>
-                        <li><i class="fas fa-arrow-right text-purple-400 mr-2"></i>Security advisory'leri takip edin</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- DETAYLI TARAMA SONUÇLARI -->
-        <section class="bg-slate-800/50 rounded-xl p-6 mb-8">
-            <h2 class="text-xl font-bold text-white mb-4">
-                <i class="fas fa-list-check mr-2"></i>Detaylı Tarama Sonuçları (50 Kontrol)
-            </h2>
-
-            <!-- Kategori Grid -->
-            <div class="grid md:grid-cols-2 gap-4">
-                <!-- Kategori 1 -->
-                <div class="bg-slate-900 rounded-lg p-4">
-                    <h3 class="font-bold text-red-400 mb-3">
-                        <span class="bg-red-500 text-white w-6 h-6 rounded-full inline-flex items-center justify-center text-xs mr-2">1</span>
-                        Backdoor & Shell (1-5)
-                    </h3>
-                    <div class="space-y-2 text-sm">
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">1.1 Eval+Base64</span>
-                            <span class="text-red-400">2 bulgu ⚠️</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">1.2 Shell komutları</span>
-                            <span class="text-green-400">Temiz ✓</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">1.3 REQUEST+Eval</span>
-                            <span class="text-red-400">3 bulgu ⚠️</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">1.4 Assert</span>
-                            <span class="text-green-400">Temiz ✓</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">1.5 Create function</span>
-                            <span class="text-green-400">Temiz ✓</span>
-                        </div>
+                <div class="bg-slate-900/50 rounded-lg p-4 border-l-4 border-red-500">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-bold text-red-400">1. Debug Mode Kapat</h3>
+                        <span class="bg-red-500/20 text-red-400 px-3 py-1 rounded text-xs">5 Dakika</span>
                     </div>
+                    <code class="block bg-slate-800 px-3 py-2 rounded text-green-400 text-xs">
+APP_DEBUG=false # .env'de değiştir<br>
+php artisan config:clear && php artisan config:cache
+                    </code>
                 </div>
 
-                <!-- Kategori 2 -->
-                <div class="bg-slate-900 rounded-lg p-4">
-                    <h3 class="font-bold text-orange-400 mb-3">
-                        <span class="bg-orange-500 text-white w-6 h-6 rounded-full inline-flex items-center justify-center text-xs mr-2">2</span>
-                        Dosya Manipülasyonu (6-8)
-                    </h3>
-                    <div class="space-y-2 text-sm">
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">2.1 File write+decode</span>
-                            <span class="text-blue-400">1 normal</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">2.2 @copy/@move</span>
-                            <span class="text-red-400">2 bulgu ⚠️</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">2.3 chmod/chown</span>
-                            <span class="text-blue-400">1 normal</span>
-                        </div>
+                <div class="bg-slate-900/50 rounded-lg p-4 border-l-4 border-red-500">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-bold text-red-400">2. CORS Düzelt</h3>
+                        <span class="bg-red-500/20 text-red-400 px-3 py-1 rounded text-xs">15 Dakika</span>
                     </div>
+                    <p class="text-xs text-gray-400">3 dosyada wildcard yerine belirli domainler ekle</p>
                 </div>
 
-                <!-- Kategori 3 -->
-                <div class="bg-slate-900 rounded-lg p-4">
-                    <h3 class="font-bold text-purple-400 mb-3">
-                        <span class="bg-purple-500 text-white w-6 h-6 rounded-full inline-flex items-center justify-center text-xs mr-2">3</span>
-                        Gizli Dosyalar (9-12)
-                    </h3>
-                    <div class="space-y-2 text-sm">
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">3.1 Gizli PHP</span>
-                            <span class="text-blue-400">Vendor dosyaları</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">3.2 Hex isimli</span>
-                            <span class="text-orange-400">1 txt ⚠️</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">3.3 Public'te PHP</span>
-                            <span class="text-red-400">5 dosya ⚠️</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">3.4 Şüpheli TXT</span>
-                            <span class="text-orange-400">1 bulgu ⚠️</span>
-                        </div>
+                <div class="bg-slate-900/50 rounded-lg p-4 border-l-4 border-orange-500">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-bold text-orange-400">3. Public PHP Koru</h3>
+                        <span class="bg-orange-500/20 text-orange-400 px-3 py-1 rounded text-xs">30 Dakika</span>
                     </div>
+                    <p class="text-xs text-gray-400">Artisan command'e çevir veya IP whitelist</p>
                 </div>
 
-                <!-- Kategori 4 -->
-                <div class="bg-slate-900 rounded-lg p-4">
-                    <h3 class="font-bold text-blue-400 mb-3">
-                        <span class="bg-blue-500 text-white w-6 h-6 rounded-full inline-flex items-center justify-center text-xs mr-2">4</span>
-                        Upload Güvenliği (13-15)
-                    </h3>
-                    <div class="space-y-2 text-sm">
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">4.1 Uploads'da PHP</span>
-                            <span class="text-green-400">Temiz ✓</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">4.2 PHP varyantları</span>
-                            <span class="text-green-400">Temiz ✓</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">4.3 Resim içinde PHP</span>
-                            <span class="text-green-400">Temiz ✓</span>
-                        </div>
+                <div class="bg-slate-900/50 rounded-lg p-4 border-l-4 border-yellow-500">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-bold text-yellow-400">4. Backup Dosyaları Sil</h3>
+                        <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded text-xs">2 Dakika</span>
                     </div>
-                </div>
-
-                <!-- Kategori 5-14 devam eder... -->
-                <div class="bg-slate-900 rounded-lg p-4">
-                    <h3 class="font-bold text-pink-400 mb-3">
-                        <span class="bg-pink-500 text-white w-6 h-6 rounded-full inline-flex items-center justify-center text-xs mr-2">5-9</span>
-                        Encoding & Network (16-30)
-                    </h3>
-                    <div class="space-y-2 text-sm">
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">Gzip/Chr/Base64</span>
-                            <span class="text-green-400">Temiz ✓</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">Socket/Remote</span>
-                            <span class="text-green-400">Temiz ✓</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">Cron/Sistem</span>
-                            <span class="text-blue-400">Normal</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">Crypto/Mail</span>
-                            <span class="text-green-400">Temiz ✓</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-slate-900 rounded-lg p-4">
-                    <h3 class="font-bold text-cyan-400 mb-3">
-                        <span class="bg-cyan-500 text-white w-6 h-6 rounded-full inline-flex items-center justify-center text-xs mr-2">10-14</span>
-                        Advanced (31-50) - v2 Yeni
-                    </h3>
-                    <div class="space-y-2 text-sm">
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">Variable function</span>
-                            <span class="text-green-400">Temiz ✓</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">Hex/Octal encoding</span>
-                            <span class="text-red-400">Backdoor'da ⚠️</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">PHP Wrappers</span>
-                            <span class="text-blue-400">1 normal</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-400">Webshell/Config</span>
-                            <span class="text-green-400">Temiz ✓</span>
-                        </div>
-                    </div>
+                    <code class="block bg-slate-800 px-3 py-2 rounded text-green-400 text-xs">
+sudo rm public/assets/js/ai-chat.js.backup<br>
+sudo rm public/readme/2025/12/05/subscription-complete-guide/index.html.backup
+                    </code>
                 </div>
             </div>
         </section>
 
         <!-- Footer -->
-        <footer class="text-center text-gray-500 text-sm pt-8 border-t border-gray-800">
-            <p>
+        <footer class="text-center text-sm text-gray-500 border-t border-slate-700 pt-6">
+            <p class="mb-2">
                 <i class="fas fa-robot mr-1"></i>
-                Bu rapor Claude AI tarafından otomatik oluşturulmuştur.
+                Bu rapor <strong>Claude Code</strong> tarafından otomatik oluşturuldu.
             </p>
-            <p class="mt-2">
-                <i class="fas fa-calendar mr-1"></i> 5 Ocak 2026
-                <span class="mx-2">|</span>
-                <i class="fas fa-shield-virus mr-1"></i> 50 Kontrol Noktası
-                <span class="mx-2">|</span>
-                <span class="text-red-400">2 Kritik Bulgu</span>
+            <p class="text-xs">
+                Güvenlik Rehberi: <a href="https://ixtif.com/readme/2026/01/02/guvenlik-tarama-rehberi/v5/" class="text-blue-400 hover:underline">v5 (90 Kontrol)</a>
             </p>
-            <p class="mt-2 text-xs">
-                Referans: <a href="https://ixtif.com/readme/2026/01/02/guvenlik-tarama-rehberi/v2/" class="text-blue-400 hover:underline">Güvenlik Tarama Rehberi v2</a>
+            <p class="text-xs text-gray-600 mt-2">
+                🤖 Generated with <a href="https://claude.com/claude-code" class="text-purple-400 hover:underline">Claude Code</a><br>
+                Co-Authored-By: Claude Sonnet 4.5 &lt;noreply@anthropic.com&gt;
             </p>
         </footer>
+
     </div>
 </body>
 </html>

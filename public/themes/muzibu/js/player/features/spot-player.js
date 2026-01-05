@@ -381,8 +381,8 @@ window.MuzibuSpotPlayer = (function() {
             state.wasSkipped = false;
             state.spotStartTime = Date.now();
 
-            // Dinleme kaydı başlat
-            await logPlayStart(spot.id);
+            // Dinleme kaydı başlat (background - await KALDIR!)
+            logPlayStart(spot.id); // API'ye log yaz ama BEKLEME! Spot hemen çalsın
 
             // Sayacı sıfırla
             resetCounter();

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spot Ayarları Dinamik Senkronizasyon v2 - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        .badge { @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium; }
+        .badge-blue { @apply bg-blue-500/20 text-blue-300 border border-blue-500/30; }
+        .badge-green { @apply bg-green-500/20 text-green-300 border border-green-500/30; }
+        .badge-purple { @apply bg-purple-500/20 text-purple-300 border border-purple-500/30; }
+        pre { @apply overflow-x-auto; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+
+    <!-- Header -->
+    <header class="relative border-b border-white/10">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/10 to-transparent"></div>
+        <div class="relative max-w-6xl mx-auto px-6 py-8">
+            <div class="flex items-center gap-3 mb-2">
+                <span class="badge badge-blue"><i class="fas fa-sync-alt mr-1.5"></i>Dinamik Senkronizasyon</span>
+                <span class="badge badge-purple"><i class="fas fa-power-off mr-1.5"></i>Global Kapatma</span>
+                <span class="text-gray-500">•</span>
+                <span class="text-gray-500 text-sm">5 Ocak 2026 • v2</span>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">Spot Ayarları Dinamik Senkronizasyon v2</h1>
+            <p class="text-gray-400">Çalma Aralığı, Aktif/Pasif durumu ve Ana Şube Global Kapatma - Otomatik Senkronizasyon</p>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-8 space-y-8">
+
+        <!-- 📝 Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-800 rounded-xl p-6">
+            <div class="flex items-center gap-2 mb-4">
+                <i class="fas fa-book-open text-green-400"></i>
+                <h2 class="text-xl font-semibold text-green-300">Basit Anlatım (Herkes İçin)</h2>
+            </div>
+
+            <div class="space-y-4 text-gray-200">
+                <p class="text-lg font-medium">Şu anda ne sorun var?</p>
+                <ul class="space-y-2 ml-4">
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-times text-red-400 mt-1"></i>
+                        <span>Ana şube "Kaç şarkıda bir anons çalsın?" ayarını değiştiriyor (örn: 10 → 15 şarkı)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-times text-red-400 mt-1"></i>
+                        <span>Ana şube anons sistemini tamamen kapatıyor (spot_enabled = false)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-times text-red-400 mt-1"></i>
+                        <span>Şubeler ve ana şube player'ları eski ayarı kullanmaya devam ediyor</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-times text-red-400 mt-1"></i>
+                        <span>Değişiklik için sayfa yenileme (F5) gerekiyor</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-times text-red-400 mt-1"></i>
+                        <span>10 şube var? 10 yerde F5 basmak gerekiyor!</span>
+                    </li>
+                </ul>
+
+                <p class="text-lg font-medium mt-6">Ne yapacağız?</p>
+                <ul class="space-y-2 ml-4">
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>Ana şube ayarı değiştirdiğinde → Tüm şubeler <strong>otomatik</strong> algılayacak</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>Sayfa yenileme yok! Arka planda sessizce güncellenir</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span><strong>3 dinamik ayar:</strong> Çalma Aralığı, Aktif/Pasif, Global Kapatma</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-400 mt-1"></i>
+                        <span>30 saniyede bir kontrol eder (hafif, server'ı yormaz)</span>
+                    </li>
+                </ul>
+
+                <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-4 mt-4">
+                    <p class="text-blue-200"><strong>Örnek Senaryo 1:</strong></p>
+                    <p class="text-gray-300 mt-2">
+                        Ana şube "10 şarkıda bir" ayarını "15 şarkıda bir" yapar.
+                        30 saniye içinde tüm şubeler yeni ayarı alır.
+                        Kimsenin sayfa yenilemesine gerek kalmaz!
+                    </p>
+                </div>
+
+                <div class="bg-purple-900/30 border border-purple-700 rounded-lg p-4">
+                    <p class="text-purple-200"><strong>Örnek Senaryo 2:</strong></p>
+                    <p class="text-gray-300 mt-2">
+                        Ana şube "Anons Sistemi"ni kapatır (spot_enabled → false).
+                        30 saniye içinde tüm şubelerdeki player'lar otomatik durur.
+                        Şube kendisi açamaz, sadece ana şube kontrol eder!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🎯 Üç Seviyeli Kontrol Sistemi -->
+        <section class="bg-purple-900/20 border border-purple-800 rounded-xl p-6">
+            <div class="flex items-center gap-2 mb-4">
+                <i class="fas fa-layer-group text-purple-400"></i>
+                <h2 class="text-xl font-semibold text-purple-300">Üç Seviyeli Kontrol Sistemi</h2>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-purple-500">
+                    <h3 class="font-semibold text-lg mb-2 text-purple-300">Seviye 1: Ana Şube Global Kontrol (spot_enabled)</h3>
+                    <p class="text-gray-300 mb-3">Tüm sistemi kapatma/açma yetkisi</p>
+                    <ul class="space-y-2 text-sm text-gray-400 ml-4">
+                        <li>✅ <code class="text-amber-400">spot_enabled = true</code> → Sistem açık, şubeler çalabilir</li>
+                        <li>❌ <code class="text-amber-400">spot_enabled = false</code> → Sistem kapalı, <strong>hiçbir şube çalamaz!</strong></li>
+                        <li>🔒 Sadece ana şube değiştirebilir</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-blue-500">
+                    <h3 class="font-semibold text-lg mb-2 text-blue-300">Seviye 2: Şube Lokal Kontrol (spot_is_paused)</h3>
+                    <p class="text-gray-300 mb-3">Her şube kendi player'ını durdurabilir</p>
+                    <ul class="space-y-2 text-sm text-gray-400 ml-4">
+                        <li>✅ <code class="text-amber-400">spot_is_paused = false</code> → Bu şubede çalar (ana şube açıksa)</li>
+                        <li>⏸️ <code class="text-amber-400">spot_is_paused = true</code> → Bu şubede durur (geçici)</li>
+                        <li>🔓 Her şube kendi durumunu değiştirebilir</li>
+                        <li>⚠️ Ana şube kapatırsa → Şube açamaz!</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-green-500">
+                    <h3 class="font-semibold text-lg mb-2 text-green-300">Seviye 3: Çalma Aralığı (spot_songs_between)</h3>
+                    <p class="text-gray-300 mb-3">Kaç şarkıda bir anons çalacak?</p>
+                    <ul class="space-y-2 text-sm text-gray-400 ml-4">
+                        <li>🎵 <code class="text-amber-400">spot_songs_between = 10</code> → Her 10 şarkıda bir</li>
+                        <li>📊 Ana şube değiştirir, tüm şubeler uyar</li>
+                        <li>🔄 Değişince sayaç sıfırlanır</li>
+                    </ul>
+                </div>
+
+                <div class="bg-amber-900/20 border border-amber-700 rounded-lg p-4 mt-4">
+                    <p class="text-amber-200 font-semibold mb-2"><i class="fas fa-info-circle mr-2"></i>Öncelik Mantığı:</p>
+                    <pre class="text-xs text-gray-300 bg-slate-900 p-3 rounded overflow-x-auto"><code>if (!spot_enabled) {
+    // ❌ Ana şube kapattı → HİÇBİR ŞUBE ÇALAMAZ!
+    return SPOT_DISABLED;
+}
+
+if (spot_is_paused) {
+    // ⏸️ Bu şube kendi durdurdu → Bu şubede çalmaz
+    return SPOT_PAUSED;
+}
+
+// ✅ Her şey OK → Normal çalış
+playSpotsEvery(spot_songs_between);</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🔧 Teknik Detaylar -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-xl p-6">
+            <div class="flex items-center gap-2 mb-4">
+                <i class="fas fa-cogs text-blue-400"></i>
+                <h2 class="text-xl font-semibold text-blue-300">Teknik Detaylar (Geliştiriciler İçin)</h2>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Mevcut Sistem -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-3 text-red-300"><i class="fas fa-exclamation-triangle mr-2"></i>Mevcut Sistem (Sorunlu)</h3>
+                    <div class="bg-slate-800/50 rounded-lg p-4 space-y-3">
+                        <div>
+                            <p class="text-gray-400 text-sm mb-2">Player Init (spot-player.js:50-68)</p>
+                            <pre class="text-xs text-gray-300 bg-slate-900 p-3 rounded overflow-x-auto"><code>async function init() {
+    loadCounter();              // localStorage'dan sayaç yükle
+    await fetchSettings();      // API'den ayarları ÇEK (1 kez!)
+}
+
+async function fetchSettings() {
+    const data = await fetch('/api/spot/settings').json();
+    state.songsBetween = data.songs_between || 10;  // ← Bir kez ayarlanıyor!
+    state.enabled = data.enabled;                   // ← Bir kez!
+    state.isPaused = data.spot_is_paused;           // ← Bir kez!
+
+    // ❌ SORUN: Ayarlar değişse bile player tekrar kontrol etmiyor
+}</code></pre>
+                        </div>
+
+                        <div class="bg-red-900/20 border border-red-700 rounded p-3">
+                            <p class="text-red-300 text-sm"><strong>Sorun:</strong> Player init sırasında ayarları 1 kez alıyor, bir daha kontrol etmiyor!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yeni Sistem -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-3 text-green-300"><i class="fas fa-check-circle mr-2"></i>Yeni Sistem (Çözüm)</h3>
+
+                    <div class="space-y-4">
+                        <!-- Adım 1: Database -->
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h4 class="font-semibold mb-2 text-blue-300">1. Database: Settings Version Ekle</h4>
+                            <p class="text-gray-400 text-sm mb-3">Dosya: <code class="text-amber-400">Modules/Muzibu/database/migrations/tenant/YYYY_MM_DD_add_spot_settings_version.php</code></p>
+                            <pre class="text-xs text-gray-300 bg-slate-900 p-3 rounded"><code>Schema::table('muzibu_corporate_accounts', function (Blueprint $table) {
+    $table->unsignedInteger('spot_settings_version')->default(1)
+          ->after('spot_is_paused')
+          ->comment('Ayarlar her değiştiğinde artırılır');
+});</code></pre>
+                        </div>
+
+                        <!-- Adım 2: Controller -->
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h4 class="font-semibold mb-2 text-blue-300">2. Controller: Version'ı Artır (3 Durum İçin)</h4>
+                            <p class="text-gray-400 text-sm mb-3">Dosya: <code class="text-amber-400">Modules/Muzibu/app/Http/Controllers/Front/CorporateFrontController.php:1726</code></p>
+                            <pre class="text-xs text-gray-300 bg-slate-900 p-3 rounded"><code>public function updateSpotSettings(Request $request)
+{
+    // ... (mevcut kod)
+
+    // ✅ YENİ: 3 ayar değişimini de izle
+    $versionUpdated = false;
+
+    if ($request->has('spot_enabled')) {
+        $data['spot_enabled'] = (bool) $request->spot_enabled;
+        $versionUpdated = true;  // Ana şube global kapatma!
+    }
+
+    if ($request->has('spot_songs_between')) {
+        $data['spot_songs_between'] = max(1, min(100, (int) $request->spot_songs_between));
+        $versionUpdated = true;  // Çalma aralığı değişti!
+    }
+
+    // ⚠️ NOT: spot_is_paused şube bazlı, version artırMAZ! (lokal ayar)
+
+    // Version'ı artır
+    if ($versionUpdated) {
+        $data['spot_settings_version'] = DB::raw('spot_settings_version + 1');
+    }
+
+    $account->update($data);
+
+    return response()->json([
+        'success' => true,
+        'settings' => [
+            'spot_enabled' => $account->spot_enabled,
+            'spot_songs_between' => $account->spot_songs_between,
+            'spot_settings_version' => $account->fresh()->spot_settings_version  // ✅ Yeni değer!
+        ]
+    ]);
+}</code></pre>
+                        </div>
+
+                        <!-- Adım 3: API -->
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h4 class="font-semibold mb-2 text-blue-300">3. API: Version Bilgisini Ekle</h4>
+                            <p class="text-gray-400 text-sm mb-3">Dosya: <code class="text-amber-400">Modules/Muzibu/app/Http/Controllers/Api/SpotController.php</code></p>
+                            <pre class="text-xs text-gray-300 bg-slate-900 p-3 rounded"><code>public function settings(Request $request)
+{
+    // ... (mevcut kod)
+
+    // ✅ effectiveEnabled: Ana şube + şube kontrolü
+    $effectiveEnabled = $parentAccount->spot_enabled && !$account->spot_is_paused;
+
+    return response()->json([
+        'enabled' => $effectiveEnabled,                                        // Efektif durum
+        'spot_enabled' => $parentAccount->spot_enabled,                        // ✅ YENİ: Ana şube global
+        'spot_is_paused' => $account->spot_is_paused,                          // Şube lokal
+        'songs_between' => $parentAccount->spot_songs_between ?? 10,
+        'corporate_id' => $parentAccount->id,
+        'branch_id' => $account->id,
+        'spot_settings_version' => $parentAccount->spot_settings_version ?? 1,  // ✅ Version!
+    ]);
+}</code></pre>
+                        </div>
+
+                        <!-- Adım 4: JavaScript -->
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h4 class="font-semibold mb-2 text-blue-300">4. JavaScript: Periyodik Kontrol + 3 Seviye</h4>
+                            <p class="text-gray-400 text-sm mb-3">Dosya: <code class="text-amber-400">public/themes/muzibu/js/player/features/spot-player.js:20-40</code></p>
+                            <pre class="text-xs text-gray-300 bg-slate-900 p-3 rounded"><code>const state = {
+    enabled: false,              // Efektif durum (global && !paused)
+    spotEnabled: true,           // ✅ YENİ: Ana şube global
+    isPaused: false,             // Şube lokal
+    songsBetween: 10,
+    songsPlayed: 0,
+    currentVersion: 1,           // ✅ Version
+    checkInterval: null,         // Interval ID
+};
+
+async function init() {
+    await fetchSettings();
+
+    // ✅ Her 30 saniyede bir ayarları kontrol et
+    state.checkInterval = setInterval(checkSettingsUpdate, 30000);
+}
+
+// ✅ YENİ: Ayarlar değişmiş mi kontrol et
+async function checkSettingsUpdate() {
+    try {
+        const response = await fetch('/api/spot/settings');
+        const data = await response.json();
+
+        // Version farklıysa güncelle!
+        if (data.spot_settings_version !== state.currentVersion) {
+            console.log('🎙️ SpotPlayer: Settings updated! Refreshing...');
+
+            // ✅ 3 seviyeyi güncelle
+            state.songsBetween = data.songs_between || 10;
+            state.spotEnabled = data.spot_enabled;          // ✅ Ana şube global
+            state.isPaused = data.spot_is_paused;           // Şube lokal
+            state.enabled = data.enabled;                   // Efektif (global && !paused)
+            state.currentVersion = data.spot_settings_version;
+
+            // Sayacı sıfırla (yeni aralık için)
+            resetCounter();
+
+            // ✅ UI'ı güncelle (Alpine.js event)
+            window.dispatchEvent(new CustomEvent('spot-settings-updated', {
+                detail: {
+                    songsBetween: state.songsBetween,
+                    spotEnabled: state.spotEnabled,     // ✅ Global durum
+                    isPaused: state.isPaused,           // Lokal durum
+                    enabled: state.enabled              // Efektif durum
+                }
+            }));
+        }
+    } catch (e) {
+        console.error('🎙️ SpotPlayer: Failed to check settings', e);
+    }
+}</code></pre>
+                        </div>
+
+                        <!-- Adım 5: Alpine Component -->
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h4 class="font-semibold mb-2 text-blue-300">5. Alpine.js: UI Senkronizasyonu (3 Seviye)</h4>
+                            <p class="text-gray-400 text-sm mb-3">Dosya: Player footer'daki anons toggle component</p>
+                            <pre class="text-xs text-gray-300 bg-slate-900 p-3 rounded"><code>&lt;div x-data="{
+    spotEnabled: true,       // UI state (efektif durum)
+    globalDisabled: false,   // ✅ YENİ: Ana şube kapattı mı?
+
+    init() {
+        // ✅ YENİ: Spot settings update event'ini dinle
+        window.addEventListener('spot-settings-updated', (e) => {
+            // Ana şube global kapatma kontrolü
+            this.globalDisabled = !e.detail.spotEnabled;
+
+            // Efektif durum (global açık && lokal açık)
+            this.spotEnabled = e.detail.enabled;
+
+            console.log('🎨 UI: Spot settings updated!', {
+                global: e.detail.spotEnabled,
+                paused: e.detail.isPaused,
+                effective: e.detail.enabled
+            });
+        });
+
+        // Başlangıç senkronizasyonu
+        const syncState = () => {
+            if (window.MuzibuSpotPlayer) {
+                this.spotEnabled = window.MuzibuSpotPlayer.isEnabled()
+                                && !window.MuzibuSpotPlayer.isPaused();
+            }
+        };
+        setTimeout(syncState, 500);
+    },
+
+    toggle() {
+        // ✅ Ana şube kapattıysa toggle edemez!
+        if (this.globalDisabled) {
+            console.warn('🚫 Ana şube spot sistemini kapattı!');
+            return;
+        }
+
+        // Optimistic UI
+        this.spotEnabled = !this.spotEnabled;
+
+        // API çağır (spot_is_paused toggle)
+        if (window.MuzibuSpotPlayer) {
+            window.MuzibuSpotPlayer.togglePause().then(result => {
+                if (!result.success) {
+                    this.spotEnabled = !this.spotEnabled;
+                }
+            }).catch(() => {
+                this.spotEnabled = !this.spotEnabled;
+            });
+        }
+    }
+}"&gt;
+    &lt;!-- Anons toggle UI --&gt;
+    &lt;div @click="toggle()" class="flex items-center gap-2 cursor-pointer"
+         :class="globalDisabled && 'opacity-50 cursor-not-allowed'"&gt;
+        &lt;i class="fas text-[10px]"
+           :class="spotEnabled ? 'fa-bullhorn text-white/50' : 'fa-ban text-red-400/80'"&gt;&lt;/i&gt;
+        &lt;span class="text-xs" x-text="spotEnabled ? 'Anonslar aktif' : 'Anonslar durduruldu'"&gt;&lt;/span&gt;
+        &lt;div class="w-2.5 h-2.5 rounded-sm"
+             :class="spotEnabled ? 'bg-green-400/60' : 'bg-red-400/60'"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- ⚠️ Ana şube kapattıysa uyarı --&gt;
+    &lt;div x-show="globalDisabled" class="text-[10px] text-amber-400 mt-1"&gt;
+        &lt;i class="fas fa-lock mr-1"&gt;&lt;/i&gt;Ana şube tarafından kapatıldı
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 📊 Çözüm Karşılaştırması -->
+        <section class="bg-slate-800/30 border border-white/10 rounded-xl p-6">
+            <h2 class="text-xl font-semibold mb-4"><i class="fas fa-balance-scale text-purple-400 mr-2"></i>Çözüm Seçenekleri</h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-700/50">
+                        <tr>
+                            <th class="text-left p-3 border border-white/10">Çözüm</th>
+                            <th class="text-left p-3 border border-white/10">Avantajlar</th>
+                            <th class="text-left p-3 border border-white/10">Dezavantajlar</th>
+                            <th class="text-center p-3 border border-white/10">Öneri</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-green-900/10 border-l-4 border-green-500">
+                            <td class="p-3 border border-white/10 font-semibold">
+                                <span class="badge badge-green">Seçildi</span><br>
+                                Settings Version + Polling
+                            </td>
+                            <td class="p-3 border border-white/10">
+                                • Basit implementasyon<br>
+                                • Ek teknoloji yok<br>
+                                • Hafif (30s polling)<br>
+                                • Laravel cache entegre<br>
+                                • 3 seviye kontrol destekler
+                            </td>
+                            <td class="p-3 border border-white/10">
+                                • Gerçek zamanlı değil (30s gecikme)<br>
+                                • Minimal API yükü
+                            </td>
+                            <td class="p-3 border border-white/10 text-center">
+                                <i class="fas fa-check-circle text-green-400 text-2xl"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 border border-white/10 font-semibold">WebSocket/Pusher</td>
+                            <td class="p-3 border border-white/10">
+                                • Anında güncelleme<br>
+                                • Gerçek zamanlı<br>
+                                • Polling yok
+                            </td>
+                            <td class="p-3 border border-white/10">
+                                • Pusher ücreti<br>
+                                • Server konfigürasyonu<br>
+                                • Karmaşık implementasyon
+                            </td>
+                            <td class="p-3 border border-white/10 text-center">
+                                <i class="fas fa-times-circle text-red-400 text-2xl"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 border border-white/10 font-semibold">Redis Pub/Sub</td>
+                            <td class="p-3 border border-white/10">
+                                • Hafif<br>
+                                • Laravel entegre
+                            </td>
+                            <td class="p-3 border border-white/10">
+                                • Yine polling gerekir<br>
+                                • Settings version'dan farkı yok
+                            </td>
+                            <td class="p-3 border border-white/10 text-center">
+                                <i class="fas fa-meh-blank text-gray-400 text-2xl"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 🎯 Uygulama Adımları -->
+        <section class="bg-slate-800/30 border border-white/10 rounded-xl p-6">
+            <h2 class="text-xl font-semibold mb-4"><i class="fas fa-list-check text-amber-400 mr-2"></i>Uygulama Adımları</h2>
+
+            <div class="space-y-4">
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 font-bold">1</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mb-1">Migration Oluştur ve Çalıştır</h3>
+                        <p class="text-gray-400 text-sm mb-2">Database'e <code class="text-amber-400">spot_settings_version</code> field ekle</p>
+                        <pre class="text-xs text-gray-300 bg-slate-900 p-3 rounded"><code>php artisan make:migration add_spot_settings_version_to_corporate_accounts --path=Modules/Muzibu/database/migrations/tenant
+php artisan tenants:migrate</code></pre>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 font-bold">2</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mb-1">Controller'ı Güncelle (3 Seviye İçin)</h3>
+                        <p class="text-gray-400 text-sm">CorporateFrontController::updateSpotSettings() - Version artırma ekle (spot_enabled + spot_songs_between)</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 font-bold">3</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mb-1">API'ye Version ve Global Durum Ekle</h3>
+                        <p class="text-gray-400 text-sm">SpotController::settings() - Version + spot_enabled bilgisi ekle</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 font-bold">4</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mb-1">JavaScript Polling + 3 Seviye Ekle</h3>
+                        <p class="text-gray-400 text-sm">spot-player.js - checkSettingsUpdate() + spotEnabled/isPaused/enabled state'leri</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 font-bold">5</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mb-1">Alpine Component Güncelle (Global Kontrol)</h3>
+                        <p class="text-gray-400 text-sm">Anons toggle component - globalDisabled kontrolü + event listener</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 font-bold">6</div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mb-1">Test Et (3 Senaryo)</h3>
+                        <ul class="text-gray-400 text-sm space-y-1 ml-4">
+                            <li>• Çalma aralığı değiştir → 30s içinde tüm şubeler güncellenir</li>
+                            <li>• Ana şube sistemi kapat → 30s içinde tüm şubeler durur</li>
+                            <li>• Şube kendini durdur → Sadece o şube durur (diğerleri çalar)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ⚠️ Önemli Notlar -->
+        <section class="bg-amber-900/20 border border-amber-700 rounded-xl p-6">
+            <h2 class="text-xl font-semibold mb-4"><i class="fas fa-exclamation-triangle text-amber-400 mr-2"></i>Önemli Notlar</h2>
+
+            <ul class="space-y-3">
+                <li class="flex items-start gap-3">
+                    <i class="fas fa-clock text-amber-400 mt-1"></i>
+                    <div>
+                        <strong>30 Saniye Gecikme:</strong>
+                        <p class="text-gray-400 text-sm">Bu normal ve kabul edilebilir. Anons sistemi için gerçek zamanlı olması kritik değil.</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="fas fa-memory text-amber-400 mt-1"></i>
+                    <div>
+                        <strong>localStorage Temizleme:</strong>
+                        <p class="text-gray-400 text-sm">Version değişince localStorage'daki sayaç sıfırlanır (yeni aralık için).</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="fas fa-server text-amber-400 mt-1"></i>
+                    <div>
+                        <strong>Server Yükü:</strong>
+                        <p class="text-gray-400 text-sm">30 saniyede 1 API çağrısı = saatte 120 istek = hafif (cache'lenebilir).</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="fas fa-layer-group text-amber-400 mt-1"></i>
+                    <div>
+                        <strong>3 Seviye Kontrol:</strong>
+                        <p class="text-gray-400 text-sm">Global (spot_enabled), Lokal (spot_is_paused), Aralık (spot_songs_between) - Hepsi dinamik!</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="fas fa-lock text-amber-400 mt-1"></i>
+                    <div>
+                        <strong>Version Mantığı:</strong>
+                        <p class="text-gray-400 text-sm">Sadece <code>spot_enabled</code> ve <code>spot_songs_between</code> değişiminde version artar. <code>spot_is_paused</code> lokal olduğu için version artırmaz.</p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 bg-slate-800/30 mt-12">
+        <div class="max-w-6xl mx-auto px-6 py-6 text-center text-gray-500 text-sm">
+            <p>🤖 Generated with <a href="https://claude.com/claude-code" class="text-blue-400 hover:text-blue-300">Claude Code</a></p>
+            <p class="mt-1">Co-Authored-By: Claude Sonnet 4.5</p>
+        </div>
+    </footer>
+
+</body>
+</html>

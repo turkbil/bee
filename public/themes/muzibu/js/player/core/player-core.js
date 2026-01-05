@@ -164,6 +164,7 @@ function muzibuApp() {
         isToggling: false, // 🚫 Debounce flag for togglePlayPause
         currentTime: 0,
         duration: 240,
+        animatedDuration: 0, // 🎬 Animated duration (counter from 0 to duration)
         volume: parseInt(safeStorage.getItem('volume')) || 100, // Load from localStorage, default 100
         isMuted: false,
         currentSong: null,
@@ -497,6 +498,51 @@ function muzibuApp() {
                     self.trackSongEndBeacon(true); // Tab close = skipped
                 }
             });
+
+            // 🎬 DURATION ANIMATION WATCHER: Duration değişince counter animasyonu
+            this.$watch('duration', (newDuration, oldDuration) => {
+                // Sadece duration artarsa animasyon yap (şarkı değişimi sırasında)
+                // Preload sırasında duration manuel set edilir (animasyon yok)
+                if (newDuration > oldDuration && newDuration > 0) {
+                    this.animateDurationCounter(newDuration);
+                } else if (newDuration === 0) {
+                    // Duration 0 olduysa (reset) direkt ata
+                    this.animatedDuration = 0;
+                }
+                // NOT: Duration azalırsa (preload 240→195) animatedDuration'ı dokunma,
+                // preloadLastPlayedSong() içinde manuel set edilir
+            });
+        },
+
+        /**
+         * 🎬 ANIMATE DURATION COUNTER: 0'dan target duration'a smooth sayma
+         * @param {number} targetDuration - Hedef süre (saniye)
+         */
+        animateDurationCounter(targetDuration) {
+            const startTime = performance.now();
+            const startValue = 0;
+            const duration = 800; // 800ms animasyon süresi
+
+            const animate = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Easing: easeOutCubic (başta hızlı, sonda yavaş)
+                const eased = 1 - Math.pow(1 - progress, 3);
+
+                // Sayaç değerini güncelle
+                this.animatedDuration = Math.round(startValue + (targetDuration - startValue) * eased);
+
+                // Animasyon devam ediyorsa
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    // Tam değeri ata (tam olarak target'a ulaşsın)
+                    this.animatedDuration = targetDuration;
+                }
+            };
+
+            requestAnimationFrame(animate);
         },
 
         async loadFeaturedPlaylists() {
@@ -554,6 +600,15 @@ function muzibuApp() {
 
                 const streamData = await streamResponse.json();
 
+                // 🔍 Debug: API response'u logla
+                console.log('🔍 PRELOAD API Response:', {
+                    song_title: song.song_title?.tr || song.song_title?.en || song.song_title,
+                    streamData_song_duration_raw: streamData.song?.duration,
+                    streamData_song_duration_seconds_raw: streamData.song?.duration_seconds,
+                    song_duration_raw: song.duration,
+                    song_duration_seconds_raw: song.duration_seconds
+                });
+
                 // 🚀 URL'i cache'le (HLS instance oluşturmadan)
                 // Play basınca playSongFromQueue bu cache'i kullanarak yeni HLS oluşturur
                 if (!this.streamUrlCache) {
@@ -568,11 +623,66 @@ function muzibuApp() {
                     cached_at: Date.now()
                 });
 
-                // Duration'ı set et (varsa)
+                // 🎯 DURATION PARSER: String formatı (mm:ss) saniyeye çevir
+                const parseDuration = (duration) => {
+                    if (!duration) return null;
+
+                    // Zaten number ise direkt döndür
+                    if (typeof duration === 'number') return duration;
+
+                    // String ise parse et
+                    if (typeof duration === 'string') {
+                        // Format: "mm:ss" veya "hh:mm:ss"
+                        const parts = duration.split(':').map(p => parseInt(p, 10));
+
+                        if (parts.length === 2) {
+                            // mm:ss formatı
+                            return parts[0] * 60 + parts[1];
+                        } else if (parts.length === 3) {
+                            // hh:mm:ss formatı
+                            return parts[0] * 3600 + parts[1] * 60 + parts[2];
+                        }
+                    }
+
+                    return null;
+                };
+
+                // Duration'ı set et (her türlü field'dan çek)
+                let durationValue = null;
+
+                // 1. Önce streamData.song içinden dene
                 if (streamData.song?.duration_seconds) {
-                    this.duration = streamData.song.duration_seconds;
-                } else if (song.duration_seconds) {
-                    this.duration = song.duration_seconds;
+                    durationValue = parseDuration(streamData.song.duration_seconds);
+                } else if (streamData.song?.duration) {
+                    durationValue = parseDuration(streamData.song.duration);
+                }
+
+                // 2. Yoksa song nesnesinden dene
+                if (!durationValue && song.duration_seconds) {
+                    durationValue = parseDuration(song.duration_seconds);
+                } else if (!durationValue && song.duration) {
+                    durationValue = parseDuration(song.duration);
+                }
+
+                // 3. Duration set et (Alpine.js reactivity için $nextTick)
+                if (durationValue) {
+                    this.duration = durationValue;
+                    this.animatedDuration = durationValue; // 🎬 Preload'da animasyon yok, direkt göster
+
+                    // Alpine.js reactivity: Zorla DOM güncellemesi
+                    if (this.$nextTick) {
+                        this.$nextTick(() => {
+                            console.log('🎬 PRELOAD Duration set (after nextTick):', this.duration, this.animatedDuration);
+                        });
+                    } else {
+                        console.log('🎬 PRELOAD Duration set:', this.duration, this.animatedDuration);
+                    }
+                } else {
+                    console.warn('⚠️ PRELOAD: Duration bilgisi YOK!', {
+                        song: song.song_title?.tr || song.song_title?.en || song.song_title,
+                        streamData_song: streamData.song,
+                        song_obj: song
+                    });
                 }
 
                 // 🎨 Merge API song data (color_hash dahil) ve renkleri güncelle
@@ -580,6 +690,9 @@ function muzibuApp() {
                     this.currentSong = { ...this.currentSong, ...streamData.song };
                 }
                 this.updatePlayerColors();
+
+                // 🔍 Debug: Merge sonrası duration kontrolü
+                console.log('🔍 After merge - duration:', this.duration, 'animatedDuration:', this.animatedDuration, 'currentSong:', this.currentSong?.song_title?.tr || this.currentSong?.song_title?.en);
 
                 this.isPlaying = false;
                 this.isSongLoading = false;

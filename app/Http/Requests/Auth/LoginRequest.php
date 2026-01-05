@@ -43,7 +43,46 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        // 🔍 LOGIN DEBUG: Login denemesini logla
+        \Log::info('🔐 LOGIN ATTEMPT', [
+            'email' => $this->email,
+            'tenant_id' => tenant()->id ?? null,
+            'ip' => $this->ip(),
+        ]);
+
+        // 🔐 MD5 LEGACY SUPPORT: SADECE Tenant 1001 (Muzibu) için - Eski siteden gelen kullanıcılar
+        $user = User::where('email', $this->email)->first();
+
+        // Önce standart bcrypt ile dene
+        $attemptSuccess = Auth::attempt($this->only('email', 'password'), $this->boolean('remember'));
+
+        // ⚠️ SADECE TENANT 1001 (Muzibu) için MD5 desteği
+        if (!$attemptSuccess && $user && tenant() && tenant()->id === 1001) {
+            // MD5 hash kontrolü (Muzibu eski sistem)
+            // MD5 hash: 32 karakter hex string
+            if (strlen($user->password) === 32 && ctype_xdigit($user->password)) {
+                // MD5 hash ile kontrol et
+                if (md5($this->password) === $user->password) {
+                    // ✅ MD5 şifre match etti!
+                    // Şimdi bcrypt'e güncelle ve login yap
+                    $user->password = \Hash::make($this->password);
+                    $user->save();
+
+                    \Log::info('🔐 TENANT 1001: MD5 → BCrypt Migration', [
+                        'user_id' => $user->id,
+                        'email' => $user->email,
+                        'tenant_id' => tenant()->id,
+                    ]);
+
+                    // Manuel login
+                    Auth::login($user, $this->boolean('remember'));
+                    $attemptSuccess = true;
+                }
+            }
+        }
+
+        // Hala başarısız ise hata fırlat
+        if (!$attemptSuccess) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -52,7 +91,6 @@ class LoginRequest extends FormRequest
         }
 
         // Kullanıcı pasif ise giriş yapmasına izin verme
-        $user = User::where('email', $this->email)->first();
         if ($user && !$user->is_active) {
             Auth::logout();
 

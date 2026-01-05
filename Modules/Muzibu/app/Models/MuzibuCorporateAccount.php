@@ -37,6 +37,7 @@ class MuzibuCorporateAccount extends Model
         'spot_songs_between',
         'spot_current_index',
         'spot_is_paused',
+        'spot_settings_version', // ✅ VERSION TRACKING
     ];
 
     protected $casts = [
@@ -46,7 +47,28 @@ class MuzibuCorporateAccount extends Model
         'spot_songs_between' => 'integer',
         'spot_current_index' => 'integer',
         'spot_is_paused' => 'boolean',
+        'spot_settings_version' => 'integer', // ✅ VERSION TRACKING
     ];
+
+    /**
+     * Model booting
+     * Ana şube oluşturulurken default spot değerleri ata
+     * Alt şubeler NULL kalır (parent'tan inherit eder)
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (self $account) {
+            // Ana şube oluşturuluyorsa (parent_id NULL) → Default değerler ata
+            if ($account->parent_id === null) {
+                $account->spot_enabled = $account->spot_enabled ?? false;
+                $account->spot_songs_between = $account->spot_songs_between ?? 10;
+                $account->spot_settings_version = $account->spot_settings_version ?? 1;
+                $account->spot_is_paused = $account->spot_is_paused ?? false;
+            }
+            // Alt şube oluşturuluyorsa (parent_id var) → NULL kalsın
+            // (Migration'da default(null) zaten var)
+        });
+    }
 
     /**
      * Kurum sahibi (ana hesap)

@@ -12,7 +12,7 @@ class PaymentDetailComponent extends Component
 
     public function mount($id)
     {
-        $this->payment = Payment::with(['paymentMethod'])->findOrFail($id);
+        $this->payment = Payment::with(['paymentMethod', 'payable'])->findOrFail($id);
         $this->notes = $this->payment->notes ?? '';
     }
 

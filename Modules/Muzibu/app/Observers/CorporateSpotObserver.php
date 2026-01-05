@@ -4,6 +4,7 @@ namespace Modules\Muzibu\App\Observers;
 
 use Modules\Muzibu\App\Models\CorporateSpot;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -11,15 +12,30 @@ use Illuminate\Support\Facades\Log;
  *
  * Model lifecycle event'lerini yönetir.
  * Activity logging ve cache temizleme işlemlerini otomatikleştirir.
+ * Spot değişikliklerinde parent account'un spot_settings_version'ını artırır.
  */
 class CorporateSpotObserver
 {
+    /**
+     * İzlenecek field'ler (değişirse version artırılır)
+     */
+    protected array $trackedFields = [
+        'title',
+        'starts_at',
+        'ends_at',
+        'is_enabled',
+        'is_archived',
+        'position',
+    ];
     /**
      * Handle the CorporateSpot "created" event.
      */
     public function created(CorporateSpot $spot): void
     {
         $this->clearSpotCaches($spot->corporate_account_id);
+
+        // ✅ YENİ: Version artır (yeni anons eklendi)
+        $this->incrementVersion($spot);
 
         if (function_exists('log_activity')) {
             log_activity($spot, 'oluşturuldu');
@@ -54,8 +70,16 @@ class CorporateSpotObserver
     {
         $this->clearSpotCaches($spot->corporate_account_id, $spot->id);
 
+        // ✅ YENİ: İzlenen field'lerden biri değiştiyse version artır
+        $changes = $spot->getChanges();
+        foreach ($this->trackedFields as $field) {
+            if (array_key_exists($field, $changes)) {
+                $this->incrementVersion($spot);
+                break; // Bir field yeter
+            }
+        }
+
         if (function_exists('log_activity')) {
-            $changes = $spot->getChanges();
             unset($changes['updated_at']);
 
             if (!empty($changes)) {
@@ -134,6 +158,9 @@ class CorporateSpotObserver
     {
         $this->clearSpotCaches($spot->corporate_account_id, $spot->id);
 
+        // ✅ YENİ: Version artır (anons silindi)
+        $this->incrementVersion($spot);
+
         if (function_exists('log_activity')) {
             log_activity($spot, 'silindi', null, $spot->title);
         }
@@ -168,6 +195,41 @@ class CorporateSpotObserver
 
         if (class_exists('\Spatie\ResponseCache\Facades\ResponseCache')) {
             \Spatie\ResponseCache\Facades\ResponseCache::clear();
+        }
+    }
+
+    /**
+     * Parent account'un spot_settings_version'ını artır
+     * Bu method spot değişikliklerinde (create/update/delete) çağrılır
+     */
+    protected function incrementVersion(CorporateSpot $spot): void
+    {
+        try {
+            $corporateAccountId = $spot->corporate_account_id;
+
+            if (!$corporateAccountId) {
+                return;
+            }
+
+            // Version'ı artır (atomic operation)
+            DB::table('muzibu_corporate_accounts')
+                ->where('id', $corporateAccountId)
+                ->update([
+                    'spot_settings_version' => DB::raw('spot_settings_version + 1'),
+                    'updated_at' => now(),
+                ]);
+
+            Log::info('🎙️ SpotObserver: Version incremented', [
+                'corporate_account_id' => $corporateAccountId,
+                'spot_id' => $spot->id,
+                'spot_title' => $spot->title,
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('🎙️ SpotObserver: Failed to increment version', [
+                'error' => $e->getMessage(),
+                'spot_id' => $spot->id ?? null,
+            ]);
         }
     }
 }

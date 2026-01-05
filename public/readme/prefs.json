@@ -1,0 +1,19 @@
+{
+    "favorites": [
+        "context-based-infinite-queue",
+        "multi-tenant-federation-architecture",
+        "suistimal-tespit-gelistirme",
+        "guvenlik-tarama-rehberi",
+        "root-ownership-fixer",
+        "sunucu-tasima-checklist"
+    ],
+    "hidden": [
+        "ixtif-performans-analiz",
+        "ixtif-performans-fix",
+        "hero-slider-tasarim",
+        "ixtif-performans-analizi",
+        "transpalet-sorunu",
+        "webshell-attack-analysis",
+        "guvenlik-sifre-degisikligi-raporu"
+    ]
+}

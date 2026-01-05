@@ -19,6 +19,8 @@ return [
     'except' => [
         'telescope*',
         'horizon*',
+        'payment/callback/*', // PayTR callback - must return plain "OK"
+        'api/*', // API endpoints - no debug output
     ],
 
     /*

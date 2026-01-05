@@ -1734,13 +1734,18 @@ class CorporateFrontController extends Controller
      */
     public function updateSpotSettings(Request $request)
     {
+        \Log::info('🎙️ updateSpotSettings CALLED', ['user_id' => auth()->id(), 'data' => $request->all()]);
+
         $user = auth()->user();
 
         $account = MuzibuCorporateAccount::where('user_id', $user->id)
             ->whereNull('parent_id')
             ->first();
 
+        \Log::info('🎙️ Account found?', ['account_id' => $account?->id ?? 'NULL']);
+
         if (!$account) {
+            \Log::warning('🎙️ Account NOT FOUND for user', ['user_id' => $user->id]);
             return response()->json([
                 'success' => false,
                 'message' => 'Yetkiniz yok.'
@@ -1757,19 +1762,20 @@ class CorporateFrontController extends Controller
             $data['spot_songs_between'] = max(1, min(100, (int) $request->spot_songs_between));
         }
 
-        // ✅ YENİ: Ayar değişiyorsa version artır
-        if ($request->has('spot_enabled') || $request->has('spot_songs_between')) {
-            $data['spot_settings_version'] = DB::raw('spot_settings_version + 1');
-        }
-
         // Songs played - session'da sakla
         if ($request->has('songs_played')) {
             $songsPlayed = max(0, min(100, (int) $request->songs_played));
             session(['spot_songs_played_' . $account->id => $songsPlayed]);
         }
 
+        // Update data
         if (!empty($data)) {
             $account->update($data);
+        }
+
+        // ✅ Version artır (ayrı işlem - DB::raw() mass assignment ile çalışmıyor)
+        if ($request->has('spot_enabled') || $request->has('spot_songs_between')) {
+            $account->increment('spot_settings_version');
         }
 
         $songsPlayed = session('spot_songs_played_' . $account->id, 0);

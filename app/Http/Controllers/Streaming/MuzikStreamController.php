@@ -35,16 +35,6 @@ class MuzikStreamController extends Controller
      */
     public function getEncryptionKey(string $songHash, Request $request)
     {
-        // CORS preflight (OPTIONS request)
-        if ($request->isMethod('options')) {
-            return response('', 200, [
-                'Access-Control-Allow-Origin' => '*',
-                'Access-Control-Allow-Methods' => 'GET, OPTIONS',
-                'Access-Control-Allow-Headers' => 'Content-Type, Range',
-                'Access-Control-Max-Age' => '86400',
-            ]);
-        }
-
         try {
             // TODO: Token validation + rate limiting ekle
             // TODO: User authentication kontrol et
@@ -67,10 +57,6 @@ class MuzikStreamController extends Controller
                 'Content-Length' => strlen($keyData),
                 'Cache-Control' => 'no-store, no-cache, must-revalidate',
                 'Pragma' => 'no-cache',
-                'Access-Control-Allow-Origin' => '*',
-                'Access-Control-Allow-Methods' => 'GET, OPTIONS',
-                'Access-Control-Allow-Headers' => 'Content-Type, Range',
-                'Access-Control-Expose-Headers' => 'Content-Length',
             ]);
 
         } catch (\Exception $e) {
@@ -92,16 +78,6 @@ class MuzikStreamController extends Controller
      */
     public function streamFile(string $songHash, string $filename, Request $request)
     {
-        // CORS preflight (OPTIONS request)
-        if ($request->isMethod('options')) {
-            return response('', 200, [
-                'Access-Control-Allow-Origin' => '*',
-                'Access-Control-Allow-Methods' => 'GET, OPTIONS',
-                'Access-Control-Allow-Headers' => 'Content-Type, Range',
-                'Access-Control-Max-Age' => '86400',
-            ]);
-        }
-
         try {
             // 🎯 SUBSCRIPTION ACCESS CHECK (Phase 5)
             // Access kontrolü log amaçlı (subscription_required kontrolü API'de yapılıyor)
@@ -210,7 +186,6 @@ class MuzikStreamController extends Controller
         return response($content, 200, [
             'Content-Type' => 'application/vnd.apple.mpegurl',
             'Cache-Control' => 'no-cache, must-revalidate', // Cache bypass (kalite güncellemeleri için)
-            'Access-Control-Allow-Origin' => '*',
         ]);
     }
 
@@ -234,7 +209,6 @@ class MuzikStreamController extends Controller
             'Content-Length' => $fileSize,
             'Cache-Control' => 'no-cache, must-revalidate', // Cache bypass (kalite güncellemeleri için)
             'Accept-Ranges' => 'bytes',
-            'Access-Control-Allow-Origin' => '*',
         ]);
     }
 

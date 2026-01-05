@@ -15,20 +15,24 @@ return [
     |
     */
 
-    // Note: HLS endpoints moved to /hls/* path (not /api/*) to avoid CORS middleware conflict
-    // Laravel CORS with supports_credentials=true adds Access-Control-Allow-Credentials: true
-    // This conflicts with Access-Control-Allow-Origin: * - browsers reject this combination
-    // HLS routes now handle CORS directly in controller without middleware interference
-    'paths' => ['api/*', 'sanctum/csrf-cookie', 'storage/*'],
+    // CORS middleware artık domains tablosundan spesifik domain listesi kullanıyor
+    // Wildcard (*) yerine gerçek domain listesi kullanıldığı için
+    // supports_credentials=true ile uyumlu hale geldi
+    'paths' => [
+        'api/*',
+        'sanctum/csrf-cookie',
+        'storage/*',
+        'stream/*',  // HLS streaming endpoints
+        'hls/*',     // Alternative HLS path
+        'admin/ai/profile/generate-story-stream',  // AI streaming endpoint
+    ],
 
     'allowed_methods' => ['*'],
 
+    // Wildcard - tüm tenant domain'leri için geçerli
     'allowed_origins' => ['*'],
 
-    'allowed_origins_patterns' => [
-        // Dinamik: Tüm tenant domain'lerini kabul et (supports_credentials=true için gerekli)
-        '/^https?:\/\/(www\.)?[a-zA-Z0-9\-]+\.(com|com\.tr|net|org)(:\d+)?$/',
-    ],
+    'allowed_origins_patterns' => [],
 
     'allowed_headers' => ['*'],
 

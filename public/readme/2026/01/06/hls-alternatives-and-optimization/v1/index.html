@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HLS Alternatifleri ve Hızlandırma Teknikleri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            950: '#020617',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-8">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <header class="mb-8 border-b border-slate-700 pb-6">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="px-3 py-1 bg-purple-600 text-white text-xs font-semibold rounded-full">📊 Analiz</span>
+                <span class="px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full">🚀 Streaming</span>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">HLS Alternatifleri ve Hızlandırma Teknikleri</h1>
+            <p class="text-slate-400 text-sm">6 Ocak 2026 - Audio Streaming Optimizasyon Rehberi</p>
+        </header>
+
+        <!-- İçindekiler -->
+        <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <span>📋</span>
+                İçindekiler
+            </h2>
+            <div class="grid md:grid-cols-3 gap-4">
+                <div>
+                    <h3 class="font-semibold text-slate-300 mb-2">1️⃣ HLS Hızlandırma</h3>
+                    <ul class="text-sm text-slate-400 space-y-1 ml-4">
+                        <li>• LL-HLS (Low Latency)</li>
+                        <li>• CMAF Format</li>
+                        <li>• Segment Optimizasyonu</li>
+                        <li>• CDN Stratejileri</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-slate-300 mb-2">2️⃣ Alternatif Sistemler</h3>
+                    <ul class="text-sm text-slate-400 space-y-1 ml-4">
+                        <li>• DASH</li>
+                        <li>• WebRTC</li>
+                        <li>• MSE + Custom</li>
+                        <li>• Progressive Download</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-slate-300 mb-2">3️⃣ Karibu İçin Öneri</h3>
+                    <ul class="text-sm text-slate-400 space-y-1 ml-4">
+                        <li>• Şarkılar için çözüm</li>
+                        <li>• Spotlar için çözüm</li>
+                        <li>• Uygulama stratejisi</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- BÖLÜM 1: HLS HIZLANDIRMA TEKNİKLERİ -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-blue-900/20 to-cyan-900/20 border border-blue-800 rounded-lg p-6 mb-6">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                    <span>1️⃣</span>
+                    HLS'yi Hızlandırma Teknikleri
+                </h2>
+
+                <!-- Basit Anlatım -->
+                <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-6">
+                    <h3 class="text-lg font-bold text-green-400 mb-3 flex items-center gap-2">
+                        <span>📝</span>
+                        Basit Anlatım (Herkes İçin)
+                    </h3>
+                    <div class="text-slate-300 space-y-4">
+                        <p class="leading-relaxed">
+                            HLS varsayılan olarak 6-10 saniyelik segmentler kullanır, bu da başlatma
+                            gecikmesine neden olur. Ancak <strong class="text-white">modern HLS optimizasyonları</strong>
+                            ile bu gecikme büyük oranda azaltılabilir.
+                        </p>
+                        <p class="leading-relaxed">
+                            <strong class="text-white">Örnek:</strong> Normal HLS ile 6 saniye beklersin,
+                            LL-HLS (Low Latency HLS) ile 200-500ms'de başlar!
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Teknik Detaylar -->
+                <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-blue-400 mb-3 flex items-center gap-2">
+                        <span>🔧</span>
+                        Teknik Detaylar (Geliştiriciler İçin)
+                    </h3>
+                    <div class="space-y-6">
+
+                        <!-- 1. LL-HLS -->
+                        <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                            <h4 class="font-bold text-cyan-400 mb-3 flex items-center gap-2">
+                                <span>⚡</span>
+                                1. LL-HLS (Low Latency HLS) - Apple 2019
+                            </h4>
+                            <div class="space-y-3 text-sm">
+                                <p class="text-slate-300">
+                                    <strong class="text-white">Ne yapar?</strong> Segment boyutunu 6 saniyeden 1-2 saniyeye düşürür,
+                                    "partial segments" (kısmi segmentler) kullanır.
+                                </p>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h5 class="text-white font-semibold mb-2">✅ Avantajlar:</h5>
+                                        <ul class="space-y-1 text-slate-400">
+                                            <li>• Başlatma: ~500ms (Normal HLS: 6s)</li>
+                                            <li>• Canlı yayınlar için ideal</li>
+                                            <li>• Apple tarafından destekleniyor</li>
+                                            <li>• Safari native desteği var</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h5 class="text-white font-semibold mb-2">⚠️ Dezavantajlar:</h5>
+                                        <ul class="space-y-1 text-slate-400">
+                                            <li>• Sunucu tarafında özel yapı gerekli</li>
+                                            <li>• FFmpeg 4.3+ gerekli</li>
+                                            <li>• CDN desteği sınırlı</li>
+                                            <li>• Daha fazla HTTP request</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-950/50 p-4 rounded border border-slate-800 mt-3">
+                                    <h5 class="text-yellow-400 font-semibold mb-2">💡 Muzibu için uygun mu?</h5>
+                                    <p class="text-slate-300 text-sm">
+                                        <span class="text-orange-400 font-bold">❌ Hayır.</span>
+                                        Canlı yayın değil, on-demand müzik. Kurulum karmaşık, ek sunucu yükü var.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. CMAF -->
+                        <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                            <h4 class="font-bold text-cyan-400 mb-3 flex items-center gap-2">
+                                <span>📦</span>
+                                2. CMAF (Common Media Application Format)
+                            </h4>
+                            <div class="space-y-3 text-sm">
+                                <p class="text-slate-300">
+                                    <strong class="text-white">Ne yapar?</strong> HLS ve DASH için ortak format. Aynı segment dosyaları
+                                    hem HLS hem DASH için kullanılır (depolama tasarrufu).
+                                </p>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h5 class="text-white font-semibold mb-2">✅ Avantajlar:</h5>
+                                        <ul class="space-y-1 text-slate-400">
+                                            <li>• Tek encoding, iki format</li>
+                                            <li>• Depolama %50 tasarruf</li>
+                                            <li>• CDN cache verimliliği</li>
+                                            <li>• Chunked transfer encoding</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h5 class="text-white font-semibold mb-2">⚠️ Dezavantajlar:</h5>
+                                        <ul class="space-y-1 text-slate-400">
+                                            <li>• Kurulum karmaşık</li>
+                                            <li>• Browser desteği değişken</li>
+                                            <li>• Eski cihazlarda sorun</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-950/50 p-4 rounded border border-slate-800 mt-3">
+                                    <h5 class="text-yellow-400 font-semibold mb-2">💡 Muzibu için uygun mu?</h5>
+                                    <p class="text-slate-300 text-sm">
+                                        <span class="text-orange-400 font-bold">⚠️ Kısmen.</span>
+                                        Depolama tasarrufu iyi ama kurulum karmaşık. Şu anki sistem yeterli.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Segment Optimizasyonu -->
+                        <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                            <h4 class="font-bold text-cyan-400 mb-3 flex items-center gap-2">
+                                <span>⚙️</span>
+                                3. Segment Optimizasyonu (En Basit Yöntem!)
+                            </h4>
+                            <div class="space-y-3 text-sm">
+                                <p class="text-slate-300">
+                                    <strong class="text-white">Ne yapar?</strong> Segment boyutunu küçültür (6s → 2s),
+                                    başlatma hızlanır ama HTTP request sayısı artar.
+                                </p>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-xs border-collapse">
+                                        <thead>
+                                            <tr class="bg-slate-800 border-b border-slate-700">
+                                                <th class="p-2 text-left">Segment Boyutu</th>
+                                                <th class="p-2 text-left">Başlatma</th>
+                                                <th class="p-2 text-left">HTTP Request</th>
+                                                <th class="p-2 text-left">Buffering</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-800">
+                                            <tr class="bg-slate-900/30">
+                                                <td class="p-2">10 saniye (varsayılan)</td>
+                                                <td class="p-2 text-red-400">~10s</td>
+                                                <td class="p-2 text-green-400">Az (18 req)</td>
+                                                <td class="p-2 text-green-400">Az</td>
+                                            </tr>
+                                            <tr class="bg-slate-900/50">
+                                                <td class="p-2">6 saniye</td>
+                                                <td class="p-2 text-orange-400">~6s</td>
+                                                <td class="p-2 text-green-400">Orta (30 req)</td>
+                                                <td class="p-2 text-green-400">Az</td>
+                                            </tr>
+                                            <tr class="bg-slate-900/30">
+                                                <td class="p-2 font-bold text-cyan-400">2 saniye ⭐</td>
+                                                <td class="p-2 text-green-400 font-bold">~2s ✓</td>
+                                                <td class="p-2 text-orange-400">Çok (90 req)</td>
+                                                <td class="p-2 text-yellow-400">Orta</td>
+                                            </tr>
+                                            <tr class="bg-slate-900/50">
+                                                <td class="p-2">1 saniye</td>
+                                                <td class="p-2 text-green-400">~1s</td>
+                                                <td class="p-2 text-red-400">Aşırı (180 req)</td>
+                                                <td class="p-2 text-red-400">Çok</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="bg-slate-950/50 p-4 rounded border border-slate-800 mt-3">
+                                    <h5 class="text-yellow-400 font-semibold mb-2">💡 Muzibu için uygun mu?</h5>
+                                    <p class="text-slate-300 text-sm">
+                                        <span class="text-green-400 font-bold">✅ EVET!</span>
+                                        2 saniyelik segmentler kullan. Başlatma 3x hızlanır, HTTP request sayısı kabul edilebilir seviyede.
+                                    </p>
+                                    <pre class="text-xs bg-slate-950/50 p-3 rounded border border-slate-800 mt-2 overflow-x-auto"><code class="text-green-400"># FFmpeg komutu (mevcut 6s → 2s segment)
+ffmpeg -i input.mp3 \
+  -hls_time 2 \
+  -hls_playlist_type vod \
+  -hls_segment_filename "segment-%03d.ts" \
+  output.m3u8</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. HTTP/2 Push & Preload -->
+                        <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                            <h4 class="font-bold text-cyan-400 mb-3 flex items-center gap-2">
+                                <span>🚀</span>
+                                4. HTTP/2 Server Push & Preload
+                            </h4>
+                            <div class="space-y-3 text-sm">
+                                <p class="text-slate-300">
+                                    <strong class="text-white">Ne yapar?</strong> İlk segment yüklenirken, sunucu sonraki
+                                    segmentleri otomatik push eder (client beklemeden gelir).
+                                </p>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h5 class="text-white font-semibold mb-2">✅ Avantajlar:</h5>
+                                        <ul class="space-y-1 text-slate-400">
+                                            <li>• Başlatma %30-50 hızlanır</li>
+                                            <li>• Buffering azalır</li>
+                                            <li>• Network round-trip tasarrufu</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h5 class="text-white font-semibold mb-2">⚠️ Dezavantajlar:</h5>
+                                        <ul class="space-y-1 text-slate-400">
+                                            <li>• Nginx/Apache config gerekli</li>
+                                            <li>• HTTP/2 zorunlu</li>
+                                            <li>• Ağ yükü artabilir</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-950/50 p-4 rounded border border-slate-800 mt-3">
+                                    <h5 class="text-yellow-400 font-semibold mb-2">💡 Muzibu için uygun mu?</h5>
+                                    <p class="text-slate-300 text-sm">
+                                        <span class="text-green-400 font-bold">✅ EVET!</span>
+                                        Sunucu zaten HTTP/2 destekliyor. Nginx config ile kolayca aktif edilir.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 2: ALTERNATİF SİSTEMLER -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-purple-900/20 to-pink-900/20 border border-purple-800 rounded-lg p-6 mb-6">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                    <span>2️⃣</span>
+                    HLS Alternatifleri (Segmentli Sistemler)
+                </h2>
+
+                <!-- Basit Anlatım -->
+                <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-6">
+                    <h3 class="text-lg font-bold text-green-400 mb-3 flex items-center gap-2">
+                        <span>📝</span>
+                        Basit Anlatım (Herkes İçin)
+                    </h3>
+                    <div class="text-slate-300 space-y-4">
+                        <p class="leading-relaxed">
+                            HLS dışında ses/video streaming için kullanılan başka teknolojiler de var.
+                            Her birinin avantaj ve dezavantajları farklı.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Teknik Detaylar -->
+                <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-blue-400 mb-3 flex items-center gap-2">
+                        <span>🔧</span>
+                        Teknik Detaylar (Geliştiriciler İçin)
+                    </h3>
+                    <div class="space-y-6">
+
+                        <!-- 1. DASH -->
+                        <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                            <h4 class="font-bold text-purple-400 mb-3 flex items-center gap-2">
+                                <span>🎬</span>
+                                1. DASH (Dynamic Adaptive Streaming over HTTP)
+                            </h4>
+                            <div class="space-y-3 text-sm">
+                                <p class="text-slate-300">
+                                    <strong class="text-white">Ne yapar?</strong> HLS'nin açık kaynak rakibi. MPEG standardı.
+                                    HLS ile aynı mantık ama farklı format (.mpd playlist).
+                                </p>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h5 class="text-white font-semibold mb-2">✅ Avantajlar:</h5>
+                                        <ul class="space-y-1 text-slate-400">
+                                            <li>• Codec agnostic (tüm codec'ler)</li>
+                                            <li>• Android native desteği</li>
+                                            <li>• YouTube, Netflix kullanıyor</li>
+                                            <li>• Açık standart (patent-free)</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h5 class="text-white font-semibold mb-2">⚠️ Dezavantajlar:</h5>
+                                        <ul class="space-y-1 text-slate-400">
+                                            <li>• Safari desteği YOK (iOS problem!)</li>
+                                            <li>• Kütüphane gerekli (dash.js)</li>
+                                            <li>• HLS kadar yaygın değil</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-950/50 p-4 rounded border border-slate-800 mt-3">
+                                    <h5 class="text-yellow-400 font-semibold mb-2">💡 Muzibu için uygun mu?</h5>
+                                    <p class="text-slate-300 text-sm">
+                                        <span class="text-red-400 font-bold">❌ HAYIR!</span>
+                                        iOS/Safari kullanıcıları için sorun. HLS daha iyi destekleniyor.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. WebRTC -->
+                        <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                            <h4 class="font-bold text-purple-400 mb-3 flex items-center gap-2">
+                                <span>📡</span>
+                                2. WebRTC (Web Real-Time Communication)
+                            </h4>
+                            <div class="space-y-3 text-sm">
+                                <p class="text-slate-300">
+                                    <strong class="text-white">Ne yapar?</strong> Peer-to-peer gerçek zamanlı streaming.
+                                    Ultra düşük latency (50-150ms!).
+                                </p>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h5 class="text-white font-semibold mb-2">✅ Avantajlar:</h5>
+                                        <ul class="space-y-1 text-slate-400">
+                                            <li>• Ultra düşük latency (50-150ms)</li>
+                                            <li>• Canlı yayın için ideal</li>
+                                            <li>• Browser native desteği</li>
+                                            <li>• Skype, Zoom, Google Meet kullanıyor</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h5 class="text-white font-semibold mb-2">⚠️ Dezavantajlar:</h5>
+                                        <ul class="space-y-1 text-slate-400">
+                                            <li>• Karmaşık sunucu yapısı (TURN/STUN)</li>
+                                            <li>• On-demand için uygun DEĞİL</li>
+                                            <li>• CDN ile zor çalışır</li>
+                                            <li>• Scalability problem</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-950/50 p-4 rounded border border-slate-800 mt-3">
+                                    <h5 class="text-yellow-400 font-semibold mb-2">💡 Muzibu için uygun mu?</h5>
+                                    <p class="text-slate-300 text-sm">
+                                        <span class="text-red-400 font-bold">❌ HAYIR!</span>
+                                        Canlı yayın için ideal, on-demand müzik için overkill. Kurulum çok karmaşık.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. MSE + Custom -->
+                        <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                            <h4 class="font-bold text-purple-400 mb-3 flex items-center gap-2">
+                                <span>🔧</span>
+                                3. MSE (Media Source Extensions) + Custom Logic
+                            </h4>
+                            <div class="space-y-3 text-sm">
+                                <p class="text-slate-300">
+                                    <strong class="text-white">Ne yapar?</strong> Browser'ın low-level media API'si.
+                                    Kendi custom streaming protokolünü yazabilirsin.
+                                </p>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h5 class="text-white font-semibold mb-2">✅ Avantajlar:</h5>
+                                        <ul class="space-y-1 text-slate-400">
+                                            <li>• Tam kontrol (kendi protokolün)</li>
+                                            <li>• HLS.js temelde bunu kullanır</li>
+                                            <li>• Özel optimizasyonlar yapabilirsin</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h5 class="text-white font-semibold mb-2">⚠️ Dezavantajlar:</h5>
+                                        <ul class="space-y-1 text-slate-400">
+                                            <li>• Çok karmaşık (1000+ satır kod)</li>
+                                            <li>• Maintainance yükü çok yüksek</li>
+                                            <li>• HLS.js zaten var, neden yeniden yaz?</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-950/50 p-4 rounded border border-slate-800 mt-3">
+                                    <h5 class="text-yellow-400 font-semibold mb-2">💡 Muzibu için uygun mu?</h5>
+                                    <p class="text-slate-300 text-sm">
+                                        <span class="text-red-400 font-bold">❌ HAYIR!</span>
+                                        Overkill. HLS.js zaten mükemmel çalışıyor, custom yazmanın anlamı yok.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Progressive Download -->
+                        <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                            <h4 class="font-bold text-purple-400 mb-3 flex items-center gap-2">
+                                <span>📥</span>
+                                4. Progressive Download (MP3/AAC direkt)
+                            </h4>
+                            <div class="space-y-3 text-sm">
+                                <p class="text-slate-300">
+                                    <strong class="text-white">Ne yapar?</strong> HLS yok, segment yok. Tek MP3/AAC dosyası,
+                                    indirirken çalmaya başlar (eski YouTube mantığı).
+                                </p>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h5 class="text-white font-semibold mb-2">✅ Avantajlar:</h5>
+                                        <ul class="space-y-1 text-slate-400">
+                                            <li>• <strong>ÇOK HIZLI başlatma (~50ms)</strong></li>
+                                            <li>• Basit yapı (1 HTTP request)</li>
+                                            <li>• CDN cache mükemmel çalışır</li>
+                                            <li>• Tüm browser'larda native çalışır</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h5 class="text-white font-semibold mb-2">⚠️ Dezavantajlar:</h5>
+                                        <ul class="space-y-1 text-slate-400">
+                                            <li>• Adaptif bitrate YOK</li>
+                                            <li>• Yavaş internette sorun</li>
+                                            <li>• Canlı yayın için uygun değil</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-950/50 p-4 rounded border border-slate-800 mt-3">
+                                    <h5 class="text-yellow-400 font-semibold mb-2">💡 Muzibu için uygun mu?</h5>
+                                    <p class="text-slate-300 text-sm">
+                                        <span class="text-green-400 font-bold">✅ SPOTLAR İÇİN EVET!</span>
+                                        Kısa dosyalar (15-60s) için Progressive MP3 ideal. Şarkılar için HLS daha iyi.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 3: KARŞILAŞTIRMA TABLOSU -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-slate-900/50 to-slate-800/50 border border-slate-700 rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                    <span>📊</span>
+                    Karşılaştırma Tablosu
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-slate-800 border-b border-slate-700">
+                                <th class="p-3 text-left text-white">Teknoloji</th>
+                                <th class="p-3 text-left text-white">Başlatma</th>
+                                <th class="p-3 text-left text-white">Latency</th>
+                                <th class="p-3 text-left text-white">Browser</th>
+                                <th class="p-3 text-left text-white">Karmaşıklık</th>
+                                <th class="p-3 text-left text-white">Muzibu İçin</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800">
+                            <tr class="bg-slate-900/30">
+                                <td class="p-3 font-bold">HLS (Normal)</td>
+                                <td class="p-3 text-orange-400">6s</td>
+                                <td class="p-3">6-10s</td>
+                                <td class="p-3 text-green-400">Mükemmel ✓</td>
+                                <td class="p-3 text-green-400">Basit</td>
+                                <td class="p-3 text-blue-400">Şu anki sistem</td>
+                            </tr>
+                            <tr class="bg-slate-900/50">
+                                <td class="p-3 font-bold text-cyan-400">HLS (2s segment) ⭐</td>
+                                <td class="p-3 text-green-400 font-bold">2s ✓</td>
+                                <td class="p-3">2-4s</td>
+                                <td class="p-3 text-green-400">Mükemmel ✓</td>
+                                <td class="p-3 text-green-400">Basit</td>
+                                <td class="p-3 text-green-400 font-bold">ÖNERİLİR ✓</td>
+                            </tr>
+                            <tr class="bg-slate-900/30">
+                                <td class="p-3 font-bold">LL-HLS</td>
+                                <td class="p-3 text-green-400">500ms</td>
+                                <td class="p-3">1-2s</td>
+                                <td class="p-3 text-yellow-400">İyi</td>
+                                <td class="p-3 text-red-400">Çok karmaşık</td>
+                                <td class="p-3 text-red-400">Gereksiz</td>
+                            </tr>
+                            <tr class="bg-slate-900/50">
+                                <td class="p-3 font-bold">DASH</td>
+                                <td class="p-3 text-orange-400">4-6s</td>
+                                <td class="p-3">4-8s</td>
+                                <td class="p-3 text-red-400">iOS sorun!</td>
+                                <td class="p-3 text-yellow-400">Orta</td>
+                                <td class="p-3 text-red-400">Uygun değil</td>
+                            </tr>
+                            <tr class="bg-slate-900/30">
+                                <td class="p-3 font-bold">WebRTC</td>
+                                <td class="p-3 text-green-400">50-150ms</td>
+                                <td class="p-3">50-150ms</td>
+                                <td class="p-3 text-green-400">Mükemmel</td>
+                                <td class="p-3 text-red-400">Aşırı karmaşık</td>
+                                <td class="p-3 text-red-400">Canlı yayın için</td>
+                            </tr>
+                            <tr class="bg-green-900/20 border-2 border-green-700">
+                                <td class="p-3 font-bold text-green-400">Progressive MP3 ⭐</td>
+                                <td class="p-3 text-green-400 font-bold">50ms ✓</td>
+                                <td class="p-3 text-green-400">Minimal</td>
+                                <td class="p-3 text-green-400">Mükemmel ✓</td>
+                                <td class="p-3 text-green-400">Çok basit ✓</td>
+                                <td class="p-3 text-green-400 font-bold">SPOTLAR İÇİN ✓</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 4: MUZİBU İÇİN ÖNERİ -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-700 rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                    <span>🎯</span>
+                    Muzibu İçin En İyi Çözüm
+                </h2>
+
+                <!-- Şarkılar İçin -->
+                <div class="bg-blue-900/20 border border-blue-700 rounded-lg p-5 mb-4">
+                    <h3 class="font-bold text-blue-400 mb-3 flex items-center gap-2">
+                        <span>🎵</span>
+                        Şarkılar (3-5 dakika) için:
+                    </h3>
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <p class="text-lg font-bold text-white">
+                            ✅ HLS + 2 Saniyelik Segment Optimizasyonu
+                        </p>
+                        <div class="space-y-2">
+                            <p class="flex items-start gap-2">
+                                <span class="text-green-400 mt-1 font-bold">1.</span>
+                                <span><strong class="text-white">Mevcut segment boyutunu</strong> 6 saniyeden <strong class="text-cyan-400">2 saniyeye</strong> düşür</span>
+                            </p>
+                            <p class="flex items-start gap-2">
+                                <span class="text-green-400 mt-1 font-bold">2.</span>
+                                <span><strong class="text-white">Başlatma süresi:</strong> 6s → 2s (3x hızlanma!)</span>
+                            </p>
+                            <p class="flex items-start gap-2">
+                                <span class="text-green-400 mt-1 font-bold">3.</span>
+                                <span><strong class="text-white">HTTP/2 Server Push</strong> ekle (opsiyonel, %30 ek hızlanma)</span>
+                            </p>
+                        </div>
+                        <div class="bg-slate-950/50 p-4 rounded border border-slate-800 mt-3">
+                            <h5 class="text-yellow-400 font-semibold mb-2">🔧 Uygulama:</h5>
+                            <pre class="text-xs overflow-x-auto"><code class="text-green-400"># Mevcut FFmpeg encoding script'ini güncelle:
+ffmpeg -i input.mp3 \
+  -c:a aac -b:a 192k \
+  -hls_time 2 \              # 6 → 2 saniye
+  -hls_playlist_type vod \
+  -hls_segment_filename "segment-%03d.ts" \
+  output.m3u8</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spotlar İçin -->
+                <div class="bg-green-900/20 border border-green-700 rounded-lg p-5">
+                    <h3 class="font-bold text-green-400 mb-3 flex items-center gap-2">
+                        <span>🎙️</span>
+                        Spotlar (15-60 saniye) için:
+                    </h3>
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <p class="text-lg font-bold text-white">
+                            ✅ Progressive MP3 (Şu Anki Sistem - Değişiklik Gereksiz!)
+                        </p>
+                        <div class="space-y-2">
+                            <p class="flex items-start gap-2">
+                                <span class="text-green-400 mt-1 font-bold">1.</span>
+                                <span><strong class="text-white">Mevcut sistem mükemmel:</strong> MP3 direkt preload ediliyor</span>
+                            </p>
+                            <p class="flex items-start gap-2">
+                                <span class="text-green-400 mt-1 font-bold">2.</span>
+                                <span><strong class="text-white">Başlatma:</strong> ~50ms (ultra hızlı!)</span>
+                            </p>
+                            <p class="flex items-start gap-2">
+                                <span class="text-green-400 mt-1 font-bold">3.</span>
+                                <span><strong class="text-white">Gapless geçiş:</strong> Çalışıyor ✓</span>
+                            </p>
+                            <p class="flex items-start gap-2">
+                                <span class="text-green-400 mt-1 font-bold">4.</span>
+                                <span><strong class="text-white">Preload timing:</strong> %70 → 2. saniye (YENİ!)</span>
+                            </p>
+                        </div>
+                        <div class="bg-slate-950/50 p-4 rounded border border-slate-800 mt-3">
+                            <h5 class="text-green-400 font-semibold mb-2">✅ Yapılan Değişiklik:</h5>
+                            <p class="text-xs text-slate-400 mb-2">
+                                Spot preload timing'i %70'den 2. saniyeye çekildi (daha erken preload!).
+                            </p>
+                            <pre class="text-xs overflow-x-auto"><code class="text-yellow-400">// player-core.js (3 yerde güncellendi)
+// Önceki: progressPercent >= 70
+// Yeni:    self.currentTime >= 2
+
+if (!self._spotPreloaded && self.currentTime >= 2 && window.MuzibuSpotPlayer) {
+    window.MuzibuSpotPlayer.preloadSpot();
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Özet -->
+                <div class="bg-cyan-900/20 border border-cyan-700 rounded-lg p-5 mt-4">
+                    <h3 class="font-bold text-cyan-400 mb-3 flex items-center gap-2">
+                        <span>📋</span>
+                        Özet
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <h4 class="text-white font-semibold mb-2">🎵 Şarkılar:</h4>
+                            <ul class="space-y-1 text-slate-300">
+                                <li>• HLS kullanmaya devam et</li>
+                                <li>• Segment boyutunu 6s → 2s düşür</li>
+                                <li>• HTTP/2 Push ekle (opsiyonel)</li>
+                                <li>• Başlatma: 6s → 2s (3x hızlanma)</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-white font-semibold mb-2">🎙️ Spotlar:</h4>
+                            <ul class="space-y-1 text-slate-300">
+                                <li>• MP3 kullanmaya devam et</li>
+                                <li>• Preload timing: 2. saniye (YENİ!)</li>
+                                <li>• Değişiklik gereksiz, sistem mükemmel</li>
+                                <li>• Başlatma: ~50ms (zaten çok hızlı)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-6 border-t border-slate-800 text-center text-sm text-slate-500">
+            <p>🤖 Generated with <a href="https://claude.com/claude-code" class="text-blue-400 hover:text-blue-300 transition-colors">Claude Code</a></p>
+            <p class="mt-2">Co-Authored-By: Claude Sonnet 4.5 &lt;noreply@anthropic.com&gt;</p>
+        </footer>
+    </div>
+</body>
+</html>

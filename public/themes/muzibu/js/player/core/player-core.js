@@ -3310,12 +3310,12 @@ function muzibuApp() {
                                 self.preloadNextSong();
                             }
 
-                            // 🎙️ SPOT PRELOAD: %70'te spot'u önceden yükle (gapless için)
-                            if (!self._spotPreloaded && progressPercent >= 70 && window.MuzibuSpotPlayer) {
+                            // 🎙️ SPOT PRELOAD: 2. saniyede spot'u önceden yükle (gapless için)
+                            if (!self._spotPreloaded && self.currentTime >= 2 && window.MuzibuSpotPlayer) {
                                 if (window.MuzibuSpotPlayer.shouldPreloadSpot()) {
-                                    console.log('🎙️ SPOT PRELOAD at 70% (Safari preloaded):', {
+                                    console.log('🎙️ SPOT PRELOAD at 2s (Safari preloaded):', {
                                         song: self.currentSong?.song_title,
-                                        progress: progressPercent.toFixed(1) + '%'
+                                        currentTime: self.currentTime.toFixed(1) + 's'
                                     });
                                     self._spotPreloaded = true;
                                     window.MuzibuSpotPlayer.preloadSpot();
@@ -3483,12 +3483,12 @@ function muzibuApp() {
                                 self.preloadNextSong();
                             }
 
-                            // 🎙️ SPOT PRELOAD: %70'te spot'u önceden yükle (gapless için)
-                            if (!self._spotPreloaded && progressPercent >= 70 && window.MuzibuSpotPlayer) {
+                            // 🎙️ SPOT PRELOAD: 2. saniyede spot'u önceden yükle (gapless için)
+                            if (!self._spotPreloaded && self.currentTime >= 2 && window.MuzibuSpotPlayer) {
                                 if (window.MuzibuSpotPlayer.shouldPreloadSpot()) {
-                                    console.log('🎙️ SPOT PRELOAD at 70% (HLS.js preloaded):', {
+                                    console.log('🎙️ SPOT PRELOAD at 2s (HLS.js preloaded):', {
                                         song: self.currentSong?.song_title,
-                                        progress: progressPercent.toFixed(1) + '%'
+                                        currentTime: self.currentTime.toFixed(1) + 's'
                                     });
                                     self._spotPreloaded = true;
                                     window.MuzibuSpotPlayer.preloadSpot();
@@ -4485,12 +4485,12 @@ onplay: function() {
                         self.preloadNextSong();
                     }
 
-                    // 🎙️ SPOT PRELOAD: %70'te spot'u önceden yükle (gapless için)
-                    if (!self._spotPreloaded && progressPercent >= 70 && window.MuzibuSpotPlayer) {
+                    // 🎙️ SPOT PRELOAD: 2. saniyede spot'u önceden yükle (gapless için)
+                    if (!self._spotPreloaded && self.currentTime >= 2 && window.MuzibuSpotPlayer) {
                         if (window.MuzibuSpotPlayer.shouldPreloadSpot()) {
-                            console.log('🎙️ SPOT PRELOAD at 70% (fresh stream):', {
+                            console.log('🎙️ SPOT PRELOAD at 2s (fresh stream):', {
                                 song: self.currentSong?.song_title,
-                                progress: progressPercent.toFixed(1) + '%'
+                                currentTime: self.currentTime.toFixed(1) + 's'
                             });
                             self._spotPreloaded = true;
                             window.MuzibuSpotPlayer.preloadSpot();

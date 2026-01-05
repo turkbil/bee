@@ -60,13 +60,25 @@ class MuzibuCorporateAccount extends Model
         static::creating(function (self $account) {
             // Ana şube oluşturuluyorsa (parent_id NULL) → Default değerler ata
             if ($account->parent_id === null) {
-                $account->spot_enabled = $account->spot_enabled ?? false;
-                $account->spot_songs_between = $account->spot_songs_between ?? 10;
-                $account->spot_settings_version = $account->spot_settings_version ?? 1;
-                $account->spot_is_paused = $account->spot_is_paused ?? false;
+                // Sadece NULL olanları set et (cast'tan kaçın)
+                if (!isset($account->attributes['spot_enabled'])) {
+                    $account->attributes['spot_enabled'] = false;
+                }
+                if (!isset($account->attributes['spot_songs_between'])) {
+                    $account->attributes['spot_songs_between'] = 10;
+                }
+                if (!isset($account->attributes['spot_settings_version'])) {
+                    $account->attributes['spot_settings_version'] = 1;
+                }
+                if (!isset($account->attributes['spot_is_paused'])) {
+                    $account->attributes['spot_is_paused'] = false;
+                }
+            } else {
+                // Alt şube oluşturuluyorsa (parent_id var) → Sadece pause default ver
+                if (!isset($account->attributes['spot_is_paused'])) {
+                    $account->attributes['spot_is_paused'] = false; // Başlangıçta duraklama yok
+                }
             }
-            // Alt şube oluşturuluyorsa (parent_id var) → NULL kalsın
-            // (Migration'da default(null) zaten var)
         });
     }
 

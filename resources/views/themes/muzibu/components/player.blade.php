@@ -43,7 +43,7 @@
 </style>
 <div class="mobile-player-wrapper row-start-3 col-span-full mx-3 mb-3 px-3 py-2 relative rounded-full shadow-lg">
 
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-3 relative">
         {{-- Cover with Progress Ring --}}
         <div class="relative w-12 h-12 flex-shrink-0">
             {{-- Progress Ring (Dinamik Gradient) --}}
@@ -88,8 +88,8 @@
             </p>
         </div>
 
-        {{-- Controls: Prev, Play/Pause, Next --}}
-        <div class="flex items-center gap-0.5">
+        {{-- Controls: Prev, Play/Pause, Next (Absolute Center) --}}
+        <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-0.5 pointer-events-auto">
             <button class="w-9 h-9 text-white/80 flex items-center justify-center active:scale-90 transition-transform"
                     @click="previousTrack()">
                 <i class="fas fa-backward text-sm"></i>
@@ -106,8 +106,8 @@
             </button>
         </div>
 
-        {{-- Three Dots Menu --}}
-        <button class="w-10 h-10 -mr-1 text-white/60 flex items-center justify-center active:scale-90 transition-transform"
+        {{-- Three Dots Menu (Right) --}}
+        <button class="w-10 h-10 -mr-1 text-white/60 flex items-center justify-center active:scale-90 transition-transform ml-auto"
                 @click.stop="showMobileMenu = !showMobileMenu">
             <i class="fas fa-ellipsis-v text-lg"></i>
         </button>

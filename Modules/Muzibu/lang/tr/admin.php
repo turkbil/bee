@@ -245,6 +245,8 @@ return [
     'description_placeholder' => 'Çalma listesi açıklamasını buraya yazın...',
     'sectors' => 'Sektörler',
     'sectors_help' => 'Çoklu seçim yapabilirsiniz (Ctrl/Cmd + tıklayın)',
+    'radios' => 'Radyolar',
+    'genres' => 'Türler',
     'active' => 'Aktif',
     'inactive' => 'Pasif',
     'public' => 'Herkese Açık',

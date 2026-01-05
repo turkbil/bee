@@ -326,16 +326,44 @@
                                             <div class="card-body">
                                                 <div class="d-flex align-items-center gap-2 mb-2">
                                                     <i class="fas fa-file-invoice text-orange"></i>
-                                                    <span class="fw-medium">Fatura Adresi</span>
+                                                    <span class="fw-medium">Fatura Bilgileri</span>
                                                 </div>
                                                 <div class="text-muted small">
-                                                    {{ $baddr['address_line_1'] ?? '' }}<br>
-                                                    {{ $baddr['district'] ?? '' }}, {{ $baddr['city'] ?? '' }}
-                                                    @if(!empty($baddr['tax_office']))
-                                                        <br><strong>V.D:</strong> {{ $baddr['tax_office'] }}
-                                                        @if(!empty($baddr['tax_number']))
-                                                            - {{ $baddr['tax_number'] }}
-                                                        @endif
+                                                    @if(!empty($baddr['full_name']) || (!empty($baddr['first_name']) && !empty($baddr['last_name'])))
+                                                        <div class="mb-1 fw-medium text-dark">{{ $baddr['full_name'] ?? ($baddr['first_name'] . ' ' . $baddr['last_name']) }}</div>
+                                                    @endif
+                                                    @if(!empty($baddr['company_name']))
+                                                        <div class="mb-1">{{ $baddr['company_name'] }}</div>
+                                                    @endif
+                                                    @if(!empty($baddr['phone']))
+                                                        <div class="mb-1"><i class="fas fa-phone me-1"></i>{{ $baddr['phone'] }}</div>
+                                                    @endif
+                                                    @if(!empty($baddr['email']))
+                                                        <div class="mb-1"><i class="fas fa-envelope me-1"></i>{{ $baddr['email'] }}</div>
+                                                    @endif
+                                                    @if(!empty($baddr['tax_office']) || !empty($baddr['tax_number']) || !empty($order->customer_tax_office) || !empty($order->customer_tax_number))
+                                                        <div class="mt-2 pt-2 border-top">
+                                                            @if(!empty($baddr['tax_office']) || !empty($order->customer_tax_office))
+                                                                <strong>V.D:</strong> {{ $baddr['tax_office'] ?? $order->customer_tax_office }}
+                                                            @endif
+                                                            @if(!empty($baddr['tax_number']) || !empty($order->customer_tax_number))
+                                                                @if(!empty($baddr['tax_office']) || !empty($order->customer_tax_office))<br>@endif
+                                                                <strong>V.N:</strong> {{ $baddr['tax_number'] ?? $order->customer_tax_number }}
+                                                            @endif
+                                                        </div>
+                                                    @endif
+                                                    @if(!empty($baddr['address_line_1']) || !empty($baddr['city']) || !empty($baddr['district']))
+                                                        <div class="mt-2 pt-2 border-top">
+                                                            @if(!empty($baddr['address_line_1']))
+                                                                {{ $baddr['address_line_1'] }}<br>
+                                                            @endif
+                                                            @if(!empty($baddr['district']) || !empty($baddr['city']))
+                                                                {{ $baddr['district'] }}{{ !empty($baddr['district']) && !empty($baddr['city']) ? ', ' : '' }}{{ $baddr['city'] }}
+                                                            @endif
+                                                            @if(!empty($baddr['postal_code']))
+                                                                <br>{{ $baddr['postal_code'] }}
+                                                            @endif
+                                                        </div>
                                                     @endif
                                                 </div>
                                             </div>

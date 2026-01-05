@@ -236,8 +236,83 @@
                             </div>
                         </div>
 
-                        <!-- Kurumsal Hesaplar (Playlist Dağıtımı) -->
+                        <!-- Dual Listboxes: Türler + Kurumsal (yan yana) -->
                         <div class="row g-3 mb-4">
+                            <!-- Türler (sol taraf - col-6) -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">{{ __('muzibu::admin.playlist.genres') }}</label>
+                                <div class="dual-listbox-wrapper">
+                                    {{-- Search input with float label --}}
+                                    <div class="mb-3">
+                                        <div class="form-floating">
+                                            <input type="text"
+                                                class="form-control"
+                                                placeholder="Tür ara..."
+                                                wire:model.live.debounce.300ms="genreSearch"
+                                                id="genre-search">
+                                            <label for="genre-search">
+                                                <i class="fa-solid fa-magnifying-glass me-2"></i>
+                                                Tür Ara
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-2">
+                                        <div class="col-5">
+                                            <label class="form-label small">Tüm Türler</label>
+                                            <div class="listbox" id="available-genres">
+                                                @if(isset($this->activeGenres))
+                                                    @foreach($this->activeGenres as $genre)
+                                                        @if(!in_array($genre->genre_id, $inputs['genre_ids'] ?? []))
+                                                            <div class="listbox-item"
+                                                                data-value="{{ $genre->genre_id }}"
+                                                                data-title="{{ strtolower($genre->getTranslated('title', app()->getLocale())) }}">
+                                                                {{ $genre->getTranslated('title', app()->getLocale()) }}
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="col-2 d-flex align-items-center justify-content-center">
+                                            <div class="transfer-buttons">
+                                                <button type="button" class="btn btn-sm btn-primary mb-2" onclick="transferGenresRight()">
+                                                    <i class="fa-solid fa-chevron-right"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="transferGenresLeft()">
+                                                    <i class="fa-solid fa-chevron-left"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-5">
+                                            <label class="form-label small">Seçilen Türler</label>
+                                            <div class="listbox" id="selected-genres">
+                                                @if(isset($this->activeGenres))
+                                                    @foreach($this->activeGenres as $genre)
+                                                        @if(in_array($genre->genre_id, $inputs['genre_ids'] ?? []))
+                                                            <div class="listbox-item"
+                                                                data-value="{{ $genre->genre_id }}"
+                                                                data-title="{{ strtolower($genre->getTranslated('title', app()->getLocale())) }}">
+                                                                {{ $genre->getTranslated('title', app()->getLocale()) }}
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-text mt-2">
+                                        <small class="">
+                                            <i class="fa-solid fa-circle-info me-1"></i>
+                                            Listeye tıklayıp seç, ok tuşları ile taşı
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Kurumsal Hesaplar (sağ taraf - col-6) -->
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">
                                     <i class="fa-solid fa-building me-2"></i>
@@ -499,6 +574,20 @@
             function updateLivewireRadios() {
                 const selectedValues = getDualListboxValues('selected-radios');
                 @this.set('inputs.radio_ids', selectedValues);
+            }
+
+            // 🎵 GENRE DUAL LISTBOX FUNCTIONS
+            function transferGenresRight() {
+                dualListboxTransfer('available-genres', 'selected-genres', 'right', updateLivewireGenres);
+            }
+
+            function transferGenresLeft() {
+                dualListboxTransfer('available-genres', 'selected-genres', 'left', updateLivewireGenres);
+            }
+
+            function updateLivewireGenres() {
+                const selectedValues = getDualListboxValues('selected-genres');
+                @this.set('inputs.genre_ids', selectedValues);
             }
 
             // 🏢 CORPORATE DUAL LISTBOX FUNCTIONS

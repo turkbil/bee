@@ -1,11 +1,97 @@
-spot-player.js?v=1767641660:564 🎙️ SpotPlayer: Script loaded! MuzibuSpotPlayer: object
-spot-player.js?v=1767641660:568 🎙️ SpotPlayer: DOM loading, waiting for DOMContentLoaded...
-spot-player.js?v=1767641660:570 🎙️ SpotPlayer: DOMContentLoaded fired, calling init()...
-spot-player.js?v=1767641660:56 🎙️ SpotPlayer: Initializing...
-spot-player.js?v=1767641660:83 🎙️ SpotPlayer: Fetching settings from /api/spot/settings...
-player-core.js?v=1767648140:604 🔍 PRELOAD API Response: {song_title: 'Everything I Need Fits in Your Smile', streamData_song: {…}, streamData_song_duration_seconds: undefined, streamData_song_duration: '02:32', song_duration_seconds: undefined, …}
-player-core.js?v=1767648140:672 🔍 After merge - duration: 02:32 animatedDuration: 02:32 currentSong: undefined
-player-core.js?v=1767648140:652 🎬 PRELOAD Duration set (after nextTick): 02:32 02:32
-spot-player.js?v=1767641660:93 🎙️ SpotPlayer: Settings response: {enabled: true, songs_between: 2, corporate_id: 1, branch_id: 1, spot_is_paused: false, …}
-spot-player.js?v=1767641660:171 🎙️ SpotPlayer: Starting polling (every 300s)...
-spot-player.js?v=1767641660:72 🎙️ SpotPlayer: Enabled. Songs between: 2, Current count: 0
+ 🎯 Monaco Editor Universal System başlatılıyor...
+ ✅ Monaco Editor Universal System hazır!
+universal-seo-functions.js?v=1767651801:21 🎯 Universal SEO Functions başlatılıyor...
+universal-seo-functions.js?v=1767651801:372 ✅ Universal SEO Functions yüklendi!
+universal-language-functions.js?v=1767651801:21 🎯 Universal Language Functions başlatılıyor...
+universal-language-functions.js?v=1767651801:145 ✅ Universal Language Functions yüklendi!
+universal-ai-content-functions.js?v=1767651801:21 🎯 Universal AI Content Functions başlatılıyor...
+universal-ai-content-functions.js?v=1767651801:146 ✅ Universal AI Content Functions yüklendi!
+VM3220:3 🔄 [FOOTER] Alpine state changed - isMediaUploading: false
+manage:3935 📋 Unified Tab System başlatılıyor, storage key: playlist_active_tab
+manage:3954 🔄 Tab restore işlemi başlıyor...
+manage:3957 📋 Kaydedilmiş tab: null
+manage:4008 📋 Kaydedilmiş tab yok, ilk tab aktif
+manage:4110 🔄 Tab restore sonrası dil senkronizasyon: tr
+manage.js?v=1767651801:1469 ✅ Dil değiştirildi: tr
+manage:4930 🔍 UNIVERSAL SEO TAB - DEBUG START
+manage:4934 📊 SEO Input sayısı: 15
+manage:4940   SEO Input 0: Object
+manage:4940   SEO Input 1: Object
+manage:4940   SEO Input 2: Object
+manage:4940   SEO Input 3: Object
+manage:4940   SEO Input 4: Object
+manage:4940   SEO Input 5: Object
+manage:4940   SEO Input 6: Object
+manage:4940   SEO Input 7: Object
+manage:4940   SEO Input 8: Object
+manage:4940   SEO Input 9: Object
+manage:4940   SEO Input 10: Object
+manage:4940   SEO Input 11: Object
+manage:4940   SEO Input 12: Object
+manage:4940   SEO Input 13: Object
+manage:4940   SEO Input 14: Object
+manage:4952 ✅ Livewire Component bulundu
+manage:4953 📦 seoDataCache: Proxy(Object)
+manage:4954 🌍 currentLanguage: tr
+manage:4955 📋 availableLanguages: Proxy(Array)
+manage:4956 🆔 modelId: null
+manage:4957 🏷️ modelType: playlist
+manage:4958 📦 modelClass: Modules\Muzibu\App\Models\Playlist
+manage:4968 💡 TIP: Konsola "debugSeoTab()" yaz
+manage:4973 🔍 UNIVERSAL SEO TAB - DEBUG END
+manage:5070 📋 Universal Language System yüklendi
+manage:5071 🌍 Current Language: tr
+manage:5072 🌍 Livewire Current Language: tr
+manage:5073 🔍 Available Languages: Array(1)
+universal-language-functions.js?v=1767651801:73 🔧 İlk yükleme: Dil içeriği düzenleniyor: tr
+universal-language-functions.js?v=1767651801:30 🌍 Dil içeriği değiştiriliyor: tr
+universal-language-functions.js?v=1767651801:64 ✅ Dil içeriği değiştirildi: tr
+universal-seo-functions.js?v=1767651801:336 ✅ Universal SEO event listeners kuruldu
+universal-language-functions.js?v=1767651801:129 ✅ Universal Language event listeners kuruldu
+manage.js?v=1767651801:115 🔧 Language switching sistemi kuruluyor...
+manage.js?v=1767651801:118 🔍 Bulunan language button sayısı: 1
+manage.js?v=1767651801:121   0: undefined - class: btn btn-link p-2 language-switch-btn text-muted
+manage.js?v=1767651801:443 🔎 RESTORE KONTROL - sayfa başladı
+manage.js?v=1767651801:444 📋 KURAL: İlk açılışta her zaman TR dili + Temel Bilgiler tab
+manage.js?v=1767651801:461 🎯 Varsayılan state uygulanıyor: TR dili + Temel Bilgiler tab
+manage.js?v=1767651801:1342 🚫 SEO Enter tuşu engelleme sistemi kuruluyor...
+manage.js?v=1767651801:1347 🔍 Bulunan seo-no-enter input sayısı: 4
+manage.js?v=1767651801:1353   Input 0: Object
+manage.js?v=1767651801:1353   Input 1: Object
+manage.js?v=1767651801:1353   Input 2: Object
+manage.js?v=1767651801:1353   Input 3: Object
+manage.js?v=1767651801:1407 ✅ 4 SEO input için Enter tuşu engelleme aktif
+monaco-editor-universal.js?v=1767651801:62 ✅ Monaco loader yüklendi
+universal-seo-functions.js?v=1767651801:200 📱 Social media switches initialized
+manage.js?v=1767651801:1469 ✅ Dil değiştirildi: tr
+manage.js?v=1767651801:106 🎯 İlk yükleme - dil içeriği ayarlandı: tr
+monaco-editor-universal.js?v=1767651801:128 ✅ Monaco Editor hazır
+manage.js?v=1767651801:1295 🌍 Slug Normalization - Dinamik diller tespit edildi: Array(0)
+manage.js?v=1767651801:586 🌍 SEO Counter - Dinamik diller tespit edildi: Array(0)
+manage:3954 🔄 Tab restore işlemi başlıyor...
+manage:3957 📋 Kaydedilmiş tab: null
+manage:4008 📋 Kaydedilmiş tab yok, ilk tab aktif
+manage:4110 🔄 Tab restore sonrası dil senkronizasyon: tr
+manage.js?v=1767651801:1469 ✅ Dil değiştirildi: tr
+manage.js?v=1767651801:877 🚨 MANAGE.JS ULTRA AGGRESSIVE: Loading bar zorla gizleniyor
+manage.js?v=1767651801:882 ✅ MANAGE.JS: Loading bar zorla gizlendi
+manage:3954 🔄 Tab restore işlemi başlıyor...
+manage:3957 📋 Kaydedilmiş tab: null
+manage:4008 📋 Kaydedilmiş tab yok, ilk tab aktif
+manage:4110 🔄 Tab restore sonrası dil senkronizasyon: tr
+manage.js?v=1767651801:1469 ✅ Dil değiştirildi: tr
+manage:3954 🔄 Tab restore işlemi başlıyor...
+manage:3957 📋 Kaydedilmiş tab: null
+manage:4008 📋 Kaydedilmiş tab yok, ilk tab aktif
+manage:4110 🔄 Tab restore sonrası dil senkronizasyon: tr
+manage.js?v=1767651801:1469 ✅ Dil değiştirildi: tr
+manage:3954 🔄 Tab restore işlemi başlıyor...
+manage:3957 📋 Kaydedilmiş tab: null
+manage:4008 📋 Kaydedilmiş tab yok, ilk tab aktif
+manage:4110 🔄 Tab restore sonrası dil senkronizasyon: tr
+manage.js?v=1767651801:1469 ✅ Dil değiştirildi: tr
+manage:3954 🔄 Tab restore işlemi başlıyor...
+manage:3957 📋 Kaydedilmiş tab: null
+manage:4008 📋 Kaydedilmiş tab yok, ilk tab aktif
+manage:4110 🔄 Tab restore sonrası dil senkronizasyon: tr
+manage.js?v=1767651801:1469 ✅ Dil değiştirildi: tr

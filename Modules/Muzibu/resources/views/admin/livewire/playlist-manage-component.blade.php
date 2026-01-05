@@ -548,6 +548,98 @@
                 });
             });
 
+            // 🎯 GENERIC DUAL LISTBOX HELPER FUNCTIONS
+            /**
+             * Transfer items between two listboxes
+             * @param {string} sourceId - Source listbox ID
+             * @param {string} targetId - Target listbox ID
+             * @param {string} direction - 'right' or 'left'
+             * @param {function} callback - Callback to update Livewire
+             */
+            function dualListboxTransfer(sourceId, targetId, direction, callback) {
+                const sourceListbox = document.getElementById(direction === 'right' ? sourceId : targetId);
+                const targetListbox = document.getElementById(direction === 'right' ? targetId : sourceId);
+
+                if (!sourceListbox || !targetListbox) {
+                    console.error('❌ Listbox elements not found:', sourceId, targetId);
+                    return;
+                }
+
+                // Get all selected items in the source listbox
+                const selectedItems = sourceListbox.querySelectorAll('.listbox-item.selected');
+
+                // If no selection, transfer all items (for convenience)
+                const itemsToTransfer = selectedItems.length > 0
+                    ? Array.from(selectedItems)
+                    : Array.from(sourceListbox.querySelectorAll('.listbox-item'));
+
+                if (itemsToTransfer.length === 0) {
+                    console.warn('⚠️ No items to transfer');
+                    return;
+                }
+
+                console.log(`🔄 Transferring ${itemsToTransfer.length} items ${direction}`);
+
+                // Transfer each item
+                itemsToTransfer.forEach(item => {
+                    item.classList.remove('selected'); // Remove selection
+                    targetListbox.appendChild(item); // Move to target
+                });
+
+                // Sort both listboxes alphabetically
+                sortListbox(sourceListbox);
+                sortListbox(targetListbox);
+
+                // Callback to update Livewire
+                if (typeof callback === 'function') {
+                    callback();
+                    console.log('✅ Livewire updated');
+                }
+            }
+
+            /**
+             * Get all values from a listbox
+             * @param {string} listboxId - Listbox ID
+             * @returns {array} Array of data-value attributes
+             */
+            function getDualListboxValues(listboxId) {
+                const listbox = document.getElementById(listboxId);
+                if (!listbox) {
+                    console.error('❌ Listbox not found:', listboxId);
+                    return [];
+                }
+
+                const items = listbox.querySelectorAll('.listbox-item');
+                const values = Array.from(items).map(item => item.getAttribute('data-value'));
+                console.log(`📦 ${listboxId}: ${values.length} items`);
+                return values;
+            }
+
+            /**
+             * Sort listbox items alphabetically
+             * @param {HTMLElement} listbox - Listbox element
+             */
+            function sortListbox(listbox) {
+                const items = Array.from(listbox.querySelectorAll('.listbox-item'));
+                items.sort((a, b) => {
+                    const titleA = (a.getAttribute('data-title') || a.textContent.trim()).toLowerCase();
+                    const titleB = (b.getAttribute('data-title') || b.textContent.trim()).toLowerCase();
+                    return titleA.localeCompare(titleB, 'tr');
+                });
+
+                // Re-append in sorted order
+                items.forEach(item => listbox.appendChild(item));
+            }
+
+            // 🖱️ LISTBOX ITEM CLICK HANDLER (Selection toggle)
+            document.addEventListener('DOMContentLoaded', function() {
+                document.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('listbox-item')) {
+                        e.target.classList.toggle('selected');
+                    }
+                });
+            });
+
             // 🎯 PLAYLIST-SPECIFIC DUAL LISTBOX FUNCTIONS
             function transferSectorsRight() {
                 dualListboxTransfer('available-sectors', 'selected-sectors', 'right', updateLivewireSectors);

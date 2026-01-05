@@ -65,12 +65,21 @@ return [
 
     'providers' => [
         'users' => [
-            'driver' => 'eloquent',
+            /*
+            |--------------------------------------------------------------------------
+            | ⚠️ GEÇİCİ: Legacy driver (MD5 → bcrypt migration)
+            |--------------------------------------------------------------------------
+            | Eski: 'eloquent'
+            | Yeni: 'legacy' (geçici - tüm kullanıcılar migrate olunca 'eloquent' yap)
+            |
+            | Rehber: https://ixtif.com/readme/2026/01/05/md5-muzibu-eski-sifreler-migration/
+            */
+            'driver' => 'legacy', // ⚠️ GEÇİCİ - Sonra 'eloquent' yapılacak
             'model' => env('AUTH_MODEL', App\Models\User::class),
             'connection' => 'tenant', // 🔧 Her tenant kendi users tablosunu kullanır
         ],
         'api_users' => [
-            'driver' => 'eloquent',
+            'driver' => 'legacy', // ⚠️ GEÇİCİ - Sonra 'eloquent' yapılacak
             'model' => env('AUTH_MODEL', App\Models\User::class),
             'connection' => 'tenant', // 🔧 API de tenant users kullanır
         ],

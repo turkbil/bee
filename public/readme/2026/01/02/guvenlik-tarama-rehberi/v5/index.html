@@ -8,20 +8,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         .code-block-wrapper {
-            position: relative;
+            position: relative !important;
+            display: block;
         }
         .copy-btn {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
+            position: absolute !important;
+            top: 0.5rem !important;
+            right: 0.5rem !important;
             opacity: 0;
-            transition: opacity 0.2s;
+            transition: all 0.3s ease;
+            z-index: 10;
         }
         .code-block-wrapper:hover .copy-btn {
-            opacity: 1;
+            opacity: 1 !important;
         }
         .copy-btn:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
         .copy-btn.copied {
             opacity: 1 !important;
@@ -1590,10 +1592,12 @@
             <div class="bg-slate-900 border border-green-600 rounded-lg p-6">
                 <div class="flex items-center justify-between mb-3">
                     <h3 class="font-bold text-white">📋 Prompt v5 (90 Kontrol + Güvenli Silme)</h3>
-                    <span class="text-xs bg-green-500/20 text-green-400 px-3 py-1 rounded">FINAL VERSION</span>
+                    <button id="copy-full-prompt-btn" class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded text-sm font-bold transition-all">
+                        <i class="fas fa-copy mr-2"></i>TÜM PROMPTU KOPYALA
+                    </button>
                 </div>
 
-                <pre class="bg-black/70 p-4 rounded text-green-300 text-sm overflow-x-auto border border-green-800"><code>https://ixtif.com/readme/2026/01/02/guvenlik-tarama-rehberi/v5/ bu linkteki 90 güvenlik kontrolünü tek tek uygula.
+                <pre id="full-prompt-content" class="bg-black/70 p-4 rounded text-green-300 text-sm overflow-x-auto border border-green-800"><code>https://ixtif.com/readme/2026/01/02/guvenlik-tarama-rehberi/v5/ bu linkteki 90 güvenlik kontrolünü tek tek uygula.
 
 GÖREV:
 1. Todo listesi oluştur (90 kontrol için 22 kategori)
@@ -1746,56 +1750,115 @@ GÖREV:
     <!-- Copy to Clipboard Script -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Tüm code bloklarını bul
-            const codeBlocks = document.querySelectorAll('code');
+            // Kopyalama fonksiyonu
+            function copyToClipboard(text, button) {
+                navigator.clipboard.writeText(text).then(() => {
+                    const originalHTML = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-check mr-1"></i>Kopyalandı!';
+                    button.classList.add('copied', 'bg-green-600');
+                    button.classList.remove('bg-slate-700');
 
-            codeBlocks.forEach((block, index) => {
-                // Sadece block kod bloklarına buton ekle (inline olmayanlar)
-                if (block.classList.contains('block')) {
-                    // Wrapper oluştur
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'code-block-wrapper';
-                    block.parentNode.insertBefore(wrapper, block);
-                    wrapper.appendChild(block);
+                    setTimeout(() => {
+                        button.innerHTML = originalHTML;
+                        button.classList.remove('copied', 'bg-green-600');
+                        button.classList.add('bg-slate-700');
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Kopyalama hatası:', err);
+                    const originalHTML = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-times mr-1"></i>Hata!';
+                    button.classList.add('bg-red-600');
+                    button.classList.remove('bg-slate-700');
 
-                    // Kopyala butonu oluştur
-                    const copyBtn = document.createElement('button');
-                    copyBtn.className = 'copy-btn bg-slate-700 hover:bg-slate-600 text-gray-300 px-3 py-1 rounded text-xs transition-all';
-                    copyBtn.innerHTML = '<i class="fas fa-copy mr-1"></i>Kopyala';
-                    copyBtn.setAttribute('data-index', index);
+                    setTimeout(() => {
+                        button.innerHTML = originalHTML;
+                        button.classList.remove('bg-red-600');
+                        button.classList.add('bg-slate-700');
+                    }, 2000);
+                });
+            }
 
-                    // Kopyalama fonksiyonu
-                    copyBtn.addEventListener('click', function() {
-                        const codeText = block.textContent.trim();
-
-                        // Clipboard API kullan
-                        navigator.clipboard.writeText(codeText).then(() => {
-                            // Başarılı feedback
-                            copyBtn.innerHTML = '<i class="fas fa-check mr-1"></i>Kopyalandı!';
-                            copyBtn.classList.add('copied', 'bg-green-600', 'hover:bg-green-600');
-
-                            // 2 saniye sonra eski haline dön
-                            setTimeout(() => {
-                                copyBtn.innerHTML = '<i class="fas fa-copy mr-1"></i>Kopyala';
-                                copyBtn.classList.remove('copied', 'bg-green-600', 'hover:bg-green-600');
-                            }, 2000);
-                        }).catch(err => {
-                            // Hata durumunda fallback
-                            console.error('Kopyalama hatası:', err);
-                            copyBtn.innerHTML = '<i class="fas fa-times mr-1"></i>Hata!';
-                            copyBtn.classList.add('bg-red-600');
-
-                            setTimeout(() => {
-                                copyBtn.innerHTML = '<i class="fas fa-copy mr-1"></i>Kopyala';
-                                copyBtn.classList.remove('bg-red-600');
-                            }, 2000);
-                        });
-                    });
-
-                    wrapper.appendChild(copyBtn);
+            // 1. Tüm block code elementlerine buton ekle
+            document.querySelectorAll('code.block').forEach((codeBlock, index) => {
+                // Eğer zaten wrapper varsa atla
+                if (codeBlock.parentElement.classList.contains('code-block-wrapper')) {
+                    return;
                 }
+
+                // Wrapper oluştur
+                const wrapper = document.createElement('div');
+                wrapper.className = 'code-block-wrapper';
+                codeBlock.parentNode.insertBefore(wrapper, codeBlock);
+                wrapper.appendChild(codeBlock);
+
+                // Kopyala butonu
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn bg-slate-700 hover:bg-slate-600 text-gray-300 px-3 py-1 rounded text-xs font-medium';
+                copyBtn.innerHTML = '<i class="fas fa-copy mr-1"></i>Kopyala';
+
+                copyBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    copyToClipboard(codeBlock.textContent.trim(), copyBtn);
+                });
+
+                wrapper.appendChild(copyBtn);
+
+                // Wrapper hover'da butonu göster
+                wrapper.addEventListener('mouseenter', () => {
+                    copyBtn.style.opacity = '1';
+                });
+                wrapper.addEventListener('mouseleave', () => {
+                    if (!copyBtn.classList.contains('copied')) {
+                        copyBtn.style.opacity = '0';
+                    }
+                });
             });
+
+            // 2. HAZIR PROMPT için özel kopyala butonu
+            const promptBtn = document.getElementById('copy-full-prompt-btn');
+            const promptContent = document.getElementById('full-prompt-content');
+
+            if (promptBtn && promptContent) {
+                promptBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const promptText = promptContent.textContent.trim();
+
+                    navigator.clipboard.writeText(promptText).then(() => {
+                        const originalHTML = promptBtn.innerHTML;
+                        promptBtn.innerHTML = '<i class="fas fa-check mr-2"></i>KOPYALANDI!';
+                        promptBtn.classList.remove('bg-green-600', 'hover:bg-green-500');
+                        promptBtn.classList.add('bg-emerald-500');
+
+                        setTimeout(() => {
+                            promptBtn.innerHTML = originalHTML;
+                            promptBtn.classList.remove('bg-emerald-500');
+                            promptBtn.classList.add('bg-green-600', 'hover:bg-green-500');
+                        }, 3000);
+                    }).catch(err => {
+                        console.error('Prompt kopyalama hatası:', err);
+                        const originalHTML = promptBtn.innerHTML;
+                        promptBtn.innerHTML = '<i class="fas fa-times mr-2"></i>HATA!';
+                        promptBtn.classList.remove('bg-green-600');
+                        promptBtn.classList.add('bg-red-600');
+
+                        setTimeout(() => {
+                            promptBtn.innerHTML = originalHTML;
+                            promptBtn.classList.remove('bg-red-600');
+                            promptBtn.classList.add('bg-green-600');
+                        }, 3000);
+                    });
+                });
+            }
         });
+
+        // CSS hover fix için style injection
+        const style = document.createElement('style');
+        style.textContent = `
+            .code-block-wrapper:hover .copy-btn {
+                opacity: 1 !important;
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>

@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use App\Services\ModuleAccessService;
 use App\Helpers\TenantHelpers;
+use App\Auth\LegacyUserProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -17,6 +19,34 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         //
     ];
+
+    /**
+     * Register services.
+     */
+    public function register(): void
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | ⚠️ GEÇİCİ: MD5 Legacy Password Migration (Tenant 1001 - Muzibu)
+        |--------------------------------------------------------------------------
+        | Eski sistemden gelen MD5 hashli şifreleri bcrypt'e migrate eder.
+        | Tüm kullanıcılar migrate olunca bu bloğu ve ilgili dosyaları kaldır!
+        |
+        | Rehber: https://ixtif.com/readme/2026/01/05/md5-muzibu-eski-sifreler-migration/
+        |
+        | KALDIRMA:
+        | 1. Bu bloğu sil
+        | 2. config/auth.php → driver: 'eloquent' yap
+        | 3. app/Services/Auth/LegacyPasswordMigrationService.php sil
+        | 4. app/Auth/LegacyUserProvider.php sil
+        */
+        Auth::provider('legacy', function ($app, array $config) {
+            return new LegacyUserProvider(
+                $app['hash'],
+                $config['model']
+            );
+        });
+    }
 
     /**
      * Register any authentication / authorization services.
@@ -102,7 +132,7 @@ class AuthServiceProvider extends ServiceProvider
                 // Kendi üzerinde view/update yapabilir, diğer işlemleri yapamaz
                 return in_array($action, ['view', 'update']);
             }
-            
+
             return false;
         });
     }

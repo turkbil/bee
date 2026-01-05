@@ -64,23 +64,24 @@
                 <p><strong>✅ YAPILACAKLAR (DOĞRU SIRA):</strong></p>
                 <ol class="ml-6 space-y-1">
                     <li>1. <strong class="text-cyan-400">Git Checkpoint Oluştur (ÖNCELİK!):</strong> <code class="bg-slate-800 px-2 py-1 rounded">git add -A && git commit -m "🔧 CHECKPOINT: Before cleanup"</code></li>
-                    <li>2. <strong>Dosya Yedek Al:</strong> <code class="bg-slate-800 px-2 py-1 rounded">cp dosya.php dosya.php.backup</code></li>
-                    <li>3. <strong>İçeriği İncele:</strong> <code class="bg-slate-800 px-2 py-1 rounded">cat dosya.php</code></li>
-                    <li>4. <strong>Karar Ver:</strong>
+                    <li>2. <strong class="text-orange-400">Checkpoint'i Remote'a Push Et (ZORUNLU!):</strong> <code class="bg-slate-800 px-2 py-1 rounded">git push origin main</code></li>
+                    <li>3. <strong>Dosya Yedek Al:</strong> <code class="bg-slate-800 px-2 py-1 rounded">cp dosya.php dosya.php.backup</code></li>
+                    <li>4. <strong>İçeriği İncele:</strong> <code class="bg-slate-800 px-2 py-1 rounded">cat dosya.php</code></li>
+                    <li>5. <strong>Karar Ver:</strong>
                         <ul class="ml-6 mt-1">
                             <li>• Dosya tamamen zararlıysa → Sil</li>
                             <li>• Dosya içinde zararlı kod varsa → Sadece o kısmı temizle</li>
                             <li>• Sistem dosyasıysa (vendor, core) → ASLA silme, rapor et</li>
                         </ul>
                     </li>
-                    <li>5. <strong>Sil/Temizle:</strong> <code class="bg-slate-800 px-2 py-1 rounded">sudo rm dosya.php</code> veya düzenle</li>
-                    <li>6. <strong>Test Et:</strong> <code class="bg-slate-800 px-2 py-1 rounded">curl -I https://site.com/</code> → 200 OK?</li>
-                    <li>7. <strong class="text-yellow-400">Sorun Varsa → Geri Dön:</strong> <code class="bg-slate-800 px-2 py-1 rounded">git reset --hard [checkpoint-hash]</code></li>
-                    <li>8. <strong class="text-green-400">Sorun Yoksa → Kaydet:</strong> <code class="bg-slate-800 px-2 py-1 rounded">git add -A && git commit -m "Security: Cleaned malware"</code></li>
+                    <li>6. <strong>Sil/Temizle:</strong> <code class="bg-slate-800 px-2 py-1 rounded">sudo rm dosya.php</code> veya düzenle</li>
+                    <li>7. <strong>Test Et:</strong> <code class="bg-slate-800 px-2 py-1 rounded">curl -I https://site.com/</code> → 200 OK?</li>
+                    <li>8. <strong class="text-yellow-400">Sorun Varsa → Geri Dön:</strong> <code class="bg-slate-800 px-2 py-1 rounded">git reset --hard [checkpoint-hash]</code></li>
+                    <li>9. <strong class="text-green-400">Sorun Yoksa → Kaydet:</strong> <code class="bg-slate-800 px-2 py-1 rounded">git add -A && git commit -m "Security: Cleaned malware" && git push origin main</code></li>
                 </ol>
-                <p class="mt-3 text-yellow-400 text-xs">
-                    <i class="fas fa-lightbulb mr-1"></i>
-                    <strong>HATIRLATMA:</strong> Git Checkpoint = Sigorta! Hatalı silme olursa tek tuşla geri dönebilirsiniz.
+                <p class="mt-3 text-red-400 text-xs border-t border-red-700 pt-2">
+                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                    <strong>KRİTİK:</strong> Checkpoint'i remote'a push etmeden silme yapma! Local disk sorununda checkpoint da kaybolur.
                 </p>
             </div>
         </div>
@@ -146,10 +147,16 @@
                         <code class="block bg-slate-900 px-3 py-2 rounded text-green-400 mb-3">git commit -m "🔧 CHECKPOINT: Before security cleanup"</code>
 
                         <p class="text-gray-400 mb-2"><strong>3. Checkpoint hash'ini kaydet:</strong></p>
-                        <code class="block bg-slate-900 px-3 py-2 rounded text-green-400 mb-2">git log -1 --oneline</code>
-                        <p class="text-gray-500 text-xs mt-1">
+                        <code class="block bg-slate-900 px-3 py-2 rounded text-green-400 mb-3">git log -1 --oneline</code>
+                        <p class="text-gray-500 text-xs mb-3">
                             Çıktı örneği: <code class="bg-slate-900 px-2 py-0.5 rounded text-yellow-400">abc123f 🔧 CHECKPOINT: Before security cleanup</code>
                             <br><strong class="text-yellow-400">abc123f</strong> hash'ini not edin!
+                        </p>
+
+                        <p class="text-orange-400 mb-2"><strong>4. Remote'a push et (ZORUNLU!):</strong></p>
+                        <code class="block bg-slate-900 px-3 py-2 rounded text-orange-400 mb-2">git push origin main</code>
+                        <p class="text-red-400 text-xs">
+                            ⚠️ <strong>KRİTİK:</strong> Push etmeden silme yapma! Remote'da güvenli kopya olmalı.
                         </p>
                     </div>
                 </div>
@@ -188,11 +195,13 @@
                     </h4>
                     <ul class="ml-6 space-y-1 text-gray-300">
                         <li>✅ Her silme öncesi checkpoint yap</li>
+                        <li>✅ <strong class="text-orange-400">Checkpoint'i MUTLAKA remote'a push et!</strong></li>
                         <li>✅ Checkpoint hash'ini text dosyasına kaydet</li>
                         <li>✅ Checkpoint mesajına tarih ekle: <code class="bg-slate-800 px-1 py-0.5 rounded">"CHECKPOINT: 2026-01-05 14:30"</code></li>
                         <li>✅ Temizleme sonrası test et, sorun yoksa yeni commit at</li>
-                        <li>✅ Büyük temizlikten sonra remote'a push et: <code class="bg-slate-800 px-1 py-0.5 rounded">git push origin main</code></li>
+                        <li>✅ Temizleme commit'ini de push et: <code class="bg-slate-800 px-1 py-0.5 rounded">git push origin main</code></li>
                         <li>❌ Checkpoint olmadan büyük silme yapma!</li>
+                        <li>❌ <strong class="text-red-400">Push etmeden silme yapma!</strong></li>
                     </ul>
                 </div>
 
@@ -203,20 +212,26 @@
                     </h4>
                     <div class="bg-slate-800 rounded-lg p-4 space-y-2 text-xs">
                         <p class="text-gray-400"><strong>Senaryo:</strong> 90 kontrol sonucu 15 zararlı dosya bulundu</p>
+
                         <code class="block bg-slate-900 px-2 py-1 rounded text-green-400"># 1. Checkpoint oluştur</code>
                         <code class="block bg-slate-900 px-2 py-1 rounded text-white">git add -A && git commit -m "🔧 CHECKPOINT: Before cleanup (15 files)"</code>
                         <code class="block bg-slate-900 px-2 py-1 rounded text-white">git log -1 --oneline  # Hash: abc123f</code>
 
-                        <code class="block bg-slate-900 px-2 py-1 rounded text-green-400 mt-3"># 2. Zararlı dosyaları sil</code>
+                        <code class="block bg-slate-900 px-2 py-1 rounded text-orange-400 mt-3"># 2. Remote'a push et (ZORUNLU!)</code>
+                        <code class="block bg-slate-900 px-2 py-1 rounded text-white">git push origin main</code>
+                        <p class="text-red-400 text-xs mt-1">⚠️ Bu adım ZORUNLU! Remote'da güvenli kopya olmalı.</p>
+
+                        <code class="block bg-slate-900 px-2 py-1 rounded text-green-400 mt-3"># 3. Zararlı dosyaları sil</code>
                         <code class="block bg-slate-900 px-2 py-1 rounded text-white">sudo rm public/shell.php vendor/autoload.suspected ...</code>
 
-                        <code class="block bg-slate-900 px-2 py-1 rounded text-green-400 mt-3"># 3. Site test et</code>
+                        <code class="block bg-slate-900 px-2 py-1 rounded text-green-400 mt-3"># 4. Site test et</code>
                         <code class="block bg-slate-900 px-2 py-1 rounded text-white">curl -I https://site.com/  # 200 OK?</code>
 
-                        <code class="block bg-slate-900 px-2 py-1 rounded text-yellow-400 mt-3"># 4a. SORUN VARSA → Geri dön!</code>
+                        <code class="block bg-slate-900 px-2 py-1 rounded text-yellow-400 mt-3"># 5a. SORUN VARSA → Geri dön!</code>
                         <code class="block bg-slate-900 px-2 py-1 rounded text-red-400">git reset --hard abc123f</code>
+                        <code class="block bg-slate-900 px-2 py-1 rounded text-red-400">git push origin main --force  # Remote'u da geri al</code>
 
-                        <code class="block bg-slate-900 px-2 py-1 rounded text-green-400 mt-3"># 4b. SORUN YOKSA → Kaydet ve push</code>
+                        <code class="block bg-slate-900 px-2 py-1 rounded text-green-400 mt-3"># 5b. SORUN YOKSA → Kaydet ve push</code>
                         <code class="block bg-slate-900 px-2 py-1 rounded text-white">git add -A && git commit -m "Security: Cleaned 15 malware files"</code>
                         <code class="block bg-slate-900 px-2 py-1 rounded text-white">git push origin main</code>
                     </div>

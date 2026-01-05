@@ -199,6 +199,13 @@
                                 </td>
                                 <td class="text-center align-middle">
                                     <div class="d-flex align-items-center gap-3 justify-content-center">
+                                        <a href="{{ route('admin.muzibu.corporate.manage', $account->id) }}"
+                                           data-bs-toggle="tooltip"
+                                           data-bs-placement="top"
+                                           title="Düzenle"
+                                           style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
+                                            <i class="fa-solid fa-edit link-primary fa-lg"></i>
+                                        </a>
                                         <a href="javascript:void(0);"
                                            wire:click="toggleActive({{ $account->id }})"
                                            data-bs-toggle="tooltip"

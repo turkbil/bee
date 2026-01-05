@@ -85,11 +85,6 @@
                 </a>
                 @endhasmoduleaccess
                 @hasmoduleaccess('muzibu', 'view')
-                <a class="dropdown-item" href="{{ route('admin.muzibu.corporate.subscription') }}">
-                    <i class="fas fa-credit-card me-2 text-green"></i>Abonelikler
-                </a>
-                @endhasmoduleaccess
-                @hasmoduleaccess('muzibu', 'view')
                 <a class="dropdown-item" href="{{ route('admin.muzibu.corporate.usage') }}">
                     <i class="fas fa-chart-line me-2 text-info"></i>Kullanım Raporları
                 </a>
@@ -243,9 +238,6 @@
                 @hasmoduleaccess('muzibu', 'view')
                 <a class="dropdown-item" href="{{ route('admin.muzibu.corporate.index') }}">
                     <i class="fas fa-building me-2 text-blue"></i>Kurumsal Hesaplar
-                </a>
-                <a class="dropdown-item" href="{{ route('admin.muzibu.corporate.subscription') }}">
-                    <i class="fas fa-credit-card me-2 text-green"></i>Abonelikler
                 </a>
                 <a class="dropdown-item" href="{{ route('admin.muzibu.corporate.usage') }}">
                     <i class="fas fa-chart-line me-2 text-info"></i>Kullanım Raporları

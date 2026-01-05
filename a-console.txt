@@ -1,261 +1,193 @@
-spot-player.js?v=1767284776:483 🎙️ SpotPlayer: Script loaded! MuzibuSpotPlayer: object
-spot-player.js?v=1767284776:487 🎙️ SpotPlayer: DOM loading, waiting for DOMContentLoaded...
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: leaving is not defined
+# Symfony\Component\Routing\Exception\RouteNotFoundException - Internal Server Error
+Route [admin.muzibu.corporate.subscription] not defined.
 
-Expression: "leaving"
+PHP 8.3.28
+Laravel 12.32.5
+muzibu.com.tr
 
- <button type=​"button" @click=​"showLeaveModal()​" :disabled=​"leaving" class=​"w-full flex items-center justify-between p-4 bg-red-500/​10 hover:​bg-red-500/​20 rounded-xl transition disabled:​opacity-50 cursor-pointer">​…​</button>​flex
-handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: leaving is not defined
+## Stack Trace
 
-Expression: "!leaving"
+0 - vendor/laravel/framework/src/Illuminate/Routing/UrlGenerator.php:526
+1 - vendor/laravel/framework/src/Illuminate/Foundation/helpers.php:871
+2 - Modules/Muzibu/resources/views/admin/helper.blade.php:88
+3 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:123
+4 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:124
+5 - vendor/laravel/framework/src/Illuminate/View/Engines/PhpEngine.php:57
+6 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:22
+7 - vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php:76
+8 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:10
+9 - vendor/laravel/framework/src/Illuminate/View/View.php:208
+10 - vendor/laravel/framework/src/Illuminate/View/View.php:191
+11 - vendor/laravel/framework/src/Illuminate/View/View.php:160
+12 - Modules/Muzibu/resources/views/admin/corporate-index.blade.php:2
+13 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:123
+14 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:124
+15 - vendor/laravel/framework/src/Illuminate/View/Engines/PhpEngine.php:57
+16 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:22
+17 - vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php:76
+18 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:10
+19 - vendor/laravel/framework/src/Illuminate/View/View.php:208
+20 - vendor/laravel/framework/src/Illuminate/View/View.php:191
+21 - vendor/laravel/framework/src/Illuminate/View/View.php:160
+22 - vendor/laravel/framework/src/Illuminate/Http/Response.php:78
+23 - vendor/laravel/framework/src/Illuminate/Http/Response.php:34
+24 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:939
+25 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:906
+26 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
+27 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+28 - Modules/UserManagement/app/Http/Middleware/ModulePermissionMiddleware.php:59
+29 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+30 - Modules/Muzibu/app/Http/Middleware/InitializeMuzibuAdmin.php:45
+31 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+32 - app/Http/Middleware/FixLegacyTenantUrls.php:26
+33 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+34 - Modules/LanguageManagement/app/Http/Middleware/AdminSetLocaleMiddleware.php:30
+35 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+36 - app/Http/Middleware/AdminNoCacheMiddleware.php:27
+37 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+38 - app/Http/Middleware/AdminAccessMiddleware.php:40
+39 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+40 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:66
+41 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+42 - app/Http/Middleware/UnderConstructionProtection.php:20
+43 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+44 - app/Http/Middleware/LivewireJsonSanitizer.php:43
+45 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+46 - app/Http/Middleware/RootOnlyDebugbar.php:51
+47 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+48 - Modules/TenantManagement/app/Http/Middleware/ResourceTrackingMiddleware.php:36
+49 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+50 - app/Http/Middleware/DatabasePoolMiddleware.php:58
+51 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+52 - app/Http/Middleware/SecurityHeaders.php:18
+53 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+54 - app/Http/Middleware/CheckThemeStatus.php:40
+55 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+56 - app/Http/Middleware/RedisHealthCheckMiddleware.php:23
+57 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+58 - vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
+59 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+60 - vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php:63
+61 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+62 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:87
+63 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+64 - vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:48
+65 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+66 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:120
+67 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:63
+68 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+69 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:36
+70 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+71 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:74
+72 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+73 - app/Http/Middleware/RemoveWwwPrefix.php:30
+74 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+75 - app/Http/Middleware/InitializeTenancy.php:108
+76 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+77 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+78 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
+79 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:800
+80 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:764
+81 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:753
+82 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:200
+83 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+84 - vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php:19
+85 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+86 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:66
+87 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+88 - app/Http/Middleware/FixResponseCacheHeaders.php:35
+89 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+90 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
+91 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php:31
+92 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+93 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
+94 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php:51
+95 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+96 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php:27
+97 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+98 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php:109
+99 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+100 - vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php:48
+101 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+102 - vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php:58
+103 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+104 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php:22
+105 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+106 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php:26
+107 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+108 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+109 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:175
+110 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:144
+111 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1220
+112 - public/index.php:20
 
- <i class=​"fas fa-sign-out-alt text-red-400" x-show=​"!leaving" style=​"display:​ none;​">​</i>​
-handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: leaving is not defined
+## Request
 
-Expression: "leaving"
+GET /admin/muzibu/corporate
 
- <i class=​"fas fa-spinner fa-spin text-red-400" x-show=​"leaving" style=​"display:​ none;​">​</i>​
-handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: leaving is not defined
+## Headers
 
-Expression: "!leaving"
+* **cookie**: muzibu_cookie_consent=%7B%22necessary%22%3Atrue%2C%22functional%22%3Atrue%2C%22analytics%22%3Atrue%2C%22marketing%22%3Atrue%7D; siteTextColor=#ffffff; laravel_session_1001=eyJpdiI6Ill2UzJSeDNNMkdRcmV2Z3BOaW9iSUE9PSIsInZhbHVlIjoiTllIYjN1aFVzTkl5V01ueWlQb1RrdEpCb043VkU2UkxINmlGaS9KaXFqbUI3eEtuM09yNG13NmtVU3VZY0Z2ODNHbFo1VDRORXlSS2tTaDZRaUtFVVkwMFo5aTRoVGNETyt6M3FNSWkwNmxWTTJkNk1mclZMdjFVa1NKZVZyZmciLCJtYWMiOiJjNmIxYWQ5OWFmNTU0NzhmZWMyOGRhYTU2OGMzNjE3YzM1NzQyNzBkNDMyYzI2YWJiNmY0M2Y0NjBmZWQyOWI2IiwidGFnIjoiIn0%3D; mzb_login_token=eyJpdiI6Ik9vOUFDOG41MmgwR08weml2NE9CV1E9PSIsInZhbHVlIjoiNjRMbWtLSXdBNEkxQWdzNEUvc1dubDZiWmp0Z2VnT0ZKUThrODFOLzEyZVI3V29BM3ZQQStoK3VQdW9HLzduOGJhZDBCZjlTRTFySUduZGE3blRVdVh0dnh2Vldyb3dGRzdoSUVnNU9ncGxZWE54WTFhdkVvRHlRcW9HaEw2YmVEL3BaZGJMbGc0cXVqUkFaRnlMamlBPT0iLCJtYWMiOiI1MmVjNmI1NTBlZDRiNzlhOWQ0ZmQ0YzU3NWYwOTk1ZGUwZDVkZmRiNDRhY2Y3MDEzNTgzZjEzNmU3ZWZjMmEwIiwidGFnIjoiIn0%3D; last_activity_read=1767312931; XSRF-TOKEN=eyJpdiI6IkpIU0xKOGMwODh3YmZYUE45NGJDNlE9PSIsInZhbHVlIjoiZnZWMmFYQjIwNi8yNVRpdnVKVUw3bEwwbTQ2VVhDM2NNU0JzbStjSGpVNGlhMHJRK3VRdWRsMTZacVRqYnlwQy84SmVtbS85aW9zY0F3QzZwVTQ0M09LcDdReXNoeXZnUnVzVE9jYnBaSlpmajZ3cWJVMks3U2k5TFN3TWl4S0MiLCJtYWMiOiJlYjg4YTBiMWY0NDU5M2U5NjA4YWY1YTliZTdkNWY0MGNhZTlhMTRhM2ZjNjRkMmUyZjI3NzdiYzYxZDdlZmRhIiwidGFnIjoiIn0%3D; tuufi_session=eyJpdiI6ImwzdVRBQ3VXUzJQMmR5Ung0NHRoS0E9PSIsInZhbHVlIjoiNm9QSzVOTEtmdUFSUUhZSWF1Ui9neXB3V0x6OEh1T1JJZC90SlFXMTNkNmhydDY4YWduTmwvNUlZR1R6NjNCUUk3R2tmTU1XT282NmZ6ODNoZmhyS2lOK0NxVlpLK1pEL3pseXgrc1lic2xKNEpXSVpUUG9lNUNIemhRWVhqTE4iLCJtYWMiOiI1OGMyMzQxMjM2MmQ2YWU1N2JlNTI4ZjI4MjhmYTRhODU4YmQzYjYwNzM4YWZjOGRmNjAxYzlkOWJkZjc0ZjU1IiwidGFnIjoiIn0%3D
+* **priority**: u=0, i
+* **accept-language**: tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7
+* **accept-encoding**: gzip, deflate, br, zstd
+* **sec-fetch-dest**: empty
+* **sec-fetch-mode**: navigate
+* **sec-fetch-site**: same-origin
+* **sec-ch-ua-mobile**: ?0
+* **sec-ch-ua**: "Google Chrome";v="143", "Chromium";v="143", "Not A(Brand";v="24"
+* **upgrade-insecure-requests**: 1
+* **dnt**: 1
+* **accept**: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+* **user-agent**: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36
+* **sec-ch-ua-platform**: "macOS"
+* **connection**: close
+* **x-accel-internal**: /internal-nginx-static-location
+* **x-real-ip**: 92.44.171.31
+* **host**: muzibu.com.tr
 
- <i class=​"fas fa-chevron-right text-red-400" x-show=​"!leaving" style=​"display:​ none;​">​</i>​
-handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-spot-player.js?v=1767284776:489 🎙️ SpotPlayer: DOMContentLoaded fired, calling init()...
-spot-player.js?v=1767284776:51 🎙️ SpotPlayer: Initializing...
-spot-player.js?v=1767284776:75 🎙️ SpotPlayer: Fetching settings from /api/spot/settings...
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: leaving is not defined
-    at [Alpine] leaving (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3533:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at handler2 (livewire.js?id=df3a17f2:3533:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] leaving @ VM15619:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3533
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-handler2 @ livewire.js?id=df3a17f2:3533
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: leaving is not defined
-    at [Alpine] !leaving (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:33)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] !leaving @ VM15621:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: leaving is not defined
-    at [Alpine] leaving (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] leaving @ VM15619:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: leaving is not defined
-    at [Alpine] !leaving (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:33)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] !leaving @ VM15621:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-spot-player.js?v=1767284776:85 🎙️ SpotPlayer: Settings response: {enabled: true, songs_between: 1, corporate_id: 18, branch_id: 20, spot_is_paused: false}
-spot-player.js?v=1767284776:64 🎙️ SpotPlayer: Enabled. Songs between: 1, Current count: 0
+## Route Context
+
+controller: Modules\Muzibu\App\Http\Controllers\Admin\CorporateController@index
+route name: admin.muzibu.corporate.index
+middleware: admin, tenant, Modules\Muzibu\App\Http\Middleware\InitializeMuzibuAdmin, module.permission:muzibu,view
+
+## Route Parameters
+
+No route parameter data available.
+
+## Database Queries
+
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (1.89 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.63 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.64 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.67 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.6 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.6 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.69 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.7 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.68 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.56 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.58 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.64 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.53 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.64 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.62 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.62 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.65 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.56 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.61 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.66 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.6 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.77 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.57 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.73 ms)
+* mysql - select `domain` from `domains` where `tenant_id` = 1001 (0.67 ms)
+* mysql - select * from `themes` where `themes`.`theme_id` = 7 and `themes`.`deleted_at` is null limit 1 (0.74 ms)
+* mysql - select * from `domains` where `domains`.`tenant_id` = 1001 and `domains`.`tenant_id` is not null (0.8 ms)
+* mysql - select * from `domains` where `tenant_id` = 1001 and `is_primary` = 1 limit 1 (0.76 ms)
+* tenant - select * from `users` where `id` = 1 and `users`.`deleted_at` is null limit 1 (1.74 ms)
+* mysql - select * from `tenants` where `tenants`.`id` = 1001 limit 1 (0.56 ms)
+* tenant - select `roles`.*, `model_has_roles`.`model_id` as `pivot_model_id`, `model_has_roles`.`role_id` as `pivot_role_id`, `model_has_roles`.`model_type` as `pivot_model_type` from `roles` inner join `model_has_roles` on `roles`.`id` = `model_has_roles`.`role_id` where `model_has_roles`.`model_id` in (1) and `model_has_roles`.`model_type` = 'App\Models\User' (13.3 ms)
+* mysql - select * from `modules` where `name` = 'muzibu' limit 1 (1.41 ms)
+* mysql - select * from `domains` where `tenant_id` = 1001 and `is_primary` = 1 limit 1 (0.59 ms)

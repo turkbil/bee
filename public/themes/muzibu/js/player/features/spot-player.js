@@ -34,10 +34,15 @@ window.MuzibuSpotPlayer = (function() {
         preloadedSpot: null,
         preloadedAudio: null,
         isPreloading: false,
+        // ✅ YENİ: Version tracking (sync için)
+        spotSettingsVersion: null,
+        activeSpots: [],
+        pollingInterval: null,
     };
 
     const STORAGE_KEY = 'muzibu_spot_counter';
     const MIN_LISTEN_DURATION = 30; // 30 saniye dinlenince sayılır
+    const POLL_INTERVAL = 300000; // ✅ 5 dakika (300000ms)
 
     // ═══════════════════════════════════════════════════════════════════════════
     // INIT & SETTINGS
@@ -56,6 +61,9 @@ window.MuzibuSpotPlayer = (function() {
 
             // API'den ayarları al
             await fetchSettings();
+
+            // ✅ YENİ: Polling başlat (5dk'da bir kontrol)
+            startPolling();
         } catch (e) {
             console.error('🎙️ SpotPlayer: INIT ERROR!', e);
         }
@@ -90,6 +98,10 @@ window.MuzibuSpotPlayer = (function() {
             state.corporateId = data.corporate_id || null;
             state.branchId = data.branch_id || null;
 
+            // ✅ YENİ: Version ve spot listesi
+            const newVersion = data.spot_settings_version || null;
+            const newSpots = data.spots || [];
+
             // Ayarlar değiştiyse sayacı sıfırla
             const savedSettings = localStorage.getItem(STORAGE_KEY + '_settings');
             const currentSettings = JSON.stringify({
@@ -102,9 +114,76 @@ window.MuzibuSpotPlayer = (function() {
                 localStorage.setItem(STORAGE_KEY + '_settings', currentSettings);
             }
 
+            // ✅ YENİ: Version değiştiyse sync yap
+            if (state.spotSettingsVersion !== null && newVersion !== state.spotSettingsVersion) {
+                console.log(`🎙️ SpotPlayer: Version changed! ${state.spotSettingsVersion} → ${newVersion}`);
+                handleVersionChange(newVersion, newSpots);
+            }
+
+            state.spotSettingsVersion = newVersion;
+            state.activeSpots = newSpots;
+
         } catch (error) {
             console.error('🎙️ SpotPlayer: Failed to fetch settings', error);
             state.enabled = false;
+        }
+    }
+
+    /**
+     * ✅ YENİ: Version değişikliğini handle et
+     */
+    function handleVersionChange(newVersion, newSpots) {
+        console.log('🎙️ SpotPlayer: Handling version change...');
+
+        // Preload'lanmış spot varsa iptal et (artık geçersiz olabilir)
+        if (state.preloadedSpot) {
+            const preloadedId = state.preloadedSpot.id;
+            const stillActive = newSpots.some(s => s.id === preloadedId);
+
+            if (!stillActive) {
+                console.log('🎙️ SpotPlayer: Preloaded spot no longer active, clearing...');
+                clearPreload(true); // src'yi de sil (iptal)
+            }
+        }
+
+        // Alpine.js event dispatch (UI güncelleme için)
+        window.dispatchEvent(new CustomEvent('spot-settings-updated', {
+            detail: {
+                version: newVersion,
+                spots: newSpots,
+                enabled: state.enabled,
+                songsBetween: state.songsBetween,
+            }
+        }));
+
+        console.log('🎙️ SpotPlayer: Version sync completed');
+    }
+
+    /**
+     * ✅ YENİ: Polling başlat (5 dakikada bir kontrol)
+     */
+    function startPolling() {
+        // Zaten çalışıyorsa durdur
+        if (state.pollingInterval) {
+            clearInterval(state.pollingInterval);
+        }
+
+        console.log(`🎙️ SpotPlayer: Starting polling (every ${POLL_INTERVAL / 1000}s)...`);
+
+        state.pollingInterval = setInterval(async () => {
+            console.log('🎙️ SpotPlayer: Polling for settings update...');
+            await fetchSettings();
+        }, POLL_INTERVAL);
+    }
+
+    /**
+     * ✅ YENİ: Polling durdur
+     */
+    function stopPolling() {
+        if (state.pollingInterval) {
+            clearInterval(state.pollingInterval);
+            state.pollingInterval = null;
+            console.log('🎙️ SpotPlayer: Polling stopped');
         }
     }
 
@@ -282,24 +361,20 @@ window.MuzibuSpotPlayer = (function() {
                 spot._preloadedAudio = state.preloadedAudio;
                 clearPreload();
             } else {
-                // Preload yoksa API'den al
-                const response = await fetch('/api/spot/next', {
-                    credentials: 'include',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (!data.success || !data.spot) {
-                    console.log('🎙️ SpotPlayer: No spot available');
+                // ✅ YENİ: Client-side rotation (state.activeSpots'tan al)
+                if (!state.activeSpots || state.activeSpots.length === 0) {
+                    console.log('🎙️ SpotPlayer: No active spots in list');
                     resetCounter();
                     return null;
                 }
 
-                spot = data.spot;
+                // Rotation: Sıradaki spot'u bul
+                const currentIndex = state.currentSpot ?
+                    state.activeSpots.findIndex(s => s.id === state.currentSpot.id) : -1;
+                const nextIndex = (currentIndex + 1) % state.activeSpots.length;
+                spot = state.activeSpots[nextIndex];
+
+                console.log(`🎙️ SpotPlayer: Client-side rotation ${currentIndex} → ${nextIndex} (${spot.title})`);
             }
 
             state.currentSpot = spot;
@@ -469,6 +544,10 @@ window.MuzibuSpotPlayer = (function() {
         shouldPreloadSpot,
         hasPreloadedSpot: () => !!state.preloadedSpot,
 
+        // ✅ YENİ: Polling API
+        startPolling,
+        stopPolling,
+
         // State getters
         isEnabled: () => state.enabled,
         isPaused: () => state.isPaused,
@@ -476,6 +555,8 @@ window.MuzibuSpotPlayer = (function() {
         getSongsBetween: () => state.songsBetween,
         getCurrentSpot: () => state.currentSpot,
         isPlaying: () => state.currentSpot !== null,
+        getVersion: () => state.spotSettingsVersion,
+        getActiveSpots: () => state.activeSpots,
     };
 
 })();

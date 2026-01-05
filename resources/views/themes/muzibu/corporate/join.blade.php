@@ -2,7 +2,7 @@
 
 @section('title', 'Kurumsal Hesap - Muzibu')
 
-@section('content')
+@push('scripts')
 <script>
 window.corporatePage = function() {
     return {
@@ -181,6 +181,9 @@ window.corporatePage = function() {
     }
 }
 </script>
+@endpush
+
+@section('content')
 
 <div class="py-12 pb-24" x-data="corporatePage()">
     <div class="max-w-4xl mx-auto px-4">

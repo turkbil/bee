@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu - Satış Ekibi Eğitim Sunumu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 3px; }
+
+        /* Slide System */
+        .slide {
+            display: none;
+            min-height: 100vh;
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Gradient Texts */
+        .gradient-text {
+            background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .gradient-text-gold {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .gradient-text-green {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .gradient-text-red {
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 50%, #dc2626 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .gradient-text-blue {
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.6); }
+        }
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes wave {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(1.5); }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        @keyframes bounce-soft {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        @keyframes radar {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .animate-float { animation: float 4s ease-in-out infinite; }
+        .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+        .animate-spin-slow { animation: spin-slow 20s linear infinite; }
+        .animate-shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        .animate-bounce-soft { animation: bounce-soft 2s ease-in-out infinite; }
+
+        /* Sound Wave Animation */
+        .sound-wave {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 40px;
+        }
+        .sound-wave span {
+            width: 4px;
+            background: linear-gradient(to top, #6366f1, #a855f7);
+            border-radius: 2px;
+            animation: wave 1s ease-in-out infinite;
+        }
+        .sound-wave span:nth-child(1) { height: 20px; animation-delay: 0s; }
+        .sound-wave span:nth-child(2) { height: 35px; animation-delay: 0.1s; }
+        .sound-wave span:nth-child(3) { height: 25px; animation-delay: 0.2s; }
+        .sound-wave span:nth-child(4) { height: 40px; animation-delay: 0.3s; }
+        .sound-wave span:nth-child(5) { height: 30px; animation-delay: 0.4s; }
+        .sound-wave span:nth-child(6) { height: 20px; animation-delay: 0.5s; }
+        .sound-wave span:nth-child(7) { height: 35px; animation-delay: 0.6s; }
+
+        /* Shield Pulse */
+        .shield-pulse {
+            position: relative;
+        }
+        .shield-pulse::before {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border: 2px solid rgba(34, 197, 94, 0.5);
+            border-radius: 50%;
+            animation: radar 2s ease-out infinite;
+        }
+        .shield-pulse::after {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border: 2px solid rgba(34, 197, 94, 0.3);
+            border-radius: 50%;
+            animation: radar 2s ease-out infinite 0.5s;
+        }
+
+        /* Card Styles */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+        .glass-card:hover {
+            border-color: rgba(99, 102, 241, 0.5);
+            transform: translateY(-4px);
+            transition: all 0.3s ease;
+        }
+
+        /* Gradient Border */
+        .gradient-border {
+            position: relative;
+            background: #0f172a;
+        }
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            padding: 2px;
+            background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+            border-radius: inherit;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+
+        /* Background Decorations */
+        .bg-grid {
+            background-image:
+                linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* Corner Decorations */
+        .corner-decoration {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        /* Comparison Table */
+        .comparison-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        }
+        .comparison-row:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        /* Price Tag */
+        .price-tag {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
+        }
+
+        /* Progress Steps */
+        .step-number {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-white overflow-x-hidden" x-data="presentation()">
+
+    <!-- Background -->
+    <div class="fixed inset-0 bg-grid pointer-events-none"></div>
+    <div class="fixed inset-0 pointer-events-none">
+        <div class="absolute top-0 left-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-500/5 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- ==================== SLIDE 01: KAPAK ==================== -->
+    <section class="slide active flex-col items-center justify-center text-center px-8 py-16 relative" data-slide="1">
+        <!-- Corner Sound Wave -->
+        <div class="absolute top-8 right-8">
+            <div class="sound-wave">
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+        </div>
+
+        <!-- Badge -->
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-sm mb-8 animate-bounce-soft">
+            <i class="fas fa-building"></i>
+            <span>B2B</span>
+            <span class="w-1 h-1 bg-indigo-400 rounded-full"></span>
+            <span>Tek Panel</span>
+            <span class="w-1 h-1 bg-indigo-400 rounded-full"></span>
+            <span>Sürekli Gelişen Platform</span>
+        </div>
+
+        <!-- Logo & Title -->
+        <div class="mb-6 animate-float">
+            <div class="w-24 h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-2xl shadow-indigo-500/30">
+                <i class="fas fa-music text-4xl text-white"></i>
+            </div>
+        </div>
+
+        <h1 class="text-7xl md:text-8xl font-black mb-6 tracking-tight">
+            <span class="gradient-text">MUZIBU</span>
+        </h1>
+
+        <p class="text-2xl md:text-3xl text-slate-300 font-light mb-4 max-w-3xl">
+            İşletmeler için <span class="text-indigo-400 font-medium">yasal</span>,
+            <span class="text-purple-400 font-medium">güvenli</span> ve
+            <span class="text-pink-400 font-medium">yönetilebilir</span> müzik yayını
+        </p>
+
+        <div class="flex items-center gap-3 text-slate-400 mt-8">
+            <i class="fas fa-shield-halved text-green-500"></i>
+            <span>Satış Ekibi Eğitim Sunumu</span>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-500">
+            <span class="text-sm">Başlamak için</span>
+            <i class="fas fa-chevron-down animate-bounce"></i>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 02: BUGÜN NE YAPACAĞIZ ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="2">
+        <!-- Corner Icon -->
+        <div class="absolute top-8 right-8 text-6xl text-indigo-500/20 animate-float">
+            <i class="fas fa-bullseye"></i>
+        </div>
+
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/30 text-green-400 text-sm mb-8">
+                <i class="fas fa-lightbulb"></i>
+                <span>Değer Odaklı Satış</span>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                Bugün bir <span class="gradient-text">"ürün"</span> değil,<br>
+                bir <span class="gradient-text-gold">"değer"</span> anlatacağız
+            </h2>
+
+            <p class="text-xl text-slate-400 mb-12 max-w-2xl mx-auto">
+                Müşteriye müzik satmıyorsunuz;<br>
+                <span class="text-white font-medium">işletmeye huzur, güvenlik ve tasarruf satıyorsunuz.</span>
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="glass-card rounded-2xl p-6 text-left">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-crosshairs text-xl text-indigo-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Doğru Hedef</h3>
+                    <p class="text-slate-400">İşletmeler (B2B)</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-left">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-comments text-xl text-purple-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Doğru Dil</h3>
+                    <p class="text-slate-400">Risk → Çözüm → Kazanç</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-left">
+                    <div class="w-12 h-12 rounded-xl bg-pink-500/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-route text-xl text-pink-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Doğru Akış</h3>
+                    <p class="text-slate-400">Demo → Teklif → Kapanış</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 03: BEN KİMİM ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="3">
+        <!-- Corner Building -->
+        <div class="absolute top-8 right-8 text-6xl text-indigo-500/20 animate-spin-slow" style="animation-duration: 30s;">
+            <i class="fas fa-cog"></i>
+        </div>
+
+        <div class="max-w-4xl mx-auto">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <!-- Avatar -->
+                <div class="flex-shrink-0">
+                    <div class="w-40 h-40 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 p-1 animate-pulse-glow">
+                        <div class="w-full h-full rounded-full bg-slate-900 flex items-center justify-center">
+                            <i class="fas fa-building text-5xl text-indigo-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info -->
+                <div class="text-center md:text-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-sm mb-4">
+                        <i class="fas fa-handshake"></i>
+                        <span>Merhaba</span>
+                    </div>
+
+                    <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                        Ben <span class="gradient-text">Türk Bilişim</span>'den
+                    </h2>
+
+                    <p class="text-xl text-slate-300 mb-6">
+                        Muzibu ekibi, satış temsilcilerine sistemin mantığını ve sahada nasıl anlatılacağını aktarmamı istedi.
+                    </p>
+
+                    <div class="space-y-3 text-left">
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-code text-indigo-400 mt-1"></i>
+                            <span class="text-slate-400"><span class="text-white">Bizim işimiz:</span> Ürün geliştirmek, güvenli işletmek, sürekli iyileştirmek</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-music text-purple-400 mt-1"></i>
+                            <span class="text-slate-400"><span class="text-white">Muzibu:</span> Müşterimiz (bağımsız marka)</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-rocket text-pink-400 mt-1"></i>
+                            <span class="text-slate-400"><span class="text-white">Platform:</span> Türk Bilişim tarafından geliştiriliyor ve büyütülüyor</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Company Badge -->
+            <div class="mt-12 text-center">
+                <div class="inline-flex items-center gap-4 px-6 py-3 rounded-xl bg-slate-800/50 border border-slate-700">
+                    <span class="text-2xl font-bold gradient-text">turkbilisim.com.tr</span>
+                    <span class="text-slate-500">|</span>
+                    <span class="text-slate-400">27+ Yıllık Deneyim</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 04: MUZİBU NEDİR ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="4">
+        <!-- Corner Radio -->
+        <div class="absolute top-8 right-8">
+            <div class="relative">
+                <i class="fas fa-radio text-6xl text-purple-500/30"></i>
+                <div class="absolute -top-2 -right-2">
+                    <div class="sound-wave" style="transform: scale(0.6);">
+                        <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-sm mb-8">
+                <i class="fas fa-info-circle"></i>
+                <span>Platform Tanıtımı</span>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                <span class="gradient-text">Muzibu</span> = İşletmeler için<br>müzik yayın platformu
+            </h2>
+
+            <p class="text-xl text-slate-400 mb-12">
+                Çalmak kolay. Yönetmek kolay. <span class="text-white">Süreç net.</span>
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="glass-card rounded-2xl p-6 text-left group hover:border-purple-500/50 transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fas fa-radio text-2xl text-indigo-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Sektöre Uygun Yayın</h3>
+                            <p class="text-slate-400">Radyo/playlist yapısı her sektöre özel hazırlandı</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-left group hover:border-purple-500/50 transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fas fa-sliders text-2xl text-purple-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Tam Kontrol</h3>
+                            <p class="text-slate-400">Kullanıcı/cihaz yönetimi işletme disipliniyle</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-left group hover:border-purple-500/50 transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-pink-500/20 to-red-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fas fa-bullhorn text-2xl text-pink-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Anons Sistemi</h3>
+                            <p class="text-slate-400">Marka içi duyuru ve kampanya imkânı</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-left group hover:border-purple-500/50 transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fas fa-face-smile text-2xl text-green-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Sorunsuz Deneyim</h3>
+                            <p class="text-slate-400">Müşteriye kesintisiz, profesyonel yayın</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 05: İŞLETMELERİN KABUSU ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="5">
+        <!-- Corner Warning -->
+        <div class="absolute top-8 right-8 animate-bounce-soft">
+            <i class="fas fa-triangle-exclamation text-6xl text-red-500/30"></i>
+        </div>
+
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-sm mb-8">
+                    <i class="fas fa-skull-crossbones"></i>
+                    <span>Problem Tanımı</span>
+                </div>
+
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                    İşletmelerin <span class="gradient-text-red">kabusu</span>:<br>
+                    belirsizlik ve risk
+                </h2>
+
+                <p class="text-xl text-slate-400 max-w-2xl mx-auto">
+                    <span class="text-red-400 font-medium">"Bir şey olmaz"</span> cümlesi,<br>
+                    işletmelerde pahalıya patlar.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-12">
+                <div class="glass-card rounded-2xl p-6 border-red-500/20 hover:border-red-500/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-gavel text-2xl text-red-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-center mb-2">Denetim Kabusu</h3>
+                    <p class="text-slate-400 text-center text-sm">Ani denetimler ve tarife karmaşası</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 border-red-500/20 hover:border-red-500/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-question text-2xl text-red-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-center mb-2">Belirsizlik</h3>
+                    <p class="text-slate-400 text-center text-sm">"Ticari sayılır mı?" sorusu</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 border-red-500/20 hover:border-red-500/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-money-bill-wave text-2xl text-red-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-center mb-2">Beklenmedik Fatura</h3>
+                    <p class="text-slate-400 text-center text-sm">15-30 bin TL yıllık masraf</p>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <div class="inline-flex items-center gap-3 px-6 py-4 rounded-xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30">
+                    <i class="fas fa-shield-halved text-2xl text-green-400"></i>
+                    <span class="text-lg text-green-300">Muzibu, bu belirsizliği <span class="font-bold text-white">netliğe</span> çevirir.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 06: SPOTİFY FARKI ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="6">
+        <!-- Corner Scale -->
+        <div class="absolute top-8 right-8 animate-float">
+            <i class="fas fa-scale-balanced text-6xl text-indigo-500/20"></i>
+        </div>
+
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-sm mb-8">
+                <i class="fas fa-not-equal"></i>
+                <span>Kritik Fark</span>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                Spotify <span class="gradient-text-green">çok iyi</span>.<br>
+                Ama işletme problemi <span class="gradient-text">başka</span>.
+            </h2>
+
+            <p class="text-xl text-slate-400 mb-12 max-w-2xl mx-auto">
+                Kişisel kullanım ile ticari yayın aynı şey değildir.
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- Spotify -->
+                <div class="glass-card rounded-2xl p-8 text-left border-green-500/20">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-green-500 flex items-center justify-center">
+                            <i class="fab fa-spotify text-2xl text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold">Spotify</h3>
+                            <p class="text-slate-400 text-sm">Bireysel Platform</p>
+                        </div>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-slate-300">
+                            <i class="fas fa-check text-green-400"></i>
+                            <span>Kişisel dinleme deneyimi</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-slate-300">
+                            <i class="fas fa-check text-green-400"></i>
+                            <span>Bireysel kullanımda mükemmel</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-slate-300">
+                            <i class="fas fa-check text-green-400"></i>
+                            <span>Milyonlarca şarkı</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Muzibu -->
+                <div class="gradient-border rounded-2xl p-8 text-left">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                            <i class="fas fa-music text-2xl text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold gradient-text">Muzibu</h3>
+                            <p class="text-slate-400 text-sm">İşletme Platformu</p>
+                        </div>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-slate-300">
+                            <i class="fas fa-building text-indigo-400"></i>
+                            <span>İşletme senaryosu için tasarım</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-slate-300">
+                            <i class="fas fa-shield-halved text-indigo-400"></i>
+                            <span>Ticari kullanım güvencesi</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-slate-300">
+                            <i class="fas fa-sliders text-indigo-400"></i>
+                            <span>Kontrol ve yönetim</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 07: KORUMA KALKANI ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="7">
+        <div class="max-w-4xl mx-auto text-center">
+            <!-- Animated Shield -->
+            <div class="relative inline-block mb-8">
+                <div class="shield-pulse">
+                    <div class="w-32 h-32 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-2xl shadow-green-500/30">
+                        <i class="fas fa-shield-halved text-5xl text-white"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/30 text-green-400 text-sm mb-8">
+                <i class="fas fa-lock"></i>
+                <span>Değer Önerisi</span>
+            </div>
+
+            <h2 class="text-5xl md:text-6xl font-black mb-6">
+                <span class="gradient-text">MUZIBU</span><br>
+                <span class="gradient-text-green">KORUMA KALKANI</span>
+            </h2>
+
+            <p class="text-2xl text-slate-300 mb-12 max-w-2xl mx-auto">
+                Siz bir ürün satmıyorsunuz.<br>
+                <span class="text-white font-semibold">İşletmeyi riske karşı koruyorsunuz.</span>
+            </p>
+
+            <div class="flex flex-wrap justify-center gap-6">
+                <div class="px-8 py-4 rounded-2xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30">
+                    <i class="fas fa-heart text-3xl text-green-400 mb-2"></i>
+                    <p class="text-xl font-semibold text-green-300">Huzur</p>
+                </div>
+                <div class="px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/30">
+                    <i class="fas fa-shield text-3xl text-indigo-400 mb-2"></i>
+                    <p class="text-xl font-semibold text-indigo-300">Güvenlik</p>
+                </div>
+                <div class="px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/30">
+                    <i class="fas fa-coins text-3xl text-amber-400 mb-2"></i>
+                    <p class="text-xl font-semibold text-amber-300">Tasarruf</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 08: ALTIN MADENİ ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="8">
+        <!-- Corner Gem -->
+        <div class="absolute top-8 right-8 animate-float">
+            <i class="fas fa-gem text-6xl text-amber-500/30"></i>
+        </div>
+
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-sm mb-8">
+                <i class="fas fa-map"></i>
+                <span>Pazar Fırsatı</span>
+            </div>
+
+            <h2 class="text-4xl md:text-6xl font-black mb-6">
+                <span class="gradient-text-gold">Altın Madeninin</span><br>
+                Üstündesiniz!
+            </h2>
+
+            <p class="text-xl text-slate-400 mb-12 max-w-2xl mx-auto">
+                Çünkü hedef kitle net: <span class="text-white">binlerce işletme</span> aynı dertten muzdarip.
+            </p>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-12">
+                <div class="glass-card rounded-xl p-4 hover:border-amber-500/50 transition-all group">
+                    <i class="fas fa-mug-hot text-3xl text-amber-400 mb-2 group-hover:scale-110 transition-transform"></i>
+                    <p class="font-medium">Kafe</p>
+                </div>
+                <div class="glass-card rounded-xl p-4 hover:border-amber-500/50 transition-all group">
+                    <i class="fas fa-utensils text-3xl text-orange-400 mb-2 group-hover:scale-110 transition-transform"></i>
+                    <p class="font-medium">Restoran</p>
+                </div>
+                <div class="glass-card rounded-xl p-4 hover:border-amber-500/50 transition-all group">
+                    <i class="fas fa-scissors text-3xl text-pink-400 mb-2 group-hover:scale-110 transition-transform"></i>
+                    <p class="font-medium">Kuaför</p>
+                </div>
+                <div class="glass-card rounded-xl p-4 hover:border-amber-500/50 transition-all group">
+                    <i class="fas fa-dumbbell text-3xl text-red-400 mb-2 group-hover:scale-110 transition-transform"></i>
+                    <p class="font-medium">Spor Salonu</p>
+                </div>
+                <div class="glass-card rounded-xl p-4 hover:border-amber-500/50 transition-all group">
+                    <i class="fas fa-store text-3xl text-indigo-400 mb-2 group-hover:scale-110 transition-transform"></i>
+                    <p class="font-medium">Mağaza</p>
+                </div>
+                <div class="glass-card rounded-xl p-4 hover:border-amber-500/50 transition-all group">
+                    <i class="fas fa-hotel text-3xl text-purple-400 mb-2 group-hover:scale-110 transition-transform"></i>
+                    <p class="font-medium">Otel</p>
+                </div>
+            </div>
+
+            <div class="inline-flex items-center gap-3 px-6 py-4 rounded-xl bg-slate-800/50 border border-slate-700">
+                <span class="text-lg text-slate-300">Hepsinin ortak ihtiyacı:</span>
+                <span class="text-lg font-bold gradient-text-gold">Atmosfer + Güven + Kontrol</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 09: SATIŞIN 4 SÜTUNU ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="9">
+        <!-- Corner Columns -->
+        <div class="absolute top-8 right-8 animate-float">
+            <i class="fas fa-columns text-6xl text-indigo-500/20"></i>
+        </div>
+
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-sm mb-8">
+                <i class="fas fa-list-ol"></i>
+                <span>Satış Metodolojisi</span>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                Satışın <span class="gradient-text">4 Sütunu</span>
+            </h2>
+
+            <p class="text-xl text-slate-400 mb-12">
+                Müşteriyle konuşurken <span class="text-white">bu sırayı bozmayın</span>.
+            </p>
+
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="glass-card rounded-2xl p-6 text-center group hover:border-green-500/50 transition-all">
+                    <div class="step-number mx-auto mb-4 group-hover:scale-110 transition-transform">1</div>
+                    <i class="fas fa-shield-halved text-3xl text-green-400 mb-3"></i>
+                    <h3 class="text-lg font-bold mb-2">Güvence</h3>
+                    <p class="text-sm text-slate-400">Riskten çıkış</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-center group hover:border-purple-500/50 transition-all">
+                    <div class="step-number mx-auto mb-4 group-hover:scale-110 transition-transform">2</div>
+                    <i class="fas fa-cloud-sun text-3xl text-purple-400 mb-3"></i>
+                    <h3 class="text-lg font-bold mb-2">Atmosfer</h3>
+                    <p class="text-sm text-slate-400">Müşteri deneyimi</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-center group hover:border-indigo-500/50 transition-all">
+                    <div class="step-number mx-auto mb-4 group-hover:scale-110 transition-transform">3</div>
+                    <i class="fas fa-sliders text-3xl text-indigo-400 mb-3"></i>
+                    <h3 class="text-lg font-bold mb-2">Kontrol</h3>
+                    <p class="text-sm text-slate-400">Playlist, anons, yönetim</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-center group hover:border-pink-500/50 transition-all">
+                    <div class="step-number mx-auto mb-4 group-hover:scale-110 transition-transform">4</div>
+                    <i class="fas fa-infinity text-3xl text-pink-400 mb-3"></i>
+                    <h3 class="text-lg font-bold mb-2">Süreklilik</h3>
+                    <p class="text-sm text-slate-400">Kesintisiz yayın</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 10: HIZLI DEĞER ÖNERİSİ ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="10">
+        <!-- Corner Money -->
+        <div class="absolute top-8 right-8 animate-bounce-soft">
+            <i class="fas fa-sack-dollar text-6xl text-green-500/30"></i>
+        </div>
+
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/30 text-green-400 text-sm mb-8">
+                <i class="fas fa-lightbulb"></i>
+                <span>Anahtar Mesaj</span>
+            </div>
+
+            <div class="mb-12">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6 leading-tight">
+                    <span class="gradient-text-gold">"Satış yapmıyorsunuz,</span><br>
+                    <span class="gradient-text-green">işletmelere para kazandırıyorsunuz!"</span>
+                </h2>
+            </div>
+
+            <p class="text-xl text-slate-400 mb-12 max-w-2xl mx-auto">
+                Çünkü: ceza riskini azaltır, atmosferi iyileştirir,<br>
+                <span class="text-white">müşteri kalış süresini artırır.</span>
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="glass-card rounded-2xl p-6 group hover:border-green-500/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-face-smile text-3xl text-green-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Müşteri Memnuniyeti</h3>
+                    <p class="text-slate-400 text-sm">Doğru müzik = mutlu müşteri</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 group hover:border-amber-500/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-amber-500/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-clock text-3xl text-amber-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Uzun Kalış Süresi</h3>
+                    <p class="text-slate-400 text-sm">Daha uzun kalış → daha çok harcama</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 group hover:border-indigo-500/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-indigo-500/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-star text-3xl text-indigo-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Marka Algısı</h3>
+                    <p class="text-slate-400 text-sm">Profesyonel ortam = güçlü marka</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 11: NE ÇALACAĞIM STRESİ ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="11">
+        <!-- Corner Wand -->
+        <div class="absolute top-8 right-8 animate-float">
+            <i class="fas fa-wand-magic-sparkles text-6xl text-purple-500/30"></i>
+        </div>
+
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-sm mb-8">
+                <i class="fas fa-magic"></i>
+                <span>Otomatik Çözüm</span>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                Müşteri <span class="gradient-text">"ne çalacağım?"</span><br>
+                stresini bitirin
+            </h2>
+
+            <p class="text-xl text-slate-400 mb-12">
+                Sektöre uygun yayın = <span class="text-white font-semibold">satışın en hızlı yolu</span>
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <div class="glass-card rounded-2xl p-6 text-left">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-radio text-xl text-indigo-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Hazır Radyolar</h3>
+                    <p class="text-slate-400 text-sm">Pop, Chill, Jazz, Türkçe... Her tema hazır</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-left">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-toggle-on text-xl text-purple-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Oto veya Manuel</h3>
+                    <p class="text-slate-400 text-sm">İster otomatik, ister manuel kontrol</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-left">
+                    <div class="w-12 h-12 rounded-xl bg-pink-500/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-heart text-xl text-pink-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Mekân Ruhu</h3>
+                    <p class="text-slate-400 text-sm">Mekânın ruhuna göre akış</p>
+                </div>
+            </div>
+
+            <div class="inline-flex items-center gap-3 px-6 py-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30">
+                <i class="fas fa-check-double text-xl text-purple-400"></i>
+                <span class="text-lg text-slate-300">Müşteri müzik seçmekle uğraşmaz. <span class="text-white font-medium">Sistem onun yerine düşünür.</span></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 12: PLAYLİST KONTROLÜ ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="12">
+        <!-- Corner List -->
+        <div class="absolute top-8 right-8 animate-float">
+            <i class="fas fa-list-check text-6xl text-indigo-500/20"></i>
+        </div>
+
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-sm mb-8">
+                <i class="fas fa-sliders"></i>
+                <span>Yönetim Gücü</span>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                <span class="gradient-text">Playlist Kontrolü:</span><br>
+                işletme kendi atmosferini yönetir
+            </h2>
+
+            <p class="text-xl text-slate-400 mb-12">
+                <span class="text-white">"Aynı mekân, farklı saat, farklı müzik."</span>
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="glass-card rounded-2xl p-6 text-center group hover:border-indigo-500/50 transition-all">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-sun text-3xl text-amber-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Saate Göre</h3>
+                    <p class="text-slate-400 text-sm">Sabah enerjik, akşam sakin</p>
+                    <div class="mt-4 flex justify-center gap-2">
+                        <span class="px-2 py-1 rounded bg-amber-500/20 text-amber-300 text-xs">08:00</span>
+                        <span class="px-2 py-1 rounded bg-orange-500/20 text-orange-300 text-xs">12:00</span>
+                        <span class="px-2 py-1 rounded bg-purple-500/20 text-purple-300 text-xs">20:00</span>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-center group hover:border-pink-500/50 transition-all">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-pink-500/20 to-red-500/20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-tags text-3xl text-pink-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Kampanyaya Göre</h3>
+                    <p class="text-slate-400 text-sm">Özel günlere özel içerik</p>
+                    <div class="mt-4 flex justify-center gap-2">
+                        <span class="px-2 py-1 rounded bg-red-500/20 text-red-300 text-xs">Yılbaşı</span>
+                        <span class="px-2 py-1 rounded bg-pink-500/20 text-pink-300 text-xs">14 Şubat</span>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-center group hover:border-green-500/50 transition-all">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-building text-3xl text-green-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Şubeye Göre</h3>
+                    <p class="text-slate-400 text-sm">Her lokasyona farklı yayın</p>
+                    <div class="mt-4 flex justify-center gap-2">
+                        <span class="px-2 py-1 rounded bg-green-500/20 text-green-300 text-xs">Merkez</span>
+                        <span class="px-2 py-1 rounded bg-emerald-500/20 text-emerald-300 text-xs">Şube</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 13: ANONS SİSTEMİ ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="13">
+        <!-- Corner Megaphone with waves -->
+        <div class="absolute top-8 right-8">
+            <div class="relative animate-bounce-soft">
+                <i class="fas fa-bullhorn text-6xl text-pink-500/30"></i>
+                <div class="absolute -right-4 top-2 flex flex-col gap-1">
+                    <div class="w-8 h-1 rounded bg-pink-500/30 animate-pulse"></div>
+                    <div class="w-6 h-1 rounded bg-pink-500/20 animate-pulse" style="animation-delay: 0.2s;"></div>
+                    <div class="w-4 h-1 rounded bg-pink-500/10 animate-pulse" style="animation-delay: 0.4s;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-500/10 border border-pink-500/30 text-pink-300 text-sm mb-8">
+                <i class="fas fa-bullhorn"></i>
+                <span>Ekstra Değer</span>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                <span class="gradient-text">Anons Sistemi</span> =<br>
+                işletmenin kendi reklamı
+            </h2>
+
+            <p class="text-xl text-slate-400 mb-12">
+                Müzik + duyuru → <span class="text-white font-semibold">satışa doğrudan etki</span>
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <div class="glass-card rounded-2xl p-6 text-center group hover:border-pink-500/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500/20 to-red-500/20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-percent text-2xl text-pink-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Kampanya Anonsu</h3>
+                    <p class="text-slate-400 text-sm">"Bugün tüm içeceklerde %20 indirim!"</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-center group hover:border-purple-500/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500/20 to-indigo-500/20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-clock text-2xl text-purple-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Kapanış Duyurusu</h3>
+                    <p class="text-slate-400 text-sm">"10 dakika sonra kapanıyoruz"</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-center group hover:border-amber-500/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-amber-500/20 to-yellow-500/20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-utensils text-2xl text-amber-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Menü Hatırlatma</h3>
+                    <p class="text-slate-400 text-sm">"Günün özel menüsü hazır!"</p>
+                </div>
+            </div>
+
+            <div class="inline-flex items-center gap-3 px-6 py-4 rounded-xl bg-gradient-to-r from-pink-500/10 to-purple-500/10 border border-pink-500/30">
+                <i class="fas fa-lightbulb text-xl text-pink-400"></i>
+                <span class="text-lg text-slate-300">Müşteri "müzik" değil, <span class="text-white font-medium">iletişim kanalı</span> satın alır.</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 14: GÜVENLİK VE KONTROL ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="14">
+        <!-- Corner Key -->
+        <div class="absolute top-8 right-8 animate-float">
+            <i class="fas fa-key text-6xl text-indigo-500/20"></i>
+        </div>
+
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-sm mb-8">
+                <i class="fas fa-lock"></i>
+                <span>İşletme Disiplini</span>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                B2B disiplin:<br>
+                <span class="gradient-text">kullanıcı/cihaz kontrolü</span>
+            </h2>
+
+            <p class="text-xl text-slate-400 mb-12">
+                İşletme hesabı, <span class="text-white">işletme gibi yönetilir</span>.
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="glass-card rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 rounded-full bg-indigo-500/10 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-laptop text-2xl text-indigo-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Cihaz Limiti</h3>
+                    <p class="text-slate-400 text-sm">Kaç cihazda çalabileceği belirlenir</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-user-shield text-2xl text-purple-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Yetki Düzeni</h3>
+                    <p class="text-slate-400 text-sm">Kim neyi yönetebilir, net</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-shield-halved text-2xl text-green-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Hesap Güvenliği</h3>
+                    <p class="text-slate-400 text-sm">Oturum ve erişim kontrolü</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 15: YAPAY ZEKA ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="15">
+        <!-- Corner Sparkles -->
+        <div class="absolute top-8 right-8">
+            <div class="relative">
+                <i class="fas fa-robot text-6xl text-purple-500/30 animate-float"></i>
+                <div class="absolute -top-2 -right-2 w-4 h-4 bg-purple-500 rounded-full animate-ping"></div>
+            </div>
+        </div>
+
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-sm mb-8 animate-shimmer">
+                <i class="fas fa-sparkles"></i>
+                <span>Yapay Zeka</span>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                <span class="gradient-text">Yapay Zeka</span> destekli<br>
+                müzik asistanı
+            </h2>
+
+            <p class="text-xl text-slate-400 mb-12">
+                <span class="text-white">"Bu mekâna, bu saat aralığında, bu kitleye ne çalarız?"</span>
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <div class="glass-card rounded-2xl p-6 text-center group hover:border-purple-500/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-bolt text-2xl text-purple-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Hızlı Öneri</h3>
+                    <p class="text-slate-400 text-sm">Saniyeler içinde akıllı playlist</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-center group hover:border-indigo-500/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500/20 to-blue-500/20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-sliders text-2xl text-indigo-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Tarz/Tempo/Mood</h3>
+                    <p class="text-slate-400 text-sm">Detaylı parametre seçimi</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-center group hover:border-pink-500/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500/20 to-red-500/20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-wand-magic-sparkles text-2xl text-pink-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Demo Gücü</h3>
+                    <p class="text-slate-400 text-sm">Satıcının elini güçlendirir</p>
+                </div>
+            </div>
+
+            <div class="inline-flex items-center gap-3 px-6 py-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30">
+                <i class="fas fa-brain text-xl text-purple-400"></i>
+                <span class="text-lg text-slate-300">Türk Bilişim tarafından <span class="text-white font-medium">özel olarak geliştirildi</span></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 16: 3 SUNUCU ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="16">
+        <!-- Corner Servers -->
+        <div class="absolute top-8 right-8">
+            <div class="flex gap-2">
+                <div class="w-8 h-12 bg-indigo-500/20 rounded animate-pulse"></div>
+                <div class="w-8 h-12 bg-purple-500/20 rounded animate-pulse" style="animation-delay: 0.3s;"></div>
+                <div class="w-8 h-12 bg-pink-500/20 rounded animate-pulse" style="animation-delay: 0.6s;"></div>
+            </div>
+        </div>
+
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-sm mb-8">
+                <i class="fas fa-server"></i>
+                <span>Altyapı Gücü</span>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                <span class="gradient-text">Süreklilik:</span><br>
+                sistem her zaman ayakta
+            </h2>
+
+            <p class="text-xl text-slate-400 mb-12">
+                Teknik detay değil; müşteri için anlamı: <span class="text-white font-semibold">kesintisiz yayın</span>
+            </p>
+
+            <div class="flex justify-center items-center gap-8 mb-12">
+                <div class="glass-card rounded-2xl p-6 text-center w-40">
+                    <div class="w-16 h-16 rounded-full bg-indigo-500/20 flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-server text-2xl text-indigo-400"></i>
+                    </div>
+                    <p class="text-sm text-slate-400">Sunucu 1</p>
+                </div>
+
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-arrows-left-right text-2xl text-slate-600"></i>
+                    <span class="text-xs text-slate-500 mt-1">Senkron</span>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-center w-40">
+                    <div class="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-server text-2xl text-purple-400"></i>
+                    </div>
+                    <p class="text-sm text-slate-400">Sunucu 2</p>
+                </div>
+
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-arrows-left-right text-2xl text-slate-600"></i>
+                    <span class="text-xs text-slate-500 mt-1">Senkron</span>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-center w-40">
+                    <div class="w-16 h-16 rounded-full bg-pink-500/20 flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-server text-2xl text-pink-400"></i>
+                    </div>
+                    <p class="text-sm text-slate-400">Sunucu 3</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="glass-card rounded-xl p-4 text-center">
+                    <i class="fas fa-shield-halved text-xl text-green-400 mb-2"></i>
+                    <p class="text-sm text-slate-400">Yedeklilik yaklaşımı</p>
+                </div>
+                <div class="glass-card rounded-xl p-4 text-center">
+                    <i class="fas fa-chart-line text-xl text-indigo-400 mb-2"></i>
+                    <p class="text-sm text-slate-400">Trafik artınca stabil</p>
+                </div>
+                <div class="glass-card rounded-xl p-4 text-center">
+                    <i class="fas fa-infinity text-xl text-purple-400 mb-2"></i>
+                    <p class="text-sm text-slate-400">"Müzik durdu" yok</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 17: KARŞILAŞTIRMA TABLOSU ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="17">
+        <!-- Corner Table -->
+        <div class="absolute top-8 right-8 animate-float">
+            <i class="fas fa-table text-6xl text-indigo-500/20"></i>
+        </div>
+
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-sm mb-8">
+                    <i class="fas fa-scale-balanced"></i>
+                    <span>Karşılaştırma</span>
+                </div>
+
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                    Kıyas: <span class="gradient-text">işletme için doğru çözüm</span>
+                </h2>
+
+                <p class="text-xl text-slate-400">
+                    Aynı şeyleri değil, <span class="text-white">doğru kullanım senaryosunu</span> kıyaslıyoruz.
+                </p>
+            </div>
+
+            <!-- Comparison Table -->
+            <div class="glass-card rounded-2xl overflow-hidden">
+                <!-- Header -->
+                <div class="comparison-row bg-slate-800/50 font-semibold">
+                    <div class="text-slate-400">Özellik</div>
+                    <div class="text-center">
+                        <span class="text-green-400"><i class="fab fa-spotify mr-2"></i>Spotify</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="gradient-text"><i class="fas fa-music mr-2"></i>Muzibu</span>
+                    </div>
+                </div>
+
+                <!-- Rows -->
+                <div class="comparison-row">
+                    <div class="text-slate-300">Hedef Kitle</div>
+                    <div class="text-center text-slate-400">Bireysel dinleme</div>
+                    <div class="text-center text-indigo-400 font-medium">İşletme yayını</div>
+                </div>
+
+                <div class="comparison-row">
+                    <div class="text-slate-300">Kontrol</div>
+                    <div class="text-center text-slate-400">Sınırlı</div>
+                    <div class="text-center text-indigo-400 font-medium">Playlist/şube/saat</div>
+                </div>
+
+                <div class="comparison-row">
+                    <div class="text-slate-300">Anons Sistemi</div>
+                    <div class="text-center"><i class="fas fa-times text-red-400"></i></div>
+                    <div class="text-center"><i class="fas fa-check text-green-400"></i></div>
+                </div>
+
+                <div class="comparison-row">
+                    <div class="text-slate-300">İşletme Disiplini</div>
+                    <div class="text-center"><i class="fas fa-times text-red-400"></i></div>
+                    <div class="text-center"><i class="fas fa-check text-green-400"></i></div>
+                </div>
+
+                <div class="comparison-row">
+                    <div class="text-slate-300">Satıcı Desteği</div>
+                    <div class="text-center"><i class="fas fa-times text-red-400"></i></div>
+                    <div class="text-center"><i class="fas fa-check text-green-400"></i></div>
+                </div>
+
+                <div class="comparison-row border-b-0">
+                    <div class="text-slate-300">Yapay Zeka Asistan</div>
+                    <div class="text-center"><i class="fas fa-times text-red-400"></i></div>
+                    <div class="text-center"><i class="fas fa-check text-green-400"></i></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 18: FİYATLANDIRMA ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="18">
+        <!-- Corner Receipt -->
+        <div class="absolute top-8 right-8 animate-float">
+            <i class="fas fa-receipt text-6xl text-green-500/20"></i>
+        </div>
+
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/30 text-green-400 text-sm mb-8">
+                <i class="fas fa-wallet"></i>
+                <span>Fiyatlandırma</span>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                Paketler <span class="gradient-text-green">net</span>.<br>
+                Maliyet <span class="gradient-text-gold">öngörülebilir</span>.
+            </h2>
+
+            <p class="text-xl text-slate-400 mb-12">
+                Bedava değiliz; <span class="text-white">cüzî ve sürdürülebilir</span> bir ücretle profesyonel hizmet veriyoruz.
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto mb-8">
+                <!-- Monthly -->
+                <div class="glass-card rounded-2xl p-8 text-center group hover:border-indigo-500/50 transition-all">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-700 text-slate-300 text-sm mb-6">
+                        <i class="fas fa-calendar"></i>
+                        <span>Aylık Paket</span>
+                    </div>
+                    <div class="mb-4">
+                        <span class="text-5xl font-black gradient-text">600₺</span>
+                        <span class="text-slate-400 text-lg ml-2">+ KDV</span>
+                    </div>
+                    <p class="text-slate-400">Her ay yenilenir</p>
+                    <div class="mt-4 text-sm text-slate-500">
+                        Günlük: ~20₺
+                    </div>
+                </div>
+
+                <!-- Yearly -->
+                <div class="gradient-border rounded-2xl p-8 text-center relative overflow-hidden">
+                    <div class="absolute top-4 right-4">
+                        <span class="px-3 py-1 rounded-full bg-green-500 text-white text-xs font-bold">AVANTAJLI</span>
+                    </div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-sm mb-6">
+                        <i class="fas fa-star"></i>
+                        <span>Yıllık Paket</span>
+                    </div>
+                    <div class="mb-4">
+                        <span class="text-5xl font-black gradient-text-gold">4.000₺</span>
+                        <span class="text-slate-400 text-lg ml-2">+ KDV</span>
+                    </div>
+                    <p class="text-slate-400">12 ay geçerli</p>
+                    <div class="mt-4 text-sm text-green-400">
+                        Günlük: ~11₺ <span class="text-slate-500">(Aylığa göre %44 tasarruf)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inline-flex items-center gap-3 px-6 py-4 rounded-xl bg-slate-800/50 border border-slate-700">
+                <i class="fas fa-info-circle text-indigo-400"></i>
+                <span class="text-slate-300">Yıllık paket, ay bazında <span class="text-white font-medium">ciddi avantaj</span> sağlar.</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 19: PAHALI MI? ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="19">
+        <!-- Corner Shield -->
+        <div class="absolute top-8 right-8">
+            <div class="shield-pulse" style="transform: scale(0.5);">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-amber-500/30 to-orange-500/30 flex items-center justify-center">
+                    <i class="fas fa-coins text-3xl text-amber-400"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-sm mb-8">
+                <i class="fas fa-comments-dollar"></i>
+                <span>Satış Cümleleri</span>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                <span class="gradient-text-gold">Pahalı değil.</span><br>
+                Pahalı olan <span class="gradient-text-red">belirsizlik</span>.
+            </h2>
+
+            <p class="text-xl text-slate-400 mb-12">
+                Müşteriye cümle kurma şablonu:
+            </p>
+
+            <div class="space-y-4 text-left max-w-2xl mx-auto">
+                <div class="glass-card rounded-xl p-5 hover:border-amber-500/50 transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-mug-hot text-amber-400"></i>
+                        </div>
+                        <p class="text-lg text-slate-300">
+                            <span class="text-amber-400">"</span>Günlük maliyete bölerseniz, <span class="text-white font-medium">bir kahveden daha düşük.</span><span class="text-amber-400">"</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-xl p-5 hover:border-green-500/50 transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-shield-halved text-green-400"></i>
+                        </div>
+                        <p class="text-lg text-slate-300">
+                            <span class="text-green-400">"</span>Asıl tasarruf: <span class="text-white font-medium">risk yönetimi ve düzen.</span><span class="text-green-400">"</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-xl p-5 hover:border-indigo-500/50 transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-users text-indigo-400"></i>
+                        </div>
+                        <p class="text-lg text-slate-300">
+                            <span class="text-indigo-400">"</span>Atmosfer + kontrol, <span class="text-white font-medium">müşteri deneyimini doğrudan etkiler.</span><span class="text-indigo-400">"</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 20: HEDEF SEKTÖRLER ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="20">
+        <!-- Corner Map -->
+        <div class="absolute top-8 right-8 animate-float">
+            <i class="fas fa-map-location-dot text-6xl text-indigo-500/20"></i>
+        </div>
+
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-sm mb-8">
+                <i class="fas fa-route"></i>
+                <span>İlk Hedefler</span>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                İlk odak: <span class="gradient-text">hızlı karar veren</span> işletmeler
+            </h2>
+
+            <p class="text-xl text-slate-400 mb-12">
+                Yeni başlayan satış ekibi için <span class="text-white">net rota</span>.
+            </p>
+
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div class="glass-card rounded-2xl p-6 text-center group hover:border-amber-500/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-amber-500/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-mug-hot text-2xl text-amber-400"></i>
+                    </div>
+                    <h3 class="font-semibold">Kafe</h3>
+                    <p class="text-xs text-slate-500 mt-1">Restoran</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-center group hover:border-pink-500/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-pink-500/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-scissors text-2xl text-pink-400"></i>
+                    </div>
+                    <h3 class="font-semibold">Kuaför</h3>
+                    <p class="text-xs text-slate-500 mt-1">Güzellik merkezi</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-center group hover:border-red-500/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-dumbbell text-2xl text-red-400"></i>
+                    </div>
+                    <h3 class="font-semibold">Spor Salonu</h3>
+                    <p class="text-xs text-slate-500 mt-1">Stüdyo</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-center group hover:border-indigo-500/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-indigo-500/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-store text-2xl text-indigo-400"></i>
+                    </div>
+                    <h3 class="font-semibold">Mağaza</h3>
+                    <p class="text-xs text-slate-500 mt-1">Showroom</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-center group hover:border-green-500/50 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-stethoscope text-2xl text-green-400"></i>
+                    </div>
+                    <h3 class="font-semibold">Klinik</h3>
+                    <p class="text-xs text-slate-500 mt-1">Bekleme alanı</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 21: 60 SANİYELİK PİTCH ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="21">
+        <!-- Corner Mic -->
+        <div class="absolute top-8 right-8 animate-bounce-soft">
+            <i class="fas fa-microphone text-6xl text-indigo-500/20"></i>
+        </div>
+
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-sm mb-8">
+                <i class="fas fa-stopwatch"></i>
+                <span>60 Saniye</span>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                <span class="gradient-text">60 saniyelik</span> konuşma akışı
+            </h2>
+
+            <p class="text-xl text-slate-400 mb-12">
+                4 cümle, tek hedef: <span class="text-white font-semibold">"demo randevusu"</span>
+            </p>
+
+            <div class="space-y-4 text-left">
+                <div class="glass-card rounded-xl p-5 flex items-start gap-4 hover:border-indigo-500/50 transition-all">
+                    <div class="step-number flex-shrink-0" style="width: 36px; height: 36px; font-size: 1rem;">1</div>
+                    <p class="text-lg text-slate-300">
+                        "İşletmelerde müzik, kişisel kullanım gibi işlemiyor; <span class="text-white font-medium">risk ve belirsizlik</span> oluşabiliyor."
+                    </p>
+                </div>
+
+                <div class="glass-card rounded-xl p-5 flex items-start gap-4 hover:border-purple-500/50 transition-all">
+                    <div class="step-number flex-shrink-0" style="width: 36px; height: 36px; font-size: 1rem;">2</div>
+                    <p class="text-lg text-slate-300">
+                        "Muzibu, işletmeler için tasarlanmış: <span class="text-white font-medium">sektör yayını, kontrol, anons.</span>"
+                    </p>
+                </div>
+
+                <div class="glass-card rounded-xl p-5 flex items-start gap-4 hover:border-pink-500/50 transition-all">
+                    <div class="step-number flex-shrink-0" style="width: 36px; height: 36px; font-size: 1rem;">3</div>
+                    <p class="text-lg text-slate-300">
+                        "Ücret sabit ve öngörülebilir; amaç <span class="text-white font-medium">sorun yaşamadan yayın.</span>"
+                    </p>
+                </div>
+
+                <div class="glass-card rounded-xl p-5 flex items-start gap-4 hover:border-green-500/50 transition-all">
+                    <div class="step-number flex-shrink-0" style="width: 36px; height: 36px; font-size: 1rem;">4</div>
+                    <p class="text-lg text-slate-300">
+                        "İsterseniz 2 dakikada demo açayım; <span class="text-white font-medium">mekânınıza uygun akışı gösterelim.</span>"
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 22: KEŞİF SORULARI ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="22">
+        <!-- Corner Search -->
+        <div class="absolute top-8 right-8 animate-float">
+            <i class="fas fa-magnifying-glass text-6xl text-purple-500/20"></i>
+        </div>
+
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-sm mb-8">
+                <i class="fas fa-comments"></i>
+                <span>Keşif Soruları</span>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                <span class="gradient-text">Doğru sorular</span> = hızlı satış
+            </h2>
+
+            <p class="text-xl text-slate-400 mb-12">
+                Soru sorarsanız müşteri <span class="text-white">kendi ihtiyacını söyler</span>.
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-4 text-left">
+                <div class="glass-card rounded-xl p-5 hover:border-purple-500/50 transition-all">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-question-circle text-purple-400 mt-1"></i>
+                        <p class="text-slate-300">"Mekânınızda gün içinde <span class="text-white">müzik tarzı değişiyor mu?</span>"</p>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-xl p-5 hover:border-indigo-500/50 transition-all">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-question-circle text-indigo-400 mt-1"></i>
+                        <p class="text-slate-300">"<span class="text-white">Şubeniz var mı?</span> Hepsinde aynı yayın mı olmalı?"</p>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-xl p-5 hover:border-pink-500/50 transition-all">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-question-circle text-pink-400 mt-1"></i>
+                        <p class="text-slate-300">"<span class="text-white">Kampanya/duyuru anonsu</span> kullanıyor musunuz?"</p>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-xl p-5 hover:border-red-500/50 transition-all">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-question-circle text-red-400 mt-1"></i>
+                        <p class="text-slate-300">"Müzik kesilince <span class="text-white">operasyon etkileniyor mu?</span>"</p>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-xl p-5 hover:border-amber-500/50 transition-all md:col-span-2">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-question-circle text-amber-400 mt-1"></i>
+                        <p class="text-slate-300">"Müşteri kitleniz <span class="text-white">hangi saatlerde yoğun?</span>"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 23: İTİRAZLAR ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="23">
+        <!-- Corner Shield -->
+        <div class="absolute top-8 right-8 animate-float">
+            <i class="fas fa-shield-halved text-6xl text-green-500/20"></i>
+        </div>
+
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/30 text-green-400 text-sm mb-8">
+                <i class="fas fa-comments"></i>
+                <span>İtiraz Yönetimi</span>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                <span class="gradient-text-green">İtiraz yönetimi</span><br>
+                (kısa ve net)
+            </h2>
+
+            <p class="text-xl text-slate-400 mb-12">
+                Tartışmayın; <span class="text-white">çerçeve kurun</span>.
+            </p>
+
+            <div class="space-y-4 text-left">
+                <div class="glass-card rounded-xl p-5 hover:border-green-500/30 transition-all">
+                    <div class="flex flex-col md:flex-row md:items-center gap-3">
+                        <span class="px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-sm whitespace-nowrap">"Spotify var."</span>
+                        <i class="fas fa-arrow-right text-slate-600 hidden md:block"></i>
+                        <p class="text-slate-300">"Spotify mükemmel; Muzibu <span class="text-green-400 font-medium">işletme senaryosu için kontrol ve süreç</span> sağlar."</p>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-xl p-5 hover:border-green-500/30 transition-all">
+                    <div class="flex flex-col md:flex-row md:items-center gap-3">
+                        <span class="px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-sm whitespace-nowrap">"Bizde sorun olmaz."</span>
+                        <i class="fas fa-arrow-right text-slate-600 hidden md:block"></i>
+                        <p class="text-slate-300">"Harika; Muzibu zaten <span class="text-green-400 font-medium">'sorun olmasın'</span> diye var: netlik ve düzen."</p>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-xl p-5 hover:border-green-500/30 transition-all">
+                    <div class="flex flex-col md:flex-row md:items-center gap-3">
+                        <span class="px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-sm whitespace-nowrap">"Fiyat yüksek."</span>
+                        <i class="fas fa-arrow-right text-slate-600 hidden md:block"></i>
+                        <p class="text-slate-300">"Günlük maliyete bölelim; <span class="text-green-400 font-medium">belirsizlik ve kesinti daha pahalıya</span> gelir."</p>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-xl p-5 hover:border-green-500/30 transition-all">
+                    <div class="flex flex-col md:flex-row md:items-center gap-3">
+                        <span class="px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-sm whitespace-nowrap">"Kurulum zor mu?"</span>
+                        <i class="fas fa-arrow-right text-slate-600 hidden md:block"></i>
+                        <p class="text-slate-300">"<span class="text-green-400 font-medium">Dakikalar içinde başlıyoruz</span>; biz destekliyoruz."</p>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-xl p-5 hover:border-green-500/30 transition-all">
+                    <div class="flex flex-col md:flex-row md:items-center gap-3">
+                        <span class="px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-sm whitespace-nowrap">"Şube çok."</span>
+                        <i class="fas fa-arrow-right text-slate-600 hidden md:block"></i>
+                        <p class="text-slate-300">"<span class="text-green-400 font-medium">Şubeye göre yayın ve kontrol</span> zaten bu işin kalbi."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 24: KAPANIŞ ==================== -->
+    <section class="slide flex-col items-center justify-center px-8 py-16 relative" data-slide="24">
+        <!-- Corner Sparkles -->
+        <div class="absolute top-8 right-8">
+            <div class="relative">
+                <i class="fas fa-handshake text-6xl text-indigo-500/30 animate-float"></i>
+                <div class="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-ping"></div>
+            </div>
+        </div>
+
+        <div class="max-w-4xl mx-auto text-center">
+            <!-- Logo -->
+            <div class="mb-8">
+                <div class="w-24 h-24 mx-auto rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-2xl shadow-indigo-500/30 animate-pulse-glow">
+                    <i class="fas fa-music text-4xl text-white"></i>
+                </div>
+            </div>
+
+            <h2 class="text-4xl md:text-6xl font-black mb-6">
+                <span class="gradient-text">Muzibu:</span><br>
+                işletmeler için doğru müzik düzeni
+            </h2>
+
+            <p class="text-2xl text-slate-300 mb-8 max-w-2xl mx-auto">
+                Siz sadece müzik satmıyorsunuz.<br>
+                <span class="text-white font-semibold">Huzur, güvenlik ve tasarruf satıyorsunuz.</span>
+            </p>
+
+            <div class="inline-flex items-center gap-3 px-8 py-5 rounded-2xl bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 mb-12">
+                <i class="fas fa-bullseye text-2xl text-indigo-400"></i>
+                <span class="text-xl text-white">"Şimdi sahada hedefimiz basit: <span class="font-bold gradient-text">doğru işletmeye doğru demo.</span>"</span>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-4">
+                <div class="px-6 py-3 rounded-xl bg-slate-800/50 border border-slate-700">
+                    <i class="fas fa-globe text-indigo-400 mr-2"></i>
+                    <span class="text-slate-300">muzibu.com.tr</span>
+                </div>
+                <div class="px-6 py-3 rounded-xl bg-slate-800/50 border border-slate-700">
+                    <i class="fas fa-code text-purple-400 mr-2"></i>
+                    <span class="text-slate-300">turkbilisim.com.tr</span>
+                </div>
+            </div>
+
+            <!-- Sound Wave Footer -->
+            <div class="mt-12 flex justify-center">
+                <div class="sound-wave">
+                    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== NAVIGATION ==================== -->
+    <div class="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 z-50">
+        <!-- Prev Button -->
+        <button @click="prevSlide()"
+                :disabled="currentSlide === 1"
+                :class="currentSlide === 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-indigo-500'"
+                class="w-12 h-12 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center transition-all">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <!-- Slide Counter -->
+        <div class="px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 backdrop-blur">
+            <span class="text-indigo-400 font-bold" x-text="currentSlide"></span>
+            <span class="text-slate-500">/</span>
+            <span class="text-slate-400" x-text="totalSlides"></span>
+        </div>
+
+        <!-- Next Button -->
+        <button @click="nextSlide()"
+                :disabled="currentSlide === totalSlides"
+                :class="currentSlide === totalSlides ? 'opacity-30 cursor-not-allowed' : 'hover:bg-indigo-500'"
+                class="w-12 h-12 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center transition-all">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <!-- Keyboard hint -->
+    <div class="fixed bottom-8 right-8 text-slate-600 text-sm hidden md:block">
+        <i class="fas fa-keyboard mr-1"></i> ← → veya Space
+    </div>
+
+    <script>
+        function presentation() {
+            return {
+                currentSlide: 1,
+                totalSlides: 24,
+
+                init() {
+                    this.showSlide(1);
+
+                    // Keyboard navigation
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'ArrowRight' || e.key === ' ') {
+                            e.preventDefault();
+                            this.nextSlide();
+                        } else if (e.key === 'ArrowLeft') {
+                            e.preventDefault();
+                            this.prevSlide();
+                        } else if (e.key === 'Home') {
+                            e.preventDefault();
+                            this.goToSlide(1);
+                        } else if (e.key === 'End') {
+                            e.preventDefault();
+                            this.goToSlide(this.totalSlides);
+                        }
+                    });
+
+                    // Touch swipe
+                    let touchStartX = 0;
+                    document.addEventListener('touchstart', (e) => {
+                        touchStartX = e.touches[0].clientX;
+                    });
+                    document.addEventListener('touchend', (e) => {
+                        const touchEndX = e.changedTouches[0].clientX;
+                        const diff = touchStartX - touchEndX;
+                        if (Math.abs(diff) > 50) {
+                            if (diff > 0) this.nextSlide();
+                            else this.prevSlide();
+                        }
+                    });
+                },
+
+                showSlide(n) {
+                    const slides = document.querySelectorAll('.slide');
+                    slides.forEach((slide, index) => {
+                        slide.classList.remove('active');
+                        if (index + 1 === n) {
+                            slide.classList.add('active');
+                        }
+                    });
+                    this.currentSlide = n;
+                },
+
+                nextSlide() {
+                    if (this.currentSlide < this.totalSlides) {
+                        this.showSlide(this.currentSlide + 1);
+                    }
+                },
+
+                prevSlide() {
+                    if (this.currentSlide > 1) {
+                        this.showSlide(this.currentSlide - 1);
+                    }
+                },
+
+                goToSlide(n) {
+                    if (n >= 1 && n <= this.totalSlides) {
+                        this.showSlide(n);
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

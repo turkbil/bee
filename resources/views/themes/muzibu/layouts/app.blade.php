@@ -482,6 +482,7 @@
     @include('themes.muzibu.components.context-menu')
     @include('themes.muzibu.components.rating-modal')
     @include('themes.muzibu.components.playlist-select-modal')
+    @include('themes.muzibu.components.confirm-modal')
 
     {{-- 🍪 COOKIE CONSENT - Design 2 (Compact Modern) --}}
     @include('themes.muzibu.components.cookie-consent')
@@ -1003,6 +1004,7 @@
     </script>
 
     @yield('scripts')
+    @stack('scripts')
 </body>
 </html>
 @endif

@@ -33,6 +33,8 @@ class CoreCacheProfile implements ModuleCacheProfileInterface
             'subscription/*',
             'subscriptions',
             'subscriptions/*',
+            'my-subscriptions', // Abonelik geçmişi (kullanıcıya özel)
+            'my-subscriptions/*',
             'pricing',
             'pricing/*',
             'plans',

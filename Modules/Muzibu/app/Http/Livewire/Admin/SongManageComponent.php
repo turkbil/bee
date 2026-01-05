@@ -708,11 +708,7 @@ class SongManageComponent extends Component implements AIContentGeneratable
                 ];
             }
         } else {
-            // 🎨 color_hash boşsa otomatik üret
-            if (empty($data['color_hash']) && !empty($data['title'])) {
-                $data['color_hash'] = Song::generateColorHash($data['title']);
-            }
-
+            // 🎨 color_hash otomatik üretilir (Song model boot() metodu)
             $song = Song::query()->create($data);
             $this->songId = $song->song_id;
             log_activity($song, 'eklendi');

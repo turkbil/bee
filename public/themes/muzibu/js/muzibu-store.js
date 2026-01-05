@@ -1768,6 +1768,47 @@ document.addEventListener('alpine:init', () => {
         }
     });
 
+    // 🔴 Confirmation Modal Store - Global confirmation dialog
+    Alpine.store('confirmModal', {
+        visible: false,
+        title: '',
+        message: '',
+        confirmText: 'Onayla',
+        cancelText: 'Vazgeç',
+        type: 'info', // 'info' | 'danger'
+        onConfirm: null,
+
+        show(options) {
+            this.title = options.title || 'Emin misiniz?';
+            this.message = options.message || '';
+            this.confirmText = options.confirmText || 'Onayla';
+            this.cancelText = options.cancelText || 'Vazgeç';
+            this.type = options.type || 'info';
+            this.onConfirm = options.onConfirm || null;
+            this.visible = true;
+        },
+
+        hide() {
+            this.visible = false;
+            // Reset after animation
+            setTimeout(() => {
+                this.title = '';
+                this.message = '';
+                this.confirmText = 'Onayla';
+                this.cancelText = 'Vazgeç';
+                this.type = 'info';
+                this.onConfirm = null;
+            }, 200);
+        },
+
+        confirm() {
+            if (this.onConfirm && typeof this.onConfirm === 'function') {
+                this.onConfirm();
+            }
+            this.hide();
+        }
+    });
+
     // 🔗 ALIAS: 'muzibu' store references 'player' store for backward compatibility
     // Some code uses Alpine.store('muzibu') instead of Alpine.store('player')
     Alpine.store('muzibu', Alpine.store('player'));

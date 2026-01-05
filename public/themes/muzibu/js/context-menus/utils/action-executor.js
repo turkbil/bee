@@ -19,6 +19,7 @@ const ActionExecutor = {
             song: window.SongActions,
             album: window.AlbumActions,
             playlist: window.PlaylistActions,
+            'my-playlist': window.PlaylistActions,
             genre: window.GenreActions,
             sector: window.SectorActions,
             radio: window.RadioActions,
@@ -121,13 +122,14 @@ const ActionExecutor = {
                 break;
 
             case 'edit':
-                if (type === 'playlist' && data.id) {
-                    window.location.href = `/my-playlists/${data.id}/edit`;
+                if ((type === 'playlist' || type === 'my-playlist') && data.id) {
+                    const identifier = data.slug || data.id;
+                    window.location.href = `/muzibu/playlist/${identifier}/edit`;
                 }
                 break;
 
             case 'delete':
-                if (type === 'playlist' && window.PlaylistActions) {
+                if ((type === 'playlist' || type === 'my-playlist') && window.PlaylistActions) {
                     await window.PlaylistActions.delete(data);
                 }
                 break;

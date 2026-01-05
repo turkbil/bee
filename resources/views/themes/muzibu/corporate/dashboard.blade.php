@@ -73,7 +73,7 @@
                              x-transition:enter="transition ease-out duration-200"
                              x-transition:enter-start="opacity-0 scale-95"
                              x-transition:enter-end="opacity-100 scale-100"
-                             class="absolute right-0 mt-2 w-56 bg-slate-800/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden">
+                             class="absolute right-0 mt-2 w-56 bg-slate-800/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-xl overflow-hidden z-[9999]">
                             <button @click="open = false; showDisbandModal = true"
                                     class="w-full px-4 py-3 text-left text-red-400 hover:bg-red-500/10 transition flex items-center gap-3 text-sm">
                                 <i class="fas fa-power-off w-5"></i>

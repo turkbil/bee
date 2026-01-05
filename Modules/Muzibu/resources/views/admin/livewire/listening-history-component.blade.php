@@ -173,7 +173,7 @@
         </div>
         <div class="card-body">
             @php
-                $maxHourly = max($this->hourlyStats) ?: 1;
+                $maxHourly = !empty($this->hourlyStats) ? max($this->hourlyStats) : 1;
             @endphp
             <div class="d-flex align-items-end gap-1" style="height: 120px;">
                 @foreach($this->hourlyStats as $hour => $plays)

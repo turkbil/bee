@@ -165,6 +165,75 @@
             };
         };
 
+        // 🎯 corporateJoinPage - Corporate join/create with code validation (SPA compatible)
+        window.corporateJoinPage = function() {
+            return {
+                joinCode: '',
+                joining: false,
+                leaving: false,
+                companyName: '',
+                createCode: '',
+                creating: false,
+                codeError: '',
+                codeAvailable: null,
+                checkingCode: false,
+                get createCodeValid() { return this.createCode.length === 8 && this.codeAvailable === true; },
+                async validateCreateCode() {
+                    if (this.createCode.length === 0) { this.codeError = ''; this.codeAvailable = null; }
+                    else if (this.createCode.length < 8) { this.codeError = 'Tam olarak 8 karakter gerekli'; this.codeAvailable = null; }
+                    else { this.codeError = ''; await this.checkCodeAvailability(); }
+                },
+                async checkCodeAvailability() {
+                    if (this.createCode.length !== 8 || this.checkingCode) return;
+                    this.checkingCode = true; this.codeAvailable = null;
+                    try {
+                        const response = await fetch('/corporate/check-code', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' }, body: JSON.stringify({ code: this.createCode }) });
+                        const data = await response.json();
+                        this.codeAvailable = data.available;
+                        this.codeError = data.available ? '' : (data.message || 'Bu kod zaten kullanımda');
+                    } catch (error) { this.codeError = 'Kontrol sirasinda hata olustu'; this.codeAvailable = null; }
+                    finally { this.checkingCode = false; }
+                },
+                async joinWithCode() {
+                    if (this.joinCode.length !== 8 || this.joining) return;
+                    this.joining = true;
+                    try {
+                        const response = await fetch('/corporate/join', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' }, body: JSON.stringify({ corporate_code: this.joinCode }) });
+                        const data = await response.json();
+                        if (data.success) { window.dispatchEvent(new CustomEvent('toast', { detail: { message: data.message, type: 'success' } })); setTimeout(() => { window.location.assign(data.redirect || '/dashboard'); }, 1000); }
+                        else { window.dispatchEvent(new CustomEvent('toast', { detail: { message: data.message || 'Gecersiz kod', type: 'error' } })); }
+                    } catch (error) { window.dispatchEvent(new CustomEvent('toast', { detail: { message: 'Hata olustu', type: 'error' } })); }
+                    finally { this.joining = false; }
+                },
+                async createCorporate() {
+                    if (this.companyName.length < 2 || !this.createCodeValid || this.creating) return;
+                    this.creating = true; this.codeError = '';
+                    try {
+                        const response = await fetch('/corporate/create', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' }, body: JSON.stringify({ company_name: this.companyName, corporate_code: this.createCode }) });
+                        const data = await response.json();
+                        if (data.success) { window.dispatchEvent(new CustomEvent('toast', { detail: { message: data.message, type: 'success' } })); setTimeout(() => { window.location.href = data.redirect || '/corporate/dashboard'; }, 1500); }
+                        else { this.codeError = data.message || 'Bu kod zaten kullanımda'; window.dispatchEvent(new CustomEvent('toast', { detail: { message: data.message || 'Hata olustu', type: 'error' } })); }
+                    } catch (error) { window.dispatchEvent(new CustomEvent('toast', { detail: { message: 'Hata olustu', type: 'error' } })); }
+                    finally { this.creating = false; }
+                },
+                showLeaveModal() {
+                    const confirmModal = Alpine.store('confirmModal');
+                    if (!confirmModal) { if (confirm('Kurumsal hesaptan ayrilmak istediginize emin misiniz?')) { this.doLeave(); } return; }
+                    confirmModal.show({ title: 'Kurumdan Ayrıl', message: 'Kurumsal hesaptan ayrılmak istediğinize emin misiniz?', confirmText: 'Evet, Ayrıl', cancelText: 'Vazgeç', type: 'danger', onConfirm: () => this.doLeave() });
+                },
+                async doLeave() {
+                    if (this.leaving) return;
+                    this.leaving = true;
+                    try {
+                        const response = await fetch('/corporate/leave', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' } });
+                        const data = await response.json();
+                        if (data.success) { window.dispatchEvent(new CustomEvent('toast', { detail: { message: data.message, type: 'success' } })); setTimeout(() => { if (window.muzibuRouter) { window.muzibuRouter.navigateTo('/dashboard'); } else { window.location.href = '/dashboard'; } }, 1000); }
+                        else { throw new Error(data.message); }
+                    } catch (error) { window.dispatchEvent(new CustomEvent('toast', { detail: { message: error.message || 'Hata olustu', type: 'error' } })); this.leaving = false; }
+                }
+            };
+        };
+
         // 🎯 corporateDashboard - Corporate dashboard (parameter-based for SPA)
         window.corporateDashboard = function(initialData = {}) {
             return {

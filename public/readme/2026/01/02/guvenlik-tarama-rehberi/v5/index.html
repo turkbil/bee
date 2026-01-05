@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHP Güvenlik Tarama Rehberi v5 - Nihai 90 Kontrol + Güvenli Silme</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 bg-gradient-to-r from-red-500/20 via-purple-500/20 to-orange-500/20 text-red-400 px-4 py-2 rounded-full text-sm mb-4 border border-red-500/30">
+                <i class="fas fa-shield-virus"></i>
+                <span>Güvenlik Rehberi v5 - NİHAİ SÜRÜM</span>
+            </div>
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-red-400 via-purple-400 to-orange-400 bg-clip-text text-transparent">PHP Güvenlik Tarama Rehberi</h1>
+            <p class="text-2xl text-gray-400 mb-2">Backdoor, Malware ve Zararlı Kod Tespiti + Güvenli Silme</p>
+            <p class="text-xl text-purple-400 mb-4">v2 + v3 + v4 + Yeni Kontroller = v5</p>
+            <p class="text-sm text-gray-500">
+                <i class="fas fa-calendar-alt mr-1"></i> 5 Ocak 2026 (v5 - Final)
+                <span class="mx-2">|</span>
+                <i class="fas fa-clock mr-1"></i> <strong class="text-green-400">90 Kontrol Noktası</strong>
+                <span class="mx-2">|</span>
+                <span class="text-blue-400">50 Temel</span> + <span class="text-purple-400">20 Imunify360</span> + <span class="text-orange-400">20 Yeni</span>
+            </p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-400 mb-4">
+                <i class="fas fa-user-check mr-2"></i>Basit Anlatım (Herkes İçin)
+            </h2>
+            <p class="text-gray-300 mb-4">
+                Bu rehber, web sitenize sızabilecek <strong>zararlı kodları</strong> tespit eder ve <strong>güvenli silme</strong> talimatları verir.
+                <strong class="text-orange-400">v5</strong> en kapsamlı sürümdür: 90 kontrol + otomatik silme prosedürü.
+            </p>
+            <ul class="space-y-2 text-gray-300">
+                <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Backdoor & Shell</strong> tespiti (eval, base64, shell_exec...)</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Gizli dosyalar</strong> ve rastgele isimliler</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Upload güvenliği</strong> (PHP, resim içinde kod)</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i><strong>Encoding & Obfuscation</strong> (gzip, hex, base64)</li>
+                <li><i class="fas fa-check text-purple-400 mr-2"></i><strong>Imunify360</strong> gelişmiş testler</li>
+                <li><i class="fas fa-check text-orange-400 mr-2"></i><strong>Information Disclosure</strong> (.env, .git, backup)</li>
+                <li><i class="fas fa-check text-orange-400 mr-2"></i><strong>Credential Exposure</strong> (API key, SSH key)</li>
+                <li><i class="fas fa-check text-orange-400 mr-2"></i><strong>Attack Patterns</strong> (SQL injection, XSS)</li>
+                <li><i class="fas fa-check text-orange-400 mr-2"></i><strong>Config Issues</strong> (debug mode, weak session)</li>
+            </ul>
+            <p class="text-gray-400 mt-4 text-sm">
+                <i class="fas fa-lightbulb text-yellow-400 mr-1"></i>
+                Aşağıdaki 90 kontrolü çalıştırın, bulgular için <strong>güvenli silme prosedürü</strong> uygulayın.
+            </p>
+        </section>
+
+        <!-- Kritik Uyarı -->
+        <div class="bg-red-900/30 border border-red-700 rounded-xl p-6 mb-8">
+            <h3 class="text-lg font-bold text-red-400 mb-3">
+                <i class="fas fa-exclamation-triangle mr-2"></i>Kritik Uyarı - Güvenli Silme Prosedürü
+            </h3>
+            <div class="space-y-2 text-gray-300 text-sm">
+                <p><strong>❌ ASLA:</strong> Bulunan dosyaları hemen silmeyin!</p>
+                <p><strong>✅ YAPILACAKLAR:</strong></p>
+                <ol class="ml-6 space-y-1">
+                    <li>1. <strong>Yedek Al:</strong> <code class="bg-slate-800 px-2 py-1 rounded">cp dosya.php dosya.php.backup</code></li>
+                    <li>2. <strong>İçeriği İncele:</strong> <code class="bg-slate-800 px-2 py-1 rounded">cat dosya.php</code></li>
+                    <li>3. <strong>Karar Ver:</strong>
+                        <ul class="ml-6 mt-1">
+                            <li>• Dosya tamamen zararlıysa → Sil</li>
+                            <li>• Dosya içinde zararlı kod varsa → Sadece o kısmı temizle</li>
+                            <li>• Sistem dosyasıysa (vendor, core) → ASLA silme, rapor et</li>
+                        </ul>
+                    </li>
+                    <li>4. <strong>Test Et:</strong> Silme sonrası site çalışıyor mu?</li>
+                    <li>5. <strong>Git'e Kaydet:</strong> <code class="bg-slate-800 px-2 py-1 rounded">git add -A && git commit -m "Security: Cleaned malware"</code></li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- v5 Özellikleri -->
+        <div class="bg-gradient-to-r from-orange-900/30 to-red-900/30 border-2 border-orange-700 rounded-xl p-6 mb-8">
+            <h3 class="text-2xl font-bold text-orange-400 mb-4 text-center">
+                <i class="fas fa-fire mr-2"></i>v5'te Neler Var? (NİHAİ SÜRÜM)
+            </h3>
+            <div class="grid md:grid-cols-4 gap-4">
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <div class="text-3xl mb-2">📚</div>
+                    <h4 class="font-bold text-blue-400 mb-2">v2-v4: 70 Kontrol</h4>
+                    <p class="text-sm text-gray-400">Backdoor, encoding, network, sistem, Imunify360 testleri.</p>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <div class="text-3xl mb-2">🔐</div>
+                    <h4 class="font-bold text-orange-400 mb-2">+20 Yeni Kontrol</h4>
+                    <p class="text-sm text-gray-400">Info disclosure, credential exposure, attack patterns, config issues.</p>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <div class="text-3xl mb-2">🗑️</div>
+                    <h4 class="font-bold text-red-400 mb-2">Güvenli Silme</h4>
+                    <p class="text-sm text-gray-400">Otomatik yedek, analiz, temizleme prosedürü.</p>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <div class="text-3xl mb-2">⚡</div>
+                    <h4 class="font-bold text-green-400 mb-2">Tam Otomatik</h4>
+                    <p class="text-sm text-gray-400">Hazır prompt: tek tıkla 90 kontrol + rapor.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarama Kategorileri -->
+        <h2 class="text-3xl font-bold mb-6 text-center">
+            <i class="fas fa-search mr-2 text-blue-400"></i>90 Güvenlik Kontrol Noktası
+        </h2>
+
+        <!-- ====================================== -->
+        <!-- KATEGORİ 1-14: TEMEL KONTROLLER (1-50) -->
+        <!-- ====================================== -->
+
+        <div class="bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border border-blue-500/50 rounded-xl p-4 mb-6">
+            <h2 class="text-2xl font-bold text-blue-400 text-center">
+                <i class="fas fa-layer-group mr-2"></i>Kategori 1-14: Temel Güvenlik Kontrolleri (1-50)
+            </h2>
+        </div>
+        <!-- Kategori 1: Backdoor Tespiti -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6">
+            <h3 class="text-xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                <span class="bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
+                Backdoor & Shell Tespiti
+            </h3>
+
+            <div class="space-y-4">
+                <!-- Komut 1 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">1.1 Eval + Base64 Combo</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">En yaygın backdoor pattern'i. Şifreli kod çalıştırır.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -l "eval(base64_decode" /var/www/html --exclude-dir=vendor</code></pre>
+                </div>
+
+                <!-- Komut 2 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">1.2 Shell Komutları</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Sistem komutları çalıştıran fonksiyonlar.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -l "passthru\|shell_exec\|system\s*(" /var/www/html/public --exclude-dir=vendor</code></pre>
+                </div>
+
+                <!-- Komut 3 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">1.3 REQUEST + Eval</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Kullanıcı girdisini doğrudan çalıştıran kod.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -l '\$_\(REQUEST\|POST\|GET\).*eval\|eval.*\$_\(REQUEST\|POST\|GET\)' /var/www/html</code></pre>
+                </div>
+
+                <!-- Komut 4 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">1.4 Assert Exploit</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">PHP assert() fonksiyonu kod çalıştırabilir.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" "assert\s*(" /var/www/html/public --exclude-dir=vendor</code></pre>
+                </div>
+
+                <!-- Komut 5 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">1.5 Create Function</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Eski PHP exploit yöntemi.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -l "create_function" /var/www/html --exclude-dir=vendor</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori 2: Dosya Manipülasyonu -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6">
+            <h3 class="text-xl font-bold text-orange-400 mb-4 flex items-center gap-2">
+                <span class="bg-orange-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
+                Dosya Manipülasyonu Tespiti
+            </h3>
+
+            <div class="space-y-4">
+                <!-- Komut 6 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">2.1 File Write + Decode</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Şifreli içeriği dosyaya yazan kod.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -l "file_put_contents.*base64_decode" /var/www/html --exclude-dir=vendor</code></pre>
+                </div>
+
+                <!-- Komut 7 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">2.2 @copy / @move</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Dosya kopyalama/taşıma (hata gizleme ile).</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -l "@copy\|@rename\|@move" /var/www/html/public --exclude-dir=vendor</code></pre>
+                </div>
+
+                <!-- Komut 8 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">2.3 Chmod/Chown</span>
+                        <span class="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded">Orta</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">İzin değiştirme komutları.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -l "chmod\|chown" /var/www/html/public --exclude-dir=vendor</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori 3: Gizli & Şüpheli Dosyalar -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6">
+            <h3 class="text-xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+                <span class="bg-purple-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">3</span>
+                Gizli & Şüpheli Dosya Tespiti
+            </h3>
+
+            <div class="space-y-4">
+                <!-- Komut 9 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">3.1 Gizli PHP Dosyaları</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Nokta ile başlayan gizli PHP dosyaları.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html -name ".*php" -o -name ".*.php" 2>/dev/null</code></pre>
+                </div>
+
+                <!-- Komut 10 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">3.2 Rastgele Hex İsimli Dosyalar</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">453bbb9eb16f.php gibi rastgele isimler.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html/public -maxdepth 2 -type f -regextype posix-extended -regex '.*/[a-f0-9]{16,}\.[a-z]+$'</code></pre>
+                </div>
+
+                <!-- Komut 11 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">3.3 Public'te Şüpheli PHP</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Public klasöründe olmaması gereken PHP'ler.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html/public -maxdepth 1 -name "*.php" ! -name "index.php" ! -name "robots.txt"</code></pre>
+                </div>
+
+                <!-- Komut 12 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">3.4 Şüpheli TXT Dosyaları</span>
+                        <span class="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded">Orta</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Marker/beacon dosyaları.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html/public -maxdepth 1 -name "*.txt" ! -name "robots.txt"</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori 4: Upload Güvenliği -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6">
+            <h3 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                <span class="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">4</span>
+                Upload Klasörü Güvenliği
+            </h3>
+
+            <div class="space-y-4">
+                <!-- Komut 13 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">4.1 Uploads'da PHP</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Upload klasöründe PHP dosyası OLMAMALI!</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html/public/uploads -name "*.php" 2>/dev/null</code></pre>
+                </div>
+
+                <!-- Komut 14 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">4.2 PHP Varyantları</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">phtml, phar, php5, php7 uzantıları.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html/public/uploads -type f \( -name "*.phtml" -o -name "*.phar" -o -name "*.php5" -o -name "*.php7" \)</code></pre>
+                </div>
+
+                <!-- Komut 15 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">4.3 Resim İçinde PHP</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">JPG/PNG/GIF içine gizlenmiş PHP kodu.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html -type f \( -name "*.jpg" -o -name "*.png" -o -name "*.gif" \) -exec grep -l "&lt;?php" {} \;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori 5: Encoded/Obfuscated -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6">
+            <h3 class="text-xl font-bold text-pink-400 mb-4 flex items-center gap-2">
+                <span class="bg-pink-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">5</span>
+                Şifreli/Karmaşık Kod Tespiti
+            </h3>
+
+            <div class="space-y-4">
+                <!-- Komut 16 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">5.1 Gzip Encoded</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Sıkıştırılmış zararlı kod.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -l "gzinflate\|gzuncompress\|str_rot13" /var/www/html/public</code></pre>
+                </div>
+
+                <!-- Komut 17 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">5.2 Chr() Encoded</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">chr(98).chr(97)... formatı.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -l "chr(98).chr(97).chr(115).chr(101)" /var/www/html</code></pre>
+                </div>
+
+                <!-- Komut 18 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">5.3 Uzun Base64 String</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">50+ karakter base64 encoded string.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -l '\$[a-zA-Z_]*\s*=\s*["'"'"'][a-zA-Z0-9+/=]\{50,\}["'"'"']' /var/www/html/public</code></pre>
+                </div>
+
+                <!-- Komut 19 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">5.4 Preg_replace /e</span>
+                        <span class="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded">Orta</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Eski PHP versiyonlarında kod çalıştırır.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" "preg_replace.*['\"]\/.*e['\"]" /var/www/html --exclude-dir=vendor</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori 6: Network/Remote -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6">
+            <h3 class="text-xl font-bold text-cyan-400 mb-4 flex items-center gap-2">
+                <span class="bg-cyan-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">6</span>
+                Ağ & Remote Erişim Tespiti
+            </h3>
+
+            <div class="space-y-4">
+                <!-- Komut 20 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">6.1 Socket/Reverse Shell</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Uzak bağlantı açan kod.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -l "fsockopen\|socket_create\|pfsockopen" /var/www/html --exclude-dir=vendor</code></pre>
+                </div>
+
+                <!-- Komut 21 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">6.2 Remote Include</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Uzak sunucudan dosya include.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -l "include.*http\|require.*http" /var/www/html/public</code></pre>
+                </div>
+
+                <!-- Komut 22 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">6.3 Proc Open</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Process açma fonksiyonu.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -l "proc_open" /var/www/html/public</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori 7: Sistem Kontrolü -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6">
+            <h3 class="text-xl font-bold text-emerald-400 mb-4 flex items-center gap-2">
+                <span class="bg-emerald-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">7</span>
+                Sistem & Cron Kontrolü
+            </h3>
+
+            <div class="space-y-4">
+                <!-- Komut 23 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">7.1 Cron Kontrolü</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Zamanlanmış görevlerde backdoor.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>crontab -l | grep -v "^#"</code></pre>
+                </div>
+
+                <!-- Komut 24 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">7.2 .htaccess Değişiklikleri</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Son 7 günde değişen htaccess.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html -name ".htaccess" -mtime -7 -exec ls -la {} \;</code></pre>
+                </div>
+
+                <!-- Komut 25 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">7.3 World Writable</span>
+                        <span class="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded">Orta</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Herkesin yazabildiği dosyalar.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html/public -type f -perm -002 ! -path "*/storage/*"</code></pre>
+                </div>
+
+                <!-- Komut 26 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">7.4 Symlink Saldırısı</span>
+                        <span class="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded">Orta</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Şüpheli sembolik linkler.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html/public -type l ! -path "*/storage/*" ! -path "*/readme/*"</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori 8: Zaman Bazlı -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6">
+            <h3 class="text-xl font-bold text-amber-400 mb-4 flex items-center gap-2">
+                <span class="bg-amber-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">8</span>
+                Zaman Bazlı Tarama
+            </h3>
+
+            <div class="space-y-4">
+                <!-- Komut 27 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">8.1 Son 24 Saat PHP</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Son 24 saatte oluşturulan PHP dosyaları.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html -name "*.php" -mtime -1 ! -path "*/vendor/*" ! -path "*/storage/framework/*"</code></pre>
+                </div>
+
+                <!-- Komut 28 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">8.2 Son 7 Gün Uploads</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Son 7 günde uploads'a eklenen PHP.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html/public/uploads -name "*.php" -mtime -7</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori 9: Özel Tehditler -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6">
+            <h3 class="text-xl font-bold text-rose-400 mb-4 flex items-center gap-2">
+                <span class="bg-rose-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">9</span>
+                Özel Tehditler
+            </h3>
+
+            <div class="space-y-4">
+                <!-- Komut 29 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">9.1 Crypto Miner</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Kripto madenci zararlıları.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -l "coinhive\|cryptonight\|stratum\|xmrig" /var/www/html</code></pre>
+                </div>
+
+                <!-- Komut 30 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">9.2 Mail Spam</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Public'te mail fonksiyonu (spam için kullanılabilir).</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -l "mail\s*(" /var/www/html/public --exclude-dir=vendor</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori 10: Variable Function & Dynamic Code -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6">
+            <h3 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                <span class="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">10</span>
+                Variable Function & Dinamik Kod
+            </h3>
+
+            <div class="space-y-4">
+                <!-- Komut 31 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">10.1 Variable Function Call</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">$func() şeklinde dinamik fonksiyon çağrısı. Backdoor'larda çok yaygın.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -l '\$[a-zA-Z_][a-zA-Z0-9_]*\s*(' /var/www/html/public --exclude-dir=vendor | head -20</code></pre>
+                </div>
+
+                <!-- Komut 32 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">10.2 Call User Func</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">call_user_func ile dinamik kod çalıştırma.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -l "call_user_func\|call_user_func_array" /var/www/html/public --exclude-dir=vendor</code></pre>
+                </div>
+
+                <!-- Komut 33 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">10.3 Array Callback Exploit</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">array_map, array_filter ile kod çalıştırma.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" "array_map\|array_filter\|array_walk\|usort" /var/www/html/public --exclude-dir=vendor | grep -i "eval\|assert\|base64"</code></pre>
+                </div>
+
+                <!-- Komut 34 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">10.4 ReflectionFunction</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Reflection API ile kod çalıştırma.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -l "ReflectionFunction\|ReflectionMethod" /var/www/html/public --exclude-dir=vendor</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori 11: Hex & Advanced Encoding -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6">
+            <h3 class="text-xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+                <span class="bg-purple-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">11</span>
+                Hex & Gelişmiş Encoding
+            </h3>
+
+            <div class="space-y-4">
+                <!-- Komut 35 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">11.1 Hex Encoded String</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">\x62\x61\x73\x65 formatında gizli kod.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" '\\x[0-9a-fA-F]\{2\}\\x[0-9a-fA-F]\{2\}' /var/www/html/public --exclude-dir=vendor</code></pre>
+                </div>
+
+                <!-- Komut 36 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">11.2 Octal Encoded</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">\142\141\163\145 formatında octal encoding.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" '\\[0-7]\{3\}\\[0-7]\{3\}' /var/www/html/public --exclude-dir=vendor</code></pre>
+                </div>
+
+                <!-- Komut 37 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">11.3 Double Encoding</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Çift base64 encoding ile gizleme.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" "base64_decode.*base64_decode" /var/www/html --exclude-dir=vendor</code></pre>
+                </div>
+
+                <!-- Komut 38 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">11.4 Pack/Unpack</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Binary veri manipülasyonu ile kod gizleme.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" "pack\s*(\|unpack\s*(" /var/www/html/public --exclude-dir=vendor</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori 12: PHP Wrappers & Streams -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6">
+            <h3 class="text-xl font-bold text-cyan-400 mb-4 flex items-center gap-2">
+                <span class="bg-cyan-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">12</span>
+                PHP Wrappers & Streams
+            </h3>
+
+            <div class="space-y-4">
+                <!-- Komut 39 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">12.1 php://input Exploit</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Raw POST verisi ile kod çalıştırma.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" "php://input" /var/www/html/public --exclude-dir=vendor</code></pre>
+                </div>
+
+                <!-- Komut 40 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">12.2 data:// Wrapper</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Data URI ile kod injection.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" "data://" /var/www/html/public --exclude-dir=vendor</code></pre>
+                </div>
+
+                <!-- Komut 41 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">12.3 php://filter</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Filter wrapper ile dosya okuma/encoding.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" "php://filter" /var/www/html --exclude-dir=vendor</code></pre>
+                </div>
+
+                <!-- Komut 42 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">12.4 expect:// Wrapper</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Sistem komutu çalıştırma wrapper'ı.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" "expect://" /var/www/html --exclude-dir=vendor</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori 13: Webshell Patterns -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6">
+            <h3 class="text-xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                <span class="bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">13</span>
+                Webshell Patterns
+            </h3>
+
+            <div class="space-y-4">
+                <!-- Komut 43 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">13.1 Bilinen Webshell İsimleri</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">c99, r57, b374k gibi ünlü shell'ler.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -l "c99shell\|r57shell\|b374k\|WSO\|FilesMan" /var/www/html</code></pre>
+                </div>
+
+                <!-- Komut 44 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">13.2 File Manager Patterns</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Dosya yöneticisi shell imzaları.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" "FilesMan\|filemanager\|File Manager" /var/www/html/public --exclude-dir=vendor</code></pre>
+                </div>
+
+                <!-- Komut 45 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">13.3 Cookie Backdoor Auth</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Cookie ile gizli erişim kontrolü.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" '\$_COOKIE.*==\|md5.*\$_COOKIE' /var/www/html/public --exclude-dir=vendor</code></pre>
+                </div>
+
+                <!-- Komut 46 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">13.4 Deserialization Attack</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">unserialize ile RCE saldırısı.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" "unserialize\s*(\s*\$_" /var/www/html --exclude-dir=vendor</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori 14: Config & INI Manipulation -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6">
+            <h3 class="text-xl font-bold text-yellow-400 mb-4 flex items-center gap-2">
+                <span class="bg-yellow-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">14</span>
+                Config & INI Manipülasyonu
+            </h3>
+
+            <div class="space-y-4">
+                <!-- Komut 47 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">14.1 .user.ini Dosyaları</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">PHP ayarlarını override eden .user.ini dosyaları.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html -name ".user.ini" -exec cat {} \;</code></pre>
+                </div>
+
+                <!-- Komut 48 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">14.2 auto_prepend_file</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Her PHP çalışmadan önce otomatik include.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r "auto_prepend_file\|auto_append_file" /var/www/html -l 2>/dev/null</code></pre>
+                </div>
+
+                <!-- Komut 49 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">14.3 SVG/XML PHP Injection</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">SVG ve XML dosyalarına gizlenmiş PHP.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html -type f \( -name "*.svg" -o -name "*.xml" \) -exec grep -l "&lt;?php\|&lt;script" {} \;</code></pre>
+                </div>
+
+                <!-- Komut 50 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">14.4 Alternatif PHP Uzantıları</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">.pht, .phps, .inc gibi az bilinen PHP uzantıları.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html -type f \( -name "*.pht" -o -name "*.phps" -o -name "*.inc" -o -name "*.php3" -o -name "*.php4" \)</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====================================== -->
+        <!-- KATEGORİ 15-18: IMUNIFY360 (51-70) -->
+        <!-- ====================================== -->
+
+        <div class="bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/50 rounded-xl p-4 mb-6">
+            <h2 class="text-2xl font-bold text-purple-400 text-center">
+                <i class="fas fa-shield-halved mr-2"></i>Kategori 15-18: Imunify360 Gelişmiş Testler (51-70)
+            </h2>
+        </div>
+
+        <!-- Kategori 15: Malware Signatures -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6 border-l-4 border-purple-500">
+            <h3 class="text-xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+                <span class="bg-purple-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">15</span>
+                Imunify360: Malware Signatures
+            </h3>
+
+            <div class="space-y-4">
+                <!-- 51 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">15.1 SEO Spam Injection</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Gizli SEO linkler, viagra/casino spam.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -ri "viagra\|cialis\|casino\|poker\|pharma" /var/www/html --include="*.php" --include="*.html" | grep -i "display.*none\|visibility.*hidden" | head -20</code></pre>
+                </div>
+
+                <!-- 52 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">15.2 Malicious Redirects</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">JavaScript/Meta tag ile gizli yönlendirmeler.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r "window\.location\|document\.location\|meta.*refresh" /var/www/html/public --include="*.php" --include="*.html" | grep -v "vendor" | head -20</code></pre>
+                </div>
+
+                <!-- 53 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">15.3 Defaced Page Detection</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Hacked by, owned by pattern'leri.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -ri "hacked by\|owned by\|defaced by\|pwned by" /var/www/html/public --include="*.php" --include="*.html"</code></pre>
+                </div>
+
+                <!-- 54 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">15.4 Known Malware Strings</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Bilinen malware imzaları (eval chains).</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r "eval.*base64_decode.*gzinflate\|eval.*str_rot13.*base64" /var/www/html --include="*.php" --exclude-dir=vendor</code></pre>
+                </div>
+
+                <!-- 55 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">15.5 Suspicious Function Chains</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Şüpheli fonksiyon kombinasyonları.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r "file_get_contents.*base64_decode\|curl_exec.*eval" /var/www/html --include="*.php" --exclude-dir=vendor | head -10</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori 16: Advanced Detection -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6 border-l-4 border-pink-500">
+            <h3 class="text-xl font-bold text-pink-400 mb-4 flex items-center gap-2">
+                <span class="bg-pink-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">16</span>
+                Imunify360: Gelişmiş Tespit
+            </h3>
+
+            <div class="space-y-4">
+                <!-- 56 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">16.1 Polymorphic Malware</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Sürekli değişen, kendini şifreleyen kod.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html -name "*.php" -exec sh -c 'grep -l "eval.*\\\$" "$1" && stat -c "%Y %n" "$1"' _ {} \; | sort -rn | head -20</code></pre>
+                </div>
+
+                <!-- 57 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">16.2 Time-Based Execution</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Belli saatlerde aktif olan backdoor.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r "date\s*(\|time\s*(" /var/www/html/public --include="*.php" --exclude-dir=vendor | grep -i "if\|switch" | head -20</code></pre>
+                </div>
+
+                <!-- 58 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">16.3 IP-Based Backdoors</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Sadece belli IP'lerden erişilebilen backdoor.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r "\$_SERVER\[.*REMOTE_ADDR.*==\|REMOTE_ADDR.*!=\|in_array.*REMOTE_ADDR" /var/www/html/public --include="*.php" --exclude-dir=vendor | head -10</code></pre>
+                </div>
+
+                <!-- 59 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">16.4 User-Agent Filtering</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">User-agent kontrol eden backdoor.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r "\$_SERVER\[.*HTTP_USER_AGENT" /var/www/html/public --include="*.php" --exclude-dir=vendor | grep -i "if\|preg_match" | head -10</code></pre>
+                </div>
+
+                <!-- 60 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">16.5 Multi-Stage Payloads</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Çok aşamalı encoded yükler.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r "eval.*eval\|base64_decode.*base64_decode.*base64_decode" /var/www/html --include="*.php" --exclude-dir=vendor</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori 17: File Integrity -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6 border-l-4 border-indigo-500">
+            <h3 class="text-xl font-bold text-indigo-400 mb-4 flex items-center gap-2">
+                <span class="bg-indigo-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">17</span>
+                Imunify360: Dosya Bütünlüğü
+            </h3>
+
+            <div class="space-y-4">
+                <!-- 61 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">17.1 Core File Modifications</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Laravel core dosyalarında değişiklik.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html/vendor/laravel -name "*.php" -mtime -30 ! -path "*/cache/*" 2>/dev/null | head -10</code></pre>
+                </div>
+
+                <!-- 62 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">17.2 Permission Anomalies</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">777 izinli PHP dosyaları.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html -type f -name "*.php" -perm 0777 ! -path "*/storage/*" 2>/dev/null</code></pre>
+                </div>
+
+                <!-- 63 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">17.3 Timestamp Manipulation</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Eski tarihli ama yeni içerikli dosyalar.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html/public -name "*.php" -type f -printf "%T@ %p\n" | sort -n | head -20 | awk '{print $2}' | xargs -I {} sh -c 'echo "File: {}"; grep -c "eval\|base64" {}'</code></pre>
+                </div>
+
+                <!-- 64 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">17.4 Hidden Attributes</span>
+                        <span class="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded">Orta</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Immutable (değiştirilemez) attribute.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html/public -type f -name "*.php" -exec lsattr {} \; 2>/dev/null | grep -E "i-|a-" | head -10</code></pre>
+                </div>
+
+                <!-- 65 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">17.5 Suspicious File Sizes</span>
+                        <span class="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded">Orta</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Çok küçük (<100 byte) veya çok büyük (>1MB) PHP.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html/public -name "*.php" -type f \( -size -100c -o -size +1M \) ! -path "*/vendor/*" 2>/dev/null | head -10</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori 18: Behavioral Analysis -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6 border-l-4 border-rose-500">
+            <h3 class="text-xl font-bold text-rose-400 mb-4 flex items-center gap-2">
+                <span class="bg-rose-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">18</span>
+                Imunify360: Davranış Analizi
+            </h3>
+
+            <div class="space-y-4">
+                <!-- 66 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">18.1 Mass File Creation</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Son 1 saatte 10+ PHP dosyası oluşturulmuş.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html -name "*.php" -type f -cmin -60 ! -path "*/vendor/*" ! -path "*/storage/framework/*" 2>/dev/null | wc -l</code></pre>
+                </div>
+
+                <!-- 67 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">18.2 Rapid Modifications</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Aynı dosyaya 1 saat içinde çok sayıda modify.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html/public -name "*.php" -type f -mmin -60 ! -path "*/storage/*" -exec ls -lt {} \; | head -20</code></pre>
+                </div>
+
+                <!-- 68 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">18.3 Suspicious Includes</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Dinamik include/require pattern'i.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r "include\s*(\s*\$\|require\s*(\s*\$" /var/www/html/public --include="*.php" --exclude-dir=vendor | head -10</code></pre>
+                </div>
+
+                <!-- 69 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">18.4 External File Operations</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Dışarıdan dosya indirme/kaydetme.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r "file_get_contents\s*(\s*['\"]http\|curl_exec" /var/www/html/public --include="*.php" --exclude-dir=vendor | grep "file_put_contents" | head -10</code></pre>
+                </div>
+
+                <!-- 70 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">18.5 Suspicious Variable Names</span>
+                        <span class="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded">Orta</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Tek harf veya anlamsız değişken isimleri.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r '\$[a-z]\s*=.*eval\|\$[a-z]\s*=.*base64' /var/www/html/public --include="*.php" --exclude-dir=vendor | head -10</code></pre>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ====================================== -->
+        <!-- KATEGORİ 19-22: YENİ KONTROLLER (71-90) -->
+        <!-- ====================================== -->
+
+        <div class="bg-gradient-to-r from-orange-600/20 to-red-600/20 border border-orange-500/50 rounded-xl p-4 mb-6">
+            <h2 class="text-2xl font-bold text-orange-400 text-center">
+                <i class="fas fa-plus-circle mr-2"></i>v5 Yeni Kontroller (71-90) - 20 Ekleme
+            </h2>
+        </div>
+
+        <!-- Kategori 19: Information Disclosure -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6 border-l-4 border-orange-500">
+            <h3 class="text-xl font-bold text-orange-400 mb-4 flex items-center gap-2">
+                <span class="bg-orange-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">19</span>
+                Information Disclosure (Bilgi Sızıntısı)
+                <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded ml-2">YENİ</span>
+            </h3>
+
+            <div class="space-y-4">
+                <!-- 71 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">19.1 .env File Exposure</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Public'te .env dosyası (database credential sızıntısı).</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html/public -name ".env" -o -name ".env.backup" -o -name ".env.old" 2>/dev/null</code></pre>
+                </div>
+
+                <!-- 72 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">19.2 .git Directory Exposure</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Public'te .git klasörü (tüm kaynak kod sızıntısı).</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html/public -type d -name ".git" 2>/dev/null</code></pre>
+                </div>
+
+                <!-- 73 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">19.3 Backup Files</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">.bak, .old, .backup, ~, .swp uzantılı dosyalar.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html/public -type f \( -name "*.bak" -o -name "*.old" -o -name "*.backup" -o -name "*~" -o -name "*.swp" \) 2>/dev/null</code></pre>
+                </div>
+
+                <!-- 74 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">19.4 SQL Dump Files</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Public'te .sql dosyaları (database dump sızıntısı).</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html/public -name "*.sql" -o -name "*.sql.gz" -o -name "dump.sql" 2>/dev/null</code></pre>
+                </div>
+
+                <!-- 75 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">19.5 phpinfo() Pages</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Sistem bilgisi ifşa eden phpinfo() sayfaları.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" "phpinfo\s*(" /var/www/html/public --exclude-dir=vendor | head -10</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori 20: Credential & Key Exposure -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                <span class="bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">20</span>
+                Credential & Key Exposure (Kimlik Sızıntısı)
+                <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded ml-2">YENİ</span>
+            </h3>
+
+            <div class="space-y-4">
+                <!-- 76 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">20.1 Hardcoded API Keys</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Kod içine yazılmış API anahtarları.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -E "api[_-]?key|apikey|api[_-]?secret" /var/www/html --exclude-dir=vendor | grep -i "=" | head -20</code></pre>
+                </div>
+
+                <!-- 77 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">20.2 SSH Private Keys</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Public'te private key dosyaları.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html/public -name "id_rsa" -o -name "*.pem" -o -name "*.key" -o -name "*.ppk" 2>/dev/null</code></pre>
+                </div>
+
+                <!-- 78 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">20.3 Database Credentials in Code</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Kod içinde DB şifresi.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -E "DB_PASSWORD|mysql.*password|mysqli.*connect" /var/www/html/public --exclude-dir=vendor | grep -v "env(" | head -10</code></pre>
+                </div>
+
+                <!-- 79 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">20.4 Composer auth.json</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Public'te composer kimlik dosyası.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>find /var/www/html/public -name "auth.json" -o -name "composer.json" -o -name "composer.lock" 2>/dev/null</code></pre>
+                </div>
+
+                <!-- 80 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">20.5 AWS/Cloud Credentials</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">AWS access key, secret key hardcoded.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -E "AKIA[0-9A-Z]{16}|aws_access_key|aws_secret" /var/www/html --exclude-dir=vendor | head -10</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori 21: Attack Patterns -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6 border-l-4 border-yellow-500">
+            <h3 class="text-xl font-bold text-yellow-400 mb-4 flex items-center gap-2">
+                <span class="bg-yellow-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">21</span>
+                Attack Patterns (Saldırı İzleri)
+                <span class="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded ml-2">YENİ</span>
+            </h3>
+
+            <div class="space-y-4">
+                <!-- 81 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">21.1 SQL Injection Attempts</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">SQL injection pattern'leri (UNION, OR 1=1).</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -E "UNION.*SELECT|OR.*1.*=.*1|admin'--|\' OR \'1" /var/www/html/public --exclude-dir=vendor | head -10</code></pre>
+                </div>
+
+                <!-- 82 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">21.2 XSS Patterns</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Cross-Site Scripting saldırı izleri.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" --include="*.html" -E "&lt;script&gt;|javascript:|onerror=|onload=" /var/www/html/public --exclude-dir=vendor | grep -v "vendor\|node_modules" | head -10</code></pre>
+                </div>
+
+                <!-- 83 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">21.3 Directory Traversal</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">../../../ pattern'i ile dosya okuma.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" "\.\./\.\./\.\." /var/www/html/public --exclude-dir=vendor | head -10</code></pre>
+                </div>
+
+                <!-- 84 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">21.4 NULL Byte Injection</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">%00 (null byte) ile dosya uzantısı bypass.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" "%00\|\\x00\|chr(0)" /var/www/html/public --exclude-dir=vendor | head -10</code></pre>
+                </div>
+
+                <!-- 85 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">21.5 LDAP Injection</span>
+                        <span class="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded">Orta</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">LDAP sorgularında injection.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" "ldap_search\|ldap_bind" /var/www/html --exclude-dir=vendor | grep "\$_" | head -10</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori 22: Configuration Issues -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-6 border-l-4 border-pink-500">
+            <h3 class="text-xl font-bold text-pink-400 mb-4 flex items-center gap-2">
+                <span class="bg-pink-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">22</span>
+                Configuration Issues (Yapılandırma Sorunları)
+                <span class="text-xs bg-pink-500/20 text-pink-400 px-2 py-1 rounded ml-2">YENİ</span>
+            </h3>
+
+            <div class="space-y-4">
+                <!-- 86 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">22.1 Debug Mode Enabled</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">APP_DEBUG=true production'da (stack trace sızıntısı).</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r "APP_DEBUG.*true\|debug.*true" /var/www/html/.env /var/www/html/config/app.php 2>/dev/null</code></pre>
+                </div>
+
+                <!-- 87 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">22.2 Error Display On</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">display_errors = On (hata mesajları gösteriliyor).</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r "display_errors\s*=\s*On\|error_reporting.*E_ALL" /var/www/html --include="*.ini" --include="*.php" 2>/dev/null | head -5</code></pre>
+                </div>
+
+                <!-- 88 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">22.3 Default Credentials</span>
+                        <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Kritik</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">admin/admin, root/root gibi default şifreler.</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" -E "password.*=.*(admin|123456|password|root)" /var/www/html/public --exclude-dir=vendor | head -10</code></pre>
+                </div>
+
+                <!-- 89 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">22.4 Weak Session Config</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">session.cookie_secure = false (HTTP üzerinden çerez).</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r "session\.cookie_secure.*false\|session\.cookie_httponly.*false" /var/www/html --include="*.ini" --include="*.php" 2>/dev/null</code></pre>
+                </div>
+
+                <!-- 90 -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-yellow-400 font-medium">22.5 Insecure CORS</span>
+                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-1 rounded">Yüksek</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Access-Control-Allow-Origin: * (tüm domainlere izin).</p>
+                    <pre class="bg-black/50 p-3 rounded text-green-400 text-sm overflow-x-auto"><code>grep -r --include="*.php" "Access-Control-Allow-Origin.*\*" /var/www/html --exclude-dir=vendor | head -10</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- GÜVENLİ SİLME PROSEDÜRÜ -->
+        <!-- ============================================ -->
+        <section class="bg-gradient-to-r from-red-900/50 to-orange-900/50 border-2 border-red-600 rounded-xl p-8 mb-8">
+            <h2 class="text-3xl font-bold text-red-400 mb-6 text-center">
+                <i class="fas fa-trash-alt mr-2"></i>GÜVENLİ SİLME PROSEDÜRÜ
+            </h2>
+
+            <div class="bg-yellow-900/30 border border-yellow-600 rounded-lg p-4 mb-6">
+                <h3 class="font-bold text-yellow-400 mb-2">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>ÖNEMLİ UYARI
+                </h3>
+                <p class="text-sm text-gray-300">
+                    Bulguları hemen silmeyin! Önce analiz edin, yedekleyin, sonra temizleyin.
+                    Sistemi bozabilecek dosyaları asla silmeyin (vendor, core files).
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Sol: Dosya İçinde Zararlı Kod -->
+                <div class="bg-slate-900 border border-orange-600 rounded-lg p-6">
+                    <h3 class="font-bold text-orange-400 mb-4 text-lg">
+                        <i class="fas fa-file-code mr-2"></i>Senaryo 1: Dosya İçinde Zararlı Kod
+                    </h3>
+                    <p class="text-sm text-gray-400 mb-4">
+                        Dosya meşru ama içinde zararlı kod var (örn: Laravel controller'da backdoor).
+                    </p>
+                    <div class="space-y-3">
+                        <div class="bg-slate-800 rounded p-3">
+                            <div class="text-green-400 text-xs mb-1">1. Yedek Al</div>
+                            <code class="text-xs text-gray-300">cp dosya.php dosya.php.backup-$(date +%s)</code>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <div class="text-green-400 text-xs mb-1">2. İçeriği İncele</div>
+                            <code class="text-xs text-gray-300">cat dosya.php | less</code>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <div class="text-green-400 text-xs mb-1">3. Zararlı Kısmı Tespit Et</div>
+                            <code class="text-xs text-gray-300">grep -n "eval\|base64_decode" dosya.php</code>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <div class="text-green-400 text-xs mb-1">4. Sadece O Kısmı Sil</div>
+                            <code class="text-xs text-gray-300">nano dosya.php  # Manuel temizle</code>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <div class="text-green-400 text-xs mb-1">5. Test Et</div>
+                            <code class="text-xs text-gray-300">php artisan route:list  # Site çalışıyor mu?</code>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <div class="text-green-400 text-xs mb-1">6. Git'e Kaydet</div>
+                            <code class="text-xs text-gray-300">git add dosya.php && git commit -m "Security: Cleaned backdoor"</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sağ: Dosya Tamamen Zararlı -->
+                <div class="bg-slate-900 border border-red-600 rounded-lg p-6">
+                    <h3 class="font-bold text-red-400 mb-4 text-lg">
+                        <i class="fas fa-file-alt mr-2"></i>Senaryo 2: Dosya Tamamen Zararlı
+                    </h3>
+                    <p class="text-sm text-gray-400 mb-4">
+                        Dosya %100 zararlı (örn: public/453bbb9eb16f.php webshell).
+                    </p>
+                    <div class="space-y-3">
+                        <div class="bg-slate-800 rounded p-3">
+                            <div class="text-green-400 text-xs mb-1">1. Yedek Al (Analiz İçin)</div>
+                            <code class="text-xs text-gray-300">cp dosya.php /tmp/malware-backup-$(date +%s).php</code>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <div class="text-green-400 text-xs mb-1">2. İçeriği Kaydet</div>
+                            <code class="text-xs text-gray-300">cat dosya.php > /tmp/malware-analysis.txt</code>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <div class="text-green-400 text-xs mb-1">3. Dosyayı SİL</div>
+                            <code class="text-xs text-gray-300">rm -f dosya.php</code>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <div class="text-green-400 text-xs mb-1">4. Test Et</div>
+                            <code class="text-xs text-gray-300">curl -I https://site.com/  # 200 OK?</code>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <div class="text-green-400 text-xs mb-1">5. Git'e Kaydet</div>
+                            <code class="text-xs text-gray-300">git add -A && git commit -m "Security: Removed malware"</code>
+                        </div>
+                        <div class="bg-slate-800 rounded p-3">
+                            <div class="text-green-400 text-xs mb-1">6. Analiz Et</div>
+                            <code class="text-xs text-gray-300">cat /tmp/malware-analysis.txt  # Nasıl sızdı?</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kritik Sistem Dosyaları Uyarısı -->
+            <div class="bg-red-900/30 border border-red-700 rounded-lg p-4 mt-6">
+                <h4 class="font-bold text-red-400 mb-2">
+                    <i class="fas fa-ban mr-2"></i>ASLA SİLME - Kritik Sistem Dosyaları
+                </h4>
+                <ul class="space-y-1 text-sm text-gray-300">
+                    <li>• <strong>vendor/</strong> klasörü içindeki dosyalar (Laravel core)</li>
+                    <li>• <strong>node_modules/</strong> klasörü (NPM paketleri)</li>
+                    <li>• <strong>storage/framework/</strong> (session, cache, views)</li>
+                    <li>• <strong>bootstrap/cache/</strong> (Laravel cache)</li>
+                    <li>• <strong>.env</strong> (silinmemeli, içeriği kontrol edilmeli)</li>
+                    <li>• <strong>config/</strong> klasörü (konfigürasyon dosyaları)</li>
+                </ul>
+                <p class="text-xs text-red-300 mt-2">
+                    ⚠️ Bu dosyalarda zararlı kod bulursan → Rapor et, sistemi yeniden kur!
+                </p>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- HAZIR PROMPT - v5 ÖZEL -->
+        <!-- ============================================ -->
+        <section class="bg-gradient-to-r from-green-900/50 to-emerald-900/50 border-2 border-green-600 rounded-xl p-8 mb-8">
+            <h2 class="text-3xl font-bold text-green-400 mb-6 text-center">
+                <i class="fas fa-robot mr-2"></i>HAZIR PROMPT v5 - KOPYALA & YAPIŞTIR
+            </h2>
+
+            <div class="bg-yellow-900/30 border border-yellow-600 rounded-lg p-4 mb-6">
+                <h3 class="font-bold text-yellow-400 mb-2">
+                    <i class="fas fa-lightbulb mr-2"></i>v5 Prompt - 90 Kontrol + Güvenli Silme
+                </h3>
+                <ol class="space-y-2 text-sm text-gray-300">
+                    <li><strong>1.</strong> Aşağıdaki prompt'u kopyalayın</li>
+                    <li><strong>2.</strong> Claude AI'ya yapıştırın</li>
+                    <li><strong>3.</strong> AI otomatik olarak:
+                        <ul class="ml-6 mt-1 space-y-1">
+                            <li>✓ 90 kontrolü çalıştırır</li>
+                            <li>✓ Bulguları analiz eder</li>
+                            <li>✓ Güvenli silme planı yapar</li>
+                            <li>✓ Zararlı dosyaları yedekler</li>
+                            <li>✓ Sadece zararlı kısımları temizler</li>
+                            <li>✓ Detaylı HTML rapor oluşturur</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="bg-slate-900 border border-green-600 rounded-lg p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-bold text-white">📋 Prompt v5 (90 Kontrol + Güvenli Silme)</h3>
+                    <span class="text-xs bg-green-500/20 text-green-400 px-3 py-1 rounded">FINAL VERSION</span>
+                </div>
+
+                <pre class="bg-black/70 p-4 rounded text-green-300 text-sm overflow-x-auto border border-green-800"><code>https://ixtif.com/readme/2026/01/02/guvenlik-tarama-rehberi/v5/ bu linkteki 90 güvenlik kontrolünü tek tek uygula.
+
+GÖREV:
+1. Todo listesi oluştur (90 kontrol için 22 kategori)
+2. Tüm kontrolleri tek tek çalıştır (1-90)
+3. Sonuçları derle ve analiz et
+4. Bugüne ait (YYYY/MM/DD formatında) detaylı HTML rapor oluştur:
+   - public/readme/[YYYY]/[MM]/[DD]/guvenlik-tarama-sonuclari/v1/index.html
+   - İki seviyeli içerik (basit anlatım + teknik detaylar)
+   - Kritik bulgular ayrı bölüm
+   - Temiz sonuçlar ayrı bölüm
+   - 90 kontrolün özet tablosu
+   - GÜVENLİ SİLME PLANI bölümü (ÇOK ÖNEMLİ!)
+
+5. Bulgu varsa GÜVENLİ SİLME prosedürü uygula:
+   a) YEDEK AL:
+      - Her dosya için timestamp'li yedek oluştur
+      - cp dosya.php dosya.php.backup-$(date +%s)
+
+   b) ANALİZ ET:
+      - Dosya tamamen zararlı mı? → SİL
+      - Dosya içinde zararlı kod var mı? → SADECE O KISMI TEMİZLE
+      - Sistem dosyası mı? (vendor, core) → ASLA SİLME, RAPOR ET
+
+   c) TEMİZLE:
+      - Tamamen zararlıysa: rm -f dosya
+      - Kısmi zararlıysa: Sadece zararlı satırları kaldır
+
+   d) TEST ET:
+      - Site çalışıyor mu kontrol et
+      - Curl ile 200 OK al
+
+   e) GIT'E KAYDET:
+      - git add -A
+      - git commit -m "Security: Cleaned malware [dosya listesi]"
+
+6. Rapor hazır olunca:
+   - İzinleri düzelt (tuufi.com_:psaserv, 644/755)
+   - Sembolik link oluştur
+   - curl ile 200 OK kontrolü yap
+   - Bana link ver
+
+ÖNEMLİ:
+- Hepsi onaylı, tek tek sormana gerek yok
+- Her kategori bitince todo güncelle
+- Vendor klasörünü hariç tut
+- Temiz sonuçları da raporla (sadece hataları değil)
+- Bulguları şiddete göre sınıflandır (Kritik/Yüksek/Orta/Normal)
+- ⚠️ KRİTİK: Sistem dosyalarını (vendor, core) ASLA silme!
+- ⚠️ KRİTİK: Silmeden önce MUTLAKA yedek al!
+- ⚠️ KRİTİK: Raporda hangi dosyaların silindiğini/temizlendiğini belirt!</code></pre>
+
+                <div class="mt-4 p-3 bg-blue-900/30 border border-blue-700 rounded text-sm">
+                    <p class="text-blue-300">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        <strong>v5 Farkı:</strong> Bu prompt sadece tarama yapmaz, aynı zamanda bulguları
+                        <strong>güvenli şekilde temizler</strong>. Sistem dosyalarına dokunmaz, her şeyi yedekler,
+                        detaylı silme raporu oluşturur.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-6 grid md:grid-cols-3 gap-4 text-sm">
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <h4 class="font-bold text-green-400 mb-2">✅ v5 Prompt Ne Yapar?</h4>
+                    <ul class="space-y-1 text-gray-300">
+                        <li>• 90 kontrolü otomatik çalıştırır</li>
+                        <li>• Bulguları analiz eder</li>
+                        <li>• Güvenli silme planı yapar</li>
+                        <li>• Yedek alır</li>
+                        <li>• Zararlı kodları temizler</li>
+                        <li>• HTML rapor + silme raporu</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <h4 class="font-bold text-blue-400 mb-2">🛡️ Güvenlik Önlemleri</h4>
+                    <ul class="space-y-1 text-gray-300">
+                        <li>• Timestamp'li yedekler</li>
+                        <li>• Sistem dosyası kontrolü</li>
+                        <li>• Kısmi temizleme desteği</li>
+                        <li>• Test sonrası git commit</li>
+                        <li>• Detaylı changelog</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <h4 class="font-bold text-orange-400 mb-2">📊 Rapor İçeriği</h4>
+                    <ul class="space-y-1 text-gray-300">
+                        <li>• 90 kontrolün sonuçları</li>
+                        <li>• Kritik/Yüksek/Orta bulgular</li>
+                        <li>• Silme planı</li>
+                        <li>• Yedek konumları</li>
+                        <li>• Temizlenen dosyalar</li>
+                        <li>• Güvenlik önerileri</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Önleme -->
+        <section class="bg-slate-800/50 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-blue-400 mb-4">
+                <i class="fas fa-shield-alt mr-2"></i>Önleme Tavsiyeleri (Saldırı Sonrası)
+            </h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <h4 class="font-medium text-white mb-2"><i class="fas fa-lock text-red-400 mr-2"></i>Şifre Değiştir</h4>
+                    <p class="text-gray-400 text-sm">FTP, SSH, Database, Admin panel şifrelerini değiştir</p>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <h4 class="font-medium text-white mb-2"><i class="fas fa-key text-red-400 mr-2"></i>.env Yeniden Oluştur</h4>
+                    <p class="text-gray-400 text-sm">APP_KEY, DB_PASSWORD, API anahtarlarını değiştir</p>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <h4 class="font-medium text-white mb-2"><i class="fas fa-ban text-red-400 mr-2"></i>Upload Kapat</h4>
+                    <p class="text-gray-400 text-sm">uploads/.htaccess: <code>php_flag engine off</code></p>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <h4 class="font-medium text-white mb-2"><i class="fas fa-fire text-red-400 mr-2"></i>WAF Aktif Et</h4>
+                    <p class="text-gray-400 text-sm">ModSecurity, Imunify360 veya Cloudflare WAF</p>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <h4 class="font-medium text-white mb-2"><i class="fas fa-sync text-yellow-400 mr-2"></i>Güncellemeler</h4>
+                    <p class="text-gray-400 text-sm">PHP, Laravel, tüm paketleri güncel tut</p>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <h4 class="font-medium text-white mb-2"><i class="fas fa-clock text-yellow-400 mr-2"></i>Düzenli Tarama</h4>
+                    <p class="text-gray-400 text-sm">Haftada bir bu 90 kontrolü çalıştır</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 text-sm pt-8 border-t border-gray-800">
+            <p>
+                <i class="fas fa-robot mr-1"></i>
+                Bu rehber Claude AI tarafından oluşturulmuştur.
+            </p>
+            <p class="mt-2">
+                <i class="fas fa-calendar mr-1"></i> 5 Ocak 2026
+                <span class="mx-2">|</span>
+                <i class="fas fa-code-branch mr-1"></i> v5.0 (Final - Güvenli Silme İlaveli)
+                <span class="mx-2">|</span>
+                <span class="text-green-400">90 Kontrol (50 temel + 20 Imunify360 + 20 yeni)</span>
+            </p>
+            <p class="mt-2 text-xs">
+                <span class="text-blue-400">v2</span> + <span class="text-purple-400">v3</span> + <span class="text-orange-400">v4</span> + <span class="text-red-400">Güvenli Silme</span> = <span class="text-green-400 font-bold">v5 NİHAİ</span>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

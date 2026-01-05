@@ -1,57 +1,261 @@
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: initTooltips is not defined
+spot-player.js?v=1767284776:483 🎙️ SpotPlayer: Script loaded! MuzibuSpotPlayer: object
+spot-player.js?v=1767284776:487 🎙️ SpotPlayer: DOM loading, waiting for DOMContentLoaded...
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: leaving is not defined
 
-Expression: "function initTooltips() {
-        setTimeout(() => {
-            const wrapper = document.querySelector('.dashboard-component-wrapper');
-            if (!wrapper) return;
+Expression: "leaving"
 
-            const tooltipTriggerList = wrapper.querySelectorAll('[data-bs-toggle="tooltip"]');
-            tooltipTriggerList.forEach(el => {
-                const existingTooltip = bootstrap.Tooltip.getInstance(el);
-                if (existingTooltip) existingTooltip.dispose();
-                new bootstrap.Tooltip(el);
-            });
-        }, 100);
-    }
-
-    initTooltips();
-
-    // Livewire 3 hooks
-    Livewire.hook('morph.updated', () => initTooltips());
-    Livewire.hook('commit', ({ succeed }) => {
-        succeed(() => initTooltips());
-    });"
-
- <div wire:id=​"ACvENIMAk1CJAzbJFLyD" class=​"dashboard-component-wrapper">​…​</div>​
+ <button type=​"button" @click=​"showLeaveModal()​" :disabled=​"leaving" class=​"w-full flex items-center justify-between p-4 bg-red-500/​10 hover:​bg-red-500/​20 rounded-xl transition disabled:​opacity-50 cursor-pointer">​…​</button>​flex
 handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: initTooltips is not defined
-    at [Alpine] function initTooltips() {
-        setTimeout(() => {
-            const wrapper = document.querySelector('.dashboard-component-wrapper');
-            if (!wrapper) return;
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: leaving is not defined
 
-            const tooltipTriggerList = wrapper.querySelectorAll('[data-bs-toggle="tooltip"]');
-            tooltipTriggerList.forEach(el => {
-                const existingTooltip = bootstrap.Tooltip.getInstance(el);
-                if (existingTooltip) existingTooltip.dispose();
-                new bootstrap.Tooltip(el);
-            });
-        }, 100);
-    }
+Expression: "!leaving"
 
-    initTooltips();
+ <i class=​"fas fa-sign-out-alt text-red-400" x-show=​"!leaving" style=​"display:​ none;​">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3626
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3626
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: leaving is not defined
 
-    // Livewire 3 hooks
-    Livewire.hook('morph.updated', () => initTooltips());
-    Livewire.hook('commit', ({ succeed }) => {
-        succeed(() => initTooltips());
-    }); (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:17:5)
-    at https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1196:23
-    at tryCatch (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1116:14)
-    at Object.evaluate (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1140:34)
-    at https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:8919:28
-    at Object.dontAutoEvaluateFunctions (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1134:18)
-    at https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:8918:26
-    at onlyIfScriptHasntBeenRunAlreadyForThisComponent (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:8931:5)
-    at https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:8916:9
-    at Array.forEach (<anonymous>)
+Expression: "leaving"
+
+ <i class=​"fas fa-spinner fa-spin text-red-400" x-show=​"leaving" style=​"display:​ none;​">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3626
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3626
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: leaving is not defined
+
+Expression: "!leaving"
+
+ <i class=​"fas fa-chevron-right text-red-400" x-show=​"!leaving" style=​"display:​ none;​">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3626
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3626
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+spot-player.js?v=1767284776:489 🎙️ SpotPlayer: DOMContentLoaded fired, calling init()...
+spot-player.js?v=1767284776:51 🎙️ SpotPlayer: Initializing...
+spot-player.js?v=1767284776:75 🎙️ SpotPlayer: Fetching settings from /api/spot/settings...
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: leaving is not defined
+    at [Alpine] leaving (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] leaving @ VM15619:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3533
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+handler2 @ livewire.js?id=df3a17f2:3533
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: leaving is not defined
+    at [Alpine] !leaving (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:33)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] !leaving @ VM15621:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3626
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3626
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: leaving is not defined
+    at [Alpine] leaving (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] leaving @ VM15619:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3626
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3626
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: leaving is not defined
+    at [Alpine] !leaving (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:33)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] !leaving @ VM15621:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3626
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3626
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+spot-player.js?v=1767284776:85 🎙️ SpotPlayer: Settings response: {enabled: true, songs_between: 1, corporate_id: 18, branch_id: 20, spot_is_paused: false}
+spot-player.js?v=1767284776:64 🎙️ SpotPlayer: Enabled. Songs between: 1, Current count: 0

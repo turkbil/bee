@@ -2,191 +2,10 @@
 
 @section('title', 'Kurumsal Hesap - Muzibu')
 
-@push('scripts')
-<script>
-window.corporatePage = function() {
-    return {
-        // Katılım formu
-        joinCode: '',
-        joining: false,
-
-        // Oluşturma formu
-        companyName: '',
-        createCode: '',
-        creating: false,
-        codeError: '',
-        codeAvailable: null, // null=kontrol edilmedi, true=uygun, false=kullanımda
-        checkingCode: false,
-
-        get createCodeValid() {
-            return this.createCode.length === 8 && this.codeAvailable === true;
-        },
-
-        async validateCreateCode() {
-            if (this.createCode.length === 0) {
-                this.codeError = '';
-                this.codeAvailable = null;
-            } else if (this.createCode.length < 8) {
-                this.codeError = 'Tam olarak 8 karakter gerekli';
-                this.codeAvailable = null;
-            } else {
-                // 8 karakter olunca otomatik kontrol et
-                this.codeError = '';
-                await this.checkCodeAvailability();
-            }
-        },
-
-        async checkCodeAvailability() {
-            if (this.createCode.length !== 8 || this.checkingCode) return;
-            this.checkingCode = true;
-            this.codeAvailable = null;
-
-            try {
-                const response = await fetch('/corporate/check-code', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({ code: this.createCode })
-                });
-
-                const data = await response.json();
-                this.codeAvailable = data.available;
-                if (!data.available) {
-                    this.codeError = data.message || 'Bu kod zaten kullanımda';
-                } else {
-                    this.codeError = '';
-                }
-            } catch (error) {
-                this.codeError = 'Kontrol sirasinda hata olustu';
-                this.codeAvailable = null;
-            } finally {
-                this.checkingCode = false;
-            }
-        },
-
-        async joinWithCode() {
-            if (this.joinCode.length !== 8 || this.joining) return;
-            this.joining = true;
-
-            try {
-                const response = await fetch('/corporate/join', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({ corporate_code: this.joinCode })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    window.dispatchEvent(new CustomEvent('toast', {
-                        detail: { message: data.message, type: 'success' }
-                    }));
-                    // Full page reload (SPA bypass)
-                    setTimeout(() => {
-                        window.location.assign(data.redirect || '/dashboard');
-                    }, 1000);
-                } else {
-                    window.dispatchEvent(new CustomEvent('toast', {
-                        detail: { message: data.message || 'Gecersiz kod', type: 'error' }
-                    }));
-                }
-            } catch (error) {
-                window.dispatchEvent(new CustomEvent('toast', {
-                    detail: { message: 'Hata olustu', type: 'error' }
-                }));
-            } finally {
-                this.joining = false;
-            }
-        },
-
-        async createCorporate() {
-            if (this.companyName.length < 2 || !this.createCodeValid || this.creating) return;
-            this.creating = true;
-            this.codeError = '';
-
-            try {
-                const response = await fetch('/corporate/create', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        company_name: this.companyName,
-                        corporate_code: this.createCode
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    window.dispatchEvent(new CustomEvent('toast', {
-                        detail: { message: data.message, type: 'success' }
-                    }));
-                    setTimeout(() => {
-                        window.location.href = data.redirect || '/corporate/dashboard';
-                    }, 1500);
-                } else {
-                    this.codeError = data.message || 'Bu kod zaten kullanımda';
-                    window.dispatchEvent(new CustomEvent('toast', {
-                        detail: { message: data.message || 'Hata olustu', type: 'error' }
-                    }));
-                }
-            } catch (error) {
-                window.dispatchEvent(new CustomEvent('toast', {
-                    detail: { message: 'Hata olustu', type: 'error' }
-                }));
-            } finally {
-                this.creating = false;
-            }
-        },
-
-        async leaveCorporate() {
-            if (!confirm('Kurumsal hesaptan ayrilmak istediginize emin misiniz?')) return;
-
-            try {
-                const response = await fetch('/corporate/leave', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    window.dispatchEvent(new CustomEvent('toast', {
-                        detail: { message: data.message, type: 'success' }
-                    }));
-                    location.reload();
-                } else {
-                    throw new Error(data.message);
-                }
-            } catch (error) {
-                window.dispatchEvent(new CustomEvent('toast', {
-                    detail: { message: error.message || 'Hata olustu', type: 'error' }
-                }));
-            }
-        }
-    }
-}
-</script>
-@endpush
-
 @section('content')
 
-<div class="py-12 pb-24" x-data="corporatePage()">
-    <div class="max-w-4xl mx-auto px-4">
+<div class="py-6 sm:py-12 pb-24" x-data="corporateJoinPage()" x-init="if($store.sidebar) $store.sidebar.rightSidebarVisible = false;">
+    <div class="max-w-4xl mx-auto px-3 sm:px-4">
 
         {{-- Already Member --}}
         @if($existingAccount)
@@ -212,7 +31,7 @@ window.corporatePage = function() {
                         <a href="/corporate/my-corporate" class="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl transition" data-spa>
                             <i class="fas fa-user mr-2"></i>Uyeligim
                         </a>
-                        <button @click="leaveCorporate()" class="px-6 py-3 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-semibold rounded-xl transition">
+                        <button type="button" @click="showLeaveModal()" class="px-6 py-3 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-semibold rounded-xl transition cursor-pointer">
                             <i class="fas fa-sign-out-alt mr-2"></i>Ayril
                         </button>
                     </div>
@@ -220,22 +39,22 @@ window.corporatePage = function() {
             </div>
         @else
             {{-- Page Header --}}
-            <div class="text-center mb-10">
-                <h1 class="text-3xl font-bold text-white mb-3">Kurumsal Hesap</h1>
-                <p class="text-gray-400">Mevcut bir kurumsal hesaba katilin veya kendi kurumsal yapinizi olusturun</p>
+            <div class="text-center mb-6 sm:mb-10">
+                <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2 sm:mb-3">Kurumsal Hesap</h1>
+                <p class="text-gray-400 text-sm sm:text-base px-2">Mevcut bir kurumsal hesaba katilin veya kendi kurumsal yapinizi olusturun</p>
             </div>
 
-            {{-- Two Column Layout --}}
-            <div class="grid md:grid-cols-2 gap-6">
+            {{-- Two Column Layout - Mobile: Stack, Desktop: Side by Side --}}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
 
                 {{-- 1. DAVET KODU ILE KATIL --}}
-                <div class="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-2xl p-6">
-                    <div class="text-center mb-6">
-                        <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-sign-in-alt text-white text-xl"></i>
+                <div class="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-xl sm:rounded-2xl p-4 sm:p-6">
+                    <div class="text-center mb-4 sm:mb-6">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                            <i class="fas fa-sign-in-alt text-white text-lg sm:text-xl"></i>
                         </div>
-                        <h2 class="text-xl font-bold text-white mb-1">Davet Kodu ile Katil</h2>
-                        <p class="text-gray-400 text-sm">Sirketinizden aldiginiz 8 haneli kodu girin</p>
+                        <h2 class="text-lg sm:text-xl font-bold text-white mb-1">Davet Kodu ile Katil</h2>
+                        <p class="text-gray-400 text-xs sm:text-sm">Sirketinizden aldiginiz 8 haneli kodu girin</p>
                     </div>
 
                     <form @submit.prevent="joinWithCode()" class="space-y-4">
@@ -253,20 +72,20 @@ window.corporatePage = function() {
 
                         <button type="submit" :disabled="joinCode.length !== 8 || joining"
                                 class="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition">
-                            <span x-show="!joining"><i class="fas fa-arrow-right mr-2"></i>Katil</span>
+                            <span x-show="!joining"><i class="fas fa-arrow-right mr-2"></i>Katıl</span>
                             <span x-show="joining"><i class="fas fa-spinner fa-spin mr-2"></i>Kontrol ediliyor...</span>
                         </button>
                     </form>
                 </div>
 
                 {{-- 2. KENDI KURUMSAL YAPINI OLUSTUR --}}
-                <div class="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-2xl p-6">
-                    <div class="text-center mb-6">
-                        <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-crown text-yellow-400 text-xl"></i>
+                <div class="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-xl sm:rounded-2xl p-4 sm:p-6">
+                    <div class="text-center mb-4 sm:mb-6">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                            <i class="fas fa-crown text-yellow-400 text-lg sm:text-xl"></i>
                         </div>
-                        <h2 class="text-xl font-bold text-white mb-1">Kurumsal Yapi Olustur</h2>
-                        <p class="text-gray-400 text-sm">Kendi sirketiniz icin kurumsal hesap acin</p>
+                        <h2 class="text-lg sm:text-xl font-bold text-white mb-1">Kurumsal Yapi Olustur</h2>
+                        <p class="text-gray-400 text-xs sm:text-sm">Kendi sirketiniz icin kurumsal hesap acin</p>
                     </div>
 
                     <form @submit.prevent="createCorporate()" class="space-y-4">
@@ -306,7 +125,7 @@ window.corporatePage = function() {
                             </p>
                         </div>
 
-                        <button type="submit" :disabled="companyName.length < 2 || !createCodeValid || creating"
+                        <button type="submit" :disabled="companyName.length &lt; 2 || !createCodeValid || creating"
                                 class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition">
                             <span x-show="!creating"><i class="fas fa-crown mr-2"></i>Kurumsal Hesap Olustur</span>
                             <span x-show="creating"><i class="fas fa-spinner fa-spin mr-2"></i>Olusturuluyor...</span>

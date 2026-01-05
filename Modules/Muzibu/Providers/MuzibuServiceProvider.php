@@ -83,6 +83,7 @@ class MuzibuServiceProvider extends ServiceProvider
      * - SectorObserver: Activity log, cache temizleme
      * - CorporateSpotObserver: Activity log, cache temizleme
      * - CertificateObserver: Activity log, cache temizleme
+     * - MuzibuCorporateAccountObserver: Kurumsal hesap activity log (kurma, katılma, ayrılma)
      */
     protected function registerModelObservers(): void
     {
@@ -108,6 +109,7 @@ class MuzibuServiceProvider extends ServiceProvider
         // Corporate & Certificate Observers
         \Modules\Muzibu\App\Models\CorporateSpot::observe(\Modules\Muzibu\App\Observers\CorporateSpotObserver::class);
         \Modules\Muzibu\App\Models\Certificate::observe(\Modules\Muzibu\App\Observers\CertificateObserver::class);
+        \Modules\Muzibu\App\Models\MuzibuCorporateAccount::observe(\Modules\Muzibu\App\Observers\MuzibuCorporateAccountObserver::class);
     }
 
     /**
@@ -173,6 +175,7 @@ class MuzibuServiceProvider extends ServiceProvider
 
         // Corporate Account Components
         Livewire::component('muzibu::admin.corporate-account-component', \Modules\Muzibu\App\Http\Livewire\Admin\CorporateAccountComponent::class);
+        Livewire::component('muzibu::admin.corporate-account-manage-component', \Modules\Muzibu\App\Http\Livewire\Admin\CorporateAccountManageComponent::class);
 
         // Spot Components
         Livewire::component('muzibu::admin.spot-component', \Modules\Muzibu\App\Http\Livewire\Admin\SpotComponent::class);

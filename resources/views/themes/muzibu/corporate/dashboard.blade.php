@@ -8,11 +8,11 @@
     x-data="corporateDashboard()"
     data-corporate-code="{{ $account->corporate_code }}"
     data-company-name="{{ addslashes($account->company_name ?? '') }}"
-    x-init="corporateCode = $el.dataset.corporateCode; companyName = $el.dataset.companyName"
+    x-init="corporateCode = $el.dataset.corporateCode; companyName = $el.dataset.companyName; if($store.sidebar) $store.sidebar.rightSidebarVisible = false;"
     class="min-h-screen overflow-x-hidden"
 >
     {{-- Hero Banner --}}
-    <div class="relative overflow-hidden">
+    <div class="relative">
         <div class="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-pink-600/10 to-transparent"></div>
         <div class="absolute top-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-purple-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
         <div class="absolute bottom-0 left-0 w-48 sm:w-64 h-48 sm:h-64 bg-pink-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
@@ -50,7 +50,7 @@
                 </div>
 
                 {{-- Action Buttons --}}
-                <div class="flex items-center gap-2 flex-wrap">
+                <div class="flex items-center gap-2 flex-wrap relative z-40">
                     <a href="/dashboard" class="px-3 sm:px-4 py-2 sm:py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-lg sm:rounded-xl transition-all flex items-center gap-2 text-xs sm:text-sm" data-spa>
                         <i class="fas fa-arrow-left"></i>
                         <span class="hidden sm:inline">{{ __('muzibu::front.corporate.dashboard') }}</span>
@@ -65,7 +65,7 @@
                         <span class="hidden sm:inline">{{ __('muzibu::front.corporate.spot_management') }}</span>
                     </a>
                     {{-- More Options --}}
-                    <div class="relative ml-auto" x-data="{ open: false }">
+                    <div class="relative ml-auto z-50" x-data="{ open: false }">
                         <button @click="open = !open" class="p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white rounded-lg sm:rounded-xl transition-all">
                             <i class="fas fa-ellipsis-v"></i>
                         </button>
@@ -73,7 +73,7 @@
                              x-transition:enter="transition ease-out duration-200"
                              x-transition:enter-start="opacity-0 scale-95"
                              x-transition:enter-end="opacity-100 scale-100"
-                             class="absolute right-0 mt-2 w-56 bg-slate-800/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-xl overflow-hidden z-[9999]">
+                             class="absolute right-0 mt-2 w-56 bg-slate-800/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden z-[9999]">
                             <button @click="open = false; showDisbandModal = true"
                                     class="w-full px-4 py-3 text-left text-red-400 hover:bg-red-500/10 transition flex items-center gap-3 text-sm">
                                 <i class="fas fa-power-off w-5"></i>
@@ -88,55 +88,55 @@
 
     <div class="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 pb-24">
         {{-- Stats Grid --}}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-6 sm:mb-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6 md:mb-8">
             {{-- Total Members --}}
-            <div class="group relative bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-500/20 rounded-xl sm:rounded-2xl p-3 sm:p-5 hover:border-blue-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10">
-                <div class="flex items-start justify-between">
-                    <div class="min-w-0">
-                        <p class="text-blue-300/70 text-xs sm:text-sm mb-1 truncate">{{ __('muzibu::front.corporate.total_members') }}</p>
-                        <p class="text-white text-xl sm:text-2xl lg:text-3xl font-bold" data-total-members>{{ $branchStats['totals']['total_members'] }}</p>
+            <div class="group relative bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-500/20 rounded-lg sm:rounded-xl md:rounded-2xl p-2.5 sm:p-4 md:p-5 hover:border-blue-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10">
+                <div class="flex items-center sm:items-start justify-between gap-2">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-blue-300/70 text-[10px] sm:text-xs md:text-sm mb-0.5 sm:mb-1 truncate">{{ __('muzibu::front.corporate.total_members') }}</p>
+                        <p class="text-white text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold" data-total-members>{{ $branchStats['totals']['total_members'] }}</p>
                     </div>
-                    <div class="w-8 h-8 sm:w-10 md:w-12 sm:h-10 md:h-12 bg-blue-500/20 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                        <i class="fas fa-users text-blue-400 text-sm sm:text-base lg:text-lg"></i>
+                    <div class="w-7 h-7 sm:w-9 sm:h-9 md:w-11 md:h-11 bg-blue-500/20 rounded-md sm:rounded-lg md:rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+                        <i class="fas fa-users text-blue-400 text-xs sm:text-sm md:text-base"></i>
                     </div>
                 </div>
             </div>
 
             {{-- Total Plays --}}
-            <div class="group relative bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20 rounded-xl sm:rounded-2xl p-3 sm:p-5 hover:border-green-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10">
-                <div class="flex items-start justify-between">
-                    <div class="min-w-0">
-                        <p class="text-green-300/70 text-xs sm:text-sm mb-1 truncate">{{ __('muzibu::front.corporate.total_listening') }}</p>
-                        <p class="text-white text-xl sm:text-2xl lg:text-3xl font-bold">{{ number_format($branchStats['totals']['total_plays']) }}</p>
+            <div class="group relative bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20 rounded-lg sm:rounded-xl md:rounded-2xl p-2.5 sm:p-4 md:p-5 hover:border-green-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10">
+                <div class="flex items-center sm:items-start justify-between gap-2">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-green-300/70 text-[10px] sm:text-xs md:text-sm mb-0.5 sm:mb-1 truncate">{{ __('muzibu::front.corporate.total_listening') }}</p>
+                        <p class="text-white text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">{{ number_format($branchStats['totals']['total_plays']) }}</p>
                     </div>
-                    <div class="w-8 h-8 sm:w-10 md:w-12 sm:h-10 md:h-12 bg-green-500/20 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                        <i class="fas fa-play text-green-400 text-sm sm:text-base lg:text-lg"></i>
+                    <div class="w-7 h-7 sm:w-9 sm:h-9 md:w-11 md:h-11 bg-green-500/20 rounded-md sm:rounded-lg md:rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+                        <i class="fas fa-play text-green-400 text-xs sm:text-sm md:text-base"></i>
                     </div>
                 </div>
             </div>
 
             {{-- Weekly Plays --}}
-            <div class="group relative bg-gradient-to-br from-amber-500/10 to-amber-600/5 border border-amber-500/20 rounded-xl sm:rounded-2xl p-3 sm:p-5 hover:border-amber-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10">
-                <div class="flex items-start justify-between">
-                    <div class="min-w-0">
-                        <p class="text-amber-300/70 text-xs sm:text-sm mb-1 truncate">{{ __('muzibu::front.corporate.this_week') }}</p>
-                        <p class="text-white text-xl sm:text-2xl lg:text-3xl font-bold">{{ number_format($branchStats['totals']['weekly_plays']) }}</p>
+            <div class="group relative bg-gradient-to-br from-amber-500/10 to-amber-600/5 border border-amber-500/20 rounded-lg sm:rounded-xl md:rounded-2xl p-2.5 sm:p-4 md:p-5 hover:border-amber-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10">
+                <div class="flex items-center sm:items-start justify-between gap-2">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-amber-300/70 text-[10px] sm:text-xs md:text-sm mb-0.5 sm:mb-1 truncate">{{ __('muzibu::front.corporate.this_week') }}</p>
+                        <p class="text-white text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">{{ number_format($branchStats['totals']['weekly_plays']) }}</p>
                     </div>
-                    <div class="w-8 h-8 sm:w-10 md:w-12 sm:h-10 md:h-12 bg-amber-500/20 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                        <i class="fas fa-chart-line text-amber-400 text-sm sm:text-base lg:text-lg"></i>
+                    <div class="w-7 h-7 sm:w-9 sm:h-9 md:w-11 md:h-11 bg-amber-500/20 rounded-md sm:rounded-lg md:rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+                        <i class="fas fa-chart-line text-amber-400 text-xs sm:text-sm md:text-base"></i>
                     </div>
                 </div>
             </div>
 
             {{-- Total Hours --}}
-            <div class="group relative bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-500/20 rounded-xl sm:rounded-2xl p-3 sm:p-5 hover:border-purple-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10">
-                <div class="flex items-start justify-between">
-                    <div class="min-w-0">
-                        <p class="text-purple-300/70 text-xs sm:text-sm mb-1 truncate">{{ __('muzibu::front.corporate.total_duration') }}</p>
-                        <p class="text-white text-xl sm:text-2xl lg:text-3xl font-bold">{{ $branchStats['totals']['total_hours'] }}<span class="text-sm sm:text-base lg:text-lg font-normal text-purple-300/70 ml-1">{{ __('muzibu::front.corporate.hours') }}</span></p>
+            <div class="group relative bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-500/20 rounded-lg sm:rounded-xl md:rounded-2xl p-2.5 sm:p-4 md:p-5 hover:border-purple-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10">
+                <div class="flex items-center sm:items-start justify-between gap-2">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-purple-300/70 text-[10px] sm:text-xs md:text-sm mb-0.5 sm:mb-1 truncate">{{ __('muzibu::front.corporate.total_duration') }}</p>
+                        <p class="text-white text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">{{ $branchStats['totals']['total_hours'] }}<span class="text-[10px] sm:text-xs md:text-sm font-normal text-purple-300/70 ml-0.5 sm:ml-1">{{ __('muzibu::front.corporate.hours') }}</span></p>
                     </div>
-                    <div class="w-8 h-8 sm:w-10 md:w-12 sm:h-10 md:h-12 bg-purple-500/20 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                        <i class="fas fa-clock text-purple-400 text-sm sm:text-base lg:text-lg"></i>
+                    <div class="w-7 h-7 sm:w-9 sm:h-9 md:w-11 md:h-11 bg-purple-500/20 rounded-md sm:rounded-lg md:rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+                        <i class="fas fa-clock text-purple-400 text-xs sm:text-sm md:text-base"></i>
                     </div>
                 </div>
             </div>

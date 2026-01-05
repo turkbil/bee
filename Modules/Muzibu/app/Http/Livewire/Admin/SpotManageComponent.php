@@ -51,6 +51,12 @@ class SpotManageComponent extends Component
         if ($id) {
             $this->spotId = $id;
             $this->loadSpotData($id);
+        } else {
+            // Yeni spot için varsayılan tarih/saat: şu an
+            $now = now();
+            $this->inputs['starts_at_date'] = $now->format('Y-m-d');
+            $this->inputs['starts_at_time'] = $now->format('H:i');
+            // Bitiş tarihi boş bırakılabilir (süresiz)
         }
     }
 
@@ -293,7 +299,8 @@ class SpotManageComponent extends Component
             $endsAt = null;
 
             if ($this->inputs['starts_at_date']) {
-                $time = $this->inputs['starts_at_time'] ?? '00:00';
+                // Boş string için de fallback değer kullan (?: null ve boş string için çalışır)
+                $time = !empty($this->inputs['starts_at_time']) ? $this->inputs['starts_at_time'] : '00:00';
                 $startsAt = \Carbon\Carbon::createFromFormat(
                     'Y-m-d H:i',
                     $this->inputs['starts_at_date'] . ' ' . $time
@@ -301,7 +308,8 @@ class SpotManageComponent extends Component
             }
 
             if ($this->inputs['ends_at_date']) {
-                $time = $this->inputs['ends_at_time'] ?? '23:59';
+                // Boş string için de fallback değer kullan (?: null ve boş string için çalışır)
+                $time = !empty($this->inputs['ends_at_time']) ? $this->inputs['ends_at_time'] : '23:59';
                 $endsAt = \Carbon\Carbon::createFromFormat(
                     'Y-m-d H:i',
                     $this->inputs['ends_at_date'] . ' ' . $time

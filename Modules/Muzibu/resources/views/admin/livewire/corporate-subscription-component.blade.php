@@ -85,8 +85,10 @@
             <table class="table table-vcenter card-table table-hover text-nowrap datatable">
                 <thead>
                     <tr>
-                        <th>Firma</th>
-                        <th>Kullanıcı</th>
+                        <th>Kurum Kodu</th>
+                        <th>Firma / Şube</th>
+                        <th>Hesap Sahibi</th>
+                        <th class="text-center">Tür</th>
                         <th class="text-center">Durum</th>
                         <th class="text-end">Oluşturulma</th>
                         <th class="text-end">İşlem</th>
@@ -95,17 +97,60 @@
                 <tbody>
                     @forelse($this->subscriptions as $account)
                         <tr>
+                            {{-- Kurum Kodu --}}
                             <td>
-                                <strong>{{ $account->company_name }}</strong>
+                                <code class="text-primary">{{ $account->corporate_code ?? '-' }}</code>
                             </td>
+
+                            {{-- Firma / Şube --}}
                             <td>
-                                <div class="d-flex align-items-center">
-                                    <span class="avatar avatar-sm me-2 bg-secondary-lt">
-                                        {{ substr($account->user?->name ?? '?', 0, 1) }}
-                                    </span>
-                                    {{ $account->user?->name ?? '-' }}
+                                <div>
+                                    <strong>{{ $account->company_name }}</strong>
+                                    @if($account->branch_name)
+                                        <div class="text-muted small">
+                                            <i class="fas fa-code-branch me-1"></i>{{ $account->branch_name }}
+                                        </div>
+                                    @endif
                                 </div>
                             </td>
+
+                            {{-- Hesap Sahibi --}}
+                            <td>
+                                @if($account->user)
+                                    <div class="d-flex align-items-center">
+                                        <span class="avatar avatar-sm me-2 bg-primary-lt">
+                                            {{ strtoupper(substr($account->user->name, 0, 1)) }}
+                                        </span>
+                                        <div>
+                                            <div>{{ $account->user->name }}</div>
+                                            <div class="text-muted small">{{ $account->user->email }}</div>
+                                        </div>
+                                    </div>
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                            </td>
+
+                            {{-- Tür: Ana Firma / Şube --}}
+                            <td class="text-center">
+                                @if($account->parent_id === null)
+                                    <span class="badge bg-blue-lt text-blue">
+                                        <i class="fas fa-building me-1"></i>Ana Firma
+                                    </span>
+                                    @if($account->children->count() > 0)
+                                        <div class="text-muted small mt-1">{{ $account->children->count() }} şube</div>
+                                    @endif
+                                @else
+                                    <span class="badge bg-azure-lt text-azure">
+                                        <i class="fas fa-code-branch me-1"></i>Şube
+                                    </span>
+                                    @if($account->parent)
+                                        <div class="text-muted small mt-1">{{ $account->parent->company_name }}</div>
+                                    @endif
+                                @endif
+                            </td>
+
+                            {{-- Durum --}}
                             <td class="text-center">
                                 @if($account->is_active)
                                     <span class="badge bg-green">Aktif</span>
@@ -113,18 +158,22 @@
                                     <span class="badge bg-secondary">Pasif</span>
                                 @endif
                             </td>
+
+                            {{-- Oluşturulma --}}
                             <td class="text-end text-muted">
                                 {{ $account->created_at?->format('d.m.Y') ?? '-' }}
                             </td>
+
+                            {{-- İşlem --}}
                             <td class="text-end">
                                 <a href="{{ route('admin.muzibu.corporate.manage', $account->id) }}" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-eye"></i>
+                                    <i class="fas fa-edit me-1"></i>Düzenle
                                 </a>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center py-4 text-muted">
+                            <td colspan="7" class="text-center py-4 text-muted">
                                 <i class="fas fa-building fa-2x mb-2"></i>
                                 <p class="mb-0">Kurumsal hesap bulunamadı</p>
                             </td>

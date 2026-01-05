@@ -57,6 +57,14 @@ class MuzibuCorporateAccount extends Model
     }
 
     /**
+     * Alias for owner - backward compatibility
+     */
+    public function user(): BelongsTo
+    {
+        return $this->owner();
+    }
+
+    /**
      * Üst firma (parent)
      */
     public function parent(): BelongsTo

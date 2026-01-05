@@ -40,11 +40,13 @@ class CorporateSubscriptionComponent extends Component
     #[Computed]
     public function subscriptions()
     {
-        return MuzibuCorporateAccount::with(['user'])
+        return MuzibuCorporateAccount::with(['user', 'parent', 'children'])
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('company_name', 'like', '%' . $this->search . '%')
-                      ->orWhereHas('user', fn($uq) => $uq->where('name', 'like', '%' . $this->search . '%'));
+                      ->orWhere('corporate_code', 'like', '%' . $this->search . '%')
+                      ->orWhereHas('user', fn($uq) => $uq->where('name', 'like', '%' . $this->search . '%')
+                                                         ->orWhere('email', 'like', '%' . $this->search . '%'));
                 });
             })
             ->when($this->status === 'active', fn($q) => $q->where('is_active', true))

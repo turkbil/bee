@@ -137,7 +137,13 @@
                                         </a>
                                         <a href="javascript:void(0);"
                                            wire:click="deleteParent({{ $account->id }})"
-                                           wire:confirm="Bu ana firmayı ve tüm şubelerini silmek istediğinize emin misiniz?"
+                                           wire:confirm="⚠️ DİKKAT: Bu ana firmayı silmek istediğinize emin misiniz?
+
+🏢 {{ $account->company_name }}
+📊 {{ $account->children->count() }} alt şube silinecek
+🎵 {{ $account->spots()->count() }} spot/anons silinecek
+
+Bu işlem geri alınamaz!"
                                            data-bs-toggle="tooltip"
                                            data-bs-placement="top"
                                            title="Sil"

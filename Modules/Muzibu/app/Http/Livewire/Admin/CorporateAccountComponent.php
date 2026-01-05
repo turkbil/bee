@@ -211,6 +211,46 @@ class CorporateAccountComponent extends Component
 
             $user = User::find($this->selectedUserId);
 
+            // Kullanıcı başka bir ana şubenin alt şubesi mi?
+            $existingBranch = MuzibuCorporateAccount::where('user_id', $this->selectedUserId)
+                ->whereNotNull('parent_id')
+                ->first();
+
+            if ($existingBranch) {
+                // Alt şubeyi eski parent'ından kopar ve ana şube yap
+                $oldParent = $existingBranch->parent;
+                $oldParentName = $oldParent ? $oldParent->company_name : 'Bilinmiyor';
+
+                $existingBranch->update([
+                    'parent_id' => null,
+                    'company_name' => $this->companyName ?: $user->name,
+                    'branch_name' => null,
+                    'corporate_code' => $this->corporateCode,
+                    'is_active' => true,
+                ]);
+
+                Log::info('Muzibu: Alt şube ana firma yapıldı (koparıldı)', [
+                    'account_id' => $existingBranch->id,
+                    'old_parent_id' => $oldParent?->id,
+                    'old_parent_name' => $oldParentName,
+                    'user_id' => $this->selectedUserId,
+                    'new_code' => $this->corporateCode,
+                    'admin_id' => auth()->id()
+                ]);
+
+                // Reset form
+                $this->reset(['selectedUserId', 'companyName', 'corporateCode']);
+
+                $this->dispatch('toast', [
+                    'type' => 'success',
+                    'title' => 'Başarılı',
+                    'message' => $existingBranch->company_name . ' artık bağımsız ana firma! (' . $oldParentName . ' şubesinden koparıldı)'
+                ]);
+
+                return;
+            }
+
+            // Yeni ana firma oluştur
             $account = MuzibuCorporateAccount::create([
                 'user_id' => $this->selectedUserId,
                 'parent_id' => null,
@@ -463,7 +503,7 @@ class CorporateAccountComponent extends Component
     public function deleteParent(int $accountId): void
     {
         try {
-            $account = MuzibuCorporateAccount::find($accountId);
+            $account = MuzibuCorporateAccount::with(['children', 'spots'])->find($accountId);
 
             if (!$account || $account->parent_id) {
                 $this->dispatch('toast', [
@@ -475,20 +515,64 @@ class CorporateAccountComponent extends Component
             }
 
             $branchCount = $account->children()->count();
+            $spotCount = $account->spots()->count();
             $companyName = $account->company_name;
 
+            // Önce spotları sil (media dosyaları dahil)
+            if ($spotCount > 0) {
+                foreach ($account->spots as $spot) {
+                    // Media dosyalarını temizle
+                    $spot->clearMediaCollection('audio');
+                    // Spot dinleme kayıtlarını sil
+                    $spot->plays()->delete();
+                }
+                // Spotları sil
+                $account->spots()->delete();
+
+                Log::info('Muzibu: Ana firma spotları silindi', [
+                    'account_id' => $accountId,
+                    'spot_count' => $spotCount,
+                    'admin_id' => auth()->id()
+                ]);
+            }
+
+            // Alt şubelerin spotlarını da sil
+            foreach ($account->children as $child) {
+                $childSpotCount = $child->spots()->count();
+                if ($childSpotCount > 0) {
+                    foreach ($child->spots as $spot) {
+                        $spot->clearMediaCollection('audio');
+                        $spot->plays()->delete();
+                    }
+                    $child->spots()->delete();
+                }
+            }
+
+            // Alt şubeleri sil
+            $account->children()->delete();
+
+            // Ana firmayı sil
             $account->delete();
 
             Log::info('Muzibu: Ana firma silindi', [
                 'account_id' => $accountId,
                 'branch_count' => $branchCount,
+                'spot_count' => $spotCount,
                 'admin_id' => auth()->id()
             ]);
+
+            $message = $companyName . ' silindi';
+            if ($branchCount > 0) {
+                $message .= ', ' . $branchCount . ' şube';
+            }
+            if ($spotCount > 0) {
+                $message .= ', ' . $spotCount . ' spot';
+            }
 
             $this->dispatch('toast', [
                 'type' => 'success',
                 'title' => 'Başarılı',
-                'message' => $companyName . ' ve ' . $branchCount . ' şubesi silindi'
+                'message' => $message
             ]);
 
         } catch (\Exception $e) {

@@ -63,8 +63,23 @@
         </div>
     </div>
 
-    {{-- Anonslar Toggle - Sadece kurumsal kullanıcılar --}}
-    @if(auth()->check())
+    {{-- Anonslar Toggle - Sadece spot'a sahip kurumsal kullanıcılar --}}
+    @php
+        $showSpotToggle = false;
+        if (auth()->check()) {
+            $corporateAccount = \Modules\Muzibu\App\Models\MuzibuCorporateAccount::where('user_id', auth()->id())->first();
+            if ($corporateAccount) {
+                // Ana şubeyse kendi spotlarına bak
+                if ($corporateAccount->isMainBranch()) {
+                    $showSpotToggle = $corporateAccount->spots()->exists();
+                } else {
+                    // Alt şubeyse parent'ın spotlarına bak
+                    $showSpotToggle = $corporateAccount->parent && $corporateAccount->parent->spots()->exists();
+                }
+            }
+        }
+    @endphp
+    @if($showSpotToggle)
     <div x-data="{
             spotEnabled: true,
             init() {

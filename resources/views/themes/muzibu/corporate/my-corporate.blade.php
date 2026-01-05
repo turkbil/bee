@@ -3,55 +3,38 @@
 @section('title', __('muzibu::front.corporate.my_corporate') . ' - Muzibu')
 
 @section('content')
-<script>
-window.myCorporate = function() {
-    return {
-        leaving: false,
-        async leaveCorporate() {
-            if (!confirm('Kurumdan ayrılmak istediğinize emin misiniz?')) return;
-            if (this.leaving) return;
-            this.leaving = true;
-
-            try {
-                const response = await fetch('/corporate/leave', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    window.dispatchEvent(new CustomEvent('toast', {
-                        detail: { message: data.message, type: 'success' }
-                    }));
-                    // SPA navigation - refresh yerine router kullan
-                    setTimeout(() => {
-                        if (window.muzibuRouter) {
-                            window.muzibuRouter.navigateTo('/dashboard');
-                        } else {
-                            window.location.href = '/dashboard';
-                        }
-                    }, 1000);
-                } else {
-                    throw new Error(data.message);
-                }
-            } catch (error) {
-                window.dispatchEvent(new CustomEvent('toast', {
-                    detail: { message: error.message || 'Hata oluştu', type: 'error' }
-                }));
-                this.leaving = false;
-            }
+<div x-data="{
+    leaving: false,
+    showLeaveModal() {
+        if (confirm('Kurumdan ayrilmak istediginize emin misiniz? Bu islem geri alinamaz.')) {
+            this.leaveCorporate();
         }
+    },
+    async leaveCorporate() {
+        this.leaving = true;
+        try {
+            const response = await fetch('/corporate/leave', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                    'Accept': 'application/json'
+                }
+            });
+            const data = await response.json();
+            if (data.success) {
+                window.dispatchEvent(new CustomEvent('toast', { detail: { message: data.message || 'Kurumdan ayrildiniz', type: 'success' } }));
+                setTimeout(() => window.location.href = '/dashboard', 1500);
+            } else {
+                window.dispatchEvent(new CustomEvent('toast', { detail: { message: data.message || 'Bir hata olustu', type: 'error' } }));
+            }
+        } catch (e) {
+            window.dispatchEvent(new CustomEvent('toast', { detail: { message: 'Bir hata olustu', type: 'error' } }));
+        }
+        this.leaving = false;
     }
-}
-</script>
-
-<div x-data="myCorporate()">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-20">
+}" x-init="if($store.sidebar) $store.sidebar.rightSidebarVisible = false;">
+    <div class="max-w-3xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-12 pb-20">
 
         {{-- Header --}}
         <div class="text-center mb-8">
@@ -123,9 +106,10 @@ window.myCorporate = function() {
                     <i class="fas fa-chevron-right text-gray-500"></i>
                 </a>
 
-                <button @click="leaveCorporate()"
+                <button type="button"
+                        @click="showLeaveModal()"
                         :disabled="leaving"
-                        class="w-full flex items-center justify-between p-4 bg-red-500/10 hover:bg-red-500/20 rounded-xl transition disabled:opacity-50">
+                        class="w-full flex items-center justify-between p-4 bg-red-500/10 hover:bg-red-500/20 rounded-xl transition disabled:opacity-50 cursor-pointer">
                     <div class="flex items-center gap-3">
                         <i class="fas fa-sign-out-alt text-red-400" x-show="!leaving"></i>
                         <i class="fas fa-spinner fa-spin text-red-400" x-show="leaving"></i>

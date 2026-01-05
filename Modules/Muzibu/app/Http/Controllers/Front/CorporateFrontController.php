@@ -1851,7 +1851,8 @@ class CorporateFrontController extends Controller
                 return [
                     'id' => $spot->id,
                     'title' => $spot->title,
-                    'url' => $spot->getAudioUrl(), // ✅ Media library metodu
+                    'url' => $spot->getAudioUrl(), // ✅ Media library metodu (audio)
+                    'hero' => $spot->getFirstMediaUrl('hero'), // ✅ Hero görsel (opsiyonel)
                     'position' => $spot->position,
                     'duration' => $spot->duration,
                 ];

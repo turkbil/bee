@@ -55,11 +55,19 @@ class CorporateSpot extends Model implements HasMedia
     ];
 
     /**
-     * Media collections config - Audio dosyaları için
+     * Media collections config - Audio ve hero görselleri için
      */
     protected function getMediaConfig(): array
     {
         return [
+            'hero' => [
+                'type' => 'image',
+                'single_file' => true,
+                'max_items' => 1,
+                'max_size' => 10240, // 10 MB
+                'allowed_types' => ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'],
+                'sortable' => false,
+            ],
             'audio' => [
                 'type' => 'audio',
                 'single_file' => true,

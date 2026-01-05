@@ -166,10 +166,6 @@ Route::middleware(['admin', 'tenant', \Modules\Muzibu\App\Http\Middleware\Initia
                             ->middleware('module.permission:muzibu,create')
                             ->name('manage');
 
-                        Route::get('/subscription', [\Modules\Muzibu\App\Http\Controllers\Admin\CorporateController::class, 'subscription'])
-                            ->middleware('module.permission:muzibu,view')
-                            ->name('subscription');
-
                         Route::get('/usage', [\Modules\Muzibu\App\Http\Controllers\Admin\CorporateController::class, 'usage'])
                             ->middleware('module.permission:muzibu,view')
                             ->name('usage');

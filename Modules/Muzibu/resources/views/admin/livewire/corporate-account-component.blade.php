@@ -1,4 +1,76 @@
 <div class="corporate-account-wrapper">
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <span class="bg-primary text-white avatar">
+                                <i class="fas fa-building"></i>
+                            </span>
+                        </div>
+                        <div class="col">
+                            <div class="font-weight-medium h3 mb-0">{{ number_format($this->stats['total_accounts']) }}</div>
+                            <div class="text-muted">Toplam Hesap</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <span class="bg-blue text-white avatar">
+                                <i class="fas fa-city"></i>
+                            </span>
+                        </div>
+                        <div class="col">
+                            <div class="font-weight-medium h3 mb-0">{{ number_format($this->stats['parent_accounts']) }}</div>
+                            <div class="text-muted">Ana Firma</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <span class="bg-green text-white avatar">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </div>
+                        <div class="col">
+                            <div class="font-weight-medium h3 mb-0">{{ number_format($this->stats['active_accounts']) }}</div>
+                            <div class="text-muted">Aktif</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <span class="bg-secondary text-white avatar">
+                                <i class="fas fa-pause"></i>
+                            </span>
+                        </div>
+                        <div class="col">
+                            <div class="font-weight-medium h3 mb-0">{{ number_format($this->stats['inactive_accounts']) }}</div>
+                            <div class="text-muted">Pasif</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="card">
         <div class="card-body p-0">
             <!-- Header Bölümü -->

@@ -61,20 +61,166 @@
             </h3>
             <div class="space-y-2 text-gray-300 text-sm">
                 <p><strong>❌ ASLA:</strong> Bulunan dosyaları hemen silmeyin!</p>
-                <p><strong>✅ YAPILACAKLAR:</strong></p>
+                <p><strong>✅ YAPILACAKLAR (DOĞRU SIRA):</strong></p>
                 <ol class="ml-6 space-y-1">
-                    <li>1. <strong>Yedek Al:</strong> <code class="bg-slate-800 px-2 py-1 rounded">cp dosya.php dosya.php.backup</code></li>
-                    <li>2. <strong>İçeriği İncele:</strong> <code class="bg-slate-800 px-2 py-1 rounded">cat dosya.php</code></li>
-                    <li>3. <strong>Karar Ver:</strong>
+                    <li>1. <strong class="text-cyan-400">Git Checkpoint Oluştur (ÖNCELİK!):</strong> <code class="bg-slate-800 px-2 py-1 rounded">git add -A && git commit -m "🔧 CHECKPOINT: Before cleanup"</code></li>
+                    <li>2. <strong>Dosya Yedek Al:</strong> <code class="bg-slate-800 px-2 py-1 rounded">cp dosya.php dosya.php.backup</code></li>
+                    <li>3. <strong>İçeriği İncele:</strong> <code class="bg-slate-800 px-2 py-1 rounded">cat dosya.php</code></li>
+                    <li>4. <strong>Karar Ver:</strong>
                         <ul class="ml-6 mt-1">
                             <li>• Dosya tamamen zararlıysa → Sil</li>
                             <li>• Dosya içinde zararlı kod varsa → Sadece o kısmı temizle</li>
                             <li>• Sistem dosyasıysa (vendor, core) → ASLA silme, rapor et</li>
                         </ul>
                     </li>
-                    <li>4. <strong>Test Et:</strong> Silme sonrası site çalışıyor mu?</li>
-                    <li>5. <strong>Git'e Kaydet:</strong> <code class="bg-slate-800 px-2 py-1 rounded">git add -A && git commit -m "Security: Cleaned malware"</code></li>
+                    <li>5. <strong>Sil/Temizle:</strong> <code class="bg-slate-800 px-2 py-1 rounded">sudo rm dosya.php</code> veya düzenle</li>
+                    <li>6. <strong>Test Et:</strong> <code class="bg-slate-800 px-2 py-1 rounded">curl -I https://site.com/</code> → 200 OK?</li>
+                    <li>7. <strong class="text-yellow-400">Sorun Varsa → Geri Dön:</strong> <code class="bg-slate-800 px-2 py-1 rounded">git reset --hard [checkpoint-hash]</code></li>
+                    <li>8. <strong class="text-green-400">Sorun Yoksa → Kaydet:</strong> <code class="bg-slate-800 px-2 py-1 rounded">git add -A && git commit -m "Security: Cleaned malware"</code></li>
                 </ol>
+                <p class="mt-3 text-yellow-400 text-xs">
+                    <i class="fas fa-lightbulb mr-1"></i>
+                    <strong>HATIRLATMA:</strong> Git Checkpoint = Sigorta! Hatalı silme olursa tek tuşla geri dönebilirsiniz.
+                </p>
+            </div>
+        </div>
+
+        <!-- Git Checkpoint (Yedekleme & Geri Dönme) -->
+        <div class="bg-cyan-900/30 border border-cyan-700 rounded-xl p-6 mb-8">
+            <h3 class="text-lg font-bold text-cyan-400 mb-3">
+                <i class="fas fa-code-branch mr-2"></i>Git Checkpoint - Güvenli Geri Dönüş Noktası
+            </h3>
+
+            <!-- Basit Anlatım -->
+            <div class="bg-green-900/20 border border-green-800 rounded-lg p-4 mb-4">
+                <h4 class="text-md font-bold text-green-400 mb-2">
+                    <i class="fas fa-user-check mr-2"></i>Basit Anlatım (Herkes İçin)
+                </h4>
+                <p class="text-gray-300 text-sm mb-2">
+                    <strong>Git Checkpoint</strong>, zararlı dosyaları silmeden önce sistemin anlık <strong>fotoğrafını çekmek</strong> gibidir.
+                    Eğer temizleme sırasında yanlışlıkla önemli bir dosya silerseniz, <strong>tek tuşla geri dönebilirsiniz</strong>.
+                </p>
+                <p class="text-gray-400 text-xs">
+                    <i class="fas fa-lightbulb text-yellow-400 mr-1"></i>
+                    Örnek: 100 dosya sildiniz, site bozuldu → Checkpoint'e dönüp sadece 5 dakika önceki halinize geri dönebilirsiniz!
+                </p>
+            </div>
+
+            <!-- Teknik Detaylar -->
+            <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-4 mb-4">
+                <h4 class="text-md font-bold text-blue-400 mb-2">
+                    <i class="fas fa-cog mr-2"></i>Teknik Detaylar (Geliştiriciler İçin)
+                </h4>
+                <p class="text-gray-300 text-sm">
+                    Git checkpoint, <code class="bg-slate-800 px-1 py-0.5 rounded">git commit</code> komutu ile oluşturulur.
+                    Bu, tüm dosya değişikliklerini <strong>SHA hash</strong> ile kaydeder ve istediğiniz zaman
+                    <code class="bg-slate-800 px-1 py-0.5 rounded">git reset</code> ile geri dönmenizi sağlar.
+                </p>
+            </div>
+
+            <div class="space-y-4 text-sm">
+                <!-- Ne Zaman? -->
+                <div>
+                    <h4 class="font-bold text-cyan-300 mb-2">
+                        <i class="fas fa-clock text-yellow-400 mr-2"></i>Ne Zaman Checkpoint Yapılır?
+                    </h4>
+                    <ul class="ml-6 space-y-1 text-gray-300">
+                        <li>✅ <strong>90 kontrol tamamlandıktan sonra</strong> (zararlı dosyalar tespit edildi)</li>
+                        <li>✅ <strong>Silme işlemine başlamadan ÖNCE</strong> (her zaman!)</li>
+                        <li>✅ <strong>Kritik dosyalar silinecekse</strong> (vendor, core, config)</li>
+                        <li>✅ <strong>10+ dosya silinecekse</strong> (toplu silme)</li>
+                        <li>❌ <strong>1-2 dosya basit silme</strong> → Checkpoint gerekmez</li>
+                    </ul>
+                </div>
+
+                <!-- Nasıl Yapılır? -->
+                <div>
+                    <h4 class="font-bold text-cyan-300 mb-2">
+                        <i class="fas fa-terminal text-green-400 mr-2"></i>Checkpoint Nasıl Yapılır?
+                    </h4>
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <p class="text-gray-400 mb-2"><strong>1. Mevcut durumu kaydet:</strong></p>
+                        <code class="block bg-slate-900 px-3 py-2 rounded text-green-400 mb-3">git add -A</code>
+
+                        <p class="text-gray-400 mb-2"><strong>2. Checkpoint oluştur:</strong></p>
+                        <code class="block bg-slate-900 px-3 py-2 rounded text-green-400 mb-3">git commit -m "🔧 CHECKPOINT: Before security cleanup"</code>
+
+                        <p class="text-gray-400 mb-2"><strong>3. Checkpoint hash'ini kaydet:</strong></p>
+                        <code class="block bg-slate-900 px-3 py-2 rounded text-green-400 mb-2">git log -1 --oneline</code>
+                        <p class="text-gray-500 text-xs mt-1">
+                            Çıktı örneği: <code class="bg-slate-900 px-2 py-0.5 rounded text-yellow-400">abc123f 🔧 CHECKPOINT: Before security cleanup</code>
+                            <br><strong class="text-yellow-400">abc123f</strong> hash'ini not edin!
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Geri Dönme (Rollback) -->
+                <div>
+                    <h4 class="font-bold text-red-300 mb-2">
+                        <i class="fas fa-undo text-red-400 mr-2"></i>Geri Dönme (Rollback) - Acil Kurtarma
+                    </h4>
+                    <div class="bg-red-900/20 border border-red-800 rounded-lg p-4">
+                        <p class="text-gray-300 mb-3">
+                            <strong>❌ Durum:</strong> Yanlış dosya sildim, site bozuldu, geri dönmek istiyorum!
+                        </p>
+
+                        <p class="text-gray-400 mb-2"><strong>1. Checkpoint hash'ini bul:</strong></p>
+                        <code class="block bg-slate-900 px-3 py-2 rounded text-green-400 mb-3">git log --oneline -10</code>
+                        <p class="text-gray-500 text-xs mb-3">Son 10 commit'i gösterir. "CHECKPOINT" yazan satırdaki hash'i kopyala.</p>
+
+                        <p class="text-gray-400 mb-2"><strong>2. Geri dön (HARD RESET):</strong></p>
+                        <code class="block bg-slate-900 px-3 py-2 rounded text-red-400 mb-2">git reset --hard abc123f</code>
+                        <p class="text-yellow-400 text-xs mb-3">
+                            ⚠️ <strong>DİKKAT:</strong> Bu komut checkpoint'ten sonraki <strong>TÜM DEĞİŞİKLİKLERİ SİLER!</strong>
+                            <br>Silinen dosyalar geri gelir, değiştirilen dosyalar eski haline döner.
+                        </p>
+
+                        <p class="text-gray-400 mb-2"><strong>3. Dosyaları kontrol et:</strong></p>
+                        <code class="block bg-slate-900 px-3 py-2 rounded text-green-400 mb-2">ls -la</code>
+                        <p class="text-gray-500 text-xs">Sildiğiniz dosyalar geri gelmiş olmalı.</p>
+                    </div>
+                </div>
+
+                <!-- En İyi Pratikler -->
+                <div>
+                    <h4 class="font-bold text-purple-300 mb-2">
+                        <i class="fas fa-star text-yellow-400 mr-2"></i>En İyi Pratikler
+                    </h4>
+                    <ul class="ml-6 space-y-1 text-gray-300">
+                        <li>✅ Her silme öncesi checkpoint yap</li>
+                        <li>✅ Checkpoint hash'ini text dosyasına kaydet</li>
+                        <li>✅ Checkpoint mesajına tarih ekle: <code class="bg-slate-800 px-1 py-0.5 rounded">"CHECKPOINT: 2026-01-05 14:30"</code></li>
+                        <li>✅ Temizleme sonrası test et, sorun yoksa yeni commit at</li>
+                        <li>✅ Büyük temizlikten sonra remote'a push et: <code class="bg-slate-800 px-1 py-0.5 rounded">git push origin main</code></li>
+                        <li>❌ Checkpoint olmadan büyük silme yapma!</li>
+                    </ul>
+                </div>
+
+                <!-- Örnek İş Akışı -->
+                <div>
+                    <h4 class="font-bold text-orange-300 mb-2">
+                        <i class="fas fa-list-ol text-orange-400 mr-2"></i>Tam İş Akışı Örneği
+                    </h4>
+                    <div class="bg-slate-800 rounded-lg p-4 space-y-2 text-xs">
+                        <p class="text-gray-400"><strong>Senaryo:</strong> 90 kontrol sonucu 15 zararlı dosya bulundu</p>
+                        <code class="block bg-slate-900 px-2 py-1 rounded text-green-400"># 1. Checkpoint oluştur</code>
+                        <code class="block bg-slate-900 px-2 py-1 rounded text-white">git add -A && git commit -m "🔧 CHECKPOINT: Before cleanup (15 files)"</code>
+                        <code class="block bg-slate-900 px-2 py-1 rounded text-white">git log -1 --oneline  # Hash: abc123f</code>
+
+                        <code class="block bg-slate-900 px-2 py-1 rounded text-green-400 mt-3"># 2. Zararlı dosyaları sil</code>
+                        <code class="block bg-slate-900 px-2 py-1 rounded text-white">sudo rm public/shell.php vendor/autoload.suspected ...</code>
+
+                        <code class="block bg-slate-900 px-2 py-1 rounded text-green-400 mt-3"># 3. Site test et</code>
+                        <code class="block bg-slate-900 px-2 py-1 rounded text-white">curl -I https://site.com/  # 200 OK?</code>
+
+                        <code class="block bg-slate-900 px-2 py-1 rounded text-yellow-400 mt-3"># 4a. SORUN VARSA → Geri dön!</code>
+                        <code class="block bg-slate-900 px-2 py-1 rounded text-red-400">git reset --hard abc123f</code>
+
+                        <code class="block bg-slate-900 px-2 py-1 rounded text-green-400 mt-3"># 4b. SORUN YOKSA → Kaydet ve push</code>
+                        <code class="block bg-slate-900 px-2 py-1 rounded text-white">git add -A && git commit -m "Security: Cleaned 15 malware files"</code>
+                        <code class="block bg-slate-900 px-2 py-1 rounded text-white">git push origin main</code>
+                    </div>
+                </div>
             </div>
         </div>
 

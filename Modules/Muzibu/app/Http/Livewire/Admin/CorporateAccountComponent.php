@@ -60,6 +60,21 @@ class CorporateAccountComponent extends Component
     }
 
     /**
+     * İstatistikler (Stats Cards için)
+     */
+    #[Computed]
+    public function stats(): array
+    {
+        return [
+            'total_accounts' => MuzibuCorporateAccount::count(),
+            'parent_accounts' => MuzibuCorporateAccount::whereNull('parent_id')->count(),
+            'branch_accounts' => MuzibuCorporateAccount::whereNotNull('parent_id')->count(),
+            'active_accounts' => MuzibuCorporateAccount::where('is_active', true)->count(),
+            'inactive_accounts' => MuzibuCorporateAccount::where('is_active', false)->count(),
+        ];
+    }
+
+    /**
      * Tüm ana firmalar (şube yönetimi dropdown için)
      */
     #[Computed]

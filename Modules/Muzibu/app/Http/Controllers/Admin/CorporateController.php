@@ -25,14 +25,6 @@ class CorporateController extends Controller
     }
 
     /**
-     * Kurumsal Abonelikler Sayfası
-     */
-    public function subscription()
-    {
-        return view('muzibu::admin.corporate-subscription');
-    }
-
-    /**
      * Kurumsal Kullanım Raporları Sayfası
      */
     public function usage()

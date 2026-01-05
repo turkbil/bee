@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD5 Muzibu Eski Şifreler - Laravel Migration Rehberi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .code-block { background: #1e293b; border-radius: 8px; padding: 16px; overflow-x: auto; }
+        .code-block code { color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 14px; }
+        .step-number { width: 32px; height: 32px; background: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 bg-amber-500/20 text-amber-400 px-4 py-2 rounded-full text-sm mb-4">
+                <span>🔐</span>
+                <span>Geçici Servis - İleride Kaldırılacak</span>
+            </div>
+            <h1 class="text-4xl font-bold mb-4">MD5 Muzibu Eski Şifreler</h1>
+            <h2 class="text-xl text-slate-400">Laravel Password Migration Rehberi</h2>
+            <p class="text-slate-500 mt-4">5 Ocak 2026 - Tenant 1001 (Muzibu)</p>
+
+            <div class="flex justify-center gap-4 mt-6">
+                <span class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded text-sm">md5</span>
+                <span class="bg-purple-500/20 text-purple-400 px-3 py-1 rounded text-sm">bcrypt</span>
+                <span class="bg-green-500/20 text-green-400 px-3 py-1 rounded text-sm">tenant-1001</span>
+                <span class="bg-orange-500/20 text-orange-400 px-3 py-1 rounded text-sm">muzibu</span>
+            </div>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-bold text-green-400 mb-4">📝 Basit Anlatım (Herkes İçin)</h3>
+            <div class="space-y-4 text-slate-300">
+                <p>
+                    <strong>Problem:</strong> Muzibu'nun eski sisteminde kullanıcı şifreleri MD5 ile saklanıyordu.
+                    MD5 artık güvenli değil ve Laravel bcrypt kullanıyor.
+                </p>
+                <p>
+                    <strong>Çözüm:</strong> Kullanıcı giriş yaptığında, eski şifresi otomatik olarak yeni güvenli formata
+                    çevriliyor. Kullanıcı hiçbir şey fark etmiyor, şifre değiştirmek zorunda kalmıyor.
+                </p>
+                <p>
+                    <strong>Sonuç:</strong> Zamanla tüm kullanıcılar en az bir kez giriş yapacak ve şifreleri
+                    otomatik güncellenecek. Herkes geçiş yapınca bu sistemi kaldıracağız.
+                </p>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-bold text-blue-400 mb-4">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div class="bg-slate-800/50 rounded p-4">
+                    <h4 class="font-bold text-slate-300 mb-2">📁 Dosyalar</h4>
+                    <ul class="space-y-1 text-slate-400">
+                        <li>• app/Services/Auth/LegacyPasswordMigrationService.php</li>
+                        <li>• app/Auth/LegacyUserProvider.php</li>
+                        <li>• app/Providers/AuthServiceProvider.php</li>
+                        <li>• config/auth.php</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800/50 rounded p-4">
+                    <h4 class="font-bold text-slate-300 mb-2">⚙️ Teknoloji</h4>
+                    <ul class="space-y-1 text-slate-400">
+                        <li>• MD5 → 32 karakter hex string</li>
+                        <li>• bcrypt → 60 karakter ($2y$ prefix)</li>
+                        <li>• Tenant-aware kontrol</li>
+                        <li>• Laravel Log entegrasyonu</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 1: OLUŞTURMA -->
+        <section class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-xl">🛠️</div>
+                <h2 class="text-2xl font-bold text-green-400">OLUŞTURMA (4 Adım)</h2>
+            </div>
+
+            <!-- Adım 1 -->
+            <div class="bg-slate-800 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="step-number text-white">1</div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-lg mb-2">Service Dosyasını Oluştur</h4>
+                        <p class="text-slate-400 mb-3">Ana migration servisi - tüm mantık burada</p>
+                        <div class="bg-slate-900 rounded p-2 text-sm text-slate-400 mb-3">
+                            📁 app/Services/Auth/LegacyPasswordMigrationService.php
+                        </div>
+                        <details class="bg-slate-900/50 rounded p-4">
+                            <summary class="cursor-pointer text-blue-400 font-medium">Kodu Göster</summary>
+                            <pre class="mt-4 text-xs text-slate-300 overflow-x-auto"><code>&lt;?php
+
+namespace App\Services\Auth;
+
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+
+/**
+ * Legacy MD5 Password Migration Service
+ *
+ * ⚠️ GEÇİCİ SERVİS - Tüm kullanıcılar migrate olunca kaldırılacak!
+ *
+ * Arama: md5 muzibu eski şifreler migration
+ */
+class LegacyPasswordMigrationService
+{
+    /**
+     * Migration aktif olan tenant'lar
+     */
+    protected array $enabledTenants = [1001]; // Sadece Muzibu
+
+    /**
+     * Bu tenant için legacy migration aktif mi?
+     */
+    public function isEnabled(): bool
+    {
+        return tenant() && in_array(tenant()-&gt;id, $this-&gt;enabledTenants);
+    }
+
+    /**
+     * MD5 hash mi kontrol et (32 karakter hex)
+     */
+    public function isLegacyHash(string $hash): bool
+    {
+        return strlen($hash) === 32 && ctype_xdigit($hash);
+    }
+
+    /**
+     * Legacy şifre doğrula ve migrate et
+     *
+     * @return bool|null  true=başarılı, false=yanlış şifre, null=legacy değil
+     */
+    public function validateAndMigrate(Authenticatable $user, string $plainPassword): ?bool
+    {
+        // Tenant kontrolü
+        if (!$this-&gt;isEnabled()) {
+            return null;
+        }
+
+        $storedHash = $user-&gt;getAuthPassword();
+
+        // Legacy hash değilse normal auth'a bırak
+        if (!$this-&gt;isLegacyHash($storedHash)) {
+            return null;
+        }
+
+        // MD5 kontrolü
+        if (md5($plainPassword) !== $storedHash) {
+            return false;
+        }
+
+        // ✅ Şifreyi bcrypt'e migrate et
+        $user-&gt;password = Hash::make($plainPassword);
+        $user-&gt;save();
+
+        // Log tut (takip için)
+        Log::channel('single')-&gt;info('Legacy MD5 password migrated to bcrypt', [
+            'tenant_id' =&gt; tenant()-&gt;id,
+            'user_id' =&gt; $user-&gt;getAuthIdentifier(),
+            'user_email' =&gt; $user-&gt;email ?? 'N/A',
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Kaç kullanıcı hala MD5 kullanıyor? (İstatistik)
+     */
+    public function getRemainingLegacyCount(): int
+    {
+        if (!$this-&gt;isEnabled()) {
+            return 0;
+        }
+
+        return \App\Models\User::whereRaw('LENGTH(password) = 32')-&gt;count();
+    }
+}</code></pre>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 2 -->
+            <div class="bg-slate-800 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="step-number text-white">2</div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-lg mb-2">Custom User Provider Oluştur</h4>
+                        <p class="text-slate-400 mb-3">Laravel auth sistemine bağlanır</p>
+                        <div class="bg-slate-900 rounded p-2 text-sm text-slate-400 mb-3">
+                            📁 app/Auth/LegacyUserProvider.php
+                        </div>
+                        <details class="bg-slate-900/50 rounded p-4">
+                            <summary class="cursor-pointer text-blue-400 font-medium">Kodu Göster</summary>
+                            <pre class="mt-4 text-xs text-slate-300 overflow-x-auto"><code>&lt;?php
+
+namespace App\Auth;
+
+use App\Services\Auth\LegacyPasswordMigrationService;
+use Illuminate\Auth\EloquentUserProvider;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Hash;
+
+/**
+ * Legacy User Provider
+ *
+ * ⚠️ GEÇİCİ - MD5 migration tamamlanınca kaldırılacak!
+ */
+class LegacyUserProvider extends EloquentUserProvider
+{
+    public function validateCredentials(Authenticatable $user, array $credentials): bool
+    {
+        $plainPassword = $credentials['password'];
+
+        // Legacy migration servisini çağır
+        $migrationService = app(LegacyPasswordMigrationService::class);
+        $result = $migrationService-&gt;validateAndMigrate($user, $plainPassword);
+
+        // null değilse sonucu döndür (true veya false)
+        if ($result !== null) {
+            return $result;
+        }
+
+        // Legacy değil → Normal Laravel auth
+        return Hash::check($plainPassword, $user-&gt;getAuthPassword());
+    }
+}</code></pre>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 3 -->
+            <div class="bg-slate-800 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="step-number text-white">3</div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-lg mb-2">AuthServiceProvider'a Kaydet</h4>
+                        <p class="text-slate-400 mb-3">Provider'ı Laravel'e tanıt</p>
+                        <div class="bg-slate-900 rounded p-2 text-sm text-slate-400 mb-3">
+                            📁 app/Providers/AuthServiceProvider.php → boot() metoduna ekle
+                        </div>
+                        <details class="bg-slate-900/50 rounded p-4">
+                            <summary class="cursor-pointer text-blue-400 font-medium">Eklenecek Kodu Göster</summary>
+                            <pre class="mt-4 text-xs text-slate-300 overflow-x-auto"><code>use App\Auth\LegacyUserProvider;
+use Illuminate\Support\Facades\Auth;
+
+public function boot(): void
+{
+    // ... mevcut kodlar ...
+
+    // ⚠️ GEÇİCİ: MD5 Legacy Password Migration (Tenant 1001)
+    // Tüm kullanıcılar migrate olunca kaldırılacak!
+    Auth::provider('legacy', function ($app, array $config) {
+        return new LegacyUserProvider(
+            $app['hash'],
+            $config['model']
+        );
+    });
+}</code></pre>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 4 -->
+            <div class="bg-slate-800 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="step-number text-white">4</div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-lg mb-2">Config'de Driver'ı Değiştir</h4>
+                        <p class="text-slate-400 mb-3">Auth driver'ı legacy olarak ayarla</p>
+                        <div class="bg-slate-900 rounded p-2 text-sm text-slate-400 mb-3">
+                            📁 config/auth.php → providers.users.driver
+                        </div>
+                        <details class="bg-slate-900/50 rounded p-4">
+                            <summary class="cursor-pointer text-blue-400 font-medium">Değişikliği Göster</summary>
+                            <pre class="mt-4 text-xs text-slate-300 overflow-x-auto"><code>'providers' => [
+    'users' => [
+        'driver' => 'legacy',  // ⚠️ 'eloquent' → 'legacy' (GEÇİCİ)
+        'model' => App\Models\User::class,
+    ],
+],</code></pre>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test -->
+            <div class="bg-green-900/30 border border-green-700 rounded-lg p-6">
+                <h4 class="font-bold text-green-400 mb-3">✅ Test Etme</h4>
+                <div class="space-y-2 text-sm text-slate-300">
+                    <p>1. Muzibu'da MD5 şifreli bir kullanıcı ile giriş yap</p>
+                    <p>2. Giriş başarılı olmalı</p>
+                    <p>3. Log kontrolü:</p>
+                    <div class="bg-slate-900 rounded p-3 mt-2 font-mono text-xs">
+                        grep "Legacy MD5 password migrated" storage/logs/laravel.log
+                    </div>
+                    <p class="mt-2">4. Database kontrolü (şifre 60 karakter olmalı):</p>
+                    <div class="bg-slate-900 rounded p-3 mt-2 font-mono text-xs">
+                        SELECT id, email, LENGTH(password) FROM users WHERE id = X;
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 2: KALDIRMA -->
+        <section class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center text-xl">🗑️</div>
+                <h2 class="text-2xl font-bold text-red-400">KALDIRMA (3 Adım)</h2>
+            </div>
+
+            <div class="bg-amber-900/20 border border-amber-700 rounded-lg p-4 mb-6">
+                <p class="text-amber-400">
+                    <strong>⚠️ Ne Zaman Kaldırılır?</strong><br>
+                    Tüm kullanıcılar en az bir kez giriş yaptığında. Kontrol komutu:
+                </p>
+                <div class="bg-slate-900 rounded p-3 mt-2 font-mono text-xs text-slate-300">
+                    SELECT COUNT(*) FROM users WHERE LENGTH(password) = 32;
+                    <br>-- Sonuç 0 olmalı
+                </div>
+            </div>
+
+            <!-- Kaldırma Adım 1 -->
+            <div class="bg-slate-800 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="step-number bg-red-500 text-white">1</div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-lg mb-2">Config'i Geri Al</h4>
+                        <div class="bg-slate-900 rounded p-2 text-sm text-slate-400 mb-3">
+                            📁 config/auth.php
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4 text-xs">
+                            <code class="text-red-400">'driver' => 'legacy',</code>
+                            <span class="text-slate-500 mx-2">→</span>
+                            <code class="text-green-400">'driver' => 'eloquent',</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kaldırma Adım 2 -->
+            <div class="bg-slate-800 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="step-number bg-red-500 text-white">2</div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-lg mb-2">AuthServiceProvider'dan Kaldır</h4>
+                        <div class="bg-slate-900 rounded p-2 text-sm text-slate-400 mb-3">
+                            📁 app/Providers/AuthServiceProvider.php
+                        </div>
+                        <p class="text-slate-400 text-sm">boot() metodundan şu bloğu sil:</p>
+                        <div class="bg-slate-900/50 rounded p-4 text-xs mt-2">
+                            <code class="text-red-400">Auth::provider('legacy', function ($app, array $config) { ... });</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kaldırma Adım 3 -->
+            <div class="bg-slate-800 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="step-number bg-red-500 text-white">3</div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-lg mb-2">Dosyaları Sil</h4>
+                        <div class="bg-slate-900 rounded p-3 font-mono text-xs text-slate-300">
+                            rm app/Services/Auth/LegacyPasswordMigrationService.php<br>
+                            rm app/Auth/LegacyUserProvider.php
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cache Temizle -->
+            <div class="bg-slate-800 rounded-lg p-6">
+                <div class="flex items-start gap-4">
+                    <div class="step-number bg-slate-600 text-white">✓</div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-lg mb-2">Cache Temizle</h4>
+                        <div class="bg-slate-900 rounded p-3 font-mono text-xs text-slate-300">
+                            php artisan config:clear<br>
+                            php artisan cache:clear
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- İstatistik Takibi -->
+        <section class="bg-purple-900/20 border border-purple-800 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-bold text-purple-400 mb-4">📊 Migration İstatistik Takibi</h3>
+            <div class="space-y-4 text-sm">
+                <div>
+                    <p class="text-slate-400 mb-2">Kaç kullanıcı migrate oldu?</p>
+                    <div class="bg-slate-900 rounded p-3 font-mono text-xs text-slate-300">
+                        grep "Legacy MD5 password migrated" storage/logs/laravel.log | wc -l
+                    </div>
+                </div>
+                <div>
+                    <p class="text-slate-400 mb-2">Kaç kullanıcı hala MD5 kullanıyor?</p>
+                    <div class="bg-slate-900 rounded p-3 font-mono text-xs text-slate-300">
+                        SELECT COUNT(*) as remaining FROM users WHERE LENGTH(password) = 32;
+                    </div>
+                </div>
+                <div>
+                    <p class="text-slate-400 mb-2">Migration yüzdesi?</p>
+                    <div class="bg-slate-900 rounded p-3 font-mono text-xs text-slate-300">
+                        SELECT <br>
+                        &nbsp;&nbsp;COUNT(CASE WHEN LENGTH(password) > 32 THEN 1 END) as migrated,<br>
+                        &nbsp;&nbsp;COUNT(CASE WHEN LENGTH(password) = 32 THEN 1 END) as pending,<br>
+                        &nbsp;&nbsp;ROUND(COUNT(CASE WHEN LENGTH(password) > 32 THEN 1 END) * 100.0 / COUNT(*), 2) as percentage<br>
+                        FROM users;
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özet Tablo -->
+        <section class="bg-slate-800 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-bold mb-4">📋 Özet</h3>
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="text-left text-slate-400 border-b border-slate-700">
+                        <th class="pb-3">Özellik</th>
+                        <th class="pb-3">Değer</th>
+                    </tr>
+                </thead>
+                <tbody class="text-slate-300">
+                    <tr class="border-b border-slate-700/50">
+                        <td class="py-3">Etkilenen Tenant</td>
+                        <td class="py-3">Sadece 1001 (Muzibu)</td>
+                    </tr>
+                    <tr class="border-b border-slate-700/50">
+                        <td class="py-3">Eski Hash</td>
+                        <td class="py-3">MD5 (32 karakter)</td>
+                    </tr>
+                    <tr class="border-b border-slate-700/50">
+                        <td class="py-3">Yeni Hash</td>
+                        <td class="py-3">bcrypt (60 karakter)</td>
+                    </tr>
+                    <tr class="border-b border-slate-700/50">
+                        <td class="py-3">Kullanıcı Fark Eder mi?</td>
+                        <td class="py-3">Hayır ✅</td>
+                    </tr>
+                    <tr class="border-b border-slate-700/50">
+                        <td class="py-3">Diğer Tenant'lar Etkilenir mi?</td>
+                        <td class="py-3">Hayır ✅</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3">Geçici mi?</td>
+                        <td class="py-3">Evet - İleride kaldırılacak</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-800 pt-8">
+            <p>🤖 Claude AI tarafından oluşturuldu</p>
+            <p class="mt-2">5 Ocak 2026 - v1</p>
+            <p class="mt-4 text-xs">
+                Arama Terimleri: md5, muzibu, eski şifreler, password migration, bcrypt, tenant 1001, legacy auth
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -6,6 +6,27 @@
     <title>PHP Güvenlik Tarama Rehberi v5 - Nihai 90 Kontrol + Güvenli Silme</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .code-block-wrapper {
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .code-block-wrapper:hover .copy-btn {
+            opacity: 1;
+        }
+        .copy-btn:hover {
+            transform: scale(1.1);
+        }
+        .copy-btn.copied {
+            opacity: 1 !important;
+        }
+    </style>
 </head>
 <body class="bg-slate-900 text-gray-100 min-h-screen">
     <div class="container mx-auto px-4 py-8 max-w-6xl">
@@ -1721,5 +1742,60 @@ GÖREV:
             </p>
         </footer>
     </div>
+
+    <!-- Copy to Clipboard Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tüm code bloklarını bul
+            const codeBlocks = document.querySelectorAll('code');
+
+            codeBlocks.forEach((block, index) => {
+                // Sadece block kod bloklarına buton ekle (inline olmayanlar)
+                if (block.classList.contains('block')) {
+                    // Wrapper oluştur
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'code-block-wrapper';
+                    block.parentNode.insertBefore(wrapper, block);
+                    wrapper.appendChild(block);
+
+                    // Kopyala butonu oluştur
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'copy-btn bg-slate-700 hover:bg-slate-600 text-gray-300 px-3 py-1 rounded text-xs transition-all';
+                    copyBtn.innerHTML = '<i class="fas fa-copy mr-1"></i>Kopyala';
+                    copyBtn.setAttribute('data-index', index);
+
+                    // Kopyalama fonksiyonu
+                    copyBtn.addEventListener('click', function() {
+                        const codeText = block.textContent.trim();
+
+                        // Clipboard API kullan
+                        navigator.clipboard.writeText(codeText).then(() => {
+                            // Başarılı feedback
+                            copyBtn.innerHTML = '<i class="fas fa-check mr-1"></i>Kopyalandı!';
+                            copyBtn.classList.add('copied', 'bg-green-600', 'hover:bg-green-600');
+
+                            // 2 saniye sonra eski haline dön
+                            setTimeout(() => {
+                                copyBtn.innerHTML = '<i class="fas fa-copy mr-1"></i>Kopyala';
+                                copyBtn.classList.remove('copied', 'bg-green-600', 'hover:bg-green-600');
+                            }, 2000);
+                        }).catch(err => {
+                            // Hata durumunda fallback
+                            console.error('Kopyalama hatası:', err);
+                            copyBtn.innerHTML = '<i class="fas fa-times mr-1"></i>Hata!';
+                            copyBtn.classList.add('bg-red-600');
+
+                            setTimeout(() => {
+                                copyBtn.innerHTML = '<i class="fas fa-copy mr-1"></i>Kopyala';
+                                copyBtn.classList.remove('bg-red-600');
+                            }, 2000);
+                        });
+                    });
+
+                    wrapper.appendChild(copyBtn);
+                }
+            });
+        });
+    </script>
 </body>
 </html>

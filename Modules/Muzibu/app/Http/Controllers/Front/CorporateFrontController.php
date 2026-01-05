@@ -1714,9 +1714,18 @@ class CorporateFrontController extends Controller
                 ->update(['position' => $position]);
         }
 
+        // ✅ YENİ: Sıralama değişti, version artır
+        DB::table('muzibu_corporate_accounts')
+            ->where('id', $account->id)
+            ->update([
+                'spot_settings_version' => DB::raw('spot_settings_version + 1'),
+                'updated_at' => now(),
+            ]);
+
         return response()->json([
             'success' => true,
-            'message' => 'Sıralama güncellendi.'
+            'message' => 'Sıralama güncellendi.',
+            'spot_settings_version' => (int) $account->fresh()->spot_settings_version,
         ]);
     }
 
@@ -1748,6 +1757,11 @@ class CorporateFrontController extends Controller
             $data['spot_songs_between'] = max(1, min(100, (int) $request->spot_songs_between));
         }
 
+        // ✅ YENİ: Ayar değişiyorsa version artır
+        if ($request->has('spot_enabled') || $request->has('spot_songs_between')) {
+            $data['spot_settings_version'] = DB::raw('spot_settings_version + 1');
+        }
+
         // Songs played - session'da sakla
         if ($request->has('songs_played')) {
             $songsPlayed = max(0, min(100, (int) $request->songs_played));
@@ -1767,6 +1781,7 @@ class CorporateFrontController extends Controller
                 'spot_enabled' => (bool) $account->spot_enabled,
                 'spot_songs_between' => (int) $account->spot_songs_between,
                 'songs_played' => (int) $songsPlayed,
+                'spot_settings_version' => (int) $account->fresh()->spot_settings_version,
             ]
         ]);
     }
@@ -1827,12 +1842,22 @@ class CorporateFrontController extends Controller
             ]);
         }
 
-        // Aktif spot var mı?
-        $hasActiveSpots = \Modules\Muzibu\App\Models\CorporateSpot::where('corporate_account_id', $corporate->id)
+        // ✅ YENİ: Aktif spotları getir (JavaScript sync için)
+        $activeSpots = \Modules\Muzibu\App\Models\CorporateSpot::where('corporate_account_id', $corporate->id)
             ->currentlyActive()
-            ->exists();
+            ->orderBy('position')
+            ->get(['id', 'title', 'position', 'duration', 'starts_at', 'ends_at'])
+            ->map(function ($spot) {
+                return [
+                    'id' => $spot->id,
+                    'title' => $spot->title,
+                    'url' => $spot->getAudioUrl(), // ✅ Media library metodu
+                    'position' => $spot->position,
+                    'duration' => $spot->duration,
+                ];
+            });
 
-        if (!$hasActiveSpots) {
+        if ($activeSpots->isEmpty()) {
             return response()->json([
                 'enabled' => false,
                 'reason' => 'no_active_spots'
@@ -1845,6 +1870,8 @@ class CorporateFrontController extends Controller
             'corporate_id' => $corporate->id,
             'branch_id' => $userCorporate->id,
             'spot_is_paused' => (bool) $userCorporate->spot_is_paused,
+            'spot_settings_version' => (int) $corporate->spot_settings_version,
+            'spots' => $activeSpots,
         ]);
     }
 

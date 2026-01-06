@@ -3234,10 +3234,18 @@ function muzibuApp() {
                     };
 
                     preloadedAudio.onwaiting = function() {
-                        console.warn('⚠️ WAITING (preloaded) - Veri bekleniyor!', {
-                            audioId: preloadedAudio.id,
-                            currentTime: preloadedAudio.currentTime?.toFixed(1)
-                        });
+                        // 🔧 readyState kontrolü: Erken waiting event'lerini filtrele
+                        const isEarlyWaiting = preloadedAudio.readyState < 2;
+
+                        if (isEarlyWaiting) {
+                            console.log('⏳ WAITING (preloaded initial load):', preloadedAudio.readyState);
+                        } else {
+                            console.warn('⚠️ WAITING (preloaded) - Buffer hole!', {
+                                audioId: preloadedAudio.id,
+                                currentTime: preloadedAudio.currentTime?.toFixed(1),
+                                readyState: preloadedAudio.readyState
+                            });
+                        }
                     };
 
                     preloadedAudio.onerror = function(e) {
@@ -4045,16 +4053,17 @@ onplay: function() {
 
                 // 🚀 PRELOAD MODE: Minimal buffer kullan (sadece ilk segment için)
                 const isPreloadMode = !autoplay;
-                const bufferLength = isPreloadMode ? 1 : 120; // Preload: 1sn, Normal: 120sn (increased from 90)
-                const bufferSize = isPreloadMode ? 5 * 1000 * 1000 : 150 * 1000 * 1000; // Normal: 150MB (increased from 120)
+                const bufferLength = isPreloadMode ? 1 : 150; // Preload: 1sn, Normal: 150sn (increased from 120)
+                const bufferSize = isPreloadMode ? 5 * 1000 * 1000 : 200 * 1000 * 1000; // Normal: 200MB (increased from 150)
 
                 this.hls = new Hls({
                     enableWorker: false, // 🔧 FIX: Disable worker to avoid internal exceptions
                     lowLatencyMode: false,
-                    maxBufferLength: bufferLength, // Preload: 1sn, Normal: 120sn (increased)
-                    maxMaxBufferLength: isPreloadMode ? 5 : 200, // Preload: 5sn, Normal: 200sn (increased from 180)
-                    maxBufferSize: bufferSize, // Preload: 5MB, Normal: 150MB (increased)
-                    maxBufferHole: 0.5, // Buffer hole tolerance (prevent stall)
+                    maxBufferLength: bufferLength, // Preload: 1sn, Normal: 150sn (increased)
+                    maxMaxBufferLength: isPreloadMode ? 5 : 250, // Preload: 5sn, Normal: 250sn (increased from 200)
+                    maxBufferSize: bufferSize, // Preload: 5MB, Normal: 200MB (increased)
+                    maxBufferHole: 1.0, // Buffer hole tolerance: 1 second (increased from 0.5)
+                    maxFragLookUpTolerance: 0.5, // Fragment lookup tolerance
                     backBufferLength: isPreloadMode ? 0 : 30,
                     // 🔑 KEY LOADING POLICY - Prevent keyLoadError with aggressive retries
                     keyLoadPolicy: {
@@ -4601,13 +4610,22 @@ onplay: function() {
                 };
 
                 audio.onwaiting = function() {
-                    console.warn('⚠️ WAITING - Veri bekleniyor!', {
-                        currentTime: audio.currentTime?.toFixed(1),
-                        readyState: audio.readyState,
-                        networkState: audio.networkState
-                    });
-                    if (self.currentUser?.is_root) {
-                        self.showToast('⏳ WAITING - Veri bekleniyor...', 'info');
+                    // 🔧 readyState kontrolü: 0-1 (veri yok) ise normal, 2+ (oynatılıyor) ise gerçek buffer sorunu
+                    const isEarlyWaiting = audio.readyState < 2; // 0: HAVE_NOTHING, 1: HAVE_METADATA
+
+                    if (isEarlyWaiting) {
+                        // Manifest/metadata yüklenirken normal, sessiz log
+                        console.log('⏳ WAITING (initial load):', audio.readyState);
+                    } else {
+                        // Oynatma sırasında buffer sorunu - gerçek sorun
+                        console.warn('⚠️ WAITING - Buffer hole detected!', {
+                            currentTime: audio.currentTime?.toFixed(1),
+                            readyState: audio.readyState,
+                            networkState: audio.networkState
+                        });
+                        if (self.currentUser?.is_root) {
+                            self.showToast('⏳ Buffer yükleniyor...', 'info');
+                        }
                     }
                 };
 

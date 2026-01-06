@@ -98,6 +98,7 @@ Route::redirect('/muzibu/sector/{slug}', '/sectors/{slug}', 301);
 // 👑 SUBSCRIPTION PLANS
 Route::get('/subscription/plans', \Modules\Subscription\App\Http\Livewire\Front\SubscriptionPlansComponent::class)->name('subscription.plans');
 Route::middleware('auth')->get('/subscription/success', \Modules\Subscription\App\Http\Controllers\Front\SubscriptionSuccessController::class)->name('subscription.success');
+Route::middleware('auth')->get('/subscription/checkout/{subscriptionId}', [\Modules\Subscription\App\Http\Controllers\Front\SubscriptionCheckoutController::class, 'show'])->name('subscription.checkout');
 
 // 💳 PAYMENT ROUTES - Tenant context için middleware zorunlu!
 Route::middleware([InitializeTenancy::class])->group(function () {

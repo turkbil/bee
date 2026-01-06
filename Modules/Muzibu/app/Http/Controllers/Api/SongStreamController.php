@@ -683,8 +683,7 @@ class SongStreamController extends Controller
                 Log::warning('HLS file not found', [
                     'song_id' => $songId,
                     'file' => $filename,
-                    'token_prefix' => substr($token, 0, 12),
-                    'session_id' => substr($sessionRow->session_id ?? '', 0, 20),
+                    'token' => $token,
                     'ip' => request()->ip(),
                 ]);
                 return response()->json(['error' => 'File not found'], 404);
@@ -748,7 +747,10 @@ class SongStreamController extends Controller
             Log::error('HLS file serving error', [
                 'song_id' => $songId,
                 'filename' => $filename,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'file_path' => $filePath ?? 'unknown',
+                'file_exists' => isset($filePath) ? file_exists($filePath) : false,
             ]);
             return response()->json(['error' => 'Internal server error'], 500);
         }

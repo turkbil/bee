@@ -2506,3 +2506,145 @@ tryCatch @ livewire.js?id=df3a17f2:1116
 handler4 @ livewire.js?id=df3a17f2:3183
 (anonymous) @ livewire.js?id=df3a17f2:3247
 (anonymous) @ livewire.js?id=df3a17f2:3185
+player-core.js?v=1767657290:4511 🔵 onended fired (normal path) {isCrossfading: false, isPlaying: true, audioId: 'hlsAudio'}
+player-core.js?v=1767657290:4521 🔵 Calling onTrackEnded from onended (normal)
+player-core.js?v=1767657290:2154 🟢 onTrackEnded called {isPlaying: true, isPlayingSpot: undefined}
+player-core.js?v=1767657290:2177 🟢 onTrackEnded proceeding to nextTrack
+player-core.js?v=1767657290:2198 🎙️ Spot check: {hasMuzibuSpotPlayer: true, isEnabled: true, listenedDuration: 166.478905}
+spot-player.js?v=1767641660:241 🎙️ SpotPlayer: Song counted. Progress: 1/1
+spot-player.js?v=1767641660:245 🎙️ SpotPlayer: Time for a spot!
+player-core.js?v=1767657290:2208 🎙️ Spot time! Fetching and playing spot...
+spot-player.js?v=1767641660:358 🎙️ SpotPlayer: Using preloaded spot (gapless)
+spot-player.js?v=1767641660:390 🎙️ SpotPlayer: Playing spot: ikstif, ikstif
+player-core.js?v=1767657290:2211 🎙️ Playing spot: ikstif, ikstif
+player-core.js?v=1767657290:2244 🎙️ playSpotAudio: Using PRELOADED audio (gapless)
+player-core.js?v=1767657290:2251 🎙️ playSpotAudio: ikstif, ikstif https://muzibu.com.tr/storage/tenant1001/2182/ikstif-ikstif.mp3
+player-core.js?v=1767657290:2348 🎙️ Spot playing...
+player-core.js?v=1767657290:2306 🎙️ Spot playing: Preloading next song at 3s...
+player-core.js?v=1767657290:6172 ⏩ Preload SKIPPED - already ready: Path
+spot-player.js?v=1767641660:174 🎙️ SpotPlayer: Polling for settings update...
+spot-player.js?v=1767641660:83 🎙️ SpotPlayer: Fetching settings from /api/spot/settings...
+spot-player.js?v=1767641660:93 🎙️ SpotPlayer: Settings response: {enabled: true, songs_between: 1, corporate_id: 1, branch_id: 1, spot_is_paused: false, …}
+player-core.js?v=1767657290:2315 🎙️ Spot ended, continuing to next track
+spot-player.js?v=1767641660:480 🎙️ SpotPlayer: Spot ended normally
+player-core.js?v=1767657290:2381 🎙️ playNextFromQueue: Resuming music after spot
+player-core.js?v=1767657290:2395 🎙️ Using preloaded song after spot (gapless): Path
+player-core.js?v=1767657290:3171 ⚡ Using PRELOADED song (gapless): Path
+player-core.js?v=1767657290:3477 🚀 PRELOAD TRIGGER at 2s (HLS.js preloaded): {song: 'Path', duration: 189, currentTime: 2.151705, _nextSongPreloaded: false}
+player-core.js?v=1767657290:6176 🚀 Starting preload for: That's a Promise
+player-core.js?v=1767657290:3490 🎙️ SPOT PRELOAD at 2s (HLS.js preloaded): {song: 'Path', currentTime: '2.1s'}
+spot-player.js?v=1767641660:279 🎙️ SpotPlayer: Preloading spot...
+spot-player.js?v=1767641660:314 🎙️ SpotPlayer: Spot preloaded: İxtif 1 
+player-core.js?v=1767657290:6285 ✅ Preload READY: That's a Promise
+player-core.js?v=1767657290:3509 🔵 onended fired (preloaded path) {isCrossfading: false, isPlaying: true}
+player-core.js?v=1767657290:3514 🔵 Calling onTrackEnded from onended
+player-core.js?v=1767657290:2154 🟢 onTrackEnded called {isPlaying: true, isPlayingSpot: false}
+player-core.js?v=1767657290:2177 🟢 onTrackEnded proceeding to nextTrack
+player-core.js?v=1767657290:2198 🎙️ Spot check: {hasMuzibuSpotPlayer: true, isEnabled: true, listenedDuration: 189.173301}
+spot-player.js?v=1767641660:241 🎙️ SpotPlayer: Song counted. Progress: 1/1
+spot-player.js?v=1767641660:245 🎙️ SpotPlayer: Time for a spot!
+player-core.js?v=1767657290:2208 🎙️ Spot time! Fetching and playing spot...
+spot-player.js?v=1767641660:358 🎙️ SpotPlayer: Using preloaded spot (gapless)
+spot-player.js?v=1767641660:390 🎙️ SpotPlayer: Playing spot: İxtif 1 
+player-core.js?v=1767657290:2211 🎙️ Playing spot: İxtif 1 
+player-core.js?v=1767657290:2244 🎙️ playSpotAudio: Using PRELOADED audio (gapless)
+player-core.js?v=1767657290:2251 🎙️ playSpotAudio: İxtif 1  https://muzibu.com.tr/storage/tenant1001/2180/ixtif-1.mp3
+player-core.js?v=1767657290:2348 🎙️ Spot playing...
+player-core.js?v=1767657290:2306 🎙️ Spot playing: Preloading next song at 3s...
+player-core.js?v=1767657290:6172 ⏩ Preload SKIPPED - already ready: That's a Promise
+player-core.js?v=1767657290:2315 🎙️ Spot ended, continuing to next track
+spot-player.js?v=1767641660:480 🎙️ SpotPlayer: Spot ended normally
+player-core.js?v=1767657290:2381 🎙️ playNextFromQueue: Resuming music after spot
+player-core.js?v=1767657290:2395 🎙️ Using preloaded song after spot (gapless): That's a Promise
+player-core.js?v=1767657290:3171 ⚡ Using PRELOADED song (gapless): That's a Promise
+player-core.js?v=1767657290:3477 🚀 PRELOAD TRIGGER at 2s (HLS.js preloaded): {song: "That's a Promise", duration: 139, currentTime: 2.145202, _nextSongPreloaded: false}
+player-core.js?v=1767657290:6176 🚀 Starting preload for: Carolina
+player-core.js?v=1767657290:3490 🎙️ SPOT PRELOAD at 2s (HLS.js preloaded): {song: "That's a Promise", currentTime: '2.1s'}
+spot-player.js?v=1767641660:279 🎙️ SpotPlayer: Preloading spot...
+spot-player.js?v=1767641660:314 🎙️ SpotPlayer: Spot preloaded: İxtif 2
+player-core.js?v=1767657290:6285 ✅ Preload READY: Carolina
+spot-player.js?v=1767641660:174 🎙️ SpotPlayer: Polling for settings update...
+spot-player.js?v=1767641660:83 🎙️ SpotPlayer: Fetching settings from /api/spot/settings...
+spot-player.js?v=1767641660:93 🎙️ SpotPlayer: Settings response: {enabled: true, songs_between: 1, corporate_id: 1, branch_id: 1, spot_is_paused: false, …}
+player-core.js?v=1767657290:3509 🔵 onended fired (preloaded path) {isCrossfading: false, isPlaying: true}
+player-core.js?v=1767657290:3514 🔵 Calling onTrackEnded from onended
+player-core.js?v=1767657290:2154 🟢 onTrackEnded called {isPlaying: true, isPlayingSpot: false}
+player-core.js?v=1767657290:2177 🟢 onTrackEnded proceeding to nextTrack
+player-core.js?v=1767657290:2198 🎙️ Spot check: {hasMuzibuSpotPlayer: true, isEnabled: true, listenedDuration: 138.565542}
+spot-player.js?v=1767641660:241 🎙️ SpotPlayer: Song counted. Progress: 1/1
+spot-player.js?v=1767641660:245 🎙️ SpotPlayer: Time for a spot!
+player-core.js?v=1767657290:2208 🎙️ Spot time! Fetching and playing spot...
+spot-player.js?v=1767641660:358 🎙️ SpotPlayer: Using preloaded spot (gapless)
+spot-player.js?v=1767641660:390 🎙️ SpotPlayer: Playing spot: İxtif 2
+player-core.js?v=1767657290:2211 🎙️ Playing spot: İxtif 2
+player-core.js?v=1767657290:2244 🎙️ playSpotAudio: Using PRELOADED audio (gapless)
+player-core.js?v=1767657290:2251 🎙️ playSpotAudio: İxtif 2 https://muzibu.com.tr/storage/tenant1001/2181/ixtif-2.mp3
+player-core.js?v=1767657290:2348 🎙️ Spot playing...
+player-core.js?v=1767657290:2306 🎙️ Spot playing: Preloading next song at 3s...
+player-core.js?v=1767657290:6172 ⏩ Preload SKIPPED - already ready: Carolina
+player-core.js?v=1767657290:2315 🎙️ Spot ended, continuing to next track
+spot-player.js?v=1767641660:480 🎙️ SpotPlayer: Spot ended normally
+player-core.js?v=1767657290:2381 🎙️ playNextFromQueue: Resuming music after spot
+player-core.js?v=1767657290:2395 🎙️ Using preloaded song after spot (gapless): Carolina
+player-core.js?v=1767657290:3171 ⚡ Using PRELOADED song (gapless): Carolina
+player-core.js?v=1767657290:3477 🚀 PRELOAD TRIGGER at 2s (HLS.js preloaded): {song: 'Carolina', duration: 142, currentTime: 2.158024, _nextSongPreloaded: false}
+player-core.js?v=1767657290:6176 🚀 Starting preload for: Punchin' Bag
+player-core.js?v=1767657290:3490 🎙️ SPOT PRELOAD at 2s (HLS.js preloaded): {song: 'Carolina', currentTime: '2.1s'}
+spot-player.js?v=1767641660:279 🎙️ SpotPlayer: Preloading spot...
+spot-player.js?v=1767641660:314 🎙️ SpotPlayer: Spot preloaded: ikstif, ikstif
+player-core.js?v=1767657290:6285 ✅ Preload READY: Punchin' Bag
+xhr-loader.ts:158  GET https://muzibu.com.tr/hls/muzibu/songs/430/segment-009.ts?expires=1767708849&token=1&sig=a4fcd85d24c739634a0bdafa8f2bb9f369e5f55d98017108e8c0573fef984785 500 (Internal Server Error)
+e.openAndSendXhr @ xhr-loader.ts:158
+e.loadInternal @ xhr-loader.ts:117
+e.load @ xhr-loader.ts:76
+(anonymous) @ fragment-loader.ts:100
+e.load @ fragment-loader.ts:67
+r._doFragLoad @ base-stream-controller.ts:772
+r._loadFragForPlayback @ base-stream-controller.ts:367
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+xhr-loader.ts:158  GET https://muzibu.com.tr/hls/muzibu/songs/430/segment-009.ts?expires=1767708849&token=1&sig=a4fcd85d24c739634a0bdafa8f2bb9f369e5f55d98017108e8c0573fef984785 500 (Internal Server Error)
+e.openAndSendXhr @ xhr-loader.ts:158
+e.loadInternal @ xhr-loader.ts:117
+e.load @ xhr-loader.ts:76
+(anonymous) @ fragment-loader.ts:100
+e.load @ fragment-loader.ts:67
+r._doFragLoad @ base-stream-controller.ts:772
+r._loadFragForPlayback @ base-stream-controller.ts:367
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+player-core.js?v=1767657290:3237 ⚠️ WAITING (preloaded) - Veri bekleniyor! {audioId: 'hlsAudioNext', currentTime: '89.8'}
+preloadedAudio.onwaiting @ player-core.js?v=1767657290:3237
+player-core.js?v=1767657290:3509 🔵 onended fired (preloaded path) {isCrossfading: false, isPlaying: true}
+player-core.js?v=1767657290:3514 🔵 Calling onTrackEnded from onended
+player-core.js?v=1767657290:2154 🟢 onTrackEnded called {isPlaying: true, isPlayingSpot: false}
+player-core.js?v=1767657290:2177 🟢 onTrackEnded proceeding to nextTrack
+player-core.js?v=1767657290:2198 🎙️ Spot check: {hasMuzibuSpotPlayer: true, isEnabled: true, listenedDuration: 141.755989}
+spot-player.js?v=1767641660:241 🎙️ SpotPlayer: Song counted. Progress: 1/1
+spot-player.js?v=1767641660:245 🎙️ SpotPlayer: Time for a spot!
+player-core.js?v=1767657290:2208 🎙️ Spot time! Fetching and playing spot...
+spot-player.js?v=1767641660:358 🎙️ SpotPlayer: Using preloaded spot (gapless)
+spot-player.js?v=1767641660:390 🎙️ SpotPlayer: Playing spot: ikstif, ikstif
+player-core.js?v=1767657290:2211 🎙️ Playing spot: ikstif, ikstif
+player-core.js?v=1767657290:2244 🎙️ playSpotAudio: Using PRELOADED audio (gapless)
+player-core.js?v=1767657290:2251 🎙️ playSpotAudio: ikstif, ikstif https://muzibu.com.tr/storage/tenant1001/2182/ikstif-ikstif.mp3
+player-core.js?v=1767657290:2348 🎙️ Spot playing...
+player-core.js?v=1767657290:2306 🎙️ Spot playing: Preloading next song at 3s...
+player-core.js?v=1767657290:6172 ⏩ Preload SKIPPED - already ready: Punchin' Bag
+player-core.js?v=1767657290:2315 🎙️ Spot ended, continuing to next track
+spot-player.js?v=1767641660:480 🎙️ SpotPlayer: Spot ended normally
+player-core.js?v=1767657290:2381 🎙️ playNextFromQueue: Resuming music after spot
+player-core.js?v=1767657290:2395 🎙️ Using preloaded song after spot (gapless): Punchin' Bag
+player-core.js?v=1767657290:3171 ⚡ Using PRELOADED song (gapless): Punchin' Bag
+player-core.js?v=1767657290:3477 🚀 PRELOAD TRIGGER at 2s (HLS.js preloaded): {song: "Punchin' Bag", duration: 200, currentTime: 2.154252, _nextSongPreloaded: false}
+player-core.js?v=1767657290:6176 🚀 Starting preload for: No Destruction
+player-core.js?v=1767657290:3490 🎙️ SPOT PRELOAD at 2s (HLS.js preloaded): {song: "Punchin' Bag", currentTime: '2.1s'}
+spot-player.js?v=1767641660:279 🎙️ SpotPlayer: Preloading spot...
+spot-player.js?v=1767641660:314 🎙️ SpotPlayer: Spot preloaded: İxtif 1 
+player-core.js?v=1767657290:6285 ✅ Preload READY: No Destruction

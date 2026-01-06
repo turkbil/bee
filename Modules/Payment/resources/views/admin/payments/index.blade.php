@@ -226,13 +226,13 @@
                         {{-- Sol Kolon: Ana Bilgiler --}}
                         <div class="col-lg-8 border-end">
                             {{-- Tutar Banner --}}
-                            <div class="p-4 bg-dark text-white">
+                            <div class="p-4 bg-primary">
                                 <div class="row align-items-center">
                                     <div class="col">
-                                        <div class="text-white-50 small mb-1">Ödeme Tutarı</div>
+                                        <div class="text-white text-opacity-75 small mb-1">Ödeme Tutarı</div>
                                         <div class="d-flex align-items-baseline gap-1">
-                                            <span class="display-5 fw-bold">{{ number_format($selectedPayment->amount, 2, ',', '.') }}</span>
-                                            <span class="fs-4 text-white-50">₺</span>
+                                            <span class="display-5 fw-bold text-white">{{ number_format($selectedPayment->amount, 2, ',', '.') }}</span>
+                                            <span class="fs-4 text-white text-opacity-75">₺</span>
                                         </div>
                                     </div>
                                     <div class="col-auto">
@@ -250,10 +250,10 @@
                                             };
                                         @endphp
                                         <div class="text-center">
-                                            <div class="avatar avatar-xl bg-white-lt mb-2">
-                                                <i class="fas fa-{{ $gwIcon }} fa-lg"></i>
+                                            <div class="avatar avatar-xl bg-white bg-opacity-25 mb-2">
+                                                <i class="fas fa-{{ $gwIcon }} fa-lg text-white"></i>
                                             </div>
-                                            <div class="small">{{ $gwLabel }}</div>
+                                            <div class="small text-white">{{ $gwLabel }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -264,33 +264,33 @@
                             <div class="p-4">
                                 {{-- Müşteri Kartı --}}
                                 <div class="d-flex align-items-start gap-3 mb-4 pb-4 border-bottom">
-                                    <span class="avatar avatar-lg bg-primary-lt">
+                                    <span class="avatar avatar-lg bg-blue-lt">
                                         {{ strtoupper(substr($order->customer_name ?? 'M', 0, 1)) }}
                                     </span>
                                     <div class="flex-fill">
                                         <div class="d-flex align-items-center gap-2 mb-1">
                                             <h4 class="mb-0">{{ $order->customer_name }}</h4>
                                             @if($user)
-                                                <span class="badge bg-green-lt text-green">Kayıtlı Üye</span>
+                                                <span class="badge bg-green">Kayıtlı Üye</span>
                                             @else
-                                                <span class="badge bg-secondary-lt text-secondary">Misafir</span>
+                                                <span class="badge bg-secondary">Misafir</span>
                                             @endif
                                         </div>
-                                        <div class="d-flex flex-wrap gap-3 text-muted">
+                                        <div class="d-flex flex-wrap gap-3 text-secondary">
                                             @if($order->customer_email)
-                                                <a href="mailto:{{ $order->customer_email }}" class="text-reset">
+                                                <a href="mailto:{{ $order->customer_email }}" class="text-reset text-decoration-none">
                                                     <i class="fas fa-envelope me-1"></i>{{ $order->customer_email }}
                                                 </a>
                                             @endif
                                             @if($order->customer_phone)
-                                                <a href="tel:{{ $order->customer_phone }}" class="text-reset">
+                                                <a href="tel:{{ $order->customer_phone }}" class="text-reset text-decoration-none">
                                                     <i class="fas fa-phone me-1"></i>{{ $order->customer_phone }}
                                                 </a>
                                             @endif
                                         </div>
                                     </div>
                                     <div class="text-end">
-                                        <div class="text-muted small">Sipariş No</div>
+                                        <div class="text-secondary small">Sipariş No</div>
                                         <div class="badge bg-primary fs-6">{{ $order->order_number }}</div>
                                     </div>
                                 </div>
@@ -307,9 +307,9 @@
                                                     <i class="fas fa-truck text-blue"></i>
                                                     <span class="fw-medium">Teslimat Bilgileri</span>
                                                 </div>
-                                                <div class="text-muted small">
+                                                <div class="text-secondary small">
                                                     @if(!empty($addr['full_name']) || (!empty($addr['first_name']) && !empty($addr['last_name'])))
-                                                        <div class="mb-1 fw-medium text-dark">{{ $addr['full_name'] ?? ($addr['first_name'] . ' ' . $addr['last_name']) }}</div>
+                                                        <div class="mb-1 fw-medium text-body">{{ $addr['full_name'] ?? ($addr['first_name'] . ' ' . $addr['last_name']) }}</div>
                                                     @endif
                                                     @if(!empty($addr['phone']))
                                                         <div class="mb-1"><i class="fas fa-phone me-1"></i>{{ $addr['phone'] }}</div>
@@ -345,9 +345,9 @@
                                                     <i class="fas fa-file-invoice text-orange"></i>
                                                     <span class="fw-medium">Fatura Bilgileri</span>
                                                 </div>
-                                                <div class="text-muted small">
+                                                <div class="text-secondary small">
                                                     @if(!empty($baddr['full_name']) || (!empty($baddr['first_name']) && !empty($baddr['last_name'])))
-                                                        <div class="mb-1 fw-medium text-dark">{{ $baddr['full_name'] ?? ($baddr['first_name'] . ' ' . $baddr['last_name']) }}</div>
+                                                        <div class="mb-1 fw-medium text-body">{{ $baddr['full_name'] ?? ($baddr['first_name'] . ' ' . $baddr['last_name']) }}</div>
                                                     @endif
                                                     @if(!empty($baddr['company_name']))
                                                         <div class="mb-1">{{ $baddr['company_name'] }}</div>
@@ -459,14 +459,14 @@
                                                             $targetUserIds = $item->metadata['target_user_ids'];
                                                             $memberNames = \App\Models\User::whereIn('id', $targetUserIds)->pluck('name', 'id')->toArray();
                                                         @endphp
-                                                        <div class="mt-2 p-2 bg-purple-lt rounded">
+                                                        <div class="mt-2 p-2 bg-purple-lt border border-purple-lt rounded">
                                                             <div class="d-flex align-items-center gap-1 mb-1">
                                                                 <i class="fas fa-building text-purple"></i>
                                                                 <span class="text-purple fw-medium small">Kurumsal Üyeler:</span>
                                                             </div>
                                                             <div class="d-flex flex-wrap gap-1">
                                                                 @foreach($memberNames as $memberId => $memberName)
-                                                                    <span class="badge bg-white text-dark shadow-sm">
+                                                                    <span class="badge bg-purple text-white shadow-sm">
                                                                         <i class="fas fa-user me-1"></i>{{ $memberName }}
                                                                     </span>
                                                                 @endforeach
@@ -518,13 +518,13 @@
                                 <div class="accordion" id="gatewayAccordion">
                                     <div class="accordion-item border-0">
                                         <h2 class="accordion-header">
-                                            <button class="accordion-button collapsed py-3 bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#gatewayCollapse">
+                                            <button class="accordion-button collapsed py-3" type="button" data-bs-toggle="collapse" data-bs-target="#gatewayCollapse">
                                                 <i class="fas fa-code me-2"></i> Gateway Response (Teknik Detay)
                                             </button>
                                         </h2>
                                         <div id="gatewayCollapse" class="accordion-collapse collapse" data-bs-parent="#gatewayAccordion">
                                             <div class="accordion-body p-0">
-                                                <pre class="bg-dark text-white p-3 m-0 small" style="max-height: 200px; overflow-y: auto;">{{ json_encode($selectedPayment->gateway_response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                                                <pre class="bg-body-secondary text-body p-3 m-0 small" style="max-height: 200px; overflow-y: auto;">{{ json_encode($selectedPayment->gateway_response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
                                             </div>
                                         </div>
                                     </div>
@@ -534,7 +534,7 @@
                         </div>
 
                         {{-- Sağ Kolon: Sidebar --}}
-                        <div class="col-lg-4 bg-light">
+                        <div class="col-lg-4 bg-body-tertiary">
                             <div class="p-4">
                                 {{-- Havale Bilgileri --}}
                                 @if(in_array($selectedPayment->gateway, ['manual', 'bank_transfer']))
@@ -604,9 +604,9 @@
                                                 <div class="text-center mb-3">
                                                     @if($isPdf)
                                                         <a href="{{ Storage::url($selectedPayment->receipt_path) }}" target="_blank" class="d-block">
-                                                            <div class="py-4 bg-white rounded border">
+                                                            <div class="py-4 bg-body rounded border">
                                                                 <i class="fas fa-file-pdf text-danger fa-3x"></i>
-                                                                <div class="small text-muted mt-2">PDF Dekont</div>
+                                                                <div class="small text-secondary mt-2">PDF Dekont</div>
                                                             </div>
                                                         </a>
                                                     @else

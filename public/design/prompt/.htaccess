@@ -1,6 +1,17 @@
-<FilesMatch 'index\.php$'>
-    Order allow,deny
-    Allow from all
-</FilesMatch>
+# Override parent directory PHP restriction
+# Allow PHP execution in this directory only
+<IfModule mod_authz_core.c>
+    <FilesMatch "\.php$">
+        Require all granted
+    </FilesMatch>
+</IfModule>
+
+<IfModule !mod_authz_core.c>
+    <FilesMatch "\.php$">
+        Order allow,deny
+        Allow from all
+    </FilesMatch>
+</IfModule>
+
 DirectoryIndex index.php index.html
 Options -Indexes

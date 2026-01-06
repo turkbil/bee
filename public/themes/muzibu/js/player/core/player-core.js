@@ -4033,15 +4033,16 @@ onplay: function() {
 
                 // 🚀 PRELOAD MODE: Minimal buffer kullan (sadece ilk segment için)
                 const isPreloadMode = !autoplay;
-                const bufferLength = isPreloadMode ? 1 : 90; // Preload: sadece 1 saniye buffer istek
-                const bufferSize = isPreloadMode ? 5 * 1000 * 1000 : 120 * 1000 * 1000;
+                const bufferLength = isPreloadMode ? 1 : 120; // Preload: 1sn, Normal: 120sn (increased from 90)
+                const bufferSize = isPreloadMode ? 5 * 1000 * 1000 : 150 * 1000 * 1000; // Normal: 150MB (increased from 120)
 
                 this.hls = new Hls({
                     enableWorker: false, // 🔧 FIX: Disable worker to avoid internal exceptions
                     lowLatencyMode: false,
-                    maxBufferLength: bufferLength, // Preload: 1sn, Normal: 90sn
-                    maxMaxBufferLength: isPreloadMode ? 5 : 180, // Preload: max 5sn, Normal: max 180sn
-                    maxBufferSize: bufferSize, // Preload: 5MB, Normal: 120MB
+                    maxBufferLength: bufferLength, // Preload: 1sn, Normal: 120sn (increased)
+                    maxMaxBufferLength: isPreloadMode ? 5 : 200, // Preload: 5sn, Normal: 200sn (increased from 180)
+                    maxBufferSize: bufferSize, // Preload: 5MB, Normal: 150MB (increased)
+                    maxBufferHole: 0.5, // Buffer hole tolerance (prevent stall)
                     backBufferLength: isPreloadMode ? 0 : 30,
                     // 🔑 KEY LOADING POLICY - Prevent keyLoadError with aggressive retries
                     keyLoadPolicy: {
@@ -4129,6 +4130,12 @@ onplay: function() {
 
                 // 🔑 Error handling - TÜM hataları logla (debug için)
                 this.hls.on(Hls.Events.ERROR, function(event, data) {
+                    // 🔧 bufferStalledError: Silent recovery (HLS otomatik recover eder)
+                    if (data.details === 'bufferStalledError') {
+                        console.log('🔄 Buffer stall detected, HLS auto-recovering...');
+                        return; // Toast gösterme, sessizce recover et
+                    }
+
                     // 🔧 DEBUG: Tüm HLS hatalarını logla
                     console.warn('⚠️ HLS ERROR:', {
                         type: data.type,
@@ -4146,8 +4153,8 @@ onplay: function() {
                             self.showToast(`🔴 HLS FATAL: ${data.details}`, 'error');
                         }
                     } else {
-                        // Non-fatal ama önemli hatalar
-                        if (self.currentUser?.is_root) {
+                        // Non-fatal ama önemli hatalar (bufferStalled hariç)
+                        if (self.currentUser?.is_root && data.details !== 'bufferStalledError') {
                             self.showToast(`⚠️ HLS: ${data.details}`, 'warning');
                         }
                     }

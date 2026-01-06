@@ -300,10 +300,10 @@
              @mouseenter="clearTimeout(volumeTimeout)"
              class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 rounded-lg px-3 pt-3 pb-2.5 shadow-2xl z-50 select-none flex flex-col items-center"
              style="background: #18181b; border: 1px solid rgba(255,255,255,0.1);"
-             @mousedown="isDragging = true"
-             @mouseup="isDragging = false; $el.querySelector('.volume-track').releasePointerCapture && $el.querySelector('.volume-track').releasePointerCapture($event.pointerId)"
-             @click="const track = $el.querySelector('.volume-track'); const rect = track.getBoundingClientRect(); const clickY = $event.clientY - rect.top; const percent = Math.max(0, Math.min(100, 100 - (clickY / rect.height * 100))); volume = Math.round(percent); if (isMuted) isMuted = false; if (audioElement) audioElement.volume = volume / 100;"
-             @mousemove="if (isDragging) { const track = $el.querySelector('.volume-track'); const rect = track.getBoundingClientRect(); const moveY = $event.clientY - rect.top; const percent = Math.max(0, Math.min(100, 100 - (moveY / rect.height * 100))); volume = Math.round(percent); if (isMuted) isMuted = false; if (audioElement) audioElement.volume = volume / 100; }">
+             @mousedown="isDragging = true; $el.querySelector('.volume-track').setPointerCapture($event.pointerId)"
+             @mouseup="isDragging = false; try { $el.querySelector('.volume-track').releasePointerCapture($event.pointerId) } catch(e) {}"
+             @click="const track = $el.querySelector('.volume-track'); const rect = track.getBoundingClientRect(); const clickY = $event.clientY - rect.top; const percent = Math.max(0, Math.min(100, 100 - (clickY / rect.height * 100))); setVolume(percent, true);"
+             @mousemove="if (isDragging) { const track = $el.querySelector('.volume-track'); const rect = track.getBoundingClientRect(); const moveY = $event.clientY - rect.top; const percent = Math.max(0, Math.min(100, 100 - (moveY / rect.height * 100))); setVolume(percent, true); }">
 
             {{-- Vertical Track --}}
             <div class="volume-track h-32 w-2 my-2 bg-white/10 rounded-full relative cursor-pointer select-none">

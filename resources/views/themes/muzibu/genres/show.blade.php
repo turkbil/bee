@@ -1,10 +1,15 @@
 @extends('themes.muzibu.layouts.app')
 
 @section('content')
-<div class="px-4 sm:px-6 py-6 sm:py-8">
+<div class="px-4 py-6 sm:px-6 sm:py-8">
     {{-- Genre Header - Responsive --}}
     <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6 mb-6 sm:mb-8">
-        @php $iconUrl = $genre->getIconUrl(300, 300); @endphp
+        @php
+            $iconUrl = null;
+            if($genre->media_id && $genre->iconMedia) {
+                $iconUrl = thumb($genre->iconMedia, 300, 300, ['scale' => 1]);
+            }
+        @endphp
         @if($iconUrl)
             <img src="{{ $iconUrl }}"
                  alt="{{ $genre->getTranslation('title', app()->getLocale()) }}"
@@ -28,7 +33,7 @@
             @endif
 
             <p class="text-sm text-gray-400">
-                {{ $songs->count() }} şarkı
+                {{ $playlists->count() }} playlist
             </p>
         </div>
     </div>
@@ -44,16 +49,16 @@
         </div>
     </div>
 
-    {{-- Songs List - Simple Design --}}
-    @if($songs && $songs->count() > 0)
-        <div class="bg-slate-900/50 rounded-lg overflow-hidden">
-            @foreach($songs as $index => $song)
-                <x-muzibu.song-simple-row :song="$song" :index="$index" />
+    {{-- PLAYLİSTLER BÖLÜMÜ --}}
+    @if($playlists && $playlists->count() > 0)
+        <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4">
+            @foreach($playlists as $playlist)
+                <x-muzibu.playlist-card :playlist="$playlist" :preview="true" />
             @endforeach
         </div>
     @else
         <div class="text-center py-12">
-            <p class="text-gray-400">Bu türde henüz şarkı yok</p>
+            <p class="text-gray-400">Bu türde henüz playlist yok</p>
         </div>
     @endif
 </div>

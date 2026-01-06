@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sektör Sistemi: Kullanıcı Bazlı vs Kategorik</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .demo-screen {
+            min-height: 600px;
+            background: linear-gradient(to bottom, #0f172a 0%, #1e293b 100%);
+        }
+        .clickable {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .clickable:hover {
+            transform: translateX(4px);
+            background: rgba(59, 130, 246, 0.2) !important;
+        }
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100">
+
+    <header class="gradient-bg border-b border-slate-800 sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <div class="flex items-center gap-4 mb-2">
+                <span class="bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-sm font-medium border border-orange-500/30">
+                    <i class="fas fa-code-branch mr-2"></i>İki Farklı Yaklaşım
+                </span>
+                <span class="text-slate-400 text-sm">6 Ocak 2026</span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-2">
+                <i class="fas fa-building text-orange-400 mr-3"></i>
+                Kullanıcı Her Sektörü Görebilir mi? Yoksa Sadece Kendi Sektörünü mü?
+            </h1>
+            <p class="text-slate-300 text-lg">İki farklı yaklaşım: Kısıtlı vs Açık Sistem</p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-12">
+
+        <!-- Açıklama -->
+        <section class="bg-blue-900/20 border border-blue-800 rounded-xl p-6 mb-8">
+            <div class="flex items-start gap-4">
+                <div class="bg-blue-500/20 p-3 rounded-lg">
+                    <i class="fas fa-question-circle text-blue-400 text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-white mb-2">🤔 Ana Soru: Café Sahibi Gym Müziklerini Görebilmeli mi?</h2>
+                    <div class="space-y-3 text-slate-300">
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h3 class="font-semibold text-blue-300 mb-2">❌ HAYIR, Görmemeli! (Kullanıcı Bazlı Sistem)</h3>
+                            <p class="text-sm">Her kullanıcı <strong class="text-blue-400">sadece kendi sektörünü</strong> görür</p>
+                            <div class="mt-3 space-y-2 text-sm">
+                                <div class="flex items-start gap-2">
+                                    <i class="fas fa-lock text-blue-400 mt-1"></i>
+                                    <span>Café sahibi kaydoldu → Sadece Café kategorileri görür</span>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <i class="fas fa-lock text-blue-400 mt-1"></i>
+                                    <span>Gym, SPA, Restaurant kategorilerini <strong>göremez</strong></span>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <i class="fas fa-info-circle text-slate-400 mt-1"></i>
+                                    <span class="text-slate-400">Sisteme girdiğinde direkt Café müzikleri karşılıyor</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h3 class="font-semibold text-green-300 mb-2">✅ EVET, Görebilmeli! (Kategorik Sistem)</h3>
+                            <p class="text-sm">Tüm sektörler <strong class="text-green-400">kategori gibi</strong> çalışır, herkes hepsini görebilir</p>
+                            <div class="mt-3 space-y-2 text-sm">
+                                <div class="flex items-start gap-2">
+                                    <i class="fas fa-unlock text-green-400 mt-1"></i>
+                                    <span>Café sahibi olsa bile <strong>tüm sektörleri</strong> görebilir</span>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <i class="fas fa-unlock text-green-400 mt-1"></i>
+                                    <span>İsterse Gym, SPA veya Restaurant kategorisine girebilir</span>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <i class="fas fa-info-circle text-slate-400 mt-1"></i>
+                                    <span class="text-slate-400">Ana sayfada tüm sektör kategorileri listelenir</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Karşılaştırmalı Demolar -->
+        <div class="grid lg:grid-cols-2 gap-8">
+
+            <!-- DEMO 1: Kullanıcı Bazlı -->
+            <div class="bg-slate-800/30 border border-purple-700/50 rounded-xl overflow-hidden">
+                <div class="bg-purple-900/40 px-6 py-4 border-b border-purple-700/50">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-purple-500/20 p-2 rounded-lg">
+                                <i class="fas fa-user-lock text-purple-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white">Sistem 1: Sadece Kendi Sektörü</h3>
+                                <p class="text-sm text-purple-300">Café sahibi → Sadece Café görür (Kısıtlı)</p>
+                            </div>
+                        </div>
+                        <button class="reset-btn bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded text-sm text-white" data-demo="demo1">
+                            <i class="fas fa-redo mr-1"></i>Sıfırla
+                        </button>
+                    </div>
+                </div>
+
+                <div id="demo1" class="demo-screen p-6"></div>
+
+                <div class="bg-purple-900/20 px-6 py-4 border-t border-purple-700/50">
+                    <p class="text-sm text-slate-300">
+                        <i class="fas fa-lock text-purple-400 mr-2"></i>
+                        <strong class="text-purple-300">Kısıtlı:</strong> Kullanıcı sadece kendi sektörünü görür
+                    </p>
+                </div>
+            </div>
+
+            <!-- DEMO 2: Kategorik -->
+            <div class="bg-slate-800/30 border border-green-700/50 rounded-xl overflow-hidden">
+                <div class="bg-green-900/40 px-6 py-4 border-b border-green-700/50">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-green-500/20 p-2 rounded-lg">
+                                <i class="fas fa-folder-tree text-green-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white">Sistem 2: Tüm Sektörlere Erişim</h3>
+                                <p class="text-sm text-green-300">Herkes → Tüm sektörleri görebilir (Açık)</p>
+                            </div>
+                        </div>
+                        <button class="reset-btn bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded text-sm text-white" data-demo="demo2">
+                            <i class="fas fa-redo mr-1"></i>Sıfırla
+                        </button>
+                    </div>
+                </div>
+
+                <div id="demo2" class="demo-screen p-6"></div>
+
+                <div class="bg-green-900/20 px-6 py-4 border-t border-green-700/50">
+                    <p class="text-sm text-slate-300">
+                        <i class="fas fa-unlock text-green-400 mr-2"></i>
+                        <strong class="text-green-300">Açık:</strong> Tüm sektörler kategori gibi seçilebilir
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Karşılaştırma Tablosu -->
+        <section class="mt-12 bg-slate-800/30 border border-slate-700 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6">
+                <i class="fas fa-balance-scale text-orange-400 mr-2"></i>
+                Hangisi Daha İyi? Yan Yana Karşılaştırma
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 px-4 text-slate-400 font-semibold">Özellik</th>
+                            <th class="text-left py-3 px-4 text-purple-300 font-semibold">❌ Sadece Kendi Sektörü</th>
+                            <th class="text-left py-3 px-4 text-green-300 font-semibold">✅ Tüm Sektörler</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">Erişim</td>
+                            <td class="py-3 px-4"><span class="bg-red-900/30 text-red-400 px-2 py-1 rounded">Sadece kendi sektörü</span></td>
+                            <td class="py-3 px-4"><span class="bg-green-900/30 text-green-400 px-2 py-1 rounded">Tüm sektörler</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">Kullanıcı Profili</td>
+                            <td class="py-3 px-4">Kayıtta sektör seçimi zorunlu</td>
+                            <td class="py-3 px-4">Kayıtta sektör seçimi opsiyonel</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">Navigasyon</td>
+                            <td class="py-3 px-4">Basit (sadece kendi içeriği)</td>
+                            <td class="py-3 px-4">Kategoriler arası geçiş var</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">Kişiselleştirme</td>
+                            <td class="py-3 px-4"><span class="bg-green-900/30 text-green-400 px-2 py-1 rounded">Yüksek</span></td>
+                            <td class="py-3 px-4"><span class="bg-yellow-900/30 text-yellow-400 px-2 py-1 rounded">Orta</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">Kullanım Senaryosu</td>
+                            <td class="py-3 px-4">Café sahibi sadece Café müziği ister</td>
+                            <td class="py-3 px-4">Kullanıcı farklı sektörleri keşfetmek ister</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">Esneklik</td>
+                            <td class="py-3 px-4"><span class="bg-red-900/30 text-red-400 px-2 py-1 rounded">Düşük</span></td>
+                            <td class="py-3 px-4"><span class="bg-green-900/30 text-green-400 px-2 py-1 rounded">Yüksek</span></td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-medium">Örnek</td>
+                            <td class="py-3 px-4 text-xs">Spotify Business (Her işletme kendi sektörü)</td>
+                            <td class="py-3 px-4 text-xs">Spotify Consumer (Tüm kategoriler)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Hibrit Çözüm -->
+        <section class="mt-12 bg-gradient-to-br from-orange-900/30 to-red-900/20 border border-orange-700 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-4">
+                <i class="fas fa-lightbulb text-orange-400 mr-2"></i>
+                💡 İkisini Birleştirirsek Ne Olur? (En İyi Çözüm!)
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-900/50 rounded-lg p-6 border border-orange-700/30">
+                    <h3 class="text-lg font-bold text-orange-300 mb-3">
+                        <i class="fas fa-magic mr-2"></i>Adım Adım Nasıl Çalışır?
+                    </h3>
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <div class="flex items-start gap-2">
+                            <span class="bg-orange-500 text-white px-2 py-0.5 rounded text-xs font-bold mt-0.5">1</span>
+                            <span>Kayıtta kullanıcı <strong class="text-orange-400">ana sektörünü</strong> seçer (Café, Gym, SPA...)</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="bg-orange-500 text-white px-2 py-0.5 rounded text-xs font-bold mt-0.5">2</span>
+                            <span>Ana sayfa <strong class="text-orange-400">kendi sektörü öncelikli</strong> gösterilir</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="bg-orange-500 text-white px-2 py-0.5 rounded text-xs font-bold mt-0.5">3</span>
+                            <span>Sidebar'da <strong class="text-orange-400">tüm sektörler kategori</strong> olarak listelenir</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="bg-orange-500 text-white px-2 py-0.5 rounded text-xs font-bold mt-0.5">4</span>
+                            <span>Kullanıcı isterse <strong class="text-orange-400">diğer sektörleri</strong> de keşfedebilir</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-6 border border-orange-700/30">
+                    <h3 class="text-lg font-bold text-orange-300 mb-3">
+                        <i class="fas fa-check-circle mr-2"></i>Neden Bu Sistem Daha İyi?
+                    </h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span><strong>Kişiselleştirme:</strong> Ana sektör öncelikli</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span><strong>Esneklik:</strong> Diğer sektörlere erişim</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span><strong>Keşif:</strong> Yeni içerik keşfedilebilir</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span><strong>Kullanıcı dostu:</strong> Her iki dünyadan da avantaj</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-orange-900/30 border border-orange-700/50 rounded-lg p-4">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-info-circle text-orange-400 text-xl mt-1"></i>
+                    <div class="text-sm text-slate-300">
+                        <strong class="text-orange-300">Örnek Kullanım:</strong>
+                        <p class="mt-1">Café sahibi sisteme girer → <strong>Ana sayfa Café içeriği</strong> gösterir (Acoustic, Jazz, Bossa Nova...) →
+                        Sol sidebar'da <strong>"Diğer Sektörler"</strong> bölümü var → Merak ederse <strong>Gym veya SPA</strong> kategorilerini de görebilir →
+                        Ama <strong>ana odak hep Café</strong> kalır.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="gradient-bg border-t border-slate-800 mt-20">
+        <div class="max-w-7xl mx-auto px-6 py-8 text-center">
+            <div class="flex items-center justify-center gap-3 text-slate-400 mb-3">
+                <i class="fas fa-robot text-blue-400 text-xl"></i>
+                <span class="text-sm">Generated with <a href="https://claude.com/claude-code" class="text-blue-400 hover:text-blue-300 underline">Claude Code</a></span>
+            </div>
+            <div class="text-xs text-slate-500">
+                Co-Authored-By: Claude Sonnet 4.5 &lt;noreply@anthropic.com&gt;
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const sectors = [
+            { id: 'cafe', name: 'Café', icon: 'fa-mug-hot', color: 'amber', filters: ['Acoustic', 'Bossa Nova', 'Jazz', 'Instrumental'] },
+            { id: 'gym', name: 'Gym', icon: 'fa-dumbbell', color: 'orange', filters: ['Cardio', 'HIIT', 'Yoga', 'Strength'] },
+            { id: 'spa', name: 'SPA', icon: 'fa-spa', color: 'purple', filters: ['Meditation', 'Massage', 'Relaxation'] },
+            { id: 'restaurant', name: 'Restoran', icon: 'fa-utensils', color: 'red', filters: ['Breakfast', 'Lunch', 'Dinner'] },
+            { id: 'retail', name: 'Mağaza', icon: 'fa-shopping-bag', color: 'blue', filters: ['Upbeat', 'Pop', 'Trendy'] },
+            { id: 'hotel', name: 'Otel', icon: 'fa-hotel', color: 'teal', filters: ['Lobby', 'Lounge', 'Pool'] }
+        ];
+
+        let state = {
+            demo1: 'initial',
+            demo2: 'initial',
+            demo1Sector: 'cafe',
+            demo2Sector: null
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            render('demo1', 'initial');
+            render('demo2', 'initial');
+
+            document.addEventListener('click', function(e) {
+                const item = e.target.closest('[data-action]');
+                if (item) {
+                    const demo = item.dataset.demo;
+                    const action = item.dataset.action;
+                    const sector = item.dataset.sector;
+
+                    if (action === 'select-sector') {
+                        if (demo === 'demo2') {
+                            state.demo2Sector = sector;
+                            render('demo2', 'loading');
+                            setTimeout(() => render('demo2', 'filters'), 800);
+                        }
+                    } else if (action === 'select-filter') {
+                        render(demo, 'loading-playlists');
+                        setTimeout(() => render(demo, 'playlists'), 800);
+                    }
+                }
+            });
+
+            document.querySelectorAll('.reset-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const demo = this.dataset.demo;
+                    if (demo === 'demo1') {
+                        state.demo1 = 'initial';
+                    } else {
+                        state.demo2 = 'initial';
+                        state.demo2Sector = null;
+                    }
+                    render(demo, 'initial');
+                });
+            });
+        });
+
+        function render(demoId, newState) {
+            state[demoId] = newState;
+            const container = document.getElementById(demoId);
+
+            if (demoId === 'demo1') {
+                container.innerHTML = getDemo1HTML(newState);
+            } else {
+                container.innerHTML = getDemo2HTML(newState);
+            }
+        }
+
+        function getDemo1HTML(s) {
+            const userSector = sectors.find(sec => sec.id === state.demo1Sector);
+
+            if (s === 'initial') {
+                return `
+                    <div class="fade-in">
+                        <div class="bg-purple-900/20 border border-purple-700/50 rounded-lg p-4 mb-6">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-user-circle text-purple-400 text-2xl"></i>
+                                <div>
+                                    <div class="text-sm text-purple-300">Kullanıcı Profili</div>
+                                    <div class="text-white font-semibold">Sektör: ${userSector.name}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-4">${userSector.name} Müzik Kategorileri</h3>
+                        <div class="space-y-3">
+                            ${userSector.filters.map(f =>
+                                `<div class="clickable bg-${userSector.color}-900/30 border border-${userSector.color}-700/50 rounded-lg p-4" data-action="select-filter" data-demo="demo1">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <i class="fas fa-music text-${userSector.color}-400 text-xl"></i>
+                                            <span class="text-white font-semibold">${f}</span>
+                                        </div>
+                                        <i class="fas fa-chevron-right text-${userSector.color}-400"></i>
+                                    </div>
+                                </div>`
+                            ).join('')}
+                        </div>
+                        <div class="mt-6 bg-red-900/20 border border-red-700 rounded-lg p-4">
+                            <div class="flex items-center gap-2 text-red-300 text-sm">
+                                <i class="fas fa-lock"></i>
+                                <span><strong>Kısıtlı:</strong> Diğer sektörleri göremezsiniz</span>
+                            </div>
+                        </div>
+                    </div>`;
+            } else if (s === 'loading-playlists') {
+                return loading('Playlist\'ler yükleniyor...');
+            } else if (s === 'playlists') {
+                return `
+                    <div class="fade-in">
+                        <div class="bg-slate-700/30 rounded-lg p-4 mb-4">
+                            <div class="flex items-center gap-2 text-slate-400 text-sm">
+                                <i class="fas fa-home"></i>
+                                <span>${userSector.name}</span>
+                                <i class="fas fa-chevron-right text-xs"></i>
+                                <span class="text-white">Acoustic</span>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-4">Acoustic Playlist'ler</h3>
+                        <div class="space-y-3">
+                            ${['Cozy Acoustic', 'Acoustic Morning', 'Relax Acoustic'].map(pl =>
+                                `<div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                                    <div class="flex items-center gap-3">
+                                        <div class="bg-gradient-to-br from-${userSector.color}-600 to-${userSector.color}-700 w-16 h-16 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-music text-white text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold text-white">${pl}</div>
+                                            <div class="text-xs text-slate-400">32 şarkı</div>
+                                        </div>
+                                    </div>
+                                </div>`
+                            ).join('')}
+                        </div>
+                    </div>`;
+            }
+        }
+
+        function getDemo2HTML(s) {
+            if (s === 'initial') {
+                return `
+                    <div class="fade-in">
+                        <h3 class="text-xl font-bold text-white mb-4">Sektör Kategorileri (Tümü)</h3>
+                        <div class="space-y-3">
+                            ${sectors.map(sec =>
+                                `<div class="clickable bg-${sec.color}-900/30 border border-${sec.color}-700/50 rounded-lg p-4" data-action="select-sector" data-demo="demo2" data-sector="${sec.id}">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <i class="fas ${sec.icon} text-${sec.color}-400 text-xl"></i>
+                                            <span class="text-white font-semibold">${sec.name}</span>
+                                        </div>
+                                        <i class="fas fa-chevron-right text-${sec.color}-400"></i>
+                                    </div>
+                                </div>`
+                            ).join('')}
+                        </div>
+                        <div class="mt-6 bg-green-900/20 border border-green-700 rounded-lg p-4">
+                            <div class="flex items-center gap-2 text-green-300 text-sm">
+                                <i class="fas fa-unlock"></i>
+                                <span><strong>Açık:</strong> Tüm sektörleri görebilir ve seçebilirsiniz</span>
+                            </div>
+                        </div>
+                    </div>`;
+            } else if (s === 'loading') {
+                return loading('Alt kategoriler yükleniyor...');
+            } else if (s === 'filters') {
+                const sector = sectors.find(sec => sec.id === state.demo2Sector);
+                return `
+                    <div class="fade-in">
+                        <div class="bg-slate-700/30 rounded-lg p-4 mb-4">
+                            <div class="flex items-center gap-2 text-slate-400 text-sm">
+                                <i class="fas fa-home"></i>
+                                <span>Sektörler</span>
+                                <i class="fas fa-chevron-right text-xs"></i>
+                                <span class="text-${sector.color}-400">${sector.name}</span>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-4">${sector.name} Alt Kategorileri</h3>
+                        <div class="space-y-3">
+                            ${sector.filters.map(f =>
+                                `<div class="clickable bg-${sector.color}-900/30 border border-${sector.color}-700/50 rounded-lg p-4" data-action="select-filter" data-demo="demo2">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <i class="fas fa-music text-${sector.color}-400 text-xl"></i>
+                                            <span class="text-white font-semibold">${f}</span>
+                                        </div>
+                                        <i class="fas fa-chevron-right text-${sector.color}-400"></i>
+                                    </div>
+                                </div>`
+                            ).join('')}
+                        </div>
+                    </div>`;
+            } else if (s === 'loading-playlists') {
+                return loading('Playlist\'ler yükleniyor...');
+            } else if (s === 'playlists') {
+                const sector = sectors.find(sec => sec.id === state.demo2Sector);
+                return `
+                    <div class="fade-in">
+                        <div class="bg-slate-700/30 rounded-lg p-4 mb-4">
+                            <div class="flex items-center gap-2 text-slate-400 text-sm">
+                                <i class="fas fa-home"></i>
+                                <span>Sektörler</span>
+                                <i class="fas fa-chevron-right text-xs"></i>
+                                <span>${sector.name}</span>
+                                <i class="fas fa-chevron-right text-xs"></i>
+                                <span class="text-white">${sector.filters[0]}</span>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-4">${sector.filters[0]} Playlist'ler</h3>
+                        <div class="space-y-3">
+                            ${['Best Mix', 'Popular', 'Trending'].map(pl =>
+                                `<div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                                    <div class="flex items-center gap-3">
+                                        <div class="bg-gradient-to-br from-${sector.color}-600 to-${sector.color}-700 w-16 h-16 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-music text-white text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold text-white">${pl} ${sector.filters[0]}</div>
+                                            <div class="text-xs text-slate-400">28 şarkı</div>
+                                        </div>
+                                    </div>
+                                </div>`
+                            ).join('')}
+                        </div>
+                    </div>`;
+            }
+        }
+
+        function loading(text) {
+            return `
+                <div class="flex items-center justify-center h-full">
+                    <div class="text-center">
+                        <i class="fas fa-spinner loading-spinner text-blue-400 text-4xl mb-4"></i>
+                        <p class="text-slate-300">${text}</p>
+                    </div>
+                </div>`;
+        }
+    </script>
+
+</body>
+</html>

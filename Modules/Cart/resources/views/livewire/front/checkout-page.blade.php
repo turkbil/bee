@@ -1240,13 +1240,22 @@
                             </button>
                         </div>
                     @else
-                        <div @click="showNewBillingForm = true"
-                             class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-gray-300 dark:hover:border-gray-500 transition-colors duration-200 mb-3">
-                            <p class="text-sm text-gray-600 dark:text-gray-400">
+                        <div class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 mb-3">
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
                                 <i class="fa-solid fa-info-circle mr-2"></i>
                                 Fatura adresi seçilmedi.
-                                <span class="underline ml-1">Adres Ekle</span>
                             </p>
+                            <div class="flex gap-2">
+                                <button @click="showBillingList = !showBillingList"
+                                        class="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                                    <i class="fa-solid fa-list mr-1"></i>Adres Seç ({{ $userAddresses->count() }})
+                                </button>
+                                <span class="text-gray-400">|</span>
+                                <button @click="showNewBillingForm = true"
+                                        class="text-sm text-green-600 dark:text-green-400 hover:underline">
+                                    <i class="fa-solid fa-plus mr-1"></i>Yeni Adres Ekle
+                                </button>
+                            </div>
                         </div>
                     @endif
 

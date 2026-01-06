@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akıllı Öneri Sistemi - Dinamik Content Collections</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+
+    <header class="bg-gradient-to-r from-blue-900/50 to-purple-900/50 border-b border-blue-700 sticky top-0 z-50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <div class="flex items-center gap-4 mb-2">
+                <span class="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs px-3 py-1 rounded-full font-semibold">
+                    <i class="fas fa-brain mr-1"></i> AKILLI SİSTEM
+                </span>
+                <span class="text-blue-300 text-sm">6 Ocak 2026</span>
+            </div>
+            <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Akıllı Öneri Sistemi
+            </h1>
+            <p class="text-slate-300 mt-2 text-lg">Dinamik Content Collections - Saat/Sektör/Kullanıcı Bazlı Öneriler</p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8">
+
+        <!-- Sistem Özeti -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-700 rounded-xl p-8">
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-600 rounded-lg p-3">
+                        <i class="fas fa-lightbulb text-4xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="text-3xl font-bold mb-4 text-blue-300">Sistem Konsepti</h2>
+                        <p class="text-lg text-slate-200 mb-4">
+                            <strong class="text-white">Hedef:</strong> Anasayfada dinamik, akıllı içerik koleksiyonları göstermek.
+                            Sadece playlist değil, tüm içerik tiplerini (playlist, album, radio, podcast) kapsayan esnek sistem.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Saatlik Öneriler -->
+                            <div class="bg-blue-900/30 rounded-lg p-4 border border-blue-700">
+                                <div class="text-blue-400 font-bold mb-2 flex items-center gap-2">
+                                    <i class="fas fa-clock"></i>
+                                    Saatlik İçerik Önerileri
+                                </div>
+                                <div class="text-sm text-slate-300 space-y-1">
+                                    <div>• Sabah saatleri → Enerjik listeler</div>
+                                    <div>• Öğle arası → Rahatlatıcı müzikler</div>
+                                    <div>• Akşam → Atmosferik içerik</div>
+                                    <div>• Özel günler → Tematik öneriler</div>
+                                </div>
+                            </div>
+
+                            <!-- Zaman Bazlı -->
+                            <div class="bg-green-900/30 rounded-lg p-4 border border-green-700">
+                                <div class="text-green-400 font-bold mb-2 flex items-center gap-2">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Zaman Bazlı Öneriler
+                                </div>
+                                <div class="text-sm text-slate-300 space-y-1">
+                                    <div>• Günün saatine göre değişen</div>
+                                    <div>• Haftanın gününe göre (Pzt-Paz)</div>
+                                    <div>• Mevsime göre</div>
+                                    <div>• Özel tarihlere göre</div>
+                                </div>
+                            </div>
+
+                            <!-- Sektör Bazlı -->
+                            <div class="bg-purple-900/30 rounded-lg p-4 border border-purple-700">
+                                <div class="text-purple-400 font-bold mb-2 flex items-center gap-2">
+                                    <i class="fas fa-building"></i>
+                                    Sektör Bazlı Öneriler
+                                </div>
+                                <div class="text-sm text-slate-300 space-y-1">
+                                    <div>• Cafe → Sabah kahve müzikleri</div>
+                                    <div>• Restaurant → Akşam yemeği ambiyansı</div>
+                                    <div>• Gym → Antrenman motivasyonu</div>
+                                    <div>• SPA → Relax müzikleri</div>
+                                </div>
+                            </div>
+
+                            <!-- Kullanıcı Bazlı -->
+                            <div class="bg-orange-900/30 rounded-lg p-4 border border-orange-700">
+                                <div class="text-orange-400 font-bold mb-2 flex items-center gap-2">
+                                    <i class="fas fa-user"></i>
+                                    Kullanıcı Bazlı Öneriler
+                                </div>
+                                <div class="text-sm text-slate-300 space-y-1">
+                                    <div>• Favorilere göre</div>
+                                    <div>• Dinleme geçmişine göre</div>
+                                    <div>• Abonelik tipine göre (Premium/Free)</div>
+                                    <div>• Profil sektörüne göre</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mimari Tasarım -->
+        <section class="mb-8">
+            <h2 class="text-3xl font-bold mb-6 text-center">
+                <i class="fas fa-sitemap mr-2"></i>
+                Önerilen Mimari: Content Collections
+            </h2>
+
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-8">
+
+                <!-- Ana Tablo -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-bold text-cyan-400 mb-4">
+                        <i class="fas fa-table mr-2"></i>
+                        muzibu_content_collections
+                    </h3>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6 mb-4">
+                        <div class="text-sm text-slate-300 font-mono space-y-2">
+                            <div class="grid grid-cols-3 gap-4 pb-2 border-b border-slate-700 font-bold">
+                                <div>Field</div>
+                                <div>Type</div>
+                                <div>Açıklama</div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4 py-2 border-b border-slate-700/50">
+                                <div class="text-blue-400">collection_id</div>
+                                <div class="text-yellow-400">BIGINT PK</div>
+                                <div>Unique ID</div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4 py-2 border-b border-slate-700/50">
+                                <div class="text-blue-400">name</div>
+                                <div class="text-yellow-400">JSON</div>
+                                <div>Koleksiyon adı (çoklu dil)</div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4 py-2 border-b border-slate-700/50">
+                                <div class="text-blue-400">slug</div>
+                                <div class="text-yellow-400">JSON</div>
+                                <div>URL-friendly slug</div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4 py-2 border-b border-slate-700/50">
+                                <div class="text-blue-400">type</div>
+                                <div class="text-yellow-400">VARCHAR</div>
+                                <div>time_based, sector_based, mood_based, event_based, editorial</div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4 py-2 border-b border-slate-700/50">
+                                <div class="text-blue-400">icon</div>
+                                <div class="text-yellow-400">VARCHAR</div>
+                                <div>FontAwesome icon class</div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4 py-2 border-b border-slate-700/50">
+                                <div class="text-blue-400">color</div>
+                                <div class="text-yellow-400">VARCHAR</div>
+                                <div>Hex color code</div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4 py-2 border-b border-slate-700/50 bg-green-900/20">
+                                <div class="text-green-400">display_rules</div>
+                                <div class="text-yellow-400">JSON</div>
+                                <div><strong>Görünürlük kuralları (AKILLI!)</strong></div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4 py-2 border-b border-slate-700/50 bg-purple-900/20">
+                                <div class="text-purple-400">visibility_conditions</div>
+                                <div class="text-yellow-400">JSON</div>
+                                <div><strong>Koşullu gösterim (AKILLI!)</strong></div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4 py-2 border-b border-slate-700/50">
+                                <div class="text-blue-400">priority</div>
+                                <div class="text-yellow-400">INT</div>
+                                <div>Görünüm sırası (0-100)</div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4 py-2 border-b border-slate-700/50">
+                                <div class="text-blue-400">is_active</div>
+                                <div class="text-yellow-400">BOOLEAN</div>
+                                <div>Aktif/Pasif</div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4 py-2">
+                                <div class="text-blue-400">created_at, updated_at</div>
+                                <div class="text-yellow-400">TIMESTAMP</div>
+                                <div>Zaman damgaları</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pivot Tablo -->
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <h4 class="text-lg font-bold text-purple-400 mb-3">
+                            <i class="fas fa-link mr-2"></i>
+                            muzibu_collection_items (Polymorphic Pivot)
+                        </h4>
+                        <div class="text-sm text-slate-300 font-mono space-y-2">
+                            <div>• <span class="text-blue-400">collection_id</span> BIGINT FK</div>
+                            <div>• <span class="text-cyan-400">item_type</span> VARCHAR (playlist, album, radio, podcast)</div>
+                            <div>• <span class="text-cyan-400">item_id</span> BIGINT</div>
+                            <div>• <span class="text-yellow-400">position</span> INT (sıralama)</div>
+                            <div>• <span class="text-green-400">timestamps</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- JSON Field Örnekleri -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                    <!-- display_rules -->
+                    <div class="bg-gradient-to-br from-green-900/30 to-emerald-900/30 border border-green-700 rounded-lg p-6">
+                        <h4 class="text-xl font-bold text-green-300 mb-4">
+                            <i class="fas fa-cog mr-2"></i>
+                            display_rules (JSON)
+                        </h4>
+
+                        <div class="space-y-4">
+                            <div class="bg-slate-900/50 rounded p-4">
+                                <div class="text-sm text-green-400 font-bold mb-2">Saat Bazlı:</div>
+                                <pre class="text-xs text-slate-300 overflow-x-auto">{
+  "time_range": {
+    "start": "06:00",
+    "end": "12:00"
+  },
+  "days": ["Mon", "Tue", "Wed", "Thu", "Fri"],
+  "timezone": "Europe/Istanbul"
+}</pre>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded p-4">
+                                <div class="text-sm text-green-400 font-bold mb-2">Sektör Bazlı:</div>
+                                <pre class="text-xs text-slate-300 overflow-x-auto">{
+  "sectors": [1, 2, 5],
+  "sector_tags": ["cafe", "restaurant"]
+}</pre>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded p-4">
+                                <div class="text-sm text-green-400 font-bold mb-2">Tarih Bazlı:</div>
+                                <pre class="text-xs text-slate-300 overflow-x-auto">{
+  "date_range": {
+    "start": "2026-01-01",
+    "end": "2026-01-31"
+  },
+  "special_dates": ["2026-12-31"]
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- visibility_conditions -->
+                    <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/30 border border-purple-700 rounded-lg p-6">
+                        <h4 class="text-xl font-bold text-purple-300 mb-4">
+                            <i class="fas fa-eye mr-2"></i>
+                            visibility_conditions (JSON)
+                        </h4>
+
+                        <div class="space-y-4">
+                            <div class="bg-slate-900/50 rounded p-4">
+                                <div class="text-sm text-purple-400 font-bold mb-2">Kullanıcı Durumu:</div>
+                                <pre class="text-xs text-slate-300 overflow-x-auto">{
+  "auth_required": true,
+  "subscription_types": ["premium", "corporate"],
+  "min_subscription_days": 7
+}</pre>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded p-4">
+                                <div class="text-sm text-purple-400 font-bold mb-2">Kullanıcı Profili:</div>
+                                <pre class="text-xs text-slate-300 overflow-x-auto">{
+  "user_sectors": [1, 2],
+  "user_tags": ["cafe_owner", "restaurant_owner"]
+}</pre>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded p-4">
+                                <div class="text-sm text-purple-400 font-bold mb-2">Davranış Bazlı:</div>
+                                <pre class="text-xs text-slate-300 overflow-x-auto">{
+  "min_listening_hours": 10,
+  "favorite_genres": ["rock", "jazz"],
+  "recently_played": true
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Örnek Senaryolar -->
+        <section class="mb-8">
+            <h2 class="text-3xl font-bold mb-6 text-center">
+                <i class="fas fa-theater-masks mr-2"></i>
+                Örnek Kullanım Senaryoları
+            </h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                <!-- Senaryo 1: Sabah Enerjisi -->
+                <div class="bg-slate-800/50 border border-blue-700 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-blue-600 rounded-lg p-3">
+                            <i class="fas fa-sun text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-blue-300">Sabah Enerjisi</h3>
+                            <p class="text-xs text-slate-400">06:00-12:00 arası gösterilir</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4 mb-4 text-xs font-mono">
+                        <pre class="text-slate-300">{
+  "name": {"tr": "☀️ Güne Enerjik Başla"},
+  "type": "time_based",
+  "display_rules": {
+    "time_range": {"start": "06:00", "end": "12:00"},
+    "days": ["Mon","Tue","Wed","Thu","Fri"]
+  },
+  "visibility_conditions": {
+    "auth_required": false
+  },
+  "priority": 90
+}</pre>
+                    </div>
+
+                    <div class="text-sm text-slate-300">
+                        <strong>İçerik:</strong> 15 playlist (Energetic Rock, Morning Coffee Jazz, Workout Hits...)
+                    </div>
+                </div>
+
+                <!-- Senaryo 2: Cafe Sabah -->
+                <div class="bg-slate-800/50 border border-purple-700 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-purple-600 rounded-lg p-3">
+                            <i class="fas fa-coffee text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-purple-300">Cafe Sabah Müzikleri</h3>
+                            <p class="text-xs text-slate-400">Cafe sektörü + 07:00-11:00</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4 mb-4 text-xs font-mono">
+                        <pre class="text-slate-300">{
+  "name": {"tr": "☕ Kahve Keyfi"},
+  "type": "sector_based",
+  "display_rules": {
+    "sectors": [1],
+    "time_range": {"start": "07:00", "end": "11:00"}
+  },
+  "visibility_conditions": {
+    "user_sectors": [1]
+  },
+  "priority": 95
+}</pre>
+                    </div>
+
+                    <div class="text-sm text-slate-300">
+                        <strong>İçerik:</strong> 10 playlist (Bossa Nova Morning, Acoustic Cafe, Jazz Breakfast...)
+                    </div>
+                </div>
+
+                <!-- Senaryo 3: Hafta Sonu Partisi -->
+                <div class="bg-slate-800/50 border border-green-700 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-green-600 rounded-lg p-3">
+                            <i class="fas fa-music text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-green-300">Hafta Sonu Partileri</h3>
+                            <p class="text-xs text-slate-400">Cumartesi-Pazar akşamları</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4 mb-4 text-xs font-mono">
+                        <pre class="text-slate-300">{
+  "name": {"tr": "🎉 Hafta Sonu Eğlencesi"},
+  "type": "time_based",
+  "display_rules": {
+    "days": ["Sat", "Sun"],
+    "time_range": {"start": "20:00", "end": "02:00"}
+  },
+  "visibility_conditions": {},
+  "priority": 85
+}</pre>
+                    </div>
+
+                    <div class="text-sm text-slate-300">
+                        <strong>İçerik:</strong> 20 playlist (Dance Hits, House Party, Top 40...)
+                    </div>
+                </div>
+
+                <!-- Senaryo 4: Premium Özel -->
+                <div class="bg-slate-800/50 border border-orange-700 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-orange-600 rounded-lg p-3">
+                            <i class="fas fa-crown text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-orange-300">Premium Özel Koleksiyon</h3>
+                            <p class="text-xs text-slate-400">Sadece premium üyeler</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4 mb-4 text-xs font-mono">
+                        <pre class="text-slate-300">{
+  "name": {"tr": "👑 Premium Seçkiler"},
+  "type": "editorial",
+  "display_rules": {},
+  "visibility_conditions": {
+    "auth_required": true,
+    "subscription_types": ["premium"]
+  },
+  "priority": 100
+}</pre>
+                    </div>
+
+                    <div class="text-sm text-slate-300">
+                        <strong>İçerik:</strong> High-quality exclusive playlists, early releases
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Backend Logic -->
+        <section class="mb-8">
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-8">
+                <h2 class="text-3xl font-bold mb-6">
+                    <i class="fas fa-code mr-2"></i>
+                    Backend Logic (PHP)
+                </h2>
+
+                <div class="space-y-6">
+                    <!-- Service Class -->
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <h3 class="text-xl font-bold text-cyan-400 mb-4">ContentCollectionService.php</h3>
+                        <div class="bg-slate-800 rounded p-4 text-xs font-mono text-slate-300 overflow-x-auto">
+<pre>class ContentCollectionService
+{
+    public function getActiveCollections($user = null): Collection
+    {
+        $now = now();
+        $dayOfWeek = $now->format('D'); // Mon, Tue...
+        $currentTime = $now->format('H:i'); // 14:30
+
+        return ContentCollection::where('is_active', true)
+            ->get()
+            ->filter(function($collection) use ($user, $dayOfWeek, $currentTime) {
+                // Display Rules Check
+                if (!$this->checkDisplayRules($collection, $dayOfWeek, $currentTime)) {
+                    return false;
+                }
+
+                // Visibility Conditions Check
+                if (!$this->checkVisibilityConditions($collection, $user)) {
+                    return false;
+                }
+
+                return true;
+            })
+            ->sortByDesc('priority');
+    }
+
+    private function checkDisplayRules($collection, $dayOfWeek, $currentTime): bool
+    {
+        $rules = $collection->display_rules;
+
+        // Time range check
+        if (isset($rules['time_range'])) {
+            if ($currentTime < $rules['time_range']['start'] ||
+                $currentTime > $rules['time_range']['end']) {
+                return false;
+            }
+        }
+
+        // Days check
+        if (isset($rules['days']) && !in_array($dayOfWeek, $rules['days'])) {
+            return false;
+        }
+
+        // Sector check
+        if (isset($rules['sectors']) && $user && $user->primary_sector_id) {
+            if (!in_array($user->primary_sector_id, $rules['sectors'])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function checkVisibilityConditions($collection, $user): bool
+    {
+        $conditions = $collection->visibility_conditions;
+
+        // Auth required
+        if (isset($conditions['auth_required']) && $conditions['auth_required']) {
+            if (!$user) return false;
+        }
+
+        // Subscription type
+        if (isset($conditions['subscription_types']) && $user) {
+            $activeSubscription = $user->subscriptions()
+                ->where('status', 'active')
+                ->first();
+
+            if (!$activeSubscription ||
+                !in_array($activeSubscription->subscription_type, $conditions['subscription_types'])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}</pre>
+                        </div>
+                    </div>
+
+                    <!-- Controller -->
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <h3 class="text-xl font-bold text-purple-400 mb-4">HomeController.php</h3>
+                        <div class="bg-slate-800 rounded p-4 text-xs font-mono text-slate-300 overflow-x-auto">
+<pre>public function index(ContentCollectionService $service)
+{
+    $user = auth()->user();
+
+    // Akıllı koleksiyonları getir
+    $collections = $service->getActiveCollections($user);
+
+    // Her koleksiyon için içerikleri yükle
+    $collections = $collections->map(function($collection) {
+        $collection->load('items');
+        return $collection;
+    });
+
+    return view('themes.muzibu.home', compact('collections'));
+}</pre>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Frontend Görünüm -->
+        <section class="mb-8">
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-8">
+                <h2 class="text-3xl font-bold mb-6">
+                    <i class="fas fa-desktop mr-2"></i>
+                    Frontend Görünüm
+                </h2>
+
+                <div class="bg-slate-900 rounded-lg p-6 border border-blue-700">
+                    <div class="text-sm text-blue-300 mb-4 font-bold">
+                        Anasayfa (09:30 Salı sabahı, Cafe sektöründen giriş yapmış kullanıcı)
+                    </div>
+
+                    <!-- Hero -->
+                    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-6 mb-4">
+                        <h3 class="text-2xl font-bold mb-1">Günaydın! ☀️</h3>
+                        <p class="text-sm opacity-90">İşte sana özel sabah enerjisi</p>
+                    </div>
+
+                    <!-- Collections -->
+                    <div class="space-y-6">
+
+                        <!-- Collection 1: Cafe Sabah -->
+                        <div>
+                            <div class="flex items-center gap-2 mb-3">
+                                <i class="fas fa-coffee text-orange-400"></i>
+                                <h4 class="font-bold">☕ Kahve Keyfi</h4>
+                                <span class="text-xs text-slate-500 ml-auto">Cafe için özel</span>
+                            </div>
+                            <div class="grid grid-cols-6 gap-2">
+                                <div class="bg-slate-800 rounded h-20"></div>
+                                <div class="bg-slate-800 rounded h-20"></div>
+                                <div class="bg-slate-800 rounded h-20"></div>
+                                <div class="bg-slate-800 rounded h-20"></div>
+                                <div class="bg-slate-800 rounded h-20"></div>
+                                <div class="bg-slate-800 rounded h-20"></div>
+                            </div>
+                        </div>
+
+                        <!-- Collection 2: Sabah Enerjisi -->
+                        <div>
+                            <div class="flex items-center gap-2 mb-3">
+                                <i class="fas fa-sun text-yellow-400"></i>
+                                <h4 class="font-bold">☀️ Güne Enerjik Başla</h4>
+                                <span class="text-xs text-slate-500 ml-auto">Hafta içi sabahlar</span>
+                            </div>
+                            <div class="grid grid-cols-6 gap-2">
+                                <div class="bg-slate-800 rounded h-20"></div>
+                                <div class="bg-slate-800 rounded h-20"></div>
+                                <div class="bg-slate-800 rounded h-20"></div>
+                                <div class="bg-slate-800 rounded h-20"></div>
+                                <div class="bg-slate-800 rounded h-20"></div>
+                                <div class="bg-slate-800 rounded h-20"></div>
+                            </div>
+                        </div>
+
+                        <!-- Collection 3: Editör Seçkisi -->
+                        <div>
+                            <div class="flex items-center gap-2 mb-3">
+                                <i class="fas fa-star text-blue-400"></i>
+                                <h4 class="font-bold">⭐ Editör Seçkisi</h4>
+                                <span class="text-xs text-slate-500 ml-auto">Her zaman</span>
+                            </div>
+                            <div class="grid grid-cols-6 gap-2">
+                                <div class="bg-slate-800 rounded h-20"></div>
+                                <div class="bg-slate-800 rounded h-20"></div>
+                                <div class="bg-slate-800 rounded h-20"></div>
+                                <div class="bg-slate-800 rounded h-20"></div>
+                                <div class="bg-slate-800 rounded h-20"></div>
+                                <div class="bg-slate-800 rounded h-20"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="mt-4 text-xs text-green-400 bg-green-900/20 rounded p-3">
+                        <i class="fas fa-check-circle mr-1"></i>
+                        <strong>Akıllı Filtreleme:</strong> Kullanıcının sektörü (Cafe) + Mevcut saat (09:30) + Gün (Salı) bazında otomatik filtrelenmiş içerik gösteriliyor!
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Avantajlar -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-green-900/30 to-emerald-900/30 border border-green-700 rounded-xl p-8">
+                <h2 class="text-3xl font-bold mb-6 text-green-300">
+                    <i class="fas fa-trophy mr-2"></i>
+                    Sistem Avantajları
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <div class="text-green-400 font-bold mb-3">
+                            <i class="fas fa-bolt mr-2"></i>Dinamik & Esnek
+                        </div>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li>• Kod değişikliği yok, admin panelden yönetim</li>
+                            <li>• Yeni koleksiyon ekle/sil/düzenle</li>
+                            <li>• A/B test için farklı kurallar dene</li>
+                            <li>• Saat/gün/sezon bazlı otomatik değişim</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <div class="text-blue-400 font-bold mb-3">
+                            <i class="fas fa-users mr-2"></i>Kişiselleştirme
+                        </div>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li>• Kullanıcı sektörüne göre özel içerik</li>
+                            <li>• Abonelik tipine göre farklı gösterim</li>
+                            <li>• Dinleme geçmişine göre öneri</li>
+                            <li>• Favorilere göre akıllı öneri</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <div class="text-purple-400 font-bold mb-3">
+                            <i class="fas fa-chart-line mr-2"></i>İş Stratejisi
+                        </div>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li>• Premium içerik sadece premium'a göster</li>
+                            <li>• Yeni kullanıcılara trial koleksiyonları</li>
+                            <li>• Sadık kullanıcılara özel seçkiler</li>
+                            <li>• Sektörel kampanyalar (Cafe'lere özel)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <div class="text-orange-400 font-bold mb-3">
+                            <i class="fas fa-cogs mr-2"></i>Teknik Avantaj
+                        </div>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li>• Polymorphic: Playlist, Album, Radio hepsi</li>
+                            <li>• Cache edilebilir (koleksiyon başına)</li>
+                            <li>• JSON rules: Sonsuz kombinasyon</li>
+                            <li>• Admin panel kolay yönetim</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Implementation Plan -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-700 rounded-xl p-8">
+                <h2 class="text-3xl font-bold mb-6 text-center">
+                    <i class="fas fa-tasks mr-2"></i>
+                    Uygulama Planı (Adım Adım)
+                </h2>
+
+                <div class="space-y-4">
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-blue-500">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-blue-600 rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">1</div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-white mb-2">Migration Oluştur</h3>
+                                <ul class="text-sm text-slate-300 space-y-1">
+                                    <li>• <code>muzibu_content_collections</code> tablosu</li>
+                                    <li>• <code>muzibu_collection_items</code> pivot tablo</li>
+                                    <li>• Tenant migration klasörüne ekle</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-purple-500">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-purple-600 rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">2</div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-white mb-2">Model & İlişkiler</h3>
+                                <ul class="text-sm text-slate-300 space-y-1">
+                                    <li>• <code>ContentCollection</code> model (HasTranslations trait)</li>
+                                    <li>• <code>items()</code> polymorphic ilişki</li>
+                                    <li>• Accessor/Mutator için JSON cast</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-green-500">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-green-600 rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">3</div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-white mb-2">Service Class</h3>
+                                <ul class="text-sm text-slate-300 space-y-1">
+                                    <li>• <code>ContentCollectionService</code> oluştur</li>
+                                    <li>• <code>getActiveCollections()</code> method</li>
+                                    <li>• Display rules & visibility conditions logic</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-orange-500">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-orange-600 rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">4</div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-white mb-2">Admin Panel</h3>
+                                <ul class="text-sm text-slate-300 space-y-1">
+                                    <li>• Livewire component (CRUD)</li>
+                                    <li>• JSON editor için Alpine.js kullan</li>
+                                    <li>• Preview button (kullanıcı gözüyle göster)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-cyan-500">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-cyan-600 rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">5</div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-white mb-2">Frontend (Anasayfa)</h3>
+                                <ul class="text-sm text-slate-300 space-y-1">
+                                    <li>• HomeController'da service kullan</li>
+                                    <li>• Blade component: <code>@foreach($collections)</code></li>
+                                    <li>• Scroll yaparak kategoriler göster (Spotify-style)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-yellow-500">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-yellow-600 rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">6</div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-white mb-2">Seeder & Test Data</h3>
+                                <ul class="text-sm text-slate-300 space-y-1">
+                                    <li>• Demo koleksiyonlar oluştur (Sabah, Öğle, Akşam)</li>
+                                    <li>• Her koleksiyona 10-15 playlist ekle</li>
+                                    <li>• Farklı kurallarla test et</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-800/50 border-t border-slate-700 mt-12 py-6">
+        <div class="max-w-7xl mx-auto px-6 text-center text-slate-400 text-sm">
+            <p>
+                <i class="fas fa-robot mr-2"></i>
+                Generated with <a href="https://claude.com/claude-code" class="text-blue-400 hover:text-blue-300">Claude Code</a>
+            </p>
+            <p class="mt-2 text-xs text-slate-500">
+                Co-Authored-By: Claude Sonnet 4.5 &lt;noreply@anthropic.com&gt;
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>

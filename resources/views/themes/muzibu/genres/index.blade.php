@@ -24,7 +24,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
     @if($genres && $genres->count() > 0)
         <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4">
             @foreach($genres as $genre)
-                <x-muzibu.genre-card :genre="$genre" :preview="true" />
+                <x-muzibu.genre-card :genre="$genre" :preview="false" />
             @endforeach
         </div>
 

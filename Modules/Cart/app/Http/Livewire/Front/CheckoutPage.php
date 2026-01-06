@@ -482,12 +482,20 @@ class CheckoutPage extends Component
             return;
         }
 
+        // Sadece dolu adresleri getir (boş address_line_1 veya city olanları gösterme)
         $this->userAddresses = Address::where('user_id', $this->customerId)
+            ->where(function($q) {
+                $q->whereNotNull('address_line_1')
+                  ->where('address_line_1', '!=', '')
+                  ->whereNotNull('city')
+                  ->where('city', '!=', '');
+            })
             ->orderBy('title', 'asc')
             ->get();
 
         \Log::info('📍 Addresses loaded', [
             'count' => $this->userAddresses->count(),
+            'addresses' => $this->userAddresses->pluck('address_id', 'title')->toArray(),
             'shipping_selected' => $this->shipping_address_id,
             'billing_selected' => $this->billing_address_id
         ]);
@@ -1313,10 +1321,16 @@ class CheckoutPage extends Component
 
         \Log::info('📍 loadDefaultAddresses START', ['user_id' => $this->customerId]);
 
-        // Varsayılan fatura adresi
+        // Varsayılan fatura adresi (sadece dolu adresler)
         $defaultBilling = Address::where('user_id', $this->customerId)
             ->billing()
             ->defaultBilling()
+            ->where(function($q) {
+                $q->whereNotNull('address_line_1')
+                  ->where('address_line_1', '!=', '')
+                  ->whereNotNull('city')
+                  ->where('city', '!=', '');
+            })
             ->first();
 
         if ($defaultBilling) {
@@ -1326,10 +1340,16 @@ class CheckoutPage extends Component
             \Log::warning('❌ No default billing address found!');
         }
 
-        // Varsayılan teslimat adresi
+        // Varsayılan teslimat adresi (sadece dolu adresler)
         $defaultShipping = Address::where('user_id', $this->customerId)
             ->shipping()
             ->defaultShipping()
+            ->where(function($q) {
+                $q->whereNotNull('address_line_1')
+                  ->where('address_line_1', '!=', '')
+                  ->whereNotNull('city')
+                  ->where('city', '!=', '');
+            })
             ->first();
 
         if ($defaultShipping) {
@@ -1483,11 +1503,31 @@ class CheckoutPage extends Component
             // Müşteri oluştur veya güncelle
             $customer = $this->createOrUpdateCustomer();
 
+            // Login user için adres kontrolü
+            if ($this->customerId) {
+                if ($this->requiresShipping) {
+                    // Fiziksel ürün → Her iki adres zorunlu
+                    if (!$this->shipping_address_id || !$this->billing_address_id) {
+                        throw new \Exception('Fiziksel ürünler için hem fatura hem teslimat adresi seçmelisiniz.');
+                    }
+                } else {
+                    // Dijital ürün (abonelik) → Sadece fatura adresi zorunlu
+                    if (!$this->billing_address_id) {
+                        throw new \Exception('Lütfen fatura adresi seçiniz.');
+                    }
+                }
+            }
+
             // Guest için adres oluştur (login user için atlanır)
-            if (!$this->customerId || !$this->shipping_address_id) {
+            if (!$this->customerId) {
+                // Guest user için inline form ile adres oluştur
                 $shippingAddress = Address::create([
                     'user_id' => $customer->id,
                     'address_type' => 'shipping',
+                    'first_name' => $this->contact_first_name,
+                    'last_name' => $this->contact_last_name,
+                    'phone' => $this->contact_phone,
+                    'email' => $this->contact_email,
                     'address_line_1' => $this->shipping_address_line_1,
                     'address_line_2' => $this->shipping_address_line_2,
                     'city' => $this->shipping_city,
@@ -1504,6 +1544,10 @@ class CheckoutPage extends Component
                     $billingAddress = Address::create([
                         'user_id' => $customer->id,
                         'address_type' => 'billing',
+                        'first_name' => $this->contact_first_name,
+                        'last_name' => $this->contact_last_name,
+                        'phone' => $this->contact_phone,
+                        'email' => $this->contact_email,
                         'address_line_1' => $this->shipping_address_line_1,
                         'address_line_2' => $this->shipping_address_line_2,
                         'city' => $this->shipping_city,
@@ -1590,6 +1634,32 @@ class CheckoutPage extends Component
             $paymentMethod = PaymentMethod::find($this->selectedPaymentMethodId);
 
             if ($paymentMethod && $paymentMethod->gateway === 'paytr') {
+                // Dijital ürün için shipping yoksa billing kullan
+                $addressForPayment = $shippingAddress ?? $billingAddress;
+
+                // PayTR için adres zorunlu - boş olamaz!
+                $paytrAddress = 'Türkiye'; // Fallback
+                if ($addressForPayment) {
+                    $addr = trim($addressForPayment->address_line_1 ?? '');
+                    $city = trim($addressForPayment->city ?? '');
+                    $district = trim($addressForPayment->district ?? '');
+
+                    if (!empty($addr) && !empty($city)) {
+                        $paytrAddress = $addr;
+                        if (!empty($district)) {
+                            $paytrAddress .= ', ' . $district;
+                        }
+                        $paytrAddress .= ', ' . $city;
+                    }
+                }
+
+                \Log::info('💳 PayTR Session Hazırlanıyor', [
+                    'billing_address_id' => $this->billing_address_id,
+                    'shipping_address_id' => $this->shipping_address_id,
+                    'address_for_payment' => $addressForPayment ? $addressForPayment->address_id : null,
+                    'paytr_address' => $paytrAddress,
+                ]);
+
                 // Ödeme bilgilerini session'a kaydet (kart formu submit'inde kullanılacak)
                 session([
                     'pending_payment_id' => $payment->payment_id,
@@ -1597,7 +1667,7 @@ class CheckoutPage extends Component
                         'name' => trim($this->contact_first_name . ' ' . $this->contact_last_name),
                         'email' => $this->contact_email,
                         'phone' => $this->contact_phone,
-                        'address' => $shippingAddress->address_line_1 . ', ' . $shippingAddress->city,
+                        'address' => $paytrAddress,
                     ],
                     'pending_order_info' => [
                         'amount' => $this->grandTotal,
@@ -1726,8 +1796,9 @@ class CheckoutPage extends Component
             \Log::info('🔵 [CHECKOUT] Creating/updating customer...');
             $customer = $this->createOrUpdateCustomer();
 
-            // Guest için adres oluştur
-            if (!$this->customerId || !$this->shipping_address_id) {
+            // SADECE Guest için adres oluştur (Login user ASLA buraya girmemeli!)
+            if (!$this->customerId) {
+                // Guest user için inline form ile adres oluştur
                 $shippingAddress = Address::create([
                     'user_id' => $customer->id,
                     'address_type' => 'shipping',

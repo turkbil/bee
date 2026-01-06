@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tag & Category Hiyerarşisi - Mimari Kararı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        .option-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .option-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .recommended {
+            animation: pulse-green 2s infinite;
+        }
+        @keyframes pulse-green {
+            0%, 100% { border-color: rgb(34, 197, 94); }
+            50% { border-color: rgb(74, 222, 128); }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-slate-800/50 border-b border-slate-700 sticky top-0 z-50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <div class="flex items-center gap-4 mb-2">
+                <span class="bg-purple-600 text-white text-xs px-3 py-1 rounded-full font-semibold">
+                    <i class="fas fa-question-circle mr-1"></i> MİMARİ KARAR
+                </span>
+                <span class="text-slate-400 text-sm">6 Ocak 2026</span>
+            </div>
+            <h1 class="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Tag & Category Hiyerarşisi
+            </h1>
+            <p class="text-slate-300 mt-2 text-lg">Cafe → Hard Rock → Güne Başlangıç / Gece Müzikleri - Nasıl Organize Edelim?</p>
+        </div>
+    </header>
+
+    <!-- Ana Soru -->
+    <main class="max-w-7xl mx-auto px-6 py-8">
+
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-700 rounded-xl p-8">
+                <h2 class="text-3xl font-bold mb-4 flex items-center gap-3">
+                    <i class="fas fa-sitemap text-blue-400"></i>
+                    Hiyerarşi Problemi
+                </h2>
+
+                <div class="bg-slate-900/50 rounded-lg p-6 mb-6">
+                    <div class="text-lg text-slate-200 mb-4">
+                        <strong class="text-white">Senaryo:</strong>
+                    </div>
+                    <div class="flex items-center gap-3 text-xl font-mono mb-6">
+                        <span class="bg-blue-600 px-4 py-2 rounded">Cafe</span>
+                        <i class="fas fa-arrow-right text-slate-500"></i>
+                        <span class="bg-purple-600 px-4 py-2 rounded">Hard Rock</span>
+                        <i class="fas fa-arrow-right text-slate-500"></i>
+                        <div class="flex flex-col gap-2">
+                            <span class="bg-green-600 px-4 py-2 rounded text-sm">Güne Başlangıç</span>
+                            <span class="bg-orange-600 px-4 py-2 rounded text-sm">Gece Müzikleri</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-blue-900/30 rounded p-4">
+                            <div class="text-blue-400 font-bold mb-2">Cafe (Sector)</div>
+                            <div class="text-slate-300">İşletme tipi / Sektör</div>
+                        </div>
+                        <div class="bg-purple-900/30 rounded p-4">
+                            <div class="text-purple-400 font-bold mb-2">Hard Rock (?)</div>
+                            <div class="text-slate-300">Müzik karakteristiği / Stil</div>
+                        </div>
+                        <div class="bg-green-900/30 rounded p-4">
+                            <div class="text-green-400 font-bold mb-2">Güne Başlangıç (?)</div>
+                            <div class="text-slate-300">Kullanım zamanı / Senaryo</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-900/30 rounded-lg p-4 border border-yellow-700">
+                    <p class="text-yellow-300 font-bold mb-2">
+                        <i class="fas fa-lightbulb mr-2"></i>Ana Soru:
+                    </p>
+                    <p class="text-slate-200">
+                        "Hard Rock" ve "Güne Başlangıç" nasıl organize edilecek? Hangi tablo/yapı kullanılacak?
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3 Seçenek Karşılaştırma -->
+        <section class="mb-8">
+            <h2 class="text-3xl font-bold mb-6 text-center">
+                <i class="fas fa-balance-scale mr-2"></i>
+                3 Mimari Seçenek
+            </h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <!-- SEÇENEK 1 -->
+                <div class="option-card bg-slate-800/50 border-2 border-slate-700 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold">SEÇENEK 1</span>
+                        <span class="text-yellow-400 text-2xl">⭐</span>
+                    </div>
+
+                    <h3 class="text-2xl font-bold text-blue-300 mb-3">Tag Hiyerarşisi</h3>
+                    <p class="text-slate-300 text-sm mb-4">Parent-Child ilişkisi ile tag ağacı</p>
+
+                    <div class="bg-slate-900/50 rounded p-4 mb-4 text-xs font-mono">
+                        <div class="text-cyan-400 mb-2">muzibu_tags:</div>
+                        <div class="text-slate-300 space-y-1">
+                            <div>• id=1, name="Hard Rock", parent=NULL</div>
+                            <div>• id=5, name="Güne Başlangıç", parent=1</div>
+                            <div>• id=6, name="Gece Müzikleri", parent=1</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="text-green-400 text-sm font-bold mb-2">✅ Avantajlar:</div>
+                        <ul class="text-xs text-slate-300 space-y-1">
+                            <li>• Tek tablo, basit yapı</li>
+                            <li>• Sınırsız derinlik</li>
+                            <li>• Kolay yönetim</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="text-red-400 text-sm font-bold mb-2">❌ Dezavantajlar:</div>
+                        <ul class="text-xs text-slate-300 space-y-1">
+                            <li>• Karmaşık sorgular (recursive)</li>
+                            <li>• "Hard Rock" hem stil hem parent</li>
+                            <li>• Semantik karışıklık</li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-700">
+                        <div class="text-slate-400 text-xs">
+                            <strong>Frontend:</strong> Kategoriler iç içe menü
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEÇENEK 2 -->
+                <div class="option-card bg-gradient-to-br from-green-900/30 to-emerald-900/30 border-4 recommended rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-bold">SEÇENEK 2</span>
+                        <span class="text-yellow-400 text-2xl animate-bounce">👑</span>
+                    </div>
+
+                    <div class="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold inline-block mb-3">
+                        ÖNERİLEN!
+                    </div>
+                    <h3 class="text-2xl font-bold text-green-300 mb-3">Playlist Categories</h3>
+                    <p class="text-slate-300 text-sm mb-4">Tag = Karakter, Category = Senaryo</p>
+
+                    <div class="bg-slate-900/50 rounded p-4 mb-4 text-xs font-mono">
+                        <div class="text-cyan-400 mb-2">muzibu_tags:</div>
+                        <div class="text-slate-300 mb-3">
+                            • id=1, name="Hard Rock", type="style"
+                        </div>
+                        <div class="text-purple-400 mb-2">muzibu_playlist_categories:</div>
+                        <div class="text-slate-300">
+                            • id=1, name="Güne Başlangıç", sector_id=1
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="text-green-400 text-sm font-bold mb-2">✅ Avantajlar:</div>
+                        <ul class="text-xs text-slate-300 space-y-1">
+                            <li>• <strong>Net semantik!</strong> Tag≠Category</li>
+                            <li>• Basit sorgular</li>
+                            <li>• Spotify Business pattern</li>
+                            <li>• Frontend'de kolay filtreleme</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="text-red-400 text-sm font-bold mb-2">❌ Dezavantajlar:</div>
+                        <ul class="text-xs text-slate-300 space-y-1">
+                            <li>• İki ayrı tablo</li>
+                            <li>• Playlist'e hem tag hem category</li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-green-700">
+                        <div class="text-green-300 text-xs font-bold">
+                            <i class="fas fa-spotify mr-1"></i> Spotify Business kullanıyor!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEÇENEK 3 -->
+                <div class="option-card bg-slate-800/50 border-2 border-slate-700 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-bold">SEÇENEK 3</span>
+                        <span class="text-yellow-400 text-2xl">⭐⭐</span>
+                    </div>
+
+                    <h3 class="text-2xl font-bold text-purple-300 mb-3">Polymorphic Tags</h3>
+                    <p class="text-slate-300 text-sm mb-4">Type field ile tag ayırımı</p>
+
+                    <div class="bg-slate-900/50 rounded p-4 mb-4 text-xs font-mono">
+                        <div class="text-cyan-400 mb-2">muzibu_tags:</div>
+                        <div class="text-slate-300 space-y-1">
+                            <div>• id=1, name="Hard Rock", type="style"</div>
+                            <div>• id=5, name="Güne Başlangıç", type="scenario"</div>
+                            <div>• id=6, name="Gece Müzikleri", type="scenario"</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="text-green-400 text-sm font-bold mb-2">✅ Avantajlar:</div>
+                        <ul class="text-xs text-slate-300 space-y-1">
+                            <li>• Tek tablo (basit)</li>
+                            <li>• Esnek (istediğin kadar type)</li>
+                            <li>• Kolay genişletilebilir</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="text-red-400 text-sm font-bold mb-2">❌ Dezavantajlar:</div>
+                        <ul class="text-xs text-slate-300 space-y-1">
+                            <li>• Sector bağlantısı eksik</li>
+                            <li>• Type management gerekli</li>
+                            <li>• Karışabilir (scenario vs time?)</li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-700">
+                        <div class="text-slate-400 text-xs">
+                            <strong>Frontend:</strong> Step-by-step filtreleme
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Frontend Görünüm Örnekleri -->
+        <section class="mb-8">
+            <h2 class="text-3xl font-bold mb-6 text-center">
+                <i class="fas fa-desktop mr-2"></i>
+                Frontend'de Nasıl Görünür?
+            </h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                <!-- Seçenek 1 Frontend -->
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-blue-700">
+                    <div class="text-blue-400 font-bold mb-4 text-lg">
+                        <i class="fas fa-1 mr-2"></i>Seçenek 1: Tag Hiyerarşisi
+                    </div>
+
+                    <div class="bg-slate-900 rounded-lg p-4 border border-slate-700">
+                        <div class="text-sm text-slate-300 mb-3">Cafe Sektörü</div>
+
+                        <div class="space-y-2">
+                            <div class="bg-blue-900/30 rounded p-3 cursor-pointer hover:bg-blue-900/50">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-chevron-right text-blue-400"></i>
+                                    <span class="font-bold">Hard Rock</span>
+                                </div>
+                                <div class="ml-6 mt-2 space-y-1 text-xs">
+                                    <div class="bg-slate-800 rounded p-2">→ Güne Başlangıç</div>
+                                    <div class="bg-slate-800 rounded p-2">→ Gece Müzikleri</div>
+                                </div>
+                            </div>
+
+                            <div class="bg-green-900/30 rounded p-3 cursor-pointer hover:bg-green-900/50">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-chevron-right text-green-400"></i>
+                                    <span class="font-bold">Jazz</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 text-xs text-slate-400">
+                        ⚠️ İç içe menü, recursive component gerekli
+                    </div>
+                </div>
+
+                <!-- Seçenek 2 Frontend -->
+                <div class="bg-gradient-to-br from-green-900/30 to-emerald-900/30 rounded-xl p-6 border-2 border-green-600">
+                    <div class="text-green-400 font-bold mb-4 text-lg flex items-center gap-2">
+                        <i class="fas fa-2 mr-2"></i>Seçenek 2: Categories
+                        <span class="bg-green-600 text-white px-2 py-1 rounded text-xs">ÖNERİLEN</span>
+                    </div>
+
+                    <div class="bg-slate-900 rounded-lg p-4 border border-green-700">
+                        <div class="text-sm text-green-300 mb-3 font-bold">Cafe Sektörü</div>
+
+                        <!-- Filter Row -->
+                        <div class="flex gap-2 mb-4 overflow-x-auto pb-2">
+                            <button class="bg-purple-600 px-3 py-1 rounded-full text-xs whitespace-nowrap">Tümü</button>
+                            <button class="bg-slate-700 px-3 py-1 rounded-full text-xs whitespace-nowrap hover:bg-slate-600">Hard Rock</button>
+                            <button class="bg-slate-700 px-3 py-1 rounded-full text-xs whitespace-nowrap hover:bg-slate-600">Jazz</button>
+                            <button class="bg-slate-700 px-3 py-1 rounded-full text-xs whitespace-nowrap hover:bg-slate-600">Acoustic</button>
+                        </div>
+
+                        <!-- Category Sections -->
+                        <div class="space-y-4">
+                            <div>
+                                <div class="text-sm font-bold mb-2">☀️ Güne Başlangıç</div>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div class="bg-slate-800 rounded p-2 text-xs h-16"></div>
+                                    <div class="bg-slate-800 rounded p-2 text-xs h-16"></div>
+                                    <div class="bg-slate-800 rounded p-2 text-xs h-16"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="text-sm font-bold mb-2">🌙 Gece Müzikleri</div>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div class="bg-slate-800 rounded p-2 text-xs h-16"></div>
+                                    <div class="bg-slate-800 rounded p-2 text-xs h-16"></div>
+                                    <div class="bg-slate-800 rounded p-2 text-xs h-16"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 text-xs text-green-300 font-bold">
+                        ✅ Spotify Business gibi! Scroll yaparak kategoriler görünsün
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Database Yapıları -->
+        <section class="mb-8">
+            <h2 class="text-3xl font-bold mb-6 text-center">
+                <i class="fas fa-database mr-2"></i>
+                Database Yapıları (Detaylı)
+            </h2>
+
+            <div class="space-y-6">
+
+                <!-- Seçenek 2 Detaylı -->
+                <div class="bg-gradient-to-r from-green-900/30 to-emerald-900/30 border-2 border-green-700 rounded-xl p-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="bg-green-600 px-4 py-2 rounded-full font-bold">SEÇENEK 2 (ÖNERİLEN)</span>
+                        <h3 class="text-2xl font-bold text-green-300">Database Yapısı</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Tablolar -->
+                        <div class="space-y-4">
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <div class="text-cyan-400 font-bold mb-3 flex items-center gap-2">
+                                    <i class="fas fa-table"></i>
+                                    muzibu_tags
+                                </div>
+                                <div class="text-xs font-mono text-slate-300 space-y-1">
+                                    <div>• <span class="text-blue-400">tag_id</span> BIGINT PK</div>
+                                    <div>• <span class="text-cyan-400">name</span> JSON (tr, en)</div>
+                                    <div>• <span class="text-cyan-400">slug</span> JSON (tr, en)</div>
+                                    <div>• <span class="text-yellow-400">type</span> VARCHAR (style/mood/tempo)</div>
+                                    <div>• <span class="text-purple-400">color</span> VARCHAR (hex code)</div>
+                                    <div>• <span class="text-purple-400">icon</span> VARCHAR (FA class)</div>
+                                    <div>• <span class="text-green-400">is_active</span> BOOLEAN</div>
+                                </div>
+                                <div class="mt-3 text-xs text-slate-400">
+                                    Örnekler: Hard Rock, Jazz, Acoustic, Chill
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <div class="text-purple-400 font-bold mb-3 flex items-center gap-2">
+                                    <i class="fas fa-table"></i>
+                                    muzibu_playlist_categories
+                                </div>
+                                <div class="text-xs font-mono text-slate-300 space-y-1">
+                                    <div>• <span class="text-blue-400">category_id</span> BIGINT PK</div>
+                                    <div>• <span class="text-yellow-400">sector_id</span> BIGINT FK (nullable)</div>
+                                    <div>• <span class="text-cyan-400">name</span> JSON (tr, en)</div>
+                                    <div>• <span class="text-cyan-400">slug</span> JSON (tr, en)</div>
+                                    <div>• <span class="text-purple-400">sort_order</span> INT</div>
+                                    <div>• <span class="text-green-400">is_active</span> BOOLEAN</div>
+                                </div>
+                                <div class="mt-3 text-xs text-slate-400">
+                                    Örnekler: Güne Başlangıç, Gece Müzikleri, Öğle Arası
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- İlişkiler -->
+                        <div class="space-y-4">
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <div class="text-green-400 font-bold mb-3">
+                                    <i class="fas fa-link mr-2"></i>
+                                    Polymorphic İlişki
+                                </div>
+                                <div class="text-xs font-mono text-slate-300 space-y-2">
+                                    <div class="bg-slate-800 rounded p-2">
+                                        <div class="text-cyan-400 mb-1">muzibu_playlistables:</div>
+                                        <div>• playlist_id, playlistable_type, playlistable_id</div>
+                                    </div>
+                                    <div class="text-slate-400">Playlist bağlantıları:</div>
+                                    <div class="space-y-1">
+                                        <div>→ type='sector', id=1 (Cafe)</div>
+                                        <div>→ type='tag', id=3 (Hard Rock)</div>
+                                        <div>→ type='category', id=1 (Güne Başlangıç)</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <div class="text-yellow-400 font-bold mb-3">
+                                    <i class="fas fa-code mr-2"></i>
+                                    Örnek Sorgu
+                                </div>
+                                <div class="text-xs font-mono text-slate-300 bg-slate-800 rounded p-3">
+<pre class="text-slate-300">// Cafe → Hard Rock → Güne Başlangıç
+$playlists = Playlist::query()
+  ->whereHas('sectors',
+    fn($q) => $q->where('sector_id', 1))
+  ->whereHas('tags',
+    fn($q) => $q->where('tag_id', 3))
+  ->whereHas('categories',
+    fn($q) => $q->where('category_id', 1))
+  ->get();</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 bg-green-900/30 rounded-lg p-4 border border-green-700">
+                        <div class="text-green-300 font-bold mb-2">
+                            <i class="fas fa-lightbulb mr-2"></i>Neden Bu Seçenek?
+                        </div>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• <strong>Semantik Net:</strong> Tag = müzik karakteri, Category = kullanım senaryosu</li>
+                            <li>• <strong>Sector Bağlantısı:</strong> Category sector'e bağlı (Cafe'ye özel kategoriler)</li>
+                            <li>• <strong>Spotify Pattern:</strong> Aynı yapıyı kullanıyor (Browse → Categories → Playlists)</li>
+                            <li>• <strong>Kolay Frontend:</strong> Filter butonları + Category sections</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Karar Tablosu -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-orange-900/30 to-red-900/30 border border-orange-700 rounded-xl p-8">
+                <h2 class="text-3xl font-bold mb-6 text-center text-orange-300">
+                    <i class="fas fa-clipboard-check mr-2"></i>
+                    Hızlı Karar Tablosu
+                </h2>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-orange-700">
+                                <th class="text-left p-3 text-orange-300">Özellik</th>
+                                <th class="text-center p-3 text-blue-300">Seçenek 1<br><span class="text-xs font-normal">Tag Hiyerarşisi</span></th>
+                                <th class="text-center p-3 text-green-300">Seçenek 2<br><span class="text-xs font-normal">Categories</span></th>
+                                <th class="text-center p-3 text-purple-300">Seçenek 3<br><span class="text-xs font-normal">Polymorphic</span></th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr class="border-b border-slate-700">
+                                <td class="p-3">Tablo Sayısı</td>
+                                <td class="text-center">1 tablo</td>
+                                <td class="text-center bg-green-900/20">2 tablo</td>
+                                <td class="text-center">1 tablo</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="p-3">Semantik Netlik</td>
+                                <td class="text-center text-yellow-400">⭐⭐</td>
+                                <td class="text-center bg-green-900/20 text-green-400">⭐⭐⭐⭐⭐</td>
+                                <td class="text-center text-yellow-400">⭐⭐⭐</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="p-3">Sorgu Kolaylığı</td>
+                                <td class="text-center text-yellow-400">⭐⭐</td>
+                                <td class="text-center bg-green-900/20 text-green-400">⭐⭐⭐⭐⭐</td>
+                                <td class="text-center text-yellow-400">⭐⭐⭐⭐</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="p-3">Frontend Kolay</td>
+                                <td class="text-center text-yellow-400">⭐⭐⭐</td>
+                                <td class="text-center bg-green-900/20 text-green-400">⭐⭐⭐⭐⭐</td>
+                                <td class="text-center text-yellow-400">⭐⭐⭐⭐</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="p-3">Spotify Pattern</td>
+                                <td class="text-center text-red-400">❌</td>
+                                <td class="text-center bg-green-900/20 text-green-400">✅</td>
+                                <td class="text-center text-yellow-400">Kısmen</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="p-3">Sector Bağlantısı</td>
+                                <td class="text-center text-red-400">❌</td>
+                                <td class="text-center bg-green-900/20 text-green-400">✅</td>
+                                <td class="text-center text-red-400">❌</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold">TOPLAM PUAN</td>
+                                <td class="text-center text-yellow-400 font-bold">⭐⭐</td>
+                                <td class="text-center bg-green-900/20 text-green-400 font-bold">⭐⭐⭐⭐⭐</td>
+                                <td class="text-center text-yellow-400 font-bold">⭐⭐⭐</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sonuç -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-green-900/40 to-emerald-900/40 border-4 border-green-600 rounded-xl p-8 text-center">
+                <div class="text-6xl mb-4">👑</div>
+                <h2 class="text-4xl font-bold text-green-300 mb-4">
+                    ÖNERİLEN: Seçenek 2
+                </h2>
+                <p class="text-xl text-slate-200 mb-6">
+                    Playlist Categories (Tag + Category Ayrımı)
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                    <div class="bg-slate-900/50 rounded-lg p-6 text-left">
+                        <div class="text-green-400 font-bold mb-3">
+                            <i class="fas fa-table mr-2"></i>Tablolar:
+                        </div>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li>• <code>muzibu_tags</code> → Müzik karakteristiği</li>
+                            <li>• <code>muzibu_playlist_categories</code> → Kullanım senaryosu</li>
+                            <li>• <code>muzibu_playlistables</code> → Polymorphic ilişki</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6 text-left">
+                        <div class="text-green-400 font-bold mb-3">
+                            <i class="fas fa-check-circle mr-2"></i>Avantajları:
+                        </div>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li>✅ Net semantik (Tag ≠ Category)</li>
+                            <li>✅ Spotify Business pattern</li>
+                            <li>✅ Basit sorgular</li>
+                            <li>✅ Frontend'de kolay</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-yellow-900/30 rounded-lg p-4 border border-yellow-700 inline-block">
+                    <p class="text-yellow-300 text-sm">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        <strong>Not:</strong> Category'ler sector'e bağlı olabilir (nullable).
+                        Cafe'ye özel kategoriler → sector_id=1, Global kategoriler → sector_id=NULL
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800/50 border-t border-slate-700 mt-12 py-6">
+        <div class="max-w-7xl mx-auto px-6 text-center text-slate-400 text-sm">
+            <p>
+                <i class="fas fa-robot mr-2"></i>
+                Generated with <a href="https://claude.com/claude-code" class="text-blue-400 hover:text-blue-300">Claude Code</a>
+            </p>
+            <p class="mt-2 text-xs text-slate-500">
+                Co-Authored-By: Claude Sonnet 4.5 &lt;noreply@anthropic.com&gt;
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>

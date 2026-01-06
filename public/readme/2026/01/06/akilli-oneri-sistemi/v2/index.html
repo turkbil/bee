@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel Draft - Content Collections Yönetimi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://unpkg.com/@tabler/core@latest/dist/css/tabler.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --tblr-primary: #206bc4;
+            --tblr-secondary: #626976;
+        }
+        body {
+            background-color: #f5f7fb;
+        }
+        .page-wrapper {
+            margin-top: 0;
+        }
+        .json-preview {
+            background: #1e293b;
+            color: #94a3b8;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-family: monospace;
+            font-size: 0.875rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .rule-builder-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .collection-item-card {
+            border: 2px solid #e2e8f0;
+            transition: all 0.2s;
+            cursor: grab;
+        }
+        .collection-item-card:hover {
+            border-color: var(--tblr-primary);
+            transform: translateY(-2px);
+        }
+        .collection-item-card.sortable-ghost {
+            opacity: 0.4;
+        }
+        .nav-tabs .nav-link {
+            border: none;
+            background: transparent;
+            color: #626976;
+        }
+        .nav-tabs .nav-link.active {
+            color: var(--tblr-primary);
+            border-bottom: 2px solid var(--tblr-primary);
+        }
+    </style>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body>
+
+    <div class="page">
+        <!-- Header -->
+        <header class="navbar navbar-expand-md navbar-light d-print-none">
+            <div class="container-xl">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <h1 class="navbar-brand d-none-navbar-horizontal pe-0 pe-md-3">
+                    <i class="fas fa-brain text-primary me-2"></i>
+                    Content Collections Yönetimi
+                </h1>
+                <div class="navbar-nav flex-row order-md-last">
+                    <span class="badge bg-azure-lt">ADMIN PANEL DRAFT</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-wrapper">
+            <div class="page-body">
+                <div class="container-xl">
+
+                    <!-- Liste Görünümü -->
+                    <div class="row mb-4" id="list-view">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-list me-2"></i>
+                                        İçerik Koleksiyonları
+                                    </h3>
+                                    <div class="card-actions">
+                                        <button class="btn btn-primary" onclick="showCreateForm()">
+                                            <i class="fas fa-plus me-2"></i>
+                                            Yeni Koleksiyon
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-vcenter">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sıra</th>
+                                                    <th>Koleksiyon Adı</th>
+                                                    <th>Tip</th>
+                                                    <th>Kurallar</th>
+                                                    <th>İçerik Sayısı</th>
+                                                    <th>Durum</th>
+                                                    <th class="w-1">İşlemler</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Demo Data Row 1 -->
+                                                <tr>
+                                                    <td>
+                                                        <span class="badge bg-primary">1</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <span class="avatar avatar-sm me-2" style="background-color: #f59f00;">
+                                                                <i class="fas fa-sun"></i>
+                                                            </span>
+                                                            <div>
+                                                                <strong>☀️ Güne Enerjik Başla</strong>
+                                                                <div class="text-muted small">Morning energy for weekdays</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-azure-lt">time_based</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="small text-muted">
+                                                            <div><i class="fas fa-clock text-azure me-1"></i>06:00-12:00</div>
+                                                            <div><i class="fas fa-calendar text-azure me-1"></i>Mon-Fri</div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-success">15 playlist</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-success">Aktif</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="btn-group">
+                                                            <button class="btn btn-sm btn-icon btn-ghost-primary" onclick="showEditForm(1)" title="Düzenle">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-icon btn-ghost-info" onclick="previewCollection(1)" title="Önizle">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-icon btn-ghost-danger" title="Sil">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                                <!-- Demo Data Row 2 -->
+                                                <tr>
+                                                    <td>
+                                                        <span class="badge bg-primary">2</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <span class="avatar avatar-sm me-2" style="background-color: #d63939;">
+                                                                <i class="fas fa-coffee"></i>
+                                                            </span>
+                                                            <div>
+                                                                <strong>☕ Kahve Keyfi</strong>
+                                                                <div class="text-muted small">Cafe için özel sabah müzikleri</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-purple-lt">sector_based</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="small text-muted">
+                                                            <div><i class="fas fa-building text-purple me-1"></i>Cafe</div>
+                                                            <div><i class="fas fa-clock text-azure me-1"></i>07:00-11:00</div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-success">10 playlist</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-success">Aktif</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="btn-group">
+                                                            <button class="btn btn-sm btn-icon btn-ghost-primary" onclick="showEditForm(2)" title="Düzenle">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-icon btn-ghost-info" onclick="previewCollection(2)" title="Önizle">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-icon btn-ghost-danger" title="Sil">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                                <!-- Demo Data Row 3 -->
+                                                <tr>
+                                                    <td>
+                                                        <span class="badge bg-primary">3</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <span class="avatar avatar-sm me-2" style="background-color: #f76707;">
+                                                                <i class="fas fa-crown"></i>
+                                                            </span>
+                                                            <div>
+                                                                <strong>👑 Premium Seçkiler</strong>
+                                                                <div class="text-muted small">Exclusive premium content</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-orange-lt">editorial</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="small text-muted">
+                                                            <div><i class="fas fa-user-crown text-orange me-1"></i>Premium Only</div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-success">25 playlist</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-success">Aktif</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="btn-group">
+                                                            <button class="btn btn-sm btn-icon btn-ghost-primary" onclick="showEditForm(3)" title="Düzenle">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-icon btn-ghost-info" onclick="previewCollection(3)" title="Önizle">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-icon btn-ghost-danger" title="Sil">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Create/Edit Form -->
+                    <div class="row" id="form-view" style="display: none;">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title" id="form-title">
+                                        <i class="fas fa-plus me-2"></i>
+                                        Yeni Koleksiyon Oluştur
+                                    </h3>
+                                    <div class="card-actions">
+                                        <button class="btn btn-ghost-secondary" onclick="hideForm()">
+                                            <i class="fas fa-times me-2"></i>
+                                            İptal
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+
+                                    <!-- Nav Tabs -->
+                                    <ul class="nav nav-tabs mb-4" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-bs-toggle="tab" href="#tab-basic">
+                                                <i class="fas fa-info-circle me-2"></i>Temel Bilgiler
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-bs-toggle="tab" href="#tab-rules">
+                                                <i class="fas fa-cog me-2"></i>Görünürlük Kuralları
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-bs-toggle="tab" href="#tab-conditions">
+                                                <i class="fas fa-filter me-2"></i>Kullanıcı Koşulları
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-bs-toggle="tab" href="#tab-items">
+                                                <i class="fas fa-list me-2"></i>İçerik Seçimi
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-bs-toggle="tab" href="#tab-preview">
+                                                <i class="fas fa-eye me-2"></i>Önizleme
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                                    <div class="tab-content">
+
+                                        <!-- TAB 1: Temel Bilgiler -->
+                                        <div class="tab-pane fade show active" id="tab-basic">
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <div class="mb-3">
+                                                        <label class="form-label required">Koleksiyon Adı (Türkçe)</label>
+                                                        <input type="text" class="form-control" placeholder="Örn: Güne Enerjik Başla" value="☀️ Güne Enerjik Başla">
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Koleksiyon Adı (İngilizce)</label>
+                                                        <input type="text" class="form-control" placeholder="Örn: Energetic Morning" value="Energetic Morning">
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Açıklama (Türkçe)</label>
+                                                        <textarea class="form-control" rows="2" placeholder="Koleksiyon açıklaması...">Sabah saatleri için enerjik müzikler</textarea>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label class="form-label required">Koleksiyon Tipi</label>
+                                                                <select class="form-select">
+                                                                    <option value="time_based" selected>Saat Bazlı</option>
+                                                                    <option value="sector_based">Sektör Bazlı</option>
+                                                                    <option value="mood_based">Mood Bazlı</option>
+                                                                    <option value="event_based">Etkinlik Bazlı</option>
+                                                                    <option value="editorial">Editör Seçkisi</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Öncelik (0-100)</label>
+                                                                <input type="number" class="form-control" value="90" min="0" max="100">
+                                                                <small class="form-hint">Yüksek öncelikli koleksiyonlar üstte gösterilir</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">İkon (FontAwesome)</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">
+                                                                <i class="fas fa-sun"></i>
+                                                            </span>
+                                                            <input type="text" class="form-control" value="fa-sun" placeholder="fa-icon-name">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Renk (Hex)</label>
+                                                        <input type="color" class="form-control form-control-color" value="#f59f00">
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Durum</label>
+                                                        <div>
+                                                            <label class="form-check form-switch">
+                                                                <input class="form-check-input" type="checkbox" checked>
+                                                                <span class="form-check-label">Aktif</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- TAB 2: Görünürlük Kuralları -->
+                                        <div class="tab-pane fade" id="tab-rules">
+                                            <div class="alert alert-info">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                <strong>Görünürlük Kuralları:</strong> Bu koleksiyonun ne zaman gösterileceğini belirler (saat, gün, sektör, tarih bazlı)
+                                            </div>
+
+                                            <div class="row">
+                                                <!-- Saat Aralığı -->
+                                                <div class="col-md-6">
+                                                    <div class="rule-builder-item">
+                                                        <h4 class="mb-3">
+                                                            <i class="fas fa-clock text-azure me-2"></i>
+                                                            Saat Aralığı
+                                                        </h4>
+                                                        <div class="form-check form-switch mb-3">
+                                                            <input class="form-check-input" type="checkbox" id="enable-time" checked>
+                                                            <label class="form-check-label" for="enable-time">Saat aralığı kullan</label>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <label class="form-label">Başlangıç</label>
+                                                                <input type="time" class="form-control" value="06:00">
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <label class="form-label">Bitiş</label>
+                                                                <input type="time" class="form-control" value="12:00">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Günler -->
+                                                <div class="col-md-6">
+                                                    <div class="rule-builder-item">
+                                                        <h4 class="mb-3">
+                                                            <i class="fas fa-calendar text-green me-2"></i>
+                                                            Hangi Günler?
+                                                        </h4>
+                                                        <div class="form-check form-switch mb-3">
+                                                            <input class="form-check-input" type="checkbox" id="enable-days" checked>
+                                                            <label class="form-check-label" for="enable-days">Belirli günlerde göster</label>
+                                                        </div>
+                                                        <div class="btn-group w-100" role="group">
+                                                            <input type="checkbox" class="btn-check" id="day-mon" checked>
+                                                            <label class="btn btn-sm" for="day-mon">Pzt</label>
+
+                                                            <input type="checkbox" class="btn-check" id="day-tue" checked>
+                                                            <label class="btn btn-sm" for="day-tue">Sal</label>
+
+                                                            <input type="checkbox" class="btn-check" id="day-wed" checked>
+                                                            <label class="btn btn-sm" for="day-wed">Çar</label>
+
+                                                            <input type="checkbox" class="btn-check" id="day-thu" checked>
+                                                            <label class="btn btn-sm" for="day-thu">Per</label>
+
+                                                            <input type="checkbox" class="btn-check" id="day-fri" checked>
+                                                            <label class="btn btn-sm" for="day-fri">Cum</label>
+
+                                                            <input type="checkbox" class="btn-check" id="day-sat">
+                                                            <label class="btn btn-sm" for="day-sat">Cmt</label>
+
+                                                            <input type="checkbox" class="btn-check" id="day-sun">
+                                                            <label class="btn btn-sm" for="day-sun">Paz</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Sektör Seçimi -->
+                                                <div class="col-md-6">
+                                                    <div class="rule-builder-item">
+                                                        <h4 class="mb-3">
+                                                            <i class="fas fa-building text-purple me-2"></i>
+                                                            Sektör Bazlı
+                                                        </h4>
+                                                        <div class="form-check form-switch mb-3">
+                                                            <input class="form-check-input" type="checkbox" id="enable-sectors">
+                                                            <label class="form-check-label" for="enable-sectors">Sadece belirli sektörlerde göster</label>
+                                                        </div>
+                                                        <select class="form-select" multiple>
+                                                            <option value="1">Cafe</option>
+                                                            <option value="2">Restaurant</option>
+                                                            <option value="3">Gym</option>
+                                                            <option value="4">SPA</option>
+                                                            <option value="5">Retail</option>
+                                                            <option value="6">Hotel</option>
+                                                        </select>
+                                                        <small class="form-hint">Birden fazla seçebilirsiniz</small>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Tarih Aralığı -->
+                                                <div class="col-md-6">
+                                                    <div class="rule-builder-item">
+                                                        <h4 class="mb-3">
+                                                            <i class="fas fa-calendar-alt text-orange me-2"></i>
+                                                            Tarih Aralığı
+                                                        </h4>
+                                                        <div class="form-check form-switch mb-3">
+                                                            <input class="form-check-input" type="checkbox" id="enable-dates">
+                                                            <label class="form-check-label" for="enable-dates">Belirli tarihler arasında göster</label>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <label class="form-label">Başlangıç</label>
+                                                                <input type="date" class="form-control">
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <label class="form-label">Bitiş</label>
+                                                                <input type="date" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- TAB 3: Kullanıcı Koşulları -->
+                                        <div class="tab-pane fade" id="tab-conditions">
+                                            <div class="alert alert-info">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                <strong>Kullanıcı Koşulları:</strong> Bu koleksiyonu hangi kullanıcıların göreceğini belirler
+                                            </div>
+
+                                            <div class="row">
+                                                <!-- Auth Required -->
+                                                <div class="col-md-6">
+                                                    <div class="rule-builder-item">
+                                                        <h4 class="mb-3">
+                                                            <i class="fas fa-user-lock text-blue me-2"></i>
+                                                            Giriş Durumu
+                                                        </h4>
+                                                        <div class="form-check mb-2">
+                                                            <input class="form-check-input" type="radio" name="auth" id="auth-all" checked>
+                                                            <label class="form-check-label" for="auth-all">
+                                                                <strong>Herkes</strong> (Giriş yapmamış dahil)
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check mb-2">
+                                                            <input class="form-check-input" type="radio" name="auth" id="auth-required">
+                                                            <label class="form-check-label" for="auth-required">
+                                                                <strong>Sadece giriş yapmış</strong> kullanıcılar
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Subscription Type -->
+                                                <div class="col-md-6">
+                                                    <div class="rule-builder-item">
+                                                        <h4 class="mb-3">
+                                                            <i class="fas fa-crown text-orange me-2"></i>
+                                                            Abonelik Tipi
+                                                        </h4>
+                                                        <div class="form-check form-switch mb-3">
+                                                            <input class="form-check-input" type="checkbox" id="enable-subscription">
+                                                            <label class="form-check-label" for="enable-subscription">Abonelik kontrolü yap</label>
+                                                        </div>
+                                                        <div class="form-check mb-2">
+                                                            <input class="form-check-checkbox" type="checkbox" id="sub-free">
+                                                            <label class="form-check-label" for="sub-free">Free (Ücretsiz)</label>
+                                                        </div>
+                                                        <div class="form-check mb-2">
+                                                            <input class="form-check-checkbox" type="checkbox" id="sub-premium">
+                                                            <label class="form-check-label" for="sub-premium">Premium</label>
+                                                        </div>
+                                                        <div class="form-check mb-2">
+                                                            <input class="form-check-checkbox" type="checkbox" id="sub-corporate">
+                                                            <label class="form-check-label" for="sub-corporate">Corporate</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- User Sector -->
+                                                <div class="col-md-6">
+                                                    <div class="rule-builder-item">
+                                                        <h4 class="mb-3">
+                                                            <i class="fas fa-building text-purple me-2"></i>
+                                                            Kullanıcı Sektörü
+                                                        </h4>
+                                                        <div class="form-check form-switch mb-3">
+                                                            <input class="form-check-input" type="checkbox" id="enable-user-sector">
+                                                            <label class="form-check-label" for="enable-user-sector">Kullanıcının sektörüne göre göster</label>
+                                                        </div>
+                                                        <select class="form-select" multiple>
+                                                            <option value="1">Cafe</option>
+                                                            <option value="2">Restaurant</option>
+                                                            <option value="3">Gym</option>
+                                                            <option value="4">SPA</option>
+                                                        </select>
+                                                        <small class="form-hint">Profil sektörü bu değerlerden biri olan kullanıcılara göster</small>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Listening Hours -->
+                                                <div class="col-md-6">
+                                                    <div class="rule-builder-item">
+                                                        <h4 class="mb-3">
+                                                            <i class="fas fa-headphones text-green me-2"></i>
+                                                            Dinleme Geçmişi
+                                                        </h4>
+                                                        <div class="form-check form-switch mb-3">
+                                                            <input class="form-check-input" type="checkbox" id="enable-listening">
+                                                            <label class="form-check-label" for="enable-listening">Minimum dinleme saati kontrolü</label>
+                                                        </div>
+                                                        <label class="form-label">Minimum dinleme saati</label>
+                                                        <input type="number" class="form-control" value="10" min="0">
+                                                        <small class="form-hint">Bu kadar saatten fazla dinleyen kullanıcılara göster</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- TAB 4: İçerik Seçimi -->
+                                        <div class="tab-pane fade" id="tab-items">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <h4 class="mb-3">Mevcut İçerikler</h4>
+
+                                                    <div class="mb-3">
+                                                        <input type="text" class="form-control" placeholder="🔍 Ara...">
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <select class="form-select form-select-sm">
+                                                            <option>Tüm Tipler</option>
+                                                            <option>Playlist</option>
+                                                            <option>Album</option>
+                                                            <option>Radio</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div style="max-height: 500px; overflow-y: auto;">
+                                                        <!-- Available Items -->
+                                                        <div class="card card-sm mb-2 cursor-pointer" onclick="addToCollection(this)">
+                                                            <div class="card-body p-2">
+                                                                <div class="d-flex align-items-center">
+                                                                    <span class="avatar avatar-sm me-2" style="background-image: url(https://via.placeholder.com/40)"></span>
+                                                                    <div class="flex-fill">
+                                                                        <div class="small"><strong>Morning Rock Mix</strong></div>
+                                                                        <div class="text-muted" style="font-size: 0.75rem;">Playlist • 25 songs</div>
+                                                                    </div>
+                                                                    <i class="fas fa-plus text-success"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="card card-sm mb-2 cursor-pointer" onclick="addToCollection(this)">
+                                                            <div class="card-body p-2">
+                                                                <div class="d-flex align-items-center">
+                                                                    <span class="avatar avatar-sm me-2" style="background-image: url(https://via.placeholder.com/40)"></span>
+                                                                    <div class="flex-fill">
+                                                                        <div class="small"><strong>Energetic Beats</strong></div>
+                                                                        <div class="text-muted" style="font-size: 0.75rem;">Playlist • 30 songs</div>
+                                                                    </div>
+                                                                    <i class="fas fa-plus text-success"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="card card-sm mb-2 cursor-pointer" onclick="addToCollection(this)">
+                                                            <div class="card-body p-2">
+                                                                <div class="d-flex align-items-center">
+                                                                    <span class="avatar avatar-sm me-2" style="background-image: url(https://via.placeholder.com/40)"></span>
+                                                                    <div class="flex-fill">
+                                                                        <div class="small"><strong>Workout Power</strong></div>
+                                                                        <div class="text-muted" style="font-size: 0.75rem;">Playlist • 40 songs</div>
+                                                                    </div>
+                                                                    <i class="fas fa-plus text-success"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-8">
+                                                    <h4 class="mb-3">
+                                                        Koleksiyondaki İçerikler
+                                                        <span class="badge bg-primary ms-2">15</span>
+                                                    </h4>
+
+                                                    <div class="alert alert-azure">
+                                                        <i class="fas fa-arrows-alt me-2"></i>
+                                                        İçerikleri sürükleyerek sıralayabilirsiniz
+                                                    </div>
+
+                                                    <div id="sortable-items" class="row">
+                                                        <!-- Selected Items (Draggable) -->
+                                                        <div class="col-md-6 mb-3">
+                                                            <div class="collection-item-card card">
+                                                                <div class="card-body p-3">
+                                                                    <div class="d-flex align-items-start">
+                                                                        <span class="badge bg-primary me-2">1</span>
+                                                                        <span class="avatar avatar-sm me-2" style="background-image: url(https://via.placeholder.com/40)"></span>
+                                                                        <div class="flex-fill">
+                                                                            <div class="small"><strong>Morning Rock Mix</strong></div>
+                                                                            <div class="text-muted" style="font-size: 0.75rem;">Playlist • 25 songs</div>
+                                                                        </div>
+                                                                        <button class="btn btn-sm btn-icon btn-ghost-danger" onclick="removeItem(this)">
+                                                                            <i class="fas fa-times"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6 mb-3">
+                                                            <div class="collection-item-card card">
+                                                                <div class="card-body p-3">
+                                                                    <div class="d-flex align-items-start">
+                                                                        <span class="badge bg-primary me-2">2</span>
+                                                                        <span class="avatar avatar-sm me-2" style="background-image: url(https://via.placeholder.com/40)"></span>
+                                                                        <div class="flex-fill">
+                                                                            <div class="small"><strong>Energetic Beats</strong></div>
+                                                                            <div class="text-muted" style="font-size: 0.75rem;">Playlist • 30 songs</div>
+                                                                        </div>
+                                                                        <button class="btn btn-sm btn-icon btn-ghost-danger" onclick="removeItem(this)">
+                                                                            <i class="fas fa-times"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6 mb-3">
+                                                            <div class="collection-item-card card">
+                                                                <div class="card-body p-3">
+                                                                    <div class="d-flex align-items-start">
+                                                                        <span class="badge bg-primary me-2">3</span>
+                                                                        <span class="avatar avatar-sm me-2" style="background-image: url(https://via.placeholder.com/40)"></span>
+                                                                        <div class="flex-fill">
+                                                                            <div class="small"><strong>Workout Power</strong></div>
+                                                                            <div class="text-muted" style="font-size: 0.75rem;">Playlist • 40 songs</div>
+                                                                        </div>
+                                                                        <button class="btn btn-sm btn-icon btn-ghost-danger" onclick="removeItem(this)">
+                                                                            <i class="fas fa-times"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- TAB 5: Önizleme -->
+                                        <div class="tab-pane fade" id="tab-preview">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <h4 class="mb-3">JSON Preview (display_rules)</h4>
+                                                    <div class="json-preview">
+<pre>{
+  "time_range": {
+    "start": "06:00",
+    "end": "12:00"
+  },
+  "days": ["Mon", "Tue", "Wed", "Thu", "Fri"],
+  "sectors": null,
+  "date_range": null
+}</pre>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <h4 class="mb-3">JSON Preview (visibility_conditions)</h4>
+                                                    <div class="json-preview">
+<pre>{
+  "auth_required": false,
+  "subscription_types": null,
+  "user_sectors": null,
+  "min_listening_hours": null
+}</pre>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 mt-4">
+                                                    <h4 class="mb-3">Frontend Önizleme</h4>
+                                                    <div class="card bg-dark text-white">
+                                                        <div class="card-body">
+                                                            <div class="d-flex align-items-center mb-3">
+                                                                <span class="avatar avatar-md me-3" style="background-color: #f59f00;">
+                                                                    <i class="fas fa-sun"></i>
+                                                                </span>
+                                                                <div>
+                                                                    <h3 class="mb-0">☀️ Güne Enerjik Başla</h3>
+                                                                    <div class="text-muted small">Sabah saatleri için enerjik müzikler</div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row g-2">
+                                                                <div class="col-2">
+                                                                    <div class="card bg-secondary" style="height: 100px;"></div>
+                                                                </div>
+                                                                <div class="col-2">
+                                                                    <div class="card bg-secondary" style="height: 100px;"></div>
+                                                                </div>
+                                                                <div class="col-2">
+                                                                    <div class="card bg-secondary" style="height: 100px;"></div>
+                                                                </div>
+                                                                <div class="col-2">
+                                                                    <div class="card bg-secondary" style="height: 100px;"></div>
+                                                                </div>
+                                                                <div class="col-2">
+                                                                    <div class="card bg-secondary" style="height: 100px;"></div>
+                                                                </div>
+                                                                <div class="col-2">
+                                                                    <div class="card bg-secondary" style="height: 100px;"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <!-- Form Actions -->
+                                    <div class="mt-4 border-top pt-4">
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-primary">
+                                                <i class="fas fa-save me-2"></i>
+                                                Kaydet
+                                            </button>
+                                            <button class="btn btn-success">
+                                                <i class="fas fa-eye me-2"></i>
+                                                Önizle
+                                            </button>
+                                            <button class="btn btn-ghost-secondary ms-auto" onclick="hideForm()">
+                                                İptal
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showCreateForm() {
+            document.getElementById('list-view').style.display = 'none';
+            document.getElementById('form-view').style.display = 'block';
+            document.getElementById('form-title').innerHTML = '<i class="fas fa-plus me-2"></i>Yeni Koleksiyon Oluştur';
+        }
+
+        function showEditForm(id) {
+            document.getElementById('list-view').style.display = 'none';
+            document.getElementById('form-view').style.display = 'block';
+            document.getElementById('form-title').innerHTML = '<i class="fas fa-edit me-2"></i>Koleksiyon Düzenle #' + id;
+        }
+
+        function hideForm() {
+            document.getElementById('list-view').style.display = 'block';
+            document.getElementById('form-view').style.display = 'none';
+        }
+
+        function previewCollection(id) {
+            alert('Önizleme açılacak (Collection #' + id + ')');
+        }
+
+        function addToCollection(element) {
+            alert('Koleksiyona eklendi!');
+            element.style.opacity = '0.5';
+        }
+
+        function removeItem(button) {
+            if (confirm('Bu içeriği koleksiyondan çıkarmak istediğinize emin misiniz?')) {
+                button.closest('.col-md-6').remove();
+            }
+        }
+    </script>
+
+</body>
+</html>

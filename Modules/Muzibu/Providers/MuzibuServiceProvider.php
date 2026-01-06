@@ -23,6 +23,15 @@ class MuzibuServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Polymorphic Morph Map - playlistables için
+        // Database'de 'sector', 'genre', 'radio', 'corporate' olarak saklanıyor
+        Relation::morphMap([
+            'sector' => \Modules\Muzibu\App\Models\Sector::class,
+            'genre' => \Modules\Muzibu\App\Models\Genre::class,
+            'radio' => \Modules\Muzibu\App\Models\Radio::class,
+            'corporate' => \Modules\Muzibu\App\Models\MuzibuCorporateAccount::class,
+        ]);
+
         // Load helpers
         $helpersPath = module_path($this->name, 'app/Helpers/helpers.php');
         if (file_exists($helpersPath)) {

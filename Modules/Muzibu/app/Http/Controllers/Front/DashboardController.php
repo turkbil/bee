@@ -17,7 +17,8 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
-        $user = auth()->user();
+        // FRESH USER - Session cache yerine DB'den güncel veri çek
+        $user = \App\Models\User::find(auth()->id());
 
         // Subscription bilgisi
         $subscriptionService = app(SubscriptionService::class);
@@ -38,7 +39,7 @@ class DashboardController extends Controller
         // Kurumsal bilgi
         $corporate = $this->getCorporateInfo($user->id);
 
-        // Kalan süre hesaplama (users.subscription_expires_at'dan)
+        // Kalan süre hesaplama (users.subscription_expires_at'dan) - FRESH USER!
         $timeLeft = $this->calculateTimeLeft($user->subscription_expires_at);
 
         // Abonelik bilgileri
@@ -62,7 +63,8 @@ class DashboardController extends Controller
      */
     public function apiIndex(Request $request)
     {
-        $user = auth()->user();
+        // FRESH USER - Session cache yerine DB'den güncel veri çek
+        $user = \App\Models\User::find(auth()->id());
 
         $subscriptionService = app(SubscriptionService::class);
         $access = $subscriptionService->checkUserAccess($user);
@@ -100,7 +102,8 @@ class DashboardController extends Controller
      */
     public function history(Request $request)
     {
-        $user = auth()->user();
+        // FRESH USER - Session cache yerine DB'den güncel veri çek
+        $user = \App\Models\User::find(auth()->id());
 
         $history = SongPlay::where('user_id', $user->id)
             ->with(['song.album.artist', 'song.album.coverMedia', 'song.coverMedia'])
@@ -115,7 +118,8 @@ class DashboardController extends Controller
      */
     public function apiHistory(Request $request)
     {
-        $user = auth()->user();
+        // FRESH USER - Session cache yerine DB'den güncel veri çek
+        $user = \App\Models\User::find(auth()->id());
 
         $history = SongPlay::where('user_id', $user->id)
             ->with(['song.album.artist', 'song.album.coverMedia', 'song.coverMedia'])
@@ -138,7 +142,8 @@ class DashboardController extends Controller
      */
     public function subscriptions(Request $request)
     {
-        $user = auth()->user();
+        // FRESH USER - Session cache yerine DB'den güncel veri çek
+        $user = \App\Models\User::find(auth()->id());
         $subscriptionInfo = $this->getSubscriptionInfo($user->id);
         $timeLeft = $this->calculateTimeLeft($user->subscription_expires_at);
         $allPayments = $this->getPaymentHistory($user->id);
@@ -156,7 +161,8 @@ class DashboardController extends Controller
      */
     public function apiSubscriptions(Request $request)
     {
-        $user = auth()->user();
+        // FRESH USER - Session cache yerine DB'den güncel veri çek
+        $user = \App\Models\User::find(auth()->id());
         $subscriptionInfo = $this->getSubscriptionInfo($user->id);
         $timeLeft = $this->calculateTimeLeft($user->subscription_expires_at);
         $allPayments = $this->getPaymentHistory($user->id);
@@ -362,7 +368,8 @@ class DashboardController extends Controller
      */
     private function getSubscriptionInfo(int $userId): array
     {
-        $user = \App\Models\User::find($userId);
+        // CACHE BYPASS: fresh() ile doğrudan DB'den çek
+        $user = \App\Models\User::whereId($userId)->first();
 
         // Ödeme bekleyen abonelikler (bunlar önemli - ödeme butonu gösterilecek)
         $pendingPaymentSubscriptions = Subscription::where('user_id', $userId)

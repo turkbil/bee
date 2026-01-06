@@ -21,6 +21,10 @@ trait HasPlaylistDistribution
 {
     /**
      * Bu entity'e dağıtılmış playlist'ler
+     *
+     * ⚠️ playlistable_type değerleri: 'sector', 'radio', 'genre', 'corporate'
+     * Database'de küçük harf, singular formda saklanıyor!
+     * MorphMap: MuzibuServiceProvider::boot() içinde tanımlı
      */
     public function playlists(): MorphToMany
     {

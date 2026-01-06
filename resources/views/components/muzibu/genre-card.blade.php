@@ -4,19 +4,7 @@
 {{-- Usage: <x-muzibu.genre-card :genre="$genre" /> --}}
 {{-- STANDARD PATTERN: Same layout as playlist/album/song cards --}}
 
-<a @if($preview)
-       href="/genres/{{ $genre->getTranslation('slug', app()->getLocale()) }}"
-       @click="if (window.innerWidth >= 768) { $event.preventDefault(); $store.sidebar.showPreview('genre', {{ $genre->genre_id }}, {
-           type: 'Genre',
-           id: {{ $genre->genre_id }},
-           title: '{{ addslashes($genre->getTranslation('title', app()->getLocale())) }}',
-           slug: '{{ $genre->getTranslation('slug', app()->getLocale()) }}',
-           cover: '{{ $genre->iconMedia ? thumb($genre->iconMedia, 300, 300, ['scale' => 1]) : '' }}',
-           is_favorite: {{ is_favorited('genre', $genre->genre_id) ? 'true' : 'false' }}
-       }); }"
-   @else
-       href="/genres/{{ $genre->getTranslation('slug', app()->getLocale()) }}"
-   @endif
+<a href="/genres/{{ $genre->getTranslation('slug', app()->getLocale()) }}"
    data-genre-id="{{ $genre->genre_id }}"
    data-context-type="genre"
    x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'genre', {
@@ -104,7 +92,11 @@
             {{ $genre->getTranslation('title', app()->getLocale()) }}
         </h3>
         <p class="text-xs text-gray-400 leading-6 line-clamp-1">
-            &nbsp;
+            @if(isset($genre->playlists_count) && $genre->playlists_count > 0)
+                {{ $genre->playlists_count }} playlist
+            @else
+                &nbsp;
+            @endif
         </p>
     </div>
 </a>

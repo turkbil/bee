@@ -14,10 +14,11 @@ use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 use Modules\Favorite\App\Traits\HasFavorites;
 use Modules\Muzibu\App\Traits\HasCachedCounts;
+use Modules\Muzibu\App\Traits\HasPlaylistDistribution;
 
 class Genre extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, Searchable, HasFavorites, HasCachedCounts;
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, Searchable, HasFavorites, HasCachedCounts, HasPlaylistDistribution;
 
     protected $table = 'muzibu_genres';
     protected $primaryKey = 'genre_id';

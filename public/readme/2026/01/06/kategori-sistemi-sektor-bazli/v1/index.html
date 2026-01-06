@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sektör Bazlı Kategori Sistemi - Kullanıcı Profili Odaklı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .demo-screen {
+            min-height: 600px;
+            background: linear-gradient(to bottom, #0f172a 0%, #1e293b 100%);
+            transition: all 0.3s ease;
+        }
+        .clickable {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .clickable:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .filter-btn {
+            transition: all 0.2s ease;
+        }
+        .filter-btn:hover {
+            transform: scale(1.05);
+        }
+        .playlist-card {
+            transition: all 0.3s ease;
+        }
+        .playlist-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100">
+
+    <!-- Header -->
+    <header class="gradient-bg border-b border-slate-800 sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <div class="flex items-center gap-4 mb-2">
+                <span class="bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-sm font-medium border border-orange-500/30">
+                    <i class="fas fa-building mr-2"></i>Sektör Bazlı Sistem
+                </span>
+                <span class="text-slate-400 text-sm">6 Ocak 2026</span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-2">
+                <i class="fas fa-industry text-orange-400 mr-3"></i>
+                Sektör Bazlı Kategori Sistemi
+            </h1>
+            <p class="text-slate-300 text-lg">Her işletme tipi için özelleştirilmiş müzik deneyimi</p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-12">
+
+        <!-- Açıklama -->
+        <section class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-8">
+            <div class="flex items-start gap-4">
+                <div class="bg-green-500/20 p-3 rounded-lg">
+                    <i class="fas fa-lightbulb text-green-400 text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-white mb-2">💡 Konsept: Kullanıcı Profili = Sektör</h2>
+                    <p class="text-slate-300 mb-3">
+                        Kullanıcı kaydolurken <strong class="text-green-400">işletme tipini seçiyor</strong> (Café, Restoran, Gym, SPA...).
+                        Sisteme girdikten sonra <strong class="text-green-400">sadece kendi sektörüne uygun</strong> kategoriler, filtreler ve playlist'ler görüyor.
+                    </p>
+                    <div class="bg-slate-800/50 rounded-lg p-4 space-y-2 text-sm">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-check text-green-400"></i>
+                            <span><strong>Café sahibi:</strong> Acoustic, Bossa Nova, Jazz filtreleri görür</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-check text-green-400"></i>
+                            <span><strong>Gym sahibi:</strong> Cardio, HIIT, Yoga filtreleri görür</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-check text-green-400"></i>
+                            <span><strong>SPA sahibi:</strong> Meditation, Massage, Relaxation filtreleri görür</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Demo Seçimi -->
+        <section class="bg-slate-800/30 border border-slate-700 rounded-xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-white mb-4">🎭 Sektör Seçin (Kullanıcı Profili)</h2>
+            <p class="text-slate-400 mb-6">Farklı sektörlerin nasıl farklı deneyimler gördüğünü test edin:</p>
+
+            <div class="grid md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <button class="sector-btn clickable bg-gradient-to-br from-amber-900/40 to-amber-800/20 border border-amber-700/50 rounded-xl p-4 text-center" data-sector="cafe">
+                    <i class="fas fa-mug-hot text-amber-400 text-3xl mb-2"></i>
+                    <div class="text-white font-semibold">Café</div>
+                    <div class="text-xs text-slate-400 mt-1">Kahve dükkanı</div>
+                </button>
+
+                <button class="sector-btn clickable bg-gradient-to-br from-red-900/40 to-red-800/20 border border-red-700/50 rounded-xl p-4 text-center" data-sector="restaurant">
+                    <i class="fas fa-utensils text-red-400 text-3xl mb-2"></i>
+                    <div class="text-white font-semibold">Restoran</div>
+                    <div class="text-xs text-slate-400 mt-1">Yemek servisi</div>
+                </button>
+
+                <button class="sector-btn clickable bg-gradient-to-br from-orange-900/40 to-orange-800/20 border border-orange-700/50 rounded-xl p-4 text-center" data-sector="gym">
+                    <i class="fas fa-dumbbell text-orange-400 text-3xl mb-2"></i>
+                    <div class="text-white font-semibold">Gym</div>
+                    <div class="text-xs text-slate-400 mt-1">Spor salonu</div>
+                </button>
+
+                <button class="sector-btn clickable bg-gradient-to-br from-purple-900/40 to-purple-800/20 border border-purple-700/50 rounded-xl p-4 text-center" data-sector="spa">
+                    <i class="fas fa-spa text-purple-400 text-3xl mb-2"></i>
+                    <div class="text-white font-semibold">SPA</div>
+                    <div class="text-xs text-slate-400 mt-1">Wellness merkezi</div>
+                </button>
+
+                <button class="sector-btn clickable bg-gradient-to-br from-blue-900/40 to-blue-800/20 border border-blue-700/50 rounded-xl p-4 text-center" data-sector="retail">
+                    <i class="fas fa-shopping-bag text-blue-400 text-3xl mb-2"></i>
+                    <div class="text-white font-semibold">Mağaza</div>
+                    <div class="text-xs text-slate-400 mt-1">Perakende</div>
+                </button>
+
+                <button class="sector-btn clickable bg-gradient-to-br from-teal-900/40 to-teal-800/20 border border-teal-700/50 rounded-xl p-4 text-center" data-sector="hotel">
+                    <i class="fas fa-hotel text-teal-400 text-3xl mb-2"></i>
+                    <div class="text-white font-semibold">Otel</div>
+                    <div class="text-xs text-slate-400 mt-1">Konaklama</div>
+                </button>
+            </div>
+        </section>
+
+        <!-- Demo Ekranı -->
+        <section class="bg-slate-800/30 border border-slate-700 rounded-xl overflow-hidden">
+            <div class="bg-slate-700/50 px-6 py-4 border-b border-slate-700 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <i id="sector-icon" class="fas fa-music text-slate-400 text-2xl"></i>
+                    <div>
+                        <h3 id="sector-name" class="text-xl font-bold text-white">Bir sektör seçin</h3>
+                        <p id="sector-desc" class="text-sm text-slate-400">Yukarıdaki butonlardan sektörünüzü seçin</p>
+                    </div>
+                </div>
+                <button id="reset-btn" class="bg-slate-600 hover:bg-slate-500 px-4 py-2 rounded text-sm text-white hidden">
+                    <i class="fas fa-redo mr-2"></i>Sıfırla
+                </button>
+            </div>
+
+            <div id="demo-screen" class="demo-screen p-8"></div>
+        </section>
+
+        <!-- Özellikler -->
+        <section class="mt-12 bg-blue-900/20 border border-blue-800 rounded-xl p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <div class="bg-blue-500/20 p-3 rounded-lg">
+                    <i class="fas fa-star text-blue-400 text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-white mb-2">✨ Sistem Özellikleri</h2>
+                    <p class="text-blue-300">Sektör bazlı kişiselleştirme avantajları</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-900/50 rounded-lg p-6 border border-blue-700/30">
+                    <h3 class="text-lg font-bold text-blue-300 mb-3">
+                        <i class="fas fa-filter mr-2"></i>Dinamik Filtreler
+                    </h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span>Her sektör <strong>kendi filtrelerini</strong> görür</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span>Cafe: Acoustic, Bossa Nova, Jazz, Instrumental</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span>Gym: Cardio, HIIT, Yoga, Strength</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span>İlgisiz filtreler <strong>gösterilmez</strong></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-6 border border-emerald-700/30">
+                    <h3 class="text-lg font-bold text-emerald-300 mb-3">
+                        <i class="fas fa-user-check mr-2"></i>Kişiselleştirilmiş İçerik
+                    </h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span>"<strong>Sizin için</strong> önerilen" playlist'ler</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span>"<strong>Bölgenizdeki</strong> popüler" listeler</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span>"<strong>Müşteri favorileri</strong>" önerileri</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span>Sektöre özel <strong>trend</strong> takibi</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-6 border border-purple-700/30">
+                    <h3 class="text-lg font-bold text-purple-300 mb-3">
+                        <i class="fas fa-clock mr-2"></i>Zaman Bazlı Öneriler
+                    </h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span>Restoran: <strong>Breakfast, Lunch, Dinner</strong></span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span>Gym: <strong>Morning workout, Evening</strong></span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span>Cafe: <strong>Morning Coffee, Afternoon Tea</strong></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-6 border border-orange-700/30">
+                    <h3 class="text-lg font-bold text-orange-300 mb-3">
+                        <i class="fas fa-chart-line mr-2"></i>Analitik & İstatistik
+                    </h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span>Sektöre özel <strong>müşteri davranışı</strong></span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span>En çok çalınan <strong>playlist'ler</strong></span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span>Zaman dilimlerine göre <strong>performans</strong></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Yaklaşım -->
+        <section class="mt-12 bg-slate-800/30 border border-slate-700 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-white mb-6">
+                <i class="fas fa-code text-yellow-400 mr-2"></i>
+                Teknik Uygulama Yaklaşımları
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Yaklaşım 1 -->
+                <div class="bg-slate-900/70 rounded-lg p-6 border-l-4 border-green-500">
+                    <h3 class="text-xl font-bold text-green-300 mb-3">
+                        ✅ Yaklaşım 1: Kullanıcı Profili + Dinamik Filtreler
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <h4 class="font-semibold text-slate-300 mb-2">Database:</h4>
+                            <div class="bg-slate-800/50 rounded p-3 font-mono text-xs text-slate-400 space-y-1">
+                                <div>users (sector_id)</div>
+                                <div>sectors (id, name, slug)</div>
+                                <div>sector_filters (sector_id, filter_name)</div>
+                                <div>playlists (sector_id, filter_tags)</div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-slate-300 mb-2">Mantık:</h4>
+                            <div class="bg-slate-800/50 rounded p-3 text-xs text-slate-300 space-y-2">
+                                <div>1. Kullanıcı login → sector_id çek</div>
+                                <div>2. Sadece o sector'a ait filtreleri göster</div>
+                                <div>3. Playlist'leri sector_id + filter ile filtrele</div>
+                                <div>4. Kullanıcı farklı sektör görmez</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yaklaşım 2 -->
+                <div class="bg-slate-900/70 rounded-lg p-6 border-l-4 border-blue-500">
+                    <h3 class="text-xl font-bold text-blue-300 mb-3">
+                        ✅ Yaklaşım 2: Multi-Tenant Sector Sistemi
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <h4 class="font-semibold text-slate-300 mb-2">Database:</h4>
+                            <div class="bg-slate-800/50 rounded p-3 font-mono text-xs text-slate-400 space-y-1">
+                                <div>tenant_cafe (playlists, filters)</div>
+                                <div>tenant_gym (playlists, filters)</div>
+                                <div>tenant_spa (playlists, filters)</div>
+                                <div>user.sector → database switch</div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-slate-300 mb-2">Mantık:</h4>
+                            <div class="bg-slate-800/50 rounded p-3 text-xs text-slate-300 space-y-2">
+                                <div>1. Her sektör ayrı database</div>
+                                <div>2. Kullanıcı login → database switch</div>
+                                <div>3. Tam izolasyon (Cafe, Gym verisi ayrı)</div>
+                                <div>4. Ölçeklenebilir ve güvenli</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yaklaşım 3 -->
+                <div class="bg-slate-900/70 rounded-lg p-6 border-l-4 border-purple-500">
+                    <h3 class="text-xl font-bold text-purple-300 mb-3">
+                        ✅ Yaklaşım 3: Hybrid (Genre + Sector Tags)
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <h4 class="font-semibold text-slate-300 mb-2">Database:</h4>
+                            <div class="bg-slate-800/50 rounded p-3 font-mono text-xs text-slate-400 space-y-1">
+                                <div>genres (id, name, parent_id)</div>
+                                <div>playlists (genre_id, sector_tags)</div>
+                                <div>sector_tags: ['cafe', 'restaurant']</div>
+                                <div>filters: sector + genre kombinasyonu</div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-slate-300 mb-2">Mantık:</h4>
+                            <div class="bg-slate-800/50 rounded p-3 text-xs text-slate-300 space-y-2">
+                                <div>1. Playlist'ler sektör tag'leri ile işaretli</div>
+                                <div>2. Kullanıcı sector'ına göre filtrele</div>
+                                <div>3. Aynı playlist birden fazla sektörde</div>
+                                <div>4. Esnek ve paylaşılabilir içerik</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="gradient-bg border-t border-slate-800 mt-20">
+        <div class="max-w-7xl mx-auto px-6 py-8 text-center">
+            <div class="flex items-center justify-center gap-3 text-slate-400 mb-3">
+                <i class="fas fa-robot text-blue-400 text-xl"></i>
+                <span class="text-sm">Generated with <a href="https://claude.com/claude-code" class="text-blue-400 hover:text-blue-300 underline">Claude Code</a></span>
+            </div>
+            <div class="text-xs text-slate-500">
+                Co-Authored-By: Claude Sonnet 4.5 &lt;noreply@anthropic.com&gt;
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const sectorData = {
+            cafe: {
+                name: 'Café',
+                icon: 'fa-mug-hot',
+                color: 'amber',
+                desc: 'Kahve dükkanınız için özel müzik koleksiyonu',
+                filters: ['Discover', 'All', 'Acoustic', 'Bossa Nova', 'Instrumental', 'Jazz', 'Relaxed', 'Singer-songwriter'],
+                sections: [
+                    {
+                        title: 'Sizin için önerilen café playlist\'leri',
+                        subtitle: 'İşletmenize özel seçilmiş',
+                        playlists: [
+                            { name: 'Café Jazz', desc: 'Sofistike ritimler ve canlı sesler', icon: 'coffee' },
+                            { name: 'Cozy Café', desc: 'Rahatlatıcı atmosfer', icon: 'cloud' },
+                            { name: 'Happy Retro Café', desc: 'Neşeli nostaljik parçalar', icon: 'smile' }
+                        ]
+                    },
+                    {
+                        title: 'Popüler café playlist\'leri',
+                        subtitle: 'Barista favorileri',
+                        playlists: [
+                            { name: 'Morning Coffee', desc: 'Güne başlarken', icon: 'sun' },
+                            { name: 'Afternoon Tea', desc: 'Öğleden sonra dinginliği', icon: 'leaf' },
+                            { name: 'Evening Lounge', desc: 'Akşam rahatlaması', icon: 'moon' }
+                        ]
+                    }
+                ]
+            },
+            restaurant: {
+                name: 'Restoran',
+                icon: 'fa-utensils',
+                color: 'red',
+                desc: 'Restoranınızın ambiyansını tamamlayan müzikler',
+                filters: ['Discover', 'All', 'Breakfast', 'Lunch', 'Dinner', 'Fine Dining', 'Fast Food', 'Romantic'],
+                sections: [
+                    {
+                        title: 'Sizin için önerilen restoran müzikleri',
+                        subtitle: 'Yemek deneyimini zenginleştirin',
+                        playlists: [
+                            { name: 'Fine Dining Experience', desc: 'Şık ve zarif melodiler', icon: 'wine-glass' },
+                            { name: 'Italian Restaurant', desc: 'Akdeniz esintileri', icon: 'pizza-slice' },
+                            { name: 'Modern Gastronomy', desc: 'Çağdaş lezzetler için', icon: 'utensils' }
+                        ]
+                    },
+                    {
+                        title: 'Zaman dilimlerine göre',
+                        subtitle: 'Günün her saati için uygun',
+                        playlists: [
+                            { name: 'Breakfast Brunch', desc: 'Kahvaltı keyfi', icon: 'egg' },
+                            { name: 'Lunch Time Vibes', desc: 'Öğle arası enerji', icon: 'sun' },
+                            { name: 'Dinner Elegance', desc: 'Akşam yemeği şıklığı', icon: 'moon' }
+                        ]
+                    }
+                ]
+            },
+            gym: {
+                name: 'Gym',
+                icon: 'fa-dumbbell',
+                color: 'orange',
+                desc: 'Spor salonunuz için motivasyon veren müzikler',
+                filters: ['Discover', 'All', 'Cardio', 'HIIT', 'Yoga', 'Strength', 'Warm-up', 'Cool-down'],
+                sections: [
+                    {
+                        title: 'Sizin için önerilen workout müzikleri',
+                        subtitle: 'Motivasyonu artırın',
+                        playlists: [
+                            { name: 'Beast Mode', desc: 'Yüksek tempolu güç müziği', icon: 'fire' },
+                            { name: 'Cardio Power', desc: 'Dayanıklılık için enerji', icon: 'heartbeat' },
+                            { name: 'HIIT Session', desc: 'Aralıklı antrenman ritmi', icon: 'bolt' }
+                        ]
+                    },
+                    {
+                        title: 'Antrenman tiplerine göre',
+                        subtitle: 'Her egzersiz için doğru tempo',
+                        playlists: [
+                            { name: 'Strength Training', desc: 'Ağır kaldırma ritmi', icon: 'dumbbell' },
+                            { name: 'Yoga & Pilates', desc: 'Akış ve denge', icon: 'spa' },
+                            { name: 'Warm-up Mix', desc: 'Isınma müziği', icon: 'fire-alt' }
+                        ]
+                    }
+                ]
+            },
+            spa: {
+                name: 'SPA',
+                icon: 'fa-spa',
+                color: 'purple',
+                desc: 'Wellness merkeziniz için huzur veren sesler',
+                filters: ['Discover', 'All', 'Meditation', 'Massage', 'Relaxation', 'Yoga', 'Nature Sounds'],
+                sections: [
+                    {
+                        title: 'Sizin için önerilen SPA müzikleri',
+                        subtitle: 'Huzur ve dinginlik',
+                        playlists: [
+                            { name: 'Deep Relaxation', desc: 'Derin rahatlama sesleri', icon: 'water' },
+                            { name: 'Massage Therapy', desc: 'Terapi eşliği', icon: 'hand-sparkles' },
+                            { name: 'Meditation Journey', desc: 'Meditasyon yolculuğu', icon: 'yin-yang' }
+                        ]
+                    },
+                    {
+                        title: 'Wellness kategorileri',
+                        subtitle: 'Her tedavi için uygun',
+                        playlists: [
+                            { name: 'Hot Stone', desc: 'Sıcak taş terapisi', icon: 'fire' },
+                            { name: 'Aromatherapy', desc: 'Koku terapisi müziği', icon: 'leaf' },
+                            { name: 'Sauna & Steam', desc: 'Buhar odası ambiyansı', icon: 'cloud' }
+                        ]
+                    }
+                ]
+            },
+            retail: {
+                name: 'Mağaza',
+                icon: 'fa-shopping-bag',
+                color: 'blue',
+                desc: 'Perakende mağazanız için alışveriş deneyimini artırın',
+                filters: ['Discover', 'All', 'Upbeat', 'Pop', 'Chill', 'Trendy', 'Luxury', 'Fast Fashion'],
+                sections: [
+                    {
+                        title: 'Sizin için önerilen mağaza müzikleri',
+                        subtitle: 'Müşteri deneyimini geliştirin',
+                        playlists: [
+                            { name: 'Shopping Vibes', desc: 'Alışveriş keyfi', icon: 'shopping-cart' },
+                            { name: 'Boutique Luxury', desc: 'Lüks butik ambiyansı', icon: 'gem' },
+                            { name: 'Pop Retail', desc: 'Trend pop müzik', icon: 'star' }
+                        ]
+                    },
+                    {
+                        title: 'Mağaza tipine göre',
+                        subtitle: 'Hedef kitlenize uygun',
+                        playlists: [
+                            { name: 'Fashion Forward', desc: 'Moda mağazaları için', icon: 'tshirt' },
+                            { name: 'Tech Store Beats', desc: 'Elektronik mağazası', icon: 'mobile' },
+                            { name: 'Bookstore Calm', desc: 'Kitapçı sessizliği', icon: 'book' }
+                        ]
+                    }
+                ]
+            },
+            hotel: {
+                name: 'Otel',
+                icon: 'fa-hotel',
+                color: 'teal',
+                desc: 'Otel ve konaklama tesisleriniz için',
+                filters: ['Discover', 'All', 'Lobby', 'Lounge', 'Pool', 'Restaurant', 'Bar', 'Spa'],
+                sections: [
+                    {
+                        title: 'Sizin için önerilen otel müzikleri',
+                        subtitle: 'Misafir deneyimini mükemmelleştirin',
+                        playlists: [
+                            { name: 'Luxury Lobby', desc: 'Lobi ambiyansı', icon: 'crown' },
+                            { name: 'Poolside Relaxation', desc: 'Havuz başı keyfi', icon: 'swimmer' },
+                            { name: 'Hotel Lounge', desc: 'Lounge bar müziği', icon: 'cocktail' }
+                        ]
+                    },
+                    {
+                        title: 'Otel bölümlerine göre',
+                        subtitle: 'Her alan için özel',
+                        playlists: [
+                            { name: 'Check-in Welcome', desc: 'Karşılama müziği', icon: 'door-open' },
+                            { name: 'Elevator Music', desc: 'Asansör müziği', icon: 'sort' },
+                            { name: 'Breakfast Buffet', desc: 'Kahvaltı salonu', icon: 'utensils' }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        let currentSector = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sector button clicks
+            document.querySelectorAll('.sector-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const sector = this.dataset.sector;
+                    loadSector(sector);
+                });
+            });
+
+            // Reset button
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                resetDemo();
+            });
+        });
+
+        function loadSector(sectorKey) {
+            currentSector = sectorKey;
+            const data = sectorData[sectorKey];
+
+            // Update header
+            document.getElementById('sector-icon').className = `fas ${data.icon} text-${data.color}-400 text-2xl`;
+            document.getElementById('sector-name').textContent = data.name;
+            document.getElementById('sector-desc').textContent = data.desc;
+            document.getElementById('reset-btn').classList.remove('hidden');
+
+            // Show loading
+            const screen = document.getElementById('demo-screen');
+            screen.innerHTML = loading();
+
+            // Render content after delay
+            setTimeout(() => {
+                screen.innerHTML = renderSectorContent(data);
+            }, 800);
+        }
+
+        function renderSectorContent(data) {
+            const filterBtns = data.filters.map((f, i) =>
+                `<button class="filter-btn ${i === 0 ? 'bg-' + data.color + '-600' : 'bg-slate-700'} hover:bg-${data.color}-500 px-4 py-2 rounded-full text-sm text-white transition">
+                    ${f}
+                </button>`
+            ).join('');
+
+            const sections = data.sections.map(section => `
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold text-white mb-1">${section.title}</h3>
+                    <p class="text-slate-400 text-sm mb-4">${section.subtitle}</p>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        ${section.playlists.map(pl => `
+                            <div class="playlist-card clickable bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                                <div class="bg-gradient-to-br from-${data.color}-600 to-${data.color}-700 w-full aspect-square rounded-lg flex items-center justify-center mb-3">
+                                    <i class="fas fa-${pl.icon} text-white text-4xl"></i>
+                                </div>
+                                <h4 class="font-semibold text-white mb-1">${pl.name}</h4>
+                                <p class="text-xs text-slate-400">${pl.desc}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            return `
+                <div class="fade-in">
+                    <!-- Filters -->
+                    <div class="mb-8">
+                        <div class="flex flex-wrap gap-2">
+                            ${filterBtns}
+                        </div>
+                    </div>
+
+                    <!-- Sections -->
+                    ${sections}
+
+                    <!-- Info -->
+                    <div class="mt-8 bg-${data.color}-900/20 border border-${data.color}-700 rounded-lg p-6">
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-info-circle text-${data.color}-400 text-xl mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-white mb-2">💡 Sektöre Özel Deneyim</h4>
+                                <p class="text-sm text-slate-300">
+                                    ${data.name} sektöründe çalışıyorsunuz. Gördüğünüz tüm filtreler, kategoriler ve playlist'ler
+                                    <strong class="text-${data.color}-400">sadece sizin işletme tipinize özel</strong> olarak seçilmiştir.
+                                    Diğer sektörlerin müziklerini göremezsiniz.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loading() {
+            return `
+                <div class="flex items-center justify-center h-full">
+                    <div class="text-center">
+                        <i class="fas fa-spinner loading-spinner text-blue-400 text-4xl mb-4"></i>
+                        <p class="text-slate-300">Sektöre özel içerik yükleniyor...</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function resetDemo() {
+            currentSector = null;
+            document.getElementById('sector-icon').className = 'fas fa-music text-slate-400 text-2xl';
+            document.getElementById('sector-name').textContent = 'Bir sektör seçin';
+            document.getElementById('sector-desc').textContent = 'Yukarıdaki butonlardan sektörünüzü seçin';
+            document.getElementById('reset-btn').classList.add('hidden');
+            document.getElementById('demo-screen').innerHTML = `
+                <div class="flex items-center justify-center h-full text-slate-500">
+                    <div class="text-center">
+                        <i class="fas fa-hand-pointer text-6xl mb-4"></i>
+                        <p class="text-xl">Yukarıdan bir sektör seçin</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initial state
+        resetDemo();
+    </script>
+
+</body>
+</html>

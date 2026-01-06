@@ -1,50 +1,3 @@
-{{-- 🎯 Sidebar Data - Track list for right sidebar --}}
-<script>
-document.addEventListener('alpine:init', () => {
-    setTimeout(() => {
-        if (window.Alpine && window.Alpine.store('sidebar')) {
-            window.Alpine.store('sidebar').setContent(
-                'genre',
-                @json($songs->map(function($song) {
-                    return [
-                        'id' => $song->song_id,
-                        'title' => $song->getTranslation('title', app()->getLocale()),
-                        'artist' => $song->artist ? $song->artist->getTranslation('title', app()->getLocale()) : '',
-                        'duration' => gmdate('i:s', $song->duration ?? 0)
-                    ];
-                })),
-                {
-                    type: 'Tür',
-                    title: @json($genre->getTranslation('title', app()->getLocale())),
-                    cover: @json($genre->getIconUrl(100, 100)),
-                    id: {{ $genre->genre_id }}
-                }
-            );
-        }
-    }, 100);
-});
-
-if (window.Alpine && window.Alpine.store('sidebar')) {
-    window.Alpine.store('sidebar').setContent(
-        'genre',
-        @json($songs->map(function($song) {
-            return [
-                'id' => $song->song_id,
-                'title' => $song->getTranslation('title', app()->getLocale()),
-                'artist' => $song->artist ? $song->artist->getTranslation('title', app()->getLocale()) : '',
-                'duration' => gmdate('i:s', $song->duration ?? 0)
-            ];
-        })),
-        {
-            type: 'Tür',
-            title: @json($genre->getTranslation('title', app()->getLocale())),
-            cover: @json($genre->getIconUrl(100, 100)),
-            id: {{ $genre->genre_id }}
-        }
-    );
-}
-</script>
-
 {{-- Hero Section with Gradient Background --}}
 <div class="relative mb-8">
     {{-- Dynamic Gradient Background --}}
@@ -83,7 +36,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
                 <div class="flex items-center justify-center sm:justify-start gap-2 text-sm sm:text-base text-white">
                     <span class="font-bold">Muzibu</span>
                     <span class="text-gray-400">•</span>
-                    <span class="font-semibold">{{ $songs->count() }} şarkı</span>
+                    <span class="font-semibold">{{ $playlists->count() }} playlist</span>
                 </div>
             </div>
         </div>
@@ -95,7 +48,6 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
     {{-- Actions - Larger Buttons --}}
     <div class="flex items-center gap-6 mb-8 sm:mb-10">
         <button
-            @click="$dispatch('play-all-songs', { genreId: {{ $genre->genre_id }} })"
             class="w-14 h-14 sm:w-16 sm:h-16 bg-muzibu-coral hover:scale-105 active:scale-100 rounded-full flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-200">
             <i class="fas fa-play text-white text-xl sm:text-2xl ml-1"></i>
         </button>
@@ -152,20 +104,20 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
         </button>
     </div>
 
-    {{-- Songs List - Simple Design --}}
-    @if($songs && $songs->count() > 0)
-        <div class="bg-slate-900/50 rounded-lg overflow-hidden">
-            @foreach($songs as $index => $song)
-                <x-muzibu.song-simple-row :song="$song" :index="$index" />
+    {{-- PLAYLİSTLER BÖLÜMÜ --}}
+    @if($playlists && $playlists->count() > 0)
+        <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4">
+            @foreach($playlists as $playlist)
+                <x-muzibu.playlist-card :playlist="$playlist" :preview="true" />
             @endforeach
         </div>
     @else
         <div class="text-center py-16 sm:py-20">
             <div class="mb-6">
-                <i class="fas fa-music text-gray-600 text-5xl sm:text-6xl"></i>
+                <i class="fas fa-list text-gray-600 text-5xl sm:text-6xl"></i>
             </div>
-            <h3 class="text-xl sm:text-2xl font-bold text-white mb-2">Bu türde henüz şarkı yok</h3>
-            <p class="text-sm sm:text-base text-gray-400">Bu türe ait şarkılar eklendiğinde burada görünecek</p>
+            <h3 class="text-xl sm:text-2xl font-bold text-white mb-2">Bu türde henüz playlist yok</h3>
+            <p class="text-sm sm:text-base text-gray-400">Bu türe ait playlistler eklendiğinde burada görünecek</p>
         </div>
     @endif
 </div>

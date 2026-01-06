@@ -26,6 +26,9 @@ class MuzibuCacheProfile implements ModuleCacheProfileInterface
             'muzibu/listening-history',
             'muzibu/listening-history/*',
 
+            // Abonelik ve ödeme geçmişi
+            'my-subscriptions',
+
             // Playlist detay düzenleme
             'playlists/*/edit',
         ];

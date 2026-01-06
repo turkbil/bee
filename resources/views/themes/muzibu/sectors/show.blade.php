@@ -15,7 +15,7 @@
         @endif
 
         <div class="flex-1 w-full sm:min-w-0 text-center sm:text-left pb-0 sm:pb-4">
-            <p class="text-xs sm:text-sm font-semibold text-gray-400 uppercase tracking-wide mb-2">Kategori</p>
+            <p class="text-xs sm:text-sm font-semibold text-gray-400 uppercase tracking-wide mb-2">Sektör</p>
             <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 truncate">
                 {{ $sector->getTranslation('title', app()->getLocale()) }}
             </h1>
@@ -81,7 +81,7 @@
         </div>
     @else
         <div class="text-center py-12">
-            <p class="text-gray-400">Bu kategoride henüz playlist yok</p>
+            <p class="text-gray-400">Bu sektörde henüz playlist yok</p>
         </div>
     @endif
 </div>

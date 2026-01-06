@@ -358,6 +358,21 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
+     * Türler ilişkisi (Polymorphic - playlistables tablosu)
+     * ✅ v5 sistemi: Artık playlistables tablosunu kullanıyor
+     */
+    public function genres()
+    {
+        return $this->morphedByMany(
+            Genre::class,
+            'playlistable',
+            'muzibu_playlistables',
+            'playlist_id',
+            'playlistable_id'
+        )->withPivot('position')->withTimestamps();
+    }
+
+    /**
      * Kurumsal hesaplar ilişkisi (Polymorphic - playlistables tablosu)
      * ✅ v5 sistemi: Corporate'lara playlist dağıtımı
      */
@@ -428,6 +443,20 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
+     * Playlist'in dağıtıldığı türler (Polymorphic)
+     */
+    public function distributedToGenres()
+    {
+        return $this->morphedByMany(
+            Genre::class,
+            'playlistable',
+            'muzibu_playlistables',
+            'playlist_id',
+            'playlistable_id'
+        )->withPivot('position')->withTimestamps();
+    }
+
+    /**
      * Playlist'in dağıtıldığı kurumsal hesaplar (Polymorphic)
      */
     public function distributedToCorporates()
@@ -443,7 +472,7 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
 
     /**
      * Tüm distribution entity'lerini tek sorguda getir
-     * @return array ['sectors' => [...], 'radios' => [...], 'corporates' => [...]]
+     * @return array ['sectors' => [...], 'radios' => [...], 'genres' => [...], 'corporates' => [...]]
      */
     public function getAllDistributions(): array
     {
@@ -455,6 +484,7 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
         return [
             'sectors' => $distributions->get('sector', collect())->pluck('playlistable_id')->toArray(),
             'radios' => $distributions->get('radio', collect())->pluck('playlistable_id')->toArray(),
+            'genres' => $distributions->get('genre', collect())->pluck('playlistable_id')->toArray(),
             'corporates' => $distributions->get('corporate', collect())->pluck('playlistable_id')->toArray(),
         ];
     }

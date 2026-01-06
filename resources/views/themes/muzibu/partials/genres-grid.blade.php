@@ -9,7 +9,7 @@
     @if($genres && $genres->count() > 0)
         <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
             @foreach($genres as $genre)
-                <x-muzibu.genre-card :genre="$genre" :preview="true" :compact="false" />
+                <x-muzibu.genre-card :genre="$genre" :preview="false" :compact="false" />
             @endforeach
         </div>
 

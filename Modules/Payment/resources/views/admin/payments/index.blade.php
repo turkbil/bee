@@ -123,7 +123,7 @@
                             <span class="text-muted">₺</span>
                         </td>
                         <td class="text-center">
-                            <span class="badge bg-{{ $gc['color'] }}-lt text-{{ $gc['color'] }}">
+                            <span class="badge bg-{{ $gc['color'] }}">
                                 <i class="fas fa-{{ $gc['icon'] }} me-1"></i>{{ $gc['label'] }}
                             </span>
                         </td>
@@ -305,13 +305,30 @@
                                             <div class="card-body">
                                                 <div class="d-flex align-items-center gap-2 mb-2">
                                                     <i class="fas fa-truck text-blue"></i>
-                                                    <span class="fw-medium">Teslimat Adresi</span>
+                                                    <span class="fw-medium">Teslimat Bilgileri</span>
                                                 </div>
                                                 <div class="text-muted small">
-                                                    {{ $addr['address_line_1'] ?? '' }}<br>
-                                                    {{ $addr['district'] ?? '' }}, {{ $addr['city'] ?? '' }}
-                                                    @if(!empty($addr['postal_code']))
-                                                        <br>{{ $addr['postal_code'] }}
+                                                    @if(!empty($addr['full_name']) || (!empty($addr['first_name']) && !empty($addr['last_name'])))
+                                                        <div class="mb-1 fw-medium text-dark">{{ $addr['full_name'] ?? ($addr['first_name'] . ' ' . $addr['last_name']) }}</div>
+                                                    @endif
+                                                    @if(!empty($addr['phone']))
+                                                        <div class="mb-1"><i class="fas fa-phone me-1"></i>{{ $addr['phone'] }}</div>
+                                                    @endif
+                                                    @if(!empty($addr['email']))
+                                                        <div class="mb-1"><i class="fas fa-envelope me-1"></i>{{ $addr['email'] }}</div>
+                                                    @endif
+                                                    @if(!empty($addr['address_line_1']) || !empty($addr['city']) || !empty($addr['district']))
+                                                        <div class="mt-2 pt-2 border-top">
+                                                            @if(!empty($addr['address_line_1']))
+                                                                {{ $addr['address_line_1'] }}<br>
+                                                            @endif
+                                                            @if(!empty($addr['district']) || !empty($addr['city']))
+                                                                {{ $addr['district'] }}{{ !empty($addr['district']) && !empty($addr['city']) ? ', ' : '' }}{{ $addr['city'] }}
+                                                            @endif
+                                                            @if(!empty($addr['postal_code']))
+                                                                <br>{{ $addr['postal_code'] }}
+                                                            @endif
+                                                        </div>
                                                     @endif
                                                 </div>
                                             </div>

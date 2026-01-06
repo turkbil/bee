@@ -2143,8 +2143,9 @@ function muzibuApp() {
                 }
             }
 
-            // Save volume to localStorage
-            safeStorage.setItem('volume', Math.round(this.volume));
+            // Save volume to localStorage (99+ → 100)
+            const volumeToSave = Math.round(this.volume) >= 99 ? 100 : Math.round(this.volume);
+            safeStorage.setItem('volume', volumeToSave);
         },
 
         // Metadata is handled by Howler.js onload callback
@@ -6709,8 +6710,9 @@ onplay: function() {
                     }
                 }
 
-                // localStorage'a kaydet
-                safeStorage.setItem('volume', Math.round(newVolume));
+                // localStorage'a kaydet (99+ → 100)
+                const volumeToSave = Math.round(newVolume) >= 99 ? 100 : Math.round(newVolume);
+                safeStorage.setItem('volume', volumeToSave);
             });
 
             // 🕒 Her 5 saniyede bir currentTime'ı kaydet (progress tracking)

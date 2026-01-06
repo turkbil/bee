@@ -78,8 +78,8 @@ class PayTRDirectService
                 'merchant_oid' => $merchantOid,
                 'email' => $email,
                 'user_name' => $userInfo['name'],
-                'user_address' => $userInfo['address'] ?? 'N/A',
-                'user_phone' => $userInfo['phone'] ?? 'N/A',
+                'user_address' => !empty($userInfo['address']) ? $userInfo['address'] : 'Türkiye',
+                'user_phone' => !empty($userInfo['phone']) ? $userInfo['phone'] : '05000000000',
 
                 // Ödeme bilgileri
                 'payment_type' => $paymentType,

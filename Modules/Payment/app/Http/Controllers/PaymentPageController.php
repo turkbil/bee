@@ -70,12 +70,37 @@ class PaymentPageController extends Controller
             try {
                 $iframeService = app(PayTRIframeService::class);
 
-                $userInfo = session('checkout_user_info', [
-                    'name' => $order->customer_name ?? 'Müşteri',
-                    'email' => $order->customer_email ?? 'test@test.com',
-                    'phone' => $order->customer_phone ?? '5551234567',
-                    'address' => 'Türkiye',
-                ]);
+                // ÖNCE: pending_customer session'ını kontrol et (CheckoutPage'den gelir)
+                $pendingCustomer = session('pending_customer');
+
+                // Order'dan billing address snapshot'ını çek
+                $billingAddr = is_array($order->billing_address ?? null)
+                    ? $order->billing_address
+                    : json_decode($order->billing_address ?? '[]', true);
+
+                // Address string oluştur (PayTR için)
+                $userAddress = 'Türkiye'; // Fallback
+                if (!empty($billingAddr)) {
+                    $addr = trim($billingAddr['address_line_1'] ?? '');
+                    $city = trim($billingAddr['city'] ?? '');
+                    $district = trim($billingAddr['district'] ?? '');
+
+                    if (!empty($addr) && !empty($city)) {
+                        $userAddress = $addr;
+                        if (!empty($district)) {
+                            $userAddress .= ', ' . $district;
+                        }
+                        $userAddress .= ', ' . $city;
+                    }
+                }
+
+                // UserInfo - önce session'dan, sonra order'dan
+                $userInfo = [
+                    'name' => $pendingCustomer['name'] ?? $order->customer_name ?? 'Müşteri',
+                    'email' => $pendingCustomer['email'] ?? $order->customer_email ?? 'test@test.com',
+                    'phone' => $pendingCustomer['phone'] ?? $order->customer_phone ?? '5551234567',
+                    'address' => $pendingCustomer['address'] ?? $userAddress,
+                ];
 
                 $items = $order->items->map(function ($item) {
                     return [
@@ -92,7 +117,11 @@ class PaymentPageController extends Controller
                     'items' => $items,
                 ];
 
-                \Log::info('🔍 PayTR Token Request', compact('userInfo', 'orderInfo'));
+                \Log::info('🔍 PayTR Token Request', [
+                    'userInfo' => $userInfo,
+                    'orderInfo' => $orderInfo,
+                    'billing_address_snapshot' => $billingAddr,
+                ]);
 
                 $result = $iframeService->prepareIframePayment($payment, $userInfo, $orderInfo);
 

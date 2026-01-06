@@ -279,12 +279,13 @@
     </div>
 
     {{-- Volume Control - Twitter Style (Vertical Hover) --}}
-    <div class="relative" x-data="{ showVolumeSlider: false, isDragging: false }">
+    <div class="relative" x-data="{ showVolumeSlider: false, isDragging: false, volumeTimeout: null }"
+         @mouseleave="if (!isDragging) { volumeTimeout = setTimeout(() => { showVolumeSlider = false; }, 500) }">
         {{-- Volume Button --}}
         <button class="w-8 h-8 text-white/60 hover:text-white flex items-center justify-center transition-colors"
                 @click="toggleMute()"
-                @mouseenter="showVolumeSlider = true">
-            <i :class="isMuted ? 'fas fa-volume-mute' : (volume > 50 ? 'fas fa-volume-up' : 'fas fa-volume-down')"></i>
+                @mouseenter="clearTimeout(volumeTimeout); showVolumeSlider = true">
+            <i class="fas fa-volume-up" :class="isMuted ? 'fa-volume-mute' : (volume > 50 ? 'fa-volume-up' : 'fa-volume-down')"></i>
         </button>
 
         {{-- Vertical Volume Slider (Hover) --}}
@@ -296,27 +297,28 @@
              x-transition:leave="transition ease-in duration-150"
              x-transition:leave-start="opacity-100 scale-100 translate-y-0"
              x-transition:leave-end="opacity-0 scale-95 translate-y-2"
-             @mouseenter="showVolumeSlider = true"
-             @mouseleave="showVolumeSlider = false; isDragging = false"
-             class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-800 border border-slate-600 rounded-lg p-3 shadow-2xl z-50 select-none flex flex-col items-center"
+             @mouseenter="clearTimeout(volumeTimeout)"
+             class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 rounded-lg px-3 pt-3 pb-2.5 shadow-2xl z-50 select-none flex flex-col items-center"
+             style="background: #18181b; border: 1px solid rgba(255,255,255,0.1);"
              @mousedown="isDragging = true"
              @mouseup="isDragging = false; $el.querySelector('.volume-track').releasePointerCapture && $el.querySelector('.volume-track').releasePointerCapture($event.pointerId)"
              @click="const track = $el.querySelector('.volume-track'); const rect = track.getBoundingClientRect(); const clickY = $event.clientY - rect.top; const percent = Math.max(0, Math.min(100, 100 - (clickY / rect.height * 100))); volume = Math.round(percent); if (isMuted) isMuted = false; if (audioElement) audioElement.volume = volume / 100;"
              @mousemove="if (isDragging) { const track = $el.querySelector('.volume-track'); const rect = track.getBoundingClientRect(); const moveY = $event.clientY - rect.top; const percent = Math.max(0, Math.min(100, 100 - (moveY / rect.height * 100))); volume = Math.round(percent); if (isMuted) isMuted = false; if (audioElement) audioElement.volume = volume / 100; }">
 
             {{-- Vertical Track --}}
-            <div class="volume-track h-32 w-2 bg-slate-700 rounded-full relative cursor-pointer select-none">
-                {{-- Fill (bottom to top) --}}
-                <div class="absolute bottom-0 w-full bg-white rounded-full transition-all pointer-events-none"
-                     :style="`height: ${volume}%`"></div>
+            <div class="volume-track h-32 w-2 my-2 bg-white/10 rounded-full relative cursor-pointer select-none">
+                {{-- Fill (bottom to top) - Beyaz --}}
+                <div class="absolute bottom-0 w-full bg-white/90 rounded-full transition-all pointer-events-none"
+                     :style="`height: ${isMuted ? 0 : volume}%`"></div>
 
-                {{-- Handle --}}
+                {{-- Handle - Beyaz --}}
                 <div class="absolute left-1/2 -translate-x-1/2 w-4 h-4 bg-white rounded-full shadow-lg pointer-events-none"
-                     :style="`bottom: calc(${volume}% - 8px)`"></div>
+                     :style="`bottom: calc(${isMuted ? 0 : volume}% - 8px)`"></div>
             </div>
 
-            {{-- Percentage Display (Fixed Width, Centered) --}}
-            <p class="w-8 mx-auto text-xs text-center mt-2 text-slate-400 tabular-nums select-none" x-text="Math.round(volume)"></p>
+            {{-- Percentage Display (Fixed Width, Centered) - Beyaz --}}
+            <p class="w-8 mx-auto text-xs text-center mt-2 mb-0.5 text-white/70 tabular-nums select-none"
+               x-text="isMuted ? 0 : (Math.round(volume) >= 99 ? 100 : Math.round(volume))"></p>
         </div>
     </div>
 

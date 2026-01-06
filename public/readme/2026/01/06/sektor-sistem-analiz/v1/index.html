@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sektör Bazlı Kategori Sistemi - Teknik Analiz ve Gereksinimler</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-slate-800/50 border-b border-slate-700 sticky top-0 z-50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <div class="flex items-center gap-4 mb-2">
+                <span class="bg-blue-600 text-white text-xs px-3 py-1 rounded-full font-semibold">
+                    <i class="fas fa-list-check mr-1"></i> TEKNİK ANALİZ
+                </span>
+                <span class="text-slate-400 text-sm">6 Ocak 2026</span>
+            </div>
+            <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                Sektör Bazlı Kategori Sistemi
+            </h1>
+            <p class="text-slate-300 mt-2 text-lg">Mevcut Durum Analizi ve Uygulama Gereksinimleri</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-8">
+
+        <!-- Özet Bilgi -->
+        <div class="bg-gradient-to-r from-blue-900/30 to-cyan-900/30 border border-blue-700/50 rounded-xl p-8 mb-8">
+            <div class="flex items-start gap-4">
+                <div class="bg-blue-600 rounded-lg p-3">
+                    <i class="fas fa-info-circle text-3xl"></i>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-2xl font-bold mb-3">Sistem Durumu Özeti</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <div class="text-green-400 font-bold mb-1"><i class="fas fa-check-circle mr-2"></i>MEVCUT</div>
+                            <div class="text-slate-300">Temel altyapı hazır</div>
+                            <div class="text-slate-400 text-xs mt-2">Model, Migration, Controller, Route</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <div class="text-yellow-400 font-bold mb-1"><i class="fas fa-exclamation-triangle mr-2"></i>EKSİK</div>
+                            <div class="text-slate-300">Filtre sistemi yok</div>
+                            <div class="text-slate-400 text-xs mt-2">Tag, Filter, User-Sector ilişkisi</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <div class="text-blue-400 font-bold mb-1"><i class="fas fa-tasks mr-2"></i>YAPILACAK</div>
+                            <div class="text-slate-300">7 adım gerekli</div>
+                            <div class="text-slate-400 text-xs mt-2">Migration, Model, Seeder, Frontend</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Basit Anlatım -->
+        <section class="mb-8">
+            <div class="bg-green-900/20 border border-green-700 rounded-xl p-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <i class="fas fa-lightbulb text-green-400 text-2xl"></i>
+                    <h3 class="text-2xl font-bold text-green-300">Basit Anlatım (Herkes İçin)</h3>
+                </div>
+
+                <div class="space-y-4 text-slate-200 leading-relaxed">
+                    <p class="text-lg">
+                        <strong class="text-white">Şu anda ne var?</strong><br>
+                        Sistemde "Sektör" (Sector) yapısı mevcut. Örneğin: Cafe, Restaurant, Gym, SPA gibi sektörler var.
+                        Her sektörün kendi playlist'leri ve radyoları var. Yani temel yapı hazır, çalışıyor.
+                    </p>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-green-500">
+                        <p class="font-semibold text-green-300 mb-2"><i class="fas fa-check mr-2"></i>Çalışan Özellikler:</p>
+                        <ul class="space-y-2 text-sm">
+                            <li><i class="fas fa-circle text-green-500 text-xs mr-2"></i>Sektörler listelenebiliyor (/sectors sayfası)</li>
+                            <li><i class="fas fa-circle text-green-500 text-xs mr-2"></i>Her sektörün detay sayfası var (/sectors/cafe)</li>
+                            <li><i class="fas fa-circle text-green-500 text-xs mr-2"></i>Sektörlere playlist ve radyo atanabiliyor</li>
+                            <li><i class="fas fa-circle text-green-500 text-xs mr-2"></i>Admin panelinde yönetilebiliyor</li>
+                        </ul>
+                    </div>
+
+                    <p class="text-lg">
+                        <strong class="text-white">Ne eksik?</strong><br>
+                        Spotify Business'taki gibi filtreler yok. Örneğin Cafe sektöründe "Acoustic", "Bossa Nova", "Chill", "Upbeat" gibi
+                        seçenekler yok. Ayrıca kullanıcı profili ile sektör bağlantısı yok (kullanıcı hangi sektörde çalışıyor bilgisi).
+                    </p>
+
+                    <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-yellow-500">
+                        <p class="font-semibold text-yellow-300 mb-2"><i class="fas fa-exclamation-triangle mr-2"></i>Eksik Özellikler:</p>
+                        <ul class="space-y-2 text-sm">
+                            <li><i class="fas fa-circle text-yellow-500 text-xs mr-2"></i>Filtre sistemi (Acoustic, Chill, Upbeat vb.)</li>
+                            <li><i class="fas fa-circle text-yellow-500 text-xs mr-2"></i>Tag sistemi (playlist'leri etiketleme)</li>
+                            <li><i class="fas fa-circle text-yellow-500 text-xs mr-2"></i>Kullanıcı-Sektör bağlantısı</li>
+                            <li><i class="fas fa-circle text-yellow-500 text-xs mr-2"></i>Spotify-style scrollable frontend</li>
+                        </ul>
+                    </div>
+
+                    <p class="text-lg">
+                        <strong class="text-white">Ne yapacağız?</strong><br>
+                        Sisteme filtre ve tag yapısı ekleyeceğiz. Kullanıcı profili ile sektör bağlantısı kuracağız.
+                        Frontend'i Spotify Business gibi yapacağız (scroll yaparak tüm içerik görünecek).
+                        Toplam 7 adımda tamamlanacak.
+                    </p>
+
+                    <div class="bg-gradient-to-r from-blue-900/30 to-cyan-900/30 rounded-lg p-6 mt-4">
+                        <p class="font-semibold text-cyan-300 mb-3"><i class="fas fa-rocket mr-2"></i>Beklenen Sonuç:</p>
+                        <p class="text-sm">
+                            Kullanıcı Cafe sektörü seçtiğinde, üstte "Discover", "All", "Acoustic", "Bossa Nova" gibi filtreler görünecek.
+                            Tıkladığında o tag'e sahip playlist'ler grid halinde (kutu kutu) listelenecek.
+                            Scroll yaparak tüm içerik görülebilecek, sayfa geçişi olmayacak.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar: Mevcut Altyapı -->
+        <section class="mb-8">
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <i class="fas fa-database text-blue-400 text-2xl"></i>
+                    <h3 class="text-2xl font-bold text-blue-300">Teknik Detaylar: Mevcut Altyapı</h3>
+                </div>
+
+                <!-- Database Yapısı -->
+                <div class="mb-6">
+                    <h4 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-table text-green-400"></i>
+                        1. Database Tabloları (Mevcut)
+                    </h4>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <!-- Sector Tablosu -->
+                        <div class="bg-slate-900/50 rounded-lg p-5 border border-green-700/30">
+                            <div class="flex items-center gap-2 mb-3">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <h5 class="font-bold text-green-300">muzibu_sectors</h5>
+                            </div>
+                            <div class="text-xs text-slate-300 space-y-1 font-mono">
+                                <div><span class="text-blue-400">sector_id</span> <span class="text-slate-500">(PK)</span></div>
+                                <div><span class="text-cyan-400">title</span> <span class="text-slate-500">(JSON - çoklu dil)</span></div>
+                                <div><span class="text-cyan-400">slug</span> <span class="text-slate-500">(JSON - çoklu dil)</span></div>
+                                <div><span class="text-cyan-400">description</span> <span class="text-slate-500">(JSON)</span></div>
+                                <div><span class="text-yellow-400">media_id</span> <span class="text-slate-500">(icon/cover)</span></div>
+                                <div><span class="text-purple-400">is_active</span> <span class="text-slate-500">(boolean)</span></div>
+                            </div>
+                            <div class="mt-3 text-xs text-slate-400">
+                                <i class="fas fa-info-circle mr-1"></i>Migration: 2025_11_09_000005_create_muzibu_sectors_table.php
+                            </div>
+                        </div>
+
+                        <!-- Playlistables Tablosu -->
+                        <div class="bg-slate-900/50 rounded-lg p-5 border border-green-700/30">
+                            <div class="flex items-center gap-2 mb-3">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <h5 class="font-bold text-green-300">muzibu_playlistables</h5>
+                            </div>
+                            <div class="text-xs text-slate-300 space-y-1 font-mono">
+                                <div><span class="text-blue-400">id</span> <span class="text-slate-500">(PK)</span></div>
+                                <div><span class="text-yellow-400">playlist_id</span> <span class="text-slate-500">(FK → playlists)</span></div>
+                                <div><span class="text-cyan-400">playlistable_type</span> <span class="text-slate-500">(sector/radio/genre/corporate)</span></div>
+                                <div><span class="text-cyan-400">playlistable_id</span> <span class="text-slate-500">(polymorphic ID)</span></div>
+                                <div><span class="text-purple-400">position</span> <span class="text-slate-500">(sıralama)</span></div>
+                            </div>
+                            <div class="mt-3 text-xs text-slate-400">
+                                <i class="fas fa-info-circle mr-1"></i>Migration: 2025_12_30_211700_create_playlistables_table.php
+                            </div>
+                        </div>
+
+                        <!-- Genre Tablosu -->
+                        <div class="bg-slate-900/50 rounded-lg p-5 border border-green-700/30">
+                            <div class="flex items-center gap-2 mb-3">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <h5 class="font-bold text-green-300">muzibu_genres</h5>
+                            </div>
+                            <div class="text-xs text-slate-300 space-y-1 font-mono">
+                                <div><span class="text-blue-400">genre_id</span> <span class="text-slate-500">(PK)</span></div>
+                                <div><span class="text-cyan-400">title</span> <span class="text-slate-500">(JSON - çoklu dil)</span></div>
+                                <div><span class="text-cyan-400">slug</span> <span class="text-slate-500">(JSON)</span></div>
+                                <div><span class="text-yellow-400">media_id</span> <span class="text-slate-500">(icon)</span></div>
+                                <div><span class="text-purple-400">is_active</span> <span class="text-slate-500">(boolean)</span></div>
+                            </div>
+                            <div class="mt-3 text-xs text-slate-400">
+                                <i class="fas fa-info-circle mr-1"></i>Genre'ler playlistables üzerinden playlist'lere bağlanır
+                            </div>
+                        </div>
+
+                        <!-- Users Tablosu -->
+                        <div class="bg-slate-900/50 rounded-lg p-5 border border-yellow-700/30">
+                            <div class="flex items-center gap-2 mb-3">
+                                <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+                                <h5 class="font-bold text-yellow-300">users (Tenant DB)</h5>
+                            </div>
+                            <div class="text-xs text-slate-300 space-y-1 font-mono">
+                                <div><span class="text-blue-400">id</span> <span class="text-slate-500">(PK)</span></div>
+                                <div><span class="text-cyan-400">name, email, phone</span> <span class="text-slate-500">(user info)</span></div>
+                                <div class="text-red-400"><span class="text-red-400">primary_sector_id</span> <span class="text-slate-500">❌ EKSİK!</span></div>
+                            </div>
+                            <div class="mt-3 text-xs text-yellow-400">
+                                <i class="fas fa-exclamation-triangle mr-1"></i>Her tenant'ın kendi users tablosu var! Field tenant DB'ye eklenecek.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Model ve Trait'ler -->
+                <div class="mb-6">
+                    <h4 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-code text-blue-400"></i>
+                        2. Laravel Model'ler (Mevcut)
+                    </h4>
+
+                    <div class="space-y-3">
+                        <div class="bg-slate-900/50 rounded-lg p-4 border-l-4 border-green-500">
+                            <div class="flex items-center justify-between mb-2">
+                                <code class="text-green-300 font-bold">Modules\Muzibu\App\Models\Sector</code>
+                                <span class="text-xs bg-green-900/50 text-green-300 px-2 py-1 rounded">✓ MEVCUT</span>
+                            </div>
+                            <div class="text-xs text-slate-300 space-y-1">
+                                <div><strong>Traits:</strong> HasTranslations, HasMediaManagement, HasPlaylistDistribution, HasFavorites, Searchable</div>
+                                <div><strong>İlişkiler:</strong>
+                                    <code class="text-cyan-400">playlists()</code> (polymorphic via playlistables),
+                                    <code class="text-cyan-400">radios()</code> (many-to-many)
+                                </div>
+                                <div><strong>Dosya:</strong> <code class="text-slate-400">Modules/Muzibu/app/Models/Sector.php</code></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded-lg p-4 border-l-4 border-green-500">
+                            <div class="flex items-center justify-between mb-2">
+                                <code class="text-green-300 font-bold">Modules\Muzibu\App\Models\Genre</code>
+                                <span class="text-xs bg-green-900/50 text-green-300 px-2 py-1 rounded">✓ MEVCUT</span>
+                            </div>
+                            <div class="text-xs text-slate-300 space-y-1">
+                                <div><strong>Traits:</strong> HasTranslations, HasMediaManagement, HasPlaylistDistribution, Searchable</div>
+                                <div><strong>İlişkiler:</strong>
+                                    <code class="text-cyan-400">songs()</code> (hasMany),
+                                    <code class="text-cyan-400">playlists()</code> (polymorphic via playlistables)
+                                </div>
+                                <div><strong>Dosya:</strong> <code class="text-slate-400">Modules/Muzibu/app/Models/Genre.php</code></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded-lg p-4 border-l-4 border-green-500">
+                            <div class="flex items-center justify-between mb-2">
+                                <code class="text-green-300 font-bold">Modules\Muzibu\App\Models\Playlist</code>
+                                <span class="text-xs bg-green-900/50 text-green-300 px-2 py-1 rounded">✓ MEVCUT</span>
+                            </div>
+                            <div class="text-xs text-slate-300 space-y-1">
+                                <div><strong>İlişkiler:</strong>
+                                    <code class="text-cyan-400">sectors()</code>,
+                                    <code class="text-cyan-400">genres()</code>,
+                                    <code class="text-cyan-400">radios()</code>,
+                                    <code class="text-cyan-400">corporates()</code> (hepsi morphedByMany)
+                                </div>
+                                <div><strong>Method:</strong> <code class="text-purple-400">getAllDistributions()</code> - Tüm ilişkileri tek sorguda getirir</div>
+                                <div><strong>Dosya:</strong> <code class="text-slate-400">Modules/Muzibu/app/Models/Playlist.php</code></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controller'lar -->
+                <div class="mb-6">
+                    <h4 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-server text-purple-400"></i>
+                        3. Controller'lar (Mevcut)
+                    </h4>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-slate-900/50 rounded-lg p-4 border border-green-700/30">
+                            <div class="text-green-300 font-bold mb-2 text-sm">
+                                <i class="fas fa-check-circle mr-1"></i>Frontend Controller
+                            </div>
+                            <code class="text-xs text-slate-300 block mb-2">SectorController (Front)</code>
+                            <div class="text-xs text-slate-400 space-y-1">
+                                <div>• <code>index()</code> - Liste</div>
+                                <div>• <code>show($slug)</code> - Detay</div>
+                                <div>• <code>apiIndex()</code> - SPA API</div>
+                                <div>• <code>apiShow($slug)</code> - SPA Detail</div>
+                            </div>
+                            <div class="mt-2 text-xs text-slate-500">
+                                Modules/Muzibu/app/Http/Controllers/Front/SectorController.php
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded-lg p-4 border border-green-700/30">
+                            <div class="text-green-300 font-bold mb-2 text-sm">
+                                <i class="fas fa-check-circle mr-1"></i>API Controller
+                            </div>
+                            <code class="text-xs text-slate-300 block mb-2">SectorController (API)</code>
+                            <div class="text-xs text-slate-400 space-y-1">
+                                <div>• <code>index()</code> - JSON liste</div>
+                                <div>• <code>playlists($id)</code> - Sektör playlist'leri</div>
+                                <div>• <code>songs($id)</code> - Sektör şarkıları</div>
+                            </div>
+                            <div class="mt-2 text-xs text-slate-500">
+                                Modules/Muzibu/app/Http/Controllers/Api/SectorController.php
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded-lg p-4 border border-green-700/30">
+                            <div class="text-green-300 font-bold mb-2 text-sm">
+                                <i class="fas fa-check-circle mr-1"></i>Admin Controller
+                            </div>
+                            <code class="text-xs text-slate-300 block mb-2">Admin Livewire</code>
+                            <div class="text-xs text-slate-400 space-y-1">
+                                <div>• sector-component.blade.php</div>
+                                <div>• sector-manage-component.blade.php</div>
+                            </div>
+                            <div class="mt-2 text-xs text-slate-500">
+                                Modules/Muzibu/resources/views/admin/livewire/
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Route'lar -->
+                <div class="mb-6">
+                    <h4 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-route text-cyan-400"></i>
+                        4. Route'lar (Mevcut)
+                    </h4>
+
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+                            <div>
+                                <div class="text-green-400 font-bold mb-2">✓ Frontend Routes (web.php)</div>
+                                <div class="space-y-1 text-slate-300">
+                                    <div><span class="text-blue-400">GET</span> /sectors → SectorController@index</div>
+                                    <div><span class="text-blue-400">GET</span> /sectors/{slug} → SectorController@show</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-green-400 font-bold mb-2">✓ API Routes (api.php)</div>
+                                <div class="space-y-1 text-slate-300">
+                                    <div><span class="text-purple-400">GET</span> /api/sectors → SectorController@index</div>
+                                    <div><span class="text-purple-400">GET</span> /api/sectors/{id}/playlists</div>
+                                    <div><span class="text-purple-400">GET</span> /api/sectors/{id}/songs</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View'lar -->
+                <div>
+                    <h4 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-eye text-pink-400"></i>
+                        5. Frontend View'lar (Mevcut)
+                    </h4>
+
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <div class="text-xs space-y-2 text-slate-300">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-file text-green-400"></i>
+                                <code>resources/views/themes/muzibu/sectors/index.blade.php</code>
+                                <span class="text-green-400 text-xs">✓</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-file text-green-400"></i>
+                                <code>resources/views/themes/muzibu/sectors/show.blade.php</code>
+                                <span class="text-green-400 text-xs">✓</span>
+                            </div>
+                            <div class="mt-3 text-slate-400">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Basit liste görünümü mevcut. Spotify-style scrollable grid tasarımı YAPILACAK.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Eksik Olanlar -->
+        <section class="mb-8">
+            <div class="bg-yellow-900/20 border border-yellow-700 rounded-xl p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <i class="fas fa-exclamation-triangle text-yellow-400 text-2xl"></i>
+                    <h3 class="text-2xl font-bold text-yellow-300">Eksik Olan Yapılar</h3>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Filtre/Tag Sistemi -->
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-yellow-500">
+                        <h4 class="text-xl font-bold text-white mb-3 flex items-center gap-2">
+                            <i class="fas fa-filter text-yellow-400"></i>
+                            1. Filtre/Tag Sistemi
+                        </h4>
+                        <div class="text-slate-300 space-y-3">
+                            <p>
+                                Spotify Business'taki gibi "Acoustic", "Bossa Nova", "Chill", "Upbeat" gibi filtreler yok.
+                                Playlist'leri etiketlemek için tag sistemi kurulmalı.
+                            </p>
+                            <div class="bg-slate-800/50 rounded p-4 text-sm">
+                                <div class="text-yellow-300 font-bold mb-2">Gerekli Yapı:</div>
+                                <ul class="space-y-1 text-xs font-mono text-slate-400">
+                                    <li>• Tablo: <code class="text-cyan-400">muzibu_tags</code> (id, name, slug, type, is_active)</li>
+                                    <li>• Pivot: <code class="text-cyan-400">muzibu_playlist_tag</code> (playlist_id, tag_id)</li>
+                                    <li>• Model: <code class="text-green-400">Tag.php</code> (HasTranslations trait ile)</li>
+                                    <li>• İlişki: <code class="text-purple-400">Playlist::tags()</code> (belongsToMany)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kullanıcı-Sektör Bağlantısı -->
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-yellow-500">
+                        <h4 class="text-xl font-bold text-white mb-3 flex items-center gap-2">
+                            <i class="fas fa-user-tag text-yellow-400"></i>
+                            2. Kullanıcı-Sektör Bağlantısı
+                        </h4>
+                        <div class="text-slate-300 space-y-3">
+                            <p>
+                                Kullanıcı profilinde "primary_sector_id" field'ı yok. Kullanıcının hangi sektörde çalıştığı bilgisi saklanmalı.
+                            </p>
+                            <div class="bg-slate-800/50 rounded p-4 text-sm">
+                                <div class="text-yellow-300 font-bold mb-2">Gerekli Değişiklik:</div>
+                                <ul class="space-y-1 text-xs font-mono text-slate-400">
+                                    <li>• Migration: <code class="text-cyan-400">add_primary_sector_to_users</code></li>
+                                    <li>• Field: <code class="text-green-400">primary_sector_id</code> (nullable, foreign key)</li>
+                                    <li>• İlişki: <code class="text-purple-400">User::primarySector()</code> (belongsTo)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filtre API Endpoint'leri -->
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-yellow-500">
+                        <h4 class="text-xl font-bold text-white mb-3 flex items-center gap-2">
+                            <i class="fas fa-plug text-yellow-400"></i>
+                            3. Filtre API Endpoint'leri
+                        </h4>
+                        <div class="text-slate-300 space-y-3">
+                            <p>
+                                Sektör + tag kombinasyonuyla playlist getiren API endpoint'i yok.
+                            </p>
+                            <div class="bg-slate-800/50 rounded p-4 text-sm">
+                                <div class="text-yellow-300 font-bold mb-2">Gerekli Endpoint'ler:</div>
+                                <ul class="space-y-1 text-xs font-mono text-slate-400">
+                                    <li>• <code class="text-blue-400">GET</code> /api/sectors/{id}/tags → Sektörün tag'lerini listele</li>
+                                    <li>• <code class="text-blue-400">GET</code> /api/sectors/{id}/playlists?tag={tagSlug} → Filtrelenmiş playlist'ler</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Frontend Tasarım -->
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-yellow-500">
+                        <h4 class="text-xl font-bold text-white mb-3 flex items-center gap-2">
+                            <i class="fas fa-paint-brush text-yellow-400"></i>
+                            4. Spotify-Style Frontend Tasarım
+                        </h4>
+                        <div class="text-slate-300 space-y-3">
+                            <p>
+                                Mevcut tasarım basit liste görünümü. Spotify Business gibi scrollable grid layout gerekli.
+                            </p>
+                            <div class="bg-slate-800/50 rounded p-4 text-sm">
+                                <div class="text-yellow-300 font-bold mb-2">Yapılacak Değişiklikler:</div>
+                                <ul class="space-y-1 text-xs text-slate-400">
+                                    <li>• Üstte sektör seçici butonlar (Cafe, Restaurant, Gym...)</li>
+                                    <li>• Hero section (sektör adı + cover)</li>
+                                    <li>• Filter butonlar (Discover, All, Acoustic, Bossa Nova...)</li>
+                                    <li>• Grid layout (6 kolon, responsive)</li>
+                                    <li>• Playlist kartları (cover + başlık + açıklama)</li>
+                                    <li>• Scroll ile tüm içerik görünsün (sayfa geçişi yok)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Yapılacaklar Adım Adım -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-700 rounded-xl p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <i class="fas fa-tasks text-blue-400 text-2xl"></i>
+                    <h3 class="text-2xl font-bold text-blue-300">Yapılacaklar (Adım Adım)</h3>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Adım 1 -->
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-blue-500">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
+                                1
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-xl font-bold text-white mb-2">Tag Sistemi Migration Oluştur</h4>
+                                <p class="text-slate-300 mb-3">
+                                    Playlist'leri etiketlemek için tag tablosu ve pivot tablo oluştur.
+                                </p>
+                                <div class="bg-slate-800/50 rounded p-4 text-xs font-mono text-slate-300">
+                                    <div class="text-cyan-400 mb-2">Migration 1: create_muzibu_tags_table.php</div>
+                                    <div class="space-y-1 text-slate-400">
+                                        <div>• <code>id</code> (bigint, PK)</div>
+                                        <div>• <code>name</code> (JSON - çoklu dil)</div>
+                                        <div>• <code>slug</code> (JSON - çoklu dil)</div>
+                                        <div>• <code>type</code> (string - mood/style/tempo/genre)</div>
+                                        <div>• <code>color</code> (string - hex code, nullable)</div>
+                                        <div>• <code>icon</code> (string - FA icon class, nullable)</div>
+                                        <div>• <code>is_active</code> (boolean)</div>
+                                        <div>• <code>timestamps</code></div>
+                                    </div>
+                                    <div class="text-cyan-400 mt-4 mb-2">Migration 2: create_muzibu_playlist_tag_table.php</div>
+                                    <div class="space-y-1 text-slate-400">
+                                        <div>• <code>id</code> (bigint, PK)</div>
+                                        <div>• <code>playlist_id</code> (FK → muzibu_playlists)</div>
+                                        <div>• <code>tag_id</code> (FK → muzibu_tags)</div>
+                                        <div>• <code>timestamps</code></div>
+                                        <div>• UNIQUE constraint (playlist_id, tag_id)</div>
+                                    </div>
+                                    <div class="mt-3 text-yellow-400">
+                                        <i class="fas fa-exclamation-triangle mr-1"></i>
+                                        Her iki migration da MODÜL İÇİNDE iki yerde oluştur (central + tenant)!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Adım 2 -->
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-blue-500">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
+                                2
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-xl font-bold text-white mb-2">Tag Model Oluştur</h4>
+                                <p class="text-slate-300 mb-3">
+                                    Laravel model oluştur, çoklu dil ve ilişkiler ekle.
+                                </p>
+                                <div class="bg-slate-800/50 rounded p-4 text-xs font-mono text-slate-300">
+                                    <div class="text-green-400 mb-2">Dosya: Modules/Muzibu/app/Models/Tag.php</div>
+                                    <div class="space-y-1 text-slate-400">
+                                        <div>• Traits: <code>HasTranslations</code>, <code>Sluggable</code>, <code>SoftDeletes</code></div>
+                                        <div>• Primary Key: <code>tag_id</code></div>
+                                        <div>• Translatable: <code>['name', 'slug']</code></div>
+                                        <div>• Relationship: <code>playlists()</code> (belongsToMany → Playlist)</div>
+                                        <div>• Scopes: <code>active()</code>, <code>ofType($type)</code></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Adım 3 -->
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-blue-500">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
+                                3
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-xl font-bold text-white mb-2">Playlist Model'e Tag İlişkisi Ekle</h4>
+                                <p class="text-slate-300 mb-3">
+                                    Playlist model'e tags() ilişkisi ekle.
+                                </p>
+                                <div class="bg-slate-800/50 rounded p-4 text-xs font-mono text-slate-300">
+                                    <div class="text-purple-400 mb-2">Modules/Muzibu/app/Models/Playlist.php</div>
+                                    <div class="space-y-1 text-slate-400">
+                                        <div>• Method ekle: <code>tags()</code></div>
+                                        <div>• <code>return $this->belongsToMany(Tag::class, 'muzibu_playlist_tag', 'playlist_id', 'tag_id');</code></div>
+                                        <div>• Eager loading için: <code>protected $with = ['tags'];</code> (opsiyonel)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Adım 4 -->
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-blue-500">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
+                                4
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-xl font-bold text-white mb-2">User Model'e Sector Field Ekle</h4>
+                                <p class="text-slate-300 mb-3">
+                                    Kullanıcı profiline primary_sector_id field'ı ekle.
+                                </p>
+                                <div class="bg-slate-800/50 rounded p-4 text-xs font-mono text-slate-300">
+                                    <div class="text-cyan-400 mb-2">Migration: add_primary_sector_to_users.php (Tenant DB)</div>
+                                    <div class="space-y-1 text-slate-400">
+                                        <div>• <code>$table->unsignedBigInteger('primary_sector_id')->nullable();</code></div>
+                                        <div>• <code>$table->foreign('primary_sector_id')->references('sector_id')->on('muzibu_sectors');</code></div>
+                                        <div class="text-yellow-400 mt-2">⚠️ Migration SADECE tenant klasöründe oluştur! (database/migrations/tenant/)</div>
+                                    </div>
+                                    <div class="text-purple-400 mt-3 mb-2">app/Models/User.php</div>
+                                    <div class="space-y-1 text-slate-400">
+                                        <div>• <code>protected $fillable</code> → 'primary_sector_id' ekle</div>
+                                        <div>• Method ekle: <code>primarySector()</code> (belongsTo → Sector, tenant connection)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Adım 5 -->
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-blue-500">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
+                                5
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-xl font-bold text-white mb-2">Seeder Oluştur (Tag ve Sector Verileri)</h4>
+                                <p class="text-slate-300 mb-3">
+                                    Demo veriler için seeder oluştur.
+                                </p>
+                                <div class="bg-slate-800/50 rounded p-4 text-xs text-slate-300">
+                                    <div class="text-green-400 mb-2">Modules/Muzibu/database/seeders/TagSeeder.php</div>
+                                    <ul class="space-y-1 text-slate-400 list-disc list-inside">
+                                        <li>Cafe: Acoustic, Bossa Nova, Chill, Jazz, Lo-Fi, Upbeat</li>
+                                        <li>Restaurant: Classical, Dinner, Elegant, Romantic, Soft Jazz</li>
+                                        <li>Gym: Energetic, HIIT, Motivational, Power, Workout</li>
+                                        <li>SPA: Ambient, Calm, Meditation, Relaxation, Zen</li>
+                                    </ul>
+                                    <div class="text-yellow-400 mt-3">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Her tag çoklu dil desteğiyle oluşturulacak (tr, en)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Adım 6 -->
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-blue-500">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
+                                6
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-xl font-bold text-white mb-2">API Endpoint'leri Ekle</h4>
+                                <p class="text-slate-300 mb-3">
+                                    Tag filtreleme için API method'ları ekle.
+                                </p>
+                                <div class="bg-slate-800/50 rounded p-4 text-xs font-mono text-slate-300">
+                                    <div class="text-purple-400 mb-2">SectorController (API) - Yeni Method'lar:</div>
+                                    <div class="space-y-1 text-slate-400">
+                                        <div>• <code>tags($sectorId)</code> → Sektörün tüm tag'lerini getir</div>
+                                        <div>• <code>playlistsByTag($sectorId, $tagSlug)</code> → Tag'e göre filtrelenmiş playlist'ler</div>
+                                    </div>
+                                    <div class="text-cyan-400 mt-3 mb-2">Route'lar (api.php):</div>
+                                    <div class="space-y-1 text-slate-400">
+                                        <div>• <code>GET /api/sectors/{id}/tags</code></div>
+                                        <div>• <code>GET /api/sectors/{id}/playlists?tag={slug}</code></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Adım 7 -->
+                    <div class="bg-slate-900/50 rounded-lg p-6 border-l-4 border-blue-500">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
+                                7
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-xl font-bold text-white mb-2">Frontend Tasarım (Spotify-Style)</h4>
+                                <p class="text-slate-300 mb-3">
+                                    Mevcut view'ları Spotify Business gibi scrollable grid'e çevir.
+                                </p>
+                                <div class="bg-slate-800/50 rounded p-4 text-xs text-slate-300">
+                                    <div class="text-pink-400 mb-2">sectors/show.blade.php - Yeni Yapı:</div>
+                                    <ul class="space-y-1 text-slate-400 list-disc list-inside">
+                                        <li>Üstte: Sektör seçici butonlar (horizontal scroll)</li>
+                                        <li>Hero section: Sektör adı + cover + açıklama</li>
+                                        <li>Filter butonlar: "Discover", "All" + tag'ler (horizontal)</li>
+                                        <li>Grid layout: 6 kolon (xl), 4 kolon (lg), 3 kolon (md), 2 kolon (sm)</li>
+                                        <li>Playlist kartları: Cover + başlık + açıklama (hover efekti)</li>
+                                        <li>Alpine.js ile tag filtreleme (sayfa yenileme yok)</li>
+                                        <li>Smooth scroll, lazy loading (görseller için)</li>
+                                    </ul>
+                                    <div class="text-cyan-400 mt-3">
+                                        <i class="fas fa-code mr-1"></i>
+                                        Referans: public/readme/2026/01/06/kategori-sistemi-sektor-bazli/v3/index.html
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özet ve Sonuç -->
+        <section class="mb-8">
+            <div class="bg-gradient-to-r from-green-900/30 to-emerald-900/30 border border-green-700 rounded-xl p-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <i class="fas fa-check-circle text-green-400 text-2xl"></i>
+                    <h3 class="text-2xl font-bold text-green-300">Özet ve Sonuç</h3>
+                </div>
+
+                <div class="space-y-4 text-slate-200">
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <h4 class="text-xl font-bold text-white mb-3">Sistemin Mevcut Durumu:</h4>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check text-green-400 mt-1"></i>
+                                <span><strong>Sector altyapısı tamamen mevcut</strong> - Model, migration, controller, route, view hepsi var ve çalışıyor.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check text-green-400 mt-1"></i>
+                                <span><strong>Polymorphic ilişki sistemi kurulu</strong> - playlistables tablosu sector, genre, radio ilişkilerini yönetiyor.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check text-green-400 mt-1"></i>
+                                <span><strong>API endpoint'leri hazır</strong> - Frontend ve mobile için JSON API mevcut.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <h4 class="text-xl font-bold text-white mb-3">Eksik Olan ve Yapılacaklar:</h4>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-exclamation-triangle text-yellow-400 mt-1"></i>
+                                <span><strong>Tag sistemi kurulacak</strong> - Playlist'leri "Acoustic", "Chill" gibi etiketlerle işaretlemek için.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-exclamation-triangle text-yellow-400 mt-1"></i>
+                                <span><strong>User-Sector bağlantısı eklenecek</strong> - Kullanıcı hangi sektörde çalışıyor bilgisi.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-exclamation-triangle text-yellow-400 mt-1"></i>
+                                <span><strong>Frontend Spotify-style olacak</strong> - Scrollable grid layout, filter butonları, smooth UX.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-blue-900/50 to-purple-900/50 rounded-lg p-6 border border-blue-700/50">
+                        <h4 class="text-xl font-bold text-white mb-3 flex items-center gap-2">
+                            <i class="fas fa-rocket text-blue-400"></i>
+                            İş Planı:
+                        </h4>
+                        <div class="text-sm space-y-3">
+                            <div class="flex items-center gap-3">
+                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">1</span>
+                                <span>Tag migration + model oluştur</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">2</span>
+                                <span>Playlist-Tag ilişkisi kur</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">3</span>
+                                <span>User'a primary_sector_id ekle</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">4</span>
+                                <span>Seeder'larla demo veriler oluştur</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">5</span>
+                                <span>API endpoint'leri ekle (tag filtreleme)</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">6</span>
+                                <span>Frontend tasarımı Spotify-style yap</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">7</span>
+                                <span>Test ve cache temizleme</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-900/30 rounded-lg p-6 border border-green-700">
+                        <p class="text-lg font-semibold text-green-300 mb-2">
+                            <i class="fas fa-trophy mr-2"></i>Sonuç:
+                        </p>
+                        <p class="text-slate-200">
+                            Temel altyapı %80 hazır. Sadece tag sistemi, user-sector bağlantısı ve frontend tasarımı eklenecek.
+                            7 adımda sistem tamamen Spotify Business tarzında çalışır hale gelecek.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800/50 border-t border-slate-700 mt-12 py-6">
+        <div class="max-w-7xl mx-auto px-6 text-center text-slate-400 text-sm">
+            <p>
+                <i class="fas fa-robot mr-2"></i>
+                Generated with <a href="https://claude.com/claude-code" class="text-blue-400 hover:text-blue-300">Claude Code</a>
+            </p>
+            <p class="mt-2 text-xs text-slate-500">
+                Co-Authored-By: Claude Sonnet 4.5 &lt;noreply@anthropic.com&gt;
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -111,25 +111,31 @@ https://ixtif.com/readme/2025/11/30/horizon-cpu-sorunu-analiz/
 
 **Her tenant tamamen bağımsız çalışır:**
 - ✅ **Her tenant'ın kendi database'i var** (tenant_ixtif, tenant_muzibu_1528d0 vb.)
-- ✅ **Central database** (tuufi_4ekim) ortak tablolar için kullanılır (users, roles, permissions)
+- ✅ **Database Per Tenant** pattern - Her tenant tamamen izole edilmiş database'de çalışır
+- ✅ **Central database** (tuufi_4ekim) SADECE tenant yönetimi ve merkezi AI/subscription sistemi için
 - ✅ **Tenant 1 (tuufi.com)** = Central tenant (Ana sistem, diğer tenant'ları yönetir)
-- ✅ **Bazı tablolar central'da, bazıları tenant database'lerinde**
+- ✅ **Her tenant kendi users, roles, permissions'ına sahip!**
 
 ### 🗄️ Database Dağılımı
 
-**Central Database (tuufi_4ekim) - Tüm Tenant'lar İçin Ortak:**
+**Central Database (tuufi_4ekim) - SADECE Sistem Yönetimi:**
 - `tenants`, `domains` - Tenant yönetimi
-- `users`, `roles`, `permissions` - Kullanıcı & yetki sistemi
-- `ai_credits`, `subscriptions`, `invoices` - Faturalandırma
+- `ai_*` tablolar - AI modülü (merkezi AI sistemi)
+- `admin_languages`, `system_languages` - Sistem dilleri
 - `migrations` - Central migration kayıtları
+- `users` (19 kullanıcı) - **SADECE sistem admin'leri** (tenant kullanıcıları DEĞİL!)
+- `subscriptions` (7 kayıt) - **Eski test kayıtları** (gerçek subscriptions tenant'larda!)
 
-**Tenant Database (tenant_X) - Her Tenant'a Özel:**
+**Tenant Database (tenant_X) - Her Tenant Tamamen Bağımsız:**
+- `users`, `roles`, `permissions`, `model_has_roles`, `model_has_permissions` - **HER TENANT KENDI KULLANICILARI!**
+- `subscriptions` - **HER TENANT KENDI ABONELİKLERİ!** (Muzibu: 24 kayıt)
 - `pages`, `blogs`, `blog_categories` - İçerik yönetimi
-- `products`, `categories`, `brands` - Ürün sistemi
+- `shop_products`, `shop_categories`, `brands` - Ürün sistemi
 - `media` - Medya dosyaları (tenant'a özel)
-- `seo_meta`, `settings` - Tenant ayarları
-- **Muzibu için:** `songs`, `albums`, `artists`, `playlists`, `genres`, `sectors`
-- **İxtif için:** `products` (endüstriyel ekipman - forklift, transpalet)
+- `seo_settings`, `settings_values` - Tenant ayarları
+- `migrations` - Tenant migration kayıtları
+- **Muzibu için:** `muzibu_songs`, `muzibu_albums`, `muzibu_artists`, `muzibu_playlists`, `muzibu_genres`, `muzibu_sectors`
+- **İxtif için:** `shop_products` (endüstriyel ekipman - forklift, transpalet)
 
 ### 🎯 Aktif Tenant'lar
 
@@ -149,10 +155,10 @@ https://ixtif.com/readme/2025/11/30/horizon-cpu-sorunu-analiz/
    - **Müzik/Song/Album/Artist** → SADECE Tenant 1001 (muzibu.com)!
 
 2. ❌ Central database'e tenant verisi yazma!
-   - Blog, Product, Page → Tenant database'e yazılmalı!
+   - Blog, Product, Page, User → Tenant database'e yazılmalı!
 
-3. ❌ Tenant database'e user bilgisi yazma!
-   - User, Role, Permission → Central database'de!
+3. ❌ Tenant verilerini central'dan okuma!
+   - Her şey (users dahil) tenant context'te tenant DB'den okunur!
 
 **✅ YAP:**
 1. ✅ Kod yazmadan önce SOR:
@@ -173,13 +179,15 @@ https://ixtif.com/readme/2025/11/30/horizon-cpu-sorunu-analiz/
 
 3. ✅ Database bağlantısını doğru kullan:
    ```php
-   // Tenant verisi (otomatik tenant DB)
-   Page::all();
-   Blog::all();
+   // Tenant context'te OTOMATIK tenant DB kullanılır
+   User::all();      // Tenant users (tenant_muzibu_1528d0.users)
+   Role::all();      // Tenant roles
+   Page::all();      // Tenant pages
+   Blog::all();      // Tenant blogs
 
-   // Central verisi (zorunlu $connection = 'central')
-   User::all();
-   Role::all();
+   // SADECE tenant yönetimi için central DB
+   // (Normal kodlarda kullanma, sistem içi işlemler)
+   \App\Models\Tenant::all();  // Central DB: tenants tablosu
    ```
 
 4. ✅ Migration oluştururken MODÜL İÇİNDE, İKİ YERDE oluştur:

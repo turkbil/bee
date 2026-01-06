@@ -1,3 +1,45 @@
+# =============================================================================
+# CACHE-CONTROL HEADERS - KALICI ÇÖZÜM
+# =============================================================================
+# JS/CSS dosyaları versioned_asset() ile yüklenir (?v=timestamp)
+# Query string değişince browser otomatik yeni dosyayı çeker!
+# =============================================================================
+
+<IfModule mod_headers.c>
+    # JS/CSS: Public cache + ETag + version query string bazlı cache
+    <FilesMatch "\.(js|css)$">
+        # Public cache: Browser ve CDN cache'leyebilir
+        Header set Cache-Control "public, max-age=31536000, immutable"
+
+        # ETag: Dosya değişirse ETag değişir, browser yeniden indirir
+        Header set ETag "\"versioned-asset\""
+
+        # Vary: Query string değişince yeni dosya (versioned_asset sayesinde)
+        Header append Vary Accept-Encoding
+    </FilesMatch>
+
+    # Images: Uzun cache (genelde değişmez)
+    <FilesMatch "\.(jpg|jpeg|png|gif|svg|webp|ico)$">
+        Header set Cache-Control "public, max-age=2592000"
+    </FilesMatch>
+
+    # Fonts: Uzun cache (asla değişmez)
+    <FilesMatch "\.(woff|woff2|ttf|otf|eot)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+
+    # HTML: No cache (dinamik content)
+    <FilesMatch "\.(html|htm)$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
+</IfModule>
+
+# =============================================================================
+# LARAVEL REWRITE RULES
+# =============================================================================
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes

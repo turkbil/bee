@@ -226,13 +226,13 @@
                         {{-- Sol Kolon: Ana Bilgiler --}}
                         <div class="col-lg-8 border-end">
                             {{-- Tutar Banner --}}
-                            <div class="p-4 bg-primary">
+                            <div class="p-4 payment-amount-banner">
                                 <div class="row align-items-center">
                                     <div class="col">
-                                        <div class="text-white text-opacity-75 small mb-1">Ödeme Tutarı</div>
+                                        <div class="payment-amount-label small mb-1">Ödeme Tutarı</div>
                                         <div class="d-flex align-items-baseline gap-1">
-                                            <span class="display-5 fw-bold text-white">{{ number_format($selectedPayment->amount, 2, ',', '.') }}</span>
-                                            <span class="fs-4 text-white text-opacity-75">₺</span>
+                                            <span class="display-5 fw-bold payment-amount-value">{{ number_format($selectedPayment->amount, 2, ',', '.') }}</span>
+                                            <span class="fs-4 payment-amount-currency">₺</span>
                                         </div>
                                     </div>
                                     <div class="col-auto">
@@ -250,10 +250,10 @@
                                             };
                                         @endphp
                                         <div class="text-center">
-                                            <div class="avatar avatar-xl bg-white bg-opacity-25 mb-2">
-                                                <i class="fas fa-{{ $gwIcon }} fa-lg text-white"></i>
+                                            <div class="avatar avatar-xl payment-gateway-avatar mb-2">
+                                                <i class="fas fa-{{ $gwIcon }} fa-lg payment-gateway-icon"></i>
                                             </div>
-                                            <div class="small text-white">{{ $gwLabel }}</div>
+                                            <div class="small payment-gateway-label">{{ $gwLabel }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -396,7 +396,7 @@
                                     <h5 class="mb-3">
                                         <i class="fas fa-shopping-bag me-2 text-muted"></i>
                                         Sipariş Kalemleri
-                                        <span class="badge bg-secondary-lt ms-2">{{ $order->items->count() }}</span>
+                                        <span class="badge bg-secondary ms-2">{{ $order->items->count() }}</span>
                                     </h5>
                                     <div class="list-group list-group-flush">
                                         @foreach($order->items as $item)
@@ -450,7 +450,7 @@
                                                     <div class="text-muted small">
                                                         {{ number_format($item->unit_price, 2, ',', '.') }} ₺ x {{ $item->quantity }}
                                                         @if($item->is_digital)
-                                                            <span class="badge bg-purple-lt text-purple ms-1">Dijital</span>
+                                                            <span class="badge bg-purple ms-1">Dijital</span>
                                                         @endif
                                                     </div>
                                                     {{-- Kurumsal Üye Bilgisi --}}
@@ -747,5 +747,53 @@
     <style>
     .cursor-pointer { cursor: pointer; }
     .cursor-pointer:hover { background-color: rgba(var(--tblr-primary-rgb), 0.02); }
+
+    /* Payment Amount Banner - Light Mode */
+    .payment-amount-banner {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
+    .payment-amount-label {
+        color: #6c757d;
+    }
+    .payment-amount-value {
+        color: #1e293b;
+    }
+    .payment-amount-currency {
+        color: #6c757d;
+    }
+    .payment-gateway-avatar {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+    .payment-gateway-icon {
+        color: #1e293b;
+    }
+    .payment-gateway-label {
+        color: #1e293b;
+    }
+
+    /* Payment Amount Banner - Dark Mode */
+    [data-bs-theme="dark"] .payment-amount-banner {
+        background-color: #1e293b;
+        border-bottom: 1px solid #334155;
+    }
+    [data-bs-theme="dark"] .payment-amount-label {
+        color: rgba(255, 255, 255, 0.7);
+    }
+    [data-bs-theme="dark"] .payment-amount-value {
+        color: #ffffff;
+    }
+    [data-bs-theme="dark"] .payment-amount-currency {
+        color: rgba(255, 255, 255, 0.7);
+    }
+    [data-bs-theme="dark"] .payment-gateway-avatar {
+        background-color: rgba(255, 255, 255, 0.15);
+    }
+    [data-bs-theme="dark"] .payment-gateway-icon {
+        color: #ffffff;
+    }
+    [data-bs-theme="dark"] .payment-gateway-label {
+        color: #ffffff;
+    }
     </style>
 </div>

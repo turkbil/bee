@@ -3355,8 +3355,20 @@ function muzibuApp() {
 
                         // 🔧 HLS ERROR: Fragment 401/403 retry (preloaded path)
                         preloadedHls.on(Hls.Events.ERROR, async function(event, data) {
-                            // 🔧 Non-fatal 401/403 fragment hatalarında yeni URL al
+                            // 🔧 bufferStalledError: Silent recovery (preloaded)
+                            if (data.details === 'bufferStalledError') {
+                                console.log('🔄 Buffer stall detected (preloaded), HLS auto-recovering...');
+                                return;
+                            }
+
+                            // 🔧 fragLoadError (500/404): Silent retry (preloaded)
                             const respCode = data?.response?.code || data?.response?.status || null;
+                            if (data.details === 'fragLoadError' && !data.fatal && respCode === 500) {
+                                console.log(`🔄 Fragment load error 500 (preloaded), HLS auto-retrying...`);
+                                return; // HLS retry ediyor
+                            }
+
+                            // 🔧 Non-fatal 401/403 fragment hatalarında yeni URL al
                             if (!data.fatal && (respCode === 401 || respCode === 403) && data.details === 'fragLoadError') {
                                 if (!self._frag401RetryCount) self._frag401RetryCount = 0;
                                 self._frag401RetryCount++;
@@ -4136,6 +4148,13 @@ onplay: function() {
                         return; // Toast gösterme, sessizce recover et
                     }
 
+                    // 🔧 fragLoadError (500/404): Silent retry (HLS otomatik retry yapar)
+                    if (data.details === 'fragLoadError' && !data.fatal) {
+                        const statusCode = data.response?.code || data.response?.status;
+                        console.log(`🔄 Fragment load error (${statusCode}), HLS auto-retrying...`);
+                        return; // Toast gösterme, HLS retry ediyor
+                    }
+
                     // 🔧 DEBUG: Tüm HLS hatalarını logla
                     console.warn('⚠️ HLS ERROR:', {
                         type: data.type,
@@ -4153,8 +4172,9 @@ onplay: function() {
                             self.showToast(`🔴 HLS FATAL: ${data.details}`, 'error');
                         }
                     } else {
-                        // Non-fatal ama önemli hatalar (bufferStalled hariç)
-                        if (self.currentUser?.is_root && data.details !== 'bufferStalledError') {
+                        // Non-fatal ama önemli hatalar (silent recovery olanlar hariç)
+                        const silentErrors = ['bufferStalledError', 'fragLoadError'];
+                        if (self.currentUser?.is_root && !silentErrors.includes(data.details)) {
                             self.showToast(`⚠️ HLS: ${data.details}`, 'warning');
                         }
                     }

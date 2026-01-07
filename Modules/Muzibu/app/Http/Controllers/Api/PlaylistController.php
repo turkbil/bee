@@ -96,7 +96,6 @@ class PlaylistController extends Controller
                     'song_title' => $song->title,
                     'song_slug' => $song->slug,
                     'duration' => $song->duration,
-                    'file_path' => $song->file_path,
                     'hls_path' => $song->hls_path,                    'lyrics' => $song->lyrics, // 🎤 Lyrics support (dynamic - null if not available)
                     'album_id' => $album?->album_id,
                     'album_title' => $album?->title,

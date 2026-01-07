@@ -51,7 +51,6 @@ class RadioController extends Controller
                     'song_title' => $song->title,
                     'song_slug' => $song->slug,
                     'duration' => $song->duration,
-                    'file_path' => $song->file_path,
                     'hls_path' => $song->hls_path,
                     'album_id' => $album?->album_id,
                     'album_title' => $album?->title,

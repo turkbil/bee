@@ -95,6 +95,19 @@ async function playGenres(genreId) {
         player.queue = shuffledSongs;
         player.queueIndex = 0;
 
+        // 🎸 Set play context to 'genre'
+        const muzibuStore = Alpine.store('muzibu');
+        if (muzibuStore && typeof muzibuStore.setPlayContext === 'function') {
+            const genreTitle = data.genre?.title?.tr || data.genre?.title?.en || data.genre?.title || 'Genre';
+            muzibuStore.setPlayContext({
+                type: 'genre',
+                id: genreId,
+                name: genreTitle,
+                offset: 0,
+                source: 'genre_click'
+            });
+        }
+
         // Play first song
         await player.playSongFromQueue(0);
 
@@ -154,6 +167,19 @@ async function playPlaylist(playlistId) {
         // Load shuffled songs into queue and play
         player.queue = shuffledSongs;
         player.queueIndex = 0;
+
+        // 🎵 Set play context to 'playlist'
+        const muzibuStore = Alpine.store('muzibu');
+        if (muzibuStore && typeof muzibuStore.setPlayContext === 'function') {
+            const playlistTitle = data.playlist?.title?.tr || data.playlist?.title?.en || data.playlist?.title || 'Playlist';
+            muzibuStore.setPlayContext({
+                type: 'playlist',
+                id: playlistId,
+                name: playlistTitle,
+                offset: 0,
+                source: 'playlist_click'
+            });
+        }
 
         // Play first song
         await player.playSongFromQueue(0);
@@ -215,6 +241,19 @@ async function playAlbum(albumId) {
         player.queue = shuffledSongs;
         player.queueIndex = 0;
 
+        // 💿 Set play context to 'album'
+        const muzibuStore = Alpine.store('muzibu');
+        if (muzibuStore && typeof muzibuStore.setPlayContext === 'function') {
+            const albumTitle = data.album?.title?.tr || data.album?.title?.en || data.album?.title || 'Album';
+            muzibuStore.setPlayContext({
+                type: 'album',
+                id: albumId,
+                name: albumTitle,
+                offset: 0,
+                source: 'album_click'
+            });
+        }
+
         // Play first song
         await player.playSongFromQueue(0);
 
@@ -275,6 +314,19 @@ async function playRadio(radioId) {
         player.queue = shuffledSongs;
         player.queueIndex = 0;
 
+        // 📻 Set play context to 'radio' (queue butonunu gizlemek için)
+        const muzibuStore = Alpine.store('muzibu');
+        if (muzibuStore && typeof muzibuStore.setPlayContext === 'function') {
+            const radioTitle = data.radio?.title?.tr || data.radio?.title?.en || data.radio?.title || 'Radio';
+            muzibuStore.setPlayContext({
+                type: 'radio',
+                id: radioId,
+                name: radioTitle,
+                offset: 0,
+                source: 'radio_click'
+            });
+        }
+
         // Play first song
         await player.playSongFromQueue(0);
 
@@ -334,6 +386,19 @@ async function playSector(sectorId) {
         // Load shuffled songs into queue and play
         player.queue = shuffledSongs;
         player.queueIndex = 0;
+
+        // 🏢 Set play context to 'sector'
+        const muzibuStore = Alpine.store('muzibu');
+        if (muzibuStore && typeof muzibuStore.setPlayContext === 'function') {
+            const sectorTitle = data.sector?.title?.tr || data.sector?.title?.en || data.sector?.title || 'Sector';
+            muzibuStore.setPlayContext({
+                type: 'sector',
+                id: sectorId,
+                name: sectorTitle,
+                offset: 0,
+                source: 'sector_click'
+            });
+        }
 
         // Play first song
         await player.playSongFromQueue(0);

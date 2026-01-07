@@ -77,7 +77,6 @@ class SectorController extends Controller
                     'song_title' => $song->title,
                     'song_slug' => $song->slug,
                     'duration' => $song->duration,
-                    'file_path' => $song->file_path,
                     'hls_path' => $song->hls_path,
                     'cover_url' => $song->getCoverUrl(120, 120), // ✅ Sidebar için cover (120x120)
                     'album_cover' => $song->getCoverUrl(120, 120), // ✅ Compatibility

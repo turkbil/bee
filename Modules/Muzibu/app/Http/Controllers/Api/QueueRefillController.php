@@ -104,7 +104,8 @@ class QueueRefillController extends Controller
                         'reason' => 'Şarkı bulunamadı, popüler türe geçiliyor'
                     ];
 
-                    $songs = $this->getGenreSongs($fallbackGenre->genre_id, 0, $limit, []);
+                    // 🐛 FIX: exclude_song_ids'i genre'ye de geçir (duplicate önleme)
+                    $songs = $this->getGenreSongs($fallbackGenre->genre_id, 0, $limit, $excludeSongIds);
                 }
             }
 
@@ -241,7 +242,8 @@ class QueueRefillController extends Controller
 
             if ($albumGenreId) {
                 $genre = Genre::find($albumGenreId);
-                $genreSongs = $this->getGenreSongsOnly($albumGenreId, $limit, []);
+                // 🐛 FIX: exclude_song_ids'i genre'ye de geçir (duplicate önleme)
+                $genreSongs = $this->getGenreSongsOnly($albumGenreId, $limit, $excludeSongIds);
 
                 $genreTitle = $this->extractTitle($genre, 'Tür');
                 $albumTitle = $this->extractTitle($album, 'Albüm');
@@ -314,7 +316,8 @@ class QueueRefillController extends Controller
                 $song = Song::with('genre')->find($anySong->song_id);
                 if ($song && $song->genre_id) {
                     $genre = $song->genre;
-                    $genreSongs = $this->getGenreSongsOnly($song->genre_id, $limit, []);
+                    // 🐛 FIX: exclude_song_ids'i genre'ye de geçir (duplicate önleme)
+                    $genreSongs = $this->getGenreSongsOnly($song->genre_id, $limit, $excludeSongIds);
                     $playlistTitle = $this->extractTitle($playlist, 'Playlist');
                     $genreTitle = $this->extractTitle($genre, 'Tür');
 
@@ -384,7 +387,8 @@ class QueueRefillController extends Controller
                 $song = Song::with('genre')->find($anySong->song_id);
                 if ($song && $song->genre_id) {
                     $genre = $song->genre;
-                    $genreSongs = $this->getGenreSongsOnly($song->genre_id, $limit, []);
+                    // 🐛 FIX: exclude_song_ids'i genre'ye de geçir (duplicate önleme)
+                    $genreSongs = $this->getGenreSongsOnly($song->genre_id, $limit, $excludeSongIds);
                     $playlistTitle = $this->extractTitle($playlist, 'Playlist');
                     $genreTitle = $this->extractTitle($genre, 'Tür');
 
@@ -524,7 +528,8 @@ class QueueRefillController extends Controller
                 $lastSong = Song::with('genre')->find($lastPlayedSongId);
                 if ($lastSong && $lastSong->genre_id) {
                     $genre = $lastSong->genre;
-                    $genreSongs = $this->getGenreSongsOnly($lastSong->genre_id, $limit, []);
+                    // 🐛 FIX: exclude_song_ids'i genre'ye de geçir (duplicate önleme)
+                    $genreSongs = $this->getGenreSongsOnly($lastSong->genre_id, $limit, $excludeSongIds);
                     $genreTitle = $this->extractTitle($genre, 'Tür');
 
                     return [
@@ -611,7 +616,8 @@ class QueueRefillController extends Controller
                     $lastSong = Song::with('genre')->find($lastPlayedSongId);
                     if ($lastSong && $lastSong->genre_id) {
                         $genre = $lastSong->genre;
-                        $genreSongs = $this->getGenreSongsOnly($lastSong->genre_id, $limit, []);
+                        // 🐛 FIX: exclude_song_ids'i genre'ye de geçir (duplicate önleme)
+                        $genreSongs = $this->getGenreSongsOnly($lastSong->genre_id, $limit, $excludeSongIds);
                         $genreTitle = $this->extractTitle($genre, 'Tür');
 
                         return [
@@ -680,7 +686,8 @@ class QueueRefillController extends Controller
 
             if ($anySong && $anySong->genre_id) {
                 $genre = $anySong->genre;
-                $genreSongs = $this->getGenreSongsOnly($anySong->genre_id, $limit, []);
+                // 🐛 FIX: exclude_song_ids'i genre'ye de geçir (duplicate önleme)
+                $genreSongs = $this->getGenreSongsOnly($anySong->genre_id, $limit, $excludeSongIds);
                 $artistTitle = $this->extractTitle($artist, 'Sanatçı');
                 $genreTitle = $this->extractTitle($genre, 'Tür');
 
@@ -859,7 +866,6 @@ class QueueRefillController extends Controller
                 'song_title' => $song->title,
                 'song_slug' => $song->slug,
                 'duration' => $song->duration,
-                'file_path' => $song->file_path,
                 'hls_path' => $song->hls_path,
                 'lyrics' => $song->lyrics,
                 'album_id' => $album?->album_id,
@@ -1171,7 +1177,6 @@ class QueueRefillController extends Controller
             'song_title' => $song->title,
             'song_slug' => $song->slug,
             'duration' => $song->duration,
-            'file_path' => $song->file_path,
             'hls_path' => $song->hls_path,
             'lyrics' => $song->lyrics,
             'album_id' => $album?->album_id,

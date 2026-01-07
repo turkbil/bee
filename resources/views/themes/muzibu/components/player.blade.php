@@ -181,7 +181,8 @@
                 <i :class="isLiked ? 'fas fa-heart text-pink-500' : 'far fa-heart text-zinc-400'" class="w-5 text-center"></i>
                 <span x-text="isLiked ? 'Favorilerden Çıkar' : 'Favorilere Ekle'"></span>
             </button>
-            <button class="w-full px-4 py-3 flex items-center gap-3 text-sm text-white active:bg-zinc-700"
+            <button x-show="$store.muzibu?.playContext?.type !== 'radio'"
+                    class="w-full px-4 py-3 flex items-center gap-3 text-sm text-white active:bg-zinc-700"
                     @click="showQueue = true; showMobileMenu = false">
                 <i class="fas fa-list-ul text-orange-400 w-5 text-center"></i>
                 <span>Sıradakiler</span>
@@ -322,8 +323,9 @@
         </div>
     </div>
 
-    {{-- Queue Button --}}
-    <button class="w-9 h-9 text-white/60 hover:text-white flex items-center justify-center transition-colors"
+    {{-- Queue Button (Radyo modunda gizli) --}}
+    <button x-show="$store.muzibu?.playContext?.type !== 'radio'"
+            class="w-9 h-9 text-white/60 hover:text-white flex items-center justify-center transition-colors"
             @click="showQueue = !showQueue">
         <i class="fas fa-list-ul"></i>
     </button>

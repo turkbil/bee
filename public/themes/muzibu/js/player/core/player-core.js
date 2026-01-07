@@ -1436,9 +1436,14 @@ function muzibuApp() {
                         }
 
                         if (newSongs && newSongs.length > 0) {
-                            // Mevcut şarkıyı filtrele
+                            // 🛡️ DUPLICATE FILTER: Mevcut şarkı + kendi aralarındaki duplicate'leri filtrele
                             const currentSongId = this.currentSong?.song_id;
-                            const uniqueSongs = newSongs.filter(s => s.song_id !== currentSongId);
+                            const seenIds = new Set(currentSongId ? [currentSongId] : []);
+                            const uniqueSongs = newSongs.filter(s => {
+                                if (seenIds.has(s.song_id)) return false;
+                                seenIds.add(s.song_id);
+                                return true;
+                            });
 
                             // 🔍 SERVER LOG
                             serverLog('refillFiltered', {
@@ -2863,9 +2868,21 @@ function muzibuApp() {
                     }
 
                     this.queueIndex = 0;
-                    await this.playSongFromQueue(0);
 
+                    // 📻 Set play context to 'radio' (queue butonunu gizlemek için)
+                    const muzibuStore = Alpine.store('muzibu');
                     const radioTitle = data.radio?.title?.tr || data.radio?.title?.en || data.radio?.title || this.frontLang?.general?.radio || 'Radio';
+                    if (muzibuStore && typeof muzibuStore.setPlayContext === 'function') {
+                        muzibuStore.setPlayContext({
+                            type: 'radio',
+                            id: id,
+                            name: radioTitle,
+                            offset: 0,
+                            source: 'radio_click'
+                        });
+                    }
+
+                    await this.playSongFromQueue(0);
                     this.showToast(`📻 ${(this.frontLang?.messages?.now_playing || ':title is playing').replace(':title', radioTitle)}`, 'success');
                 } else {
                     this.showToast(this.frontLang?.messages?.radio_no_playable_songs || 'No playable songs in this radio', 'error');
@@ -3058,28 +3075,33 @@ function muzibuApp() {
                     this.showToast(`🔍 store:${muzibuStore ? 'OK' : 'YOK!'} album:${albumId || '-'} genre:${genreId || '-'} ctx:${currentContext ? 'var' : 'yok'}`, 'info');
                 }
 
-                if (!currentContext && (albumId || genreId)) {
-
-                    // Priority: Album → Genre
-                    // If song has album_id, set context to album (will transition to genre when album ends)
-                    // If no album, set context to genre directly (infinite loop)
-                    if (albumId) {
-                        muzibuStore.setPlayContext({
-                            type: 'album',
-                            id: albumId,
-                            name: albumName,
-                            offset: 0,
-                            source: 'auto_detect'
-                        });
-                    } else if (genreId) {
-                        muzibuStore.setPlayContext({
-                            type: 'genre',
-                            id: genreId,
-                            name: genreName,
-                            offset: 0,
-                            source: 'auto_detect'
-                        });
-                    }
+                // 🎵 Tek şarkı çalınırken HER ZAMAN context güncelle (radyo sonrası queue görünsün)
+                // Priority: Album → Genre → Song
+                if (albumId) {
+                    muzibuStore.setPlayContext({
+                        type: 'album',
+                        id: albumId,
+                        name: albumName,
+                        offset: 0,
+                        source: 'song_click'
+                    });
+                } else if (genreId) {
+                    muzibuStore.setPlayContext({
+                        type: 'genre',
+                        id: genreId,
+                        name: genreName,
+                        offset: 0,
+                        source: 'song_click'
+                    });
+                } else {
+                    // Şarkının album/genre'si yoksa 'song' context'i ayarla
+                    muzibuStore.setPlayContext({
+                        type: 'song',
+                        id: id,
+                        name: fullSong.song_title?.tr || fullSong.song_title?.en || fullSong.song_title || 'Song',
+                        offset: 0,
+                        source: 'song_click'
+                    });
                 }
 
                 // 🔥 INSTANT QUEUE REFILL: Context var ise (detail page veya auto-detect), queue'yu doldur!
@@ -3095,9 +3117,14 @@ function muzibuApp() {
                         }
 
                         if (nextSongs && nextSongs.length > 0) {
-                            // 🛡️ DUPLICATE FILTER: Mevcut şarkı ile aynı olanları filtrele
+                            // 🛡️ DUPLICATE FILTER: Mevcut şarkı + kendi aralarındaki duplicate'leri filtrele
                             const currentSongId = song.song_id;
-                            const uniqueNextSongs = nextSongs.filter(s => s.song_id !== currentSongId);
+                            const seenIds = new Set([currentSongId]); // Mevcut şarkı zaten dahil
+                            const uniqueNextSongs = nextSongs.filter(s => {
+                                if (seenIds.has(s.song_id)) return false;
+                                seenIds.add(s.song_id);
+                                return true;
+                            });
 
                             // Queue'ya ekle (mevcut şarkı zaten 0. index'te)
                             this.queue = [song, ...uniqueNextSongs];

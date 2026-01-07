@@ -1,14 +1,18 @@
-@props(['song', 'preview' => true, 'compact' => false])
+@props(['song', 'preview' => true, 'compact' => false, 'list' => false])
 
 {{-- ⚠️⚠️⚠️ UYARI: PREVIEW MODU HER ZAMAN TRUE OLMALI! ⚠️⚠️⚠️ --}}
 {{--
     🚨 KRİTİK: Bu component MUTLAKA :preview="true" ile çağrılmalı!
 
     ✅ DOĞRU KULLANIM:
-    <x-muzibu.song-card :song="$song" :preview="true" />
+    <x-muzibu.song-card :song="$song" :preview="true" />           -- Card view
+    <x-muzibu.song-card :song="$song" :preview="false" :list="true" /> -- List view
 
-    ❌ YANLIŞ KULLANIM:
-    <x-muzibu.song-card :song="$song" />  ← Bu YANLIŞ! Preview=false olur!
+    Props:
+    - song: Model - Şarkı modeli (zorunlu)
+    - preview: Boolean - Desktop sidebar preview (varsayılan: true)
+    - compact: Boolean - Compact card mode (varsayılan: false)
+    - list: Boolean - Yatay liste görünümü (varsayılan: false)
 --}}
 {{-- Muzibu Song Card Component --}}
 
@@ -22,8 +26,80 @@
         $albumCover = $albumHero ? thumb($albumHero, 300, 300, ['scale' => 1]) : null;
         $artistName = $song->album->artist ? $song->album->artist->getTranslation('title', app()->getLocale()) : null;
     }
+    $isFavorite = is_favorited('song', $songId);
 @endphp
 
+@if($list)
+{{-- LIST VIEW --}}
+<div class="group flex items-center gap-3 px-3 py-2 rounded transition-all bg-transparent hover:bg-white/10 cursor-pointer"
+     data-song-id="{{ $songId }}"
+     data-context-type="song"
+     x-data="{ touchTimer: null, touchStartPos: { x: 0, y: 0 } }"
+     x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'song', {
+         id: {{ $songId }},
+         title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
+         artist: '{{ $artistName ? addslashes($artistName) : '' }}',
+         album_id: {{ $song->album_id ?? 'null' }},
+         is_favorite: {{ $isFavorite ? 'true' : 'false' }}
+     })"
+     x-on:touchstart="touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY }; touchTimer = setTimeout(() => { if (navigator.vibrate) navigator.vibrate(50); $store.contextMenu.openContextMenu({ clientX: $event.touches[0].clientX, clientY: $event.touches[0].clientY }, 'song', { id: {{ $songId }}, title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}', is_favorite: {{ $isFavorite ? 'true' : 'false' }} }); }, 500);"
+     x-on:touchend="clearTimeout(touchTimer)"
+     x-on:touchmove="if (Math.abs($event.touches[0].clientX - touchStartPos.x) > 10 || Math.abs($event.touches[0].clientY - touchStartPos.y) > 10) clearTimeout(touchTimer);"
+     @mouseenter="if (typeof preloadSongOnHover === 'function') preloadSongOnHover({{ $songId }})"
+     @click="window.playSong ? window.playSong({{ $songId }}) : $store.player.playSong({{ $songId }})">
+
+    {{-- Play Button Overlay --}}
+    <div class="relative">
+        <div class="w-14 h-14 rounded overflow-hidden flex-shrink-0">
+            @if($albumCover)
+                <img src="{{ thumb($song->album->getFirstMedia('hero'), 56, 56, ['scale' => 1]) }}"
+                     alt="{{ $song->getTranslation('title', app()->getLocale()) }}"
+                     class="w-full h-full object-cover">
+            @else
+                <div class="w-full h-full bg-gradient-to-br from-muzibu-coral to-pink-600 flex items-center justify-center text-xl">
+                    🎵
+                </div>
+            @endif
+        </div>
+        <div class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded">
+            <i class="fas fa-play text-white text-sm"></i>
+        </div>
+    </div>
+
+    {{-- Song Info --}}
+    <div class="flex-1 min-w-0">
+        <div class="text-sm font-semibold text-white truncate group-hover:text-muzibu-coral transition-colors"
+             x-bind:class="$store.player.currentSong?.id === {{ $songId }} ? 'text-muzibu-coral' : ''">
+            {{ $song->getTranslation('title', app()->getLocale()) }}
+        </div>
+        <div class="text-xs text-muzibu-text-gray truncate">
+            {{ $artistName ?? 'Sanatçı' }}
+        </div>
+    </div>
+
+    {{-- Actions --}}
+    <div class="flex items-center gap-2">
+        {{-- Duration --}}
+        <div class="text-xs text-muzibu-text-gray w-10 text-right">
+            @if($song->duration)
+                {{ gmdate('i:s', $song->duration) }}
+            @endif
+        </div>
+        {{-- 3-Dot Menu --}}
+        <button @click.stop="$store.contextMenu.openContextMenu($event, 'song', {
+            id: {{ $songId }},
+            title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
+            artist: '{{ $artistName ? addslashes($artistName) : '' }}',
+            album_id: {{ $song->album_id ?? 'null' }},
+            is_favorite: {{ $isFavorite ? 'true' : 'false' }}
+        })" class="w-8 h-8 rounded-full flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all">
+            <i class="fas fa-ellipsis-v text-sm"></i>
+        </button>
+    </div>
+</div>
+
+@else
+{{-- CARD VIEW (Default) --}}
 <a @if($preview)
        href="{{ $song->getUrl() }}"
        @click="if (window.innerWidth >= 768) { $event.preventDefault(); $store.sidebar.showPreview('song', {{ $songId }}, {
@@ -32,7 +108,7 @@
            title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
            artist: '{{ $artistName ? addslashes($artistName) : '' }}',
            cover: '{{ $albumCover ?? '' }}',
-           is_favorite: {{ is_favorited('song', $songId) ? 'true' : 'false' }}
+           is_favorite: {{ $isFavorite ? 'true' : 'false' }}
        }); }"
    @else
        href="{{ $song->getUrl() }}"
@@ -45,7 +121,7 @@
        title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
        artist: '{{ $artistName ? addslashes($artistName) : '' }}',
        album_id: {{ $song->album_id ?? 'null' }},
-       is_favorite: {{ is_favorited('song', $songId) ? 'true' : 'false' }}
+       is_favorite: {{ $isFavorite ? 'true' : 'false' }}
    })"
    {{-- Context Menu (Mobile: Long Press) --}}
    x-data="{
@@ -64,7 +140,7 @@
                title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
                artist: '{{ $artistName ? addslashes($artistName) : '' }}',
                album_id: {{ $song->album_id ?? 'null' }},
-               is_favorite: {{ is_favorited('song', $songId) ? 'true' : 'false' }}
+               is_favorite: {{ $isFavorite ? 'true' : 'false' }}
            });
        }, 500);
    "
@@ -124,7 +200,7 @@
                 title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
                 artist: '{{ $artistName ? addslashes($artistName) : '' }}',
                 album_id: {{ $song->album_id ?? 'null' }},
-                is_favorite: {{ is_favorited('song', $songId) ? 'true' : 'false' }}
+                is_favorite: {{ $isFavorite ? 'true' : 'false' }}
             })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
                 <i class="fas fa-ellipsis-v text-sm"></i>
             </button>
@@ -145,3 +221,4 @@
         </p>
     </div>
 </a>
+@endif

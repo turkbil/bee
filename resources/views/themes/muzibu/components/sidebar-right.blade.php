@@ -91,67 +91,55 @@
             <template x-if="!$store.sidebar.previewLoading && $store.sidebar.hasPreviewTracks && $store.sidebar.previewInfo?.type === 'Playlist' && $store.sidebar.previewInfo?.is_mine === true">
                 <div class="flex-1 overflow-y-auto bg-slate-900/50"
                      x-ref="myPlaylistPreviewList"
-                     x-effect="
-                        if ($store.sidebar.previewInfo?.is_mine && $refs.myPlaylistPreviewList && $store.sidebar.previewTracks?.length > 0 && typeof Sortable !== 'undefined') {
-                            $nextTick(() => {
-                                if ($refs.myPlaylistPreviewList._sortable) $refs.myPlaylistPreviewList._sortable.destroy();
-                                $refs.myPlaylistPreviewList._sortable = new Sortable($refs.myPlaylistPreviewList, {
-                                    animation: 250,
-                                    easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
-                                    handle: '.playlist-drag-handle',
-                                    ghostClass: 'sortable-ghost',
-                                    chosenClass: 'sortable-chosen',
-                                    dragClass: 'sortable-drag',
-                                    forceFallback: true,
-                                    fallbackClass: 'sortable-drag',
-                                    onEnd: async (evt) => {
-                                        const oldIdx = evt.oldIndex;
-                                        const newIdx = evt.newIndex;
+                     x-init="
+                        let sortableInstance = null;
+                        const initSortable = () => {
+                            if (!$refs.myPlaylistPreviewList || typeof Sortable === 'undefined') return;
+                            if (sortableInstance) sortableInstance.destroy();
+                            if (!$store.sidebar.previewTracks?.length) return;
 
-                                        // DOM değişikliğini geri al (Alpine yeniden render edecek)
-                                        const item = evt.item;
-                                        const parent = evt.from;
-                                        parent.removeChild(item);
-                                        if (oldIdx < parent.children.length) {
-                                            parent.insertBefore(item, parent.children[oldIdx]);
-                                        } else {
-                                            parent.appendChild(item);
+                            sortableInstance = new Sortable($refs.myPlaylistPreviewList, {
+                                animation: 200,
+                                handle: '.playlist-drag-handle',
+                                ghostClass: 'sortable-ghost',
+                                chosenClass: 'sortable-chosen',
+                                dragClass: 'sortable-drag',
+                                onEnd: async (evt) => {
+                                    if (evt.oldIndex === evt.newIndex) return;
+
+                                    // Yeni sıralamayı hesapla
+                                    const tracks = [...$store.sidebar.previewTracks];
+                                    const movedTrack = tracks[evt.oldIndex];
+                                    tracks.splice(evt.oldIndex, 1);
+                                    tracks.splice(evt.newIndex, 0, movedTrack);
+
+                                    // State güncelle
+                                    $store.sidebar.previewTracks = tracks;
+
+                                    // Server'a kaydet
+                                    const songPositions = tracks.map((t, i) => ({ song_id: t.id, position: i }));
+                                    try {
+                                        const resp = await fetch(`/api/muzibu/playlists/${$store.sidebar.previewInfo.id}/reorder`, {
+                                            method: 'PUT',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content
+                                            },
+                                            body: JSON.stringify({ song_positions: songPositions })
+                                        });
+                                        const data = await resp.json();
+                                        if (data.success) {
+                                            Alpine.store('toast').show('Sıralama kaydedildi', 'success');
                                         }
-
-                                        if (oldIdx === newIdx) return;
-
-                                        const tracks = [...$store.sidebar.previewTracks];
-                                        const movedTrack = tracks[oldIdx];
-                                        tracks.splice(oldIdx, 1);
-                                        tracks.splice(newIdx, 0, movedTrack);
-
-                                        // Update local state (Alpine will re-render)
-                                        $store.sidebar.previewTracks = tracks;
-
-                                        // Save to server - format: song_positions: [{ song_id: X, position: Y }, ...]
-                                        const songPositions = tracks.map((t, i) => ({ song_id: t.id, position: i }));
-                                        try {
-                                            const resp = await fetch(`/api/muzibu/playlists/${$store.sidebar.previewInfo.id}/reorder`, {
-                                                method: 'PUT',
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content
-                                                },
-                                                body: JSON.stringify({ song_positions: songPositions })
-                                            });
-                                            const data = await resp.json();
-                                            if (data.success) {
-                                                Alpine.store('toast').show('Sıralama kaydedildi', 'success');
-                                            }
-                                        } catch (e) {
-                                            console.error('Reorder error:', e);
-                                        }
+                                    } catch (e) {
+                                        console.error('Reorder error:', e);
                                     }
-                                });
+                                }
                             });
-                        }
+                        };
+                        $watch('$store.sidebar.previewTracks', () => $nextTick(initSortable), { immediate: true });
                      ">
-                    <template x-for="(track, index) in $store.sidebar.previewTracks" :key="track.id">
+                    <template x-for="(track, index) in $store.sidebar.previewTracks" :key="'pl-' + track.id + '-' + index">
                         <div class="group flex items-center gap-2.5 px-3 py-2 hover:bg-white/5 cursor-pointer transition-all playlist-item"
                              @click="$dispatch('play-song', { songId: track.id })">
 

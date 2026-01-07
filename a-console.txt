@@ -1,15 +1,388 @@
-spot-player.js?v=1767708631:565 🎙️ SpotPlayer: Script loaded! MuzibuSpotPlayer: object
-spot-player.js?v=1767708631:569 🎙️ SpotPlayer: DOM loading, waiting for DOMContentLoaded...
-spot-player.js?v=1767708631:571 🎙️ SpotPlayer: DOMContentLoaded fired, calling init()...
-spot-player.js?v=1767708631:56 🎙️ SpotPlayer: Initializing...
-spot-player.js?v=1767708631:84 🎙️ SpotPlayer: Fetching settings from /api/spot/settings...
-spot-player.js?v=1767708631:94 🎙️ SpotPlayer: Settings response: {enabled: true, songs_between: 1, corporate_id: 1, branch_id: 1, spot_is_paused: false, …}
-spot-player.js?v=1767708631:73 🎙️ SpotPlayer: Enabled. Songs between: 1, Current count: 0
-player-core.js?v=1767713326:604 🔍 PRELOAD API Response: {song_title: 'No Mountain Moves Me Like You Do', streamData_song_duration_raw: '02:46', streamData_song_duration_seconds_raw: undefined, song_duration_raw: 166, song_duration_seconds_raw: undefined}
-player-core.js?v=1767713326:695 🔍 After merge - duration: 166 animatedDuration: 166 currentSong: undefined
-player-core.js?v=1767713326:675 🎬 PRELOAD Duration set (after nextTick): 166 166
-player-core.js?v=1767713326:3670 💾 Using CACHED stream: No Mountain Moves Me Like You Do
-player-core.js?v=1767713326:6271 🚀 Starting preload for: smoke in fog
-player-core.js?v=1767713326:6255 ⏩ Preload SKIPPED - already in progress
-player-core.js?v=1767713326:6380 ✅ Preload READY: smoke in fog
-player-core.js?v=1767713326:4668 ⏳ WAITING (initial load): 0
+<aside x-show="showQueue" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="transform translate-x-full" x-transition:enter-end="transform translate-x-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="transform translate-x-0" x-transition:leave-end="transform translate-x-full" class="fixed top-0 right-0 bottom-0 w-full sm:w-96 bg-gradient-to-b from-zinc-900 via-zinc-900 to-black border-l border-white/5 shadow-2xl z-50 flex flex-col" x-data="{ startX: 0, currentX: 0, isDragging: false }" :style="isDragging &amp;&amp; currentX &gt; 0 ? `transform: translateX(${currentX}px)` : ''" data-alpine-initialized="true">
+    
+    <div class="sm:hidden flex justify-center py-2">
+        <div class="w-12 h-1.5 bg-zinc-600 rounded-full"></div>
+    </div>
+
+    
+    <div class="flex items-center justify-between px-5 py-4 border-b border-white/5 touch-none sm:touch-auto" @touchstart="startX = $event.touches[0].clientX; isDragging = true; currentX = 0" @touchmove.prevent="if(isDragging) { currentX = Math.max(0, $event.touches[0].clientX - startX); }" @touchend="if(currentX &gt; 100) { showQueue = false; } isDragging = false; currentX = 0;">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-muzibu-coral/20 rounded-lg flex items-center justify-center">
+                <i class="fas fa-stream text-muzibu-coral text-sm"></i>
+            </div>
+            <div>
+                <h3 class="text-base font-bold text-white">Sıra</h3>
+                <p class="text-xs text-zinc-500" x-text="(queue || []).length + ' Şarkı'">4 Şarkı</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-1">
+            <button @click="showQueue = false" class="p-2 text-zinc-500 hover:text-white hover:bg-white/10 rounded-lg transition-all">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    
+    <template x-if="currentSong">
+        <div class="px-5 py-4 bg-gradient-to-r from-muzibu-coral/10 to-transparent border-b border-white/5">
+            <div class="flex items-center gap-2 mb-3">
+                <div class="w-1.5 h-1.5 bg-muzibu-coral rounded-full animate-pulse"></div>
+                <span class="text-xs font-semibold text-muzibu-coral uppercase tracking-wider">Şimdi Çalınıyor</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-muzibu-coral to-pink-600 flex-shrink-0 overflow-hidden shadow-lg shadow-muzibu-coral/20">
+                    <template x-if="currentSong.album_cover">
+                        <img :src="getCoverUrl(currentSong.album_cover, 56, 56)" :alt="currentSong.song_title" class="w-full h-full object-cover">
+                    </template>
+                    <template x-if="!currentSong.album_cover">
+                        <div class="w-full h-full flex items-center justify-center text-2xl">🎵</div>
+                    </template>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h4 class="text-sm font-bold text-white truncate" x-text="currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')"></h4>
+                    <p class="text-xs text-zinc-400 truncate mt-0.5" x-text="currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')"></p>
+                </div>
+                <button @click="toggleLike()" class="p-2 transition-all" :class="isLiked ? 'text-muzibu-coral' : 'text-zinc-500 hover:text-white'">
+                    <i :class="isLiked ? 'fas fa-heart' : 'far fa-heart'"></i>
+                </button>
+            </div>
+        </div>
+    </template><div class="px-5 py-4 bg-gradient-to-r from-muzibu-coral/10 to-transparent border-b border-white/5">
+            <div class="flex items-center gap-2 mb-3">
+                <div class="w-1.5 h-1.5 bg-muzibu-coral rounded-full animate-pulse"></div>
+                <span class="text-xs font-semibold text-muzibu-coral uppercase tracking-wider">Şimdi Çalınıyor</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-muzibu-coral to-pink-600 flex-shrink-0 overflow-hidden shadow-lg shadow-muzibu-coral/20">
+                    <template x-if="currentSong.album_cover">
+                        <img :src="getCoverUrl(currentSong.album_cover, 56, 56)" :alt="currentSong.song_title" class="w-full h-full object-cover">
+                    </template><img :src="getCoverUrl(currentSong.album_cover, 56, 56)" :alt="currentSong.song_title" class="w-full h-full object-cover" src="https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2629%2Fai-cover-1767811975.jpg&amp;w=120&amp;h=120&amp;q=90&amp;s=1&amp;f=webp&amp;c=1" alt="Afterimage">
+                    <template x-if="!currentSong.album_cover">
+                        <div class="w-full h-full flex items-center justify-center text-2xl">🎵</div>
+                    </template>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h4 class="text-sm font-bold text-white truncate" x-text="currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Afterimage</h4>
+                    <p class="text-xs text-zinc-400 truncate mt-0.5" x-text="currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Ajda Pekkan</p>
+                </div>
+                <button @click="toggleLike()" class="p-2 transition-all text-muzibu-coral" :class="isLiked ? 'text-muzibu-coral' : 'text-zinc-500 hover:text-white'">
+                    <i :class="isLiked ? 'fas fa-heart' : 'far fa-heart'" class="fas fa-heart"></i>
+                </button>
+            </div>
+        </div>
+
+    
+    <div class="px-5 py-3 flex items-center justify-between border-b border-white/5">
+        <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Sıradaki Şarkılar</span>
+        <span class="text-xs text-zinc-600" x-show="queue &amp;&amp; queue.length &gt; 0" style="">Sürükleyerek sırala</span>
+    </div>
+
+    
+    <div class="flex-1 overflow-y-auto">
+        
+        <template x-if="!queue || queue.length === 0">
+            <div class="flex flex-col items-center justify-center h-full text-center px-8">
+                <div class="w-20 h-20 bg-zinc-800/50 rounded-full flex items-center justify-center mb-4">
+                    <i class="fas fa-music text-3xl text-zinc-600"></i>
+                </div>
+                <h4 class="text-base font-semibold text-zinc-400 mb-1">Sıra Boş</h4>
+                <p class="text-sm text-zinc-600">Şarkı eklemek için bir playlist veya albüme gidin</p>
+            </div>
+        </template>
+
+        
+        <div id="queue-list" class="p-2 space-y-0.5" x-ref="queueList" x-effect="
+                if (showQueue &amp;&amp; $refs.queueList &amp;&amp; queue &amp;&amp; queue.length &gt; 0 &amp;&amp; typeof Sortable !== 'undefined') {
+                    $nextTick(() =&gt; {
+                        if ($refs.queueList._sortable) $refs.queueList._sortable.destroy();
+                        $refs.queueList._sortable = new Sortable($refs.queueList, {
+                            animation: 250,
+                            easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
+                            handle: '.queue-drag-handle',
+                            ghostClass: 'sortable-ghost',
+                            chosenClass: 'sortable-chosen',
+                            dragClass: 'sortable-drag',
+                            forceFallback: true,
+                            fallbackClass: 'sortable-drag',
+                            onStart: (evt) =&gt; {
+                                $refs.queueList.classList.add('queue-dragging');
+                                evt.item.style.transition = 'none';
+                            },
+                            onEnd: (evt) =&gt; {
+                                $refs.queueList.classList.remove('queue-dragging');
+
+                                // Drop animasyonu
+                                evt.item.classList.add('queue-item-dropped');
+                                setTimeout(() =&gt; evt.item.classList.remove('queue-item-dropped'), 400);
+
+                                if (evt.oldIndex === evt.newIndex) return;
+
+                                const movedSong = queue[evt.oldIndex];
+                                const newQueue = [...queue];
+                                newQueue.splice(evt.oldIndex, 1);
+                                newQueue.splice(evt.newIndex, 0, movedSong);
+
+                                if (queueIndex === evt.oldIndex) {
+                                    queueIndex = evt.newIndex;
+                                } else if (evt.oldIndex &lt; queueIndex &amp;&amp; evt.newIndex &gt;= queueIndex) {
+                                    queueIndex--;
+                                } else if (evt.oldIndex &gt; queueIndex &amp;&amp; evt.newIndex &lt;= queueIndex) {
+                                    queueIndex++;
+                                }
+
+                                queue = newQueue;
+                                showToast('muzibu::front.player.queue_updated', 'success');
+                            }
+                        });
+                    });
+                }
+             ">
+            <template x-for="(song, index) in (queue || [])" :key="'queue-' + index + '-' + (song?.song_id || 'song')">
+                <div data-queue-item="" :data-queue-index="index" @click="playFromQueue(index)" class="queue-item flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group" :class="{
+                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
+                        'hover:bg-white/5': queueIndex !== index
+                    }">
+                    
+                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
+                        <template x-if="song.album_cover">
+                            <img :src="getCoverUrl(song.album_cover, 100, 100)" :alt="song.song_title" class="w-full h-full object-cover">
+                        </template>
+                        <template x-if="!song.album_cover">
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        </template>
+                        
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <i class="fas fa-play text-white text-xs"></i>
+                        </div>
+                        
+                        <template x-if="queueIndex === index">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
+                        </template>
+                    </div>
+
+                    
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium truncate transition-colors" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')"></h4>
+                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')"></p>
+                    </div>
+
+                    
+                    <div class="w-10 h-6 flex items-center justify-center flex-shrink-0 relative">
+                        
+                        <span class="queue-duration text-xs text-gray-600" x-show="song.duration" x-text="formatTime(song.duration)"></span>
+                        
+                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="queue-remove-btn absolute inset-0 w-full h-full flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" style="display: none;" title="Sıradan Çıkar">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                    </div>
+
+                    
+                    <div class="queue-drag-handle w-7 h-7 flex items-center justify-center rounded-full text-gray-500 cursor-grab active:cursor-grabbing hover:bg-white/10 hover:text-white transition-all flex-shrink-0" title="Sürükle">
+                        <i class="fas fa-grip-vertical text-xs"></i>
+                    </div>
+                </div>
+            </template><div data-queue-item="" :data-queue-index="index" @click="playFromQueue(index)" class="queue-item flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
+                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
+                        'hover:bg-white/5': queueIndex !== index
+                    }" data-queue-index="0">
+                    
+                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
+                        <template x-if="song.album_cover">
+                            <img :src="getCoverUrl(song.album_cover, 100, 100)" :alt="song.song_title" class="w-full h-full object-cover">
+                        </template><img :src="getCoverUrl(song.album_cover, 100, 100)" :alt="song.song_title" class="w-full h-full object-cover" src="https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2627%2Fupload-695eaa06388f9-4.jpg&amp;w=120&amp;h=120&amp;q=90&amp;s=1&amp;f=webp&amp;c=1" alt="A Great Day">
+                        <template x-if="!song.album_cover">
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        </template>
+                        
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <i class="fas fa-play text-white text-xs"></i>
+                        </div>
+                        
+                        <template x-if="queueIndex === index">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
+                        </template>
+                    </div>
+
+                    
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">A Great Day</h4>
+                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Barış Manço</p>
+                    </div>
+
+                    
+                    <div class="w-10 h-6 flex items-center justify-center flex-shrink-0 relative">
+                        
+                        <span class="queue-duration text-xs text-gray-600" x-show="song.duration" x-text="formatTime(song.duration)">3:06</span>
+                        
+                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="queue-remove-btn absolute inset-0 w-full h-full flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar" style="">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                    </div>
+
+                    
+                    <div class="queue-drag-handle w-7 h-7 flex items-center justify-center rounded-full text-gray-500 cursor-grab active:cursor-grabbing hover:bg-white/10 hover:text-white transition-all flex-shrink-0" title="Sürükle">
+                        <i class="fas fa-grip-vertical text-xs"></i>
+                    </div>
+                </div><div data-queue-item="" :data-queue-index="index" @click="playFromQueue(index)" class="queue-item flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group bg-muzibu-coral/10 border border-muzibu-coral/20" :class="{
+                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
+                        'hover:bg-white/5': queueIndex !== index
+                    }" data-queue-index="1">
+                    
+                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
+                        <template x-if="song.album_cover">
+                            <img :src="getCoverUrl(song.album_cover, 100, 100)" :alt="song.song_title" class="w-full h-full object-cover">
+                        </template><img :src="getCoverUrl(song.album_cover, 100, 100)" :alt="song.song_title" class="w-full h-full object-cover" src="https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2629%2Fai-cover-1767811975.jpg&amp;w=120&amp;h=120&amp;q=90&amp;s=1&amp;f=webp&amp;c=1" alt="Afterimage">
+                        <template x-if="!song.album_cover">
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        </template>
+                        
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <i class="fas fa-play text-white text-xs"></i>
+                        </div>
+                        
+                        <template x-if="queueIndex === index">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
+                        </template><div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
+                    </div>
+
+                    
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium truncate transition-colors text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Afterimage</h4>
+                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Ajda Pekkan</p>
+                    </div>
+
+                    
+                    <div class="w-10 h-6 flex items-center justify-center flex-shrink-0 relative">
+                        
+                        <span class="queue-duration text-xs text-gray-600" x-show="song.duration" x-text="formatTime(song.duration)">3:12</span>
+                        
+                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="queue-remove-btn absolute inset-0 w-full h-full flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                    </div>
+
+                    
+                    <div class="queue-drag-handle w-7 h-7 flex items-center justify-center rounded-full text-gray-500 cursor-grab active:cursor-grabbing hover:bg-white/10 hover:text-white transition-all flex-shrink-0" title="Sürükle">
+                        <i class="fas fa-grip-vertical text-xs"></i>
+                    </div>
+                </div><div data-queue-item="" :data-queue-index="index" @click="playFromQueue(index)" class="queue-item flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
+                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
+                        'hover:bg-white/5': queueIndex !== index
+                    }" data-queue-index="2">
+                    
+                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
+                        <template x-if="song.album_cover">
+                            <img :src="getCoverUrl(song.album_cover, 100, 100)" :alt="song.song_title" class="w-full h-full object-cover">
+                        </template><img :src="getCoverUrl(song.album_cover, 100, 100)" :alt="song.song_title" class="w-full h-full object-cover" src="https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2629%2Fai-cover-1767811975.jpg&amp;w=120&amp;h=120&amp;q=90&amp;s=1&amp;f=webp&amp;c=1" alt="Afterimage">
+                        <template x-if="!song.album_cover">
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        </template>
+                        
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <i class="fas fa-play text-white text-xs"></i>
+                        </div>
+                        
+                        <template x-if="queueIndex === index">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
+                        </template>
+                    </div>
+
+                    
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Afterimage</h4>
+                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Ajda Pekkan</p>
+                    </div>
+
+                    
+                    <div class="w-10 h-6 flex items-center justify-center flex-shrink-0 relative">
+                        
+                        <span class="queue-duration text-xs text-gray-600" x-show="song.duration" x-text="formatTime(song.duration)">3:12</span>
+                        
+                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="queue-remove-btn absolute inset-0 w-full h-full flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                    </div>
+
+                    
+                    <div class="queue-drag-handle w-7 h-7 flex items-center justify-center rounded-full text-gray-500 cursor-grab active:cursor-grabbing hover:bg-white/10 hover:text-white transition-all flex-shrink-0" title="Sürükle">
+                        <i class="fas fa-grip-vertical text-xs"></i>
+                    </div>
+                </div><div data-queue-item="" :data-queue-index="index" @click="playFromQueue(index)" class="queue-item flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all duration-150 group hover:bg-white/5" :class="{
+                        'bg-muzibu-coral/10 border border-muzibu-coral/20': queueIndex === index,
+                        'hover:bg-white/5': queueIndex !== index
+                    }" data-queue-index="3">
+                    
+                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-muzibu-coral to-orange-600 flex-shrink-0 overflow-hidden relative">
+                        <template x-if="song.album_cover">
+                            <img :src="getCoverUrl(song.album_cover, 100, 100)" :alt="song.song_title" class="w-full h-full object-cover">
+                        </template><img :src="getCoverUrl(song.album_cover, 100, 100)" :alt="song.song_title" class="w-full h-full object-cover" src="https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2629%2Fai-cover-1767811975.jpg&amp;w=120&amp;h=120&amp;q=90&amp;s=1&amp;f=webp&amp;c=1" alt="Afterimage">
+                        <template x-if="!song.album_cover">
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-music text-white/30 text-xs"></i>
+                            </div>
+                        </template>
+                        
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <i class="fas fa-play text-white text-xs"></i>
+                        </div>
+                        
+                        <template x-if="queueIndex === index">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <i class="fas fa-volume-up text-muzibu-coral text-xs animate-pulse"></i>
+                            </div>
+                        </template>
+                    </div>
+
+                    
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium truncate transition-colors text-white group-hover:text-muzibu-coral" :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-muzibu-coral'" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || (window.muzibuPlayerConfig?.frontLang?.general?.song || 'Song')">Afterimage</h4>
+                        <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')">Ajda Pekkan</p>
+                    </div>
+
+                    
+                    <div class="w-10 h-6 flex items-center justify-center flex-shrink-0 relative">
+                        
+                        <span class="queue-duration text-xs text-gray-600" x-show="song.duration" x-text="formatTime(song.duration)">3:12</span>
+                        
+                        <button x-show="queue.length &gt; 1" @click.stop="removeFromQueue(index)" class="queue-remove-btn absolute inset-0 w-full h-full flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Sıradan Çıkar">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                    </div>
+
+                    
+                    <div class="queue-drag-handle w-7 h-7 flex items-center justify-center rounded-full text-gray-500 cursor-grab active:cursor-grabbing hover:bg-white/10 hover:text-white transition-all flex-shrink-0" title="Sürükle">
+                        <i class="fas fa-grip-vertical text-xs"></i>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+    
+    <div class="px-5 py-3 border-t border-white/5 bg-transparent">
+        <div class="flex items-center justify-between text-xs text-zinc-600">
+            <span x-show="queue &amp;&amp; queue.length &gt; 0" style="">
+                <i class="fas fa-info-circle mr-1"></i>
+                Şarkılara tıklayarak çal
+            </span>
+            
+        </div>
+    </div>
+</aside>

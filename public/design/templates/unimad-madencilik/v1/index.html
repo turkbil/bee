@@ -20,6 +20,11 @@
 
     <!-- Tailwind CSS v4 -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
 
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -105,8 +110,8 @@
         /* Header */
         header {
             backdrop-filter: blur(12px);
-            background-color: rgba(248, 250, 252, 0.9);
-            border-bottom: 1px solid var(--color-light-border);
+            background-color: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
         }
 
         .dark header {
@@ -189,7 +194,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(248, 250, 252, 0.95) 0%, rgba(241, 245, 249, 0.90) 100%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(248, 250, 252, 0.75) 100%);
             z-index: 0;
         }
 
@@ -198,7 +203,7 @@
         }
 
         .hero-bg {
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            background: linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%);
         }
 
         .dark .hero-bg {
@@ -218,7 +223,7 @@
 
         /* Footer */
         footer {
-            background: linear-gradient(180deg, var(--color-dark-surface) 0%, var(--color-dark-bg) 100%);
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
         }
 
         .dark footer {
@@ -335,18 +340,18 @@
                         </div>
                         <div>
                             <h1 class="text-xl font-bold dark:text-white text-gray-900">Unimad</h1>
-                            <p class="text-xs dark:text-gray-400 text-gray-600">Mühendislik & Danışmanlık</p>
+                            <p class="text-xs dark:text-gray-400 text-gray-800 text-gray-800">Mühendislik & Danışmanlık</p>
                         </div>
                     </a>
                 </div>
 
                 <!-- Desktop Menu -->
                 <nav class="hidden lg:flex items-center gap-8">
-                    <a href="#" class="dark:text-gray-300 text-gray-700 dark:hover:text-white hover:text-gray-900 transition-colors duration-200">Ana Sayfa</a>
+                    <a href="#" class="dark:text-gray-300 text-gray-900 dark:hover:text-white hover:text-gray-900 transition-colors duration-200">Ana Sayfa</a>
 
                     <!-- Mega Menu - Hizmetler -->
                     <div class="menu-item relative">
-                        <a href="#services" class="dark:text-gray-300 text-gray-700 dark:hover:text-white hover:text-gray-900 transition-colors duration-200 flex items-center gap-1">
+                        <a href="#services" class="dark:text-gray-300 text-gray-900 dark:hover:text-white hover:text-gray-900 transition-colors duration-200 flex items-center gap-1">
                             Hizmetler
                             <i class="fa-light fa-chevron-down text-xs"></i>
                         </a>
@@ -357,38 +362,38 @@
                                         <i class="fa-solid fa-gem text-2xl" style="color: var(--color-mining)"></i>
                                         <h3 class="font-bold text-lg dark:text-white text-gray-900">Madencilik</h3>
                                     </div>
-                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-600 dark:hover:text-white hover:text-gray-900 transition-colors">Maden Arama</a>
-                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-600 dark:hover:text-white hover:text-gray-900 transition-colors">Jeolojik Haritalama</a>
-                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-600 dark:hover:text-white hover:text-gray-900 transition-colors">Kaynak Değerlendirme</a>
-                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-600 dark:hover:text-white hover:text-gray-900 transition-colors">Maden İşletme</a>
+                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors">Maden Arama</a>
+                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors">Jeolojik Haritalama</a>
+                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors">Kaynak Değerlendirme</a>
+                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors">Maden İşletme</a>
                                 </div>
                                 <div class="space-y-3">
                                     <div class="flex items-center gap-2 mb-4">
                                         <i class="fa-solid fa-building text-2xl" style="color: var(--color-architecture)"></i>
                                         <h3 class="font-bold text-lg dark:text-white text-gray-900">Mimarlık</h3>
                                     </div>
-                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-600 dark:hover:text-white hover:text-gray-900 transition-colors">Yapı Tasarım</a>
-                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-600 dark:hover:text-white hover:text-gray-900 transition-colors">Proje Yönetimi</a>
-                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-600 dark:hover:text-white hover:text-gray-900 transition-colors">Kentsel Dönüşüm</a>
-                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-600 dark:hover:text-white hover:text-gray-900 transition-colors">Restorasyon</a>
+                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors">Yapı Tasarım</a>
+                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors">Proje Yönetimi</a>
+                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors">Kentsel Dönüşüm</a>
+                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors">Restorasyon</a>
                                 </div>
                                 <div class="space-y-3">
                                     <div class="flex items-center gap-2 mb-4">
                                         <i class="fa-solid fa-layer-group text-2xl" style="color: var(--color-geotech)"></i>
                                         <h3 class="font-bold text-lg dark:text-white text-gray-900">Jeoteknik</h3>
                                     </div>
-                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-600 dark:hover:text-white hover:text-gray-900 transition-colors">Zemin Araştırması</a>
-                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-600 dark:hover:text-white hover:text-gray-900 transition-colors">Temel Tasarımı</a>
-                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-600 dark:hover:text-white hover:text-gray-900 transition-colors">Şev Stabilizasyonu</a>
-                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-600 dark:hover:text-white hover:text-gray-900 transition-colors">Zemin İyileştirme</a>
+                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors">Zemin Araştırması</a>
+                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors">Temel Tasarımı</a>
+                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors">Şev Stabilizasyonu</a>
+                                    <a href="#" class="block text-sm dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors">Zemin İyileştirme</a>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <a href="#about" class="dark:text-gray-300 text-gray-700 dark:hover:text-white hover:text-gray-900 transition-colors duration-200">Kurumsal</a>
-                    <a href="#references" class="dark:text-gray-300 text-gray-700 dark:hover:text-white hover:text-gray-900 transition-colors duration-200">Referanslar</a>
-                    <a href="#contact" class="dark:text-gray-300 text-gray-700 dark:hover:text-white hover:text-gray-900 transition-colors duration-200">İletişim</a>
+                    <a href="#about" class="dark:text-gray-300 text-gray-900 dark:hover:text-white hover:text-gray-900 transition-colors duration-200">Kurumsal</a>
+                    <a href="#references" class="dark:text-gray-300 text-gray-900 dark:hover:text-white hover:text-gray-900 transition-colors duration-200">Referanslar</a>
+                    <a href="#contact" class="dark:text-gray-300 text-gray-900 dark:hover:text-white hover:text-gray-900 transition-colors duration-200">İletişim</a>
                 </nav>
 
                 <!-- Dark Mode & Mobile Menu Toggle -->
@@ -418,11 +423,11 @@
              x-transition:leave-end="opacity-0 -translate-y-4"
              class="lg:hidden surface border-t border-custom">
             <div class="px-4 py-6 space-y-4">
-                <a href="#" class="block dark:text-gray-300 text-gray-700 dark:hover:text-white hover:text-gray-900 transition-colors">Ana Sayfa</a>
-                <a href="#services" class="block dark:text-gray-300 text-gray-700 dark:hover:text-white hover:text-gray-900 transition-colors">Hizmetler</a>
-                <a href="#about" class="block dark:text-gray-300 text-gray-700 dark:hover:text-white hover:text-gray-900 transition-colors">Kurumsal</a>
-                <a href="#references" class="block dark:text-gray-300 text-gray-700 dark:hover:text-white hover:text-gray-900 transition-colors">Referanslar</a>
-                <a href="#contact" class="block dark:text-gray-300 text-gray-700 dark:hover:text-white hover:text-gray-900 transition-colors">İletişim</a>
+                <a href="#" class="block dark:text-gray-300 text-gray-900 dark:hover:text-white hover:text-gray-900 transition-colors">Ana Sayfa</a>
+                <a href="#services" class="block dark:text-gray-300 text-gray-900 dark:hover:text-white hover:text-gray-900 transition-colors">Hizmetler</a>
+                <a href="#about" class="block dark:text-gray-300 text-gray-900 dark:hover:text-white hover:text-gray-900 transition-colors">Kurumsal</a>
+                <a href="#references" class="block dark:text-gray-300 text-gray-900 dark:hover:text-white hover:text-gray-900 transition-colors">Referanslar</a>
+                <a href="#contact" class="block dark:text-gray-300 text-gray-900 dark:hover:text-white hover:text-gray-900 transition-colors">İletişim</a>
             </div>
         </div>
     </header>
@@ -447,7 +452,7 @@
             </div>
 
             <div data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
-                <p class="text-xl dark:text-gray-300 text-gray-700 mb-12 max-w-3xl mx-auto">
+                <p class="text-xl dark:text-gray-300 text-gray-900 mb-12 max-w-3xl mx-auto">
                     Madencilik, mimarlık ve jeoteknik mühendisliği alanlarında uzman kadromuzla,
                     projelerinize değer katıyoruz. Ankara merkezli, Türkiye çapında hizmet veriyoruz.
                 </p>
@@ -481,7 +486,7 @@
                     <span class="dark:text-white text-gray-900">Uzmanlık</span>
                     <span class="bg-gradient-to-r from-[var(--color-mining-light)] to-[var(--color-architecture-light)] bg-clip-text text-transparent"> Alanlarımız</span>
                 </h2>
-                <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+                <p class="text-xl dark:text-gray-400 text-gray-800 max-w-2xl mx-auto">
                     Üç ana hizmet dalında profesyonel çözümler sunuyoruz
                 </p>
             </div>
@@ -496,19 +501,19 @@
                         <i class="fa-light fa-gem text-white text-3xl"></i>
                     </div>
                     <h3 class="text-2xl font-bold mb-4 dark:text-white text-gray-900">Madencilik</h3>
-                    <p class="text-gray-400 mb-6 leading-relaxed">
+                    <p class="dark:text-gray-400 text-gray-800 mb-6 leading-relaxed">
                         Maden arama, jeolojik haritalama, kaynak değerlendirme ve işletme planlaması konularında kapsamlı hizmetler.
                     </p>
                     <ul class="space-y-3 mb-6">
-                        <li class="flex items-start gap-2 text-gray-400">
+                        <li class="flex items-start gap-2 dark:text-gray-400 text-gray-800">
                             <i class="fa-light fa-check text-[var(--color-mining)] mt-1"></i>
                             <span>Jeolojik haritalama ve prospeksiyon</span>
                         </li>
-                        <li class="flex items-start gap-2 text-gray-400">
+                        <li class="flex items-start gap-2 dark:text-gray-400 text-gray-800">
                             <i class="fa-light fa-check text-[var(--color-mining)] mt-1"></i>
                             <span>Kaynak hesaplama ve rezerv belirleme</span>
                         </li>
-                        <li class="flex items-start gap-2 text-gray-400">
+                        <li class="flex items-start gap-2 dark:text-gray-400 text-gray-800">
                             <i class="fa-light fa-check text-[var(--color-mining)] mt-1"></i>
                             <span>Maden işletme proje danışmanlığı</span>
                         </li>
@@ -528,19 +533,19 @@
                         <i class="fa-light fa-building text-white text-3xl"></i>
                     </div>
                     <h3 class="text-2xl font-bold mb-4 dark:text-white text-gray-900">Mimarlık</h3>
-                    <p class="text-gray-400 mb-6 leading-relaxed">
+                    <p class="dark:text-gray-400 text-gray-800 mb-6 leading-relaxed">
                         Yapı tasarımı, proje yönetimi, kentsel dönüşüm ve restorasyon projelerinde profesyonel mimari hizmetler.
                     </p>
                     <ul class="space-y-3 mb-6">
-                        <li class="flex items-start gap-2 text-gray-400">
+                        <li class="flex items-start gap-2 dark:text-gray-400 text-gray-800">
                             <i class="fa-light fa-check text-[var(--color-architecture)] mt-1"></i>
                             <span>Mimari proje ve uygulama tasarımı</span>
                         </li>
-                        <li class="flex items-start gap-2 text-gray-400">
+                        <li class="flex items-start gap-2 dark:text-gray-400 text-gray-800">
                             <i class="fa-light fa-check text-[var(--color-architecture)] mt-1"></i>
                             <span>Kentsel tasarım ve dönüşüm projeleri</span>
                         </li>
-                        <li class="flex items-start gap-2 text-gray-400">
+                        <li class="flex items-start gap-2 dark:text-gray-400 text-gray-800">
                             <i class="fa-light fa-check text-[var(--color-architecture)] mt-1"></i>
                             <span>Tarihi yapı restorasyonu ve koruma</span>
                         </li>
@@ -560,19 +565,19 @@
                         <i class="fa-light fa-layer-group text-white text-3xl"></i>
                     </div>
                     <h3 class="text-2xl font-bold mb-4 dark:text-white text-gray-900">Jeoteknik</h3>
-                    <p class="text-gray-400 mb-6 leading-relaxed">
+                    <p class="dark:text-gray-400 text-gray-800 mb-6 leading-relaxed">
                         Zemin araştırması, temel tasarımı, şev stabilizasyonu ve zemin iyileştirme çözümleri.
                     </p>
                     <ul class="space-y-3 mb-6">
-                        <li class="flex items-start gap-2 text-gray-400">
+                        <li class="flex items-start gap-2 dark:text-gray-400 text-gray-800">
                             <i class="fa-light fa-check text-[var(--color-geotech)] mt-1"></i>
                             <span>Zemin etüd ve sondaj çalışmaları</span>
                         </li>
-                        <li class="flex items-start gap-2 text-gray-400">
+                        <li class="flex items-start gap-2 dark:text-gray-400 text-gray-800">
                             <i class="fa-light fa-check text-[var(--color-geotech)] mt-1"></i>
                             <span>Temel ve şev stabilite analizleri</span>
                         </li>
-                        <li class="flex items-start gap-2 text-gray-400">
+                        <li class="flex items-start gap-2 dark:text-gray-400 text-gray-800">
                             <i class="fa-light fa-check text-[var(--color-geotech)] mt-1"></i>
                             <span>Zemin iyileştirme proje tasarımı</span>
                         </li>
@@ -592,19 +597,19 @@
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
                 <div class="text-center" data-aos="fade-up" data-aos-delay="100">
                     <div class="counter mb-2" x-text="stats.projects + '+'"></div>
-                    <p class="text-gray-400 font-medium">Tamamlanan Proje</p>
+                    <p class="dark:text-gray-400 text-gray-800 font-medium">Tamamlanan Proje</p>
                 </div>
                 <div class="text-center" data-aos="fade-up" data-aos-delay="200">
                     <div class="counter mb-2" x-text="stats.experience + '+'"></div>
-                    <p class="text-gray-400 font-medium">Yıllık Tecrübe</p>
+                    <p class="dark:text-gray-400 text-gray-800 font-medium">Yıllık Tecrübe</p>
                 </div>
                 <div class="text-center" data-aos="fade-up" data-aos-delay="300">
                     <div class="counter mb-2" x-text="stats.clients + '+'"></div>
-                    <p class="text-gray-400 font-medium">Mutlu Müşteri</p>
+                    <p class="dark:text-gray-400 text-gray-800 font-medium">Mutlu Müşteri</p>
                 </div>
                 <div class="text-center" data-aos="fade-up" data-aos-delay="400">
                     <div class="counter mb-2" x-text="stats.engineers"></div>
-                    <p class="text-gray-400 font-medium">Uzman Mühendis</p>
+                    <p class="dark:text-gray-400 text-gray-800 font-medium">Uzman Mühendis</p>
                 </div>
             </div>
         </div>
@@ -618,7 +623,7 @@
                     <span class="dark:text-white text-gray-900">Neden</span>
                     <span class="bg-gradient-to-r from-[var(--color-mining-light)] to-[var(--color-geotech-light)] bg-clip-text text-transparent"> Unimad?</span>
                 </h2>
-                <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+                <p class="text-xl dark:text-gray-400 text-gray-800 max-w-2xl mx-auto">
                     Değerlerimiz ve çalışma prensiplerimizdeki farklılıklar
                 </p>
             </div>
@@ -629,7 +634,7 @@
                         <i class="fa-light fa-trophy text-white text-2xl"></i>
                     </div>
                     <h3 class="text-lg font-bold mb-2 dark:text-white text-gray-900">Kalite</h3>
-                    <p class="text-sm text-gray-400">ISO standartlarında profesyonel hizmet</p>
+                    <p class="text-sm dark:text-gray-400 text-gray-800">ISO standartlarında profesyonel hizmet</p>
                 </div>
 
                 <div class="surface border-custom border rounded-xl p-6 text-center" data-aos="fade-up" data-aos-delay="200">
@@ -637,7 +642,7 @@
                         <i class="fa-light fa-handshake text-white text-2xl"></i>
                     </div>
                     <h3 class="text-lg font-bold mb-2 dark:text-white text-gray-900">Güvenilirlik</h3>
-                    <p class="text-sm text-gray-400">Taahhütlerimize bağlılık ve şeffaflık</p>
+                    <p class="text-sm dark:text-gray-400 text-gray-800">Taahhütlerimize bağlılık ve şeffaflık</p>
                 </div>
 
                 <div class="surface border-custom border rounded-xl p-6 text-center" data-aos="fade-up" data-aos-delay="300">
@@ -645,7 +650,7 @@
                         <i class="fa-light fa-lightbulb text-white text-2xl"></i>
                     </div>
                     <h3 class="text-lg font-bold mb-2 dark:text-white text-gray-900">İnovasyon</h3>
-                    <p class="text-sm text-gray-400">Teknoloji odaklı yenilikçi çözümler</p>
+                    <p class="text-sm dark:text-gray-400 text-gray-800">Teknoloji odaklı yenilikçi çözümler</p>
                 </div>
 
                 <div class="surface border-custom border rounded-xl p-6 text-center" data-aos="fade-up" data-aos-delay="400">
@@ -653,7 +658,7 @@
                         <i class="fa-light fa-users text-white text-2xl"></i>
                     </div>
                     <h3 class="text-lg font-bold mb-2 dark:text-white text-gray-900">Ekip</h3>
-                    <p class="text-sm text-gray-400">Deneyimli ve uzman kadro</p>
+                    <p class="text-sm dark:text-gray-400 text-gray-800">Deneyimli ve uzman kadro</p>
                 </div>
             </div>
         </div>
@@ -667,7 +672,7 @@
                     <span class="dark:text-white text-gray-900">Başarılı</span>
                     <span class="bg-gradient-to-r from-[var(--color-mining-light)] to-[var(--color-architecture-light)] bg-clip-text text-transparent"> Projelerimiz</span>
                 </h2>
-                <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+                <p class="text-xl dark:text-gray-400 text-gray-800 max-w-2xl mx-auto">
                     Gerçekleştirdiğimiz projelerden öne çıkanlar
                 </p>
             </div>
@@ -681,7 +686,7 @@
                             </div>
                             <div class="p-6">
                                 <h3 class="text-xl font-bold mb-2 dark:text-white text-gray-900">Bakır Madeni Arama Projesi</h3>
-                                <p class="text-gray-400 mb-4">Doğu Anadolu bölgesinde gerçekleştirilen kapsamlı jeolojik haritalama ve sondaj çalışmaları.</p>
+                                <p class="dark:text-gray-400 text-gray-800 mb-4">Doğu Anadolu bölgesinde gerçekleştirilen kapsamlı jeolojik haritalama ve sondaj çalışmaları.</p>
                                 <div class="flex items-center gap-2 text-sm text-[var(--color-mining)]">
                                     <i class="fa-light fa-gem"></i>
                                     <span>Madencilik</span>
@@ -697,7 +702,7 @@
                             </div>
                             <div class="p-6">
                                 <h3 class="text-xl font-bold mb-2 dark:text-white text-gray-900">Ankara Ofis Kompleksi</h3>
-                                <p class="text-gray-400 mb-4">Modern mimari yaklaşımla tasarlanan 15 katlı ofis binası ve peyzaj düzenlemesi.</p>
+                                <p class="dark:text-gray-400 text-gray-800 mb-4">Modern mimari yaklaşımla tasarlanan 15 katlı ofis binası ve peyzaj düzenlemesi.</p>
                                 <div class="flex items-center gap-2 text-sm text-[var(--color-architecture)]">
                                     <i class="fa-light fa-building"></i>
                                     <span>Mimarlık</span>
@@ -713,7 +718,7 @@
                             </div>
                             <div class="p-6">
                                 <h3 class="text-xl font-bold mb-2 dark:text-white text-gray-900">Baraj Temeli Zemin Analizi</h3>
-                                <p class="text-gray-400 mb-4">Hidroelektrik santrali barajı için kapsamlı zemin etüd ve temel tasarım çalışması.</p>
+                                <p class="dark:text-gray-400 text-gray-800 mb-4">Hidroelektrik santrali barajı için kapsamlı zemin etüd ve temel tasarım çalışması.</p>
                                 <div class="flex items-center gap-2 text-sm text-[var(--color-geotech)]">
                                     <i class="fa-light fa-layer-group"></i>
                                     <span>Jeoteknik</span>
@@ -729,7 +734,7 @@
                             </div>
                             <div class="p-6">
                                 <h3 class="text-xl font-bold mb-2 dark:text-white text-gray-900">Mermer Ocağı İşletme Planı</h3>
-                                <p class="text-gray-400 mb-4">Ege bölgesinde mermer ocağı için kaynak değerlendirme ve işletme planlaması.</p>
+                                <p class="dark:text-gray-400 text-gray-800 mb-4">Ege bölgesinde mermer ocağı için kaynak değerlendirme ve işletme planlaması.</p>
                                 <div class="flex items-center gap-2 text-sm text-[var(--color-mining)]">
                                     <i class="fa-light fa-gem"></i>
                                     <span>Madencilik</span>
@@ -752,7 +757,7 @@
                         <span class="dark:text-white text-gray-900">Projeleriniz İçin</span>
                         <span class="bg-gradient-to-r from-[var(--color-mining-light)] to-[var(--color-architecture-light)] bg-clip-text text-transparent"> Bizimle İletişime Geçin</span>
                     </h2>
-                    <p class="text-xl text-gray-400 mb-8">
+                    <p class="text-xl dark:text-gray-400 text-gray-800 mb-8">
                         Uzman ekibimizle projelerinizi hayata geçirin. Size en kısa sürede dönüş yapacağız.
                     </p>
 
@@ -763,7 +768,7 @@
                             </div>
                             <div>
                                 <h3 class="font-bold mb-1 dark:text-white text-gray-900">Adres</h3>
-                                <p class="text-gray-400">Ankara, Türkiye</p>
+                                <p class="dark:text-gray-400 text-gray-800">Ankara, Türkiye</p>
                             </div>
                         </div>
 
@@ -773,7 +778,7 @@
                             </div>
                             <div>
                                 <h3 class="font-bold mb-1 dark:text-white text-gray-900">Telefon</h3>
-                                <p class="text-gray-400">+90 (312) XXX XX XX</p>
+                                <p class="dark:text-gray-400 text-gray-800">+90 (312) XXX XX XX</p>
                             </div>
                         </div>
 
@@ -783,7 +788,7 @@
                             </div>
                             <div>
                                 <h3 class="font-bold mb-1 dark:text-white text-gray-900">E-posta</h3>
-                                <p class="text-gray-400">info@unimad.com.tr</p>
+                                <p class="dark:text-gray-400 text-gray-800">info@unimad.com.tr</p>
                             </div>
                         </div>
                     </div>
@@ -832,62 +837,62 @@
                             <i class="fa-solid fa-gem text-white text-xl"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-white">Unimad</h3>
+                            <h3 class="text-lg font-bold dark:text-white text-gray-900">Unimad</h3>
                         </div>
                     </div>
-                    <p class="text-gray-400 text-sm mb-4">
+                    <p class="dark:text-gray-400 text-gray-800 text-gray-800 text-sm mb-4">
                         Tecrübe ve bilgi birikimini güncel teknoloji ile birleştiren mühendislik firması.
                     </p>
                     <div class="flex items-center gap-3">
                         <a href="#" class="w-9 h-9 rounded-lg surface border-custom border flex items-center justify-center hover:bg-[var(--color-mining)] hover:border-[var(--color-mining)] transition-all">
-                            <i class="fa-brands fa-linkedin text-gray-400"></i>
+                            <i class="fa-brands fa-linkedin dark:text-gray-400 text-gray-800 text-gray-800"></i>
                         </a>
                         <a href="#" class="w-9 h-9 rounded-lg surface border-custom border flex items-center justify-center hover:bg-[var(--color-mining)] hover:border-[var(--color-mining)] transition-all">
-                            <i class="fa-brands fa-twitter text-gray-400"></i>
+                            <i class="fa-brands fa-twitter dark:text-gray-400 text-gray-800 text-gray-800"></i>
                         </a>
                         <a href="#" class="w-9 h-9 rounded-lg surface border-custom border flex items-center justify-center hover:bg-[var(--color-mining)] hover:border-[var(--color-mining)] transition-all">
-                            <i class="fa-brands fa-instagram text-gray-400"></i>
+                            <i class="fa-brands fa-instagram dark:text-gray-400 text-gray-800 text-gray-800"></i>
                         </a>
                     </div>
                 </div>
 
                 <!-- Quick Links -->
                 <div>
-                    <h3 class="text-lg font-bold text-white mb-4">Hızlı Erişim</h3>
+                    <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-4">Hızlı Erişim</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">Ana Sayfa</a></li>
-                        <li><a href="#services" class="text-gray-400 hover:text-white transition-colors text-sm">Hizmetler</a></li>
-                        <li><a href="#about" class="text-gray-400 hover:text-white transition-colors text-sm">Kurumsal</a></li>
-                        <li><a href="#references" class="text-gray-400 hover:text-white transition-colors text-sm">Referanslar</a></li>
-                        <li><a href="#contact" class="text-gray-400 hover:text-white transition-colors text-sm">İletişim</a></li>
+                        <li><a href="#" class="dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors text-sm">Ana Sayfa</a></li>
+                        <li><a href="#services" class="dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors text-sm">Hizmetler</a></li>
+                        <li><a href="#about" class="dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors text-sm">Kurumsal</a></li>
+                        <li><a href="#references" class="dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors text-sm">Referanslar</a></li>
+                        <li><a href="#contact" class="dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors text-sm">İletişim</a></li>
                     </ul>
                 </div>
 
                 <!-- Services -->
                 <div>
-                    <h3 class="text-lg font-bold text-white mb-4">Hizmetlerimiz</h3>
+                    <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-4">Hizmetlerimiz</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">Madencilik</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">Mimarlık</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">Jeoteknik</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">Proje Yönetimi</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">Danışmanlık</a></li>
+                        <li><a href="#" class="dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors text-sm">Madencilik</a></li>
+                        <li><a href="#" class="dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors text-sm">Mimarlık</a></li>
+                        <li><a href="#" class="dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors text-sm">Jeoteknik</a></li>
+                        <li><a href="#" class="dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors text-sm">Proje Yönetimi</a></li>
+                        <li><a href="#" class="dark:text-gray-400 text-gray-800 text-gray-800 dark:hover:text-white hover:text-gray-900 transition-colors text-sm">Danışmanlık</a></li>
                     </ul>
                 </div>
 
                 <!-- Contact -->
                 <div>
-                    <h3 class="text-lg font-bold text-white mb-4">İletişim</h3>
+                    <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-4">İletişim</h3>
                     <ul class="space-y-3">
-                        <li class="flex items-start gap-2 text-gray-400 text-sm">
+                        <li class="flex items-start gap-2 dark:text-gray-400 text-gray-800 text-gray-800 text-sm">
                             <i class="fa-light fa-location-dot mt-1"></i>
                             <span>Ankara, Türkiye</span>
                         </li>
-                        <li class="flex items-start gap-2 text-gray-400 text-sm">
+                        <li class="flex items-start gap-2 dark:text-gray-400 text-gray-800 text-gray-800 text-sm">
                             <i class="fa-light fa-phone mt-1"></i>
                             <span>+90 (312) XXX XX XX</span>
                         </li>
-                        <li class="flex items-start gap-2 text-gray-400 text-sm">
+                        <li class="flex items-start gap-2 dark:text-gray-400 text-gray-800 text-gray-800 text-sm">
                             <i class="fa-light fa-envelope mt-1"></i>
                             <span>info@unimad.com.tr</span>
                         </li>
@@ -896,7 +901,7 @@
             </div>
 
             <div class="pt-8 border-t border-custom text-center">
-                <p class="text-gray-400 text-sm">
+                <p class="dark:text-gray-400 text-gray-800 text-gray-800 text-sm">
                     © 2024 Unimad Mühendislik. Tüm hakları saklıdır.
                 </p>
             </div>
@@ -930,12 +935,12 @@
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-2xl font-bold dark:text-white text-gray-900">Tasarım Promptu</h3>
                 <button @click="promptModal = false" class="w-10 h-10 rounded-lg hover:bg-gray-700 transition-colors flex items-center justify-center">
-                    <i class="fa-light fa-times text-xl text-gray-400"></i>
+                    <i class="fa-light fa-times text-xl dark:text-gray-400 text-gray-800"></i>
                 </button>
             </div>
 
             <div class="prose prose-invert max-w-none">
-                <p class="text-gray-400 mb-4">Bu web sitesi aşağıdaki prompt ile oluşturulmuştur:</p>
+                <p class="dark:text-gray-400 text-gray-800 mb-4">Bu web sitesi aşağıdaki prompt ile oluşturulmuştur:</p>
 
                 <div class="bg-black/50 rounded-xl p-6 border border-gray-700 text-sm font-mono text-gray-300 leading-relaxed">
                     <p class="mb-4"><strong class="text-[var(--color-mining-light)]">Proje:</strong> Unimad Madencilik - Mühendislik ve Danışmanlık Web Sitesi</p>
@@ -974,10 +979,10 @@
                     </ul>
 
                     <p class="mb-4"><strong class="text-[var(--color-mining-light)]">Görsel Strateji:</strong></p>
-                    <p class="text-gray-400 ml-4">Profesyonel endüstri fotoğrafyası (madencilik sahaları, mühendis ekipleri), teknik illüstrasyonlar, sıcak ton aydınlatma, güven ve yetkinlik vurgusu.</p>
+                    <p class="dark:text-gray-400 text-gray-800 ml-4">Profesyonel endüstri fotoğrafyası (madencilik sahaları, mühendis ekipleri), teknik illüstrasyonlar, sıcak ton aydınlatma, güven ve yetkinlik vurgusu.</p>
                 </div>
 
-                <p class="text-gray-400 text-sm mt-4">
+                <p class="dark:text-gray-400 text-gray-800 text-sm mt-4">
                     <i class="fa-light fa-info-circle mr-2"></i>
                     Bu prompt, Claude Code AI tarafından yorumlanarak yukarıdaki web sitesi tasarımı oluşturulmuştur.
                 </p>

@@ -98,7 +98,13 @@ Route::redirect('/muzibu/sector/{slug}', '/sectors/{slug}', 301);
 // 👑 SUBSCRIPTION PLANS
 Route::get('/subscription/plans', \Modules\Subscription\App\Http\Livewire\Front\SubscriptionPlansComponent::class)->name('subscription.plans');
 Route::middleware('auth')->get('/subscription/success', \Modules\Subscription\App\Http\Controllers\Front\SubscriptionSuccessController::class)->name('subscription.success');
-Route::middleware('auth')->get('/subscription/checkout/{subscriptionId}', [\Modules\Subscription\App\Http\Controllers\Front\SubscriptionCheckoutController::class, 'show'])->name('subscription.checkout');
+// 🔥 SUBSCRIPTION CHECKOUT - Global route (domain-agnostic)
+Route::middleware([InitializeTenancy::class, 'auth'])->get('/subscription/checkout/{subscriptionId}', function($subscriptionId) {
+    file_put_contents(storage_path('logs/sub-debug.txt'), date('Y-m-d H:i:s') . " - GLOBAL ROUTE HIT: {$subscriptionId}, auth: " . (auth()->check() ? 'YES user=' . auth()->id() : 'NO') . "\n", FILE_APPEND);
+
+    $controller = app(\Modules\Subscription\App\Http\Controllers\Front\SubscriptionCheckoutController::class);
+    return $controller->show($subscriptionId);
+})->name('subscription.checkout');
 
 // 💳 PAYMENT ROUTES - Tenant context için middleware zorunlu!
 Route::middleware([InitializeTenancy::class])->group(function () {
@@ -153,6 +159,7 @@ $muzibuDomains = \Illuminate\Support\Facades\DB::table('domains')
 
 foreach ($muzibuDomains as $index => $domain) {
     Route::middleware([
+        'web', // Session, cookies, CSRF - AUTH İÇİN ZORUNLU!
         \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class,
         'site', // Response cache, locale, SEO middleware'leri
     ])
@@ -761,16 +768,16 @@ Route::middleware([InitializeTenancy::class, 'site'])
         // Regex ile admin, api vb. system route'larını hariç tut
         Route::get('/{slug1}', function($slug1) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment)[^/]+$');
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment|subscription)[^/]+$');
 
         Route::get('/{slug1}/{slug2}', function($slug1, $slug2) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment)[^/]+$')
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment|subscription)[^/]+$')
          ->where('slug2', '^(?!pdf|category|tag)[^/]+$');
 
         Route::get('/{slug1}/{slug2}/{slug3}', function($slug1, $slug2, $slug3) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2, $slug3);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment)[^/]+$')
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment|subscription)[^/]+$')
          ->where('slug2', '^(?!pdf|category|tag)[^/]+$')
          ->where('slug3', '[^/]+');
     });
@@ -852,4 +859,10 @@ Route::get("/test-auth-debug", function () {
 // 🔍 DEBUG: Test route for cache middleware
 Route::middleware(['site'])->get('/test-cache-middleware', function() {
     return response('Cache middleware test')->header('X-Test-Route', 'yes');
+});
+
+// 🔥 TEST ROUTE - Middleware bypass
+Route::get('/test-subscription-checkout/{id}', function($id) {
+    file_put_contents(storage_path('logs/test-route.log'), "TEST ROUTE CALLED: id={$id}\n", FILE_APPEND);
+    return "Test route works! ID: {$id}";
 });

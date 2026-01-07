@@ -484,11 +484,9 @@ function muzibuApp() {
             }
 
             // 🚀 PRELOAD LAST PLAYED: Sayfa yüklenince son şarkıyı hazırla (instant play için)
-            // ⏱️ 500ms delay: Sayfa render'ı tamamlansın, sonra preload başlasın
+            // ⚡ INSTANT: Anında başlat (no delay!)
             if (this.isLoggedIn && (this.currentUser?.is_premium || this.currentUser?.is_trial)) {
-                setTimeout(() => {
-                    this.preloadLastPlayedSong();
-                }, 500);
+                this.preloadLastPlayedSong();
             }
 
             // 📊 TRACK END ON TAB CLOSE: Sayfa kapatılınca dinleme verisini kaydet
@@ -2112,6 +2110,48 @@ function muzibuApp() {
             }, 3000);
         },
 
+        // 🔊 Volume helper - Alpine.js'ten direkt value ile çağrılır
+        updateVolume(value) {
+            this.volume = Math.max(0, Math.min(100, value));
+
+            const volumeValue = this.volume / 100;
+
+            if (this.howl) {
+                this.howl.volume(volumeValue);
+            }
+            if (this.hls) {
+                const audio = this.getActiveHlsAudio();
+                if (audio) {
+                    audio.volume = volumeValue;
+                }
+            }
+
+            // 🎙️ Spot çalıyorsa spotAudio volume'ünü güncelle
+            if (this._isPlayingSpot) {
+                const spotAudio = document.getElementById('spotAudio');
+                if (spotAudio) {
+                    spotAudio.volume = volumeValue;
+                }
+            }
+
+            if (this.isMuted && this.volume > 0) {
+                this.isMuted = false;
+                if (this.howl) {
+                    this.howl.mute(false);
+                }
+                if (this.hls) {
+                    const audio = this.getActiveHlsAudio();
+                    if (audio) {
+                        audio.muted = false;
+                    }
+                }
+            }
+
+            // Save volume to localStorage (99+ → 100)
+            const volumeToSave = Math.round(this.volume) >= 99 ? 100 : Math.round(this.volume);
+            safeStorage.setItem('volume', volumeToSave);
+        },
+
         setVolume(e) {
             const bar = e.currentTarget;
             const rect = bar.getBoundingClientRect();
@@ -2127,6 +2167,14 @@ function muzibuApp() {
                 const audio = this.getActiveHlsAudio();
                 if (audio) {
                     audio.volume = volumeValue;
+                }
+            }
+
+            // 🎙️ Spot çalıyorsa spotAudio volume'ünü güncelle
+            if (this._isPlayingSpot) {
+                const spotAudio = document.getElementById('spotAudio');
+                if (spotAudio) {
+                    spotAudio.volume = volumeValue;
                 }
             }
 

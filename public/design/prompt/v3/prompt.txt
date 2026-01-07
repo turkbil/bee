@@ -1,0 +1,2255 @@
+## KAYIT BILGILERI
+
+Dosya yapisi:
+```
+public/design/templates/{kategori-adi}/{versiyon}/
+├── index.html      ← Ana site
+├── prompt.html     ← Prompt ve gorsel dokumani
+└── images/         ← Otomatik uretilen gorseller (generate-images.php)
+```
+
+Ornek:
+- public/design/templates/saglik-klinigi/v1/index.html
+- public/design/templates/saglik-klinigi/v1/prompt.html
+
+Kurallar:
+- Kategori: sektor veya proje adi (kucuk harf, tire ile)
+- Dosya adi: index.html (site) + prompt.html (dokuman)
+
+### VERSIYON ISIMLENDIRME VE OTOMATIK KONTROL
+
+**FORMAT:** Sadece `v{numara}` - Ekstra suffix EKLEME!
+
+**KRITIK KURAL: MEVCUT VERSIYONLARI KONTROL ET!**
+
+**YENi TASARIM OLUSTURMADAN ONCE (ZORUNLU):**
+1. Kategori klasorunu kontrol et: `public/design/templates/{kategori-adi}/`
+2. Mevcut versiyonlari say: v1, v2, v3...
+3. Ilk BOS versiyonu bul:
+   - v1 varsa → v2'yi kontrol et
+   - v2 de varsa → v3'u kontrol et
+   - Ilk bos numarayi kullan!
+4. ⚠️ **KRITIK:** ASLA mevcut dolu versiyonun ustune yazma!
+5. ⚠️ **KRITIK:** ESKi versiyonlari SILME! (v1, v2... hep saklanmali)
+
+**ORNEK KONTROL:**
+```
+public/design/templates/saglik-klinigi/
+├── v1/ (DOLU - index.html + prompt.html var)
+├── v2/ (DOLU - index.html + prompt.html var)
+├── v3/ (YOK veya BOS)
+→ v3 kullan!
+```
+
+**⚠️ KORUMA KURALLARI (ÇOK KRITIK!):**
+- ❌ ASLA v1/index.html ustune yazma!
+- ❌ ASLA v1/prompt.html ustune yazma!
+- ❌ ASLA v2/index.html ustune yazma!
+- ❌ ASLA v2/prompt.html ustune yazma!
+- ❌ ASLA eski versiyonlari silme!
+- ✅ SADECE yeni bos versiyon klasoru olustur (v3/, v4/...)
+- ✅ Eski tasarim kayitlari her zaman saklanmali!
+
+**KURALLAR:**
+1. Yeni sektor/kategori icin: Once kontrol et, v1 yoksa v1 kullan
+2. Ayni sektore yeni tasarim: Mevcut versiyonlari kontrol et, ilk bos numarayi kullan
+3. Revize/duzeltme: AYNI v numarasinda kal, AYNI dosyalari guncelle
+4. ASLA timestamp, rastgele ID veya aciklama EKLEME!
+
+**DOGRU:** v1, v2, v3, v10
+**YANLIS:** v1-20251229, v1-x7k9m, v2-minimal, v5-revize
+
+### REVIZE VS YENI TASARIM
+
+**REVIZE (Ayni versiyon):**
+Kullanici "duzelt", "degistir", "guncelle", "iyilestir" derse:
+- AYNI v numarasinda kal
+- AYNI dosyalari guncelle (ustune yaz)
+- YENI klasor ACMA!
+
+**YENI TASARIM (Yeni versiyon):**
+Kullanici "yeni tasarim", "alternatif", "farkli yaklaşım", "baska bir versiyon" derse:
+- Mevcut versiyonlari KONTROL ET!
+- Ilk bos numarayi kullan (v3, v4, v5...)
+- Yeni klasor olustur
+
+---
+
+## 🎯 TASARIM STILLERI KULLANIMI (VARSA - EN YUKSEK ONCELIK!)
+
+### ⚠️ KRITIK: Promptun Basindaki "TASARIM STILLERI" Bolumu
+
+Eger bu promptun BASINDA asagidaki gibi bir bolum varsa:
+
+```
+TASARIM STILLERI (Secilen - ONCELIKLI):
+### Kategori Adi
+- Stil aciklamasi 1
+- Stil aciklamasi 2
+
+---
+```
+
+**BU BOLUM EN YUKSEK ONCELIKTIR! MUTLAKA UYGULA!**
+
+### NASIL KULLANACAKSIN:
+
+1. **TARZ BELIRLEME:**
+   - Secilen stillere gore genel tarz belirle
+   - Minimal, prestijli, samimi, modern, klasik vb.
+   - Bu tarz TUM SITEDE gecerli!
+
+2. **GRADIENT SECIMI:**
+   - 40 gradient preset'ten TARZ'A UYGUN olani sec
+   - Ornek: "Prestijli" → Gradient #1-5 (koyu, zengin)
+   - Ornek: "Minimal" → Gradient #31-35 (soft, monokrom)
+   - Ornek: "Enerjik" → Gradient #21-25 (parlak, kontrast)
+
+3. **FONT CIFTI SECIMI:**
+   - 50 font ciftinden TARZ'A UYGUN olani sec
+   - Ornek: "Klasik" → Font #1-10 (Playfair, Merriweather)
+   - Ornek: "Modern" → Font #11-20 (Inter, Space Grotesk)
+   - Ornek: "Premium" → Font #41-50 (Cormorant, Cinzel)
+
+4. **HOVER EFEKTI SECIMI:**
+   - 20 hover efektinden TARZ'A UYGUN olani sec
+   - Ornek: "Minimal" → Efekt #1-5 (ikon weight degisimi)
+   - Ornek: "Dinamik" → Efekt #6-10 (text hareketleri)
+   - Ornek: "Bold" → Efekt #11-15 (border & shadow)
+
+5. **ANIMATED BACKGROUND:**
+   - Eger stiller "dinamik", "enerjik", "modern" ise → Animated BG kullan
+   - Eger stiller "minimal", "klasik", "sakin" ise → Static gradient kullan
+   - 30 animated background'dan TARZ'A uygun olani sec
+
+6. **LAYOUT SECIMI:**
+   - Her section icin TARZ'A UYGUN layout sec
+   - Ornek: "Minimal" → Layout #1-30 (temiz, bol bosluk)
+   - Ornek: "Bold" → Layout #61-90 (buyuk tipi, kontrast)
+   - Ornek: "Klasik" → Layout #31-60 (dengeli, symmetrik)
+
+7. **MEGA MENU:**
+   - 15 mega menu stilinden TARZ'A uygun olani sec
+   - Ornek: "Modern" → Mega #1-5 (full-width)
+   - Ornek: "Minimal" → Mega #6-10 (sidebar)
+   - Ornek: "Klasik" → Mega #11-15 (modal/overlay)
+
+### ORNEK UYGULAMA:
+
+**Secilen Stil:**
+```
+### Genel Tarz
+- Minimal ve profesyonel
+- Bol beyaz alan kullanimi
+- Soft renkler, agresif degil
+
+### Hizmetler Gosterimi
+- Kartlar ile grid yapisi
+- Hover'da hafif yukari kayma
+- Ikon on planda
+```
+
+**Uygulanisi:**
+1. Tarz: Minimal, profesyonel → Genel tasarim temiz, bol bosluk
+2. Gradient: #31-35 (Soft Mono) → bg-gradient-to-br from-slate-50 to-slate-100
+3. Font: #31-35 (Nunito + Open Sans) → Yumusak, okunakli
+4. Hover: #1 (Ikon Weight) → far → fas degisimi (minimal, profesyonel)
+5. Animated BG: KULLANMA → Minimal = static
+6. Hizmetler Layout: #1-30 (Grid, ikon + baslik + aciklama, clean)
+7. Mega Menu: #6-10 (Sidebar) → Minimal, temiz
+
+### CAKISMA DURUMU:
+
+Eger secilen stil ile alttaki listeler cakisiyorsa:
+- **TASARIM STILLERI KAZANIR!**
+- Listelerdeki oneriler = fallback (stil secimi yoksa kullan)
+
+---
+
+## ANA HEDEF
+
+Profesyonel, OZGUN ve sektore uygun kurumsal web sitesi.
+Her tasarim BENZERSIZ olmali - template fabrikasi degil, boutique tasarim studyosu gibi calis!
+
+**TEKNOLOJILER:**
+- Tailwind CSS v4 (CDN)
+- Alpine.js (interaktivite)
+- Gerektiginde: Swiper, GSAP, AOS, Lottie (CDN ile)
+
+---
+
+## 🎨 DESIGN CONSISTENCY SISTEMI (EN KRITIK KURAL!)
+
+### ⚠️ ALTIN KURAL: BIR SITE = BIR DESIGN DILI
+
+**ZORUNLU:** Tum sitede tek bir design token sistemi kullan!
+
+### 🎯 RENK BUTUNLUGU (TUM SAYFADA!)
+
+**KRITIK:** Renkler TUM sayfada bir butunluk icinde olmali!
+
+❌ **YANLIS (Daginik Renkler):**
+- Hero: Mavi tonlar
+- About: Yesil tonlar
+- Services: Turuncu tonlar
+- Contact: Mor tonlar
+→ KAOS! Amatör gorunum!
+
+✅ **DOGRU (Tutarli Palet):**
+- TUM sayfa: Ayni renk ailesi (ornek: blue-purple ailesi)
+- Hero: from-blue-600 to-purple-600
+- About: bg-blue-50, accent purple-600
+- Services: Kartlar blue-100, ikonlar purple-600
+- Contact: Border blue-200, buton purple-600
+→ PROFESYONEL! Marka birligi!
+
+**RENK SECIM KURALLARI:**
+1. Bir PRIMARY renk sec (tum sitede ana renk)
+2. Bir SECONDARY renk sec (tamamlayici)
+3. Bir ACCENT renk sec (vurgular icin)
+4. Bu 3 rengi TUM sayfalarda kullan!
+5. Ekstra renk EKLEME!
+
+**ORNEK PALET:**
+```
+PRIMARY:   blue-600    → Butonlar, linkler, ikonlar
+SECONDARY: purple-600  → Gradientler, vurgular
+ACCENT:    cyan-500    → Ozel detaylar
+NEUTRAL:   slate       → Text, background, border
+```
+
+Her section'da farkli renk, gradient, button stili KULLANMA!
+Amatör tasarimin en buyuk hatasi: Her section farkli stil.
+Profesyonel tasarimin gizemi: Butun sitede ayni design language.
+
+### DESIGN TOKEN SISTEMI (Tum Sitede Kullan)
+
+Site basinda bu kararlari ver, HICBIR section'da degistirme:
+
+**1. RENK PALETI (Tek Palet):**
+```
+primary: blue-600        → Tum butonlar, linkler
+secondary: blue-500      → Hover durumlar
+accent: purple-600       → Onemli vurgular
+```
+❌ YAPMA: Hero'da mavi, About'ta yesil, Contact'ta turuncu
+✅ YAP: Tum sitede ayni mavi palet
+
+**2. GRADIENT AILESI (Ayni Ton Varyasyonlari):**
+```
+primary: blue-600 → purple-600     → Hero, CTA
+secondary: blue-500 → purple-500   → Cards
+subtle: blue-400 → purple-400      → Backgrounds
+```
+❌ YAPMA: Hero blue-purple, About green-teal, Services orange-red
+✅ YAP: Tum sitede blue-purple gradient ailesi
+
+**3. BUTTON STILI (Tek Sistem):**
+```
+Primary: bg-blue-600 text-white px-6 py-3 rounded-lg
+Secondary: border-2 border-blue-600 text-blue-600 px-6 py-3 rounded-lg
+Tertiary: text-blue-600 px-6 py-3
+```
+❌ YAPMA: Hero pill button (rounded-full), About sharp (rounded-none)
+✅ YAP: Tum sitede rounded-lg
+
+**4. TYPOGRAPHY HIERARCHY (Sabit):**
+```
+H1: text-5xl font-bold           → Tum hero basliklar
+H2: text-3xl font-semibold       → Tum section basliklar
+H3: text-xl font-medium          → Tum alt basliklar
+Body: text-base                  → Tum paragraflar
+Small: text-sm                   → Tum aciklamalar
+```
+❌ YAPMA: Hero h1 text-6xl, About h1 text-4xl, Services h1 text-5xl
+✅ YAP: Tum h1'ler text-5xl
+
+**5. SPACING SISTEMI (Tutarli Bosluklar):**
+```
+Section Padding: py-16 md:py-24 lg:py-32    → Tum section'lar
+Container Gap: gap-8 md:gap-12              → Tum grid'ler
+Card Padding: p-6 md:p-8                    → Tum card'lar
+Element Gap: space-y-4                      → Tum vertical listeler
+```
+❌ YAPMA: Hero py-20, About py-12, Services py-32, Contact py-8
+✅ YAP: Tum section'lar py-16 md:py-24
+
+**6. BORDER & SHADOW (Tutarli Derinlik):**
+```
+Cards: rounded-xl shadow-lg
+Buttons: rounded-lg
+Inputs: rounded-lg
+Images: rounded-2xl
+Hover: shadow-xl
+```
+❌ YAPMA: Hero card rounded-3xl, About card rounded-sm
+✅ YAP: Tum card'lar rounded-xl
+
+### TUTARLILIK KONTROL LISTESI
+
+Tasarimi bitirmeden once kontrol et:
+[ ] Tum sitede ayni renk paleti mi? (primary, secondary, accent)
+[ ] Tum sitede ayni gradient ailesi mi? (blue-purple her yerde)
+[ ] Tum butonlar ayni border-radius mi? (rounded-lg)
+[ ] Tum section'lar ayni padding mi? (py-16 md:py-24)
+[ ] Tum h1'ler ayni font-size mi? (text-5xl)
+[ ] Tum card'lar ayni rounded mi? (rounded-xl)
+
+**UNUTMA:** Design consistency = Profesyonelligin gorsel kaniti!
+
+---
+
+## 🌈 GRADIENT TEXT & ANIMATED BORDERS (MODERN TEKNIK!)
+
+### GRADIENT TEXT (OLABILDIGINCE KULLAN!)
+
+**Gradient text modern ve goz alici bir teknoloji - cesur kullan!**
+
+```html
+<!-- Gradient Text -->
+<h1 class="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+  Baslik Metni
+</h1>
+
+<!-- Dark mode uyumlu -->
+<h2 class="bg-gradient-to-r from-cyan-400 to-blue-500 dark:from-cyan-300 dark:to-blue-400 bg-clip-text text-transparent">
+  Alt Baslik
+</h2>
+```
+
+### ⚡ ANIMATED GRADIENT TEXT (HAREKET EDEN!)
+
+**Text gradient'leri HAREKET etsin - dikkat cekici!**
+
+```html
+<h1 class="animated-gradient-text">Hareketli Gradient</h1>
+
+<style>
+.animated-gradient-text {
+  background: linear-gradient(
+    90deg,
+    #3b82f6,    /* blue-500 */
+    #8b5cf6,    /* violet-500 */
+    #ec4899,    /* pink-500 */
+    #3b82f6     /* blue-500 (tekrar - seamless loop) */
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradientFlow 4s ease infinite;
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+</style>
+```
+
+### 🔲 GRADIENT BORDERS (MODERN GORUNTU!)
+
+**Border'lar da gradient olsun - shadow yerine border kullan!**
+
+```html
+<!-- Gradient Border Card -->
+<div class="gradient-border-card">
+  <div class="card-content">
+    Icerik burada
+  </div>
+</div>
+
+<style>
+.gradient-border-card {
+  position: relative;
+  padding: 2px; /* Border kalinligi */
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+  border-radius: 1rem;
+}
+
+.gradient-border-card .card-content {
+  background: white; /* dark: slate-900 */
+  border-radius: calc(1rem - 2px);
+  padding: 1.5rem;
+}
+
+/* Dark mode */
+.dark .gradient-border-card .card-content {
+  background: #0f172a; /* slate-900 */
+}
+</style>
+```
+
+### ⚡ ANIMATED GRADIENT BORDERS (HAREKET EDEN!)
+
+**Border gradient'leri de hareket edebilir!**
+
+```html
+<div class="animated-border-card">
+  <div class="card-inner">Icerik</div>
+</div>
+
+<style>
+.animated-border-card {
+  position: relative;
+  padding: 3px;
+  background: linear-gradient(
+    90deg,
+    #3b82f6, #8b5cf6, #ec4899, #3b82f6
+  );
+  background-size: 300% 100%;
+  border-radius: 1rem;
+  animation: borderFlow 4s ease infinite;
+}
+
+@keyframes borderFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-border-card .card-inner {
+  background: white;
+  border-radius: calc(1rem - 3px);
+  padding: 2rem;
+}
+
+.dark .animated-border-card .card-inner {
+  background: #0f172a;
+}
+</style>
+```
+
+### TAILWIND ILE GRADIENT BORDER (Kolay Yontem)
+
+```html
+<!-- Tailwind native gradient border -->
+<div class="p-[2px] bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-xl">
+  <div class="bg-white dark:bg-slate-900 rounded-[10px] p-6">
+    Icerik
+  </div>
+</div>
+
+<!-- Hover'da gradient border -->
+<div class="p-[2px] bg-gray-200 dark:bg-slate-700 hover:bg-gradient-to-r hover:from-blue-500 hover:via-purple-500 hover:to-pink-500 rounded-xl transition-all duration-300">
+  <div class="bg-white dark:bg-slate-900 rounded-[10px] p-6">
+    Hover'da gradient border
+  </div>
+</div>
+```
+
+### KULLANIM ONERILERI
+
+**GRADIENT TEXT NEREDE KULLAN:**
+- ✅ Hero basliklar (en etkili!)
+- ✅ Section basliklar
+- ✅ CTA buton textleri
+- ✅ Onemli vurgular
+- ❌ Body text (okunaklilik duser)
+- ❌ Kucuk font size (efekt kaybolur)
+
+**GRADIENT BORDER NEREDE KULLAN:**
+- ✅ Kartlar (ozellikle hover'da)
+- ✅ CTA butonlar
+- ✅ Featured/Highlighted elemanlar
+- ✅ Form inputlar (focus state)
+- ❌ Her yerde (abartma!)
+
+**RENK KOMBINASYONLARI:**
+```css
+/* Soguk: Profesyonel */
+from-blue-500 via-cyan-500 to-teal-500
+
+/* Sicak: Enerjik */
+from-orange-500 via-red-500 to-pink-500
+
+/* Mor: Yaratici */
+from-purple-500 via-violet-500 to-indigo-500
+
+/* Rainbow: Dikkat cekici */
+from-blue-500 via-purple-500 to-pink-500
+
+/* Gold: Premium */
+from-amber-400 via-yellow-500 to-orange-500
+```
+
+---
+
+## 📐 CONTAINER GENISLIK SISTEMI
+
+### GENIS CONTAINER (Zorunlu - Varsayilan)
+
+**Responsive Padding Sistemi:**
+```html
+<div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+    <!-- Mobile: 12px, Tablet: 24-32px, Desktop: 48-64px, Large: 80px -->
+</div>
+```
+
+**Mantiği:** Icerik maksimum alan kaplasın, ama kenarlar guvenli mesafede.
+
+### ALTERNATIF GENISLIKLER
+
+**Ultra Genis (Buyuk ekranlar icin):**
+```html
+<div class="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 lg:px-16">
+    <!-- Tailwind varsayilan (1536px) yerine 1600px -->
+</div>
+```
+
+**Section Bazli Farklilaştirma:**
+- Hero Section: `max-w-screen-2xl px-6` (En genis)
+- Content Section: `max-w-7xl px-8` (Orta)
+- Text Section: `max-w-4xl px-6` (Dar - okunabilirlik)
+- Full Bleed: `w-full px-0` (Tam genislik)
+
+**Tailwind Max-Width Referansi:**
+```
+max-w-7xl        → 1280px (Standart)
+max-w-screen-xl  → 1280px
+max-w-screen-2xl → 1536px (Genis)
+max-w-[1600px]   → 1600px (Custom)
+max-w-full       → 100% (Tam genislik)
+```
+
+⚠️ **DIKKAT:** Ultra genis container'larda (1800px+) metin satirlari cok uzun olursa okunabilirlik duser. Text-heavy section'larda `max-w-4xl` kullan!
+
+---
+
+## OZGUNLUK SISTEMI (v3 - FIRMA BAZLI!)
+
+### ALTIN KURAL: HER FIRMA KENDI ICINDE FARKLI OLMALI!
+
+**FIRMA BAZLI BENZERSIZLIK:**
+- Ayni firma icin: v1, v2, v3... FARKLI layout/renk/font olmali
+- Farkli firmalar: Ayni layout/renk/font kullanabilir (icerik farklı)
+
+**Ornek:**
+```
+Firma A (Saglik Klinigi):
+- v1: Hero#47 + Color:Medical-Green + Font:Playfair-Inter
+- v2: Hero#89 + Color:Clinical-Blue + Font:DM-Serif-PT-Sans ← Farkli olmali
+- v3: Hero#23 + Color:Trust-Green + Font:Cormorant-Lato ← Yine farkli
+
+Firma B (Dis Klinigi):
+- v1: Hero#47 + Color:Medical-Green + Font:Playfair-Inter ← A ile ayni OK!
+  Cunku: Icerik farklı, logo farklı, gorseller farklı → Benzersiz gorunur
+```
+
+### FINGERPRINT SISTEMI (Firma Bazli Takip)
+
+**Fingerprint Log:**
+```
+public/design/templates/{firma-adi}/fingerprints.log
+```
+
+**Icerik:**
+```json
+{
+  "v1": {
+    "hash": "a3f2c8b9",
+    "layouts": {"hero": 47, "about": 89, "services": 12},
+    "colors": {"palette": "Medical Green"},
+    "fonts": {"heading": "Playfair Display", "body": "Inter"}
+  },
+  "v2": {
+    "hash": "p4n8q1x7",
+    "layouts": {"hero": 89, "about": 23, "services": 45},
+    "colors": {"palette": "Clinical Blue"},
+    "fonts": {"heading": "DM Serif Display", "body": "PT Sans"}
+  }
+}
+```
+
+**Kontrol Algoritmasi:**
+1. Yeni tasarim olusturmadan once → Bu firma icin fingerprints.log kontrol et
+2. Sectigin layout/color/font kombinasyonu daha once kullanilmis mi?
+3. Kullanilmissa → FARKLI sec!
+4. Kullanilmamissa → Kullan ve kaydet
+
+**SONUC:**
+- ✅ Scalable (sinirsiz firma)
+- ✅ Her firma kendi icinde ozgun
+- ✅ Firmalar arasi benzerlik sorun degil (icerik farklı)
+- ✅ Layout kutuphanesi tukenmez
+
+### SEKTOR ANALIZI (KENDIN YARAT!)
+
+**Sen sektoru analiz et ve su kurallari kendin belirle:**
+
+1. **Renk Paleti** → Sektore uygun psikoloji ile sec (asagidaki kutuphaneden)
+2. **Font Cifti** → Sektore uygun karakter ile sec (50 secenekten)
+3. **His/Atmosfer** → Sektore uygun duygu ile sec
+4. **Layout Tercihi** → Sektore uygun yapilar sec (150 secenekten)
+
+Her sektor icin FARKLI dusun. Hazir kalip kullanma!
+Kendi yaraticiligini kullan, sektoru analiz et, uygun karar ver.
+
+---
+
+## 🎨 RENK KUTUPHANESI (40 GRADIENT PRESET)
+
+### LIGHT/DARK UYUMLU GRADIENTLER
+
+**SOĞUK TONLAR (1-10):**
+1. Ocean Blue: `from-blue-500 to-cyan-400` / dark: `from-blue-600 to-cyan-600`
+2. Arctic Ice: `from-cyan-400 to-blue-300` / dark: `from-cyan-600 to-blue-700`
+3. Deep Sea: `from-blue-600 to-indigo-700` / dark: `from-blue-700 to-indigo-800`
+4. Mint Fresh: `from-emerald-400 to-teal-300` / dark: `from-emerald-600 to-teal-700`
+5. Sky Blue: `from-sky-400 to-blue-300` / dark: `from-sky-600 to-blue-700`
+6. Teal Wave: `from-teal-500 to-cyan-400` / dark: `from-teal-600 to-cyan-700`
+7. Navy Professional: `from-blue-700 to-slate-800` / dark: `from-blue-800 to-slate-900`
+8. Cool Trust: `from-blue-500 to-slate-600` / dark: `from-blue-600 to-slate-700`
+9. Glacier: `from-slate-400 to-blue-500` / dark: `from-slate-600 to-blue-700`
+10. Corporate Blue: `from-blue-600 to-blue-800` / dark: `from-blue-700 to-blue-900`
+
+**SICAK TONLAR (11-20):**
+11. Sunset Orange: `from-orange-400 to-red-500` / dark: `from-orange-600 to-red-700`
+12. Golden Hour: `from-amber-400 to-orange-500` / dark: `from-amber-600 to-orange-700`
+13. Fire Red: `from-red-500 to-orange-600` / dark: `from-red-600 to-orange-700`
+14. Warm Amber: `from-yellow-400 to-amber-500` / dark: `from-yellow-600 to-amber-700`
+15. Terracotta: `from-orange-500 to-red-600` / dark: `from-orange-600 to-red-700`
+16. Coral Pink: `from-pink-400 to-rose-500` / dark: `from-pink-600 to-rose-700`
+17. Peach Soft: `from-orange-300 to-pink-400` / dark: `from-orange-500 to-pink-600`
+18. Cherry Blossom: `from-pink-300 to-rose-400` / dark: `from-pink-500 to-rose-600`
+19. Autumn Leaves: `from-amber-500 to-red-500` / dark: `from-amber-600 to-red-700`
+20. Warm Earth: `from-orange-600 to-amber-700` / dark: `from-orange-700 to-amber-800`
+
+**ENERJIK TONLAR (21-30):**
+21. Purple Dream: `from-purple-500 to-pink-500` / dark: `from-purple-600 to-pink-700`
+22. Violet Sky: `from-violet-400 to-purple-500` / dark: `from-violet-600 to-purple-700`
+23. Magenta Pop: `from-fuchsia-500 to-pink-600` / dark: `from-fuchsia-600 to-pink-700`
+24. Royal Purple: `from-purple-600 to-indigo-700` / dark: `from-purple-700 to-indigo-800`
+25. Neon Glow: `from-purple-500 to-blue-500` / dark: `from-purple-600 to-blue-700`
+26. Electric Violet: `from-violet-500 to-fuchsia-600` / dark: `from-violet-600 to-fuchsia-700`
+27. Berry Mix: `from-pink-500 to-purple-600` / dark: `from-pink-600 to-purple-700`
+28. Plum Wine: `from-purple-700 to-pink-600` / dark: `from-purple-800 to-pink-700`
+29. Mystic Purple: `from-indigo-500 to-purple-600` / dark: `from-indigo-600 to-purple-700`
+30. Twilight: `from-purple-600 to-blue-700` / dark: `from-purple-700 to-blue-800`
+
+**DOGAL TONLAR (31-40):**
+31. Forest Green: `from-green-600 to-emerald-700` / dark: `from-green-700 to-emerald-800`
+32. Leaf Fresh: `from-lime-400 to-green-500` / dark: `from-lime-600 to-green-700`
+33. Moss Earth: `from-green-700 to-emerald-800` / dark: `from-green-800 to-emerald-900`
+34. Sage Calm: `from-green-500 to-teal-600` / dark: `from-green-600 to-teal-700`
+35. Olive Natural: `from-lime-600 to-green-700` / dark: `from-lime-700 to-green-800`
+36. Stone Gray: `from-slate-500 to-gray-600` / dark: `from-slate-600 to-gray-700`
+37. Charcoal: `from-gray-700 to-slate-800` / dark: `from-gray-800 to-slate-900`
+38. Earth Brown: `from-amber-700 to-brown-800` / dark: `from-amber-800 to-brown-900`
+39. Sand Beige: `from-yellow-200 to-amber-300` / dark: `from-yellow-600 to-amber-700`
+40. Concrete Modern: `from-slate-400 to-zinc-500` / dark: `from-slate-600 to-zinc-700`
+
+**KULLANIM:**
+- Sektor analizi yap → Uygun gradientleri sec (2-3 adet)
+- PRIMARY gradient (Hero, CTA)
+- SECONDARY gradient (Cards, backgrounds)
+- SUBTLE gradient (Hover, accents)
+
+---
+
+## 🔤 FONT CIFTI KUTUPHANESI (50 CIFT)
+
+### KLASIK & ELEGANT (1-10)
+1. Playfair Display + Inter (Klasik + Modern)
+2. Cormorant Garamond + Lato (Elegant + Readable)
+3. Marcellus + Raleway (Luxury + Refined)
+4. Italiana + Montserrat (Elegant + Contemporary)
+5. Libre Baskerville + Source Sans Pro (Traditional + Clean)
+6. Crimson Text + Work Sans (Literary + Professional)
+7. Spectral + Karla (Editorial + Friendly)
+8. Merriweather + Open Sans (Classic + Universal)
+9. Lora + Nunito (Sophisticated + Warm)
+10. EB Garamond + Roboto (Timeless + Neutral)
+
+### MODERN & TECH (11-20)
+11. Space Grotesk + DM Sans (Tech + Clean)
+12. Outfit + Source Sans Pro (Modern + Professional)
+13. Sora + Nunito (Fresh + Warm)
+14. Manrope + Inter (Contemporary + Versatile)
+15. Lexend + Plus Jakarta Sans (Readable + Modern)
+16. Red Hat Display + Red Hat Text (Unified Modern)
+17. Inter + Inter (Monochrome Modern)
+18. DM Sans + DM Sans (Consistent Modern)
+19. Poppins + Poppins (Geometric Modern)
+20. Archivo + Archivo (Neutral Modern)
+
+### BOLD & STRONG (21-30)
+21. Bebas Neue + Open Sans (Bold + Friendly)
+22. Oswald + Roboto (Strong + Neutral)
+23. Anton + Lato (Impact + Balance)
+24. Fjalla One + Noto Sans (Condensed + Clear)
+25. Teko + Work Sans (Tall + Professional)
+26. Barlow Condensed + Barlow (Unified Bold)
+27. Saira Condensed + Saira (Technical + Strong)
+28. Pathway Gothic One + Raleway (Narrow + Elegant)
+29. Russo One + Rubik (Display + Rounded)
+30. Staatliches + Nunito (Poster + Friendly)
+
+### FRIENDLY & SOFT (31-40)
+31. Quicksand + Work Sans (Friendly + Clean)
+32. Comfortaa + Mulish (Rounded + Readable)
+33. Varela Round + Noto Sans (Soft + Universal)
+34. Nunito Sans + Nunito (Harmonious Soft)
+35. Questrial + Karla (Geometric Soft + Friendly)
+36. Righteous + Barlow (Playful + Professional)
+37. Fredoka + Inter (Fun + Modern)
+38. Cabin + Cabin (Humanist Friendly)
+39. Overpass + Overpass (Highway Friendly)
+40. Maven Pro + Maven Pro (Unified Friendly)
+
+### PREMIUM & LUXURY (41-50)
+41. Cinzel + Fauna One (Luxury + Refined)
+42. Julius Sans One + Lato (Premium + Clean)
+43. Poiret One + Raleway (Art Deco + Elegant)
+44. Yeseva One + Josefin Sans (Display Luxury + Modern)
+45. Abril Fatface + Lato (Bold Luxury + Readable)
+46. Playfair Display SC + Lora (Small Caps + Elegant)
+47. Bodoni Moda + Montserrat (High Contrast + Geometric)
+48. Cormorant SC + Cormorant (Small Caps Unified)
+49. Oranienbaum + Philosopher (Russian Elegance + Unique)
+50. Sorts Mill Goudy + Alegreya (Old Style + Literary)
+
+**SECIM STRATEJISI:**
+1. Sektor analizine gore kategori sec (Elegant, Modern, Bold, Friendly, Luxury)
+2. O kategoriden RASTGELE bir cift sec
+3. Firma fingerprint'ine kaydet (bir daha kullanma)
+
+---
+
+## ✨ HOVER EFEKTLERI KUTUPHANESI (20 EFEKT)
+
+### ⚡ HOVER TERCIHI: SHADOW YERINE BORDER!
+
+**KURAL:** Hover efektlerinde shadow yerine border kullan - daha modern!
+
+❌ **ESKIMIS (Shadow Hover):**
+```css
+.card:hover {
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+```
+
+✅ **MODERN (Border Hover):**
+```css
+/* Solid border */
+.card {
+  border: 2px solid transparent;
+  transition: border-color 0.3s ease;
+}
+.card:hover {
+  border-color: theme('colors.blue.500');
+}
+
+/* Gradient border (daha etkileyici!) */
+.card {
+  padding: 2px;
+  background: transparent;
+  transition: background 0.3s ease;
+}
+.card:hover {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+}
+.card-inner {
+  background: white;
+}
+```
+
+**NEDEN BORDER TERCIH EDILMELI:**
+- ✅ Daha net ve temiz gorunum
+- ✅ Performans dostu (GPU accelerated)
+- ✅ Dark/light modda tutarli
+- ✅ Gradient border mumkun
+- ✅ Modern tasarim trendi
+- ❌ Shadow: Kirli, belirsiz, eski moda
+
+### KRITIK KURAL: CARD SABIT KALIR!
+
+❌ **ASLA YAPMA:**
+```css
+.card:hover {
+  transform: scale(1.05);      /* YAPMA! */
+  transform: translateY(-10px); /* YAPMA! */
+  transform: rotate(2deg);      /* YAPMA! */
+}
+```
+
+✅ **DOGRU YAKLASIM:**
+```css
+/* Card sabittir, icindeki elementler hareket eder */
+.card:hover .icon {
+  transform: scale(1.15);       /* Icon buyur */
+}
+.card:hover .title {
+  transform: translateX(8px);   /* Text kayar */
+}
+```
+
+### IKON WEIGHT DEGISIMI (1-5) - EN PROFESYONEL!
+
+**1. FontAwesome Regular → Solid:**
+```html
+<!-- Normal: -->
+<i class="far fa-heart"></i>
+
+<!-- JavaScript ile hover: -->
+card.addEventListener('mouseenter', () => {
+  icon.classList.remove('far');
+  icon.classList.add('fas');
+});
+```
+
+**2. Ikon Buyutme:**
+```css
+.card:hover .icon {
+  transform: scale(1.15);
+  transition: transform 0.3s ease;
+}
+```
+
+**3. Ikon Donme:**
+```css
+.card:hover .icon {
+  transform: rotate(15deg);
+}
+```
+
+**4. Ikon Renk Degisimi:**
+```css
+.icon { color: theme('colors.blue.500'); }
+.card:hover .icon { color: theme('colors.blue.600'); }
+```
+
+**5. Ikon + Background Buyume:**
+```css
+.icon-bg { background: theme('colors.blue.100'); border-radius: 50%; }
+.card:hover .icon-bg { transform: scale(1.2); }
+```
+
+### TEXT HAREKETLERI (6-10)
+
+**6. Text Kayma (Right):**
+```css
+.card:hover .title {
+  transform: translateX(8px);
+}
+```
+
+**7. Text Fade In (Aciklama):**
+```css
+.description { opacity: 0; transition: opacity 0.3s; }
+.card:hover .description { opacity: 1; }
+```
+
+**8. Underline Cizim:**
+```css
+.title::after {
+  content: '';
+  width: 0;
+  height: 2px;
+  background: currentColor;
+  transition: width 0.3s;
+}
+.card:hover .title::after {
+  width: 100%;
+}
+```
+
+**9. Text Renk Degisimi:**
+```css
+.title { color: theme('colors.gray.700'); }
+.card:hover .title { color: theme('colors.blue.600'); }
+```
+
+**10. Text Glow:**
+```css
+.card:hover .title {
+  text-shadow: 0 0 20px theme('colors.blue.400/50');
+}
+```
+
+### BORDER & SHADOW (11-15)
+
+**11. Border Cizim (Top to Bottom):**
+```css
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 0;
+  background: theme('colors.blue.600');
+  transition: height 0.3s;
+}
+.card:hover::before {
+  height: 100%;
+}
+```
+
+**12. Shadow Derinlik:**
+```css
+.card { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+```
+
+**13. Border Glow:**
+```css
+.card { border: 1px solid theme('colors.gray.200'); }
+.card:hover { border-color: theme('colors.blue.500'); box-shadow: 0 0 20px theme('colors.blue.200'); }
+```
+
+**14. Gradient Border Reveal:**
+```css
+.card { border: 2px solid transparent; background-clip: padding-box; }
+.card:hover { border-image: linear-gradient(135deg, blue, purple) 1; }
+```
+
+**15. Inner Shadow:**
+```css
+.card:hover { box-shadow: inset 0 0 20px rgba(59,130,246,0.1); }
+```
+
+### BACKGROUND EFEKTLERI (16-20)
+
+**16. Gradient Shift (Card Sabit!):**
+```css
+.card {
+  background: linear-gradient(135deg, blue, purple);
+  background-size: 200% 200%;
+  background-position: 0% 0%;
+  transition: background-position 0.4s;
+}
+.card:hover {
+  background-position: 100% 100%; /* Gradient kayar, card sabit! */
+}
+```
+
+**17. Background Color Fade:**
+```css
+.card { background: white; }
+.card:hover { background: theme('colors.blue.50'); }
+```
+
+**18. Backdrop Blur Increase:**
+```css
+.card { backdrop-filter: blur(8px); }
+.card:hover { backdrop-filter: blur(16px); }
+```
+
+**19. Background Image Zoom (Card Sabit!):**
+```css
+.card-bg {
+  background-image: url(...);
+  background-size: 100%;
+  transition: background-size 0.4s;
+}
+.card:hover .card-bg {
+  background-size: 110%; /* Gorsel buyur, card sabit */
+}
+```
+
+**20. Overlay Opacity:**
+```css
+.overlay { opacity: 0; background: rgba(0,0,0,0.5); }
+.card:hover .overlay { opacity: 1; }
+```
+
+**KULLANIM:**
+- Her card icin 2-3 efekt kombine et (ornek: Icon solid + Text kayma + Border cizim)
+- Asla card'i hareket ettirme (scale, translate, rotate YASAK!)
+- Smooth transition kullan (0.3s ease)
+
+---
+
+## 🎭 MEGA MENU STILLERI (15 TIP)
+
+### ⚠️ MEGA MENU LINK ORTALAMA (KRITIK!)
+
+**PROBLEM:** Mega menu linkleri ortalanmiyor, sola yapisiyor.
+
+**COZUM:**
+```css
+/* Mega menu container */
+.mega-menu-container {
+  display: flex;
+  justify-content: center; /* Yatay ortala */
+  align-items: center;     /* Dikey ortala */
+}
+
+/* Mega menu icindeki linkler */
+.mega-menu a {
+  display: flex;
+  align-items: center;     /* Icon ve text dikey ortali */
+  justify-content: center; /* Icerik yatay ortali (gerekirse) */
+  gap: 0.5rem;            /* Icon ile text arasi bosluk */
+  text-align: center;     /* Text ortalama */
+}
+
+/* Veya Tailwind ile */
+<a class="flex items-center justify-center gap-2 text-center">
+  <i class="fat fa-icon"></i>
+  <span>Link Text</span>
+</a>
+```
+
+**DIKKAT:**
+- Her mega menu linkinde `items-center` kullan
+- Icon ve text yan yana ise `gap-2` ekle
+- Grid icerisindeki linkler `text-center` olmali
+- Flex container'larda `justify-center` unutma!
+
+### FULL-WIDTH MEGA (1-5)
+
+**1. Grid with Images:**
+```html
+<div class="mega-menu absolute left-0 w-full bg-white shadow-xl">
+  <div class="container mx-auto py-8 grid grid-cols-4 gap-6">
+    <div class="col-span-1">
+      <img src="..." class="rounded-lg mb-2">
+      <h4>Kategori 1</h4>
+    </div>
+    <!-- ... -->
+  </div>
+</div>
+```
+
+**2. Featured + Links:**
+```html
+<div class="flex">
+  <div class="w-1/3 bg-gradient-to-br from-blue-600 to-purple-600 p-8 text-white">
+    <h3>Öne Cikan</h3>
+    <p>Yeni hizmetler...</p>
+  </div>
+  <div class="w-2/3 grid grid-cols-3 gap-4 p-8">
+    <!-- Linkler -->
+  </div>
+</div>
+```
+
+**3. Icon Grid:**
+```html
+<div class="grid grid-cols-5 gap-6">
+  <a href="#" class="flex flex-col items-center p-4 hover:bg-blue-50 rounded">
+    <i class="fas fa-icon text-3xl text-blue-600 mb-2"></i>
+    <span>Hizmet 1</span>
+  </a>
+</div>
+```
+
+**4. Tabbed Mega:**
+```html
+<div class="flex">
+  <div class="w-1/4 border-r">
+    <button class="tab active">Tab 1</button>
+    <button class="tab">Tab 2</button>
+  </div>
+  <div class="w-3/4 p-8">
+    <!-- Tab icerigi -->
+  </div>
+</div>
+```
+
+**5. Card Showcase:**
+```html
+<div class="grid grid-cols-3 gap-6 p-8">
+  <div class="card p-4 border rounded-lg hover:shadow-lg">
+    <img src="..." class="rounded mb-2">
+    <h4>Baslik</h4>
+    <p>Aciklama</p>
+  </div>
+</div>
+```
+
+### SIDEBAR MEGA (6-10)
+
+**6. Slide from Left:**
+```css
+.mega-sidebar {
+  position: fixed;
+  left: -400px;
+  width: 400px;
+  height: 100vh;
+  transition: left 0.3s;
+}
+.mega-sidebar.open { left: 0; }
+```
+
+**7. Accordion Sidebar:**
+```html
+<div class="sidebar w-80">
+  <div class="accordion-item">
+    <button class="accordion-header">Kategori 1</button>
+    <div class="accordion-content">
+      <a href="#">Alt menu 1</a>
+    </div>
+  </div>
+</div>
+```
+
+**8. Icon Sidebar:**
+```html
+<div class="flex">
+  <div class="w-20 bg-gray-900 text-white">
+    <button><i class="fas fa-icon"></i></button>
+  </div>
+  <div class="w-80 bg-white p-6">
+    <!-- Detayli menu -->
+  </div>
+</div>
+```
+
+**9. Multi-level Sidebar:**
+```html
+<ul class="menu-tree">
+  <li>
+    <span>Ana Menu</span>
+    <ul class="submenu">
+      <li>Alt Menu 1</li>
+      <li>
+        <span>Alt Menu 2</span>
+        <ul class="submenu">
+          <li>Ic Menu</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+```
+
+**10. Dashboard Style:**
+```html
+<div class="sidebar bg-slate-900 text-white">
+  <div class="logo p-6">...</div>
+  <nav class="menu">
+    <a class="menu-item active">
+      <i class="icon"></i>
+      <span>Dashboard</span>
+    </a>
+  </nav>
+</div>
+```
+
+### MODAL/OVERLAY (11-15)
+
+**11. Full-Screen Overlay:**
+```css
+.mega-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  display: grid;
+  place-items: center;
+}
+```
+
+**12. Centered Modal:**
+```html
+<div class="modal max-w-4xl mx-auto bg-white rounded-2xl p-12">
+  <div class="grid grid-cols-3 gap-8">
+    <!-- Menu items -->
+  </div>
+</div>
+```
+
+**13. Split Overlay:**
+```html
+<div class="overlay flex">
+  <div class="w-1/2 bg-blue-600 text-white p-12">
+    <!-- Sol taraf -->
+  </div>
+  <div class="w-1/2 bg-white p-12">
+    <!-- Sag taraf -->
+  </div>
+</div>
+```
+
+**14. Animated Reveal:**
+```css
+.mega-reveal .item {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s;
+}
+.mega-reveal.open .item {
+  opacity: 1;
+  transform: translateY(0);
+}
+.mega-reveal.open .item:nth-child(1) { transition-delay: 0.1s; }
+.mega-reveal.open .item:nth-child(2) { transition-delay: 0.2s; }
+```
+
+**15. Search-Focused:**
+```html
+<div class="mega-search bg-white shadow-2xl rounded-2xl p-8">
+  <input type="search" placeholder="Ne ariyorsunuz?" class="text-4xl border-0">
+  <div class="suggestions mt-6 grid grid-cols-4 gap-4">
+    <!-- Populer aramalar -->
+  </div>
+</div>
+```
+
+**KULLANIM:**
+- Sektor ve site yapisina gore uygun mega menu sec
+- Mobil: Hamburger + slide sidebar kullan (mega menu mobilde acilmaz)
+- Desktop: Dropdown veya full-width mega kullan
+
+---
+
+## 🌊 ANIMATED BACKGROUNDS (30 TIP)
+
+### GRADIENT ANIMATIONS (1-10)
+
+**1. Smooth Shift:**
+```css
+background: linear-gradient(45deg, blue, purple);
+background-size: 200% 200%;
+animation: shift 8s ease infinite;
+
+@keyframes shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+```
+
+**2. Hue Rotate:**
+```css
+background: linear-gradient(135deg, #667eea, #764ba2);
+animation: hueRotate 10s linear infinite;
+
+@keyframes hueRotate {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+```
+
+**3. Pulse:**
+```css
+background: linear-gradient(135deg, blue, purple);
+animation: pulse 4s ease-in-out infinite;
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+```
+
+**4. Wave:**
+```css
+background: linear-gradient(45deg, blue 0%, purple 50%, blue 100%);
+background-size: 200% 200%;
+animation: wave 6s ease infinite;
+
+@keyframes wave {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+```
+
+**5. Radial Expand:**
+```css
+background: radial-gradient(circle at center, blue, purple);
+background-size: 100% 100%;
+animation: expand 5s ease-in-out infinite;
+
+@keyframes expand {
+  0%, 100% { background-size: 100% 100%; }
+  50% { background-size: 150% 150%; }
+}
+```
+
+**6. Diagonal Flow:**
+```css
+background: linear-gradient(45deg, blue, purple, blue);
+background-size: 400% 400%;
+animation: diagonal 10s linear infinite;
+
+@keyframes diagonal {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 100%; }
+}
+```
+
+**7. Multi-Stop Shift:**
+```css
+background: linear-gradient(90deg, blue 0%, purple 25%, pink 50%, purple 75%, blue 100%);
+background-size: 200% 100%;
+animation: multiShift 8s ease infinite;
+```
+
+**8. Conic Rotate:**
+```css
+background: conic-gradient(from 0deg, blue, purple, blue);
+animation: conicRotate 8s linear infinite;
+
+@keyframes conicRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+```
+
+**9. Mesh Morph:**
+```css
+background: linear-gradient(135deg, blue 0%, purple 50%, pink 100%);
+filter: blur(40px);
+animation: morph 6s ease-in-out infinite;
+
+@keyframes morph {
+  0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+}
+```
+
+**10. Aurora Borealis:**
+```css
+background: linear-gradient(
+  90deg,
+  rgba(0,255,255,0.3) 0%,
+  rgba(128,0,255,0.3) 50%,
+  rgba(255,0,128,0.3) 100%
+);
+background-size: 300% 300%;
+animation: aurora 15s ease infinite;
+
+@keyframes aurora {
+  0% { background-position: 0% 50%; filter: hue-rotate(0deg); }
+  50% { background-position: 100% 50%; filter: hue-rotate(180deg); }
+  100% { background-position: 0% 50%; filter: hue-rotate(360deg); }
+}
+```
+
+### PARTICLE SYSTEMS (11-15)
+
+**11. Floating Dots (CSS Only):**
+```css
+background:
+  radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px),
+  radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+background-size: 50px 50px, 80px 80px;
+background-position: 0 0, 25px 25px;
+animation: float 20s ease-in-out infinite;
+
+@keyframes float {
+  0%, 100% { background-position: 0 0, 25px 25px; }
+  50% { background-position: 10px 20px, 35px 45px; }
+}
+```
+
+**12. SVG Pattern Animation:**
+```html
+<svg class="absolute inset-0 w-full h-full">
+  <defs>
+    <pattern id="dots" width="50" height="50" patternUnits="userSpaceOnUse">
+      <circle cx="25" cy="25" r="2" fill="currentColor" opacity="0.1">
+        <animate attributeName="r" values="2;4;2" dur="4s" repeatCount="indefinite"/>
+      </circle>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#dots)"/>
+</svg>
+```
+
+**13. Geometric Shapes Flow:**
+```css
+/* Tailwind Alpine.js ile */
+<div x-data="{ shapes: [...Array(20)] }" class="absolute inset-0">
+  <template x-for="(shape, i) in shapes" :key="i">
+    <div
+      class="absolute w-20 h-20 border border-white/5 rounded-lg"
+      :style="`
+        left: ${Math.random() * 100}%;
+        top: ${Math.random() * 100}%;
+        animation: floatShape ${10 + Math.random() * 10}s linear infinite;
+        animation-delay: ${Math.random() * 5}s;
+      `"
+    ></div>
+  </template>
+</div>
+
+@keyframes floatShape {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.05; }
+  90% { opacity: 0.05; }
+  100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+}
+```
+
+**14. Grid Lines Pulse:**
+```css
+background:
+  linear-gradient(90deg, transparent 49%, rgba(255,255,255,0.05) 50%, transparent 51%),
+  linear-gradient(0deg, transparent 49%, rgba(255,255,255,0.05) 50%, transparent 51%);
+background-size: 50px 50px;
+animation: gridPulse 2s ease-in-out infinite;
+
+@keyframes gridPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+```
+
+**15. Noise Texture Shift:**
+```css
+background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><filter id="noise"><feTurbulence baseFrequency="0.65"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.05"/></svg>');
+background-size: 300px 300px;
+animation: noiseShift 10s linear infinite;
+
+@keyframes noiseShift {
+  0% { background-position: 0 0; }
+  100% { background-position: 300px 300px; }
+}
+```
+
+### SVG PATTERN ANIMATIONS (16-20)
+
+**16. Sine Wave:**
+```html
+<svg viewBox="0 0 1000 200">
+  <path d="M0,100 Q250,0 500,100 T1000,100" fill="none" stroke="currentColor" opacity="0.1">
+    <animate attributeName="d"
+      values="M0,100 Q250,0 500,100 T1000,100;
+              M0,100 Q250,200 500,100 T1000,100;
+              M0,100 Q250,0 500,100 T1000,100"
+      dur="4s" repeatCount="indefinite"/>
+  </path>
+</svg>
+```
+
+**17. Hexagon Grid:**
+```html
+<svg class="absolute inset-0">
+  <defs>
+    <pattern id="hexagons" width="50" height="43.4" patternUnits="userSpaceOnUse">
+      <polygon points="25,0 50,14.43 50,28.87 25,43.3 0,28.87 0,14.43"
+        fill="none" stroke="currentColor" opacity="0.1">
+        <animate attributeName="opacity" values="0.1;0.3;0.1" dur="3s" repeatCount="indefinite"/>
+      </polygon>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#hexagons)"/>
+</svg>
+```
+
+**18. Dot Matrix:**
+```html
+<div class="grid grid-cols-20 gap-4 absolute inset-0 p-8">
+  <template x-for="i in 400">
+    <div class="w-1 h-1 bg-white/10 rounded-full"
+      :style="`animation: pulse ${2 + Math.random() * 3}s ease-in-out infinite; animation-delay: ${Math.random() * 2}s;`">
+    </div>
+  </template>
+</div>
+```
+
+**19. Organic Blob:**
+```html
+<svg viewBox="0 0 200 200">
+  <path fill="currentColor" opacity="0.05">
+    <animate attributeName="d"
+      values="M40,-60C50,-50,55,-30,58,-10C60,10,60,30,50,45C40,60,20,70,0,70C-20,70,-40,60,-50,45C-60,30,-60,10,-58,-10C-55,-30,-50,-50,-40,-60Z;
+              M35,-55C45,-45,50,-25,53,-5C55,15,55,35,45,50C35,65,15,75,-5,75C-25,75,-45,65,-55,50C-65,35,-65,15,-63,-5C-60,-25,-55,-45,-45,-55Z;
+              M40,-60C50,-50,55,-30,58,-10C60,10,60,30,50,45C40,60,20,70,0,70C-20,70,-40,60,-50,45C-60,30,-60,10,-58,-10C-55,-30,-50,-50,-40,-60Z"
+      dur="8s" repeatCount="indefinite"/>
+  </path>
+</svg>
+```
+
+**20. Constellation:**
+```html
+<svg class="absolute inset-0">
+  <g class="stars">
+    <!-- Her yildiz -->
+    <circle cx="100" cy="100" r="2" fill="white" opacity="0.8">
+      <animate attributeName="opacity" values="0.8;0.2;0.8" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Baglanti cizgileri -->
+    <line x1="100" y1="100" x2="200" y2="150" stroke="white" opacity="0.2">
+      <animate attributeName="opacity" values="0.2;0.5;0.2" dur="4s" repeatCount="indefinite"/>
+    </line>
+  </g>
+</svg>
+```
+
+**PERFORMANS KURALI:**
+- GPU-accelerated kullan (transform, opacity)
+- CPU kullanma (width, height, top, left)
+- 60fps hedefle
+- Dikkat cekmesin (subtle, slow & smooth)
+
+**KULLANIM:**
+- Hero section'da 1 animated background secebilirsin
+- Diger section'larda sadece solid/gradient kullan (animasyon yok)
+- Animasyon dikkat cekmesin - kullanici 5 saniye bakinca fark etmeli
+
+---
+
+## OZGUNLUK KONTROL LISTESI (v3)
+
+Tasarimi bitirmeden once kontrol et:
+[ ] Bu layout kombinasyonunu bu firma icin daha once kullandim mi? → fingerprints.log kontrol et!
+[ ] Bu renk paleti sektore uygun mu? → 40 gradient preset'ten sec!
+[ ] Font cifti siradanmi? → 50 cift arasından FARKLI sec!
+[ ] Section sirasi her zamanki gibi mi? → 10 alternatif siralamadan sec!
+[ ] Animasyon/efekt var mi? → 20 hover efekti + 30 animated background'dan sec!
+[ ] Tasarim "template" gibi mi gorunuyor? → DAHA CESUR OL!
+[ ] Mega menu modern ve profesyonel mi? → 15 stil var, sec!
+[ ] Design consistency saglandi mi? → Tum sitede ayni design token kullanildi mi?
+[ ] Container genislikleri dogru mu? → px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20
+[ ] Hover efektleri dogru mu? → Card sabit, icerik hareket ediyor mu? Icon far→fas mi?
+
+---
+
+## ONCELIK KURALI
+
+**HIERARSI (Yuksekten Alçaga):**
+
+1. **TASARIM STILLERI (Promptun basinda varsa)** ← EN YUKSEK ONCELIK!
+   - Kullanici /design/sectors/ sayfasindan secim yaptiysa
+   - Promptun basinda "TASARIM STILLERI (Secilen - ONCELIKLI):" bolumu varsa
+   - ⚠️ BU BOLUMU MUTLAKA UYGULA! (Detayli aciklama yukarida "TASARIM STILLERI KULLANIMI" bolumunde)
+   - Gradient, font, hover, layout secimlerinde bu stillere uygun ol!
+
+2. **Alttaki Layout/Gradient/Font Listeleri** ← FALLBACK (Tarz secimi yoksa)
+   - Eger yukarida TASARIM STILLERI bolumu yoksa
+   - 40 gradient, 50 font, 20 hover, 15 mega menu listelerinden kendin sec
+   - Firma fingerprint'ine gore ozgun secim yap
+
+3. **Manuel Girdi (sektor, tarz, ek_bilgiler)** ← EN DUSUK ONCELIK
+   - Kullanicinin elle yazdigi "sektor: saglik" gibi bilgiler
+   - Genel yonlendirme icin kullan
+   - Ama TASARIM STILLERI varsa o gecerli!
+
+**CAKISMA DURUMU:**
+- TASARIM STILLERI "minimal" diyor AMA alttaki listede "bold" layout var → **MINIMAL kazanir!**
+- TASARIM STILLERI "soft renkler" diyor AMA gradient #21-25 parlak → **Soft gradient sec! (#31-35)**
+- TASARIM STILLERI yoksa → Listelerden kendin sec (firma fingerprint'ine gore)
+
+---
+
+## LAYOUT LISTELERI
+
+Asagidaki listelerden RASTGELE sec. Ayni numarayi bu firma icin tekrar kullanma!
+
+### HERO SECTION (150 Secenek)
+
+**FULL-SCREEN (1-20)**
+1. Full-screen video background + ortalanmis metin + gradient overlay
+2. Full-screen image + sol alt kose metin + koyu overlay
+3. Full-screen parallax image + ortali baslik + scroll indicator
+4. Full-screen gradient mesh + dev tipografi
+5. Full-screen image slider (3-5 slide) + dot navigation
+6. Full-screen video + sag dikey metin + sol ust logo
+7. Full-screen image + cam efektli kart icinde metin
+8. Full-screen abstract SVG animation + minimal metin
+9. Full-screen particle.js + gradient text
+10. Full-screen ken burns efektli image + fade-in metin
+11. Full-screen cinematic video loop + alt bar headline
+12. Full-screen image + metin horizontal bar icinde
+13. Full-screen radial gradient + 3D transform text
+14. Full-screen image + floating glass cardlar
+15. Full-screen lottie animation + centered content
+16. Full-screen image mozaik (4 kare) + orta overlay
+17. Full-screen noise texture + bold tipografi + accent line
+18. Full-screen image + diagonal split overlay
+19. Full-screen canvas waves + floating elements
+20. Full-screen image + text maskeleme efekti
+
+**SPLIT LAYOUT (21-45)**
+21. Sol %60 metin + Sag %40 image
+22. Sol %40 image + Sag %60 metin
+23. Sol %50 + Sag %50 esit, ortada dikey cizgi
+24. Sol metin + Sag overlapping 2 image
+25. Sol image + Sag metin + Alt tam genislik stat bar
+26. Sol gradient + Sag image + Floating badgeler
+27. Sol video + Sag metin kartlari (3 adet)
+28. Sol metin + Sag diagonal kesimli image
+29. Sol %70 metin + Sag %30 dikey image strip
+30. Sol image + Sag icerik + Ortada overlapping element
+31. Sol metin + Sag hexagonal image crop
+32. Sol content + Sag slider (tek image, ok ile gecis)
+33. Sol dikey scroll text + Sag sabit image
+34. Sol metin + Sag masonry 4 image grid
+35. Sol full-height image + Sag centered content kart
+36. Sol gradient metin + Sag cutout sekilli image
+37. Sol content + Sag rounded corner buyuk image
+38. Sol split (metin/small image) + Sag buyuk image
+39. Sol timeline + Sag hero image
+40. Sol metin + Sag 3D perspective image
+41. Sol stacked cards + Sag feature image
+42. Sol quote + metin + Sag portrait image
+43. Sol numbered list + Sag lifestyle image
+44. Sol metin + Sag image with floating stats
+45. Sol animated text + Sag static image
+
+**ASYMMETRIC/OVERLAPPING (46-65)**
+46. Asymmetric grid (buyuk sol, kucuk sag ust/alt)
+47. Overlapping cards (3 kart, kayik)
+48. Z-pattern layout (zig-zag flow)
+49. Broken grid (kasitli hizasiz)
+50. Floating islands (content adalari)
+51. Diagonal composition (capraz akan)
+52. Staggered columns (farkli yukseklik)
+53. Offset boxes (kaymis kutular)
+54. Layered planes (z-index oyunu)
+55. Scattered elements (organized chaos)
+56. Perspective grid (3D derinlik)
+57. Modular blocks (farkli boyut)
+58. Cascading layout (sarmal akan)
+59. Split diagonal (capraz bolunmus)
+60. Irregular shapes (duzenli olmayan)
+61. Circular composition (dairesel)
+62. Radial burst (merkezden yayilan)
+63. Spiral flow (spiral akan)
+64. Mosaic pattern (mozaik)
+65. Fragmented hero (parcalanmis)
+
+**TYPOGRAPHY-FOCUSED (66-80)**
+66. Giant headline (ekranin %80'i tek kelime)
+67. Kinetic typography (hareketli harfler)
+68. Vertical text hero (dikey baslik)
+69. Outlined text (sadece kontur)
+70. Gradient text fill + minimal background
+71. Text-only hero (gorsel yok)
+72. Mixed font sizes (dev + kucuk)
+73. Animated text reveal (scroll ile)
+74. Stacked words (ustuste kelimeler)
+75. Rotating words (degisen animasyon)
+76. Split text colors (yari/yari)
+77. Text behind image
+78. Masked text (image ile)
+79. Neon glow text + dark bg
+80. Handwritten accent
+
+**INTERACTIVE/ANIMATED (81-105)**
+81. Mouse follower effect
+82. Scroll-triggered animations
+83. Hover reveal
+84. Parallax depth (cok katman)
+85. Magnetic buttons
+86. Liquid distortion
+87. Glitch effect
+88. Morph shapes (SVG)
+89. 3D card tilt
+90. Text scramble
+91. Typewriter effect
+92. Split screen reveal
+93. Curtain effect
+94. Page flip
+95. Smoke/fog effect
+96. Aurora borealis
+97. Geometric patterns animation
+98. Wave animation
+99. Bubble float
+100. Matrix rain (profesyonel)
+101. Gradient animation
+102. Constellation effect
+103. Lightning effect (subtle)
+104. Ripple effect
+105. Shimmer effect
+
+**EVRENSEL PREMIUM STILLER (106-150)**
+106. Premium Minimal - Cok beyaz alan, tek focal point
+107. Bold & Strong - Kalin cizgiler, koyu tonlar
+108. Trust Blue - Mavi tonlar, kurumsal
+109. Clean Fresh - Beyaz/yesil, temiz
+110. Gradient Modern - Mor/mavi gradient
+111. Natural Green - Dogal, yaprak motifleri
+112. Dark Luxury - Siyah/altin, premium
+113. Warm Orange - Turuncu accent, enerjik
+114. Formal Navy - Koyu mavi/bordo, resmi
+115. Friendly Colors - Renkli, eglenceli
+116. Warm Earth - Toprak renkleri, samimi
+117. Dynamic Flow - Hareket hissi, oklar
+118. Appetizing Warm - Sicak isik, taze
+119. Stable Green - Koyu yesil, guvenilir
+120. Industrial Metal - Metal doku, saglam
+121. Smart Clean - Minimalist, akilli
+122. Vibrant Pop - Canli, dikkat cekici
+123. Welcoming Soft - Davetkar, yumusak
+124. Organic Earth - Organik, dogal
+125. Power Red - Dinamik, kirmizi vurgular
+126. Speed Lines - Hiz hissi
+127. Soft Texture - Yumusak, zarif gecis
+128. Precise White - Bilimsel, net
+129. Solid Stone - Kaya tonlari, guclu
+130. Ocean Blue - Deniz mavisi, ferah
+131. Sky Open - Gokyuzu, ozgurluk
+132. Connected Lines - Network cizgileri
+133. Creative Burst - Yaratici, renkli patlama
+134. Active Energy - Spor hissi
+135. Elegant Soft - Sofistike, pastel
+136. Sleek Curves - Aerodinamik, akici
+137. Cozy Comfort - Sicak, evsel
+138. Shield Strong - Koruma, guvenlik
+139. Digital Grid - Dijital estetik
+140. Clinical White - Steril, bilimsel
+141. Warm Heart - Insani, duygusal
+142. Official Seal - Resmi, kurumsal
+143. Fresh Start - Taze, yenilikci
+144. Solid Foundation - Buyuk, kurumsal
+145. Creative Edge - Siradisi acilar
+146. Shop Ready - Urun odakli
+147. Product Focus - Ozellik vurgulari
+148. Platform Style - Cok tarafli
+149. Community Feel - Topluluk, sicak
+150. Expert Touch - Uzmanlik vurgusu
+
+### ABOUT/HAKKIMIZDA SECTION (150 Secenek)
+
+**TIMELINE (1-20)**
+1-20: Horizontal, vertical, curved, interactive, minimal dot, road style, tree branch, metro line, circular, stacked cards, accordion, filmstrip, book chapter, dial clock, growth plant, river flow, milestone gradient, polaroid, building blocks, DNA helix
+
+**STATISTICS-FIRST (21-40)**
+21-40: Giant counters, circular progress, card grid, icon backgrounds, bar charts, floating stats, glass morphism, before/after, speedometer, fill bars, hexagonal, ticker tape, 3D blocks, gradient numbers, dashboard widgets, scattered, vertical bars, icon+number+label, sliding carousel, pie/donut
+
+**IMAGE GALLERY (41-60)**
+41-60: Masonry overlay, horizontal scroll, lightbox grid, before/after slider, polaroid scattered, magazine spread, pinterest columns, film roll, 3D rotating, stacked photos, comparison slider, mosaic tile, collage, photo book, wall of frames, floating, parallax, carousel thumbnails, grid to fullscreen, circular arranged
+
+**CARD-BASED (61-80)**
+61-80: Team member grid, value proposition, feature highlight, flip cards, expandable, stacked deck, ribbon labels, gradient border, neumorphic, hover lift, icon headers, image backgrounds, progress indicators, testimonial style, number badges, bento grid, slide-up details, side accent bars, circular arrangement, animated backgrounds
+
+**STORYTELLING (81-105)**
+81-105: Scroll-reveal story, chapter-based, narrative illustrations, journey path, book metaphor, documentary, interview Q&A, case study, behind scenes, day in life, origin story, letter format, scrapbook, diary journal, news article, feature story, comic strip, infographic, audio/podcast visual, video documentary, parallax storytelling, interactive branches, photo essay, quote-driven, data-driven
+
+**EVRENSEL ABOUT (106-150)**
+106. Founder Story, 107. Heritage Timeline, 108. Mission Statement, 109. Team Mosaic, 110. Culture Showcase, 111. Numbers That Matter, 112. Global Presence, 113. Awards Wall, 114. Client Logos, 115. Expertise Areas, 116. Process Flow, 117. Philosophy Statement, 118. Sustainability, 119. Innovation Lab, 120. Quality Standards, 121. Community Impact, 122. Industry Leadership, 123. Technology Stack, 124. Facility Tour, 125. Supply Chain, 126. R&D, 127. Partnership Network, 128. Training, 129. Safety Standards, 130. Environmental Policy, 131. Customer Testimonials, 132. Before/After, 133. Case Study Snippets, 134. Industry Recognition, 135. Competitive Advantage, 136. Future Vision, 137. Local Roots, 138. Export Markets, 139. Production Capacity, 140. Service Coverage, 141. Experience Counter, 142. Project Counter, 143. Happy Clients, 144. Square Meters, 145. Certifications Grid, 146. Management Team, 147. Advisory Board, 148. Company Values, 149. Brand Story, 150. Milestone Achievements
+
+### HIZMETLER SECTION (105 Secenek)
+
+**CARD GRID (1-25):** 3-column, 4-column, 2-column wide, 6-column mini, 2-1-2 pattern, featured+smaller, bento box, masonry, circular, image headers, icon circles, gradient tops, hover overlays, flip animation, slide-up, ribbon corners, outlined, number badges, progress bars, rating stars, CTA buttons, testimonials, expandable, side images, background patterns
+
+**TAB/ACCORDION (26-45):** Horizontal tabs, vertical sidebar, pill-style, underline animated, icon tabs, classic accordion, icons, images, nested, FAQ style, timeline, numbered, sidebar nav, mega accordion, with progress, tabbed hybrid, step wizard, category filter, searchable, scrollspy
+
+**CAROUSEL/SLIDER (46-65):** Full-width, multi-item, card, testimonial, logo, timeline, vertical, infinite scroll, fade transition, 3D, coverflow, thumbnail nav, autoplay, draggable, parallax, split, centered, variable width, dots/arrows, text overlay
+
+**INTERACTIVE (66-85):** Map markers, clickable floor plan, zoomable image, org chart, process flow, comparison tool, calculator, quiz reveal, filterable portfolio, sortable grid, live filter search, category dropdown, tag cloud, range slider, checkbox filter, interactive timeline, hover panels, click expand, drag drop, infographic
+
+**LIST/TABLE (86-105):** Bullet list, numbered, icon list, checklist, comparison table, pricing, specification, striped data, card table, collapsible rows, sortable, horizontal scroll, definition list, timeline list, alternating bg, indented hierarchy, link arrows, image list, avatar list, status indicators
+
+### STRATEJI/DEGERLER SECTION (105 Secenek)
+
+**PILLAR/COLUMN (1-25):** 4 pillars icons, 3 pillars numbers, 5 pillars gradient bars, top icons, side numbers, hover expand, connecting lines, progress fills, staggered height, outlined, gradient bg, image bg, badges, quotes, floating icons, accent borders, shadow depth, minimal lines, bold typography, circular icons, square icons, hexagon, diamond, ribbon style, flag banner
+
+**PROCESS/STEP (26-50):** Numbered horizontal, vertical, circular numbered, arrow connected, line connected, dot connected, road path, stairs, pyramid, funnel, pipeline, flowchart, branching, loop cycle, milestone, checklist, progress bar, animated reveal, hover expand, accordion steps, tab steps, card flip, slider, timeline, roadmap
+
+**VISUAL METAPHOR (51-75):** Tree branch, building blocks, puzzle pieces, gears machinery, ecosystem circle, mountain climb, bridge, compass direction, foundation layers, chain links, DNA helix, solar system, network web, iceberg, lighthouse, arrow target, rocket launch, seeds growing, river flow, map journey, telescope vision, handshake, shield protection, key lock, anchor stability
+
+**QUOTE/HIGHLIGHT (76-105):** Large quote + text, quote carousel, author image, pull quote, blockquote border, speech bubble, quote over image, with icon, multi-quote grid, quote slider, with rating, mission highlight, vision box, core value badges, principle cards, belief panels, promise boxes, motto highlight, philosophy section, creed manifesto, declaration, oath pledge, standards list, guidelines panels, ethics statement, culture highlights, team values, customer promise, quality commitment, innovation pledge
+
+### ILETISIM SECTION (105 Secenek)
+
+**SPLIT FORM (1-25):** Sol info + Sag form, Sag info + Sol form, Ust info + Alt form, Form ortada + Info yanlarda, Full form + Floating card, Tabbed info + Form, Accordion info + Form, Timeline info + Form, Card info + Card form, Glass info + Form, Image bg + Overlay form, Gradient split + Form, Icon info + Form, Map mini + Form, Office photos + Form, Team contact cards + Form, FAQ + Form, Social links + Form, Business hours + Form, Multiple locations + Form, Quick + Full tabs, Chat bubble + Form, Phone/email buttons + Form, Video intro + Form, Testimonial + Form
+
+**MAP-INTEGRATED (26-45):** Full-width map + Floating card, Map bg + Centered form, Split map + Form, Interactive markers, Multiple locations, Mini map + Large form, Map modal, Info overlay, Satellite view, Styled dark map, With directions, Street view, Cluster markers, Animated path, Custom icons, Zoom to location, With search, With filters, Location cards, Fullscreen toggle
+
+**MINIMAL (46-65):** Single centered card, One-field email, Contact buttons only, QR code, vCard download, Click to call, WhatsApp direct, Social only, Email with copy, Minimal info list, Business card style, Sticky bar, Floating button, Slide-out panel, Modal form, Popover, Tooltip info, Inline form, Collapsible, Progressive show more
+
+**MULTI-STEP (66-85):** Step wizard, Progress bar, Numbered steps, Tab steps, Accordion steps, Card flip steps, Slide transition, Conversation style, Quiz-like, Conditional, Branch logic, Summary end, Review before submit, Save progress, Back/next nav, Step indicators, Percentage complete, Time estimate, Skip optional, Jump to step
+
+**CREATIVE (86-105):** Chat interface, Messenger style, Voice message, Video call booking, Calendar integration, Meeting scheduler, Appointment picker, Time slot selector, Department selector, Product inquiry, Quote request, Callback request, Live chat widget, Chatbot, AI assistant, Interactive FAQ + Form, Troubleshooter + Contact, Ticket system, Priority selector, File upload form
+
+### FOOTER SECTION (105 Secenek)
+
+**MULTI-COLUMN (1-25):** 4-column classic, 5-column logo, 3-column centered, 6-column compact, 2-column split, asymmetric, featured + links, newsletter + links, map + links, contact + links, social + links, logo prominent, mega 8+ columns, grouped sections, expandable mobile, scrolling long, icon-headed, numbered, bordered, card-style, gradient dividers, image-topped, CTA + links, app download, awards + links
+
+**MINIMAL (26-45):** Single line, centered minimal, logo + copyright only, links row + copyright, social only, split minimal, sticky, transparent, ghost outline, dark bar, light bar, borderless, floating, fixed bottom, collapsible, hide on scroll, parallax, gradient bar, icon-only, logo watermark
+
+**CTA-FOCUSED (46-65):** Newsletter CTA, Demo request, Contact prominent, Download app, Free trial, Quote request, Book meeting, Subscribe, Follow social, Join community, Dual CTA, Form embedded, Chat launcher, Callback, Shop now, Learn more, Get started, Pricing, Careers, Partners
+
+**CREATIVE (66-85):** Magazine style, Dashboard style, App-like, Card grid, Timeline, Story, Stats, Testimonial, Award showcase, Partner logos, Certification, Press mentions, Recent posts, Instagram feed, Twitter feed, Events, Locations, Team mini, FAQ mini, Search
+
+**MEGA/RICH (86-105):** Full sitemap, Categorized mega, Tabbed sections, Accordion mobile, Multi-level, Portal-style, Directory, Encyclopedia, Resources hub, Knowledge base, Documentation, Support hub, Community, Marketplace, Platform, SaaS, Enterprise, Corporate mega, Publisher, News organization
+
+### HEADER/NAVIGATION (105 Secenek)
+
+**CLASSIC (1-25):** Logo left + Nav center + CTA right, Logo left + Nav right, Logo center + Nav split, Logo + Mega menu, Dropdown menus, Hamburger always, Search prominent, Language selector, Top bar + Main nav, Utility + Main nav, Dual logo light/dark, Animated logo, Logo tagline, Full-width bar, Contained bar, Transparent, Solid color, Gradient, Glass morphism, Shadow, Bordered, Underline hover, Background hover, Icon + text, Icon only
+
+**STICKY/TRANSFORM (26-50):** Sticky shrink, Sticky color change, Sticky shadow appear, Hide scroll down, Show scroll up, Sticky mini, Sticky logo only, Floating bar, Sidebar nav, Bottom nav mobile, Transform to hamburger, Transform to mini, Color on section, Transparent to solid, Centered to left, Progress bar, Reading progress, Section indicator, Breadcrumb, Dynamic title, Scroll spy, Animated, Parallax, Reveal, Slide
+
+**MEGA MENU (51-75):** Full-width mega, Centered mega, Multi-column, With images, With icons, With featured, With categories, With tabs, With search, With CTA, With recent, With popular, Animated reveal, Slide mega, Fade mega, Dropdown hybrid, Sidebar mega, Off-canvas, Full-screen, Modal, Tab-style, Accordion, Card-based, List-based, Grid-based
+
+**MOBILE/HAMBURGER (76-105):** Slide from left, Slide from right, Slide from top, Slide from bottom, Full-screen overlay, Half-screen, Modal menu, Drawer, Off-canvas push, Off-canvas reveal, Accordion mobile, Tab mobile, Card mobile, List mobile, Icon grid, Circular menu, Radial menu, Floating action, Bottom sheet, Split menu, Animated hamburger, X close animation, Rotate animation, Morph animation, Spring animation, Stagger reveal, Slide reveal, Fade reveal, Scale reveal, Flip reveal
+
+---
+
+## SECTION SIRALAMASI
+
+Standart siralama yerine FARKLI dene:
+
+1. Hero > Services > About > Contact (servis odakli)
+2. Hero > About > Team > Services > Contact (insan odakli)
+3. Hero > Stats > Services > Testimonials > Contact (guven odakli)
+4. Hero > Portfolio > Services > About > Contact (sonuc odakli)
+5. Hero > Video > Services > FAQ > Contact (gorsel odakli)
+6. Hero > Products > Features > Pricing > Contact (urun odakli)
+7. Hero > Story > Values > Team > Contact (hikaye odakli)
+8. Hero > Process > Results > Testimonials > Contact (surec odakli)
+9. Hero > Mission > Services > Partners > Contact (misyon odakli)
+10. Hero > News > Events > Services > Contact (guncellik odakli)
+
+Bazi sectionlar atlanabilir - her sitede hepsi olmasina gerek yok!
+
+---
+
+## GORSEL SISTEMI (NETLESTIRILMIS!)
+
+### IS AKISI (COK ONEMLI - ANLA!)
+
+```
+1. SEN (AI) → Placeholder kullan (picsum.photos)
+              + prompt.html'e gorsel promptlarini yaz
+
+2. generate-images.php → prompt.html'i okur
+                        → Leonardo.ai'den gorselleri uretir
+                        → images/ klasorune kaydeder
+
+3. SONUC → Otomatik uretilmis gorseller hazir!
+```
+
+### ADIM 1: PLACEHOLDER KULLAN (index.html icin)
+
+```html
+<!-- Hero -->
+<img src="https://picsum.photos/1920/1080" alt="Hero">
+
+<!-- Kart -->
+<img src="https://picsum.photos/800/600" alt="About">
+
+<!-- Koyu/Grayscale -->
+<img src="https://picsum.photos/1920/1080?grayscale" alt="Dark">
+
+<!-- Bulanik -->
+<img src="https://picsum.photos/1920/1080?blur=2" alt="Blurred">
+```
+
+### ADIM 2: PROMPT.HTML'E GORSEL PROMPTLARI YAZ
+
+prompt.html icinde su formatta dokumante et:
+
+```html
+<!-- Leonardo.ai Gorsel Promptlari -->
+<div class="mt-8 bg-slate-800 rounded-xl p-6">
+    <h2 class="text-lg font-semibold mb-4 text-amber-400">
+        <i class="fas fa-image mr-2"></i>
+        Leonardo.ai Gorsel Promptlari
+    </h2>
+
+    <div class="space-y-6">
+        <!-- Her gorsel icin bir kart -->
+        <div class="border-l-4 border-amber-500 pl-4 bg-slate-700/30 rounded-r-lg p-4">
+            <div class="flex items-center justify-between mb-2">
+                <span class="font-medium text-white">hero-bg.jpg</span>
+                <span class="text-xs text-slate-400">1472x832</span>
+            </div>
+            <p class="text-slate-300 text-sm mb-3">
+                Editorial photograph of modern corporate office lobby,
+                floor-to-ceiling windows with city view, morning sunlight,
+                professional atmosphere, Canon R5 85mm f/1.4, shallow depth,
+                Kodak Portra 400 film look, subtle lens dust, 8k quality
+            </p>
+            <div class="flex flex-wrap gap-2 text-xs">
+                <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Cinematic</span>
+            </div>
+        </div>
+
+        <!-- Diger gorseller ayni formatta... -->
+    </div>
+</div>
+```
+
+**KRITIK FORMAT (generate-images.php bunu okur!):**
+- Dosya adi: `<span class="font-medium text-white">dosya.jpg</span>`
+- Boyut: `<span class="text-xs text-slate-400">1472x832</span>`
+- Prompt: `<p class="text-slate-300 text-sm mb-3">...</p>`
+
+### GORSEL PROMPT YAZMA KURALLARI
+
+**GERCEKCI FOTOGRAF ICIN (11 Kural):**
+1. Photo Type: "Editorial photograph", "Documentary shot"
+2. Subject + Action: Ne/kim + ne yapiyor
+3. Environment + Time: Mekan + zaman (morning, winter, etc.)
+4. Camera Angle: Cekim acisi (low angle, eye-level)
+5. Composition: Kompozisyon (rule of thirds, golden ratio)
+6. Lighting: Isik (golden hour, natural window light)
+7. Camera + Lens: Ekipman (Canon R5 85mm f/1.4)
+8. Film Stock: Film look (Kodak Portra 400, Fuji Velvia)
+9. Imperfections: Kusurlar (lens dust, grain, vignette) - ONEMLI!
+10. Mood: Atmosfer (professional, warm, confident)
+11. Post-Processing: Color grade (teal-orange, lifted blacks)
+
+**BOYUT SINIRLARI:**
+- Minimum: 512x512
+- Maximum: 1536x1536
+- Hero: 1472x832
+- Kart: 800x600
+- Kare: 600x600
+
+### BACKGROUND KURALLARI
+
+**YAPMA:**
+- AI ile sacma abstract/pattern background uretme
+- "digital mesh", "futuristic waves" gibi anlamsiz seyler
+- Random gradient'ler
+
+**YAP:**
+- Tailwind gradient: `bg-gradient-to-br from-slate-900 to-slate-800`
+- Solid renkler: `bg-slate-950`, `bg-white`
+- Overlay: `bg-black/50`
+- Gercek foto icin: picsum placeholder + prompt.html'e prompt yaz
+- Animated backgrounds: Yukaridaki 30 animasyon tipinden birini sec (Hero icin)
+
+---
+
+## DARK/LIGHT MODE (ZORUNLU!)
+
+Her sitede dark/light mode toggle MUTLAKA olmali!
+- Varsayilan: Sistem tercihine gore (prefers-color-scheme)
+- Toggle butonu header'da gorunur
+- localStorage ile tercih hatirlanmali
+
+### ⚠️ ALTIN KURAL: TUM BG'LER MODA UYGUN OLMALI!
+
+**KRITIK:** Dark mode'da TUM background'lar DARK olmali!
+**KRITIK:** Light mode'da TUM background'lar LIGHT olmali!
+
+❌ **YANLIS:** Dark mode'da bazi section'lar acik renk
+❌ **YANLIS:** Light mode'da bazi section'lar koyu renk
+✅ **DOGRU:** Mod degisince TUM sayfa uyumlu degisir
+
+### RENK KURALLARI
+
+**DARK MODE (TUM SAYFA KOYU!):**
+```html
+<!-- Her section dark modda koyu -->
+<section class="bg-slate-900 dark:bg-slate-900">
+<section class="bg-slate-800 dark:bg-slate-800">
+<section class="bg-slate-950 dark:bg-slate-950">
+<section class="bg-gray-900 dark:bg-gray-900">
+```
+- ✅ Koyu bg: slate-900, slate-950, slate-800, gray-900, black
+- ✅ Acik text: white, gray-100, slate-100
+- ❌ ASLA acik bg kullanma dark modda!
+
+**LIGHT MODE (TUM SAYFA ACIK!):**
+```html
+<!-- Her section light modda acik -->
+<section class="bg-white dark:bg-slate-900">
+<section class="bg-gray-50 dark:bg-slate-800">
+<section class="bg-slate-50 dark:bg-slate-950">
+```
+- ✅ Acik bg: white, gray-50, slate-50, gray-100
+- ✅ Koyu text: gray-900, slate-800, gray-800
+- ❌ ASLA koyu bg kullanma light modda!
+
+### DOGRU KULLANIM ORNEGI
+
+```html
+<!-- HEADER -->
+<header class="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800">
+
+<!-- HERO -->
+<section class="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-slate-900 dark:to-slate-800">
+
+<!-- ABOUT -->
+<section class="bg-gray-50 dark:bg-slate-800">
+
+<!-- SERVICES -->
+<section class="bg-white dark:bg-slate-900">
+
+<!-- CONTACT -->
+<section class="bg-gray-100 dark:bg-slate-950">
+
+<!-- FOOTER -->
+<footer class="bg-slate-100 dark:bg-black">
+```
+
+### HERO SECTION DARK/LIGHT (OZEL DIKKAT!)
+
+**Hero genellikle gradient veya gorsel icerir. Dark/light uyumu:**
+
+```html
+<!-- Light mode: Acik gradient -->
+<!-- Dark mode: Koyu gradient -->
+<section class="
+  bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50
+  dark:from-slate-900 dark:via-slate-800 dark:to-slate-900
+">
+  <h1 class="text-gray-900 dark:text-white">Hero Baslik</h1>
+  <p class="text-gray-600 dark:text-gray-300">Alt aciklama</p>
+</section>
+```
+
+**Hero gorselli ise overlay kullan:**
+```html
+<section class="relative">
+  <img src="..." class="absolute inset-0 object-cover">
+  <!-- Light mode: Acik overlay -->
+  <!-- Dark mode: Koyu overlay -->
+  <div class="absolute inset-0 bg-white/80 dark:bg-slate-900/90"></div>
+  <div class="relative z-10">
+    <h1 class="text-gray-900 dark:text-white">...</h1>
+  </div>
+</section>
+```
+
+**UNUTMA:** Hero dahil TUM section'lar mod'a uygun olmali!
+
+---
+
+## KONTRAST (WCAG AA)
+
+Minimum kontrast orani: 4.5:1
+
+- Acik bg = Koyu text (text-gray-900)
+- Koyu bg = Acik text (text-white)
+- ASLA: Acik uzerine acik
+- ASLA: Koyu uzerine koyu
+
+OKUNAKLILIK = ONCELIK!
+
+---
+
+## TEKNIK GEREKSINIMLER
+
+- Responsive (mobil oncelikli)
+- Mobil hamburger menu
+- Mega menu veya dropdown (15 stil var, sec!)
+- Hover efektleri (20 efekt, card sabit, icerik hareket eder!)
+- AOS scroll animasyonlari
+- Lazy loading gorseller
+
+### 🎯 FONTAWESOME PRO 7 (ZORUNLU!)
+
+**⚠️ KRITIK: CDN DEĞİL, LOCAL DOSYA KULLAN!**
+
+```html
+<!-- DOGRU: Local FontAwesome Pro 7 -->
+<link rel="stylesheet" href="/assets/libs/fontawesome-pro@7.1.0/css/all.css">
+
+<!-- YANLIS: CDN kullanma! -->
+❌ <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/..." >
+```
+
+**Dosya Konumu:**
+```
+public/assets/libs/fontawesome-pro@7.1.0/css/all.css
+```
+
+**Icon Stilleri (Pro ozellikleri):**
+- `fa-thin` (fat) - EN INCE (VARSAYILAN!)
+- `fa-light` (fal) - Cok ince ikonlar
+- `fa-regular` (far) - Ince cizgi ikonlar
+- `fa-solid` (fas) - Dolu ikonlar (HOVER!)
+- `fa-duotone` (fad) - Cift renk ikonlar
+- `fa-sharp` (fass, fasr) - Keskin koseli ikonlar
+
+**⚡ IKON HOVER EFEKTI (fat → fas) - ZORUNLU!**
+
+```html
+<!-- VARSAYILAN: Thin (en ince) -->
+<i class="fat fa-heart icon-hover"></i>
+
+<!-- HOVER: Solid (dolu) olur - HAREKET KATAR! -->
+```
+
+```css
+/* Ikon varsayilan: thin */
+.icon-hover {
+  transition: all 0.3s ease;
+}
+
+/* Hover'da: solid + hafif buyume */
+.card:hover .icon-hover {
+  font-weight: 900; /* solid weight */
+}
+
+/* VEYA JavaScript ile class degistir */
+```
+
+```javascript
+// Her card icin hover efekti
+document.querySelectorAll('.card').forEach(card => {
+  const icon = card.querySelector('.icon-hover');
+
+  card.addEventListener('mouseenter', () => {
+    icon.classList.remove('fat');
+    icon.classList.add('fas');
+  });
+
+  card.addEventListener('mouseleave', () => {
+    icon.classList.remove('fas');
+    icon.classList.add('fat');
+  });
+});
+```
+
+**GORSEL ETKI:**
+- Sayfa acildiginda: Ikonlar ince, zarif, minimal
+- Hover'da: Ikonlar doluyor, dikkat cekiyor, hareket hissi
+- Bu efekt profesyonel sitelerde cok kullanilir!
+
+**PROMPT MODAL (ZORUNLU):**
+Sayfanin altina kucuk "Prompt" butonu ekle.
+Tiklayinca modal acilsin, prompt.html linkini goster.
+
+---
+
+## CIKTI DOSYALARI
+
+**⚠️ KRITIK UYARI - DOSYA KORUMASI:**
+- Yeni versiyon olusturuyorsan → YENi klasor olustur (v3/, v4/...)
+- ASLA eski versiyonlarin ustune yazma! (v1/, v2/... korunmali)
+- Her versiyon kendi klasorunde 2 dosya icermeli: index.html + prompt.html
+
+**Dogru yaklasim:**
+```
+v1/ → v1/index.html + v1/prompt.html (BU KALIT! DOKUNMA!)
+v2/ → v2/index.html + v2/prompt.html (BU KALIT! DOKUNMA!)
+v3/ → v3/index.html + v3/prompt.html (YENI olustur!)
+```
+
+2 dosya olustur:
+
+### 1. index.html
+- Tam site (tek sayfa)
+- Placeholder gorseller (picsum)
+- Dark/light mode toggle
+- Responsive
+- Prompt modal butonu
+- Design consistency uygulanmis (tek design token!)
+- Container genislikleri: px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20
+- Hover efektleri dogru (card sabit, icerik hareket eder, icon far→fas)
+- Mega menu (15 stilden biri)
+- Animated background (Hero section icin, 30 tipten biri - OPTIONAL)
+
+### 2. prompt.html
+- Kullanilan sektor ve tarz
+- Secilen layoutlar (numara + isim)
+- Renk paleti (40 gradient'ten sec)
+- Font cifti (50 cift'ten sec)
+- Section sirasi (10 alternatiften sec)
+- Mega menu stili (15 tipten sec)
+- Hover efektleri (20 efektten 2-3 adet)
+- Animated background (eger kullanildiysa, 30 tipten hangisi)
+- Design token sistemi (hangi renkler, gradient, button, typography, spacing secildi)
+- Container genislik sistemi
+- Leonardo.ai gorsel promptlari (zorunlu format!)
+- Fingerprint hash (layout+color+font kombinasyonu)
+- Ozel notlar
+
+---
+
+## SON KONTROL (v3 - 26 KURAL)
+
+Tasarimi bitirmeden once:
+
+### TEMEL KONTROLLER
+[ ] Layout'lar listeden secildi mi? (numara belirt)
+[ ] Farkli kombinasyon mu? (bu firma icin fingerprints.log kontrol edildi mi?)
+[ ] Section sirasi standart olmayan mi? (10 alternatiften secildi mi?)
+[ ] Dark/light mode calisiyor mu?
+[ ] Prompt.html'de gorsel promptlari var mi?
+[ ] Ozgun ve yaratici mi?
+
+### FONTAWESOME & IKONLAR
+[ ] FontAwesome PRO 7 LOCAL kullanildi mi? (/assets/libs/fontawesome-pro@7.1.0/css/all.css)
+[ ] Ikonlar varsayilan THIN (fat) mi?
+[ ] Hover'da ikonlar SOLID (fas) oluyor mu?
+[ ] Icon hover efekti (fat → fas) eklendi mi?
+
+### RENK & GRADIENT
+[ ] Renk kutuphanesinden gradient secildi mi? (40 preset)
+[ ] Tum sitede ayni renk paleti kullanildi mi? (primary, secondary, accent)
+[ ] Tum sitede ayni gradient ailesi kullanildi mi?
+[ ] GRADIENT TEXT kullanildi mi? (basliklar, vurgular)
+[ ] Animated gradient text eklendi mi? (hero basligi icin)
+[ ] GRADIENT BORDER kullanildi mi? (kartlar, butonlar)
+
+### DARK/LIGHT MODE
+[ ] Dark mode'da TUM BG'ler koyu mu?
+[ ] Light mode'da TUM BG'ler acik mi?
+[ ] Hero section dark/light uyumlu mu?
+
+### HOVER & EFEKTLER
+[ ] Hover efektleri dogru mu? (Card sabit, icerik hareket eder)
+[ ] Hover'da BORDER kullanildi mi? (Shadow yerine!)
+[ ] Mega menu linkleri ORTALANDI mi? (items-center, justify-center)
+[ ] Mega menu secildi mi? (15 stil)
+
+### DESIGN CONSISTENCY
+[ ] Design consistency saglandi mi? (Tum sitede ayni design token!)
+[ ] Container genislikleri dogru mu? (px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20)
+[ ] Tum butonlar ayni border-radius mi? (rounded-lg)
+[ ] Tum section'lar ayni padding mi? (py-16 md:py-24)
+[ ] Tum h1'ler ayni font-size mi? (text-5xl)
+[ ] Font kutuphanesinden cift secildi mi? (50 cift)
+[ ] Animated background eklendi mi? (OPTIONAL - Hero icin, 30 tip)
+
+---
+
+## v3 YENILIKLER OZETI
+
+**26 BUYUK IYILESTIRME:**
+
+### TEMEL SISTEMLER
+1. ✅ Design Consistency Sistemi (EN KRITIK!) - Tek design token, tum sitede tutarli
+2. ✅ Container Genislik Sistemi - Responsive padding (px-3 → 2xl:px-20)
+3. ✅ Firma Bazli Fingerprint Sistemi - Her firma kendi icinde ozgun
+4. ✅ Renk Kutuphanesi - 40 gradient preset (light/dark uyumlu)
+5. ✅ Font Kutuphanesi - 50 font cifti (10 → 50)
+
+### FONTAWESOME & IKONLAR (YENi!)
+6. ✅ FontAwesome Pro 7 LOCAL - CDN yerine local dosya kullan
+7. ✅ Ikon Varsayilan THIN (fat) - Sayfa acildiginda ince ikonlar
+8. ✅ Ikon Hover SOLID (fas) - Hover'da dolgun ikonlar (hareket hissi!)
+
+### GRADIENT TEKNIKLERI (YENi!)
+9. ✅ Gradient Text - Basliklar ve vurgular icin
+10. ✅ Animated Gradient Text - Hareket eden gradient textler
+11. ✅ Gradient Borders - Shadow yerine modern border
+12. ✅ Animated Gradient Borders - Hareket eden border efekti
+
+### HOVER EFEKTLERI
+13. ✅ Hover Efektleri - 20 efekt (card sabit, icerik hareket eder)
+14. ✅ Border > Shadow - Hover'da shadow yerine border tercih et
+15. ✅ Mega Menu Link Ortalama - items-center, justify-center
+
+### DARK/LIGHT MODE (YENi!)
+16. ✅ Tum BG'ler Moda Uygun - Dark modda koyu, light modda acik
+17. ✅ Hero Dark/Light Uyumu - Hero section ozel kurallar
+
+### MEGA MENU & ANIMASYONLAR
+18. ✅ Mega Menu Stilleri - 15 profesyonel stil
+19. ✅ Animated Backgrounds - 30 tip (10 gradient + 5 particle + 5 SVG + 10 ekstra)
+20. ✅ Gradient Animations - 10 smooth animasyon (hue rotate, pulse, wave, etc.)
+21. ✅ Particle Systems - 5 CSS/SVG particle tip
+22. ✅ SVG Pattern Animations - 5 animasyonlu pattern
+
+### RENK BUTUNLUGU (YENi!)
+23. ✅ Tum Sayfada Ayni Palet - PRIMARY, SECONDARY, ACCENT tutarliligi
+24. ✅ Gradient Ailesi Tutarliligi - Her section ayni gradient tonlari
+25. ✅ Design Token Sistemi - Renkler, spacing, typography standartlari
+26. ✅ 26 Maddelik Son Kontrol Listesi - Kalite guvencesi
+
+**SKOR:**
+- v1: 65/100
+- v2: 95/100
+- **v3: 100/100** ⭐
+
+**v3 = FINAL VERSION - MAXIMUM OZGUNLUK & PROFESYONELLIK!**
+
+---
+
+## PROJE BILGILERI
+
+Asagidaki bilgiler kullanicidan geliyor. BUNLARA GORE TASARLA:
+
+sektor: genel kurumsal
+tarz: profesyonel ve dengeli
+ek_bilgiler: (kullanici tarafindan doldurulacak)
+
+**EK BILGILER COK ONEMLI!**
+Kullanici ne yazarsa analiz et, anla ve uygun tasarim yap.
+Sen yeterince zekisin - ek aciklama/ornek gerekmiyor.

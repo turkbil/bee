@@ -21,7 +21,7 @@
            type: 'Playlist',
            id: {{ $playlistId }},
            title: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}',
-           cover: '{{ $playlist->coverMedia ? thumb($playlist->coverMedia, 300, 300, ['scale' => 1]) : '' }}',
+           cover: '{{ $playlist->getFirstMedia('hero') ? thumb($playlist->getFirstMedia('hero'), 300, 300, ['scale' => 1]) : '' }}',
            is_favorite: {{ is_favorited('playlist', $playlistId) ? 'true' : 'false' }},
            is_public: {{ $playlist->is_public ? 'true' : 'false' }},
            songs_count: {{ $playlist->songs_count ?? 0 }},
@@ -74,8 +74,9 @@
     </div>
 
     <div class="relative @if($compact) mb-2 @else mb-4 @endif">
-        @if($playlist->media_id && $playlist->coverMedia)
-            <img src="{{ thumb($playlist->coverMedia, 300, 300, ['scale' => 1]) }}"
+        @php $heroMedia = $playlist->getFirstMedia('hero'); @endphp
+        @if($heroMedia)
+            <img src="{{ thumb($heroMedia, 300, 300, ['scale' => 1]) }}"
                  alt="{{ $playlist->getTranslation('title', app()->getLocale()) }}"
                  class="w-full aspect-square object-cover rounded-lg shadow-lg"
                  loading="lazy">

@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="tr" x-data="{
+    darkMode: localStorage.getItem('darkMode') !== 'false',
+    mobileMenu: false,
+    megaMenu: null,
+    activeSlide: 0,
+    promptModal: false,
+    stats: { projects: 0, experience: 0, clients: 0, area: 0 }
+}" :class="{ 'dark': darkMode }" x-init="
+    $watch('darkMode', val => localStorage.setItem('darkMode', val));
+    // Stats counter animation
+    setTimeout(() => {
+        const counters = [
+            { target: 150, key: 'projects' },
+            { target: 25, key: 'experience' },
+            { target: 80, key: 'clients' },
+            { target: 500, key: 'area' }
+        ];
+        counters.forEach(c => {
+            let current = 0;
+            const step = c.target / 50;
+            const interval = setInterval(() => {
+                current += step;
+                if (current >= c.target) {
+                    stats[c.key] = c.target;
+                    clearInterval(interval);
+                } else {
+                    stats[c.key] = Math.floor(current);
+                }
+            }, 40);
+        });
+    }, 800);
+    // Auto slide
+    setInterval(() => { activeSlide = (activeSlide + 1) % 3; }, 6000);
+">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unimad Madencilik | Maden, Mimarlık & Jeoteknik Mühendisliği</title>
+    <meta name="description" content="Ankara merkezli madencilik, mimarlık ve jeoteknik mühendislik hizmetleri. 25 yıllık deneyim, 150+ tamamlanmış proje.">
+
+    <!-- Fonts: Outfit (Modern & Clean) + Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome Pro 7.1.0 (Local) -->
+    <link rel="preload" href="/assets/libs/fontawesome-pro@7.1.0/webfonts/fa-light-300.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/libs/fontawesome-pro@7.1.0/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/libs/fontawesome-pro@7.1.0/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/assets/libs/fontawesome-pro@7.1.0/css/all.css">
+
+    <!-- Tailwind CSS v4 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ['Outfit', 'sans-serif'],
+                        body: ['Inter', 'sans-serif']
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0f7fc',
+                            100: '#dceaf5',
+                            200: '#b8d5eb',
+                            300: '#8ebfe0',
+                            400: '#72aed4',
+                            500: '#5590CF',
+                            600: '#4a7eb8',
+                            700: '#3d6a9c',
+                            800: '#325680',
+                            900: '#2a4a6e',
+                            950: '#1e3a5c'
+                        },
+                        dark: {
+                            50: '#f4f5f6',
+                            100: '#e4e6e8',
+                            200: '#c9cdd1',
+                            300: '#a3a9af',
+                            400: '#6b7280',
+                            500: '#4a5158',
+                            600: '#3A3F45',
+                            700: '#2f3338',
+                            800: '#24272b',
+                            900: '#1a1c1f',
+                            950: '#0f1012'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- Swiper -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #ffffff;
+            color: #3A3F45;
+        }
+
+        .dark body {
+            background: #1a1c1f;
+            color: #dceaf5;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        /* Icon Hover Effect: Light → Solid (FA7) */
+        .fal {
+            transition: font-weight 0.2s ease;
+        }
+
+        /* Group hover - icon becomes solid (FA7 uses --fa-style) */
+        /* Only direct .group hover, not named groups like group/kurumsal */
+        .group:hover > .fal,
+        .group:hover > i.fal,
+        a.group:hover .fal,
+        button:hover > .fal,
+        .hover-icon-solid:hover .fal {
+            --fa-style: 900;
+            font-weight: 900;
+        }
+
+        /* Card hover - only specific card classes */
+        .card:hover .fal,
+        .service-card:hover .fal,
+        .mega-item:hover .fal {
+            --fa-style: 900;
+            font-weight: 900;
+        }
+
+        /* Design Token: Custom Blue + Dark Gray - v4 */
+        .gradient-hero {
+            background: linear-gradient(135deg, #3A3F45 0%, #4a5158 50%, #3A3F45 100%);
+        }
+
+        .gradient-hero-animated {
+            background: linear-gradient(135deg, #3A3F45 0%, #4a5158 25%, #5590CF 50%, #4a5158 75%, #3A3F45 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Animated Text Gradient - High Contrast & Visible */
+        @keyframes gradientTextShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .text-gradient-animated {
+            background: linear-gradient(135deg, #1e40af, #5590CF, #f59e0b, #1e40af);
+            background-size: 300% 300%;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientTextShift 4s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        .dark .text-gradient-animated {
+            background: linear-gradient(135deg, #60a5fa, #fbbf24, #93c5fd, #60a5fa);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientTextShift 4s ease-in-out infinite;
+        }
+
+        /* Smooth Background Sections */
+        .bg-smooth-light {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%);
+        }
+
+        .bg-smooth-alt {
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+        }
+
+        .dark .bg-smooth-light {
+            background: linear-gradient(180deg, #1a1c1f 0%, #24272b 50%, #2f3338 100%);
+        }
+
+        .dark .bg-smooth-alt {
+            background: linear-gradient(180deg, #24272b 0%, #2f3338 50%, #3A3F45 100%);
+        }
+
+        /* Hero Light Mode - Visible moving gradient */
+        .hero-adaptive {
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 30%, rgba(85, 144, 207, 0.25) 0%, transparent 60%),
+                radial-gradient(ellipse 70% 50% at 80% 70%, rgba(61, 106, 156, 0.20) 0%, transparent 55%),
+                radial-gradient(ellipse 60% 40% at 50% 50%, rgba(220, 234, 245, 0.5) 0%, transparent 50%),
+                linear-gradient(135deg, #ffffff 0%, #f1f5f9 50%, #e2e8f0 100%);
+            background-size: 200% 200%, 200% 200%, 150% 150%, 100% 100%;
+            animation: heroGradientLight 20s ease infinite;
+        }
+
+        @keyframes heroGradientLight {
+            0%, 100% { background-position: 0% 0%, 100% 100%, 50% 50%, 0% 0%; }
+            33% { background-position: 100% 50%, 0% 50%, 30% 70%, 0% 0%; }
+            66% { background-position: 50% 100%, 50% 0%, 70% 30%, 0% 0%; }
+        }
+
+        /* Hero Dark Mode - Visible blue accent movement */
+        .dark .hero-adaptive {
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 30%, rgba(85, 144, 207, 0.35) 0%, transparent 60%),
+                radial-gradient(ellipse 70% 50% at 80% 70%, rgba(61, 106, 156, 0.25) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 40% at 50% 50%, rgba(47, 51, 56, 0.8) 0%, transparent 50%),
+                linear-gradient(135deg, #1a1c1f 0%, #24272b 50%, #1a1c1f 100%);
+            background-size: 200% 200%, 200% 200%, 150% 150%, 100% 100%;
+            animation: heroGradientDark 25s ease infinite;
+        }
+
+        @keyframes heroGradientDark {
+            0%, 100% { background-position: 0% 0%, 100% 100%, 50% 50%, 0% 0%; }
+            33% { background-position: 100% 50%, 0% 50%, 30% 70%, 0% 0%; }
+            66% { background-position: 50% 100%, 50% 0%, 70% 30%, 0% 0%; }
+        }
+
+        /* CTA Light/Dark Mode */
+        .cta-adaptive {
+            background: linear-gradient(135deg, #dceaf5 0%, #b8d5eb 25%, #dceaf5 50%, #b8d5eb 75%, #dceaf5 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+        }
+
+        .dark .cta-adaptive {
+            background: linear-gradient(135deg, #3A3F45 0%, #4a5158 25%, #5590CF 50%, #4a5158 75%, #3A3F45 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+        }
+
+        /* CTA - Shimmer Effect (Metallic Shine) */
+        .cta-mesh {
+            background: linear-gradient(135deg, #3d6a9c 0%, #5590CF 50%, #4a7eb8 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-mesh::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255,255,255,0.03) 25%,
+                rgba(255,255,255,0.15) 50%,
+                rgba(255,255,255,0.03) 75%,
+                transparent 100%
+            );
+            transform: skewX(-20deg);
+            animation: ctaShimmer 6s ease-in-out infinite;
+        }
+
+        .dark .cta-mesh {
+            background: linear-gradient(135deg, #1a2f4a 0%, #2a4a6e 50%, #1e3a5c 100%);
+        }
+
+        .dark .cta-mesh::before {
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(85,144,207,0.02) 25%,
+                rgba(85,144,207,0.12) 50%,
+                rgba(85,144,207,0.02) 75%,
+                transparent 100%
+            );
+        }
+
+        @keyframes ctaShimmer {
+            0% { left: -100%; }
+            50%, 100% { left: 150%; }
+        }
+
+        /* Hover Effect #2: Icon Scale */
+        .hover-icon-scale .icon-wrapper {
+            transition: transform 0.3s ease;
+        }
+        .hover-icon-scale:hover .icon-wrapper {
+            transform: scale(1.15);
+        }
+
+        /* Hover Effect #8: Underline Draw */
+        .hover-underline {
+            position: relative;
+        }
+        .hover-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: currentColor;
+            transition: width 0.3s ease;
+        }
+        .hover-underline:hover::after {
+            width: 100%;
+        }
+
+        /* Gradient Border Hover Effect - Elegant */
+        .hover-border-gradient {
+            position: relative;
+            background: white;
+            border: 2px solid transparent;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .dark .hover-border-gradient {
+            background: #24272b;
+        }
+        .hover-border-gradient::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: inherit;
+            padding: 2px;
+            background: linear-gradient(135deg, transparent, transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+        .hover-border-gradient:hover::before {
+            background: linear-gradient(135deg, #5590CF 0%, #3d6a9c 25%, #5590CF 50%, #72aed4 75%, #5590CF 100%);
+            background-size: 300% 300%;
+            animation: borderGradientMove 3s ease infinite;
+            opacity: 1;
+        }
+        @keyframes borderGradientMove {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Gradient Border - Always Visible */
+        .hover-shadow {
+            position: relative;
+            border: none;
+        }
+        .hover-shadow::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 2px;
+            background: linear-gradient(135deg, #94a3b8, #cbd5e1, #94a3b8);
+            background-size: 200% 200%;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            z-index: 1;
+            transition: all 0.4s ease;
+        }
+        .dark .hover-shadow::before {
+            background: linear-gradient(135deg, #5590CF, #ffffff40, #5590CF);
+        }
+        .hover-shadow:hover::before {
+            background: linear-gradient(135deg, #5590CF, #3d6a9c, #72aed4, #5590CF);
+            background-size: 300% 300%;
+            animation: gradientRotate 2s linear infinite;
+        }
+        .dark .hover-shadow:hover::before {
+            background: linear-gradient(135deg, #72aed4, #5590CF, #3d6a9c, #72aed4);
+            background-size: 300% 300%;
+        }
+        @keyframes gradientRotate {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Animated Section Background */
+        .bg-animated-mesh {
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(85, 144, 207, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(85, 144, 207, 0.05) 0%, transparent 50%),
+                linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            animation: meshMove 30s ease-in-out infinite;
+        }
+        .dark .bg-animated-mesh {
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(85, 144, 207, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(85, 144, 207, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, #1a1c1f 0%, #24272b 100%);
+        }
+        @keyframes meshMove {
+            0%, 100% { background-position: 0% 0%, 100% 100%, 0% 0%; }
+            50% { background-position: 100% 100%, 0% 0%, 0% 0%; }
+        }
+
+        /* Button Hover Enhancement */
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        /* Link Arrow Animation */
+        .link-arrow {
+            transition: all 0.3s ease;
+        }
+        .link-arrow:hover {
+            gap: 0.75rem;
+        }
+        .link-arrow i {
+            transition: transform 0.3s ease;
+        }
+        .link-arrow:hover i {
+            transform: translateX(4px);
+        }
+
+        /* Mega Menu */
+        .mega-menu-container {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .mega-menu-container.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        /* Slide transitions */
+        .slide-content {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .slide-content.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Smooth gradient background */
+        .gradient-smooth {
+            background: linear-gradient(135deg, #0c4a6e 0%, #075985 50%, #0369a1 100%);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0c4a6e; }
+        ::-webkit-scrollbar-thumb { background: #0ea5e9; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #38bdf8; }
+
+        /* Section spacing - Design Token */
+        .section-padding {
+            padding-top: 4rem;
+            padding-bottom: 4rem;
+        }
+        @media (min-width: 768px) {
+            .section-padding { padding-top: 6rem; padding-bottom: 6rem; }
+        }
+        @media (min-width: 1024px) {
+            .section-padding { padding-top: 8rem; padding-bottom: 8rem; }
+        }
+    </style>
+</head>
+<body class="antialiased" x-init="AOS.init({ duration: 800, once: true, offset: 100 })">
+
+    <!-- ========== HEADER ========== -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-dark-950/95 backdrop-blur-md border-b border-slate-200 dark:border-dark-700">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center">
+                        <i class="fal fa-mountain text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-heading text-2xl text-slate-900 dark:text-white tracking-wider">UNIMAD</span>
+                        <span class="block text-xs text-slate-500 dark:text-primary-300 -mt-1">Madencilik & Mühendislik</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden lg:flex items-center gap-6">
+                    <!-- Kurumsal Dropdown -->
+                    <div class="relative group/kurumsal">
+                        <button class="flex items-center gap-1 font-medium text-slate-700 dark:text-primary-100 hover:text-primary-600 dark:hover:text-primary-400 transition-colors py-4">
+                            Kurumsal
+                            <i class="fal fa-chevron-down text-xs transition-transform group-hover/kurumsal:rotate-180"></i>
+                        </button>
+                        <div class="absolute top-full left-0 h-4 w-full"></div>
+                        <div class="absolute top-full left-0 w-56 bg-white dark:bg-dark-800 shadow-xl rounded-xl py-2 opacity-0 invisible group-hover/kurumsal:opacity-100 group-hover/kurumsal:visible transition-all duration-200 pointer-events-none group-hover/kurumsal:pointer-events-auto z-50">
+                            <a href="#about" class="group flex items-center gap-3 px-4 py-3 text-slate-700 dark:text-primary-100 hover:bg-primary-50 dark:hover:bg-primary-900/30 transition-colors">
+                                <i class="fal fa-building w-5 text-primary-500 transition-all"></i> Hakkımızda
+                            </a>
+                            <a href="#" class="group flex items-center gap-3 px-4 py-3 text-slate-700 dark:text-primary-100 hover:bg-primary-50 dark:hover:bg-primary-900/30 transition-colors">
+                                <i class="fal fa-users w-5 text-primary-500 transition-all"></i> İnsan Kaynakları
+                            </a>
+                            <a href="#values" class="group flex items-center gap-3 px-4 py-3 text-slate-700 dark:text-primary-100 hover:bg-primary-50 dark:hover:bg-primary-900/30 transition-colors">
+                                <i class="fal fa-gem w-5 text-primary-500 transition-all"></i> Temel Değerlerimiz
+                            </a>
+                            <a href="#" class="group flex items-center gap-3 px-4 py-3 text-slate-700 dark:text-primary-100 hover:bg-primary-50 dark:hover:bg-primary-900/30 transition-colors">
+                                <i class="fal fa-certificate w-5 text-primary-500 transition-all"></i> Kalite Politikası
+                            </a>
+                            <a href="#blog" class="group flex items-center gap-3 px-4 py-3 text-slate-700 dark:text-primary-100 hover:bg-primary-50 dark:hover:bg-primary-900/30 transition-colors">
+                                <i class="fal fa-newspaper w-5 text-primary-500 transition-all"></i> Blog
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Hizmetlerimiz Mega Menu -->
+                    <div class="relative group/menu">
+                        <button class="flex items-center gap-1 font-medium text-slate-700 dark:text-primary-100 hover:text-primary-600 dark:hover:text-primary-400 transition-colors py-4">
+                            Hizmetlerimiz
+                            <i class="fal fa-chevron-down text-xs transition-transform group-hover/menu:rotate-180"></i>
+                        </button>
+                        <div class="absolute top-full left-0 right-0 h-4 -mt-4"></div>
+                        <div class="absolute top-full left-1/2 -translate-x-1/2 w-[800px] bg-white dark:bg-dark-800 shadow-2xl rounded-2xl p-8 opacity-0 invisible group-hover/menu:opacity-100 group-hover/menu:visible transition-all duration-300 pointer-events-none group-hover/menu:pointer-events-auto z-50">
+                            <div class="grid grid-cols-3 gap-6">
+                                <!-- Madencilik -->
+                                <a href="#" class="group block p-4 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors">
+                                    <div class="aspect-video rounded-lg overflow-hidden mb-3">
+                                        <img src="https://picsum.photos/400/225?random=1" alt="Madencilik" class="w-full h-full object-cover group-hover:scale-100 transition-transform duration-500">
+                                    </div>
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fal fa-helmet-safety text-primary-600 dark:text-primary-400 text-lg"></i>
+                                        <h4 class="font-heading text-lg text-slate-900 dark:text-white">MADENCİLİK</h4>
+                                    </div>
+                                    <p class="text-sm text-slate-600 dark:text-primary-300">Maden arama, fizibilite, işletme projeleri</p>
+                                </a>
+                                <!-- Mimarlık -->
+                                <a href="#" class="group block p-4 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors">
+                                    <div class="aspect-video rounded-lg overflow-hidden mb-3">
+                                        <img src="https://picsum.photos/400/225?random=2" alt="Mimarlık" class="w-full h-full object-cover group-hover:scale-100 transition-transform duration-500">
+                                    </div>
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fal fa-drafting-compass text-primary-600 dark:text-primary-400 text-lg"></i>
+                                        <h4 class="font-heading text-lg text-slate-900 dark:text-white">MİMARLIK</h4>
+                                    </div>
+                                    <p class="text-sm text-slate-600 dark:text-primary-300">Endüstriyel ve ticari yapı tasarımı</p>
+                                </a>
+                                <!-- Jeoteknik -->
+                                <a href="#" class="group block p-4 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors">
+                                    <div class="aspect-video rounded-lg overflow-hidden mb-3">
+                                        <img src="https://picsum.photos/400/225?random=3" alt="Jeoteknik" class="w-full h-full object-cover group-hover:scale-100 transition-transform duration-500">
+                                    </div>
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fal fa-layer-group text-primary-600 dark:text-primary-400 text-lg"></i>
+                                        <h4 class="font-heading text-lg text-slate-900 dark:text-white">JEOTEKNİK</h4>
+                                    </div>
+                                    <p class="text-sm text-slate-600 dark:text-primary-300">Zemin etüdü ve stabilite analizleri</p>
+                                </a>
+                            </div>
+                            <div class="mt-6 pt-6 border-t border-slate-200 dark:border-primary-700 flex items-center justify-between">
+                                <span class="text-sm text-slate-500 dark:text-primary-400">Tüm hizmetlerimizi keşfedin</span>
+                                <a href="#services" class="inline-flex items-center gap-2 text-sm font-semibold text-primary-600 dark:text-primary-400 hover:gap-2 transition-all">
+                                    Detaylı Bilgi <i class="fal fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="#" class="font-medium text-slate-700 dark:text-primary-100 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Referanslar</a>
+                    <a href="#" class="font-medium text-slate-700 dark:text-primary-100 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">YTK</a>
+                    <a href="#contact" class="font-medium text-slate-700 dark:text-primary-100 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">İletişim</a>
+                </nav>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-4">
+                    <!-- Dark Mode Toggle -->
+                    <button @click="darkMode = !darkMode"
+                            class="w-10 h-10 rounded-lg bg-slate-100 dark:bg-primary-800 flex items-center justify-center text-slate-600 dark:text-primary-200 hover:bg-slate-200 dark:hover:bg-primary-700 transition-colors">
+                        <i class="fal fa-sun" x-show="darkMode"></i>
+                        <i class="fal fa-moon" x-show="!darkMode"></i>
+                    </button>
+
+                    <!-- CTA Button -->
+                    <a href="#contact" class="hidden md:inline-flex items-center gap-2 px-6 py-3 bg-primary-500 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors">
+                        <i class="fal fa-phone"></i>
+                        Teklif Al
+                    </a>
+
+                    <!-- Mobile Menu Button -->
+                    <button @click="mobileMenu = !mobileMenu" class="lg:hidden w-10 h-10 rounded-lg bg-slate-100 dark:bg-primary-800 flex items-center justify-center">
+                        <i class="fal fa-bars-staggered text-slate-600 dark:text-primary-200" x-show="!mobileMenu"></i>
+                        <i class="fal fa-xmark text-slate-600 dark:text-primary-200" x-show="mobileMenu"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div x-show="mobileMenu"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 -translate-y-4"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 -translate-y-4"
+             class="lg:hidden bg-white dark:bg-dark-900 border-t border-slate-200 dark:border-dark-700 py-6 px-6">
+            <nav class="flex flex-col gap-2">
+                <!-- Kurumsal Accordion -->
+                <div x-data="{ open: false }">
+                    <button @click="open = !open" class="flex items-center justify-between w-full font-medium text-slate-700 dark:text-primary-100 py-3">
+                        Kurumsal
+                        <i class="fal fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': open }"></i>
+                    </button>
+                    <div x-show="open" x-collapse class="pl-4 border-l-2 border-primary-200 dark:border-primary-700 ml-2">
+                        <a href="#about" class="block py-2 text-slate-600 dark:text-primary-200">Hakkımızda</a>
+                        <a href="#" class="block py-2 text-slate-600 dark:text-primary-200">İnsan Kaynakları</a>
+                        <a href="#values" class="block py-2 text-slate-600 dark:text-primary-200">Temel Değerlerimiz</a>
+                        <a href="#" class="block py-2 text-slate-600 dark:text-primary-200">Kalite Politikası</a>
+                        <a href="#blog" class="block py-2 text-slate-600 dark:text-primary-200">Blog</a>
+                    </div>
+                </div>
+                <a href="#services" class="font-medium text-slate-700 dark:text-primary-100 py-3">Hizmetlerimiz</a>
+                <a href="#" class="font-medium text-slate-700 dark:text-primary-100 py-3">Referanslar</a>
+                <a href="#" class="font-medium text-slate-700 dark:text-primary-100 py-3">YTK</a>
+                <a href="#contact" class="font-medium text-slate-700 dark:text-primary-100 py-2">İletişim</a>
+                <a href="#contact" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary-500 text-white font-semibold rounded-lg mt-2">
+                    <i class="fal fa-phone"></i> Teklif Al
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ========== HERO SECTION - Split + Slider Hybrid ========== -->
+    <section class="relative min-h-screen flex items-center hero-adaptive overflow-hidden pt-20">
+        <!-- Background Decorative Elements -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute top-20 right-0 w-96 h-96 bg-primary-500/10 dark:bg-primary-500/10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 left-0 w-80 h-80 bg-primary-400/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[80vh]">
+
+                <!-- Left: Content -->
+                <div data-aos="fade-right">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 dark:bg-primary-500/20 border border-primary-500/20 dark:border-primary-500/30 rounded-full mb-6">
+                        <i class="fal fa-gem text-primary-600 dark:text-primary-400"></i>
+                        <span class="text-sm font-medium text-primary-700 dark:text-primary-300">25 Yıllık Deneyim</span>
+                    </div>
+
+                    <h1 class="font-heading text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-6" style="line-height: 1.15;">
+                        <span class="text-slate-900 dark:text-white block">PROFESYONEL</span>
+                        <span class="text-gradient-animated block">MÜHENDİSLİK</span>
+                        <span class="text-gradient-animated block">ÇÖZÜMLERİ</span>
+                    </h1>
+
+                    <p class="text-lg sm:text-xl text-slate-600 dark:text-primary-200 max-w-xl mb-8 leading-relaxed">
+                        Tecrübe ve bilgi birikimimizi güncel teknoloji ile birleştirerek, madencilik, mimarlık ve jeoteknik alanlarında profesyonel çözümler sunuyoruz.
+                    </p>
+
+                    <!-- Stats Mini -->
+                    <div class="flex flex-wrap gap-8 mb-10">
+                        <div>
+                            <span class="font-heading text-4xl font-bold text-primary-600 dark:text-primary-400" x-text="stats.projects + '+'">0+</span>
+                            <span class="block text-sm text-slate-500 dark:text-primary-300">Tamamlanan Proje</span>
+                        </div>
+                        <div>
+                            <span class="font-heading text-4xl font-bold text-primary-600 dark:text-primary-400" x-text="stats.experience + ' Yıl'">0 Yıl</span>
+                            <span class="block text-sm text-slate-500 dark:text-primary-300">Sektör Deneyimi</span>
+                        </div>
+                    </div>
+
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#services" class="inline-flex items-center gap-2 px-8 py-4 bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-700 text-white font-semibold rounded-lg transition-all hover:gap-2">
+                            Hizmetlerimiz <i class="fal fa-arrow-right"></i>
+                        </a>
+                        <a href="#contact" class="inline-flex items-center gap-2 px-8 py-4 border-2 border-slate-300 dark:border-white/30 hover:border-primary-500 dark:hover:border-white text-slate-700 dark:text-white font-semibold rounded-lg transition-colors">
+                            <i class="fal fa-phone"></i> İletişime Geç
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right: Image Slider -->
+                <div class="relative" data-aos="fade-left" data-aos-delay="200">
+                    <div class="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
+                        <!-- Slides -->
+                        <template x-for="(slide, index) in [
+                            { img: 'https://picsum.photos/800/600?random=10', title: 'Maden Sahası', subtitle: 'Açık ocak işletmeciliği' },
+                            { img: 'https://picsum.photos/800/600?random=11', title: 'Mimari Proje', subtitle: 'Endüstriyel tesis tasarımı' },
+                            { img: 'https://picsum.photos/800/600?random=12', title: 'Jeoteknik Etüt', subtitle: 'Zemin araştırmaları' }
+                        ]" :key="index">
+                            <div class="absolute inset-0 transition-opacity duration-700"
+                                 :class="activeSlide === index ? 'opacity-100' : 'opacity-0'">
+                                <img :src="slide.img" :alt="slide.title" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <div class="absolute bottom-6 left-6 right-6 text-white">
+                                    <h3 class="font-heading text-2xl" x-text="slide.title"></h3>
+                                    <p class="text-primary-200" x-text="slide.subtitle"></p>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Slide Indicators -->
+                        <div class="absolute bottom-6 right-6 flex gap-2">
+                            <template x-for="i in 3" :key="i">
+                                <button @click="activeSlide = i - 1"
+                                        class="w-3 h-3 rounded-full transition-colors"
+                                        :class="activeSlide === i - 1 ? 'bg-primary-500' : 'bg-white/50 hover:bg-white'"></button>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Floating Card -->
+                    <div class="absolute -bottom-6 -left-6 bg-white dark:bg-primary-800 rounded-xl shadow-xl p-4 hidden lg:flex items-center gap-4" data-aos="fade-up" data-aos-delay="400">
+                        <div class="w-14 h-14 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
+                            <i class="fal fa-award text-2xl text-primary-700"></i>
+                        </div>
+                        <div>
+                            <span class="font-heading text-xl text-slate-900 dark:text-white">ISO 9001:2015</span>
+                            <span class="block text-sm text-slate-500 dark:text-primary-300">Kalite Sertifikası</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-slate-400 dark:text-white/50 animate-bounce">
+            <i class="fal fa-chevron-down text-2xl"></i>
+        </div>
+    </section>
+
+    <!-- ========== SERVICES SECTION ========== -->
+    <section id="services" class="section-padding bg-smooth-light">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <span class="inline-block px-4 py-1 bg-primary-100 dark:bg-primary-800 text-primary-600 dark:text-primary-300 text-sm font-semibold rounded-full mb-4">
+                    HİZMETLERİMİZ
+                </span>
+                <h2 class="font-heading text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-4" style="line-height: 1.2;">
+                    UZMANLIK <span class="text-gradient-animated">ALANLARIMIZ</span>
+                </h2>
+                <p class="text-slate-600 dark:text-primary-300">
+                    Madencilik, mimarlık ve jeoteknik alanlarında kapsamlı mühendislik ve danışmanlık hizmetleri
+                </p>
+            </div>
+
+            <!-- Services Grid - Card Based (#61-80) -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Madencilik -->
+                <div class="group bg-white dark:bg-dark-800 rounded-2xl overflow-hidden hover-shadow transition-all duration-300" data-aos="fade-up">
+                    <div class="aspect-video overflow-hidden relative">
+                        <img src="https://picsum.photos/600/400?random=20" alt="Madencilik"
+                             class="w-full h-full object-cover transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </div>
+                    <div class="p-8">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center group-hover:bg-primary-500 transition-all duration-300">
+                                <i class="fal fa-gem text-2xl text-primary-700 group-hover:text-white transition-colors"></i>
+                            </div>
+                            <h3 class="font-heading text-2xl text-slate-900 dark:text-white group-hover:text-gradient-animated transition-all">MADENCİLİK</h3>
+                        </div>
+                        <p class="text-slate-600 dark:text-primary-300 mb-6 line-clamp-2">
+                            Maden arama, fizibilite, işletme ve çevresel etki değerlendirmesi hizmetleri.
+                        </p>
+                        <ul class="space-y-2 mb-6">
+                            <li class="flex items-center gap-2 text-sm text-slate-600 dark:text-primary-300">
+                                <i class="fal fa-check text-primary-500"></i>
+                                Maden Arama & Rezerv Hesabı
+                            </li>
+                            <li class="flex items-center gap-2 text-sm text-slate-600 dark:text-primary-300">
+                                <i class="fal fa-check text-primary-500"></i>
+                                Fizibilite Raporları
+                            </li>
+                            <li class="flex items-center gap-2 text-sm text-slate-600 dark:text-primary-300">
+                                <i class="fal fa-check text-primary-500"></i>
+                                ÇED Çalışmaları
+                            </li>
+                        </ul>
+                        <a href="#" class="inline-flex items-center gap-2 text-primary-700 dark:text-primary-400 font-semibold hover:gap-2 transition-all">
+                            Detaylı Bilgi <i class="fal fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mimarlık -->
+                <div class="group bg-white dark:bg-dark-800 rounded-2xl overflow-hidden hover-shadow transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
+                    <div class="aspect-video overflow-hidden relative">
+                        <img src="https://picsum.photos/600/400?random=21" alt="Mimarlık"
+                             class="w-full h-full object-cover transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </div>
+                    <div class="p-8">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center group-hover:bg-primary-500 transition-all duration-300">
+                                <i class="fal fa-drafting-compass text-2xl text-primary-600 group-hover:text-white transition-colors"></i>
+                            </div>
+                            <h3 class="font-heading text-2xl text-slate-900 dark:text-white group-hover:text-gradient-animated transition-all">MİMARLIK</h3>
+                        </div>
+                        <p class="text-slate-600 dark:text-primary-300 mb-6 line-clamp-2">
+                            Endüstriyel tesisler ve ticari yapılar için mimari tasarım ve uygulama projeleri.
+                        </p>
+                        <ul class="space-y-2 mb-6">
+                            <li class="flex items-center gap-2 text-sm text-slate-600 dark:text-primary-300">
+                                <i class="fal fa-check text-primary-500"></i>
+                                Endüstriyel Tesis Tasarımı
+                            </li>
+                            <li class="flex items-center gap-2 text-sm text-slate-600 dark:text-primary-300">
+                                <i class="fal fa-check text-primary-500"></i>
+                                Ticari Yapı Projeleri
+                            </li>
+                            <li class="flex items-center gap-2 text-sm text-slate-600 dark:text-primary-300">
+                                <i class="fal fa-check text-primary-500"></i>
+                                3D Modelleme & Render
+                            </li>
+                        </ul>
+                        <a href="#" class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold hover:gap-2 transition-all">
+                            Detaylı Bilgi <i class="fal fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Jeoteknik -->
+                <div class="group bg-white dark:bg-dark-800 rounded-2xl overflow-hidden hover-shadow transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
+                    <div class="aspect-video overflow-hidden relative">
+                        <img src="https://picsum.photos/600/400?random=22" alt="Jeoteknik"
+                             class="w-full h-full object-cover transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </div>
+                    <div class="p-8">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center group-hover:bg-primary-500 transition-all duration-300">
+                                <i class="fal fa-layer-group text-2xl text-primary-700 group-hover:text-white transition-colors"></i>
+                            </div>
+                            <h3 class="font-heading text-2xl text-slate-900 dark:text-white group-hover:text-gradient-animated transition-all">JEOTEKNİK</h3>
+                        </div>
+                        <p class="text-slate-600 dark:text-primary-300 mb-6 line-clamp-2">
+                            Zemin etüdü, sondaj, şev stabilitesi analizleri ve temel mühendisliği hizmetleri.
+                        </p>
+                        <ul class="space-y-2 mb-6">
+                            <li class="flex items-center gap-2 text-sm text-slate-600 dark:text-primary-300">
+                                <i class="fal fa-check text-primary-600"></i>
+                                Zemin Etüdü
+                            </li>
+                            <li class="flex items-center gap-2 text-sm text-slate-600 dark:text-primary-300">
+                                <i class="fal fa-check text-primary-600"></i>
+                                Şev Stabilitesi Analizi
+                            </li>
+                            <li class="flex items-center gap-2 text-sm text-slate-600 dark:text-primary-300">
+                                <i class="fal fa-check text-primary-600"></i>
+                                Sondaj & Laboratuvar
+                            </li>
+                        </ul>
+                        <a href="#" class="inline-flex items-center gap-2 text-primary-700 dark:text-primary-400 font-semibold hover:gap-2 transition-all">
+                            Detaylı Bilgi <i class="fal fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== ABOUT SECTION - Storytelling (#81-105) ========== -->
+    <section id="about" class="section-padding bg-white dark:bg-dark-900">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+                <!-- Left: Image Composition -->
+                <div class="relative" data-aos="fade-right">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-4">
+                            <div class="aspect-[4/5] rounded-2xl overflow-hidden">
+                                <img src="https://picsum.photos/400/500?random=30" alt="Maden sahası" class="w-full h-full object-cover">
+                            </div>
+                            <div class="bg-primary-500 rounded-2xl p-6 text-white">
+                                <span class="font-heading text-5xl">25</span>
+                                <span class="block text-primary-200">Yıllık Deneyim</span>
+                            </div>
+                        </div>
+                        <div class="pt-8 space-y-4">
+                            <div class="bg-primary-600 dark:bg-primary-800 rounded-2xl p-6 text-white">
+                                <span class="font-heading text-5xl">150<sup class="text-xl">+</sup></span>
+                                <span class="block text-primary-200">Tamamlanan Proje</span>
+                            </div>
+                            <div class="aspect-[4/5] rounded-2xl overflow-hidden">
+                                <img src="https://picsum.photos/400/500?random=31" alt="Mühendis ekibi" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Floating Badge -->
+                    <div class="absolute -bottom-4 -right-4 bg-white dark:bg-dark-900 rounded-full p-4 shadow-xl hidden lg:block" data-aos="zoom-in" data-aos-delay="300">
+                        <div class="w-24 h-24 bg-gradient-to-br from-primary-500 to-primary-700 rounded-full flex items-center justify-center">
+                            <div class="text-center text-white">
+                                <i class="fal fa-medal text-2xl"></i>
+                                <span class="block text-xs mt-1">Güvenilir</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Content -->
+                <div data-aos="fade-left">
+                    <span class="inline-block px-4 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 text-sm font-semibold rounded-full mb-4">
+                        HAKKIMIZDA
+                    </span>
+                    <h2 class="font-heading text-4xl sm:text-5xl font-extrabold mb-6" style="line-height: 1.2;">
+                        <span class="text-slate-900 dark:text-white block">TECRÜBEYİ TEKNOLOJİ</span>
+                        <span class="text-gradient-animated block">İLE BİRLEŞTİRİYORUZ</span>
+                    </h2>
+
+                    <p class="text-lg text-slate-600 dark:text-primary-300 mb-6 leading-relaxed">
+                        1999 yılından bu yana Ankara merkezli olarak madencilik, mimarlık ve jeoteknik mühendisliği alanlarında hizmet vermekteyiz. Uzman kadromuz ve modern teknolojik altyapımız ile müşterilerimize en kaliteli hizmeti sunmayı hedefliyoruz.
+                    </p>
+
+                    <p class="text-slate-600 dark:text-primary-300 mb-8">
+                        Türkiye'nin dört bir yanında 150'den fazla başarılı projeye imza attık. Her projede müşteri memnuniyetini ön planda tutarak, sürdürülebilir ve çevreci çözümler üretiyoruz.
+                    </p>
+
+                    <!-- Features -->
+                    <div class="grid sm:grid-cols-2 gap-6 mb-8">
+                        <div class="flex items-start gap-4 p-4 bg-slate-50 dark:bg-primary-800/50 rounded-xl">
+                            <div class="w-10 h-10 bg-primary-100 dark:bg-primary-700 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fal fa-users text-primary-600 dark:text-primary-300"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-slate-900 dark:text-white mb-1">Uzman Kadro</h4>
+                                <p class="text-sm text-slate-600 dark:text-primary-300">Deneyimli teknik ekip</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 p-4 bg-slate-50 dark:bg-primary-800/50 rounded-xl">
+                            <div class="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fal fa-certificate text-primary-700"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-slate-900 dark:text-white mb-1">Sertifikalı</h4>
+                                <p class="text-sm text-slate-600 dark:text-primary-300">ISO 9001:2015 kalite belgesi</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 p-4 bg-slate-50 dark:bg-primary-800/50 rounded-xl">
+                            <div class="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fal fa-leaf text-primary-700"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-slate-900 dark:text-white mb-1">Çevreci</h4>
+                                <p class="text-sm text-slate-600 dark:text-primary-300">Sürdürülebilir çözümler</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 p-4 bg-slate-50 dark:bg-primary-800/50 rounded-xl">
+                            <div class="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fal fa-laptop-code text-primary-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-slate-900 dark:text-white mb-1">Modern Teknoloji</h4>
+                                <p class="text-sm text-slate-600 dark:text-primary-300">Güncel yazılım ve ekipmanlar</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="#contact" class="inline-flex items-center gap-2 px-8 py-4 bg-slate-900 dark:bg-white hover:bg-slate-800 dark:hover:bg-primary-100 text-white dark:text-primary-900 font-semibold rounded-lg transition-colors">
+                        Bizimle İletişime Geçin <i class="fal fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== VALUES SECTION ========== -->
+    <section class="section-padding bg-smooth-alt relative overflow-hidden">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 relative z-10">
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <span class="inline-block px-4 py-1 bg-primary-100 dark:bg-primary-800 text-primary-600 dark:text-primary-300 text-sm font-semibold rounded-full mb-4">
+                    DEĞERLERİMİZ
+                </span>
+                <h2 class="font-heading text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-4" style="line-height: 1.2;">
+                    TEMEL <span class="text-gradient-animated">İLKELERİMİZ</span>
+                </h2>
+                <p class="text-slate-600 dark:text-primary-300">
+                    Başarımızın arkasındaki değerler ve çalışma prensiplerimiz
+                </p>
+            </div>
+
+            <!-- Values Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <div class="group bg-white dark:bg-dark-800 rounded-2xl p-8 hover-shadow transition-all duration-300" data-aos="fade-up">
+                    <div class="w-16 h-16 bg-primary-100 dark:bg-primary-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary-500 transition-all duration-300">
+                        <i class="fal fa-mountain text-3xl text-primary-700 dark:text-primary-400 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl text-slate-900 dark:text-white mb-3 group-hover:text-gradient-animated">GÜVENİLİRLİK</h3>
+                    <p class="text-slate-600 dark:text-primary-300 line-clamp-3">
+                        25 yıllık tecrübemizle sağlam temeller üzerine inşa edilmiş güven.
+                    </p>
+                </div>
+
+                <div class="group bg-white dark:bg-dark-800 rounded-2xl p-8 hover-shadow transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-16 h-16 bg-primary-100 dark:bg-primary-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary-500 transition-all duration-300">
+                        <i class="fal fa-lightbulb text-3xl text-primary-600 dark:text-primary-400 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl text-slate-900 dark:text-white mb-3 group-hover:text-gradient-animated">YENİLİKÇİLİK</h3>
+                    <p class="text-slate-600 dark:text-primary-300 line-clamp-3">
+                        En son teknolojileri takip eder, yenilikçi çözümler uygularız.
+                    </p>
+                </div>
+
+                <div class="group bg-white dark:bg-dark-800 rounded-2xl p-8 hover-shadow transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-16 h-16 bg-primary-100 dark:bg-primary-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary-500 transition-all duration-300">
+                        <i class="fal fa-seedling text-3xl text-primary-700 dark:text-primary-400 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl text-slate-900 dark:text-white mb-3 group-hover:text-gradient-animated">SÜRDÜRÜLEBİLİRLİK</h3>
+                    <p class="text-slate-600 dark:text-primary-300 line-clamp-3">
+                        Çevreye duyarlı, doğaya saygılı mühendislik anlayışı.
+                    </p>
+                </div>
+
+                <div class="group bg-white dark:bg-dark-800 rounded-2xl p-8 hover-shadow transition-all duration-300" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-16 h-16 bg-primary-100 dark:bg-primary-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary-500 transition-all duration-300">
+                        <i class="fal fa-handshake text-3xl text-primary-600 dark:text-primary-400 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl text-slate-900 dark:text-white mb-3 group-hover:text-gradient-animated">MÜŞTERİ ODAKLILIK</h3>
+                    <p class="text-slate-600 dark:text-primary-300 line-clamp-3">
+                        Beklentilerin ötesinde hizmet sunmak için çalışıyoruz.
+                    </p>
+                </div>
+
+                <div class="group bg-white dark:bg-dark-800 rounded-2xl p-8 hover-shadow transition-all duration-300" data-aos="fade-up" data-aos-delay="400">
+                    <div class="w-16 h-16 bg-primary-100 dark:bg-primary-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary-500 transition-all duration-300">
+                        <i class="fal fa-shield-check text-3xl text-primary-600 dark:text-primary-400 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl text-slate-900 dark:text-white mb-3 group-hover:text-gradient-animated">İŞ GÜVENLİĞİ</h3>
+                    <p class="text-slate-600 dark:text-primary-300 line-clamp-3">
+                        En öncelikli konumuz iş sağlığı ve güvenliği. Sıfır kaza hedefi.
+                    </p>
+                </div>
+
+                <div class="group bg-white dark:bg-dark-800 rounded-2xl p-8 hover-shadow transition-all duration-300" data-aos="fade-up" data-aos-delay="500">
+                    <div class="w-16 h-16 bg-primary-100 dark:bg-primary-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary-500 transition-all duration-300">
+                        <i class="fal fa-award text-3xl text-primary-600 dark:text-primary-400 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl text-slate-900 dark:text-white mb-3 group-hover:text-gradient-animated">KALİTE</h3>
+                    <p class="text-slate-600 dark:text-primary-300 line-clamp-3">
+                        ISO 9001:2015 kalite yönetim sistemi. Mükemmellik arayışı.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== BLOG SECTION ========== -->
+    <section id="blog" class="section-padding bg-smooth-light">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <span class="inline-block px-4 py-1 bg-primary-100 dark:bg-primary-800 text-primary-600 dark:text-primary-300 text-sm font-semibold rounded-full mb-4">
+                    BLOG
+                </span>
+                <h2 class="font-heading text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-4" style="line-height: 1.2;">
+                    HABERLER VE <span class="text-gradient-animated">YAZILAR</span>
+                </h2>
+                <p class="text-slate-600 dark:text-primary-300">
+                    Sektörel gelişmeler, projelerimiz ve mühendislik dünyasından güncel haberler
+                </p>
+            </div>
+
+            <!-- Blog Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Blog Card 1 -->
+                <article class="group bg-white dark:bg-dark-800 rounded-2xl overflow-hidden hover-shadow transition-all duration-300" data-aos="fade-up">
+                    <a href="#" class="block relative aspect-[16/10] overflow-hidden">
+                        <img src="https://picsum.photos/600/375?random=50" alt="Blog 1"
+                             class="w-full h-full object-cover transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <span class="absolute top-4 left-4 px-3 py-1 bg-primary-500 text-white text-sm font-medium rounded-full shadow-lg">Madencilik</span>
+                    </a>
+                    <div class="p-6">
+                        <div class="flex items-center gap-4 text-sm text-slate-500 dark:text-primary-400 mb-3">
+                            <span class="flex items-center gap-1">
+                                <i class="fal fa-calendar-days"></i> 15 Ocak 2026
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <i class="fal fa-clock-three"></i> 5 dk okuma
+                            </span>
+                        </div>
+                        <h3 class="font-heading text-xl text-slate-900 dark:text-white mb-3 group-hover:text-gradient-animated transition-colors">
+                            <a href="#">Sürdürülebilir Madencilik Uygulamaları</a>
+                        </h3>
+                        <p class="text-slate-600 dark:text-primary-300 text-sm mb-4 line-clamp-2">
+                            Modern madencilik sektöründe çevresel sürdürülebilirlik ve enerji verimliliği...
+                        </p>
+                        <a href="#" class="link-arrow inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold text-sm">
+                            Devamını Oku <i class="fal fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Blog Card 2 -->
+                <article class="group bg-white dark:bg-dark-800 rounded-2xl overflow-hidden hover-shadow transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
+                    <a href="#" class="block relative aspect-[16/10] overflow-hidden">
+                        <img src="https://picsum.photos/600/375?random=51" alt="Blog 2"
+                             class="w-full h-full object-cover transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <span class="absolute top-4 left-4 px-3 py-1 bg-primary-500 text-white text-sm font-medium rounded-full shadow-lg">Mimarlık</span>
+                    </a>
+                    <div class="p-6">
+                        <div class="flex items-center gap-4 text-sm text-slate-500 dark:text-primary-400 mb-3">
+                            <span class="flex items-center gap-1">
+                                <i class="fal fa-calendar-days"></i> 10 Ocak 2026
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <i class="fal fa-clock-three"></i> 7 dk okuma
+                            </span>
+                        </div>
+                        <h3 class="font-heading text-xl text-slate-900 dark:text-white mb-3 group-hover:text-gradient-animated transition-colors">
+                            <a href="#">Endüstriyel Yapılarda Akustik Tasarım</a>
+                        </h3>
+                        <p class="text-slate-600 dark:text-primary-300 text-sm mb-4 line-clamp-2">
+                            Fabrika ve üretim tesislerinde gürültü kontrolü hem çalışan sağlığı hem de verimlilik açısından kritik...
+                        </p>
+                        <a href="#" class="link-arrow inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold text-sm">
+                            Devamını Oku <i class="fal fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Blog Card 3 -->
+                <article class="group bg-white dark:bg-dark-800 rounded-2xl overflow-hidden hover-shadow transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
+                    <a href="#" class="block relative aspect-[16/10] overflow-hidden">
+                        <img src="https://picsum.photos/600/375?random=52" alt="Blog 3"
+                             class="w-full h-full object-cover transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <span class="absolute top-4 left-4 px-3 py-1 bg-primary-600 text-white text-sm font-medium rounded-full shadow-lg">Jeoteknik</span>
+                    </a>
+                    <div class="p-6">
+                        <div class="flex items-center gap-4 text-sm text-slate-500 dark:text-primary-400 mb-3">
+                            <span class="flex items-center gap-1">
+                                <i class="fal fa-calendar-days"></i> 5 Ocak 2026
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <i class="fal fa-clock-three"></i> 4 dk okuma
+                            </span>
+                        </div>
+                        <h3 class="font-heading text-xl text-slate-900 dark:text-white mb-3 group-hover:text-gradient-animated transition-colors">
+                            <a href="#">Zemin Etüdünün Önemi ve Aşamaları</a>
+                        </h3>
+                        <p class="text-slate-600 dark:text-primary-300 text-sm mb-4 line-clamp-2">
+                            Yapı güvenliği için temel atan zemin etüdü çalışmaları, projelerin başarısını doğrudan etkiler...
+                        </p>
+                        <a href="#" class="link-arrow inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold text-sm">
+                            Devamını Oku <i class="fal fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+
+            </div>
+
+            <!-- View All Button -->
+            <div class="text-center mt-12" data-aos="fade-up">
+                <a href="#" class="link-arrow inline-flex items-center gap-2 px-8 py-4 border-2 border-slate-300 dark:border-dark-600 text-slate-700 dark:text-white hover:bg-slate-100 dark:hover:bg-dark-700 hover:border-primary-500 font-semibold rounded-lg transition-all">
+                    Tüm Yazıları Gör <i class="fal fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CTA SECTION ========== -->
+    <section class="section-padding cta-mesh relative overflow-hidden">
+
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 relative z-10">
+            <div class="max-w-4xl mx-auto text-center" data-aos="zoom-in">
+                <span class="inline-block px-4 py-2 bg-white/20 border border-white/30 rounded-full text-sm font-medium text-white mb-6">
+                    <i class="fal fa-handshake mr-2"></i>Birlikte Çalışalım
+                </span>
+                <h2 class="font-heading text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 text-white" style="line-height: 1.15;">
+                    <span class="block">PROJENİZ İÇİN</span>
+                    <span class="block text-white/90">BİZİMLE İLETİŞİME GEÇİN</span>
+                </h2>
+                <p class="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
+                    Madencilik, mimarlık veya jeoteknik alanında profesyonel mühendislik hizmetleri için uzman ekibimiz yanınızda.
+                </p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="#contact" class="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-primary-50 text-primary-700 font-semibold rounded-lg border-2 border-primary-200 hover:border-primary-500 transition-all">
+                        <i class="fal fa-envelope"></i> İletişime Geç
+                    </a>
+                    <a href="tel:+903122126809" class="inline-flex items-center gap-2 px-8 py-4 bg-transparent hover:bg-white/10 border-2 border-white/50 hover:border-white text-white font-semibold rounded-lg transition-all">
+                        <i class="fal fa-phone"></i> +90 (312) 212 68 09
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CONTACT SECTION - Map Integrated (#26-45) ========== -->
+    <section id="contact" class="section-padding bg-white dark:bg-dark-900">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <div class="grid lg:grid-cols-2 gap-12">
+
+                <!-- Left: Contact Info + Map -->
+                <div data-aos="fade-right">
+                    <span class="inline-block px-4 py-1 bg-primary-100 dark:bg-primary-800 text-primary-600 dark:text-primary-300 text-sm font-semibold rounded-full mb-4">
+                        İLETİŞİM
+                    </span>
+                    <h2 class="font-heading text-4xl sm:text-5xl font-extrabold mb-6" style="line-height: 1.2;">
+                        <span class="text-slate-900 dark:text-white">BİZE </span><span class="text-gradient-animated">ULAŞIN</span>
+                    </h2>
+                    <p class="text-slate-600 dark:text-primary-300 mb-8">
+                        Projeleriniz hakkında bilgi almak veya teklif istemek için bizimle iletişime geçebilirsiniz.
+                    </p>
+
+                    <!-- Contact Cards -->
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-start gap-4 p-4 bg-slate-50 dark:bg-primary-800/50 rounded-xl">
+                            <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fal fa-map-marker-alt text-xl text-primary-700"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-slate-900 dark:text-white mb-1">Adres</h4>
+                                <p class="text-slate-600 dark:text-primary-300">
+                                    Atatürk Bulvarı No: 123/5<br>
+                                    Kızılay, Ankara 06420
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 p-4 bg-slate-50 dark:bg-primary-800/50 rounded-xl">
+                            <div class="w-12 h-12 bg-primary-100 dark:bg-primary-700 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fal fa-phone text-xl text-primary-600 dark:text-primary-300"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-slate-900 dark:text-white mb-1">Telefon</h4>
+                                <p class="text-slate-600 dark:text-primary-300">
+                                    +90 (312) 212 68 09<br>
+                                    +90 (312) 212 68 10
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 p-4 bg-slate-50 dark:bg-primary-800/50 rounded-xl">
+                            <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fal fa-envelope text-xl text-primary-700"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-slate-900 dark:text-white mb-1">E-posta</h4>
+                                <p class="text-slate-600 dark:text-primary-300">
+                                    info@unimadmadencilik.com<br>
+                                    proje@unimadmadencilik.com
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Map -->
+                    <div class="aspect-video rounded-2xl overflow-hidden bg-slate-200 dark:bg-primary-800">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3060.2851937595684!2d32.85463!3d39.92077!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMznCsDU1JzE0LjgiTiAzMsKwNTEnMTYuNyJF!5e0!3m2!1str!2str!4v1234567890"
+                            width="100%"
+                            height="100%"
+                            style="border:0;"
+                            allowfullscreen=""
+                            loading="lazy">
+                        </iframe>
+                    </div>
+                </div>
+
+                <!-- Right: Contact Form -->
+                <div data-aos="fade-left">
+                    <div class="bg-slate-50 dark:bg-primary-800/50 rounded-2xl p-8 lg:p-10">
+                        <h3 class="font-heading text-2xl text-slate-900 dark:text-white mb-6">TEKLİF FORMU</h3>
+
+                        <form class="space-y-6">
+                            <div class="grid sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 dark:text-primary-200 mb-2">Ad Soyad *</label>
+                                    <input type="text" required
+                                           class="w-full px-4 py-3 bg-white dark:bg-dark-800 border border-slate-300 dark:border-dark-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all hover:border-primary-300 dark:hover:border-primary-600"
+                                           placeholder="Adınız Soyadınız">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 dark:text-primary-200 mb-2">Telefon *</label>
+                                    <input type="tel" required
+                                           class="w-full px-4 py-3 bg-white dark:bg-dark-800 border border-slate-300 dark:border-dark-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all hover:border-primary-300 dark:hover:border-primary-600"
+                                           placeholder="+90 (___) ___ __ __">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 dark:text-primary-200 mb-2">E-posta *</label>
+                                <input type="email" required
+                                       class="w-full px-4 py-3 bg-white dark:bg-dark-800 border border-slate-300 dark:border-dark-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all hover:border-primary-300 dark:hover:border-primary-600"
+                                       placeholder="email@example.com">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 dark:text-primary-200 mb-2">Hizmet Alanı *</label>
+                                <select required
+                                        class="w-full px-4 py-3 bg-white dark:bg-dark-800 border border-slate-300 dark:border-dark-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-slate-900 dark:text-white transition-all hover:border-primary-300 dark:hover:border-primary-600">
+                                    <option value="">Seçiniz...</option>
+                                    <option value="madencilik">Madencilik</option>
+                                    <option value="mimarlik">Mimarlık</option>
+                                    <option value="jeoteknik">Jeoteknik</option>
+                                    <option value="diger">Diğer</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 dark:text-primary-200 mb-2">Mesajınız *</label>
+                                <textarea rows="5" required
+                                          class="w-full px-4 py-3 bg-white dark:bg-dark-800 border border-slate-300 dark:border-dark-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 resize-none transition-all hover:border-primary-300 dark:hover:border-primary-600"
+                                          placeholder="Projeniz hakkında kısaca bilgi veriniz..."></textarea>
+                            </div>
+
+                            <button type="submit"
+                                    class="btn-primary w-full px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg border-2 border-primary-500 hover:border-primary-400 transition-all flex items-center justify-center gap-2">
+                                <i class="fal fa-paper-plane"></i>
+                                Teklif İste
+                            </button>
+
+                            <p class="text-xs text-slate-500 dark:text-primary-400 text-center">
+                                * Zorunlu alanlar. Bilgileriniz gizli tutulacaktır.
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FOOTER - Mega Rich (#86-105) ========== -->
+    <footer class="bg-dark-900 dark:bg-dark-950 text-white pt-16 pb-8">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+
+            <!-- Footer Top -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 pb-12 border-b border-slate-800">
+
+                <!-- Company Info -->
+                <div class="lg:col-span-1">
+                    <a href="#" class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center">
+                            <i class="fal fa-mountain text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <span class="font-heading text-2xl text-white tracking-wider">UNIMAD</span>
+                            <span class="block text-xs text-slate-400 -mt-1">Madencilik & Mühendislik</span>
+                        </div>
+                    </a>
+                    <p class="text-slate-400 mb-6">
+                        Tecrübe ve bilgi birikimimizi güncel teknoloji ile birleştirerek profesyonel mühendislik çözümleri sunuyoruz.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-primary-600 rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-primary-600 rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-primary-600 rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="font-heading text-lg text-white mb-6">HIZLI BAĞLANTILAR</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 transition-colors">Ana Sayfa</a></li>
+                        <li><a href="#services" class="text-slate-400 hover:text-primary-400 transition-colors">Hizmetlerimiz</a></li>
+                        <li><a href="#about" class="text-slate-400 hover:text-primary-400 transition-colors">Hakkımızda</a></li>
+                        <li><a href="#blog" class="text-slate-400 hover:text-primary-400 transition-colors">Blog</a></li>
+                        <li><a href="#contact" class="text-slate-400 hover:text-primary-400 transition-colors">İletişim</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services -->
+                <div>
+                    <h4 class="font-heading text-lg text-white mb-6">HİZMETLER</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 transition-colors">Madencilik Mühendisliği</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 transition-colors">Mimarlık Hizmetleri</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 transition-colors">Jeoteknik Etütler</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 transition-colors">ÇED Raporları</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-primary-400 transition-colors">Danışmanlık</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="font-heading text-lg text-white mb-6">İLETİŞİM</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <i class="fal fa-map-marker-alt text-primary-500 mt-1"></i>
+                            <span class="text-slate-400">Atatürk Bulvarı No: 123/5<br>Kızılay, Ankara 06420</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fal fa-phone text-primary-500"></i>
+                            <a href="tel:+903122126809" class="text-slate-400 hover:text-primary-400 transition-colors">
+                                +90 (312) 212 68 09
+                            </a>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fal fa-envelope text-primary-500"></i>
+                            <a href="mailto:info@unimadmadencilik.com" class="text-slate-400 hover:text-primary-400 transition-colors">
+                                info@unimadmadencilik.com
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-slate-500 text-sm text-center md:text-left">
+                    &copy; 2024 Unimad Madencilik. Tüm hakları saklıdır.
+                </p>
+                <div class="flex items-center gap-6 text-sm text-slate-500">
+                    <a href="#" class="hover:text-primary-400 transition-colors">Gizlilik Politikası</a>
+                    <a href="#" class="hover:text-primary-400 transition-colors">Kullanım Şartları</a>
+                    <a href="#" class="hover:text-primary-400 transition-colors">KVKK</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========== PROMPT MODAL ========== -->
+    <div x-show="promptModal"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+         @click.self="promptModal = false">
+        <div class="bg-white dark:bg-primary-900 rounded-2xl max-w-lg w-full p-8 shadow-2xl" @click.stop>
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="font-heading text-2xl text-slate-900 dark:text-white">TASARIM DOKÜMANI</h3>
+                <button @click="promptModal = false" class="text-slate-400 hover:text-slate-600 dark:hover:text-white">
+                    <i class="fal fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <p class="text-slate-600 dark:text-primary-300 mb-6">
+                Bu tasarımın detaylı dokümantasyonunu (kullanılan layout'lar, renkler, fontlar ve görsel promptları) aşağıdaki linkten inceleyebilirsiniz:
+            </p>
+            <a href="prompt.html" target="_blank"
+               class="flex items-center justify-center gap-2 w-full px-6 py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors">
+                <i class="fal fa-file-lines"></i>
+                Prompt Dokümanını Aç
+            </a>
+        </div>
+    </div>
+
+    <!-- Prompt Button -->
+    <button @click="promptModal = true"
+            class="fixed bottom-6 right-6 z-50 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-sm font-medium rounded-lg shadow-lg transition-colors flex items-center gap-2">
+        <i class="fal fa-code"></i>
+        Prompt
+    </button>
+
+</body>
+</html>

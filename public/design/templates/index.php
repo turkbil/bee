@@ -1,14 +1,163 @@
 <?php
 /**
  * Hazir Taslaklar - Full Width Tasarim Galerisi
+ * API Mode: POST ile metadata kaydet
  */
 
+// API Mode - POST ile metadata kaydet VE silme
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['api'])) {
+    header('Content-Type: application/json');
+
+    $input = json_decode(file_get_contents('php://input'), true);
+    $action = $input['action'] ?? null;
+    $metadataFile = __DIR__ . '/metadata.json';
+
+    // Silme işlemi
+    if ($action === 'delete') {
+        // Şifre hash'i - template-action.php ile aynı
+        define('DELETE_PASSWORD_HASH', '$2y$10$yfVqtNkw3aNQrlLGJ5i18ekhDZv94reeaQ.yZOrK/Fu9xB1Oq.JBq');
+
+        $password = $input['password'] ?? '';
+        $templateId = $input['templateId'] ?? '';
+
+        // Şifre kontrolü
+        if (!password_verify($password, DELETE_PASSWORD_HASH)) {
+            http_response_code(403);
+            die(json_encode(['success' => false, 'error' => 'Yanlis sifre!']));
+        }
+
+        // Template ID kontrolü
+        if (empty($templateId) || !preg_match('/^[a-z0-9\-]+\/v[0-9]+[a-z0-9\-]*$/i', $templateId)) {
+            http_response_code(400);
+            die(json_encode(['success' => false, 'error' => 'Gecersiz template ID']));
+        }
+
+        // Klasör yolu
+        $templatePath = __DIR__ . '/' . $templateId;
+
+        // Güvenlik kontrolü
+        $realPath = realpath($templatePath);
+        $realBase = realpath(__DIR__);
+
+        if (!$realPath || strpos($realPath, $realBase) !== 0) {
+            http_response_code(400);
+            die(json_encode(['success' => false, 'error' => 'Gecersiz yol']));
+        }
+
+        // Klasör var mı?
+        if (!is_dir($templatePath)) {
+            http_response_code(404);
+            die(json_encode(['success' => false, 'error' => 'Klasor bulunamadi']));
+        }
+
+        // Recursive silme fonksiyonu
+        function deleteDirectory($dir) {
+            if (!is_dir($dir)) return false;
+            $files = array_diff(scandir($dir), ['.', '..']);
+            foreach ($files as $file) {
+                $path = $dir . '/' . $file;
+                is_dir($path) ? deleteDirectory($path) : unlink($path);
+            }
+            return rmdir($dir);
+        }
+
+        // Sil
+        if (deleteDirectory($templatePath)) {
+            // Kategori klasörü boş kaldıysa onu da sil
+            $categoryPath = dirname($templatePath);
+            $remaining = array_diff(scandir($categoryPath), ['.', '..']);
+            if (empty($remaining)) {
+                rmdir($categoryPath);
+            }
+
+            // Cache'i temizle
+            $cacheFile = __DIR__ . '/.designs-cache.json';
+            if (file_exists($cacheFile)) {
+                unlink($cacheFile);
+            }
+
+            die(json_encode(['success' => true, 'message' => 'Taslak silindi: ' . $templateId]));
+        } else {
+            http_response_code(500);
+            die(json_encode(['success' => false, 'error' => 'Silme islemi basarisiz']));
+        }
+    }
+
+    if ($action === 'saveMetadata') {
+        $templateId = $input['templateId'] ?? null;
+        $metadata = $input['metadata'] ?? null;
+
+        if (!$templateId || !is_array($metadata)) {
+            http_response_code(400);
+            die(json_encode(['success' => false, 'error' => 'Invalid input']));
+        }
+
+        $allMetadata = [];
+        if (file_exists($metadataFile)) {
+            $content = @file_get_contents($metadataFile);
+            if ($content) {
+                $allMetadata = json_decode($content, true) ?: [];
+            }
+        }
+
+        $allMetadata[$templateId] = $metadata;
+
+        $json = json_encode($allMetadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        if (file_put_contents($metadataFile, $json, LOCK_EX) === false) {
+            http_response_code(500);
+            die(json_encode(['success' => false, 'error' => 'Write failed']));
+        }
+
+        die(json_encode(['success' => true]));
+    }
+
+    if ($action === 'saveAllMetadata') {
+        $allData = $input['data'] ?? null;
+
+        if (!is_array($allData)) {
+            http_response_code(400);
+            die(json_encode(['success' => false, 'error' => 'Invalid data']));
+        }
+
+        $json = json_encode($allData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        if (file_put_contents($metadataFile, $json, LOCK_EX) === false) {
+            http_response_code(500);
+            die(json_encode(['success' => false, 'error' => 'Write failed']));
+        }
+
+        die(json_encode(['success' => true]));
+    }
+
+    http_response_code(400);
+    die(json_encode(['success' => false, 'error' => 'Invalid action']));
+}
+
+// Normal sayfa modu
 $baseDir = __DIR__;
 $baseUrl = '/design/templates';
 
-// Tum taslak kategorilerini tara
+// Cache sistemi - 5 dakika cache
+$cacheFile = $baseDir . '/.designs-cache.json';
+$cacheLifetime = 300; // 5 dakika
+$useCache = false;
+
+if (file_exists($cacheFile)) {
+    $cacheAge = time() - filemtime($cacheFile);
+    if ($cacheAge < $cacheLifetime) {
+        $useCache = true;
+    }
+}
+
 $categories = [];
 $allDesigns = [];
+
+if ($useCache) {
+    // Cache'den yükle
+    $cached = json_decode(file_get_contents($cacheFile), true);
+    $categories = $cached['categories'] ?? [];
+    $allDesigns = $cached['allDesigns'] ?? [];
+} else {
+    // Klasörleri tara (normal işlem)
 
 foreach (glob("$baseDir/*", GLOB_ONLYDIR) as $categoryPath) {
     $categoryName = basename($categoryPath);
@@ -59,7 +208,15 @@ foreach (glob("$baseDir/*", GLOB_ONLYDIR) as $categoryPath) {
     }
 }
 
-usort($categories, fn($a, $b) => strcmp($a['name'], $b['name']));
+    usort($categories, fn($a, $b) => strcmp($a['name'], $b['name']));
+
+    // Cache'e kaydet
+    file_put_contents($cacheFile, json_encode([
+        'categories' => $categories,
+        'allDesigns' => $allDesigns
+    ], JSON_UNESCAPED_UNICODE), LOCK_EX);
+}
+
 $totalDesigns = count($allDesigns);
 $promptedDesigns = count(array_filter($allDesigns, fn($d) => $d['hasPrompt']));
 $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
@@ -69,6 +226,9 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Tasarim Merkezi | Design Templates</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -83,10 +243,10 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
         .design-card { transition: border-color 0.2s, box-shadow 0.2s; }
         .design-card:hover { border-color: #6366f1; box-shadow: 0 4px 20px -5px rgba(99, 102, 241, 0.2); }
         .design-card.favorite { border-color: #f59e0b !important; }
-        .design-card.favorite .fav-icon { color: #f59e0b !important; }
+        .design-card.favorite .fav-btn { color: #f59e0b !important; }
 
-        /* Fav icon */
-        .fav-icon { transition: color 0.15s; }
+        /* Fav button */
+        .fav-btn { transition: color 0.15s; }
 
         /* Stars */
         .star-rating { display: flex; gap: 2px; }
@@ -356,70 +516,88 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
                 <?php foreach ($categories as $category): ?>
                     <?php foreach ($category['versions'] as $design): ?>
                         <div class="design-card group relative bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-violet-500/50 transition-all"
-                             data-id="<?= htmlspecialchars($design['id']) ?>"
-                             data-category="<?= htmlspecialchars($design['category']) ?>"
+                             data-id="<?= htmlspecialchars($design['id'], ENT_QUOTES, 'UTF-8') ?>"
+                             data-category="<?= htmlspecialchars($design['category'], ENT_QUOTES, 'UTF-8') ?>"
                              data-hasprompt="<?= $design['hasPrompt'] ? 'true' : 'false' ?>">
 
                             <!-- Header -->
                             <div class="p-4 pb-3">
                                 <div class="flex items-center justify-between gap-2 mb-2">
                                     <span class="text-xs font-medium text-violet-400 bg-violet-500/20 px-2 py-0.5 rounded">
-                                        <?= htmlspecialchars($design['categoryDisplay']) ?>
+                                        <?= htmlspecialchars($design['categoryDisplay'], ENT_QUOTES, 'UTF-8') ?>
                                     </span>
                                     <div class="flex items-center gap-1.5">
-                                        <div class="star-rating" data-id="<?= htmlspecialchars($design['id']) ?>">
+                                        <div class="star-rating" data-id="<?= htmlspecialchars($design['id'], ENT_QUOTES, 'UTF-8') ?>">
                                             <?php for($i = 1; $i <= 5; $i++): ?>
-                                                <i class="fas fa-star text-slate-700 text-xs hover:text-yellow-400 transition-colors" onclick="event.stopPropagation(); setRating('<?= htmlspecialchars($design['id']) ?>', <?= $i ?>)"></i>
+                                                <i class="star-icon fas fa-star text-slate-700 text-xs hover:text-yellow-400 transition-colors" data-rating="<?= $i ?>"></i>
                                             <?php endfor; ?>
                                         </div>
-                                        <button onclick="event.stopPropagation(); toggleFavorite('<?= htmlspecialchars($design['id']) ?>')" class="fav-icon text-slate-600 hover:text-amber-400 transition text-sm" title="Favori">
+                                        <button class="fav-btn text-slate-600 hover:text-amber-400 transition text-sm" title="Favori">
                                             <i class="fas fa-heart"></i>
                                         </button>
                                     </div>
                                 </div>
                                 <a href="<?= $design['url'] ?>" target="_blank" class="block">
-                                    <h3 class="text-sm font-semibold text-white leading-snug line-clamp-2 hover:text-violet-400 transition-colors" title="<?= htmlspecialchars($design['title']) ?>">
-                                        <?= htmlspecialchars($design['title']) ?>
+                                    <h3 class="text-sm font-semibold text-white leading-snug line-clamp-2 hover:text-violet-400 transition-colors" title="<?= htmlspecialchars($design['title'], ENT_QUOTES, 'UTF-8') ?>">
+                                        <?= htmlspecialchars($design['title'], ENT_QUOTES, 'UTF-8') ?>
                                     </h3>
                                 </a>
                             </div>
 
                             <!-- Hover Actions (sağ alt) -->
                             <div class="absolute bottom-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button class="toggle-details-btn w-6 h-6 flex items-center justify-center rounded bg-violet-600 hover:bg-violet-500 text-white text-xs"
+                                        data-id="<?= htmlspecialchars($design['id'], ENT_QUOTES, 'UTF-8') ?>"
+                                        title="Detaylar">
+                                    <i class="fas fa-eye"></i>
+                                </button>
                                 <?php if ($design['hasPrompt']): ?>
                                 <a href="<?= $design['promptUrl'] ?>" target="_blank" onclick="event.stopPropagation()" class="w-6 h-6 flex items-center justify-center rounded bg-violet-600 hover:bg-violet-500 text-white text-xs" title="Prompt">
                                     <i class="fas fa-terminal"></i>
                                 </a>
                                 <?php endif; ?>
-                                <button onclick="event.stopPropagation(); confirmDelete('<?= htmlspecialchars($design['id']) ?>', '<?= htmlspecialchars($design['title']) ?>')" class="w-6 h-6 flex items-center justify-center rounded bg-slate-700 hover:bg-red-600 text-slate-400 hover:text-white text-xs" title="Sil">
+                                <button class="delete-btn w-6 h-6 flex items-center justify-center rounded bg-slate-700 hover:bg-red-600 text-slate-400 hover:text-white text-xs"
+                                        data-id="<?= htmlspecialchars($design['id'], ENT_QUOTES, 'UTF-8') ?>"
+                                        data-title="<?= htmlspecialchars($design['title'], ENT_QUOTES, 'UTF-8') ?>"
+                                        title="Sil">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </div>
 
                             <!-- Details (Hidden) -->
-                            <div class="details-section border-t border-slate-800/50" data-details="<?= htmlspecialchars($design['id']) ?>">
+                            <div class="details-section border-t border-slate-800/50" data-details="<?= htmlspecialchars($design['id'], ENT_QUOTES, 'UTF-8') ?>">
                                 <div class="p-5 space-y-4">
                                     <!-- Kategori & Marka -->
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="text-xs text-slate-500 block mb-2">Kategori</label>
-                                            <input type="text" class="small-input kategori-input" placeholder="..." data-id="<?= htmlspecialchars($design['id']) ?>" onchange="saveKategori('<?= htmlspecialchars($design['id']) ?>', this.value)">
+                                            <input type="text"
+                                                   class="small-input kategori-input"
+                                                   placeholder="Seç veya yaz..."
+                                                   list="kategoriler-<?= htmlspecialchars($design['id'], ENT_QUOTES, 'UTF-8') ?>"
+                                                   data-id="<?= htmlspecialchars($design['id'], ENT_QUOTES, 'UTF-8') ?>">
+                                            <datalist id="kategoriler-<?= htmlspecialchars($design['id'], ENT_QUOTES, 'UTF-8') ?>" class="kategori-datalist"></datalist>
                                         </div>
                                         <div>
                                             <label class="text-xs text-slate-500 block mb-2">Marka</label>
-                                            <input type="text" class="small-input marka-input" placeholder="..." data-id="<?= htmlspecialchars($design['id']) ?>" onchange="saveMarka('<?= htmlspecialchars($design['id']) ?>', this.value)">
+                                            <input type="text"
+                                                   class="small-input marka-input"
+                                                   placeholder="Seç veya yaz..."
+                                                   list="markalar-<?= htmlspecialchars($design['id'], ENT_QUOTES, 'UTF-8') ?>"
+                                                   data-id="<?= htmlspecialchars($design['id'], ENT_QUOTES, 'UTF-8') ?>">
+                                            <datalist id="markalar-<?= htmlspecialchars($design['id'], ENT_QUOTES, 'UTF-8') ?>" class="marka-datalist"></datalist>
                                         </div>
                                     </div>
                                     <!-- Not -->
                                     <div>
                                         <label class="text-xs text-slate-500 block mb-2">Not</label>
-                                        <textarea class="w-full bg-slate-800/50 text-sm text-slate-300 resize-none rounded-lg p-3" rows="2" placeholder="..." data-id="<?= htmlspecialchars($design['id']) ?>" onchange="saveNote('<?= htmlspecialchars($design['id']) ?>', this.value)"></textarea>
+                                        <textarea class="w-full bg-slate-800/50 text-sm text-slate-300 resize-none rounded-lg p-3 note-input" rows="2" placeholder="..." data-id="<?= htmlspecialchars($design['id'], ENT_QUOTES, 'UTF-8') ?>"></textarea>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Indicators (kategori/marka varsa göster) -->
-                            <div class="indicators px-4 py-1.5 hidden" data-indicators="<?= htmlspecialchars($design['id']) ?>">
+                            <div class="indicators px-4 py-1.5 hidden" data-indicators="<?= htmlspecialchars($design['id'], ENT_QUOTES, 'UTF-8') ?>">
                                 <div class="flex items-center gap-1.5 flex-wrap">
                                     <span class="kategori-indicator text-xs bg-emerald-900/50 text-emerald-400 px-1.5 py-0.5 rounded hidden"></span>
                                     <span class="marka-indicator text-xs bg-blue-900/50 text-blue-400 px-1.5 py-0.5 rounded hidden"></span>
@@ -436,8 +614,90 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
 
     <script>
     const designs = <?= $designsJson ?>;
-    let designData = JSON.parse(localStorage.getItem('designData') || '{}');
+    let designData = {};
     let allDetailsOpen = false;
+
+    // Escape helper for onclick attributes
+    function escapeAttr(str) {
+        return String(str).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+    }
+
+    // Metadata'yı JSON'dan yükle
+    async function loadMetadata() {
+        try {
+            const res = await fetch('/design/templates/metadata.json?t=' + Date.now());
+            if (res.ok) {
+                designData = await res.json();
+
+                // localStorage'dan kategoriler/markalar (backward compatibility)
+                const oldKategoriler = JSON.parse(localStorage.getItem('designKategoriler') || '[]');
+                const oldMarkalar = JSON.parse(localStorage.getItem('designMarkalar') || '[]');
+
+                if (oldKategoriler.length || oldMarkalar.length) {
+                    // localStorage'daki kategori/markaları global listeye ekle
+                    window.kategoriler = oldKategoriler;
+                    window.markalar = oldMarkalar;
+                }
+
+                // localStorage'dan eski veri varsa ve JSON boşsa → migration yap
+                const oldData = JSON.parse(localStorage.getItem('designData') || '{}');
+                if (Object.keys(oldData).length > 0 && Object.keys(designData).length === 0) {
+                    console.log('🔄 localStorage verisi tespit edildi, JSON\'a taşınıyor...');
+                    await migrateFromLocalStorage(oldData);
+                }
+
+                updateUI();
+                updateFilterDropdowns();
+            }
+        } catch (e) {
+            console.error('Metadata yüklenemedi:', e);
+        }
+    }
+
+    // localStorage'dan JSON'a migration
+    async function migrateFromLocalStorage(oldData) {
+        try {
+            const res = await fetch('/design/templates/?api=1', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'saveAllMetadata',
+                    data: oldData
+                })
+            });
+            const result = await res.json();
+            if (result.success) {
+                designData = oldData;
+                console.log('✅ Migration tamamlandı! localStorage verisi JSON\'a aktarıldı.');
+                showToast('Verileriniz kalıcı depolamaya taşındı!');
+                // localStorage'ı temizle (artık kullanmıyoruz)
+                localStorage.removeItem('designData');
+            }
+        } catch (e) {
+            console.error('Migration hatası:', e);
+        }
+    }
+
+    // Metadata'yı kaydet (API'ye POST)
+    async function saveMetadataToServer(templateId, metadata) {
+        try {
+            const res = await fetch('/design/templates/?api=1', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'saveMetadata',
+                    templateId: templateId,
+                    metadata: metadata
+                })
+            });
+            const result = await res.json();
+            if (!result.success) {
+                console.error('Metadata kaydedilemedi:', result.error);
+            }
+        } catch (e) {
+            console.error('Metadata kaydetme hatası:', e);
+        }
+    }
 
     function toggleAllDetails() {
         const allDetails = document.querySelectorAll('.details-section');
@@ -454,37 +714,66 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
             icon?.classList.replace('fa-eye-slash', 'fa-eye');
             if (btn) btn.setAttribute('data-tip', 'Detaylar');
         }
+
+        // Karttaki toggle butonlarını da güncelle
+        updateAllToggleIcons();
+    }
+
+    function toggleCardDetails(id) {
+        // Tüm kartların detaylarını aç/kapat
+        toggleAllDetails();
+
+        // Tüm karttaki toggle butonlarının ikonlarını güncelle
+        updateAllToggleIcons();
+    }
+
+    function updateAllToggleIcons() {
+        const allToggleBtns = document.querySelectorAll('.toggle-details-btn');
+        allToggleBtns.forEach(btn => {
+            const icon = btn.querySelector('i');
+            if (!icon) return;
+
+            if (allDetailsOpen) {
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+                btn.title = 'Gizle';
+            } else {
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+                btn.title = 'Detaylar';
+            }
+        });
     }
 
     function toggleFavorite(id) {
         if (!designData[id]) designData[id] = {};
         designData[id].favorite = !designData[id].favorite;
-        saveData(); updateUI();
+        saveData(id); updateUI();
         showToast(designData[id].favorite ? 'Favorilere eklendi' : 'Favorilerden cikarildi');
     }
 
     function setRating(id, rating) {
         if (!designData[id]) designData[id] = {};
         designData[id].rating = designData[id].rating === rating ? 0 : rating;
-        saveData(); updateUI();
+        saveData(id); updateUI();
     }
 
     function saveNote(id, note) {
         if (!designData[id]) designData[id] = {};
         designData[id].note = note.trim();
-        saveData();
+        saveData(id);
     }
 
     function saveKategori(id, kategori) {
         if (!designData[id]) designData[id] = {};
         designData[id].kategori = kategori.trim().toLowerCase();
-        saveData(); updateFilterDropdowns();
+        saveData(id); updateFilterDropdowns();
     }
 
     function saveMarka(id, marka) {
         if (!designData[id]) designData[id] = {};
         designData[id].marka = marka.trim();
-        saveData(); updateFilterDropdowns();
+        saveData(id); updateFilterDropdowns();
     }
 
     function updateFilterDropdowns() {
@@ -507,6 +796,21 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
         markaSelect.innerHTML = '<option value="">Marka</option>';
         [...markalar].sort().forEach(m => {
             markaSelect.innerHTML += `<option value="${m}" ${m === selectedMarka ? 'selected' : ''}>${m}</option>`;
+        });
+
+        // Datalist'leri de güncelle (her kart için)
+        updateDataLists(kategoriler, markalar);
+    }
+
+    function updateDataLists(kategoriler, markalar) {
+        // Tüm kategori datalist'leri
+        document.querySelectorAll('.kategori-datalist').forEach(datalist => {
+            datalist.innerHTML = [...kategoriler].sort().map(k => `<option value="${k}">`).join('');
+        });
+
+        // Tüm marka datalist'leri
+        document.querySelectorAll('.marka-datalist').forEach(datalist => {
+            datalist.innerHTML = [...markalar].sort().map(m => `<option value="${m}">`).join('');
         });
     }
 
@@ -620,7 +924,12 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
         document.getElementById('favCount').textContent = favCount + 'f';
     }
 
-    function saveData() { localStorage.setItem('designData', JSON.stringify(designData)); }
+    function saveData(templateId) {
+        // Tek template'i kaydet (performans için)
+        if (templateId && designData[templateId]) {
+            saveMetadataToServer(templateId, designData[templateId]);
+        }
+    }
 
     function showToast(msg) {
         const t = document.getElementById('toast');
@@ -657,10 +966,10 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
         btn.disabled = true; btn.textContent = '...';
 
         try {
-            const res = await fetch('/design/templates/template-action.php', {
+            const res = await fetch('/design/templates/?api=1', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ templateId: deleteTargetId, password })
+                body: JSON.stringify({ action: 'delete', templateId: deleteTargetId, password })
             });
             const result = await res.json();
 
@@ -750,15 +1059,15 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
         const value = input.value.trim();
         if (!value) return;
 
-        // LocalStorage'daki listeye ekle
-        const listKey = addModalType === 'kategori' ? 'designKategoriler' : 'designMarkalar';
-        let list = JSON.parse(localStorage.getItem(listKey) || '[]');
+        // Global listeye ekle
+        const listKey = addModalType === 'kategori' ? 'kategoriler' : 'markalar';
+        let list = window[listKey] || [];
         const normalizedValue = addModalType === 'kategori' ? value.toLowerCase() : value;
 
         if (!list.includes(normalizedValue)) {
             list.push(normalizedValue);
             list.sort();
-            localStorage.setItem(listKey, JSON.stringify(list));
+            window[listKey] = list;
             showToast(`${addModalType === 'kategori' ? 'Kategori' : 'Marka'} eklendi: ${value}`);
             updateDropZones();
             updateFilterDropdowns();
@@ -786,18 +1095,20 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
 
     function updateManageLists() {
         // Kategorileri al
-        let kategoriler = JSON.parse(localStorage.getItem('designKategoriler') || '[]');
+        let kategoriler = window.kategoriler || [];
         Object.values(designData).forEach(d => {
             if (d.kategori && !kategoriler.includes(d.kategori)) kategoriler.push(d.kategori);
         });
         kategoriler = [...new Set(kategoriler)].sort();
+        window.kategoriler = kategoriler;
 
         // Markaları al
-        let markalar = JSON.parse(localStorage.getItem('designMarkalar') || '[]');
+        let markalar = window.markalar || [];
         Object.values(designData).forEach(d => {
             if (d.marka && !markalar.includes(d.marka)) markalar.push(d.marka);
         });
         markalar = [...new Set(markalar)].sort();
+        window.markalar = markalar;
 
         // Kategori listesi
         const katList = document.getElementById('manageKategoriList');
@@ -808,10 +1119,10 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
                     <span class="text-sm text-slate-300"><i class="fas fa-folder text-emerald-500 mr-2 text-xs"></i>${k}</span>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-slate-600">${count}</span>
-                        <button onclick="editTag('kategori', '${k}')" class="text-slate-600 hover:text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity" title="Düzenle">
+                        <button onclick="editTag('kategori', '${escapeAttr(k)}')" class="text-slate-600 hover:text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity" title="Düzenle">
                             <i class="fas fa-pen text-xs"></i>
                         </button>
-                        <button onclick="deleteTagFromModal('kategori', '${k}')" class="text-slate-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity" title="Sil">
+                        <button onclick="deleteTagFromModal('kategori', '${escapeAttr(k)}')" class="text-slate-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity" title="Sil">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
@@ -828,10 +1139,10 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
                     <span class="text-sm text-slate-300"><i class="fas fa-building text-blue-500 mr-2 text-xs"></i>${m}</span>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-slate-600">${count}</span>
-                        <button onclick="editTag('marka', '${m}')" class="text-slate-600 hover:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" title="Düzenle">
+                        <button onclick="editTag('marka', '${escapeAttr(m)}')" class="text-slate-600 hover:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" title="Düzenle">
                             <i class="fas fa-pen text-xs"></i>
                         </button>
-                        <button onclick="deleteTagFromModal('marka', '${m}')" class="text-slate-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity" title="Sil">
+                        <button onclick="deleteTagFromModal('marka', '${escapeAttr(m)}')" class="text-slate-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity" title="Sil">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
@@ -852,9 +1163,9 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
         const trimmedNew = newValue.trim();
         if (trimmedNew === oldValue) return; // Aynıysa çık (büyük/küçük harf dahil)
 
-        // LocalStorage listesini güncelle
-        const listKey = type === 'kategori' ? 'designKategoriler' : 'designMarkalar';
-        let list = JSON.parse(localStorage.getItem(listKey) || '[]');
+        // Global listesini güncelle
+        const listKey = type === 'kategori' ? 'kategoriler' : 'markalar';
+        let list = window[listKey] || [];
         const idx = list.indexOf(oldValue);
         if (idx > -1) {
             list[idx] = trimmedNew;
@@ -862,7 +1173,7 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
             list.push(trimmedNew);
         }
         list = [...new Set(list)].sort();
-        localStorage.setItem(listKey, JSON.stringify(list));
+        window[listKey] = list;
 
         // designData'daki tüm referansları güncelle
         Object.keys(designData).forEach(id => {
@@ -878,7 +1189,14 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
             }
         });
 
-        saveData();
+        // Tüm değişen template'leri kaydet
+        Object.keys(designData).forEach(id => {
+            if ((type === 'kategori' && designData[id].kategori === trimmedNew) ||
+                (type === 'marka' && designData[id].marka === trimmedNew)) {
+                saveData(id);
+            }
+        });
+
         updateUI();
         updateManageLists();
         updateFilterDropdowns();
@@ -940,32 +1258,34 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
     }
 
     function updateDropZones() {
-        // Kategorileri al (localStorage + designData'dan)
-        let kategoriler = JSON.parse(localStorage.getItem('designKategoriler') || '[]');
+        // Kategorileri al (designData'dan)
+        let kategoriler = window.kategoriler || [];
         Object.values(designData).forEach(d => {
             if (d.kategori && !kategoriler.includes(d.kategori)) {
                 kategoriler.push(d.kategori);
             }
         });
         kategoriler = [...new Set(kategoriler)].sort();
+        window.kategoriler = kategoriler;
 
         // Markaları al
-        let markalar = JSON.parse(localStorage.getItem('designMarkalar') || '[]');
+        let markalar = window.markalar || [];
         Object.values(designData).forEach(d => {
             if (d.marka && !markalar.includes(d.marka)) {
                 markalar.push(d.marka);
             }
         });
         markalar = [...new Set(markalar)].sort();
+        window.markalar = markalar;
 
         // Kategori zone'larını oluştur
         const katContainer = document.getElementById('kategoriDropZones');
         katContainer.innerHTML = kategoriler.length ? kategoriler.map(k => `
             <div class="drop-zone group relative px-5 py-3 bg-slate-800/80 rounded-xl text-base text-emerald-300 cursor-pointer hover:bg-slate-700"
-                 data-type="kategori" data-value="${k}"
+                 data-type="kategori" data-value="${escapeAttr(k)}"
                  ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
-                <i class="fas fa-folder mr-2"></i>${k}
-                <button onclick="event.stopPropagation(); deleteTag('kategori', '${k}')"
+                <i class="fas fa-folder mr-2"></i>${escapeAttr(k)}
+                <button onclick="event.stopPropagation(); deleteTag('kategori', '${escapeAttr(k)}')"
                         class="absolute -top-2 -right-2 w-5 h-5 bg-red-600 hover:bg-red-500 rounded-full text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <i class="fas fa-times"></i>
                 </button>
@@ -976,10 +1296,10 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
         const markaContainer = document.getElementById('markaDropZones');
         markaContainer.innerHTML = markalar.length ? markalar.map(m => `
             <div class="drop-zone group relative px-5 py-3 bg-slate-800/80 rounded-xl text-base text-blue-300 cursor-pointer hover:bg-slate-700"
-                 data-type="marka" data-value="${m}"
+                 data-type="marka" data-value="${escapeAttr(m)}"
                  ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
-                <i class="fas fa-building mr-2"></i>${m}
-                <button onclick="event.stopPropagation(); deleteTag('marka', '${m}')"
+                <i class="fas fa-building mr-2"></i>${escapeAttr(m)}
+                <button onclick="event.stopPropagation(); deleteTag('marka', '${escapeAttr(m)}')"
                         class="absolute -top-2 -right-2 w-5 h-5 bg-red-600 hover:bg-red-500 rounded-full text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <i class="fas fa-times"></i>
                 </button>
@@ -988,10 +1308,10 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
     }
 
     function deleteTag(type, value) {
-        const listKey = type === 'kategori' ? 'designKategoriler' : 'designMarkalar';
-        let list = JSON.parse(localStorage.getItem(listKey) || '[]');
+        const listKey = type === 'kategori' ? 'kategoriler' : 'markalar';
+        let list = window[listKey] || [];
         list = list.filter(item => item !== value);
-        localStorage.setItem(listKey, JSON.stringify(list));
+        window[listKey] = list;
 
         // designData'dan da temizle
         Object.keys(designData).forEach(id => {
@@ -999,15 +1319,16 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
                 designData[id].kategori = '';
                 const input = document.querySelector(`.kategori-input[data-id="${id}"]`);
                 if (input) input.value = '';
+                saveData(id);
             }
             if (type === 'marka' && designData[id].marka === value) {
                 designData[id].marka = '';
                 const input = document.querySelector(`.marka-input[data-id="${id}"]`);
                 if (input) input.value = '';
+                saveData(id);
             }
         });
 
-        saveData();
         updateUI();
         updateDropZones();
         updateFilterDropdowns();
@@ -1047,7 +1368,7 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
             if (input) input.value = value;
         }
 
-        saveData();
+        saveData(id);
         updateUI();
         updateFilterDropdowns();
         showToast(`${type === 'kategori' ? 'Kategori' : 'Marka'}: ${value}`);
@@ -1056,11 +1377,87 @@ $designsJson = json_encode($allDesigns, JSON_UNESCAPED_UNICODE);
     // ============================================
     // INIT
     // ============================================
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
+        // İlk önce metadata'yı yükle
+        await loadMetadata();
+
+        // Sonra UI'ı güncelle
         updateUI();
         updateFilterDropdowns();
         sortDesigns();
         initDragDrop();
+
+        // Delete butonlarına event listener (event delegation)
+        document.getElementById('designsGrid').addEventListener('click', (e) => {
+            // Toggle details button
+            const toggleBtn = e.target.closest('.toggle-details-btn');
+            if (toggleBtn) {
+                e.stopPropagation();
+                const id = toggleBtn.dataset.id;
+                if (id) toggleCardDetails(id);
+                return;
+            }
+
+            // Delete button
+            const deleteBtn = e.target.closest('.delete-btn');
+            if (deleteBtn) {
+                e.stopPropagation();
+                const id = deleteBtn.dataset.id;
+                const title = deleteBtn.dataset.title;
+                confirmDelete(id, title);
+                return;
+            }
+
+            // Favorite button
+            const favBtn = e.target.closest('.fav-btn');
+            if (favBtn) {
+                e.stopPropagation();
+                const card = favBtn.closest('.design-card');
+                const id = card?.dataset.id;
+                if (id) toggleFavorite(id);
+                return;
+            }
+
+            // Star rating
+            const starIcon = e.target.closest('.star-icon');
+            if (starIcon) {
+                e.stopPropagation();
+                const starRating = starIcon.closest('.star-rating');
+                const id = starRating?.dataset.id;
+                const rating = parseInt(starIcon.dataset.rating);
+                if (id && rating) setRating(id, rating);
+                return;
+            }
+        });
+
+        // Input change events (kategori, marka, note)
+        document.getElementById('designsGrid').addEventListener('change', (e) => {
+            const target = e.target;
+
+            // Kategori input
+            if (target.classList.contains('kategori-input')) {
+                const id = target.dataset.id;
+                const value = target.value.trim().toLowerCase();
+                saveKategori(id, value);
+                return;
+            }
+
+            // Marka input
+            if (target.classList.contains('marka-input')) {
+                const id = target.dataset.id;
+                const value = target.value.trim();
+                saveMarka(id, value);
+                return;
+            }
+
+            // Note textarea
+            if (target.classList.contains('note-input')) {
+                const id = target.dataset.id;
+                const value = target.value.trim();
+                saveNote(id, value);
+                return;
+            }
+        });
     });
     </script>
 

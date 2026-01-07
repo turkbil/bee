@@ -47,8 +47,9 @@
 
     <div class="relative mb-4">
         {{-- Genre Icon/Cover --}}
-        @if($genre->media_id && $genre->iconMedia)
-            <img src="{{ thumb($genre->iconMedia, 300, 300, ['scale' => 1]) }}"
+        @php $heroMedia = $genre->getFirstMedia('hero'); @endphp
+        @if($heroMedia)
+            <img src="{{ thumb($heroMedia, 300, 300, ['scale' => 1]) }}"
                  alt="{{ $genre->getTranslation('title', app()->getLocale()) }}"
                  class="w-full aspect-square object-cover rounded-lg shadow-lg"
                  loading="lazy">

@@ -3,7 +3,7 @@
  * Tasarim Promptu - v1/v2 Secimi
  */
 
-$version = $_GET['v'] ?? 'v2';
+$version = $_GET['v'] ?? 'v3';
 $promptFile = __DIR__ . "/{$version}/prompt.txt";
 $promptContent = file_exists($promptFile) ? file_get_contents($promptFile) : '';
 $promptContent = htmlspecialchars($promptContent, ENT_QUOTES, 'UTF-8');
@@ -13,7 +13,7 @@ $promptContent = htmlspecialchars($promptContent, ENT_QUOTES, 'UTF-8');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prompt <?= $version === 'v2' ? '(600+ Layout)' : '(Klasik)' ?> | Tasarim Merkezi</title>
+    <title>Prompt <?= $version === 'v3' ? '(v3 FINAL - 26 İyileştirme)' : ($version === 'v2' ? '(600+ Layout)' : '(Klasik)') ?> | Tasarim Merkezi</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -77,6 +77,9 @@ $promptContent = htmlspecialchars($promptContent, ENT_QUOTES, 'UTF-8');
             <a href="?v=v2" class="px-3 py-1.5 rounded-lg text-sm transition <?= $version === 'v2' ? 'bg-emerald-600 text-white' : 'bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800' ?>">
                 <i class="fas fa-sparkles mr-1"></i>v2 Ozgunluk
             </a>
+            <a href="?v=v3" class="px-3 py-1.5 rounded-lg text-sm transition <?= $version === 'v3' ? 'bg-violet-600 text-white' : 'bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800' ?>">
+                <i class="fas fa-crown mr-1"></i>v3 FINAL
+            </a>
 
             <span class="text-slate-700">|</span>
 
@@ -97,7 +100,33 @@ $promptContent = htmlspecialchars($promptContent, ENT_QUOTES, 'UTF-8');
     <main class="w-full px-6 py-6">
         <div class="max-w-4xl mx-auto">
 
-            <?php if ($version === 'v2'): ?>
+            <?php if ($version === 'v3'): ?>
+            <!-- v3 Info -->
+            <div class="mb-6 bg-violet-900/20 border border-violet-800/50 rounded-xl p-4 info-box">
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 bg-violet-500/20 rounded-lg flex items-center justify-center shrink-0">
+                        <i class="fas fa-crown text-violet-400"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h3 class="font-semibold text-violet-300">v3 FINAL (26 İyileştirme - 100/100 Skor)</h3>
+                            <span class="bg-violet-600 text-white text-xs px-2 py-0.5 rounded-full">Maksimum Özgünlük</span>
+                        </div>
+                        <p class="text-sm text-slate-400 mb-2">En gelişmiş prompt versiyonu. FontAwesome Pro 7 local, gradient text & animated borders, dark/light mode uyumu, hover'da border > shadow, renk bütünlüğü.</p>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                            <div class="bg-violet-950/50 rounded px-2 py-1"><i class="fas fa-check text-violet-400 mr-1"></i>FontAwesome Pro 7</div>
+                            <div class="bg-violet-950/50 rounded px-2 py-1"><i class="fas fa-check text-violet-400 mr-1"></i>Gradient Text</div>
+                            <div class="bg-violet-950/50 rounded px-2 py-1"><i class="fas fa-check text-violet-400 mr-1"></i>Animated Borders</div>
+                            <div class="bg-violet-950/50 rounded px-2 py-1"><i class="fas fa-check text-violet-400 mr-1"></i>Dark/Light Mode</div>
+                            <div class="bg-violet-950/50 rounded px-2 py-1"><i class="fas fa-check text-violet-400 mr-1"></i>Border > Shadow</div>
+                            <div class="bg-violet-950/50 rounded px-2 py-1"><i class="fas fa-check text-violet-400 mr-1"></i>Renk Bütünlüğü</div>
+                            <div class="bg-violet-950/50 rounded px-2 py-1"><i class="fas fa-check text-violet-400 mr-1"></i>Icon fat→fas</div>
+                            <div class="bg-violet-950/50 rounded px-2 py-1"><i class="fas fa-check text-violet-400 mr-1"></i>Mega Menu Fix</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php elseif ($version === 'v2'): ?>
             <!-- v2 Info -->
             <div class="mb-6 bg-emerald-900/20 border border-emerald-800/50 rounded-xl p-4 info-box">
                 <div class="flex items-start gap-3">
@@ -107,6 +136,9 @@ $promptContent = htmlspecialchars($promptContent, ENT_QUOTES, 'UTF-8');
                     <div>
                         <h3 class="font-semibold text-emerald-300 mb-1">Ozgunluk Promptu (600+ Layout)</h3>
                         <p class="text-sm text-slate-400">Her section icin 100+ layout secenegi. AI sectigini prompt modal'inda belirtir.</p>
+                        <a href="?v=v3" class="text-xs text-emerald-400 hover:text-emerald-300 mt-2 inline-flex items-center gap-1">
+                            <i class="fas fa-arrow-right"></i>v3 FINAL versiyonunu dene (18 iyileştirme)
+                        </a>
                     </div>
                 </div>
             </div>
@@ -120,8 +152,8 @@ $promptContent = htmlspecialchars($promptContent, ENT_QUOTES, 'UTF-8');
                     <div>
                         <h3 class="font-semibold text-amber-300 mb-1">Klasik Prompt</h3>
                         <p class="text-sm text-slate-400">Bu prompt'ta layout cesitliligi sinirli. Benzer tasarimlar uretebilir.</p>
-                        <a href="?v=v2" class="text-xs text-amber-400 hover:text-amber-300 mt-2 inline-flex items-center gap-1">
-                            <i class="fas fa-arrow-right"></i>v2 Ozgunluk versiyonunu dene
+                        <a href="?v=v3" class="text-xs text-amber-400 hover:text-amber-300 mt-2 inline-flex items-center gap-1">
+                            <i class="fas fa-arrow-right"></i>v3 FINAL versiyonunu dene (18 iyileştirme)
                         </a>
                     </div>
                 </div>

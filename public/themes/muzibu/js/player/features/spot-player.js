@@ -62,8 +62,9 @@ window.MuzibuSpotPlayer = (function() {
             // API'den ayarları al
             await fetchSettings();
 
-            // ✅ YENİ: Polling başlat (5dk'da bir kontrol)
-            startPolling();
+            // ❌ POLLİNG DEVRE DIŞI (Sistem yavaşlatma sorunu - 2026-01-06)
+            // Her 5dk'da bir /api/spot/settings çağrısı yapıyor, gereksiz trafik
+            // startPolling();
         } catch (e) {
             console.error('🎙️ SpotPlayer: INIT ERROR!', e);
         }

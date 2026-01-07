@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Şarkı Depolama Analizi - Detaylı Projeksiyon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-card { background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%); }
+        .highlight-row { background: rgba(234, 179, 8, 0.1); }
+        .scrollable-table { max-height: 600px; overflow-y: auto; }
+        .sticky-header th { position: sticky; top: 0; background: #1e293b; z-index: 10; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 bg-yellow-600/20 border border-yellow-500/30 rounded-full px-4 py-1 mb-4">
+                <span class="text-yellow-400 text-sm font-medium">Depolama Planlama Raporu</span>
+            </div>
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Muzibu Şarkı Depolama Analizi
+            </h1>
+            <p class="text-slate-400">7 Ocak 2026 - 30.000 Şarkı Taşınma Projeksiyonu</p>
+        </header>
+
+        <!-- ALERT: Taşınacak Şarkılar -->
+        <section class="mb-8">
+            <div class="bg-yellow-500/20 border-2 border-yellow-500/50 rounded-xl p-6">
+                <div class="flex items-center gap-4">
+                    <div class="text-5xl">⚠️</div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-yellow-400">30.000 Şarkı Taşınacak!</h2>
+                        <p class="text-slate-300 mt-2">
+                            Mevcut sistemde 30.000 şarkı bulunuyor ve Muzibu platformuna taşınacak.
+                            Bu rapor, taşınma sonrası depolama ihtiyaçlarını hesaplar.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Basit Anlatım -->
+        <section class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <span>📝</span> Basit Anlatım (Herkes İçin)
+            </h2>
+            <p class="text-slate-300 mb-4">
+                Her şarkı yüklendiğinde sistemde <strong>3 farklı dosya</strong> oluşturulur:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-2xl mb-2">🎵</div>
+                    <div class="font-bold text-blue-400">Orijinal MP3</div>
+                    <div class="text-slate-300">Yüklenen ham ses dosyası</div>
+                    <div class="text-xl font-bold mt-2">~3.4 MB</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-2xl mb-2">📡</div>
+                    <div class="font-bold text-purple-400">HLS Segmentleri</div>
+                    <div class="text-slate-300">Şifreli streaming parçaları</div>
+                    <div class="text-xl font-bold mt-2">~5.4 MB</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="text-2xl mb-2">🖼️</div>
+                    <div class="font-bold text-green-400">Kapak Görseli</div>
+                    <div class="text-slate-300">Şarkı fotoğrafı (JPG)</div>
+                    <div class="text-xl font-bold mt-2">~0.6 MB</div>
+                </div>
+            </div>
+            <div class="mt-4 p-4 bg-yellow-500/20 border border-yellow-500/30 rounded-lg text-center">
+                <p class="text-yellow-400 font-semibold text-xl">
+                    1 Şarkı = Ortalama 9.41 MB Disk Alanı
+                </p>
+            </div>
+        </section>
+
+        <!-- Ana Metrikler -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <span>📊</span> Temel Metrikler (225 Şarkı Örneğinden)
+            </h2>
+
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+                    <div class="text-center">
+                        <div class="text-sm text-slate-400 mb-1">Analiz Edilen</div>
+                        <div class="text-3xl font-bold text-blue-400">225</div>
+                        <div class="text-xs text-slate-500">şarkı</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-sm text-slate-400 mb-1">Toplam Süre</div>
+                        <div class="text-3xl font-bold text-purple-400">9.9</div>
+                        <div class="text-xs text-slate-500">saat</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-sm text-slate-400 mb-1">Ortalama Süre</div>
+                        <div class="text-3xl font-bold text-green-400">2:39</div>
+                        <div class="text-xs text-slate-500">dakika/şarkı</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-sm text-slate-400 mb-1">Mevcut Depolama</div>
+                        <div class="text-3xl font-bold text-yellow-400">2.07</div>
+                        <div class="text-xs text-slate-500">GB</div>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-700 pt-4">
+                    <h3 class="font-semibold text-slate-300 mb-3">Şarkı Başına Ortalama Değerler:</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-blue-500/10 rounded-lg p-3 text-center">
+                            <div class="text-sm text-blue-300">MP3</div>
+                            <div class="text-xl font-bold text-blue-400">3.41 MB</div>
+                        </div>
+                        <div class="bg-purple-500/10 rounded-lg p-3 text-center">
+                            <div class="text-sm text-purple-300">HLS</div>
+                            <div class="text-xl font-bold text-purple-400">5.37 MB</div>
+                        </div>
+                        <div class="bg-green-500/10 rounded-lg p-3 text-center">
+                            <div class="text-sm text-green-300">Görsel</div>
+                            <div class="text-xl font-bold text-green-400">0.63 MB</div>
+                        </div>
+                        <div class="bg-yellow-500/10 rounded-lg p-3 text-center border-2 border-yellow-500/30">
+                            <div class="text-sm text-yellow-300">TOPLAM</div>
+                            <div class="text-xl font-bold text-yellow-400">9.41 MB</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GELECEK PROJEKSİYONU - ANA BÖLÜM -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <span>🚀</span> Gelecek Projeksiyonu - Depolama İhtiyacı
+            </h2>
+
+            <div class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 rounded-xl border border-blue-500/30 overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-slate-800">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-slate-300">Şarkı Sayısı</th>
+                            <th class="px-4 py-3 text-right text-blue-300">MP3</th>
+                            <th class="px-4 py-3 text-right text-purple-300">HLS</th>
+                            <th class="px-4 py-3 text-right text-green-300">Görsel</th>
+                            <th class="px-4 py-3 text-right text-yellow-300 font-bold">TOPLAM</th>
+                            <th class="px-4 py-3 text-right text-slate-300">Müzik Süresi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Mevcut -->
+                        <tr class="border-t border-slate-700">
+                            <td class="px-4 py-3">
+                                <span class="text-slate-400">225</span>
+                                <span class="text-xs text-slate-500 ml-2">(mevcut test)</span>
+                            </td>
+                            <td class="px-4 py-3 text-right font-mono text-blue-400">768 MB</td>
+                            <td class="px-4 py-3 text-right font-mono text-purple-400">1.2 GB</td>
+                            <td class="px-4 py-3 text-right font-mono text-green-400">142 MB</td>
+                            <td class="px-4 py-3 text-right font-mono text-yellow-400 font-bold">2.07 GB</td>
+                            <td class="px-4 py-3 text-right text-slate-300">10 saat</td>
+                        </tr>
+
+                        <!-- 30.000 - HIGHLIGHT -->
+                        <tr class="bg-yellow-500/20 border-t-2 border-yellow-500">
+                            <td class="px-4 py-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-2xl font-bold text-yellow-400">30,000</span>
+                                    <span class="bg-yellow-500 text-black text-xs px-2 py-1 rounded font-bold">TAŞINACAK</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-4 text-right font-mono text-blue-400 text-lg">100 GB</td>
+                            <td class="px-4 py-4 text-right font-mono text-purple-400 text-lg">157 GB</td>
+                            <td class="px-4 py-4 text-right font-mono text-green-400 text-lg">18 GB</td>
+                            <td class="px-4 py-4 text-right font-mono text-yellow-400 font-bold text-xl">276 GB</td>
+                            <td class="px-4 py-4 text-right text-slate-300">
+                                <div>1,327 saat</div>
+                                <div class="text-xs text-slate-400">55 gün</div>
+                            </td>
+                        </tr>
+
+                        <!-- 60.000 -->
+                        <tr class="border-t border-slate-700 bg-slate-800/30">
+                            <td class="px-4 py-3">
+                                <span class="text-xl font-bold text-slate-200">60,000</span>
+                            </td>
+                            <td class="px-4 py-3 text-right font-mono text-blue-400">200 GB</td>
+                            <td class="px-4 py-3 text-right font-mono text-purple-400">315 GB</td>
+                            <td class="px-4 py-3 text-right font-mono text-green-400">37 GB</td>
+                            <td class="px-4 py-3 text-right font-mono text-yellow-400 font-bold text-lg">552 GB</td>
+                            <td class="px-4 py-3 text-right text-slate-300">
+                                <div>2,653 saat</div>
+                                <div class="text-xs text-slate-400">111 gün</div>
+                            </td>
+                        </tr>
+
+                        <!-- 100.000 -->
+                        <tr class="border-t border-slate-700">
+                            <td class="px-4 py-3">
+                                <span class="text-xl font-bold text-slate-200">100,000</span>
+                            </td>
+                            <td class="px-4 py-3 text-right font-mono text-blue-400">333 GB</td>
+                            <td class="px-4 py-3 text-right font-mono text-purple-400">525 GB</td>
+                            <td class="px-4 py-3 text-right font-mono text-green-400">61 GB</td>
+                            <td class="px-4 py-3 text-right font-mono text-yellow-400 font-bold text-lg">919 GB</td>
+                            <td class="px-4 py-3 text-right text-slate-300">
+                                <div>4,422 saat</div>
+                                <div class="text-xs text-slate-400">184 gün</div>
+                            </td>
+                        </tr>
+
+                        <!-- 250.000 -->
+                        <tr class="border-t border-slate-700 bg-slate-800/30">
+                            <td class="px-4 py-3">
+                                <span class="text-xl font-bold text-slate-200">250,000</span>
+                            </td>
+                            <td class="px-4 py-3 text-right font-mono text-blue-400">833 GB</td>
+                            <td class="px-4 py-3 text-right font-mono text-purple-400">1.31 TB</td>
+                            <td class="px-4 py-3 text-right font-mono text-green-400">154 GB</td>
+                            <td class="px-4 py-3 text-right font-mono text-yellow-400 font-bold text-lg">2.30 TB</td>
+                            <td class="px-4 py-3 text-right text-slate-300">
+                                <div>11,055 saat</div>
+                                <div class="text-xs text-slate-400">461 gün</div>
+                            </td>
+                        </tr>
+
+                        <!-- 500.000 -->
+                        <tr class="border-t border-slate-700">
+                            <td class="px-4 py-3">
+                                <span class="text-xl font-bold text-slate-200">500,000</span>
+                            </td>
+                            <td class="px-4 py-3 text-right font-mono text-blue-400">1.67 TB</td>
+                            <td class="px-4 py-3 text-right font-mono text-purple-400">2.62 TB</td>
+                            <td class="px-4 py-3 text-right font-mono text-green-400">307 GB</td>
+                            <td class="px-4 py-3 text-right font-mono text-yellow-400 font-bold text-lg">4.60 TB</td>
+                            <td class="px-4 py-3 text-right text-slate-300">
+                                <div>22,110 saat</div>
+                                <div class="text-xs text-slate-400">921 gün</div>
+                            </td>
+                        </tr>
+
+                        <!-- 1.000.000 -->
+                        <tr class="border-t-2 border-red-500 bg-red-500/10">
+                            <td class="px-4 py-3">
+                                <span class="text-xl font-bold text-red-400">1,000,000</span>
+                            </td>
+                            <td class="px-4 py-3 text-right font-mono text-blue-400">3.33 TB</td>
+                            <td class="px-4 py-3 text-right font-mono text-purple-400">5.25 TB</td>
+                            <td class="px-4 py-3 text-right font-mono text-green-400">614 GB</td>
+                            <td class="px-4 py-3 text-right font-mono text-red-400 font-bold text-lg">9.19 TB</td>
+                            <td class="px-4 py-3 text-right text-slate-300">
+                                <div>44,220 saat</div>
+                                <div class="text-xs text-slate-400">1,843 gün</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 30.000 Şarkı Detaylı Analiz -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <span>📦</span> 30.000 Şarkı - Detaylı Depolama Dağılımı
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Sol: Dağılım -->
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                    <h3 class="font-semibold text-lg mb-4">Dosya Türüne Göre Dağılım</h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-blue-400">MP3 Dosyaları</span>
+                                <span class="font-mono">100 GB (36%)</span>
+                            </div>
+                            <div class="h-4 bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-blue-500 rounded-full" style="width: 36%"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-purple-400">HLS Segmentleri</span>
+                                <span class="font-mono">157 GB (57%)</span>
+                            </div>
+                            <div class="h-4 bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-purple-500 rounded-full" style="width: 57%"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-green-400">Kapak Görselleri</span>
+                                <span class="font-mono">18 GB (7%)</span>
+                            </div>
+                            <div class="h-4 bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-green-500 rounded-full" style="width: 7%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                        <div class="text-center">
+                            <div class="text-sm text-yellow-300">30.000 Şarkı Toplam</div>
+                            <div class="text-3xl font-bold text-yellow-400">276 GB</div>
+                            <div class="text-xs text-slate-400">(0.27 TB)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sağ: Ek Bilgiler -->
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                    <h3 class="font-semibold text-lg mb-4">Ek Bilgiler</h3>
+
+                    <div class="space-y-4">
+                        <div class="flex justify-between py-2 border-b border-slate-700">
+                            <span class="text-slate-400">Toplam Müzik Süresi</span>
+                            <span class="font-bold">1,327 saat</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-slate-700">
+                            <span class="text-slate-400">Gün Cinsinden</span>
+                            <span class="font-bold">55 gün</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-slate-700">
+                            <span class="text-slate-400">Toplam Dosya Sayısı</span>
+                            <span class="font-bold">~1,290,000</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-slate-700">
+                            <span class="text-slate-400">HLS Segment Sayısı</span>
+                            <span class="font-bold">~1,260,000</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-slate-700">
+                            <span class="text-slate-400">Ort. Segment/Şarkı</span>
+                            <span class="font-bold">~42</span>
+                        </div>
+                        <div class="flex justify-between py-2">
+                            <span class="text-slate-400">Tahmini inode kullanımı</span>
+                            <span class="font-bold">~1.3M</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hızlı Hesaplama Formülü -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <span>🧮</span> Hızlı Hesaplama Formülü
+            </h2>
+
+            <div class="bg-gradient-to-r from-green-900/30 to-emerald-900/30 rounded-xl p-6 border border-green-500/30">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-semibold text-green-400 mb-3">Temel Formül:</h3>
+                        <div class="bg-slate-800 rounded-lg p-4 font-mono text-sm">
+                            <div class="text-slate-300">Toplam Depolama (GB) = </div>
+                            <div class="text-green-400 text-lg mt-1">Şarkı Sayısı × 9.41 MB / 1024</div>
+                        </div>
+
+                        <div class="mt-4 space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">1,000 şarkı =</span>
+                                <span class="text-green-400 font-mono">9.2 GB</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">10,000 şarkı =</span>
+                                <span class="text-green-400 font-mono">92 GB</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">100,000 şarkı =</span>
+                                <span class="text-green-400 font-mono">919 GB</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="font-semibold text-green-400 mb-3">Bileşen Bazlı:</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="bg-slate-800 rounded-lg p-3">
+                                <div class="text-blue-400">MP3 = Şarkı × 3.41 MB</div>
+                                <div class="text-slate-500 text-xs">Orijinal ses dosyası</div>
+                            </div>
+                            <div class="bg-slate-800 rounded-lg p-3">
+                                <div class="text-purple-400">HLS = Şarkı × 5.37 MB</div>
+                                <div class="text-slate-500 text-xs">Streaming segmentleri (en büyük)</div>
+                            </div>
+                            <div class="bg-slate-800 rounded-lg p-3">
+                                <div class="text-green-400">Görsel = Şarkı × 0.63 MB</div>
+                                <div class="text-slate-500 text-xs">Kapak fotoğrafları</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                <span>🔧</span> Teknik Detaylar (Geliştiriciler İçin)
+            </h2>
+
+            <div class="bg-blue-900/20 border border-blue-800 rounded-xl p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-semibold text-blue-300 mb-3">Veritabanı Yapısı</h3>
+                        <ul class="space-y-1 text-sm font-mono text-slate-300">
+                            <li><span class="text-blue-400">DB:</span> tenant_muzibu_1528d0</li>
+                            <li><span class="text-blue-400">Tablo:</span> muzibu_songs</li>
+                            <li><span class="text-blue-400">Süre:</span> duration (INT, saniye)</li>
+                            <li><span class="text-blue-400">MP3:</span> file_path (VARCHAR)</li>
+                            <li><span class="text-blue-400">HLS:</span> hls_path (VARCHAR)</li>
+                            <li><span class="text-blue-400">Görsel:</span> media_id → media</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-blue-300 mb-3">Dosya Konumları</h3>
+                        <ul class="space-y-1 text-sm font-mono text-slate-300">
+                            <li><span class="text-green-400">MP3:</span> storage/tenant1001/.../muzibu/songs/</li>
+                            <li><span class="text-purple-400">HLS:</span> storage/tenant1001/.../muzibu/hls/{id}/</li>
+                            <li><span class="text-orange-400">Görsel:</span> storage/tenant1001/.../media/</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-slate-800/50 rounded-lg">
+                    <h3 class="font-semibold text-blue-300 mb-2">HLS Segment Yapısı</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                        <div><span class="text-slate-400">Segment süresi:</span> <span class="text-white">5 saniye</span></div>
+                        <div><span class="text-slate-400">Segment boyutu:</span> <span class="text-white">~100-350 KB</span></div>
+                        <div><span class="text-slate-400">Şifreleme:</span> <span class="text-white">AES-128</span></div>
+                        <div><span class="text-slate-400">Format:</span> <span class="text-white">.ts + .m3u8</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ŞARKI LİSTESİ -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <span>🎵</span> Mevcut Şarkı Listesi (225 Örnek)
+            </h2>
+
+            <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden">
+                <div class="scrollable-table">
+                    <table class="w-full text-sm" id="songTable">
+                        <thead class="sticky-header">
+                            <tr class="border-b border-slate-600">
+                                <th class="px-3 py-3 text-left text-slate-400 text-xs">ID</th>
+                                <th class="px-3 py-3 text-left text-slate-400">Şarkı Adı</th>
+                                <th class="px-3 py-3 text-center text-slate-400 text-xs">Süre</th>
+                                <th class="px-3 py-3 text-right text-blue-400 text-xs">MP3 (MB)</th>
+                                <th class="px-3 py-3 text-right text-purple-400 text-xs">HLS (MB)</th>
+                                <th class="px-3 py-3 text-right text-green-400 text-xs">JPG (MB)</th>
+                                <th class="px-3 py-3 text-right text-yellow-400 text-xs font-bold">TOPLAM</th>
+                            </tr>
+                        </thead>
+                        <tbody id="songTableBody">
+                            <!-- JavaScript ile doldurulacak -->
+                        </tbody>
+                        <tfoot class="bg-slate-800 border-t-2 border-yellow-500">
+                            <tr>
+                                <td class="px-3 py-3 font-bold" colspan="2">TOPLAM (225 Şarkı)</td>
+                                <td class="px-3 py-3 text-center font-mono">9.9 saat</td>
+                                <td class="px-3 py-3 text-right font-mono text-blue-400 font-bold">767.87</td>
+                                <td class="px-3 py-3 text-right font-mono text-purple-400 font-bold">1,208.76</td>
+                                <td class="px-3 py-3 text-right font-mono text-green-400 font-bold">141.55</td>
+                                <td class="px-3 py-3 text-right font-mono text-yellow-400 font-bold">2,118.18</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm mt-12 pt-8 border-t border-slate-800">
+            <p>muzibu.com.tr - Müzik Platformu</p>
+            <p class="mt-1 text-xs">7 Ocak 2026</p>
+        </footer>
+
+    </div>
+
+    <script>
+    // Gerçek şarkı verileri (225 şarkı)
+    const songs = [{"id":"314","title":"A Bar Song","duration":"3:30","mp3":4.6,"hls":9.16,"cover":0.6,"total":14.35},{"id":"315","title":"A Friend Like You","duration":"2:03","mp3":2.64,"hls":5.27,"cover":0.69,"total":8.6},{"id":"316","title":"A Great Day","duration":"3:06","mp3":4.34,"hls":8.84,"cover":0.62,"total":13.79},{"id":"317","title":"After Hours","duration":"2:47","mp3":3.77,"hls":7.24,"cover":0.56,"total":11.57},{"id":"318","title":"Afterimage","duration":"3:12","mp3":4.09,"hls":8.43,"cover":0.87,"total":13.39},{"id":"319","title":"All Again","duration":"2:26","mp3":3.06,"hls":6.44,"cover":0.67,"total":10.17},{"id":"320","title":"All Night Long","duration":"2:00","mp3":2.68,"hls":4.03,"cover":0.71,"total":7.43},{"id":"321","title":"You Are Not a Soldier","duration":"3:23","mp3":4.32,"hls":6.78,"cover":0.5,"total":11.6},{"id":"322","title":"ALMA","duration":"2:04","mp3":2.61,"hls":4.13,"cover":0.67,"total":7.4},{"id":"323","title":"ALONE","duration":"2:55","mp3":3.69,"hls":5.86,"cover":0.9,"total":10.45},{"id":"324","title":"Amen","duration":"2:37","mp3":3.37,"hls":5.26,"cover":0.61,"total":9.24},{"id":"334","title":"Bless the Broken Road","duration":"2:31","mp3":3.2,"hls":5.05,"cover":0.67,"total":8.92},{"id":"335","title":"Blue","duration":"2:36","mp3":3.44,"hls":5.22,"cover":0.82,"total":9.48},{"id":"336","title":"Boomerang","duration":"2:35","mp3":3.33,"hls":5.19,"cover":0.69,"total":9.21},{"id":"337","title":"Butterflies","duration":"2:03","mp3":2.43,"hls":4.11,"cover":0.78,"total":7.31},{"id":"338","title":"By My Side","duration":"2:38","mp3":3.44,"hls":5.28,"cover":0.91,"total":9.63},{"id":"339","title":"Carolina","duration":"2:22","mp3":3.1,"hls":4.76,"cover":0.65,"total":8.5},{"id":"340","title":"Charisma","duration":"2:16","mp3":3.01,"hls":4.56,"cover":0.55,"total":8.12},{"id":"341","title":"CHEMICALS","duration":"2:48","mp3":3.46,"hls":5.61,"cover":0.64,"total":9.72},{"id":"342","title":"Chocolate","duration":"2:11","mp3":2.73,"hls":4.39,"cover":0.62,"total":7.74},{"id":"343","title":"Cigarette Daydreams","duration":"2:43","mp3":3.39,"hls":5.43,"cover":0.56,"total":9.38},{"id":"344","title":"Cold Love","duration":"2:03","mp3":2.47,"hls":4.12,"cover":0.59,"total":7.18},{"id":"345","title":"Cupid","duration":"2:37","mp3":3.46,"hls":5.22,"cover":0.8,"total":9.47},{"id":"346","title":"Dancin","duration":"3:36","mp3":4.56,"hls":7.23,"cover":0.81,"total":12.59},{"id":"347","title":"Dark Days","duration":"2:18","mp3":2.74,"hls":4.6,"cover":0.61,"total":7.95},{"id":"348","title":"DAYDREAMING","duration":"2:28","mp3":3.09,"hls":4.96,"cover":0.63,"total":8.67},{"id":"349","title":"Death Of A Bachelor","duration":"2:07","mp3":2.88,"hls":4.24,"cover":0.54,"total":7.66},{"id":"350","title":"Devil In Your Eyes","duration":"2:03","mp3":2.49,"hls":4.13,"cover":0.5,"total":7.12},{"id":"351","title":"Don't You Worry","duration":"3:10","mp3":3.98,"hls":6.38,"cover":0.82,"total":11.18},{"id":"352","title":"En Su Lugar","duration":"2:38","mp3":3.69,"hls":5.29,"cover":0.53,"total":9.51},{"id":"353","title":"Enchanted Forest","duration":"2:53","mp3":3.71,"hls":5.78,"cover":0.63,"total":10.12},{"id":"354","title":"End of the Line","duration":"3:24","mp3":4.77,"hls":6.83,"cover":0.55,"total":12.15},{"id":"355","title":"Every Step","duration":"3:24","mp3":4.58,"hls":6.83,"cover":0.8,"total":12.21},{"id":"356","title":"Faded","duration":"3:25","mp3":4.49,"hls":6.86,"cover":0.54,"total":11.89},{"id":"357","title":"fate","duration":"2:02","mp3":2.62,"hls":4.09,"cover":0.62,"total":7.33},{"id":"358","title":"FIRE","duration":"2:50","mp3":3.74,"hls":5.68,"cover":0.62,"total":10.04},{"id":"359","title":"Fine Sand","duration":"2:37","mp3":4.06,"hls":5.25,"cover":0.77,"total":10.08},{"id":"360","title":"Fired Up","duration":"2:02","mp3":2.66,"hls":4.09,"cover":0.65,"total":7.41},{"id":"361","title":"Firefly","duration":"3:06","mp3":4.05,"hls":6.23,"cover":0.45,"total":10.73},{"id":"362","title":"Four AM (Edit)","duration":"3:32","mp3":4.38,"hls":7.07,"cover":0.52,"total":11.96},{"id":"363","title":"Free Fallin","duration":"3:05","mp3":3.96,"hls":6.18,"cover":0.71,"total":10.85},{"id":"364","title":"GARDEN OF GHOSTS","duration":"2:47","mp3":3.44,"hls":5.57,"cover":0.68,"total":9.69},{"id":"365","title":"Gestures","duration":"2:59","mp3":3.96,"hls":6.0,"cover":0.49,"total":10.45},{"id":"366","title":"Give Me the Power","duration":"2:36","mp3":3.26,"hls":5.2,"cover":0.62,"total":9.09},{"id":"367","title":"Give the People What They Want","duration":"2:11","mp3":3.07,"hls":4.38,"cover":0.63,"total":8.08},{"id":"368","title":"Go","duration":"3:09","mp3":4.16,"hls":6.32,"cover":0.61,"total":11.09},{"id":"369","title":"GOD","duration":"2:22","mp3":3.02,"hls":4.76,"cover":0.66,"total":8.44},{"id":"370","title":"Goodbye Message","duration":"2:43","mp3":3.43,"hls":5.45,"cover":0.6,"total":9.49},{"id":"371","title":"Halo","duration":"2:10","mp3":2.77,"hls":4.33,"cover":0.55,"total":7.64},{"id":"372","title":"Hamba","duration":"3:16","mp3":4.08,"hls":6.57,"cover":0.51,"total":11.15},{"id":"373","title":"Happier","duration":"2:59","mp3":3.82,"hls":5.99,"cover":0.78,"total":10.59},{"id":"374","title":"How Will I Know","duration":"2:39","mp3":3.59,"hls":5.31,"cover":0.61,"total":9.51},{"id":"375","title":"Line","duration":"3:14","mp3":3.88,"hls":6.5,"cover":0.65,"total":11.03},{"id":"376","title":"Lost","duration":"2:05","mp3":2.7,"hls":4.17,"cover":0.62,"total":7.48},{"id":"377","title":"Lucky Lady on a Saturday Beat","duration":"2:59","mp3":3.84,"hls":5.97,"cover":0.68,"total":10.5},{"id":"378","title":"Memory","duration":"2:18","mp3":3.13,"hls":4.63,"cover":0.65,"total":8.4},{"id":"379","title":"Mirror","duration":"2:40","mp3":3.44,"hls":5.34,"cover":0.53,"total":9.31},{"id":"380","title":"Mixed Signals","duration":"2:43","mp3":3.46,"hls":5.45,"cover":0.67,"total":9.59},{"id":"381","title":"Monday Morning","duration":"2:00","mp3":2.71,"hls":4.02,"cover":0.53,"total":7.26},{"id":"382","title":"Moneyline","duration":"2:26","mp3":3.31,"hls":4.88,"cover":0.6,"total":8.79},{"id":"383","title":"More Love","duration":"2:09","mp3":2.84,"hls":4.3,"cover":0.6,"total":7.74},{"id":"384","title":"move","duration":"2:57","mp3":4.18,"hls":5.93,"cover":0.62,"total":10.73},{"id":"385","title":"Moving to the Left","duration":"3:16","mp3":4.23,"hls":6.54,"cover":0.63,"total":11.4},{"id":"386","title":"My Eyes Adored You","duration":"2:10","mp3":2.51,"hls":4.35,"cover":0.64,"total":7.5},{"id":"387","title":"My Girl, My Quiet Afternoon Miracle","duration":"2:13","mp3":2.84,"hls":4.47,"cover":0.53,"total":7.84},{"id":"388","title":"My Heart Keeps Dancing Even When I Don't","duration":"3:25","mp3":4.32,"hls":6.85,"cover":0.56,"total":11.73},{"id":"389","title":"No Destruction","duration":"2:11","mp3":2.44,"hls":4.39,"cover":0.52,"total":7.34},{"id":"390","title":"No Going Back","duration":"3:22","mp3":4.3,"hls":6.77,"cover":0.57,"total":11.64},{"id":"391","title":"No Lie","duration":"2:35","mp3":3.2,"hls":5.2,"cover":0.69,"total":9.09},{"id":"392","title":"No Mountain Moves Me Like You Do","duration":"2:46","mp3":3.47,"hls":5.58,"cover":0.63,"total":9.67},{"id":"393","title":"not feelings","duration":"2:23","mp3":3.24,"hls":4.8,"cover":0.63,"total":8.67},{"id":"394","title":"Now That You're Here, My Heart Won't Sit Still","duration":"2:07","mp3":2.56,"hls":4.23,"cover":0.71,"total":7.5},{"id":"395","title":"Off We Go","duration":"2:12","mp3":2.88,"hls":4.41,"cover":0.88,"total":8.17},{"id":"396","title":"On the Way Back","duration":"2:07","mp3":2.74,"hls":4.24,"cover":0.63,"total":7.61},{"id":"397","title":"Out of Sight","duration":"3:13","mp3":4.2,"hls":6.44,"cover":0.31,"total":10.94},{"id":"398","title":"Over and Over","duration":"1:53","mp3":2.43,"hls":3.77,"cover":0.7,"total":6.91},{"id":"399","title":"Overrater","duration":"3:01","mp3":3.72,"hls":6.07,"cover":0.65,"total":10.45},{"id":"400","title":"Path","duration":"3:09","mp3":3.98,"hls":6.32,"cover":0.84,"total":11.14},{"id":"401","title":"Punchin' Bag","duration":"3:20","mp3":4.32,"hls":6.68,"cover":0.65,"total":11.65},{"id":"402","title":"Pure Romance","duration":"3:37","mp3":4.55,"hls":7.26,"cover":0.77,"total":12.58},{"id":"403","title":"Rise","duration":"2:43","mp3":3.42,"hls":5.45,"cover":0.58,"total":9.45},{"id":"404","title":"silence","duration":"1:55","mp3":2.62,"hls":3.84,"cover":0.75,"total":7.22},{"id":"405","title":"smile","duration":"2:37","mp3":3.26,"hls":5.25,"cover":0.49,"total":8.99},{"id":"406","title":"smoke in fog","duration":"2:00","mp3":2.48,"hls":4.0,"cover":0.53,"total":7.01},{"id":"407","title":"star","duration":"2:42","mp3":3.37,"hls":5.4,"cover":0.64,"total":9.4},{"id":"408","title":"Storm","duration":"2:02","mp3":2.69,"hls":4.09,"cover":0.7,"total":7.49},{"id":"409","title":"Tears","duration":"3:25","mp3":4.09,"hls":6.85,"cover":0.66,"total":11.6},{"id":"410","title":"That's a Promise","duration":"2:19","mp3":3.07,"hls":4.64,"cover":0.59,"total":8.31},{"id":"429","title":"Mesafeler","duration":"3:37","mp3":4.97,"hls":7.25,"cover":0.65,"total":12.87},{"id":"430","title":"Carolina","duration":"2:22","mp3":3.1,"hls":4.76,"cover":0.54,"total":8.39},{"id":"431","title":"Charisma","duration":"2:16","mp3":3.01,"hls":4.56,"cover":0.56,"total":8.13},{"id":"432","title":"CHEMICALS","duration":"2:48","mp3":3.46,"hls":5.61,"cover":0.54,"total":9.62},{"id":"433","title":"Chocolate","duration":"2:11","mp3":2.73,"hls":4.39,"cover":0.6,"total":7.72},{"id":"434","title":"Cigarette Daydreams","duration":"2:43","mp3":3.39,"hls":5.43,"cover":0.71,"total":9.53},{"id":"435","title":"Cold Love","duration":"2:03","mp3":2.47,"hls":4.12,"cover":0.73,"total":7.32},{"id":"436","title":"Cupid","duration":"2:37","mp3":3.46,"hls":5.22,"cover":0.68,"total":9.35},{"id":"437","title":"Dancin","duration":"3:36","mp3":4.56,"hls":7.23,"cover":0.54,"total":12.32},{"id":"438","title":"Dark Days","duration":"2:18","mp3":2.74,"hls":4.6,"cover":0.58,"total":7.92},{"id":"439","title":"DAYDREAMING","duration":"2:28","mp3":3.09,"hls":4.96,"cover":0.66,"total":8.71},{"id":"440","title":"Death Of A Bachelor","duration":"2:07","mp3":2.88,"hls":4.24,"cover":0.5,"total":7.62},{"id":"441","title":"Devil In Your Eyes","duration":"2:03","mp3":2.49,"hls":4.13,"cover":0.37,"total":6.99},{"id":"442","title":"Don't You Worry","duration":"3:10","mp3":3.98,"hls":6.38,"cover":0.68,"total":11.04},{"id":"457","title":"Test Upload - 01:56:57","duration":"2:55","mp3":3.69,"hls":5.86,"cover":0.59,"total":10.14},{"id":"458","title":"Bulk Upload Test 1 - 01:59:24","duration":"2:55","mp3":3.69,"hls":5.86,"cover":0.76,"total":10.31},{"id":"459","title":"Bulk Upload Test 2 - 01:59:24","duration":"2:55","mp3":3.69,"hls":5.86,"cover":0.52,"total":10.07},{"id":"460","title":"Bulk Upload Test 3 - 01:59:24","duration":"2:55","mp3":3.69,"hls":5.86,"cover":0.68,"total":10.23},{"id":"461","title":"Nurullah","duration":"3:06","mp3":4.34,"hls":6.24,"cover":0.65,"total":11.23},{"id":"462","title":"Cold Love","duration":"2:03","mp3":2.47,"hls":4.12,"cover":0.5,"total":7.09},{"id":"463","title":"Saksıdaki Çiçekler","duration":"2:37","mp3":3.46,"hls":5.22,"cover":0.56,"total":9.23},{"id":"464","title":"Yalnız Kurt","duration":"2:55","mp3":3.69,"hls":5.86,"cover":0.64,"total":10.19},{"id":"465","title":"Kar Tanesi","duration":"2:26","mp3":3.06,"hls":4.89,"cover":0.47,"total":8.41},{"id":"466","title":"After Hours","duration":"2:47","mp3":3.77,"hls":5.57,"cover":0.68,"total":10.02},{"id":"467","title":"Afterimage","duration":"3:12","mp3":4.09,"hls":6.43,"cover":0.59,"total":11.11},{"id":"468","title":"All Again","duration":"2:26","mp3":3.06,"hls":4.89,"cover":0.51,"total":8.45},{"id":"469","title":"All Night Long","duration":"2:00","mp3":2.68,"hls":4.03,"cover":0.56,"total":7.28},{"id":"470","title":"You Are Not a Soldier","duration":"3:23","mp3":4.32,"hls":6.78,"cover":0.66,"total":11.77},{"id":"471","title":"ALMA","duration":"2:04","mp3":2.61,"hls":4.13,"cover":0.64,"total":7.38},{"id":"472","title":"ALONE","duration":"2:55","mp3":3.69,"hls":5.86,"cover":0.62,"total":10.18},{"id":"473","title":"Amen","duration":"2:37","mp3":3.37,"hls":5.26,"cover":0.7,"total":9.33},{"id":"474","title":"Angels","duration":"2:28","mp3":3.29,"hls":4.92,"cover":0.82,"total":9.03},{"id":"475","title":"ASHES & BLOOM","duration":"2:40","mp3":3.48,"hls":5.34,"cover":0.7,"total":9.52},{"id":"476","title":"Gestures","duration":"2:59","mp3":3.96,"hls":6.0,"cover":0.69,"total":10.65},{"id":"477","title":"Give Me the Power","duration":"2:36","mp3":3.26,"hls":5.2,"cover":0.47,"total":8.94},{"id":"478","title":"Give the People What They Want","duration":"2:11","mp3":3.07,"hls":4.38,"cover":0.72,"total":8.17},{"id":"479","title":"Go","duration":"3:09","mp3":4.16,"hls":6.32,"cover":0.58,"total":11.06},{"id":"480","title":"A Cut This Deep","duration":"2:35","mp3":3.28,"hls":5.2,"cover":0.65,"total":9.13},{"id":"481","title":"Bright Direction","duration":"2:36","mp3":3.21,"hls":5.21,"cover":0.63,"total":9.05},{"id":"482","title":"Aftermath (Edit)","duration":"3:37","mp3":4.69,"hls":7.24,"cover":0.78,"total":12.71},{"id":"483","title":"Aguila","duration":"2:38","mp3":3.53,"hls":5.3,"cover":0.48,"total":9.3},{"id":"484","title":"Blue Skies","duration":"2:40","mp3":3.34,"hls":5.35,"cover":0.51,"total":9.2},{"id":"485","title":"Borrowed Time","duration":"3:04","mp3":3.88,"hls":6.16,"cover":0.71,"total":10.75},{"id":"486","title":"Chasing Time","duration":"2:54","mp3":3.83,"hls":5.79,"cover":0.64,"total":10.25},{"id":"487","title":"Chemistry","duration":"2:58","mp3":3.94,"hls":5.96,"cover":0.58,"total":10.48},{"id":"488","title":"Dance of the Rain","duration":"2:59","mp3":3.94,"hls":6.0,"cover":0.86,"total":10.8},{"id":"489","title":"Dreams","duration":"2:50","mp3":3.87,"hls":5.7,"cover":0.69,"total":10.26},{"id":"490","title":"En Su Lugar","duration":"2:38","mp3":3.69,"hls":5.29,"cover":0.63,"total":9.61},{"id":"491","title":"Enchanted Forest","duration":"2:53","mp3":3.71,"hls":5.78,"cover":0.86,"total":10.35},{"id":"492","title":"Firefly","duration":"3:06","mp3":4.05,"hls":6.23,"cover":0.31,"total":10.58},{"id":"493","title":"Four AM (Edit)","duration":"3:32","mp3":4.38,"hls":7.07,"cover":0.48,"total":11.92},{"id":"494","title":"How Will I Know","duration":"2:39","mp3":3.59,"hls":5.31,"cover":0.66,"total":9.56},{"id":"495","title":"Line","duration":"3:14","mp3":3.88,"hls":6.5,"cover":0.51,"total":10.9},{"id":"496","title":"Lost","duration":"2:05","mp3":2.7,"hls":4.17,"cover":0.62,"total":7.49},{"id":"497","title":"Lucky Lady on a Saturday Beat","duration":"2:59","mp3":3.84,"hls":5.97,"cover":0.66,"total":10.48},{"id":"498","title":"A Beautiful Lie","duration":"2:51","mp3":3.64,"hls":5.72,"cover":0.67,"total":10.03},{"id":"499","title":"Above My Head","duration":"3:24","mp3":4.64,"hls":6.82,"cover":0.58,"total":12.04},{"id":"500","title":"All At Once","duration":"2:57","mp3":3.59,"hls":5.92,"cover":0.55,"total":10.06},{"id":"501","title":"Beam Me Out of Here","duration":"3:47","mp3":4.82,"hls":7.59,"cover":0.55,"total":12.96},{"id":"502","title":"Borrowed Time","duration":"3:00","mp3":3.94,"hls":5.99,"cover":0.6,"total":10.53},{"id":"503","title":"Celui Que Je Cherche","duration":"2:48","mp3":3.57,"hls":5.6,"cover":0.64,"total":9.81},{"id":"504","title":"Did I Love Too Much?","duration":"2:03","mp3":2.67,"hls":4.11,"cover":0.58,"total":7.37},{"id":"505","title":"Don't Walk Away","duration":"2:03","mp3":2.76,"hls":4.11,"cover":0.74,"total":7.62},{"id":"506","title":"Every Love Is a Farewell","duration":"2:07","mp3":2.46,"hls":4.25,"cover":0.54,"total":7.25},{"id":"507","title":"From Me to Myself","duration":"2:20","mp3":2.85,"hls":4.67,"cover":0.63,"total":8.15},{"id":"508","title":"I Am My Own Enemy","duration":"2:43","mp3":3.24,"hls":5.46,"cover":0.44,"total":9.14},{"id":"509","title":"I Didn't Write This Fate","duration":"3:15","mp3":3.9,"hls":6.52,"cover":0.69,"total":11.12},{"id":"510","title":"I Loved You Always","duration":"3:38","mp3":4.63,"hls":7.28,"cover":0.55,"total":12.46},{"id":"511","title":"Along Comes","duration":"1:45","mp3":2.37,"hls":3.52,"cover":0.69,"total":6.58},{"id":"512","title":"Born Under a Lucky Song","duration":"2:46","mp3":3.61,"hls":5.54,"cover":0.61,"total":9.77},{"id":"513","title":"Dancing in the City","duration":"2:30","mp3":3.25,"hls":5.01,"cover":0.72,"total":8.98},{"id":"514","title":"Every Morning Starts with Your Echo","duration":"2:42","mp3":3.54,"hls":5.4,"cover":0.54,"total":9.49},{"id":"515","title":"Give Me a Little More Daylight","duration":"2:46","mp3":3.58,"hls":5.57,"cover":0.58,"total":9.72},{"id":"516","title":"Groovy Walk Down 59th Street","duration":"3:00","mp3":3.5,"hls":6.0,"cover":0.67,"total":10.17},{"id":"517","title":"I Need You When the World Gets Quiet","duration":"2:41","mp3":3.08,"hls":5.38,"cover":0.45,"total":8.91},{"id":"518","title":"If Loving You's a Crime I'll Do the Time","duration":"2:22","mp3":2.95,"hls":4.74,"cover":0.53,"total":8.22},{"id":"519","title":"Lady in the Firelight","duration":"3:00","mp3":3.76,"hls":6.01,"cover":0.56,"total":10.33},{"id":"520","title":"Little Thing That Makes My Heart Levitate","duration":"2:32","mp3":3.19,"hls":5.09,"cover":0.54,"total":8.82},{"id":"521","title":"Lucky Lady on a Saturday Beat","duration":"2:59","mp3":3.84,"hls":5.97,"cover":0.73,"total":10.55},{"id":"522","title":"My Heart Keeps Dancing Even When I Don't","duration":"3:25","mp3":4.32,"hls":6.85,"cover":0.46,"total":11.63},{"id":"523","title":"Baby Don't Make Me Wait to Feel You","duration":"2:32","mp3":3.3,"hls":5.09,"cover":0.6,"total":8.99},{"id":"524","title":"Caught Between the Echoes","duration":"1:59","mp3":2.45,"hls":3.96,"cover":0.66,"total":7.07},{"id":"525","title":"Dominoes","duration":"2:20","mp3":3.11,"hls":4.67,"cover":0.61,"total":8.4},{"id":"526","title":"Everything I Need Fits in Your Smile","duration":"2:32","mp3":3.15,"hls":5.09,"cover":0.68,"total":8.93},{"id":"527","title":"Gone Too Far","duration":"2:25","mp3":3.12,"hls":4.83,"cover":0.54,"total":8.48},{"id":"528","title":"Hello Sweetheart Goodbye Yesterday","duration":"2:20","mp3":3.24,"hls":4.68,"cover":0.55,"total":8.47},{"id":"529","title":"I'll Take You There","duration":"1:55","mp3":2.48,"hls":3.85,"cover":0.63,"total":6.96},{"id":"530","title":"It Takes Two","duration":"2:15","mp3":2.73,"hls":4.5,"cover":0.49,"total":7.72},{"id":"531","title":"Be Like You","duration":"2:27","mp3":2.86,"hls":4.87,"cover":0.63,"total":8.36},{"id":"532","title":"Big Moves","duration":"1:58","mp3":2.58,"hls":3.93,"cover":0.6,"total":7.11},{"id":"533","title":"Bless the Broken Road","duration":"2:31","mp3":3.2,"hls":5.05,"cover":0.74,"total":8.99},{"id":"534","title":"Blue","duration":"2:36","mp3":3.44,"hls":5.22,"cover":0.69,"total":9.35},{"id":"535","title":"Boomerang","duration":"2:35","mp3":3.33,"hls":5.19,"cover":0.65,"total":9.17},{"id":"536","title":"Butterflies","duration":"2:03","mp3":2.43,"hls":4.11,"cover":0.68,"total":7.21},{"id":"537","title":"By My Side","duration":"2:38","mp3":3.44,"hls":5.28,"cover":0.68,"total":9.4},{"id":"538","title":"Carolina","duration":"2:22","mp3":3.1,"hls":4.76,"cover":0.65,"total":8.5},{"id":"539","title":"All Again","duration":"2:26","mp3":3.06,"hls":4.89,"cover":0.8,"total":8.75},{"id":"540","title":"All Night Long","duration":"2:00","mp3":2.68,"hls":4.03,"cover":0.59,"total":7.31},{"id":"541","title":"You Are Not a Soldier","duration":"3:23","mp3":4.32,"hls":6.78,"cover":0.64,"total":11.75},{"id":"542","title":"ALMA","duration":"2:04","mp3":2.61,"hls":4.13,"cover":0.69,"total":7.43},{"id":"543","title":"ALONE","duration":"2:55","mp3":3.69,"hls":5.86,"cover":0.66,"total":10.22},{"id":"544","title":"Amen","duration":"2:37","mp3":3.37,"hls":5.26,"cover":0.61,"total":9.25},{"id":"545","title":"Angels","duration":"2:28","mp3":3.29,"hls":4.92,"cover":0.66,"total":8.87},{"id":"546","title":"ASHES & BLOOM","duration":"2:40","mp3":3.48,"hls":5.34,"cover":0.66,"total":9.48},{"id":"547","title":"At Your Worst","duration":"2:59","mp3":3.73,"hls":5.97,"cover":0.36,"total":10.07},{"id":"548","title":"Back Road","duration":"2:46","mp3":3.58,"hls":5.55,"cover":0.7,"total":9.83},{"id":"549","title":"Backseat Driver","duration":"2:50","mp3":3.81,"hls":5.69,"cover":0.5,"total":10.01},{"id":"550","title":"Bad Luck","duration":"2:01","mp3":2.56,"hls":4.06,"cover":0.7,"total":7.32},{"id":"551","title":"Battle (Edit)","duration":"2:17","mp3":2.84,"hls":4.58,"cover":0.73,"total":8.15},{"id":"552","title":"Be Like You","duration":"2:27","mp3":2.86,"hls":4.87,"cover":0.57,"total":8.3},{"id":"553","title":"Big Moves","duration":"1:58","mp3":2.58,"hls":3.93,"cover":0.69,"total":7.2},{"id":"554","title":"That's a Promise","duration":"2:19","mp3":3.07,"hls":4.64,"cover":0.46,"total":8.18},{"id":"555","title":"The World Is Over","duration":"2:41","mp3":3.65,"hls":5.41,"cover":0.62,"total":9.69},{"id":"556","title":"There She Is in the Morning Light","duration":"2:05","mp3":2.4,"hls":4.19,"cover":0.58,"total":7.18},{"id":"557","title":"time","duration":"3:12","mp3":4.15,"hls":6.41,"cover":0.59,"total":11.15},{"id":"558","title":"To the Disco","duration":"3:08","mp3":4.03,"hls":6.29,"cover":0.87,"total":11.19},{"id":"559","title":"Blue","duration":"2:36","mp3":3.44,"hls":5.22,"cover":0.76,"total":9.42},{"id":"560","title":"Boomerang","duration":"2:35","mp3":3.33,"hls":5.19,"cover":0.67,"total":9.19},{"id":"561","title":"Butterflies","duration":"2:03","mp3":2.43,"hls":4.11,"cover":0.85,"total":7.39},{"id":"562","title":"By My Side","duration":"2:38","mp3":3.44,"hls":5.28,"cover":0.77,"total":9.5},{"id":"563","title":"Carolina","duration":"2:22","mp3":3.1,"hls":4.76,"cover":0.71,"total":8.56},{"id":"564","title":"Charisma","duration":"2:16","mp3":3.01,"hls":4.56,"cover":0.51,"total":8.08},{"id":"565","title":"CHEMICALS","duration":"2:48","mp3":3.46,"hls":5.61,"cover":0.63,"total":9.71},{"id":"568","title":"After Hours","duration":"2:47","mp3":3.77,"hls":5.57,"cover":0.53,"total":9.88},{"id":"569","title":"Afterimage","duration":"3:12","mp3":4.09,"hls":6.43,"cover":0.62,"total":11.14},{"id":"570","title":"All Again","duration":"2:26","mp3":3.06,"hls":4.89,"cover":0.53,"total":8.47},{"id":"571","title":"All Night Long","duration":"2:00","mp3":2.68,"hls":4.03,"cover":0.6,"total":7.32},{"id":"572","title":"You Are Not a Soldier","duration":"3:23","mp3":4.32,"hls":6.78,"cover":0.67,"total":11.77},{"id":"573","title":"ALMA","duration":"2:04","mp3":2.61,"hls":4.13,"cover":0.71,"total":7.44},{"id":"574","title":"Dark Days","duration":"2:18","mp3":2.74,"hls":4.6,"cover":0.6,"total":7.94},{"id":"575","title":"DAYDREAMING","duration":"2:28","mp3":3.09,"hls":4.96,"cover":0.66,"total":8.7},{"id":"576","title":"Death Of A Bachelor","duration":"2:07","mp3":2.88,"hls":4.24,"cover":0.54,"total":7.66},{"id":"577","title":"Devil In Your Eyes","duration":"2:03","mp3":2.49,"hls":4.13,"cover":0.53,"total":7.14},{"id":"578","title":"Don't You Worry","duration":"3:10","mp3":3.98,"hls":6.38,"cover":0.72,"total":11.08},{"id":"579","title":"En Su Lugar","duration":"2:38","mp3":3.69,"hls":5.29,"cover":0.56,"total":9.54},{"id":"580","title":"Enchanted Forest","duration":"2:53","mp3":3.71,"hls":5.78,"cover":0.9,"total":10.39},{"id":"581","title":"End of the Line","duration":"3:24","mp3":4.77,"hls":6.83,"cover":0.58,"total":12.17}];
+
+    // Tablo doldur
+    const tbody = document.getElementById('songTableBody');
+    songs.forEach((song, index) => {
+        const bg = index % 2 === 0 ? 'bg-slate-800/30' : 'bg-slate-800/50';
+        const row = document.createElement('tr');
+        row.className = bg;
+        row.innerHTML = `
+            <td class="px-3 py-2 text-slate-400 text-xs">${song.id}</td>
+            <td class="px-3 py-2 text-white">${song.title}</td>
+            <td class="px-3 py-2 text-slate-300 text-center text-xs">${song.duration}</td>
+            <td class="px-3 py-2 text-blue-400 text-right font-mono text-xs">${song.mp3.toFixed(2)}</td>
+            <td class="px-3 py-2 text-purple-400 text-right font-mono text-xs">${song.hls.toFixed(2)}</td>
+            <td class="px-3 py-2 text-green-400 text-right font-mono text-xs">${song.cover.toFixed(2)}</td>
+            <td class="px-3 py-2 text-yellow-400 text-right font-mono text-xs font-bold">${song.total.toFixed(2)}</td>
+        `;
+        tbody.appendChild(row);
+    });
+    </script>
+</body>
+</html>

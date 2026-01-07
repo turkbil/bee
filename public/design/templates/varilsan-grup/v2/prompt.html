@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varilsan Grup v2 - Prompt Dökümanı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'DM Sans', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+    <div class="container mx-auto px-4 py-12 max-w-5xl">
+
+        <!-- Header -->
+        <header class="text-center mb-16">
+            <div class="inline-flex items-center gap-3 bg-sky-500/20 text-sky-400 px-4 py-2 rounded-full text-sm font-medium mb-6">
+                <i class="fas fa-file-lines"></i>
+                <span>Prompt Dökümanı</span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+                Varilsan Grup
+                <span class="text-sky-400">v2</span>
+            </h1>
+            <p class="text-slate-400 text-lg">
+                Endüstriyel Ambalaj Kurumsal Web Sitesi - Modern Slider Hero
+            </p>
+            <div class="mt-6 flex items-center justify-center gap-4 text-sm text-slate-500">
+                <span><i class="fas fa-calendar mr-2"></i>06 Ocak 2026</span>
+                <span><i class="fas fa-code-branch mr-2"></i>Version 2</span>
+                <span><i class="fas fa-robot mr-2"></i>Claude AI</span>
+            </div>
+        </header>
+
+        <!-- v1 vs v2 Comparison -->
+        <section class="mb-12 bg-slate-900 rounded-2xl p-8 border border-slate-800">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-code-compare text-purple-400"></i>
+                v1 vs v2 Karşılaştırma
+            </h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 px-4 text-slate-400 font-medium">Özellik</th>
+                            <th class="text-left py-3 px-4 text-slate-400 font-medium">v1</th>
+                            <th class="text-left py-3 px-4 text-sky-400 font-medium">v2 (Yeni)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Hero Layout</td>
+                            <td class="py-3 px-4 text-slate-500">#22 Split Layout</td>
+                            <td class="py-3 px-4 text-emerald-400">#5 Full-Screen Slider</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Font Çifti</td>
+                            <td class="py-3 px-4 text-slate-500">Manrope + Inter (#14)</td>
+                            <td class="py-3 px-4 text-emerald-400">Space Grotesk + DM Sans (#11)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Border Radius</td>
+                            <td class="py-3 px-4 text-slate-500">rounded-none (keskin)</td>
+                            <td class="py-3 px-4 text-emerald-400">rounded-2xl (yumuşak)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Mega Menu</td>
+                            <td class="py-3 px-4 text-slate-500">#1 Grid with Images</td>
+                            <td class="py-3 px-4 text-emerald-400">#4 Tabbed Mega Menu</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Hover Efektleri</td>
+                            <td class="py-3 px-4 text-slate-500">#2, #6, #8, #12</td>
+                            <td class="py-3 px-4 text-emerald-400">#1, #9, #11, #16</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">About Section</td>
+                            <td class="py-3 px-4 text-slate-500">Stats + Image Stack</td>
+                            <td class="py-3 px-4 text-emerald-400">Timeline + Image Grid</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Animated BG</td>
+                            <td class="py-3 px-4 text-slate-500">Pattern Grid</td>
+                            <td class="py-3 px-4 text-emerald-400">#9 Gradient Mesh Morph</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Section Sırası</td>
+                            <td class="py-3 px-4 text-slate-500">Hero > Companies > Products...</td>
+                            <td class="py-3 px-4 text-emerald-400">Hero > Products > Companies...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Design Tokens -->
+        <section class="mb-12 bg-slate-900 rounded-2xl p-8 border border-slate-800">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-palette text-sky-400"></i>
+                Design Token Sistemi
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Colors -->
+                <div class="bg-slate-800/50 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">Renk Paleti (Sky #5)</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-sky-600"></div>
+                            <div>
+                                <span class="text-white text-sm font-medium">Primary</span>
+                                <span class="text-slate-500 text-xs block">sky-600 (#0284c7)</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-sky-700"></div>
+                            <div>
+                                <span class="text-white text-sm font-medium">Primary Hover</span>
+                                <span class="text-slate-500 text-xs block">sky-700 (#0369a1)</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg" style="background: #fac312;"></div>
+                            <div>
+                                <span class="text-white text-sm font-medium">Accent (Gold)</span>
+                                <span class="text-slate-500 text-xs block">#fac312</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-500"></div>
+                            <div>
+                                <span class="text-white text-sm font-medium">Secondary</span>
+                                <span class="text-slate-500 text-xs block">emerald-500</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-amber-500"></div>
+                            <div>
+                                <span class="text-white text-sm font-medium">Tertiary</span>
+                                <span class="text-slate-500 text-xs block">amber-500</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Typography -->
+                <div class="bg-slate-800/50 rounded-xl p-6">
+                    <h3 class="font-semibold text-white mb-4">Font Çifti (#11 Modern & Tech)</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <span class="text-slate-400 text-xs uppercase tracking-wider">Heading</span>
+                            <p class="text-2xl font-bold text-white" style="font-family: 'Space Grotesk';">Space Grotesk</p>
+                            <code class="text-xs text-sky-400 bg-sky-900/30 px-2 py-1 rounded">font-family: 'Space Grotesk'</code>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-xs uppercase tracking-wider">Body</span>
+                            <p class="text-xl text-white" style="font-family: 'DM Sans';">DM Sans</p>
+                            <code class="text-xs text-sky-400 bg-sky-900/30 px-2 py-1 rounded">font-family: 'DM Sans'</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Layout Selections -->
+        <section class="mb-12 bg-slate-900 rounded-2xl p-8 border border-slate-800">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-layer-group text-emerald-400"></i>
+                Seçilen Layout'lar
+            </h2>
+            <div class="space-y-4">
+                <div class="flex items-start gap-4 bg-slate-800/50 rounded-xl p-4">
+                    <div class="w-12 h-12 bg-sky-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <span class="text-sky-400 font-bold">#5</span>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-white">Hero Section - Full-screen Image Slider</h4>
+                        <p class="text-sm text-slate-400">Swiper.js ile 3 slaytlı hero: IBC Tank, Plastik Bidon, Geri Dönüşüm. Fade geçiş, otomatik ilerleme.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 bg-slate-800/50 rounded-xl p-4">
+                    <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <span class="text-emerald-400 font-bold">#4</span>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-white">Mega Menu - Tabbed Style</h4>
+                        <p class="text-sm text-slate-400">Sol tarafta tab butonları, sağ tarafta tab içeriği. Alpine.js ile dinamik geçiş.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 bg-slate-800/50 rounded-xl p-4">
+                    <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <span class="text-amber-400 font-bold">#61</span>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-white">Products - Card Grid with Ribbons</h4>
+                        <p class="text-sm text-slate-400">4 sütunlu grid, ribbon badge'leri (En Popüler, Geri Dönüşüm), hover efektleri.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 bg-slate-800/50 rounded-xl p-4">
+                    <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <span class="text-purple-400 font-bold">#81</span>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-white">About - Timeline + Image Grid</h4>
+                        <p class="text-sm text-slate-400">Sol tarafta dikey timeline (1999, 2008, 2024), sağ tarafta 2x2 masonry görsel grid.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 bg-slate-800/50 rounded-xl p-4">
+                    <div class="w-12 h-12 bg-pink-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <span class="text-pink-400 font-bold">#106</span>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-white">Companies - Gradient Card Grid</h4>
+                        <p class="text-sm text-slate-400">3 sütunlu grid, her şirket için gradient arka plan, floating circles.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hover Effects -->
+        <section class="mb-12 bg-slate-900 rounded-2xl p-8 border border-slate-800">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-hand-pointer text-pink-400"></i>
+                Hover Efektleri
+            </h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-8 h-8 bg-sky-500/20 rounded-lg flex items-center justify-center text-sky-400 text-sm font-bold">#1</span>
+                        <h4 class="font-semibold text-white">Icon Weight Change</h4>
+                    </div>
+                    <p class="text-sm text-slate-400">FontAwesome far → fas geçişi. İkon hover'da dolgu kazanır.</p>
+                    <code class="text-xs text-slate-500 mt-2 block">.far → .fas (font-weight: 900)</code>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 text-sm font-bold">#9</span>
+                        <h4 class="font-semibold text-white">Text Glow</h4>
+                    </div>
+                    <p class="text-sm text-slate-400">Text renk değişimi + text-shadow ile glow efekti.</p>
+                    <code class="text-xs text-slate-500 mt-2 block">text-shadow: 0 0 20px rgba(...)</code>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center text-amber-400 text-sm font-bold">#11</span>
+                        <h4 class="font-semibold text-white">Border Draw</h4>
+                    </div>
+                    <p class="text-sm text-slate-400">Üst ve alt border'ın soldan/sağdan çizilerek belirmesi.</p>
+                    <code class="text-xs text-slate-500 mt-2 block">::before, ::after pseudo elements</code>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 text-sm font-bold">#16</span>
+                        <h4 class="font-semibold text-white">Gradient Shift</h4>
+                    </div>
+                    <p class="text-sm text-slate-400">Background gradient'in hover'da kayması (background-position).</p>
+                    <code class="text-xs text-slate-500 mt-2 block">background-size: 200%, background-position shift</code>
+                </div>
+            </div>
+        </section>
+
+        <!-- Animated Background -->
+        <section class="mb-12 bg-slate-900 rounded-2xl p-8 border border-slate-800">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-wand-magic-sparkles text-amber-400"></i>
+                Animated Background
+            </h2>
+            <div class="bg-slate-800/50 rounded-xl p-6">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <span class="text-amber-400 font-bold">#9</span>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-white mb-2">Gradient Mesh Morph</h4>
+                        <p class="text-sm text-slate-400 mb-4">
+                            Hero ve Sustainability section'larında kullanıldı. 3 adet radial gradient, 20 saniyelik döngüde
+                            yavaşça hareket ediyor ve dönüyor. Kullanıcı dikkatini dağıtmadan dinamik hissiyat.
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-4 text-xs text-slate-400 font-mono overflow-x-auto">
+<pre>.animated-mesh::before {
+  background:
+    radial-gradient(circle at 20% 30%, rgba(2,132,199,0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(14,165,233,0.2) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(250,195,18,0.1) 0%, transparent 40%);
+  animation: meshMove 20s ease-in-out infinite;
+}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Order -->
+        <section class="mb-12 bg-slate-900 rounded-2xl p-8 border border-slate-800">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-list-ol text-sky-400"></i>
+                Section Sıralaması (#1 Ürün Odaklı)
+            </h2>
+            <div class="flex flex-wrap gap-3">
+                <span class="px-4 py-2 bg-sky-500/20 text-sky-400 rounded-full text-sm font-medium">1. Hero (Slider)</span>
+                <span class="text-slate-600">→</span>
+                <span class="px-4 py-2 bg-emerald-500/20 text-emerald-400 rounded-full text-sm font-medium">2. Products</span>
+                <span class="text-slate-600">→</span>
+                <span class="px-4 py-2 bg-amber-500/20 text-amber-400 rounded-full text-sm font-medium">3. Companies</span>
+                <span class="text-slate-600">→</span>
+                <span class="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-full text-sm font-medium">4. About</span>
+                <span class="text-slate-600">→</span>
+                <span class="px-4 py-2 bg-pink-500/20 text-pink-400 rounded-full text-sm font-medium">5. Sustainability</span>
+                <span class="text-slate-600">→</span>
+                <span class="px-4 py-2 bg-red-500/20 text-red-400 rounded-full text-sm font-medium">6. CTA</span>
+                <span class="text-slate-600">→</span>
+                <span class="px-4 py-2 bg-slate-500/20 text-slate-400 rounded-full text-sm font-medium">7. Contact</span>
+                <span class="text-slate-600">→</span>
+                <span class="px-4 py-2 bg-slate-600/20 text-slate-500 rounded-full text-sm font-medium">8. Footer</span>
+            </div>
+            <p class="mt-4 text-sm text-slate-500">
+                <strong>Mantık:</strong> Endüstriyel ambalaj firması için ürünler ön planda. Ziyaretçi hemen ürünleri görüyor,
+                sonra şirket yapısını öğreniyor, ardından hikaye ve sürdürülebilirlik.
+            </p>
+        </section>
+
+        <!-- Leonardo.ai Görsel Promptları -->
+        <section class="mb-12 bg-slate-900 rounded-2xl p-8 border border-slate-800">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-image text-amber-400"></i>
+                Leonardo.ai Görsel Promptları
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Hero Slides -->
+                <div class="border-l-4 border-sky-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">hero-slide-1.jpg</span>
+                        <span class="text-xs text-slate-400">1472x832</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Industrial photography of modern IBC tank production facility, rows of white 1000L IBC containers with metal cage frames, professional factory lighting, clean manufacturing environment, workers in safety gear operating machinery, morning sunlight through large windows, Canon EOS R5 24-70mm f/2.8, industrial editorial style, Kodak Portra 400 film emulation, subtle lens dust particles, sharp focus on foreground tanks with bokeh background, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Industrial Editorial</span>
+                    </div>
+                </div>
+
+                <div class="border-l-4 border-emerald-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">hero-slide-2.jpg</span>
+                        <span class="text-xs text-slate-400">1472x832</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Professional industrial photograph of colorful HDPE plastic drums 30L to 200L arranged in organized warehouse, blue yellow red barrels, modern logistics center, forklift in background, LED overhead lighting, clean concrete floor, safety markings on ground, morning shift operations, Nikon Z9 35mm f/1.8, corporate documentary style, natural color grading, subtle film grain, depth of field, 8k resolution
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Corporate Documentary</span>
+                    </div>
+                </div>
+
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">hero-slide-3.jpg</span>
+                        <span class="text-xs text-slate-400">1472x832</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Aerial drone photography of modern recycling facility with green sustainable technology, solar panels on roof, organized recycling bins, greenery around facility, eco-friendly industrial complex, morning golden hour light, DJI Mavic 3 Hasselblad, environmental documentary style, vibrant greens and earth tones, clean processing, 8k quality, sustainability theme
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Environmental Documentary</span>
+                    </div>
+                </div>
+
+                <!-- Product Images -->
+                <div class="border-l-4 border-sky-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">product-ibc-tank.jpg</span>
+                        <span class="text-xs text-slate-400">800x800</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Product photography of single white 1000L IBC tank container with metal cage frame, clean white studio background, soft box lighting from multiple angles, sharp details of valve and cage structure, UN certification marking visible, professional packshot style, Canon R5 100mm macro, zero shadows on background, commercial product catalog style, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Product Packshot</span>
+                    </div>
+                </div>
+
+                <div class="border-l-4 border-emerald-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">product-plastic-drum.jpg</span>
+                        <span class="text-xs text-slate-400">800x800</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Product photography of blue HDPE plastic drum 200L with screw cap, clean white studio background, professional lighting showing material texture, brand-new condition, reflective surface detail, commercial catalog style, Canon R5 85mm f/1.4, soft shadows, high-end product visualization, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Product Packshot</span>
+                    </div>
+                </div>
+
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">product-metal-barrel.jpg</span>
+                        <span class="text-xs text-slate-400">800x800</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Product photography of steel metal barrel 200L industrial drum, blue painted with sealed lid, clean white studio background, showing texture of painted metal surface, slight reflections, industrial strength feeling, commercial catalog style, Canon R5 70mm, professional lighting, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Industrial Product</span>
+                    </div>
+                </div>
+
+                <div class="border-l-4 border-purple-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">product-hdpe-granule.jpg</span>
+                        <span class="text-xs text-slate-400">800x800</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Close-up macro photography of white HDPE plastic granules pellets, pile of recycled plastic material, clean background, showing texture and uniformity of granules, soft lighting, material science aesthetic, Canon R5 100mm macro, shallow depth of field, scientific documentary style, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Scientific Macro</span>
+                    </div>
+                </div>
+
+                <!-- Company Images -->
+                <div class="border-l-4 border-sky-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">company-polimer.jpg</span>
+                        <span class="text-xs text-slate-400">1200x675</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Exterior photograph of modern industrial manufacturing facility in Gebze Turkey, large warehouse building with company signage, truck loading docks, organized parking, blue sky with white clouds, professional corporate architecture photography, morning light, DJI Mavic 3, clean and professional aesthetic, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Corporate Architecture</span>
+                    </div>
+                </div>
+
+                <!-- About Section Images -->
+                <div class="border-l-4 border-purple-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">about-team.jpg</span>
+                        <span class="text-xs text-slate-400">800x1000</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Portrait photograph of diverse industrial workers team in modern factory, wearing safety helmets and high-visibility vests, confident professional poses, industrial machinery in background, natural factory lighting, corporate team photography style, Canon R5 35mm f/1.4, shallow depth of field, warm and trustworthy atmosphere, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Corporate Portrait</span>
+                    </div>
+                </div>
+
+                <div class="border-l-4 border-pink-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">about-production.jpg</span>
+                        <span class="text-xs text-slate-400">800x800</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Industrial photograph of automated production line for plastic containers, robotic arms and conveyor belts, modern manufacturing technology, blue LED indicators, clean factory floor, professional industrial photography, Canon R5 24mm f/2.8, wide angle showing scale of operations, technical documentation style, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Industrial Technical</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fingerprint -->
+        <section class="mb-12 bg-slate-900 rounded-2xl p-8 border border-slate-800">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-fingerprint text-purple-400"></i>
+                Design Fingerprint
+            </h2>
+            <div class="bg-slate-800/50 rounded-xl p-6 font-mono text-sm">
+                <pre class="text-slate-300 overflow-x-auto">{
+  "hash": "vg-v2-space-grotesk-5-11-9-4",
+  "created": "2026-01-06T23:00:00+03:00",
+  "layouts": {
+    "hero": 5,
+    "mega_menu": 4,
+    "products": 61,
+    "companies": 106,
+    "about": 81,
+    "contact": 1,
+    "footer": "6-column-mega"
+  },
+  "colors": {
+    "palette": "Sky",
+    "gradient_number": 5,
+    "primary": "sky-600",
+    "primary_hover": "sky-700",
+    "accent": "#fac312"
+  },
+  "fonts": {
+    "preset_number": 11,
+    "heading": "Space Grotesk",
+    "body": "DM Sans"
+  },
+  "style": {
+    "border_radius": "rounded-2xl",
+    "button_radius": "rounded-xl",
+    "section_padding": "py-20 md:py-28 lg:py-36"
+  },
+  "hover_effects": [1, 9, 11, 16],
+  "animated_background": 9,
+  "section_order": [
+    "hero",
+    "products",
+    "companies",
+    "about",
+    "sustainability",
+    "cta",
+    "contact",
+    "footer"
+  ]
+}</pre>
+            </div>
+        </section>
+
+        <!-- Technical Notes -->
+        <section class="mb-12 bg-slate-900 rounded-2xl p-8 border border-slate-800">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fas fa-code text-sky-400"></i>
+                Teknik Notlar
+            </h2>
+            <div class="space-y-4 text-sm text-slate-400">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-check-circle text-emerald-400 mt-0.5"></i>
+                    <p><strong class="text-white">Swiper.js:</strong> Hero slider için kullanıldı. Fade efekti, autoplay (6 saniye), pagination ve navigation.</p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-check-circle text-emerald-400 mt-0.5"></i>
+                    <p><strong class="text-white">Alpine.js:</strong> Mega menu tabs, dark mode toggle, mobile menu için kullanıldı.</p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-check-circle text-emerald-400 mt-0.5"></i>
+                    <p><strong class="text-white">AOS:</strong> Scroll animasyonları için. duration: 800ms, easing: ease-out-cubic, once: true.</p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-check-circle text-emerald-400 mt-0.5"></i>
+                    <p><strong class="text-white">Dark Mode:</strong> localStorage ile tercih kaydediliyor. Varsayılan: dark mode aktif.</p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-check-circle text-emerald-400 mt-0.5"></i>
+                    <p><strong class="text-white">Container:</strong> px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 (standart responsive padding).</p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-check-circle text-emerald-400 mt-0.5"></i>
+                    <p><strong class="text-white">Header:</strong> Transparent → solid on scroll. backdrop-blur-md + shadow-lg aktif.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm pt-8 border-t border-slate-800">
+            <p>
+                <i class="fas fa-robot mr-2"></i>
+                Bu döküman Claude AI tarafından otomatik oluşturulmuştur.
+            </p>
+            <p class="mt-2">
+                <a href="index.html" class="text-sky-400 hover:text-sky-300 transition-colors">
+                    <i class="fas fa-arrow-left mr-1"></i>
+                    Tasarıma Dön
+                </a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

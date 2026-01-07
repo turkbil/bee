@@ -50,14 +50,15 @@
          type: 'Playlist',
          id: {{ $playlist->id ?? $playlist->playlist_id }},
          title: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}',
-         cover: '{{ $playlist->coverMedia ? thumb($playlist->coverMedia, 300, 300, ['scale' => 1]) : '' }}',
+         cover: '{{ $playlist->getFirstMedia('hero') ? thumb($playlist->getFirstMedia('hero'), 300, 300, ['scale' => 1]) : '' }}',
          is_favorite: {{ $isFavorite ? 'true' : 'false' }}
      })">
 
     {{-- Cover Image --}}
+    @php $heroMedia = $playlist->getFirstMedia('hero'); @endphp
     <div class="w-16 h-16 flex-shrink-0 bg-gradient-to-br from-muzibu-coral to-orange-600">
-        @if($playlist->coverMedia)
-            <img src="{{ thumb($playlist->coverMedia, 64, 64, ['scale' => 1]) }}"
+        @if($heroMedia)
+            <img src="{{ thumb($heroMedia, 64, 64, ['scale' => 1]) }}"
                  alt="{{ $playlist->getTranslation('title', app()->getLocale()) }}"
                  loading="{{ $index < 6 ? 'eager' : 'lazy' }}"
                  class="w-full h-full object-cover">

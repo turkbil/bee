@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuufi - Multi-Tenant SaaS Platform</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS v4 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwindcss.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ['Inter', 'sans-serif'],
+                        body: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#faf5ff',
+                            100: '#f3e8ff',
+                            200: '#e9d5ff',
+                            300: '#d8b4fe',
+                            400: '#c084fc',
+                            500: '#a855f7',
+                            600: '#9333ea',
+                            700: '#7c3aed',
+                            800: '#6b21a8',
+                            900: '#581c87',
+                            950: '#3b0764',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Animated Gradient Background */
+        .gradient-animate {
+            background: linear-gradient(135deg, #9333ea 0%, #6366f1 25%, #3b82f6 50%, #6366f1 75%, #9333ea 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            25% { background-position: 50% 0%; }
+            50% { background-position: 100% 50%; }
+            75% { background-position: 50% 100%; }
+        }
+
+        /* Aurora Effect */
+        .aurora-bg {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .aurora-bg::before,
+        .aurora-bg::after {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.3) 0%, transparent 50%);
+            animation: auroraMove 20s ease-in-out infinite;
+        }
+
+        .aurora-bg::before {
+            top: -50%;
+            left: -25%;
+        }
+
+        .aurora-bg::after {
+            bottom: -50%;
+            right: -25%;
+            background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.3) 0%, transparent 50%);
+            animation-delay: -10s;
+            animation-direction: reverse;
+        }
+
+        @keyframes auroraMove {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(10%, 10%) rotate(5deg); }
+            50% { transform: translate(-5%, 15%) rotate(-3deg); }
+            75% { transform: translate(-10%, 5%) rotate(3deg); }
+        }
+
+        /* Floating Shapes */
+        .floating-shape {
+            position: absolute;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20%;
+            animation: floatShape 20s linear infinite;
+        }
+
+        @keyframes floatShape {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.1; }
+            90% { opacity: 0.1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #c084fc 0%, #818cf8 50%, #60a5fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Icon Hover Effect */
+        .icon-hover .icon-regular { display: block; }
+        .icon-hover .icon-solid { display: none; }
+        .icon-hover:hover .icon-regular { display: none; }
+        .icon-hover:hover .icon-solid { display: block; }
+
+        /* Card Hover - Content Movement */
+        .card-hover {
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card-hover:hover {
+            box-shadow: 0 25px 50px -12px rgba(147, 51, 234, 0.25);
+        }
+
+        .card-hover .card-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .card-hover:hover .card-icon {
+            transform: scale(1.15);
+        }
+
+        .card-hover .card-title {
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .card-hover:hover .card-title {
+            transform: translateX(8px);
+            color: #9333ea;
+        }
+
+        /* Glass Morphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-light {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* Pricing Card Highlight */
+        .pricing-highlight {
+            position: relative;
+        }
+
+        .pricing-highlight::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(135deg, #9333ea, #3b82f6);
+            border-radius: inherit;
+            z-index: -1;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        /* Scroll Progress */
+        .scroll-progress {
+            transform-origin: left;
+            transform: scaleX(0);
+        }
+    </style>
+</head>
+<body x-data="{
+    darkMode: localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches),
+    mobileMenuOpen: false,
+    scrollProgress: 0
+}"
+x-init="
+    $watch('darkMode', val => {
+        localStorage.setItem('darkMode', val);
+        document.documentElement.classList.toggle('dark', val);
+    });
+    document.documentElement.classList.toggle('dark', darkMode);
+    window.addEventListener('scroll', () => {
+        scrollProgress = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+    });
+    AOS.init({ duration: 800, once: true, offset: 100 });
+"
+:class="darkMode ? 'dark' : ''"
+class="bg-white dark:bg-slate-950 text-gray-900 dark:text-white transition-colors duration-300">
+
+    <!-- Scroll Progress Bar -->
+    <div class="fixed top-0 left-0 right-0 h-1 bg-gray-200 dark:bg-slate-800 z-[60]">
+        <div class="scroll-progress h-full bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600"
+             :style="`transform: scaleX(${scrollProgress})`"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+            x-data="{ scrolled: false }"
+            @scroll.window="scrolled = window.scrollY > 50"
+            :class="scrolled ? 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg shadow-lg py-3' : 'bg-transparent py-5'">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <nav class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/30 group-hover:shadow-purple-500/50 transition-shadow">
+                        <span class="text-white font-heading font-bold text-lg">T</span>
+                    </div>
+                    <span class="text-2xl font-heading font-bold">
+                        <span class="gradient-text">Tuufi</span>
+                    </span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden lg:flex items-center gap-8">
+                    <a href="#features" class="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 font-medium transition-colors">Özellikler</a>
+                    <a href="#modules" class="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 font-medium transition-colors">Modüller</a>
+                    <a href="#pricing" class="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 font-medium transition-colors">Fiyatlandırma</a>
+                    <a href="#testimonials" class="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 font-medium transition-colors">Referanslar</a>
+                    <a href="#contact" class="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 font-medium transition-colors">İletişim</a>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-4">
+                    <!-- Dark Mode Toggle -->
+                    <button @click="darkMode = !darkMode"
+                            class="w-10 h-10 rounded-lg flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
+                        <i x-show="!darkMode" class="far fa-moon text-lg"></i>
+                        <i x-show="darkMode" class="far fa-sun text-lg"></i>
+                    </button>
+
+                    <!-- CTA Buttons -->
+                    <div class="hidden md:flex items-center gap-3">
+                        <a href="#" class="px-5 py-2.5 text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 font-medium transition-colors">
+                            Giriş Yap
+                        </a>
+                        <a href="#" class="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all">
+                            Ücretsiz Dene
+                        </a>
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <button @click="mobileMenuOpen = true" class="lg:hidden w-10 h-10 rounded-lg flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Mobile Menu (Off-Canvas) -->
+    <div x-show="mobileMenuOpen"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[70] bg-black/50 backdrop-blur-sm lg:hidden"
+         @click="mobileMenuOpen = false">
+    </div>
+
+    <div :class="mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'"
+         class="fixed top-0 right-0 bottom-0 w-80 max-w-full z-[80] bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300 lg:hidden overflow-y-auto">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-8">
+                <span class="text-xl font-heading font-bold gradient-text">Tuufi</span>
+                <button @click="mobileMenuOpen = false" class="w-10 h-10 rounded-lg flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="#features" @click="mobileMenuOpen = false" class="block px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 font-medium transition-colors">
+                    <i class="far fa-sparkles w-6 mr-3"></i>Özellikler
+                </a>
+                <a href="#modules" @click="mobileMenuOpen = false" class="block px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 font-medium transition-colors">
+                    <i class="far fa-cube w-6 mr-3"></i>Modüller
+                </a>
+                <a href="#pricing" @click="mobileMenuOpen = false" class="block px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 font-medium transition-colors">
+                    <i class="far fa-tag w-6 mr-3"></i>Fiyatlandırma
+                </a>
+                <a href="#testimonials" @click="mobileMenuOpen = false" class="block px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 font-medium transition-colors">
+                    <i class="far fa-star w-6 mr-3"></i>Referanslar
+                </a>
+                <a href="#contact" @click="mobileMenuOpen = false" class="block px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 font-medium transition-colors">
+                    <i class="far fa-envelope w-6 mr-3"></i>İletişim
+                </a>
+            </nav>
+
+            <div class="mt-8 pt-8 border-t border-gray-200 dark:border-slate-700 space-y-3">
+                <a href="#" class="block px-4 py-3 text-center rounded-lg border-2 border-purple-600 text-purple-600 font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
+                    Giriş Yap
+                </a>
+                <a href="#" class="block px-4 py-3 text-center rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all">
+                    Ücretsiz Dene
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center overflow-hidden">
+        <!-- Animated Background -->
+        <div class="absolute inset-0 bg-gradient-to-br from-slate-950 via-purple-950/50 to-slate-950 dark:from-slate-950 dark:via-purple-950/50 dark:to-slate-950">
+            <div class="aurora-bg"></div>
+
+            <!-- Floating Shapes -->
+            <div class="floating-shape w-32 h-32" style="left: 10%; animation-delay: 0s;"></div>
+            <div class="floating-shape w-24 h-24" style="left: 25%; animation-delay: -5s;"></div>
+            <div class="floating-shape w-40 h-40" style="left: 45%; animation-delay: -10s;"></div>
+            <div class="floating-shape w-20 h-20" style="left: 65%; animation-delay: -15s;"></div>
+            <div class="floating-shape w-36 h-36" style="left: 80%; animation-delay: -7s;"></div>
+
+            <!-- Grid Pattern -->
+            <div class="absolute inset-0 opacity-5" style="background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 50px 50px;"></div>
+        </div>
+
+        <div class="relative container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 py-32">
+            <div class="max-w-5xl mx-auto text-center">
+                <!-- Badge -->
+                <div data-aos="fade-down" class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-purple-300 text-sm font-medium mb-8">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    Yeni: AI destekli içerik yönetimi artık hazır
+                </div>
+
+                <!-- Main Headline -->
+                <h1 data-aos="fade-up" data-aos-delay="100" class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-black text-white leading-tight mb-6">
+                    Tek Platform,
+                    <span class="block gradient-text">Sınırsız Olanak</span>
+                </h1>
+
+                <!-- Subheadline -->
+                <p data-aos="fade-up" data-aos-delay="200" class="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
+                    Multi-tenant SaaS altyapısıyla her müşterinize özel, bağımsız ve güçlü web siteleri oluşturun. Tek panel, sınırsız tenant.
+                </p>
+
+                <!-- CTA Buttons -->
+                <div data-aos="fade-up" data-aos-delay="300" class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+                    <a href="#" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg font-semibold text-lg hover:shadow-2xl hover:shadow-purple-500/40 transition-all transform hover:-translate-y-1">
+                        14 Gün Ücretsiz Dene
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                    <a href="#" class="w-full sm:w-auto px-8 py-4 glass text-white rounded-lg font-semibold text-lg hover:bg-white/10 transition-all group">
+                        <i class="far fa-play-circle mr-2 group-hover:scale-110 transition-transform inline-block"></i>
+                        Demo İzle
+                    </a>
+                </div>
+
+                <!-- Trust Metrics -->
+                <div data-aos="fade-up" data-aos-delay="400" class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+                    <div class="text-center">
+                        <div class="text-3xl sm:text-4xl font-heading font-bold text-white mb-1">500+</div>
+                        <div class="text-gray-400 text-sm">Aktif Tenant</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl sm:text-4xl font-heading font-bold text-white mb-1">99.9%</div>
+                        <div class="text-gray-400 text-sm">Uptime</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl sm:text-4xl font-heading font-bold text-white mb-1">50M+</div>
+                        <div class="text-gray-400 text-sm">Sayfa Görüntüleme</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl sm:text-4xl font-heading font-bold text-white mb-1">24/7</div>
+                        <div class="text-gray-400 text-sm">Destek</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+            <a href="#features" class="w-10 h-10 rounded-full glass flex items-center justify-center text-white/70 hover:text-white transition-colors">
+                <i class="fas fa-chevron-down"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 md:py-24 lg:py-32 bg-gray-50 dark:bg-slate-900">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <!-- Section Header -->
+            <div class="max-w-3xl mx-auto text-center mb-16">
+                <div data-aos="fade-up" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-sm font-medium mb-4">
+                    <i class="far fa-sparkles"></i>
+                    Platform Özellikleri
+                </div>
+                <h2 data-aos="fade-up" data-aos-delay="100" class="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold mb-6">
+                    Neden <span class="gradient-text">Tuufi</span>?
+                </h2>
+                <p data-aos="fade-up" data-aos-delay="200" class="text-gray-600 dark:text-gray-400 text-lg">
+                    Modern web sitenizi dakikalar içinde oluşturun. Güçlü altyapı, sonsuz esneklik.
+                </p>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div data-aos="fade-up" data-aos-delay="100" class="card-hover icon-hover bg-white dark:bg-slate-800 rounded-xl p-8 cursor-pointer">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/10 to-indigo-500/10 dark:from-purple-500/20 dark:to-indigo-500/20 flex items-center justify-center mb-6 card-icon">
+                        <i class="far fa-layer-group icon-regular text-2xl text-purple-600"></i>
+                        <i class="fas fa-layer-group icon-solid text-2xl text-purple-600"></i>
+                    </div>
+                    <h3 class="card-title text-xl font-heading font-bold mb-3">Multi-Tenant Mimari</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Her müşteriniz tamamen izole, bağımsız database ve alan adı ile çalışır. Güvenlik ve performans garantisi.
+                    </p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div data-aos="fade-up" data-aos-delay="200" class="card-hover icon-hover bg-white dark:bg-slate-800 rounded-xl p-8 cursor-pointer">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/10 to-indigo-500/10 dark:from-purple-500/20 dark:to-indigo-500/20 flex items-center justify-center mb-6 card-icon">
+                        <i class="far fa-palette icon-regular text-2xl text-purple-600"></i>
+                        <i class="fas fa-palette icon-solid text-2xl text-purple-600"></i>
+                    </div>
+                    <h3 class="card-title text-xl font-heading font-bold mb-3">Tema Sistemi</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Sınırsız tema desteği. Her tenant kendi temasını seçsin veya özel tema oluşturun. Tam esneklik.
+                    </p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div data-aos="fade-up" data-aos-delay="300" class="card-hover icon-hover bg-white dark:bg-slate-800 rounded-xl p-8 cursor-pointer">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/10 to-indigo-500/10 dark:from-purple-500/20 dark:to-indigo-500/20 flex items-center justify-center mb-6 card-icon">
+                        <i class="far fa-bolt icon-regular text-2xl text-purple-600"></i>
+                        <i class="fas fa-bolt icon-solid text-2xl text-purple-600"></i>
+                    </div>
+                    <h3 class="card-title text-xl font-heading font-bold mb-3">Yıldırım Hızı</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Redis cache, CDN entegrasyonu, optimize edilmiş queries. Sub-saniye sayfa yüklemeleri.
+                    </p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div data-aos="fade-up" data-aos-delay="400" class="card-hover icon-hover bg-white dark:bg-slate-800 rounded-xl p-8 cursor-pointer">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/10 to-indigo-500/10 dark:from-purple-500/20 dark:to-indigo-500/20 flex items-center justify-center mb-6 card-icon">
+                        <i class="far fa-shield-check icon-regular text-2xl text-purple-600"></i>
+                        <i class="fas fa-shield-check icon-solid text-2xl text-purple-600"></i>
+                    </div>
+                    <h3 class="card-title text-xl font-heading font-bold mb-3">Kurumsal Güvenlik</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        SSL, WAF, rate limiting, 2FA, audit log. KVKK ve GDPR uyumlu altyapı.
+                    </p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div data-aos="fade-up" data-aos-delay="500" class="card-hover icon-hover bg-white dark:bg-slate-800 rounded-xl p-8 cursor-pointer">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/10 to-indigo-500/10 dark:from-purple-500/20 dark:to-indigo-500/20 flex items-center justify-center mb-6 card-icon">
+                        <i class="far fa-robot icon-regular text-2xl text-purple-600"></i>
+                        <i class="fas fa-robot icon-solid text-2xl text-purple-600"></i>
+                    </div>
+                    <h3 class="card-title text-xl font-heading font-bold mb-3">AI Destekli</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Claude, GPT-4 entegrasyonu ile içerik üretimi, SEO optimizasyonu ve görsel tasarım asistanı.
+                    </p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div data-aos="fade-up" data-aos-delay="600" class="card-hover icon-hover bg-white dark:bg-slate-800 rounded-xl p-8 cursor-pointer">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/10 to-indigo-500/10 dark:from-purple-500/20 dark:to-indigo-500/20 flex items-center justify-center mb-6 card-icon">
+                        <i class="far fa-chart-line icon-regular text-2xl text-purple-600"></i>
+                        <i class="fas fa-chart-line icon-solid text-2xl text-purple-600"></i>
+                    </div>
+                    <h3 class="card-title text-xl font-heading font-bold mb-3">Analitik Dashboard</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Gerçek zamanlı veriler, conversion tracking, kullanıcı davranış analizi tek panelde.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modules Section -->
+    <section id="modules" class="py-16 md:py-24 lg:py-32 bg-white dark:bg-slate-950">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <!-- Section Header -->
+            <div class="max-w-3xl mx-auto text-center mb-16">
+                <div data-aos="fade-up" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-sm font-medium mb-4">
+                    <i class="far fa-cube"></i>
+                    Modüler Yapı
+                </div>
+                <h2 data-aos="fade-up" data-aos-delay="100" class="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold mb-6">
+                    İhtiyacınıza Göre <span class="gradient-text">Modüller</span>
+                </h2>
+                <p data-aos="fade-up" data-aos-delay="200" class="text-gray-600 dark:text-gray-400 text-lg">
+                    Sadece ihtiyacınız olan modülleri aktifleştirin. Ölçeklenebilir, esnek mimari.
+                </p>
+            </div>
+
+            <!-- Modules Grid - Bento Box Style -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Module 1 - Large -->
+                <div data-aos="fade-up" data-aos-delay="100" class="lg:col-span-2 lg:row-span-2 group relative overflow-hidden rounded-2xl">
+                    <img src="https://picsum.photos/800/600?random=1" alt="E-Commerce" class="w-full h-full object-cover absolute inset-0" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
+                    <div class="relative h-full min-h-[400px] p-8 flex flex-col justify-end">
+                        <div class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur flex items-center justify-center mb-4">
+                            <i class="fas fa-shopping-cart text-xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-heading font-bold text-white mb-2">E-Ticaret</h3>
+                        <p class="text-gray-300 mb-4">Ürün yönetimi, sepet, ödeme entegrasyonları, kargo takibi. Tam teşekküllü online mağaza.</p>
+                        <a href="#" class="text-purple-400 font-medium group-hover:text-purple-300 transition-colors">
+                            Detayları İncele <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform inline-block"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Module 2 -->
+                <div data-aos="fade-up" data-aos-delay="200" class="group relative overflow-hidden rounded-2xl">
+                    <img src="https://picsum.photos/400/300?random=2" alt="Blog" class="w-full h-full object-cover absolute inset-0" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
+                    <div class="relative h-full min-h-[200px] p-6 flex flex-col justify-end">
+                        <div class="w-10 h-10 rounded-lg bg-white/10 backdrop-blur flex items-center justify-center mb-3">
+                            <i class="fas fa-pen-nib text-white"></i>
+                        </div>
+                        <h3 class="text-lg font-heading font-bold text-white mb-1">Blog & İçerik</h3>
+                        <p class="text-gray-400 text-sm">Güçlü editör, kategoriler, SEO</p>
+                    </div>
+                </div>
+
+                <!-- Module 3 -->
+                <div data-aos="fade-up" data-aos-delay="300" class="group relative overflow-hidden rounded-2xl">
+                    <img src="https://picsum.photos/400/300?random=3" alt="Portfolio" class="w-full h-full object-cover absolute inset-0" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
+                    <div class="relative h-full min-h-[200px] p-6 flex flex-col justify-end">
+                        <div class="w-10 h-10 rounded-lg bg-white/10 backdrop-blur flex items-center justify-center mb-3">
+                            <i class="fas fa-images text-white"></i>
+                        </div>
+                        <h3 class="text-lg font-heading font-bold text-white mb-1">Portfolyo</h3>
+                        <p class="text-gray-400 text-sm">Galeri, projeler, referanslar</p>
+                    </div>
+                </div>
+
+                <!-- Module 4 -->
+                <div data-aos="fade-up" data-aos-delay="400" class="group relative overflow-hidden rounded-2xl">
+                    <img src="https://picsum.photos/400/300?random=4" alt="Subscription" class="w-full h-full object-cover absolute inset-0" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
+                    <div class="relative h-full min-h-[200px] p-6 flex flex-col justify-end">
+                        <div class="w-10 h-10 rounded-lg bg-white/10 backdrop-blur flex items-center justify-center mb-3">
+                            <i class="fas fa-credit-card text-white"></i>
+                        </div>
+                        <h3 class="text-lg font-heading font-bold text-white mb-1">Abonelik</h3>
+                        <p class="text-gray-400 text-sm">Stripe, PayTR, tekrarlı ödemeler</p>
+                    </div>
+                </div>
+
+                <!-- Module 5 -->
+                <div data-aos="fade-up" data-aos-delay="500" class="group relative overflow-hidden rounded-2xl">
+                    <img src="https://picsum.photos/400/300?random=5" alt="Media" class="w-full h-full object-cover absolute inset-0" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
+                    <div class="relative h-full min-h-[200px] p-6 flex flex-col justify-end">
+                        <div class="w-10 h-10 rounded-lg bg-white/10 backdrop-blur flex items-center justify-center mb-3">
+                            <i class="fas fa-photo-video text-white"></i>
+                        </div>
+                        <h3 class="text-lg font-heading font-bold text-white mb-1">Medya Yönetimi</h3>
+                        <p class="text-gray-400 text-sm">S3, thumbmaker, lazy load</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- More Modules Link -->
+            <div data-aos="fade-up" class="text-center mt-12">
+                <a href="#" class="inline-flex items-center gap-2 px-6 py-3 border-2 border-purple-600 text-purple-600 dark:text-purple-400 rounded-lg font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
+                    <span>Tüm Modülleri Gör</span>
+                    <span class="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/50 rounded text-sm">20+</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 md:py-24 relative overflow-hidden">
+        <div class="absolute inset-0 gradient-animate opacity-90"></div>
+
+        <div class="relative container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+                <div data-aos="fade-up" data-aos-delay="100">
+                    <div class="text-5xl sm:text-6xl font-heading font-black text-white mb-2" x-data="{ count: 0 }" x-init="setTimeout(() => { let i = setInterval(() => { if(count >= 500) clearInterval(i); else count += 5; }, 20) }, 500)">
+                        <span x-text="count">0</span>+
+                    </div>
+                    <div class="text-purple-200 font-medium">Aktif Tenant</div>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <div class="text-5xl sm:text-6xl font-heading font-black text-white mb-2">99.9%</div>
+                    <div class="text-purple-200 font-medium">Uptime Garantisi</div>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-5xl sm:text-6xl font-heading font-black text-white mb-2" x-data="{ count: 0 }" x-init="setTimeout(() => { let i = setInterval(() => { if(count >= 50) clearInterval(i); else count++; }, 50) }, 700)">
+                        <span x-text="count">0</span>M+
+                    </div>
+                    <div class="text-purple-200 font-medium">Aylık Sayfa Görüntüleme</div>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="400">
+                    <div class="text-5xl sm:text-6xl font-heading font-black text-white mb-2">5 Yıl</div>
+                    <div class="text-purple-200 font-medium">Sektör Deneyimi</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-16 md:py-24 lg:py-32 bg-gray-50 dark:bg-slate-900">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <!-- Section Header -->
+            <div class="max-w-3xl mx-auto text-center mb-16">
+                <div data-aos="fade-up" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-sm font-medium mb-4">
+                    <i class="far fa-tag"></i>
+                    Fiyatlandırma
+                </div>
+                <h2 data-aos="fade-up" data-aos-delay="100" class="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold mb-6">
+                    Şeffaf <span class="gradient-text">Fiyatlandırma</span>
+                </h2>
+                <p data-aos="fade-up" data-aos-delay="200" class="text-gray-600 dark:text-gray-400 text-lg">
+                    Gizli ücret yok. İhtiyacınıza uygun planı seçin, hemen başlayın.
+                </p>
+            </div>
+
+            <!-- Pricing Toggle -->
+            <div data-aos="fade-up" class="flex items-center justify-center gap-4 mb-12" x-data="{ yearly: true }">
+                <span :class="!yearly ? 'text-gray-900 dark:text-white font-semibold' : 'text-gray-500'" class="transition-colors">Aylık</span>
+                <button @click="yearly = !yearly" class="relative w-16 h-8 rounded-full bg-purple-600 p-1 transition-colors">
+                    <div class="w-6 h-6 rounded-full bg-white shadow-lg transition-transform" :class="yearly ? 'translate-x-8' : 'translate-x-0'"></div>
+                </button>
+                <span :class="yearly ? 'text-gray-900 dark:text-white font-semibold' : 'text-gray-500'" class="transition-colors">
+                    Yıllık
+                    <span class="ml-1 px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs rounded-full">%20 İndirim</span>
+                </span>
+            </div>
+
+            <!-- Pricing Cards -->
+            <div class="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto" x-data="{ yearly: true }">
+                <!-- Starter Plan -->
+                <div data-aos="fade-up" data-aos-delay="100" class="card-hover bg-white dark:bg-slate-800 rounded-2xl p-8">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-heading font-bold mb-2">Başlangıç</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">Küçük işletmeler için ideal</p>
+                    </div>
+
+                    <div class="mb-8">
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-4xl font-heading font-bold">₺</span>
+                            <span class="text-5xl font-heading font-bold" x-text="yearly ? '799' : '999'">799</span>
+                            <span class="text-gray-500">/ay</span>
+                        </div>
+                        <p class="text-gray-500 text-sm mt-1" x-show="yearly">Yıllık ödemede ₺9.588</p>
+                    </div>
+
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check text-green-500"></i>
+                            <span>3 Tenant</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check text-green-500"></i>
+                            <span>5GB Depolama</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check text-green-500"></i>
+                            <span>SSL Sertifikası</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check text-green-500"></i>
+                            <span>E-posta Desteği</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-400">
+                            <i class="fas fa-times"></i>
+                            <span>AI Özellikleri</span>
+                        </li>
+                    </ul>
+
+                    <a href="#" class="block w-full py-3 text-center border-2 border-purple-600 text-purple-600 rounded-lg font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
+                        Başla
+                    </a>
+                </div>
+
+                <!-- Pro Plan - Highlighted -->
+                <div data-aos="fade-up" data-aos-delay="200" class="pricing-highlight rounded-2xl">
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl p-8 relative">
+                        <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-medium rounded-full">
+                            En Popüler
+                        </div>
+
+                        <div class="mb-6">
+                            <h3 class="text-xl font-heading font-bold mb-2">Profesyonel</h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">Büyüyen işletmeler için</p>
+                        </div>
+
+                        <div class="mb-8">
+                            <div class="flex items-baseline gap-1">
+                                <span class="text-4xl font-heading font-bold gradient-text">₺</span>
+                                <span class="text-5xl font-heading font-bold gradient-text" x-text="yearly ? '1.999' : '2.499'">1.999</span>
+                                <span class="text-gray-500">/ay</span>
+                            </div>
+                            <p class="text-gray-500 text-sm mt-1" x-show="yearly">Yıllık ödemede ₺23.988</p>
+                        </div>
+
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                                <i class="fas fa-check text-green-500"></i>
+                                <span><strong>15</strong> Tenant</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                                <i class="fas fa-check text-green-500"></i>
+                                <span><strong>50GB</strong> Depolama</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                                <i class="fas fa-check text-green-500"></i>
+                                <span>Özel Domain</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                                <i class="fas fa-check text-green-500"></i>
+                                <span>Öncelikli Destek</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                                <i class="fas fa-check text-green-500"></i>
+                                <span>AI Özellikleri</span>
+                            </li>
+                        </ul>
+
+                        <a href="#" class="block w-full py-3 text-center bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all">
+                            Hemen Başla
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Enterprise Plan -->
+                <div data-aos="fade-up" data-aos-delay="300" class="card-hover bg-white dark:bg-slate-800 rounded-2xl p-8">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-heading font-bold mb-2">Kurumsal</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">Büyük ölçekli operasyonlar</p>
+                    </div>
+
+                    <div class="mb-8">
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-5xl font-heading font-bold">Özel</span>
+                        </div>
+                        <p class="text-gray-500 text-sm mt-1">İhtiyaçlarınıza göre fiyatlandırma</p>
+                    </div>
+
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check text-green-500"></i>
+                            <span><strong>Sınırsız</strong> Tenant</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check text-green-500"></i>
+                            <span><strong>Sınırsız</strong> Depolama</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check text-green-500"></i>
+                            <span>White Label</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check text-green-500"></i>
+                            <span>Dedicated Sunucu</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-check text-green-500"></i>
+                            <span>7/24 Telefon Desteği</span>
+                        </li>
+                    </ul>
+
+                    <a href="#" class="block w-full py-3 text-center border-2 border-purple-600 text-purple-600 rounded-lg font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
+                        İletişime Geç
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-16 md:py-24 lg:py-32 bg-white dark:bg-slate-950">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <!-- Section Header -->
+            <div class="max-w-3xl mx-auto text-center mb-16">
+                <div data-aos="fade-up" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 text-sm font-medium mb-4">
+                    <i class="far fa-star"></i>
+                    Müşteri Yorumları
+                </div>
+                <h2 data-aos="fade-up" data-aos-delay="100" class="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold mb-6">
+                    Müşterilerimiz <span class="gradient-text">Ne Diyor?</span>
+                </h2>
+            </div>
+
+            <!-- Testimonials Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div data-aos="fade-up" data-aos-delay="100" class="card-hover bg-gray-50 dark:bg-slate-800 rounded-2xl p-8">
+                    <div class="flex items-center gap-1 mb-4">
+                        <i class="fas fa-star text-amber-400"></i>
+                        <i class="fas fa-star text-amber-400"></i>
+                        <i class="fas fa-star text-amber-400"></i>
+                        <i class="fas fa-star text-amber-400"></i>
+                        <i class="fas fa-star text-amber-400"></i>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                        "Tuufi ile 50'den fazla müşterimize hizmet veriyoruz. Multi-tenant yapısı sayesinde her biri tamamen bağımsız çalışıyor. Harika bir platform!"
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <img src="https://picsum.photos/48/48?random=10" alt="Avatar" class="w-12 h-12 rounded-full object-cover" loading="lazy">
+                        <div>
+                            <div class="font-heading font-semibold">Ahmet Yılmaz</div>
+                            <div class="text-gray-500 text-sm">CEO, TechAgency</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div data-aos="fade-up" data-aos-delay="200" class="card-hover bg-gray-50 dark:bg-slate-800 rounded-2xl p-8">
+                    <div class="flex items-center gap-1 mb-4">
+                        <i class="fas fa-star text-amber-400"></i>
+                        <i class="fas fa-star text-amber-400"></i>
+                        <i class="fas fa-star text-amber-400"></i>
+                        <i class="fas fa-star text-amber-400"></i>
+                        <i class="fas fa-star text-amber-400"></i>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                        "E-ticaret modülü tam ihtiyacımız olan şeydi. Stripe ve PayTR entegrasyonları mükemmel çalışıyor. Destek ekibi de çok hızlı."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <img src="https://picsum.photos/48/48?random=11" alt="Avatar" class="w-12 h-12 rounded-full object-cover" loading="lazy">
+                        <div>
+                            <div class="font-heading font-semibold">Elif Kaya</div>
+                            <div class="text-gray-500 text-sm">Founder, ShopStart</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div data-aos="fade-up" data-aos-delay="300" class="card-hover bg-gray-50 dark:bg-slate-800 rounded-2xl p-8">
+                    <div class="flex items-center gap-1 mb-4">
+                        <i class="fas fa-star text-amber-400"></i>
+                        <i class="fas fa-star text-amber-400"></i>
+                        <i class="fas fa-star text-amber-400"></i>
+                        <i class="fas fa-star text-amber-400"></i>
+                        <i class="fas fa-star-half-alt text-amber-400"></i>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                        "AI içerik üretimi özelliği blog yönetimini çok kolaylaştırdı. SEO skorlarımız ciddi şekilde arttı. Kesinlikle tavsiye ederim."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <img src="https://picsum.photos/48/48?random=12" alt="Avatar" class="w-12 h-12 rounded-full object-cover" loading="lazy">
+                        <div>
+                            <div class="font-heading font-semibold">Mehmet Demir</div>
+                            <div class="text-gray-500 text-sm">CMO, ContentPro</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Client Logos -->
+            <div data-aos="fade-up" class="mt-16 pt-16 border-t border-gray-200 dark:border-slate-800">
+                <p class="text-center text-gray-500 mb-8">Güvenen markalar</p>
+                <div class="flex flex-wrap items-center justify-center gap-8 md:gap-12 opacity-60">
+                    <div class="text-2xl font-heading font-bold text-gray-400">Brand1</div>
+                    <div class="text-2xl font-heading font-bold text-gray-400">Brand2</div>
+                    <div class="text-2xl font-heading font-bold text-gray-400">Brand3</div>
+                    <div class="text-2xl font-heading font-bold text-gray-400">Brand4</div>
+                    <div class="text-2xl font-heading font-bold text-gray-400">Brand5</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 md:py-24 lg:py-32 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-purple-900 via-indigo-900 to-slate-900">
+            <div class="aurora-bg opacity-50"></div>
+        </div>
+
+        <div class="relative container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 data-aos="fade-up" class="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-heading font-black text-white leading-tight mb-6">
+                    Dijital Dönüşümünüzü
+                    <span class="block gradient-text">Bugün Başlatın</span>
+                </h2>
+                <p data-aos="fade-up" data-aos-delay="100" class="text-lg sm:text-xl text-purple-200 mb-10 max-w-2xl mx-auto">
+                    14 gün ücretsiz deneme. Kredi kartı gerekmez. İstediğiniz zaman iptal edin.
+                </p>
+
+                <div data-aos="fade-up" data-aos-delay="200" class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="#" class="w-full sm:w-auto px-8 py-4 bg-white text-purple-900 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors">
+                        Ücretsiz Başla
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                    <a href="#" class="w-full sm:w-auto px-8 py-4 border-2 border-white/30 text-white rounded-lg font-semibold text-lg hover:bg-white/10 transition-colors">
+                        Satış Ekibiyle Konuş
+                    </a>
+                </div>
+
+                <div data-aos="fade-up" data-aos-delay="300" class="mt-10 flex items-center justify-center gap-6 text-purple-300 text-sm">
+                    <span class="flex items-center gap-2">
+                        <i class="fas fa-check"></i>
+                        Kurulum Desteği
+                    </span>
+                    <span class="flex items-center gap-2">
+                        <i class="fas fa-check"></i>
+                        Ücretsiz Eğitim
+                    </span>
+                    <span class="flex items-center gap-2">
+                        <i class="fas fa-check"></i>
+                        Veri Aktarımı
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 md:py-24 lg:py-32 bg-gray-50 dark:bg-slate-900">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
+                <!-- Contact Info -->
+                <div data-aos="fade-right">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-sm font-medium mb-4">
+                        <i class="far fa-envelope"></i>
+                        İletişim
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold mb-6">
+                        Sizinle <span class="gradient-text">Tanışalım</span>
+                    </h2>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg mb-10">
+                        Sorularınız mı var? Demo görmek ister misiniz? Size yardımcı olmaktan mutluluk duyarız.
+                    </p>
+
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-map-marker-alt text-purple-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-heading font-semibold mb-1">Adres</h4>
+                                <p class="text-gray-600 dark:text-gray-400">İstanbul, Türkiye</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-envelope text-purple-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-heading font-semibold mb-1">E-posta</h4>
+                                <p class="text-gray-600 dark:text-gray-400">hello@tuufi.com</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-phone text-purple-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-heading font-semibold mb-1">Telefon</h4>
+                                <p class="text-gray-600 dark:text-gray-400">+90 (212) 123 45 67</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div class="mt-10 flex items-center gap-4">
+                        <a href="#" class="w-10 h-10 rounded-lg bg-gray-200 dark:bg-slate-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-purple-100 dark:hover:bg-purple-900/30 hover:text-purple-600 transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-lg bg-gray-200 dark:bg-slate-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-purple-100 dark:hover:bg-purple-900/30 hover:text-purple-600 transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-lg bg-gray-200 dark:bg-slate-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-purple-100 dark:hover:bg-purple-900/30 hover:text-purple-600 transition-colors">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-lg bg-gray-200 dark:bg-slate-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-purple-100 dark:hover:bg-purple-900/30 hover:text-purple-600 transition-colors">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div data-aos="fade-left">
+                    <form class="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl">
+                        <div class="grid sm:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Ad Soyad</label>
+                                <input type="text" class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all" placeholder="John Doe">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">E-posta</label>
+                                <input type="email" class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all" placeholder="john@example.com">
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-2">Şirket</label>
+                            <input type="text" class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all" placeholder="Şirket Adı">
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-2">İlgilendiğiniz Plan</label>
+                            <select class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all">
+                                <option>Başlangıç</option>
+                                <option>Profesyonel</option>
+                                <option>Kurumsal</option>
+                                <option>Bilmiyorum, danışmak istiyorum</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-2">Mesajınız</label>
+                            <textarea rows="4" class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all resize-none" placeholder="Size nasıl yardımcı olabiliriz?"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all">
+                            Mesaj Gönder
+                            <i class="fas fa-paper-plane ml-2"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 dark:bg-slate-950 text-gray-400 py-16">
+        <div class="container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
+                <!-- Brand -->
+                <div class="lg:col-span-2">
+                    <a href="#" class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center">
+                            <span class="text-white font-heading font-bold text-lg">T</span>
+                        </div>
+                        <span class="text-2xl font-heading font-bold text-white">Tuufi</span>
+                    </a>
+                    <p class="text-gray-500 mb-6 max-w-sm">
+                        Multi-tenant SaaS altyapısıyla web sitesi yönetimini yeniden tanımlıyoruz. Tek platform, sınırsız olanak.
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <a href="#" class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-purple-600 transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-purple-600 transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-purple-600 transition-colors">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Product -->
+                <div>
+                    <h4 class="text-white font-heading font-semibold mb-4">Ürün</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Özellikler</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Modüller</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Fiyatlandırma</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Güncellemeler</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Yol Haritası</a></li>
+                    </ul>
+                </div>
+
+                <!-- Resources -->
+                <div>
+                    <h4 class="text-white font-heading font-semibold mb-4">Kaynaklar</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Dokümantasyon</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">API Referans</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Blog</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Destek</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Status</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h4 class="text-white font-heading font-semibold mb-4">Şirket</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Hakkımızda</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Kariyer</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">İletişim</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Gizlilik</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Şartlar</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="pt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-gray-500 text-sm">
+                    © 2024 Tuufi. Tüm hakları saklıdır.
+                </p>
+                <div class="flex items-center gap-6 text-sm">
+                    <a href="#" class="hover:text-purple-400 transition-colors">Gizlilik Politikası</a>
+                    <a href="#" class="hover:text-purple-400 transition-colors">Kullanım Şartları</a>
+                    <a href="#" class="hover:text-purple-400 transition-colors">Çerez Politikası</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prompt Modal Button -->
+    <button onclick="window.open('prompt.html', '_blank')" class="fixed bottom-6 right-6 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-sm rounded-lg shadow-lg transition-colors z-50">
+        <i class="fas fa-file-alt mr-2"></i>Prompt
+    </button>
+
+</body>
+</html>

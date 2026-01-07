@@ -213,6 +213,18 @@ class SubscriptionManageComponent extends Component
                 $subscription->update($data);
                 $message = 'Abonelik başarıyla güncellendi';
             } else {
+                // 🧹 Yeni abonelik oluşturulmadan önce kullanıcının bekleyen ödemelerini sil
+                $deletedCount = Subscription::where('user_id', $this->user_id)
+                    ->where('status', 'pending_payment')
+                    ->delete();
+
+                if ($deletedCount > 0) {
+                    \Log::info("🧹 Eski bekleyen ödemeler silindi", [
+                        'user_id' => $this->user_id,
+                        'deleted_count' => $deletedCount
+                    ]);
+                }
+
                 Subscription::create($data);
                 $message = 'Abonelik başarıyla oluşturuldu';
 

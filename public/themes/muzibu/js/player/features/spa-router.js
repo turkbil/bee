@@ -82,6 +82,11 @@ const MuzibuSpaRouter = {
                 return;
             }
 
+            // 🔥 SKIP SPA: data-spa="false" attribute bypasses SPA navigation
+            if (link.getAttribute('data-spa') === 'false') {
+                return; // Full page navigation
+            }
+
             // Check if external link (different domain)
             if (href.startsWith('http') || href.startsWith('//')) {
                 try {

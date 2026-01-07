@@ -1,127 +1,15 @@
-spot-player.js?v=1767638377:564 🎙️ SpotPlayer: Script loaded! MuzibuSpotPlayer: object
-spot-player.js?v=1767638377:568 🎙️ SpotPlayer: DOM loading, waiting for DOMContentLoaded...
-spot-player.js?v=1767638377:570 🎙️ SpotPlayer: DOMContentLoaded fired, calling init()...
-spot-player.js?v=1767638377:56 🎙️ SpotPlayer: Initializing...
-spot-player.js?v=1767638377:83 🎙️ SpotPlayer: Fetching settings from /api/spot/settings...
-spot-player.js?v=1767638377:93 🎙️ SpotPlayer: Settings response: {enabled: true, songs_between: 1, corporate_id: 1, branch_id: 1, spot_is_paused: false, …}
-spot-player.js?v=1767638377:171 🎙️ SpotPlayer: Starting polling (every 300s)...
-spot-player.js?v=1767638377:72 🎙️ SpotPlayer: Enabled. Songs between: 1, Current count: 0
-player-core.js?v=1767391594:3486 💾 Using CACHED stream: Did I Love Too Much?
-player-core.js?v=1767391594:4463 ⚠️ WAITING - Veri bekleniyor! {currentTime: '0.0', readyState: 0, networkState: 2}
-audio.onwaiting @ player-core.js?v=1767391594:4463
-waiting
-(anonymous) @ player-core.js?v=1767391594:4070
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.filterAndSortMediaOptions @ level-controller.ts:291
-r.onManifestLoaded @ level-controller.ts:152
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-e.handleTrackOrLevelPlaylist @ playlist-loader.ts:478
-onSuccess @ playlist-loader.ts:314
-e.readystatechange @ xhr-loader.ts:231
-XMLHttpRequest.send
-e.openAndSendXhr @ xhr-loader.ts:158
-(anonymous) @ xhr-loader.ts:104
-Promise.then
-e.loadInternal @ xhr-loader.ts:102
-e.load @ xhr-loader.ts:76
-e.load @ playlist-loader.ts:347
-e.onManifestLoading @ playlist-loader.ts:154
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-e.loadSource @ hls.ts:389
-playHlsStream @ player-core.js?v=1767391594:4012
-loadAndPlaySong @ player-core.js?v=1767391594:3711
-await in loadAndPlaySong
-playSongFromQueue @ player-core.js?v=1767391594:3579
-togglePlayPause @ player-core.js?v=1767391594:774
-[Alpine] togglePlayPause() @ VM3698:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3881
-handler4 @ livewire.js?id=df3a17f2:3183
-(anonymous) @ livewire.js?id=df3a17f2:3247
-(anonymous) @ livewire.js?id=df3a17f2:3185
-player-core.js?v=1767391594:4365 🚀 PRELOAD TRIGGER at 2s: {song: 'Did I Love Too Much?', duration: 122.850644, currentTime: 2.122662, _nextSongPreloaded: false}
-player-core.js?v=1767391594:6062 🚀 Starting preload for: Every Morning Starts with Your Echo
-player-core.js?v=1767391594:6171 ✅ Preload READY: Every Morning Starts with Your Echo
-player-core.js?v=1767391594:4463 ⚠️ WAITING - Veri bekleniyor! {currentTime: '111.0', readyState: 1, networkState: 2}
-audio.onwaiting @ player-core.js?v=1767391594:4463
-waiting
-seekTo @ player-core.js?v=1767391594:1975
-[Alpine] seekTo($event) @ VM3734:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3881
-handler4 @ livewire.js?id=df3a17f2:3183
-(anonymous) @ livewire.js?id=df3a17f2:3247
-(anonymous) @ livewire.js?id=df3a17f2:3185
-player-core.js?v=1767391594:4378 🎙️ SPOT PRELOAD at 70% (fresh stream): {song: 'Did I Love Too Much?', progress: '90.4%'}
-spot-player.js?v=1767638377:279 🎙️ SpotPlayer: Preloading spot...
-spot-player.js?v=1767638377:314 🎙️ SpotPlayer: Spot preloaded: ikstif, ikstif
-player-core.js?v=1767391594:4397 🔵 onended fired (normal path) {isCrossfading: false, isPlaying: true, audioId: 'hlsAudio'}
-player-core.js?v=1767391594:4407 🔵 Calling onTrackEnded from onended (normal)
-player-core.js?v=1767391594:2040 🟢 onTrackEnded called {isPlaying: true, isPlayingSpot: undefined}
-player-core.js?v=1767391594:2063 🟢 onTrackEnded proceeding to nextTrack
-player-core.js?v=1767391594:2084 🎙️ Spot check: {hasMuzibuSpotPlayer: true, isEnabled: true, listenedDuration: 122.808532}
-spot-player.js?v=1767638377:241 🎙️ SpotPlayer: Song counted. Progress: 1/1
-spot-player.js?v=1767638377:245 🎙️ SpotPlayer: Time for a spot!
-player-core.js?v=1767391594:2094 🎙️ Spot time! Fetching and playing spot...
-spot-player.js?v=1767638377:358 🎙️ SpotPlayer: Using preloaded spot (gapless)
-spot-player.js?v=1767638377:390 🎙️ SpotPlayer: Playing spot: ikstif, ikstif
-player-core.js?v=1767391594:2097 🎙️ Playing spot: ikstif, ikstif
-player-core.js?v=1767391594:2130 🎙️ playSpotAudio: Using PRELOADED audio (gapless)
-player-core.js?v=1767391594:2137 🎙️ playSpotAudio: ikstif, ikstif https://muzibu.com.tr/storage/tenant1001/2182/ikstif-ikstif.mp3
-player-core.js?v=1767391594:2234 🎙️ Spot playing...
-player-core.js?v=1767391594:2192 🎙️ Spot playing: Preloading next song at 3s...
-player-core.js?v=1767391594:6058 ⏩ Preload SKIPPED - already ready: Every Morning Starts with Your Echo
-player-core.js?v=1767391594:2201 🎙️ Spot ended, continuing to next track
-spot-player.js?v=1767638377:480 🎙️ SpotPlayer: Spot ended normally
-player-core.js?v=1767391594:2267 🎙️ playNextFromQueue: Resuming music after spot
-player-core.js?v=1767391594:2281 🎙️ Using preloaded song after spot (gapless): Every Morning Starts with Your Echo
-player-core.js?v=1767391594:3057 ⚡ Using PRELOADED song (gapless): Every Morning Starts with Your Echo
-player-core.js?v=1767391594:3363 🚀 PRELOAD TRIGGER at 2s (HLS.js preloaded): {song: 'Every Morning Starts with Your Echo', duration: 162, currentTime: 2.034577, _nextSongPreloaded: false}
-player-core.js?v=1767391594:6062 🚀 Starting preload for: If Loving You's a Crime I'll Do the Time
-player-core.js?v=1767391594:6171 ✅ Preload READY: If Loving You's a Crime I'll Do the Time
-player-core.js?v=1767391594:3123 ⚠️ WAITING (preloaded) - Veri bekleniyor! {audioId: 'hlsAudioNext', currentTime: '145.6'}
-preloadedAudio.onwaiting @ player-core.js?v=1767391594:3123
-waiting
-seekTo @ player-core.js?v=1767391594:1975
-[Alpine] seekTo($event) @ VM3734:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3881
-handler4 @ livewire.js?id=df3a17f2:3183
-(anonymous) @ livewire.js?id=df3a17f2:3247
-(anonymous) @ livewire.js?id=df3a17f2:3185
-player-core.js?v=1767391594:3376 🎙️ SPOT PRELOAD at 70% (HLS.js preloaded): {song: 'Every Morning Starts with Your Echo', progress: '89.9%'}
-spot-player.js?v=1767638377:279 🎙️ SpotPlayer: Preloading spot...
-spot-player.js?v=1767638377:314 🎙️ SpotPlayer: Spot preloaded: İxtif 1 
-player-core.js?v=1767391594:3395 🔵 onended fired (preloaded path) {isCrossfading: false, isPlaying: true}
-player-core.js?v=1767391594:3400 🔵 Calling onTrackEnded from onended
-player-core.js?v=1767391594:2040 🟢 onTrackEnded called {isPlaying: true, isPlayingSpot: false}
-player-core.js?v=1767391594:2063 🟢 onTrackEnded proceeding to nextTrack
-player-core.js?v=1767391594:2084 🎙️ Spot check: {hasMuzibuSpotPlayer: true, isEnabled: true, listenedDuration: 161.932682}
-spot-player.js?v=1767638377:241 🎙️ SpotPlayer: Song counted. Progress: 1/1
-spot-player.js?v=1767638377:245 🎙️ SpotPlayer: Time for a spot!
-player-core.js?v=1767391594:2094 🎙️ Spot time! Fetching and playing spot...
-spot-player.js?v=1767638377:358 🎙️ SpotPlayer: Using preloaded spot (gapless)
-spot-player.js?v=1767638377:390 🎙️ SpotPlayer: Playing spot: İxtif 1 
-player-core.js?v=1767391594:2097 🎙️ Playing spot: İxtif 1 
-player-core.js?v=1767391594:2130 🎙️ playSpotAudio: Using PRELOADED audio (gapless)
-player-core.js?v=1767391594:2137 🎙️ playSpotAudio: İxtif 1  https://muzibu.com.tr/storage/tenant1001/2180/ixtif-1.mp3
-player-core.js?v=1767391594:2234 🎙️ Spot playing...
-player-core.js?v=1767391594:2192 🎙️ Spot playing: Preloading next song at 3s...
-player-core.js?v=1767391594:6058 ⏩ Preload SKIPPED - already ready: If Loving You's a Crime I'll Do the Time
-player-core.js?v=1767391594:2201 🎙️ Spot ended, continuing to next track
-spot-player.js?v=1767638377:480 🎙️ SpotPlayer: Spot ended normally
-player-core.js?v=1767391594:2267 🎙️ playNextFromQueue: Resuming music after spot
-player-core.js?v=1767391594:2281 🎙️ Using preloaded song after spot (gapless): If Loving You's a Crime I'll Do the Time
-player-core.js?v=1767391594:3057 ⚡ Using PRELOADED song (gapless): If Loving You's a Crime I'll Do the Time
-player-core.js?v=1767391594:3363 🚀 PRELOAD TRIGGER at 2s (HLS.js preloaded): {song: "If Loving You's a Crime I'll Do the Time", duration: 142, currentTime: 2.033383, _nextSongPreloaded: false}
-player-core.js?v=1767391594:6062 🚀 Starting preload for: It Takes Two
-player-core.js?v=1767391594:6171 ✅ Preload READY: It Takes Two
+spot-player.js?v=1767708631:565 🎙️ SpotPlayer: Script loaded! MuzibuSpotPlayer: object
+spot-player.js?v=1767708631:569 🎙️ SpotPlayer: DOM loading, waiting for DOMContentLoaded...
+spot-player.js?v=1767708631:571 🎙️ SpotPlayer: DOMContentLoaded fired, calling init()...
+spot-player.js?v=1767708631:56 🎙️ SpotPlayer: Initializing...
+spot-player.js?v=1767708631:84 🎙️ SpotPlayer: Fetching settings from /api/spot/settings...
+spot-player.js?v=1767708631:94 🎙️ SpotPlayer: Settings response: {enabled: true, songs_between: 1, corporate_id: 1, branch_id: 1, spot_is_paused: false, …}
+spot-player.js?v=1767708631:73 🎙️ SpotPlayer: Enabled. Songs between: 1, Current count: 0
+player-core.js?v=1767713326:604 🔍 PRELOAD API Response: {song_title: 'No Mountain Moves Me Like You Do', streamData_song_duration_raw: '02:46', streamData_song_duration_seconds_raw: undefined, song_duration_raw: 166, song_duration_seconds_raw: undefined}
+player-core.js?v=1767713326:695 🔍 After merge - duration: 166 animatedDuration: 166 currentSong: undefined
+player-core.js?v=1767713326:675 🎬 PRELOAD Duration set (after nextTick): 166 166
+player-core.js?v=1767713326:3670 💾 Using CACHED stream: No Mountain Moves Me Like You Do
+player-core.js?v=1767713326:6271 🚀 Starting preload for: smoke in fog
+player-core.js?v=1767713326:6255 ⏩ Preload SKIPPED - already in progress
+player-core.js?v=1767713326:6380 ✅ Preload READY: smoke in fog
+player-core.js?v=1767713326:4668 ⏳ WAITING (initial load): 0

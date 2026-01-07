@@ -10,7 +10,7 @@
  * @date 2025-12-10
  */
 
-const CACHE_VERSION = 'v1.0.5'; // Fixed: AJAX pagination bypass
+const CACHE_VERSION = 'v1.0.6'; // Fixed: Subscription checkout bypass
 const CACHE_NAME = `pwa-cache-${CACHE_VERSION}`;
 
 // Assets to cache (minimal - only critical)
@@ -71,6 +71,7 @@ self.addEventListener('fetch', (event) => {
 
     // 🎵 NEVER cache HLS/API streaming requests (they must be fresh!)
     // 🛒 NEVER cache AJAX pagination requests (they must be fresh!)
+    // 💳 NEVER cache subscription/payment pages (they must be fresh!)
     const url = event.request.url;
     const shouldNotCache =
         url.includes('/stream/') ||
@@ -78,6 +79,9 @@ self.addEventListener('fetch', (event) => {
         url.includes('.m3u8') ||
         url.includes('.ts') ||
         url.includes('/key') ||
+        url.includes('/subscription/') || // Subscription checkout
+        url.includes('/payment/') || // Payment pages
+        url.includes('/checkout/') || // Checkout pages
         (url.includes('/shop') && url.includes('page=')) || // Shop pagination
         url.includes('?page=') || // Generic pagination
         event.request.headers.get('X-Requested-With') === 'XMLHttpRequest'; // All AJAX requests

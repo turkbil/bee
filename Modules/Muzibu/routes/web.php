@@ -22,6 +22,30 @@ use Modules\Muzibu\App\Http\Controllers\Front\CertificateController;
 // - Middleware: ['web', InitializeTenancyByDomain]
 // - API routes in separate file: routes/api.php
 
+// 🔥 SUBSCRIPTION CHECKOUT - CLOSURE with Controller call
+Route::get('/subscription/checkout/{subscriptionId}', function($subscriptionId) {
+    // DEBUG: Dosyaya yaz (log çalışmazsa bile görelim)
+    file_put_contents(storage_path('logs/sub-debug.txt'), date('Y-m-d H:i:s') . " - ROUTE HIT: {$subscriptionId}, auth: " . (auth()->check() ? 'YES user=' . auth()->id() : 'NO') . "\n", FILE_APPEND);
+
+    // Auth kontrolü
+    if (!auth()->check()) {
+        file_put_contents(storage_path('logs/sub-debug.txt'), date('Y-m-d H:i:s') . " - NOT AUTH, redirecting to login\n", FILE_APPEND);
+        return redirect()->route('login');
+    }
+
+    file_put_contents(storage_path('logs/sub-debug.txt'), date('Y-m-d H:i:s') . " - AUTH OK, calling controller\n", FILE_APPEND);
+
+    // Controller'ı çağır
+    $controller = app(\Modules\Subscription\App\Http\Controllers\Front\SubscriptionCheckoutController::class);
+    return $controller->show($subscriptionId);
+})->name('muzibu.subscription.checkout');
+
+// 🔥 TEST - Closure ile test
+Route::get('/pay-subscription/{subscriptionId}', function($subscriptionId) {
+    file_put_contents(storage_path('logs/subscription-checkout-debug.log'), "CLOSURE CALLED: {$subscriptionId}\n", FILE_APPEND);
+    return "PAY SUBSCRIPTION WORKS! ID: {$subscriptionId}";
+})->name('muzibu.pay.subscription');
+
 // Home
 Route::get('/', [\Modules\Muzibu\app\Http\Controllers\Front\HomeController::class, 'index'])->name('muzibu.home');
 // Playlists
@@ -77,6 +101,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // My Subscriptions (Abonelik Geçmişi)
     Route::get('/my-subscriptions', [DashboardController::class, 'subscriptions'])->name('muzibu.my-subscriptions');
     Route::get('/api/my-subscriptions', [DashboardController::class, 'apiSubscriptions'])->name('muzibu.my-subscriptions.api');
+
+});
+Route::middleware(['auth', 'verified'])->group(function () {
 
     // Certificate Routes (Premium Sertifikası)
     Route::get('/my-certificate', [CertificateController::class, 'index'])->name('muzibu.certificate.index');

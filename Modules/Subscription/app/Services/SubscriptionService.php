@@ -21,6 +21,9 @@ class SubscriptionService
      */
     public function create(User $user, SubscriptionPlan $plan, string $cycle = 'monthly'): Subscription
     {
+        // 🧹 Delete pending payment subscriptions first
+        $this->deletePendingPayments($user);
+
         // Cancel existing active subscription if any
         $this->cancelExisting($user);
 
@@ -135,6 +138,26 @@ class SubscriptionService
     }
 
     /**
+     * 🧹 Delete pending payment subscriptions for a user
+     * Called before creating new subscription to avoid duplicates
+     */
+    protected function deletePendingPayments(User $user): int
+    {
+        $deletedCount = Subscription::where('user_id', $user->id)
+            ->where('status', 'pending_payment')
+            ->delete();
+
+        if ($deletedCount > 0) {
+            \Log::info("🧹 Eski bekleyen ödemeler silindi", [
+                'user_id' => $user->id,
+                'deleted_count' => $deletedCount
+            ]);
+        }
+
+        return $deletedCount;
+    }
+
+    /**
      * Calculate subscription end date
      */
     protected function calculateEndDate(string $cycle, int $trialDays = 0, ?Carbon $from = null): Carbon
@@ -229,6 +252,9 @@ class SubscriptionService
         if (!$duration) {
             return null;
         }
+
+        // 🧹 Delete pending payment subscriptions first
+        $this->deletePendingPayments($user);
 
         // Trial plan'dan ilk cycle bilgisini al
         $cycles = $trialPlan->billing_cycles;

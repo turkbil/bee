@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuufi SaaS - Tasarım Dokümantasyonu</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        code, pre { font-family: 'JetBrains Mono', monospace; }
+    </style>
+</head>
+<body class="bg-slate-950 text-gray-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center">
+                        <span class="text-white font-bold">T</span>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg">Tuufi SaaS</h1>
+                        <p class="text-sm text-gray-400">Tasarım Dokümantasyonu</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="px-3 py-1 bg-purple-900/50 text-purple-400 rounded-full text-sm font-medium">v1</span>
+                    <span class="text-gray-500 text-sm">7 Ocak 2026</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <!-- Overview -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-info-circle text-purple-500"></i>
+                Proje Özeti
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <h3 class="font-semibold text-purple-400 mb-4">Genel Bilgiler</h3>
+                    <table class="w-full text-sm">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 text-gray-400">Sektör</td>
+                            <td class="py-2 text-right">SaaS / Multi-Tenant Platform</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 text-gray-400">Tarz</td>
+                            <td class="py-2 text-right">Modern, Premium, Bold</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-2 text-gray-400">Hedef Kitle</td>
+                            <td class="py-2 text-right">Ajanslar, Kurumsal Firmalar</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-gray-400">Fingerprint</td>
+                            <td class="py-2 text-right font-mono text-purple-400">tf-saas-v1-p24</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <h3 class="font-semibold text-indigo-400 mb-4">Kullanılan Stiller</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-purple-900/30 text-purple-300 rounded-full text-sm">Modern</span>
+                        <span class="px-3 py-1 bg-purple-900/30 text-purple-300 rounded-full text-sm">Premium</span>
+                        <span class="px-3 py-1 bg-purple-900/30 text-purple-300 rounded-full text-sm">Bold Typography</span>
+                        <span class="px-3 py-1 bg-indigo-900/30 text-indigo-300 rounded-full text-sm">Spacious</span>
+                        <span class="px-3 py-1 bg-indigo-900/30 text-indigo-300 rounded-full text-sm">Full-Width</span>
+                        <span class="px-3 py-1 bg-blue-900/30 text-blue-300 rounded-full text-sm">Off-Canvas Menu</span>
+                        <span class="px-3 py-1 bg-blue-900/30 text-blue-300 rounded-full text-sm">Full-Screen Hero</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Design Tokens -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-palette text-purple-500"></i>
+                Design Token Sistemi
+            </h2>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Colors -->
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <h3 class="font-semibold text-purple-400 mb-4">Renk Paleti</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-purple-600"></div>
+                            <div>
+                                <div class="text-sm font-medium">Primary</div>
+                                <div class="text-xs text-gray-400">purple-600 (#9333ea)</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-indigo-600"></div>
+                            <div>
+                                <div class="text-sm font-medium">Secondary</div>
+                                <div class="text-xs text-gray-400">indigo-600 (#4f46e5)</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-blue-500"></div>
+                            <div>
+                                <div class="text-sm font-medium">Accent</div>
+                                <div class="text-xs text-gray-400">blue-500 (#3b82f6)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-800">
+                        <div class="text-sm font-medium mb-2">Gradient (#24 Royal Purple)</div>
+                        <div class="h-8 rounded-lg bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600"></div>
+                        <code class="text-xs text-gray-400 mt-2 block">from-purple-600 via-indigo-600 to-blue-600</code>
+                    </div>
+                </div>
+
+                <!-- Typography -->
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <h3 class="font-semibold text-indigo-400 mb-4">Tipografi (#17)</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="text-sm text-gray-400 mb-1">Heading Font</div>
+                            <div class="text-xl font-bold" style="font-family: Inter, sans-serif;">Inter</div>
+                            <code class="text-xs text-gray-500">font-heading</code>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-400 mb-1">Body Font</div>
+                            <div class="text-xl" style="font-family: Outfit, sans-serif;">Outfit</div>
+                            <code class="text-xs text-gray-500">font-body</code>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-800">
+                        <div class="text-sm font-medium mb-2">Hierarchy</div>
+                        <div class="space-y-1 text-xs text-gray-400">
+                            <div>H1: text-5xl/7xl font-black</div>
+                            <div>H2: text-4xl/5xl font-bold</div>
+                            <div>H3: text-xl font-bold</div>
+                            <div>Body: text-base/lg</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spacing & Buttons -->
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <h3 class="font-semibold text-blue-400 mb-4">Spacing & Buttons</h3>
+
+                    <div class="mb-4">
+                        <div class="text-sm text-gray-400 mb-2">Section Padding</div>
+                        <code class="text-xs text-green-400">py-16 md:py-24 lg:py-32</code>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="text-sm text-gray-400 mb-2">Container</div>
+                        <code class="text-xs text-green-400 block leading-relaxed">px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20</code>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="text-sm text-gray-400 mb-2">Border Radius</div>
+                        <code class="text-xs text-green-400">rounded-lg (buttons) / rounded-xl (cards)</code>
+                    </div>
+
+                    <div>
+                        <div class="text-sm text-gray-400 mb-2">Primary Button</div>
+                        <div class="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg font-medium text-sm inline-block">
+                            Örnek Buton
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Layout Selections -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-layer-group text-purple-500"></i>
+                Layout Seçimleri
+            </h2>
+
+            <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-800/50">
+                        <tr>
+                            <th class="px-6 py-3 text-left font-semibold">Section</th>
+                            <th class="px-6 py-3 text-left font-semibold">Layout #</th>
+                            <th class="px-6 py-3 text-left font-semibold">Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        <tr>
+                            <td class="px-6 py-4">Hero</td>
+                            <td class="px-6 py-4"><span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded text-xs">#4</span></td>
+                            <td class="px-6 py-4 text-gray-400">Full-screen gradient mesh + dev tipografi</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4">Features</td>
+                            <td class="px-6 py-4"><span class="px-2 py-1 bg-indigo-900/50 text-indigo-300 rounded text-xs">#3</span></td>
+                            <td class="px-6 py-4 text-gray-400">6-column icon grid with hover effects</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4">Modules</td>
+                            <td class="px-6 py-4"><span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded text-xs">#7</span></td>
+                            <td class="px-6 py-4 text-gray-400">Bento box grid (featured + smaller cards)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4">Stats</td>
+                            <td class="px-6 py-4"><span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded text-xs">#21</span></td>
+                            <td class="px-6 py-4 text-gray-400">Giant animated counters + gradient bg</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4">Pricing</td>
+                            <td class="px-6 py-4"><span class="px-2 py-1 bg-indigo-900/50 text-indigo-300 rounded text-xs">#2</span></td>
+                            <td class="px-6 py-4 text-gray-400">3-column comparison with toggle</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4">Testimonials</td>
+                            <td class="px-6 py-4"><span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded text-xs">#1</span></td>
+                            <td class="px-6 py-4 text-gray-400">3-column quote cards + client logos</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4">CTA</td>
+                            <td class="px-6 py-4"><span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded text-xs">#66</span></td>
+                            <td class="px-6 py-4 text-gray-400">Giant headline + gradient background + aurora</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4">Contact</td>
+                            <td class="px-6 py-4"><span class="px-2 py-1 bg-indigo-900/50 text-indigo-300 rounded text-xs">#1</span></td>
+                            <td class="px-6 py-4 text-gray-400">Sol info + Sağ form split layout</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4">Footer</td>
+                            <td class="px-6 py-4"><span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded text-xs">#1</span></td>
+                            <td class="px-6 py-4 text-gray-400">5-column classic with brand section</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4">Header/Nav</td>
+                            <td class="px-6 py-4"><span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded text-xs">#26</span></td>
+                            <td class="px-6 py-4 text-gray-400">Sticky shrink + color change on scroll</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section Order -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-list-ol text-purple-500"></i>
+                Section Sıralaması
+            </h2>
+
+            <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                <div class="text-sm text-gray-400 mb-4">Kullanılan: <span class="text-purple-400">#6 (Ürün Odaklı)</span></div>
+                <div class="flex flex-wrap gap-3">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded bg-purple-600 flex items-center justify-center text-xs">1</span>
+                        <span>Hero</span>
+                    </div>
+                    <i class="fas fa-arrow-right text-gray-600"></i>
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded bg-purple-600 flex items-center justify-center text-xs">2</span>
+                        <span>Features</span>
+                    </div>
+                    <i class="fas fa-arrow-right text-gray-600"></i>
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded bg-purple-600 flex items-center justify-center text-xs">3</span>
+                        <span>Modules</span>
+                    </div>
+                    <i class="fas fa-arrow-right text-gray-600"></i>
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded bg-purple-600 flex items-center justify-center text-xs">4</span>
+                        <span>Stats</span>
+                    </div>
+                    <i class="fas fa-arrow-right text-gray-600"></i>
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded bg-purple-600 flex items-center justify-center text-xs">5</span>
+                        <span>Pricing</span>
+                    </div>
+                    <i class="fas fa-arrow-right text-gray-600"></i>
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded bg-purple-600 flex items-center justify-center text-xs">6</span>
+                        <span>Testimonials</span>
+                    </div>
+                    <i class="fas fa-arrow-right text-gray-600"></i>
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded bg-purple-600 flex items-center justify-center text-xs">7</span>
+                        <span>CTA</span>
+                    </div>
+                    <i class="fas fa-arrow-right text-gray-600"></i>
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded bg-purple-600 flex items-center justify-center text-xs">8</span>
+                        <span>Contact</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hover Effects & Animations -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-magic text-purple-500"></i>
+                Hover Efektleri & Animasyonlar
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <h3 class="font-semibold text-purple-400 mb-4">Hover Efektleri</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded text-xs">#1</span>
+                            <div>
+                                <div class="font-medium">Icon Weight Değişimi</div>
+                                <div class="text-sm text-gray-400">far → fas (FontAwesome regular → solid)</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="px-2 py-1 bg-indigo-900/50 text-indigo-300 rounded text-xs">#2</span>
+                            <div>
+                                <div class="font-medium">Icon Büyütme</div>
+                                <div class="text-sm text-gray-400">transform: scale(1.15)</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded text-xs">#6</span>
+                            <div>
+                                <div class="font-medium">Text Kayma</div>
+                                <div class="text-sm text-gray-400">transform: translateX(8px)</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded text-xs">#12</span>
+                            <div>
+                                <div class="font-medium">Shadow Derinlik</div>
+                                <div class="text-sm text-gray-400">shadow-lg → shadow-xl purple glow</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <h3 class="font-semibold text-indigo-400 mb-4">Animated Backgrounds</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded text-xs">#10</span>
+                            <div>
+                                <div class="font-medium">Aurora Borealis</div>
+                                <div class="text-sm text-gray-400">Hero & CTA sections - soft pulsing aurora effect</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="px-2 py-1 bg-indigo-900/50 text-indigo-300 rounded text-xs">#1</span>
+                            <div>
+                                <div class="font-medium">Smooth Gradient Shift</div>
+                                <div class="text-sm text-gray-400">Stats section - 15s ease infinite</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded text-xs">#13</span>
+                            <div>
+                                <div class="font-medium">Floating Shapes</div>
+                                <div class="text-sm text-gray-400">Hero section - subtle geometric shapes</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mega Menu -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-bars text-purple-500"></i>
+                Navigasyon Stili
+            </h2>
+
+            <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-semibold text-purple-400 mb-4">Desktop Navigation</h3>
+                        <ul class="space-y-2 text-sm text-gray-400">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500"></i>
+                                Sticky header with shrink on scroll
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500"></i>
+                                Transparent → solid background transition
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500"></i>
+                                Scroll progress bar
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500"></i>
+                                Dark/Light mode toggle
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-indigo-400 mb-4">Mobile Navigation (#6)</h3>
+                        <ul class="space-y-2 text-sm text-gray-400">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500"></i>
+                                Off-canvas slide from right
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500"></i>
+                                Backdrop blur overlay
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500"></i>
+                                Icon + text menu items
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500"></i>
+                                Alpine.js transitions
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Leonardo.ai Görsel Promptları -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-image text-amber-500"></i>
+                Leonardo.ai Görsel Promptları
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Hero Background -->
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="font-medium text-white">hero-bg.jpg</span>
+                        <span class="text-xs text-slate-400">1472x832</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4">
+                        Abstract dark tech background, deep purple and blue gradients merging like aurora borealis,
+                        subtle geometric grid pattern overlay, floating translucent shapes with soft glow,
+                        modern SaaS platform aesthetic, 8k quality, ultra sharp, minimal noise,
+                        dark slate base color with purple (#9333ea) and indigo (#4f46e5) accent lights
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Abstract</span>
+                        <span class="px-2 py-1 bg-indigo-900/50 text-indigo-300 rounded">Negative: text, logos, faces</span>
+                    </div>
+                </div>
+
+                <!-- E-Commerce Module -->
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="font-medium text-white">module-ecommerce.jpg</span>
+                        <span class="text-xs text-slate-400">800x600</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4">
+                        Modern e-commerce dashboard interface on laptop screen, clean UI with product cards,
+                        shopping cart icon visible, purple accent colors matching brand (#9333ea),
+                        soft depth of field, professional office environment background blur,
+                        natural window light, Canon R5 85mm f/2.8, editorial style photograph
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Cinematic</span>
+                    </div>
+                </div>
+
+                <!-- Blog Module -->
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="font-medium text-white">module-blog.jpg</span>
+                        <span class="text-xs text-slate-400">400x300</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4">
+                        Content creation workspace, person typing on modern keyboard, blog post editor visible on screen,
+                        rich text formatting tools, minimalist desk setup, natural soft lighting,
+                        warm tones with purple accent elements, shallow depth of field,
+                        creative professional atmosphere, 35mm lens aesthetic
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Lifestyle</span>
+                    </div>
+                </div>
+
+                <!-- Portfolio Module -->
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="font-medium text-white">module-portfolio.jpg</span>
+                        <span class="text-xs text-slate-400">400x300</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4">
+                        Digital portfolio gallery on tablet device, grid of project thumbnails,
+                        creative agency workspace background, mood board and design samples visible,
+                        professional studio lighting, modern interior design,
+                        warm gray tones with purple accent lighting, 50mm lens
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Editorial</span>
+                    </div>
+                </div>
+
+                <!-- Subscription Module -->
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="font-medium text-white">module-subscription.jpg</span>
+                        <span class="text-xs text-slate-400">400x300</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4">
+                        Payment processing interface on mobile phone, credit card and digital wallet icons,
+                        secure transaction visual, modern fintech aesthetic,
+                        clean white background with subtle purple gradient,
+                        isometric 3D style illustration, vector art look, minimal shadows
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: 3D Illustration</span>
+                    </div>
+                </div>
+
+                <!-- Media Module -->
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="font-medium text-white">module-media.jpg</span>
+                        <span class="text-xs text-slate-400">400x300</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4">
+                        Cloud storage visualization, floating file icons and folder structures,
+                        data flow connections, modern abstract tech concept,
+                        dark background with glowing purple (#9333ea) and blue (#3b82f6) elements,
+                        3D render style, depth and dimension, clean composition
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: 3D Abstract</span>
+                    </div>
+                </div>
+
+                <!-- Testimonial Avatars -->
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="font-medium text-white">avatar-[1-3].jpg</span>
+                        <span class="text-xs text-slate-400">200x200</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4">
+                        Professional headshot portrait, business professional in modern office attire,
+                        confident smile, neutral gray background with soft gradient,
+                        studio lighting setup, eye-level camera angle,
+                        high-end corporate portrait style, Canon 85mm f/1.4 lens aesthetic,
+                        sharp focus on eyes, subtle skin texture
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Portrait</span>
+                        <span class="px-2 py-1 bg-green-900/50 text-green-300 rounded">Generate 3 variations</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fingerprint -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-fingerprint text-purple-500"></i>
+                Tasarım Fingerprint
+            </h2>
+
+            <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                <pre class="text-sm text-gray-300 overflow-x-auto"><code>{
+  "v1": {
+    "hash": "tf-saas-v1-p24",
+    "created": "2026-01-07",
+    "layouts": {
+      "hero": 4,
+      "features": 3,
+      "modules": 7,
+      "stats": 21,
+      "pricing": 2,
+      "testimonials": 1,
+      "cta": 66,
+      "contact": 1,
+      "footer": 1,
+      "header": 26
+    },
+    "colors": {
+      "palette": "#24 Royal Purple",
+      "primary": "purple-600",
+      "secondary": "indigo-600",
+      "accent": "blue-500"
+    },
+    "fonts": {
+      "heading": "Inter",
+      "body": "Outfit",
+      "combination": "#17"
+    },
+    "hover_effects": [1, 2, 6, 12],
+    "animated_bg": [1, 10, 13],
+    "mega_menu": 6,
+    "section_order": 6
+  }
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Technical Notes -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-code text-purple-500"></i>
+                Teknik Notlar
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <h3 class="font-semibold text-purple-400 mb-4">Kullanılan Teknolojiler</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-center gap-2">
+                            <i class="fab fa-css3-alt text-blue-400"></i>
+                            Tailwind CSS v4 (CDN)
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fab fa-js text-yellow-400"></i>
+                            Alpine.js 3.x
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-magic text-purple-400"></i>
+                            AOS (Animate on Scroll)
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fab fa-font-awesome text-blue-400"></i>
+                            FontAwesome 6.5.1
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fab fa-google text-red-400"></i>
+                            Google Fonts (Inter, Outfit)
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <h3 class="font-semibold text-indigo-400 mb-4">Önemli Notlar</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span>Dark/Light mode sistemi localStorage ile persist</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span>Scroll progress bar header'da gösterilir</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span>Pricing toggle yıllık/aylık fiyat değişimi</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span>Counter animasyonları scroll ile tetiklenir</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-500 mt-1"></i>
+                            <span>Responsive: Mobile-first yaklaşım</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 py-8">
+        <div class="container mx-auto px-6 text-center text-gray-500 text-sm">
+            <p>Tuufi SaaS Tasarım Dokümantasyonu - v1</p>
+            <p class="mt-2">Oluşturulma: 7 Ocak 2026 | Claude AI</p>
+        </div>
+    </footer>
+
+</body>
+</html>

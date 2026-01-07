@@ -67,6 +67,22 @@
         opacity: 0.7;
         transition: opacity 150ms ease;
     }
+
+    /* Default state: duration visible, remove button hidden */
+    .queue-item .queue-duration {
+        display: inline !important;
+    }
+    .queue-item .queue-remove-btn {
+        display: none !important;
+    }
+
+    /* Hover state: duration hidden, remove button visible */
+    .queue-item:hover .queue-duration {
+        display: none !important;
+    }
+    .queue-item:hover .queue-remove-btn {
+        display: flex !important;
+    }
 </style>
 
 <template x-if="typeof queue !== 'undefined'">
@@ -265,18 +281,21 @@
                         <p class="text-xs text-gray-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || (window.muzibuPlayerConfig?.frontLang?.general?.artist || 'Artist')"></p>
                     </div>
 
-                    {{-- Duration (hide on hover on desktop) --}}
-                    <div class="text-xs text-gray-600 flex-shrink-0 sm:group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)"></div>
-
-                    {{-- Remove button: Mobile always visible, Desktop hover only --}}
-                    <button
-                        x-show="queue.length > 1"
-                        @click.stop="removeFromQueue(index)"
-                        class="flex sm:opacity-0 sm:group-hover:opacity-100 w-6 h-6 items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all flex-shrink-0"
-                        title="{{ trans('muzibu::front.player.remove_from_queue') }}"
-                    >
-                        <i class="fas fa-times text-xs"></i>
-                    </button>
+                    {{-- Duration / Remove Button (Same Position - Toggle on Hover) --}}
+                    <div class="w-10 h-6 flex items-center justify-center flex-shrink-0 relative">
+                        {{-- Duration (Default State - hide on hover) --}}
+                        <span class="queue-duration text-xs text-gray-600" x-show="song.duration" x-text="formatTime(song.duration)"></span>
+                        {{-- Remove Button (Hover State) --}}
+                        <button
+                            x-show="queue.length > 1"
+                            @click.stop="removeFromQueue(index)"
+                            class="queue-remove-btn absolute inset-0 w-full h-full flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                            style="display: none;"
+                            title="{{ trans('muzibu::front.player.remove_from_queue') }}"
+                        >
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                    </div>
 
                     {{-- Drag handle (always visible) --}}
                     <div

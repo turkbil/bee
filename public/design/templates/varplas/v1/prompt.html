@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VARPLAS - Tasarim Dokumantasyonu</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
+        .gradient-text {
+            background: linear-gradient(135deg, #059669, #0ea5e9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-white min-h-screen">
+
+    <!-- Header -->
+    <header class="border-b border-slate-800">
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/20 text-emerald-400 text-sm rounded-full mb-2">
+                        <i class="fas fa-file-alt"></i>
+                        Tasarim Dokumantasyonu
+                    </span>
+                    <h1 class="text-3xl font-bold">VARPLAS - v1</h1>
+                    <p class="text-slate-400 mt-1">Endustriyel Depolama & Tasima Cozumleri</p>
+                </div>
+                <div class="text-right text-sm text-slate-500">
+                    <p>Olusturma: 7 Ocak 2026</p>
+                    <p>Fingerprint: <code class="text-emerald-400">v1-e7f3a2b9</code></p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12 space-y-12">
+
+        <!-- Sektor Analizi -->
+        <section class="bg-slate-900/50 rounded-2xl p-8 border border-slate-800">
+            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-industry text-emerald-500"></i>
+                Sektor Analizi
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="font-semibold text-emerald-400 mb-3">Sektor</h3>
+                    <p class="text-slate-300">Endustriyel Depolama ve Tasima - IBC Tank, Metal Varil, Plastik Varil uretim ve tedarik</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-emerald-400 mb-3">Hedef Kitle</h3>
+                    <p class="text-slate-300">B2B musteriler - kimya, gida, insaat, tarim sektorleri, uretim tesisleri</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-emerald-400 mb-3">Marka Karakteri</h3>
+                    <p class="text-slate-300">Guvenilir, profesyonel, kaliteli, cevreci, yenilikci</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-emerald-400 mb-3">Referans Siteler</h3>
+                    <p class="text-slate-300">vatanvaril.com, plastiksan.com.tr - Benzer sektor, ayni urun yelpazesi</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Design Tokens -->
+        <section class="bg-slate-900/50 rounded-2xl p-8 border border-slate-800">
+            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-palette text-sky-500"></i>
+                Design Token Sistemi
+            </h2>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Colors -->
+                <div>
+                    <h3 class="font-semibold text-sky-400 mb-4">Renk Paleti</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-500"></div>
+                            <div>
+                                <p class="font-medium">Primary - Green</p>
+                                <code class="text-xs text-slate-400">#10b981 (emerald-500)</code>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-sky-500"></div>
+                            <div>
+                                <p class="font-medium">Secondary - Sky</p>
+                                <code class="text-xs text-slate-400">#0ea5e9 (sky-500)</code>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-sky-500"></div>
+                            <div>
+                                <p class="font-medium">Gradient Primary</p>
+                                <code class="text-xs text-slate-400">emerald-500 → sky-500</code>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-500 mt-3">
+                        <strong>Gradient Preset:</strong> #4 Mint Fresh + #5 Sky Blue kombinasyonu
+                    </p>
+                </div>
+
+                <!-- Typography -->
+                <div>
+                    <h3 class="font-semibold text-sky-400 mb-4">Tipografi</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <p class="font-medium">Heading Font</p>
+                            <p class="text-sm text-slate-400">Outfit - Modern, bold display</p>
+                        </div>
+                        <div>
+                            <p class="font-medium">Body Font</p>
+                            <p class="text-sm text-slate-400">Inter - Clean, readable UI</p>
+                        </div>
+                        <div>
+                            <p class="font-medium">Font Cifti</p>
+                            <p class="text-sm text-slate-400">#12 Outfit + Inter (Modern kategorisi)</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 space-y-2 text-sm">
+                        <p><code class="text-emerald-400">H1:</code> text-5xl font-bold</p>
+                        <p><code class="text-emerald-400">H2:</code> text-4xl font-bold</p>
+                        <p><code class="text-emerald-400">H3:</code> text-xl font-semibold</p>
+                        <p><code class="text-emerald-400">Body:</code> text-base</p>
+                    </div>
+                </div>
+
+                <!-- Spacing & Components -->
+                <div>
+                    <h3 class="font-semibold text-sky-400 mb-4">Spacing & Components</h3>
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <p class="font-medium">Section Padding</p>
+                            <code class="text-slate-400">py-16 md:py-24 lg:py-32</code>
+                        </div>
+                        <div>
+                            <p class="font-medium">Container</p>
+                            <code class="text-slate-400">px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20</code>
+                        </div>
+                        <div>
+                            <p class="font-medium">Card Padding</p>
+                            <code class="text-slate-400">p-6 md:p-8</code>
+                        </div>
+                        <div>
+                            <p class="font-medium">Border Radius</p>
+                            <code class="text-slate-400">rounded-lg (buttons), rounded-xl (cards), rounded-2xl (sections)</code>
+                        </div>
+                        <div>
+                            <p class="font-medium">Shadow</p>
+                            <code class="text-slate-400">shadow-lg → shadow-xl (hover)</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Layout Secimleri -->
+        <section class="bg-slate-900/50 rounded-2xl p-8 border border-slate-800">
+            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-th-large text-amber-500"></i>
+                Layout Secimleri
+            </h2>
+
+            <div class="space-y-6">
+                <div class="border-l-4 border-amber-500 pl-4 py-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-semibold">Hero Section</h3>
+                        <span class="px-3 py-1 bg-amber-500/20 text-amber-400 text-sm rounded-full">#21 + #5</span>
+                    </div>
+                    <p class="text-slate-400 text-sm mt-1">Split Layout (Sol %60 metin + Sag %40 slider) + Full-screen image slider kombinasyonu</p>
+                    <p class="text-slate-500 text-xs mt-2">Animated gradient background (#1 Smooth Shift) + Floating particles</p>
+                </div>
+
+                <div class="border-l-4 border-emerald-500 pl-4 py-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-semibold">Products Section</h3>
+                        <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 text-sm rounded-full">#61</span>
+                    </div>
+                    <p class="text-slate-400 text-sm mt-1">Card-based Grid Layout - 3 column, image headers, hover lift, CTA buttons</p>
+                </div>
+
+                <div class="border-l-4 border-sky-500 pl-4 py-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-semibold">Features Section</h3>
+                        <span class="px-3 py-1 bg-sky-500/20 text-sky-400 text-sm rounded-full">#21</span>
+                    </div>
+                    <p class="text-slate-400 text-sm mt-1">Split Layout - Sol image + Floating stats card, Sag icerik + 2x2 feature grid</p>
+                </div>
+
+                <div class="border-l-4 border-purple-500 pl-4 py-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-semibold">About Section</h3>
+                        <span class="px-3 py-1 bg-purple-500/20 text-purple-400 text-sm rounded-full">#1 + #21</span>
+                    </div>
+                    <p class="text-slate-400 text-sm mt-1">Timeline mini (3 milestone) + Stats Grid (4 cards) - Dark gradient background</p>
+                </div>
+
+                <div class="border-l-4 border-pink-500 pl-4 py-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-semibold">Certificates Section</h3>
+                        <span class="px-3 py-1 bg-pink-500/20 text-pink-400 text-sm rounded-full">#61</span>
+                    </div>
+                    <p class="text-slate-400 text-sm mt-1">4-column card grid - Icon circles, centered text</p>
+                </div>
+
+                <div class="border-l-4 border-orange-500 pl-4 py-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-semibold">CTA Section</h3>
+                        <span class="px-3 py-1 bg-orange-500/20 text-orange-400 text-sm rounded-full">#1</span>
+                    </div>
+                    <p class="text-slate-400 text-sm mt-1">Split Form Layout - Sol icerik + Sag form card - Gradient background</p>
+                </div>
+
+                <div class="border-l-4 border-teal-500 pl-4 py-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-semibold">Contact Section</h3>
+                        <span class="px-3 py-1 bg-teal-500/20 text-teal-400 text-sm rounded-full">#26 + #46</span>
+                    </div>
+                    <p class="text-slate-400 text-sm mt-1">3-column contact cards + Full-width map with grayscale hover effect</p>
+                </div>
+
+                <div class="border-l-4 border-slate-500 pl-4 py-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-semibold">Footer</h3>
+                        <span class="px-3 py-1 bg-slate-500/20 text-slate-400 text-sm rounded-full">#1</span>
+                    </div>
+                    <p class="text-slate-400 text-sm mt-1">4-column classic - Company info, Quick links, Products, Contact - Dark bg</p>
+                </div>
+            </div>
+
+            <div class="mt-8 p-4 bg-slate-800/50 rounded-xl">
+                <h4 class="font-semibold text-amber-400 mb-2">Section Sirasi</h4>
+                <p class="text-slate-300 text-sm">
+                    <strong>#6 (Urun Odakli):</strong> Hero → Products → Features → About → Certificates → CTA → Contact → Footer
+                </p>
+            </div>
+        </section>
+
+        <!-- Mega Menu & Navigation -->
+        <section class="bg-slate-900/50 rounded-2xl p-8 border border-slate-800">
+            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-bars text-violet-500"></i>
+                Navigation & Mega Menu
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="font-semibold text-violet-400 mb-3">Mega Menu Stili</h3>
+                    <p class="text-slate-300 mb-2"><strong>#3 Icon Grid</strong></p>
+                    <p class="text-slate-400 text-sm">3 sutun icon-headed grid, kategori bazli urun listesi, hover animasyonlu ikonlar</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-violet-400 mb-3">Header Ozellikleri</h3>
+                    <ul class="text-slate-400 text-sm space-y-1">
+                        <li>- Sticky header (shrink on scroll)</li>
+                        <li>- Top bar (telefon, email, sosyal medya)</li>
+                        <li>- Dark/Light mode toggle</li>
+                        <li>- Glass morphism background (backdrop-blur)</li>
+                        <li>- Mobile hamburger menu</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hover Effects -->
+        <section class="bg-slate-900/50 rounded-2xl p-8 border border-slate-800">
+            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-mouse-pointer text-rose-500"></i>
+                Hover Efektleri
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="p-4 bg-slate-800/50 rounded-xl">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="px-2 py-1 bg-rose-500/20 text-rose-400 text-xs rounded">#1</span>
+                        <h4 class="font-semibold">Icon Weight</h4>
+                    </div>
+                    <p class="text-slate-400 text-sm">FontAwesome far → fas degisimi (light → solid)</p>
+                    <p class="text-slate-500 text-xs mt-2">Kullanim: Contact cards, feature icons, nav items</p>
+                </div>
+
+                <div class="p-4 bg-slate-800/50 rounded-xl">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="px-2 py-1 bg-rose-500/20 text-rose-400 text-xs rounded">#2</span>
+                        <h4 class="font-semibold">Icon Scale</h4>
+                    </div>
+                    <p class="text-slate-400 text-sm">transform: scale(1.15) - Icon buyutme</p>
+                    <p class="text-slate-500 text-xs mt-2">Kullanim: Product cards, mega menu items</p>
+                </div>
+
+                <div class="p-4 bg-slate-800/50 rounded-xl">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="px-2 py-1 bg-rose-500/20 text-rose-400 text-xs rounded">#6</span>
+                        <h4 class="font-semibold">Text Slide</h4>
+                    </div>
+                    <p class="text-slate-400 text-sm">translateX(8px) - Text saga kayma</p>
+                    <p class="text-slate-500 text-xs mt-2">Kullanim: Product card titles, CTA links</p>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-emerald-900/20 border border-emerald-800 rounded-xl">
+                <p class="text-emerald-300 text-sm">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <strong>KURAL:</strong> Card sabit kalir, sadece icerik (icon, text, arrow) hareket eder. Card'a scale/translate uygulanmaz.
+                </p>
+            </div>
+        </section>
+
+        <!-- Animated Background -->
+        <section class="bg-slate-900/50 rounded-2xl p-8 border border-slate-800">
+            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-magic text-cyan-500"></i>
+                Animated Background
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="font-semibold text-cyan-400 mb-3">Hero Background</h3>
+                    <p class="text-slate-300 mb-2"><strong>#1 Smooth Shift</strong></p>
+                    <code class="block text-xs text-slate-400 bg-slate-800 p-3 rounded-lg mt-2">
+                        background-size: 200% 200%;<br>
+                        animation: shift 15s ease infinite;<br>
+                        @keyframes shift {<br>
+                        &nbsp;&nbsp;0%, 100% { background-position: 0% 50%; }<br>
+                        &nbsp;&nbsp;50% { background-position: 100% 50%; }<br>
+                        }
+                    </code>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-cyan-400 mb-3">Floating Particles</h3>
+                    <p class="text-slate-300 mb-2"><strong>#11 CSS-only particles</strong></p>
+                    <p class="text-slate-400 text-sm">4 adet floating particle, farkli boyut ve animation-delay ile smooth hareket</p>
+                    <p class="text-slate-500 text-xs mt-2">Performans: GPU-accelerated (transform, opacity)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Leonardo.ai Gorsel Promptlari -->
+        <section class="bg-slate-900/50 rounded-2xl p-8 border border-slate-800">
+            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-image text-amber-500"></i>
+                Leonardo.ai Gorsel Promptlari
+            </h2>
+
+            <div class="space-y-6">
+
+                <!-- Hero Slider 1 - IBC Tank -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">hero-ibc-tank.jpg</span>
+                        <span class="text-xs text-slate-400">1472x832</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Industrial warehouse interior, rows of clean white IBC tanks (intermediate bulk containers) with blue metal cages, modern logistics facility, bright LED lighting from ceiling, concrete floor with safety markings, professional product photography style, Canon EOS R5 24-70mm f/2.8, commercial lighting setup, clean background, 8k quality, photorealistic
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Product Photography</span>
+                    </div>
+                </div>
+
+                <!-- Hero Slider 2 - Metal Varil -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">hero-metal-varil.jpg</span>
+                        <span class="text-xs text-slate-400">1472x832</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Stack of industrial steel drums in warehouse, blue and gray metal barrels with secure lids, organized storage facility, industrial environment, natural daylight from large windows, clean professional setting, product catalog style photography, Sony A7R IV 35mm f/1.8, shallow depth of field, subtle reflections on metal surface, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Industrial</span>
+                    </div>
+                </div>
+
+                <!-- Hero Slider 3 - Plastik Varil -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">hero-plastik-varil.jpg</span>
+                        <span class="text-xs text-slate-400">1472x832</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Blue HDPE plastic drums lined up in modern warehouse, various sizes from 30L to 220L, chemical-resistant containers, clean industrial environment, soft diffused lighting, professional product arrangement, Nikon Z9 50mm f/1.4, crisp details, neutral gray background, catalog photography style, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Product Photography</span>
+                    </div>
+                </div>
+
+                <!-- Product Card - IBC -->
+                <div class="border-l-4 border-emerald-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">product-ibc-card.jpg</span>
+                        <span class="text-xs text-slate-400">800x600</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Single IBC tank product shot, white cubic container with galvanized steel cage, wooden pallet base, clean white studio background, soft box lighting from multiple angles, e-commerce product photography, Canon R5 100mm f/2.8 macro, minimal shadows, high contrast, packshot style, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-emerald-900/50 text-emerald-300 rounded">Style: E-commerce</span>
+                    </div>
+                </div>
+
+                <!-- Product Card - Metal -->
+                <div class="border-l-4 border-emerald-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">product-metal-card.jpg</span>
+                        <span class="text-xs text-slate-400">800x600</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Steel drum 200L with lid and locking ring, blue painted surface with subtle metallic sheen, industrial product photography, clean white background, professional studio lighting, detailed texture capture, Sony A7R V 90mm f/2.8, packshot composition, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-emerald-900/50 text-emerald-300 rounded">Style: E-commerce</span>
+                    </div>
+                </div>
+
+                <!-- Product Card - Plastik -->
+                <div class="border-l-4 border-emerald-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">product-plastik-card.jpg</span>
+                        <span class="text-xs text-slate-400">800x600</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Blue HDPE plastic barrel 220L, tight-head drum design, UN certified container, clean product photography, gradient white to light gray background, soft reflections, professional lighting setup, Canon R5 85mm f/1.4, sharp focus throughout, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-emerald-900/50 text-emerald-300 rounded">Style: E-commerce</span>
+                    </div>
+                </div>
+
+                <!-- Features Section - Factory -->
+                <div class="border-l-4 border-sky-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">features-factory.jpg</span>
+                        <span class="text-xs text-slate-400">1024x768</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Modern industrial facility exterior, clean manufacturing plant with company logo, green landscaping around building, blue sky with soft clouds, professional corporate architecture photography, drone perspective showing scale, DJI Mavic 3 Pro, golden hour lighting, corporate annual report style, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-sky-900/50 text-sky-300 rounded">Style: Corporate</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Fingerprint -->
+        <section class="bg-slate-900/50 rounded-2xl p-8 border border-slate-800">
+            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-fingerprint text-pink-500"></i>
+                Fingerprint Kaydi
+            </h2>
+
+            <div class="bg-slate-800 rounded-xl p-4 font-mono text-sm">
+                <pre class="text-slate-300 overflow-x-auto">{
+  "version": "v1",
+  "hash": "e7f3a2b9",
+  "timestamp": "2026-01-07T15:30:00Z",
+  "layouts": {
+    "hero": "21+5 (Split + Slider)",
+    "products": "61 (Card Grid)",
+    "features": "21 (Split Layout)",
+    "about": "1+21 (Timeline + Stats)",
+    "certificates": "61 (Card Grid)",
+    "cta": "1 (Split Form)",
+    "contact": "26+46 (Cards + Map)",
+    "footer": "1 (4-column)"
+  },
+  "colors": {
+    "palette": "Green + Sky",
+    "primary": "emerald-500 (#10b981)",
+    "secondary": "sky-500 (#0ea5e9)",
+    "gradient": "#4 + #5 (Mint Fresh + Sky Blue)"
+  },
+  "fonts": {
+    "heading": "Outfit",
+    "body": "Inter",
+    "preset": "#12 (Modern kategori)"
+  },
+  "hover": ["#1 Icon Weight", "#2 Icon Scale", "#6 Text Slide"],
+  "megaMenu": "#3 Icon Grid",
+  "animatedBg": "#1 Smooth Shift + #11 Particles"
+}</pre>
+            </div>
+        </section>
+
+        <!-- Teknik Notlar -->
+        <section class="bg-slate-900/50 rounded-2xl p-8 border border-slate-800">
+            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <i class="fas fa-code text-indigo-500"></i>
+                Teknik Notlar
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="font-semibold text-indigo-400 mb-3">Kullanilan Teknolojiler</h3>
+                    <ul class="text-slate-400 text-sm space-y-2">
+                        <li><i class="fas fa-check text-emerald-500 mr-2"></i>Tailwind CSS v4 (CDN)</li>
+                        <li><i class="fas fa-check text-emerald-500 mr-2"></i>Alpine.js (interaktivite)</li>
+                        <li><i class="fas fa-check text-emerald-500 mr-2"></i>Swiper.js (slider)</li>
+                        <li><i class="fas fa-check text-emerald-500 mr-2"></i>AOS (scroll animasyonlar)</li>
+                        <li><i class="fas fa-check text-emerald-500 mr-2"></i>FontAwesome 6.5 (ikonlar)</li>
+                        <li><i class="fas fa-check text-emerald-500 mr-2"></i>Google Fonts (Inter + Outfit)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-indigo-400 mb-3">Responsive Breakpoints</h3>
+                    <ul class="text-slate-400 text-sm space-y-2">
+                        <li><code class="text-emerald-400">sm:</code> 640px</li>
+                        <li><code class="text-emerald-400">md:</code> 768px</li>
+                        <li><code class="text-emerald-400">lg:</code> 1024px</li>
+                        <li><code class="text-emerald-400">xl:</code> 1280px</li>
+                        <li><code class="text-emerald-400">2xl:</code> 1536px</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-8 p-4 bg-indigo-900/20 border border-indigo-800 rounded-xl">
+                <h4 class="font-semibold text-indigo-300 mb-2">Dark Mode</h4>
+                <p class="text-slate-400 text-sm">
+                    localStorage ile tercih saklanir. Sistem tercihine gore varsayilan. class="dark" ile toggle.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 py-8 mt-12">
+        <div class="container mx-auto px-6 text-center text-slate-500 text-sm">
+            <p>VARPLAS Tasarim Dokumantasyonu - v1</p>
+            <p class="mt-1">Olusturulma: 7 Ocak 2026 | Claude AI ile tasarlandi</p>
+        </div>
+    </footer>
+
+</body>
+</html>

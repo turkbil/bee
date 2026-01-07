@@ -44,14 +44,19 @@
         .mega-menu {
             opacity: 0;
             visibility: hidden;
-            transform: translateY(10px);
             transition: all 0.3s ease;
+        }
+        .mega-menu.mega-menu-center {
+            transform: translate(-50%, 10px);
         }
         .menu-trigger:hover .mega-menu,
         .mega-menu:hover {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0);
+        }
+        .menu-trigger:hover .mega-menu.mega-menu-center,
+        .mega-menu.mega-menu-center:hover {
+            transform: translate(-50%, 0);
         }
 
         /* Subtle Hover Effects */
@@ -240,7 +245,7 @@
                                 <i class="fas fa-chevron-down text-[10px] opacity-50"></i>
                             </button>
                             <!-- Mega Menu -->
-                            <div class="mega-menu absolute top-full left-0 pt-4 w-[600px]">
+                            <div class="mega-menu mega-menu-center absolute top-full left-1/2 pt-4 w-[600px]">
                                 <div class="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 p-6 grid grid-cols-2 gap-6">
                                     <div>
                                         <h4 class="text-xs font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-4">Şirket</h4>
@@ -299,7 +304,7 @@
                                 <i class="fas fa-chevron-down text-[10px] opacity-50"></i>
                             </button>
                             <!-- Mega Menu -->
-                            <div class="mega-menu absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[800px]">
+                            <div class="mega-menu mega-menu-center absolute top-full left-1/2 pt-4 w-[800px]">
                                 <div class="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 p-6">
                                     <div class="grid grid-cols-3 gap-4">
                                         <a href="#" class="group p-5 rounded-xl border border-zinc-100 dark:border-zinc-800 hover:border-brand-500/50 dark:hover:border-brand-500/50 transition-all">

@@ -1,0 +1,45 @@
+{
+    "unimad-madencilik\/v1": {
+        "marka": "Unimad"
+    },
+    "madencilik\/v2": {
+        "marka": "Unimad"
+    },
+    "madencilik\/v1": {
+        "marka": "Unimad"
+    },
+    "varilsan-group-holding\/v2": {
+        "marka": "Varilsan"
+    },
+    "endustriyel-ambalaj\/v1": {
+        "marka": "Varilsan"
+    },
+    "varilsan-group-holding\/v1": {
+        "marka": "Varilsan"
+    },
+    "unimad-madencilik\/v4": {
+        "favorite": true,
+        "rating": 5,
+        "marka": "Unimad"
+    },
+    "varilsan-grup\/v2": {
+        "rating": 5,
+        "favorite": true,
+        "marka": "Varilsan"
+    },
+    "unimad-madencilik\/v2": {
+        "marka": "Unimad"
+    },
+    "varplas\/v1": {
+        "marka": "Varplas"
+    },
+    "tuufi-saas\/v1": {
+        "marka": "Tuufi"
+    },
+    "qrompt\/v1": {
+        "marka": "Qrompt"
+    },
+    "qrompt\/v2": {
+        "marka": "Qrompt"
+    }
+}

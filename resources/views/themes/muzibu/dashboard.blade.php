@@ -357,7 +357,7 @@
             </div>
         @endif
 
-        {{-- Ödeme Bekleyen (Varsa) --}}
+        {{-- Ödeme Bekleyen - DEVRE DIŞI (checkout route sorunu çözülene kadar)
         @if(!empty($subscriptionInfo['pending_payment']))
         <div class="bg-orange-500/10 border border-orange-500/30 rounded-xl overflow-hidden mb-6 sm:mb-8">
             <div class="p-4">
@@ -371,7 +371,7 @@
                         <span class="text-white font-medium">{{ $pp['plan_name'] }}</span>
                         <span class="text-gray-400 text-sm ml-1">({{ $pp['cycle_label'] ?? '' }})</span>
                     </div>
-                    <a href="/subscription/checkout/{{ $pp['id'] }}" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition">
+                    <a href="{{ route('subscription.checkout', ['subscriptionId' => $pp['id']]) }}" data-spa="false" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition cursor-pointer inline-block">
                         Ödeme Yap
                     </a>
                 </div>
@@ -379,6 +379,7 @@
             </div>
         </div>
         @endif
+        --}}
 
         {{-- Quick Actions --}}
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">

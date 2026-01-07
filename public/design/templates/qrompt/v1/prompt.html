@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qrompt v1 - Tasarım Dokümantasyonu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Roboto', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
+        .gradient-text { background: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    </style>
+</head>
+<body class="bg-slate-950 text-white min-h-screen">
+    <div class="max-w-6xl mx-auto px-6 py-12">
+
+        <!-- Header -->
+        <header class="mb-12 border-b border-slate-800 pb-8">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
+                    <i class="fas fa-terminal text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold gradient-text">Qrompt</h1>
+                    <p class="text-slate-400">AI Prompt Portal Tasarımı</p>
+                </div>
+            </div>
+            <div class="flex flex-wrap gap-3 mt-4">
+                <span class="px-3 py-1 bg-purple-600/20 text-purple-400 rounded-lg text-sm">v1</span>
+                <span class="px-3 py-1 bg-blue-600/20 text-blue-400 rounded-lg text-sm">Tech / SaaS</span>
+                <span class="px-3 py-1 bg-emerald-600/20 text-emerald-400 rounded-lg text-sm">Portal / Bilgi</span>
+                <span class="px-3 py-1 bg-amber-600/20 text-amber-400 rounded-lg text-sm">7 Ocak 2026</span>
+            </div>
+        </header>
+
+        <!-- Fingerprint -->
+        <section class="mb-12 bg-slate-900/50 border border-slate-800 rounded-2xl p-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <i class="fas fa-fingerprint text-purple-400"></i>
+                Tasarım Fingerprint
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <p class="text-sm text-slate-400 mb-1">Hash</p>
+                    <p class="font-mono text-purple-400">q7r0mpt-v1-p9u3b6</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <p class="text-sm text-slate-400 mb-1">Kombinasyon</p>
+                    <p class="font-mono text-blue-400">Hero#95 + Color#25 + Font#11</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Design Tokens -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+                <i class="fas fa-palette text-purple-400"></i>
+                Design Token Sistemi
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Colors -->
+                <div class="bg-slate-900/50 border border-slate-800 rounded-2xl p-6">
+                    <h3 class="font-semibold mb-4 text-lg">Renk Paleti (#25 Neon Glow)</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-purple-600"></div>
+                            <div>
+                                <p class="text-sm font-medium">Primary</p>
+                                <p class="text-xs text-slate-400">purple-600 (#9333ea)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-blue-600"></div>
+                            <div>
+                                <p class="text-sm font-medium">Secondary</p>
+                                <p class="text-xs text-slate-400">blue-600 (#2563eb)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600"></div>
+                            <div>
+                                <p class="text-sm font-medium">Gradient</p>
+                                <p class="text-xs text-slate-400">from-purple-600 to-blue-600</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-slate-950 border border-slate-700"></div>
+                            <div>
+                                <p class="text-sm font-medium">Background</p>
+                                <p class="text-xs text-slate-400">slate-950 (#020617)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-slate-900 border border-slate-700"></div>
+                            <div>
+                                <p class="text-sm font-medium">Surface</p>
+                                <p class="text-xs text-slate-400">slate-900 (#0f172a)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Typography -->
+                <div class="bg-slate-900/50 border border-slate-800 rounded-2xl p-6">
+                    <h3 class="font-semibold mb-4 text-lg">Font Çifti (#11)</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-sm text-slate-400 mb-1">Heading Font</p>
+                            <p class="text-2xl font-semibold" style="font-family: 'Outfit', sans-serif;">Outfit</p>
+                            <p class="text-xs text-slate-500 mt-1">Modern, geometrik, Tech/SaaS için ideal</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-400 mb-1">Body Font</p>
+                            <p class="text-2xl" style="font-family: 'Roboto', sans-serif;">Roboto</p>
+                            <p class="text-xs text-slate-500 mt-1">Temiz, nötr, okunabilir</p>
+                        </div>
+                        <div class="border-t border-slate-700 pt-4 mt-4">
+                            <p class="text-sm text-slate-400 mb-2">Typography Scale</p>
+                            <ul class="text-sm space-y-1 text-slate-300">
+                                <li>H1: text-4xl/5xl/6xl font-bold</li>
+                                <li>H2: text-3xl/4xl font-bold</li>
+                                <li>H3: text-xl font-semibold</li>
+                                <li>Body: text-base</li>
+                                <li>Small: text-sm text-slate-400</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spacing -->
+                <div class="bg-slate-900/50 border border-slate-800 rounded-2xl p-6">
+                    <h3 class="font-semibold mb-4 text-lg">Spacing Sistemi</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex justify-between">
+                            <span class="text-slate-400">Section Padding:</span>
+                            <span class="font-mono text-blue-400">py-20 md:py-32</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-slate-400">Container:</span>
+                            <span class="font-mono text-blue-400">px-4 sm:px-6 lg:px-12 xl:px-16</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-slate-400">Card Padding:</span>
+                            <span class="font-mono text-blue-400">p-6 / p-8</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-slate-400">Grid Gap:</span>
+                            <span class="font-mono text-blue-400">gap-6 / gap-8</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Border & Shadow -->
+                <div class="bg-slate-900/50 border border-slate-800 rounded-2xl p-6">
+                    <h3 class="font-semibold mb-4 text-lg">Border & Shadow</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex justify-between">
+                            <span class="text-slate-400">Card Radius:</span>
+                            <span class="font-mono text-blue-400">rounded-2xl</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-slate-400">Button Radius:</span>
+                            <span class="font-mono text-blue-400">rounded-xl</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-slate-400">Border Color:</span>
+                            <span class="font-mono text-blue-400">border-slate-800</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-slate-400">Hover Glow:</span>
+                            <span class="font-mono text-blue-400">border-primary-500/50</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Layout Selections -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+                <i class="fas fa-layer-group text-blue-400"></i>
+                Layout Seçimleri
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Hero -->
+                <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-medium">Hero Section</h4>
+                        <span class="px-2 py-1 bg-purple-600/20 text-purple-400 text-xs rounded">#95 Search-Focused</span>
+                    </div>
+                    <p class="text-slate-400 text-sm">
+                        Arama odaklı hero. Büyük başlık, merkezi arama kutusu, popüler tag'ler, animated gradient background.
+                        Portal sitesi için kullanıcıyı hemen aramaya yönlendiren yapı.
+                    </p>
+                </div>
+
+                <!-- Navigation -->
+                <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-medium">Navigation</h4>
+                        <span class="px-2 py-1 bg-purple-600/20 text-purple-400 text-xs rounded">Sol Sidebar + Top Header</span>
+                    </div>
+                    <p class="text-slate-400 text-sm">
+                        Desktop: 264px genişliğinde sabit sol sidebar (kategoriler, favoriler, kredi bilgisi).
+                        Mobil: Hamburger menu ile slide-in drawer. Top header'da arama, bildirim, kullanıcı menüsü.
+                    </p>
+                </div>
+
+                <!-- Categories -->
+                <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-medium">Categories Section</h4>
+                        <span class="px-2 py-1 bg-blue-600/20 text-blue-400 text-xs rounded">#3 Icon Grid</span>
+                    </div>
+                    <p class="text-slate-400 text-sm">
+                        6 sütunlu responsive grid (2→3→4→6). Her kategori kartında gradient ikonlu arka plan,
+                        başlık ve prompt sayısı. Hover'da border glow efekti.
+                    </p>
+                </div>
+
+                <!-- Featured Prompts -->
+                <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-medium">Featured Prompts</h4>
+                        <span class="px-2 py-1 bg-blue-600/20 text-blue-400 text-xs rounded">#1 Card Grid</span>
+                    </div>
+                    <p class="text-slate-400 text-sm">
+                        3 sütunlu grid. Her kart: Yazar bilgisi, AI platform badge, başlık, açıklama, tag'ler,
+                        beğeni/yorum sayısı, kullanım istatistiği. Filtre butonları ile kategori seçimi.
+                    </p>
+                </div>
+
+                <!-- How It Works -->
+                <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-medium">How It Works</h4>
+                        <span class="px-2 py-1 bg-emerald-600/20 text-emerald-400 text-xs rounded">#26 Numbered Horizontal</span>
+                    </div>
+                    <p class="text-slate-400 text-sm">
+                        3 adımlı yatay akış. Gradient numaralı kutular, bağlayıcı çizgiler.
+                        Keşfet → Kullan → Paylaş basit kullanıcı yolculuğu.
+                    </p>
+                </div>
+
+                <!-- Pricing -->
+                <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-medium">Pricing Section</h4>
+                        <span class="px-2 py-1 bg-amber-600/20 text-amber-400 text-xs rounded">3-Column Cards</span>
+                    </div>
+                    <p class="text-slate-400 text-sm">
+                        Kredi paketleri: Başlangıç (49₺/50 kredi), Pro (149₺/200 kredi - popüler badge),
+                        Kurumsal (499₺/1000 kredi). Özellik listesi, tasarruf yüzdeleri.
+                    </p>
+                </div>
+
+                <!-- Footer -->
+                <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-medium">Footer</h4>
+                        <span class="px-2 py-1 bg-slate-600/20 text-slate-400 text-xs rounded">#1 Multi-Column</span>
+                    </div>
+                    <p class="text-slate-400 text-sm">
+                        6 sütunlu footer: Logo + açıklama + sosyal medya (2 sütun), Keşfet, Topluluk, Şirket, Yasal.
+                        Alt bar'da copyright ve dil seçici.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hover Effects -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+                <i class="fas fa-mouse-pointer text-emerald-400"></i>
+                Hover Efektleri
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-5">
+                    <span class="px-2 py-1 bg-purple-600/20 text-purple-400 text-xs rounded mb-3 inline-block">#2 İkon Büyüme</span>
+                    <p class="text-slate-400 text-sm">
+                        Kategori ve prompt kartlarında ikon hover'da scale(1.15) ile büyüyor.
+                    </p>
+                </div>
+                <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-5">
+                    <span class="px-2 py-1 bg-blue-600/20 text-blue-400 text-xs rounded mb-3 inline-block">#6 Text Kayma</span>
+                    <p class="text-slate-400 text-sm">
+                        Kart başlıkları hover'da translateX(4px) ile sağa kayıyor.
+                    </p>
+                </div>
+                <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-5">
+                    <span class="px-2 py-1 bg-emerald-600/20 text-emerald-400 text-xs rounded mb-3 inline-block">#13 Border Glow</span>
+                    <p class="text-slate-400 text-sm">
+                        Kartlar hover'da border-primary-500/50 ve subtle purple glow alıyor.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Animated Background -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+                <i class="fas fa-wand-magic-sparkles text-amber-400"></i>
+                Animated Background
+            </h2>
+
+            <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h4 class="font-medium">Hero Section Background</h4>
+                    <span class="px-2 py-1 bg-amber-600/20 text-amber-400 text-xs rounded">#1 Smooth Shift</span>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 font-mono text-sm text-blue-300">
+                    <pre>background: linear-gradient(135deg, #9333ea 0%, #3b82f6 50%, #9333ea 100%);
+background-size: 200% 200%;
+animation: gradientShift 8s ease infinite;
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}</pre>
+                </div>
+                <p class="text-slate-400 text-sm mt-4">
+                    Mor-mavi gradient sürekli hareket ediyor. Floating geometric elementler (border-only kutular)
+                    farklı hızlarda yukarı-aşağı hareket ediyor (float animation, 6s, staggered delays).
+                </p>
+            </div>
+        </section>
+
+        <!-- Section Order -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+                <i class="fas fa-list-ol text-pink-400"></i>
+                Section Sıralaması
+            </h2>
+
+            <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-6">
+                <p class="text-slate-400 mb-4">Seçilen sıralama: <span class="text-blue-400">#6 (Ürün Odaklı)</span></p>
+                <ol class="space-y-2">
+                    <li class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-purple-600/20 text-purple-400 flex items-center justify-center text-sm font-medium">1</span>
+                        <span>Hero (Search + CTA)</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-purple-600/20 text-purple-400 flex items-center justify-center text-sm font-medium">2</span>
+                        <span>Stats Bar (Sayılar)</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-purple-600/20 text-purple-400 flex items-center justify-center text-sm font-medium">3</span>
+                        <span>Categories (Kategoriler)</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-purple-600/20 text-purple-400 flex items-center justify-center text-sm font-medium">4</span>
+                        <span>Featured Prompts (Popüler)</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-purple-600/20 text-purple-400 flex items-center justify-center text-sm font-medium">5</span>
+                        <span>How It Works (Nasıl Çalışır)</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-purple-600/20 text-purple-400 flex items-center justify-center text-sm font-medium">6</span>
+                        <span>Pricing (Kredi Paketleri)</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-purple-600/20 text-purple-400 flex items-center justify-center text-sm font-medium">7</span>
+                        <span>Testimonials (Yorumlar)</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-purple-600/20 text-purple-400 flex items-center justify-center text-sm font-medium">8</span>
+                        <span>CTA (Aksiyon Çağrısı)</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-purple-600/20 text-purple-400 flex items-center justify-center text-sm font-medium">9</span>
+                        <span>Footer</span>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Special Features -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+                <i class="fas fa-star text-yellow-400"></i>
+                Özel Özellikler
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-5">
+                    <h4 class="font-medium mb-2 flex items-center gap-2">
+                        <i class="fas fa-table-columns text-blue-400"></i>
+                        Sol Sidebar
+                    </h4>
+                    <p class="text-slate-400 text-sm">
+                        264px genişliğinde sabit sidebar. Logo, ana navigasyon, hesap linkleri (favoriler, kaydedilenler, geçmiş),
+                        kredi durumu widget'ı. Mobilde hamburger ile açılan drawer.
+                    </p>
+                </div>
+                <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-5">
+                    <h4 class="font-medium mb-2 flex items-center gap-2">
+                        <i class="fas fa-gem text-purple-400"></i>
+                        Kredi Sistemi
+                    </h4>
+                    <p class="text-slate-400 text-sm">
+                        Sidebar'da kredi göstergesi, pricing section'da 3 farklı paket (Başlangıç, Pro, Kurumsal).
+                        Tasarruf yüzdeleri, özellik karşılaştırması.
+                    </p>
+                </div>
+                <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-5">
+                    <h4 class="font-medium mb-2 flex items-center gap-2">
+                        <i class="fas fa-search text-emerald-400"></i>
+                        Çift Arama
+                    </h4>
+                    <p class="text-slate-400 text-sm">
+                        Hero'da büyük, dikkat çekici arama kutusu. Header'da her zaman erişilebilir kompakt arama.
+                        Keyboard shortcut (⌘K) desteği.
+                    </p>
+                </div>
+                <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-5">
+                    <h4 class="font-medium mb-2 flex items-center gap-2">
+                        <i class="fas fa-tags text-amber-400"></i>
+                        AI Platform Badge'leri
+                    </h4>
+                    <p class="text-slate-400 text-sm">
+                        Prompt kartlarında ChatGPT (mavi), Midjourney (pembe), Claude (mor) gibi platform etiketleri.
+                        Filtreleme için kategori butonları.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Leonardo.ai Image Prompts -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+                <i class="fas fa-image text-amber-400"></i>
+                Leonardo.ai Görsel Promptları
+            </h2>
+
+            <div class="space-y-6">
+                <!-- User Avatars -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">user-avatar-*.jpg (6 adet)</span>
+                        <span class="text-xs text-slate-400">256x256</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Professional headshot portrait, diverse ethnicity, friendly smile, neutral background,
+                        soft studio lighting, Canon EOS R5 85mm f/1.4, shallow depth of field, natural skin texture,
+                        corporate but approachable, high resolution, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Photorealistic</span>
+                    </div>
+                </div>
+
+                <!-- Testimonial Users -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">testimonial-user-*.jpg (3 adet)</span>
+                        <span class="text-xs text-slate-400">256x256</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Professional business portrait, modern office environment visible in background blur,
+                        confident expression, smart casual attire, natural window lighting, Canon R5 50mm f/1.8,
+                        bokeh background, warm color grade, authentic look, not overly polished, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Photorealistic</span>
+                    </div>
+                </div>
+
+                <!-- Abstract Tech Background (Optional) -->
+                <div class="border-l-4 border-slate-500 pl-4 bg-slate-800/30 rounded-r-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-white">tech-abstract-bg.jpg (Opsiyonel)</span>
+                        <span class="text-xs text-slate-400">1472x832</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Abstract technology background, deep purple and blue gradient, floating geometric shapes,
+                        soft glow particles, neural network visualization subtle, dark moody atmosphere,
+                        minimal and clean, no text, suitable for website hero section, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Kino XL</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Digital Art</span>
+                        <span class="px-2 py-1 bg-slate-700 text-slate-300 rounded">Not: CSS gradient tercih edildi</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-emerald-900/20 border border-emerald-800 rounded-xl">
+                <p class="text-emerald-400 text-sm">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    <strong>Not:</strong> Bu tasarımda ağırlıklı olarak CSS gradient ve minimal görsel kullanılmıştır.
+                    Görseller sadece kullanıcı avatarları için gereklidir. Placeholder olarak picsum.photos kullanılmıştır.
+                </p>
+            </div>
+        </section>
+
+        <!-- Technical Notes -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+                <i class="fas fa-code text-cyan-400"></i>
+                Teknik Notlar
+            </h2>
+
+            <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-6">
+                <ul class="space-y-3 text-slate-300">
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-500 mt-1"></i>
+                        <span><strong>Tailwind CSS v4 (CDN):</strong> Tüm styling Tailwind ile yapıldı</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-500 mt-1"></i>
+                        <span><strong>Alpine.js:</strong> Sidebar toggle, dropdown menüler, kategori filtreleri</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-500 mt-1"></i>
+                        <span><strong>AOS:</strong> Scroll animasyonları (fade-up, staggered delays)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-500 mt-1"></i>
+                        <span><strong>FontAwesome 6.5:</strong> Solid (fas), Regular (far), Brands (fab) ikonlar</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-500 mt-1"></i>
+                        <span><strong>Google Fonts:</strong> Outfit (heading), Roboto (body)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-500 mt-1"></i>
+                        <span><strong>Dark Mode:</strong> Varsayılan dark theme (slate-950 background)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-500 mt-1"></i>
+                        <span><strong>Responsive:</strong> Mobile-first, lg:ml-64 sidebar offset</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check text-green-500 mt-1"></i>
+                        <span><strong>Custom Scrollbar:</strong> Mor tema scrollbar (WebKit)</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-slate-800 pt-8 mt-12">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-slate-500 text-sm">
+                    Qrompt v1 Tasarım Dokümantasyonu | Oluşturulma: 7 Ocak 2026
+                </p>
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-purple-400 hover:text-purple-300 text-sm">
+                        <i class="fas fa-external-link mr-1"></i>
+                        Tasarımı Gör
+                    </a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+</body>
+</html>

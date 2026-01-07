@@ -9941,6 +9941,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\Subscription\\App\\Console\\Commands\\CheckExpiredSubscriptions' => __DIR__ . '/../..' . '/Modules/Subscription/app/Console/Commands/CheckExpiredSubscriptions.php',
         'Modules\\Subscription\\App\\Events\\SubscriptionExpired' => __DIR__ . '/../..' . '/Modules/Subscription/app/Events/SubscriptionExpired.php',
         'Modules\\Subscription\\App\\Events\\TrialEnding' => __DIR__ . '/../..' . '/Modules/Subscription/app/Events/TrialEnding.php',
+        'Modules\\Subscription\\App\\Http\\Controllers\\Front\\SubscriptionCheckoutController' => __DIR__ . '/../..' . '/Modules/Subscription/app/Http/Controllers/Front/SubscriptionCheckoutController.php',
         'Modules\\Subscription\\App\\Http\\Controllers\\Front\\SubscriptionSuccessController' => __DIR__ . '/../..' . '/Modules/Subscription/app/Http/Controllers/Front/SubscriptionSuccessController.php',
         'Modules\\Subscription\\App\\Http\\Livewire\\Admin\\SubscriptionComponent' => __DIR__ . '/../..' . '/Modules/Subscription/app/Http/Livewire/Admin/SubscriptionComponent.php',
         'Modules\\Subscription\\App\\Http\\Livewire\\Admin\\SubscriptionManageComponent' => __DIR__ . '/../..' . '/Modules/Subscription/app/Http/Livewire/Admin/SubscriptionManageComponent.php',

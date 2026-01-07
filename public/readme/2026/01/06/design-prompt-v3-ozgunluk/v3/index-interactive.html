@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v3 FINAL - Design Prompt Kütüphanesi (Interactive)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; }
+
+        /* Accordion */
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .accordion-content.active { max-height: 5000px; }
+
+        /* Hover Demo Cards */
+        .hover-demo-card { position: relative; overflow: hidden; }
+        .hover-demo-card .far { display: inline; }
+        .hover-demo-card .fas { display: none; }
+        .hover-demo-card:hover .far { display: none; }
+        .hover-demo-card:hover .fas { display: inline; }
+
+        /* Animated Backgrounds */
+        .animated-gradient-shift {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            background-size: 200% 200%;
+            animation: gradientShift 8s ease infinite;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .animated-hue-rotate {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            animation: hueRotate 10s linear infinite;
+        }
+        @keyframes hueRotate {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .animated-pulse {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .floating-dots {
+            background:
+                radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px),
+                radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px, 80px 80px;
+            background-position: 0 0, 25px 25px;
+            animation: float 20s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { background-position: 0 0, 25px 25px; }
+            50% { background-position: 10px 20px, 35px 45px; }
+        }
+
+        /* Swiper Custom */
+        .swiper-button-next, .swiper-button-prev {
+            color: white !important;
+            background: rgba(0,0,0,0.5);
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 50%;
+        }
+        .swiper-button-next:after, .swiper-button-prev:after {
+            font-size: 16px !important;
+        }
+        .swiper-pagination-bullet-active {
+            background: #8b5cf6 !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-white min-h-screen">
+
+<!-- Header -->
+<header class="bg-gradient-to-r from-violet-900/30 to-purple-900/30 border-b border-violet-800/50 py-8 sticky top-0 z-50 backdrop-blur-sm">
+    <div class="container mx-auto px-6">
+        <div class="flex items-center gap-3 mb-2">
+            <div class="w-12 h-12 bg-violet-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-crown text-white text-2xl"></i>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-2xl font-bold text-white">v3 FINAL - Interactive Kütüphane</h1>
+                    <span class="bg-violet-600 text-white text-xs px-3 py-1 rounded-full font-medium">🎨 CANLI DEMO</span>
+                </div>
+                <p class="text-violet-300 text-sm">40 Gradient • 50 Font • 20 Hover • 30 Animated BG</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4 text-sm text-slate-400">
+            <span><i class="far fa-calendar mr-1.5"></i>6 Ocak 2026</span>
+            <span><i class="fas fa-magic mr-1.5"></i>Interactive Version</span>
+        </div>
+    </div>
+</header>
+
+<!-- Quick Stats -->
+<section class="container mx-auto px-6 py-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-gradient-to-br from-blue-900/20 to-cyan-900/20 border border-blue-800 rounded-xl p-4 text-center">
+            <div class="text-3xl font-bold text-blue-400">40</div>
+            <div class="text-sm text-slate-400">Gradient Preset</div>
+        </div>
+        <div class="bg-gradient-to-br from-purple-900/20 to-pink-900/20 border border-purple-800 rounded-xl p-4 text-center">
+            <div class="text-3xl font-bold text-purple-400">50</div>
+            <div class="text-sm text-slate-400">Font Çifti</div>
+        </div>
+        <div class="bg-gradient-to-br from-emerald-900/20 to-green-900/20 border border-emerald-800 rounded-xl p-4 text-center">
+            <div class="text-3xl font-bold text-emerald-400">20</div>
+            <div class="text-sm text-slate-400">Hover Efekti</div>
+        </div>
+        <div class="bg-gradient-to-br from-amber-900/20 to-orange-900/20 border border-amber-800 rounded-xl p-4 text-center">
+            <div class="text-3xl font-bold text-amber-400">30</div>
+            <div class="text-sm text-slate-400">Animated BG</div>
+        </div>
+    </div>
+</section>
+
+<!-- 1. GRADIENT KÜTÜPHANESI (Slider) -->
+<section class="container mx-auto px-6 py-8">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+            <i class="fas fa-palette text-violet-400"></i>
+            40 Gradient Preset Kütüphanesi
+        </h2>
+        <span class="text-sm text-slate-500">Kaydırarak keşfet →</span>
+    </div>
+
+    <div class="swiper gradientSwiper">
+        <div class="swiper-wrapper">
+            <!-- Soğuk Tonlar -->
+            <div class="swiper-slide">
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="h-32 rounded-lg mb-4 bg-gradient-to-r from-blue-500 to-cyan-400"></div>
+                    <h3 class="font-semibold text-white mb-1">Ocean Blue</h3>
+                    <p class="text-xs text-slate-400 mb-2">from-blue-500 to-cyan-400</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs bg-blue-900/50 text-blue-300 px-2 py-1 rounded">Soğuk</span>
+                        <span class="text-xs bg-slate-800 text-slate-400 px-2 py-1 rounded">Light Mode</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="swiper-slide">
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="h-32 rounded-lg mb-4 bg-gradient-to-r from-cyan-400 to-blue-300"></div>
+                    <h3 class="font-semibold text-white mb-1">Arctic Ice</h3>
+                    <p class="text-xs text-slate-400 mb-2">from-cyan-400 to-blue-300</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs bg-cyan-900/50 text-cyan-300 px-2 py-1 rounded">Soğuk</span>
+                        <span class="text-xs bg-slate-800 text-slate-400 px-2 py-1 rounded">Light Mode</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="swiper-slide">
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="h-32 rounded-lg mb-4 bg-gradient-to-r from-blue-600 to-indigo-700"></div>
+                    <h3 class="font-semibold text-white mb-1">Deep Sea</h3>
+                    <p class="text-xs text-slate-400 mb-2">from-blue-600 to-indigo-700</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs bg-blue-900/50 text-blue-300 px-2 py-1 rounded">Soğuk</span>
+                        <span class="text-xs bg-slate-800 text-slate-400 px-2 py-1 rounded">Dark Mode</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sıcak Tonlar -->
+            <div class="swiper-slide">
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="h-32 rounded-lg mb-4 bg-gradient-to-r from-orange-400 to-red-500"></div>
+                    <h3 class="font-semibold text-white mb-1">Sunset Orange</h3>
+                    <p class="text-xs text-slate-400 mb-2">from-orange-400 to-red-500</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs bg-orange-900/50 text-orange-300 px-2 py-1 rounded">Sıcak</span>
+                        <span class="text-xs bg-slate-800 text-slate-400 px-2 py-1 rounded">Light Mode</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="swiper-slide">
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="h-32 rounded-lg mb-4 bg-gradient-to-r from-amber-400 to-orange-500"></div>
+                    <h3 class="font-semibold text-white mb-1">Golden Hour</h3>
+                    <p class="text-xs text-slate-400 mb-2">from-amber-400 to-orange-500</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs bg-amber-900/50 text-amber-300 px-2 py-1 rounded">Sıcak</span>
+                        <span class="text-xs bg-slate-800 text-slate-400 px-2 py-1 rounded">Light Mode</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enerjik Tonlar -->
+            <div class="swiper-slide">
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="h-32 rounded-lg mb-4 bg-gradient-to-r from-purple-500 to-pink-500"></div>
+                    <h3 class="font-semibold text-white mb-1">Purple Dream</h3>
+                    <p class="text-xs text-slate-400 mb-2">from-purple-500 to-pink-500</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs bg-purple-900/50 text-purple-300 px-2 py-1 rounded">Enerjik</span>
+                        <span class="text-xs bg-slate-800 text-slate-400 px-2 py-1 rounded">Light Mode</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="swiper-slide">
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="h-32 rounded-lg mb-4 bg-gradient-to-r from-violet-400 to-purple-500"></div>
+                    <h3 class="font-semibold text-white mb-1">Violet Sky</h3>
+                    <p class="text-xs text-slate-400 mb-2">from-violet-400 to-purple-500</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs bg-violet-900/50 text-violet-300 px-2 py-1 rounded">Enerjik</span>
+                        <span class="text-xs bg-slate-800 text-slate-400 px-2 py-1 rounded">Light Mode</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Doğal Tonlar -->
+            <div class="swiper-slide">
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="h-32 rounded-lg mb-4 bg-gradient-to-r from-green-600 to-emerald-700"></div>
+                    <h3 class="font-semibold text-white mb-1">Forest Green</h3>
+                    <p class="text-xs text-slate-400 mb-2">from-green-600 to-emerald-700</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs bg-green-900/50 text-green-300 px-2 py-1 rounded">Doğal</span>
+                        <span class="text-xs bg-slate-800 text-slate-400 px-2 py-1 rounded">Dark Mode</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="swiper-pagination mt-4"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+
+    <div class="mt-4 text-center">
+        <p class="text-sm text-slate-500">8 / 40 gradient gösteriliyor</p>
+    </div>
+</section>
+
+<!-- 2. HOVER EFEKTLERİ (Canlı Demo) -->
+<section class="container mx-auto px-6 py-8">
+    <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+        <i class="fas fa-hand-pointer text-emerald-400"></i>
+        20 Hover Efekti - Canlı Demo
+    </h2>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- 1. Icon Weight Change (far → fas) -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 hover-demo-card cursor-pointer transition-all">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-12 h-12 bg-violet-600 rounded-lg flex items-center justify-center text-2xl">
+                    <i class="far fa-heart"></i>
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="text-violet-400 font-semibold">Icon Weight</div>
+            </div>
+            <p class="text-sm text-slate-400">Hover yapınca far → fas</p>
+            <div class="mt-3 text-xs bg-slate-800 rounded p-2 text-slate-500">
+                <code>far fa-heart → fas fa-heart</code>
+            </div>
+        </div>
+
+        <!-- 2. Icon Scale -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 cursor-pointer group transition-all">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-2xl group-hover:scale-125 transition-transform">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="text-blue-400 font-semibold">Icon Scale</div>
+            </div>
+            <p class="text-sm text-slate-400">Icon 1.25x büyür</p>
+            <div class="mt-3 text-xs bg-slate-800 rounded p-2 text-slate-500">
+                <code>transform: scale(1.25)</code>
+            </div>
+        </div>
+
+        <!-- 3. Text Slide -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 cursor-pointer group transition-all">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-12 h-12 bg-emerald-600 rounded-lg flex items-center justify-center text-2xl">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <div class="text-emerald-400 font-semibold group-hover:translate-x-2 transition-transform">Text Slide</div>
+            </div>
+            <p class="text-sm text-slate-400">Text 8px sağa kayar</p>
+            <div class="mt-3 text-xs bg-slate-800 rounded p-2 text-slate-500">
+                <code>translateX(8px)</code>
+            </div>
+        </div>
+
+        <!-- 4. Border Draw -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 cursor-pointer group transition-all relative overflow-hidden">
+            <div class="absolute left-0 top-0 w-1 h-0 bg-violet-600 group-hover:h-full transition-all duration-300"></div>
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-12 h-12 bg-violet-600 rounded-lg flex items-center justify-center text-2xl">
+                    <i class="fas fa-paint-brush"></i>
+                </div>
+                <div class="text-violet-400 font-semibold">Border Draw</div>
+            </div>
+            <p class="text-sm text-slate-400">Sol border yukarıdan aşağı</p>
+            <div class="mt-3 text-xs bg-slate-800 rounded p-2 text-slate-500">
+                <code>height: 0 → 100%</code>
+            </div>
+        </div>
+
+        <!-- 5. Shadow Depth -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 cursor-pointer hover:shadow-2xl hover:shadow-blue-900/50 transition-all">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-2xl">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="text-blue-400 font-semibold">Shadow Depth</div>
+            </div>
+            <p class="text-sm text-slate-400">Shadow derinleşir</p>
+            <div class="mt-3 text-xs bg-slate-800 rounded p-2 text-slate-500">
+                <code>shadow-md → shadow-2xl</code>
+            </div>
+        </div>
+
+        <!-- 6. Gradient Shift -->
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 rounded-xl p-6 cursor-pointer transition-all duration-500 border border-blue-500">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center text-2xl">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <div class="text-white font-semibold">Gradient Shift</div>
+            </div>
+            <p class="text-sm text-white/80">Gradient renk değişir</p>
+            <div class="mt-3 text-xs bg-white/10 rounded p-2 text-white/60">
+                <code>blue-purple → purple-pink</code>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-6 text-center">
+        <p class="text-sm text-slate-500">6 / 20 hover efekti gösteriliyor - <span class="text-violet-400">Üzerine gelerek test edin!</span></p>
+    </div>
+</section>
+
+<!-- 3. ANIMATED BACKGROUNDS (Canlı) -->
+<section class="container mx-auto px-6 py-8">
+    <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+        <i class="fas fa-water text-blue-400"></i>
+        30 Animated Background - Canlı Örnekler
+    </h2>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- 1. Gradient Shift -->
+        <div class="rounded-xl p-8 animated-gradient-shift border border-violet-500 relative overflow-hidden">
+            <div class="relative z-10">
+                <h3 class="text-white font-bold text-xl mb-2">Smooth Shift</h3>
+                <p class="text-white/80 text-sm">Background kayar (8s)</p>
+                <div class="mt-4 text-xs bg-black/30 rounded p-2 text-white/70">
+                    <code>background-position: 0% → 100%</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Hue Rotate -->
+        <div class="rounded-xl p-8 animated-hue-rotate border border-purple-500 relative overflow-hidden">
+            <div class="relative z-10">
+                <h3 class="text-white font-bold text-xl mb-2">Hue Rotate</h3>
+                <p class="text-white/80 text-sm">Renk döner (10s)</p>
+                <div class="mt-4 text-xs bg-black/30 rounded p-2 text-white/70">
+                    <code>hue-rotate: 0deg → 360deg</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Pulse -->
+        <div class="rounded-xl p-8 animated-pulse border border-violet-500 relative overflow-hidden">
+            <div class="relative z-10">
+                <h3 class="text-white font-bold text-xl mb-2">Pulse</h3>
+                <p class="text-white/80 text-sm">Opacity nabız (4s)</p>
+                <div class="mt-4 text-xs bg-black/30 rounded p-2 text-white/70">
+                    <code>opacity: 1 → 0.7 → 1</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Floating Dots -->
+        <div class="rounded-xl p-8 bg-slate-900 floating-dots border border-slate-700 relative overflow-hidden">
+            <div class="relative z-10">
+                <h3 class="text-white font-bold text-xl mb-2">Floating Dots</h3>
+                <p class="text-slate-300 text-sm">Particle hareket (20s)</p>
+                <div class="mt-4 text-xs bg-black/30 rounded p-2 text-slate-400">
+                    <code>CSS pattern animation</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Radial Gradient -->
+        <div class="rounded-xl p-8 border border-blue-500 relative overflow-hidden" style="background: radial-gradient(circle at 50% 50%, #3b82f6, #1e40af); animation: radialPulse 5s ease-in-out infinite;">
+            <div class="relative z-10">
+                <h3 class="text-white font-bold text-xl mb-2">Radial Expand</h3>
+                <p class="text-white/80 text-sm">Radial gradient pulse</p>
+                <div class="mt-4 text-xs bg-black/30 rounded p-2 text-white/70">
+                    <code>radial-gradient pulse</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Wave -->
+        <div class="rounded-xl p-8 border border-cyan-500 relative overflow-hidden" style="background: linear-gradient(45deg, #06b6d4 0%, #8b5cf6 50%, #06b6d4 100%); background-size: 200% 200%; animation: wave 6s ease infinite;">
+            <div class="relative z-10">
+                <h3 class="text-white font-bold text-xl mb-2">Wave</h3>
+                <p class="text-white/80 text-sm">Dalga akış (6s)</p>
+                <div class="mt-4 text-xs bg-black/30 rounded p-2 text-white/70">
+                    <code>background-position flow</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-6 text-center">
+        <p class="text-sm text-slate-500">6 / 30 animated background gösteriliyor - <span class="text-blue-400">Tümü canlı çalışıyor!</span></p>
+    </div>
+</section>
+
+<!-- 4. FONT ÇİFTLERİ (Slider) -->
+<section class="container mx-auto px-6 py-8">
+    <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+        <i class="fas fa-font text-amber-400"></i>
+        50 Font Çifti Kütüphanesi
+    </h2>
+
+    <div class="swiper fontSwiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide">
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="mb-4">
+                        <span class="text-xs bg-violet-900/50 text-violet-300 px-2 py-1 rounded">Klasik & Elegant</span>
+                    </div>
+                    <h3 class="text-4xl font-bold text-white mb-2" style="font-family: 'Playfair Display', serif;">Playfair Display</h3>
+                    <p class="text-lg text-slate-400" style="font-family: 'Inter', sans-serif;">Inter Body Font - Modern ve readable</p>
+                    <div class="mt-4 text-xs text-slate-500">
+                        #1: Playfair Display + Inter (Klasik + Modern)
+                    </div>
+                </div>
+            </div>
+
+            <div class="swiper-slide">
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="mb-4">
+                        <span class="text-xs bg-blue-900/50 text-blue-300 px-2 py-1 rounded">Modern & Tech</span>
+                    </div>
+                    <h3 class="text-4xl font-bold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif;">Space Grotesk</h3>
+                    <p class="text-lg text-slate-400" style="font-family: 'DM Sans', sans-serif;">DM Sans Body - Clean ve professional</p>
+                    <div class="mt-4 text-xs text-slate-500">
+                        #11: Space Grotesk + DM Sans (Tech + Clean)
+                    </div>
+                </div>
+            </div>
+
+            <div class="swiper-slide">
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="mb-4">
+                        <span class="text-xs bg-red-900/50 text-red-300 px-2 py-1 rounded">Bold & Strong</span>
+                    </div>
+                    <h3 class="text-4xl font-bold text-white mb-2" style="font-family: 'Bebas Neue', sans-serif;">BEBAS NEUE</h3>
+                    <p class="text-lg text-slate-400" style="font-family: 'Open Sans', sans-serif;">Open Sans Body - Friendly ve accessible</p>
+                    <div class="mt-4 text-xs text-slate-500">
+                        #21: Bebas Neue + Open Sans (Bold + Friendly)
+                    </div>
+                </div>
+            </div>
+
+            <div class="swiper-slide">
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="mb-4">
+                        <span class="text-xs bg-pink-900/50 text-pink-300 px-2 py-1 rounded">Friendly & Soft</span>
+                    </div>
+                    <h3 class="text-4xl font-bold text-white mb-2" style="font-family: 'Quicksand', sans-serif;">Quicksand</h3>
+                    <p class="text-lg text-slate-400" style="font-family: 'Work Sans', sans-serif;">Work Sans Body - Clean ve readable</p>
+                    <div class="mt-4 text-xs text-slate-500">
+                        #31: Quicksand + Work Sans (Friendly + Clean)
+                    </div>
+                </div>
+            </div>
+
+            <div class="swiper-slide">
+                <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+                    <div class="mb-4">
+                        <span class="text-xs bg-amber-900/50 text-amber-300 px-2 py-1 rounded">Premium & Luxury</span>
+                    </div>
+                    <h3 class="text-4xl font-bold text-white mb-2" style="font-family: 'Cinzel', serif;">Cinzel</h3>
+                    <p class="text-lg text-slate-400" style="font-family: 'Lato', sans-serif;">Lato Body - Refined ve elegant</p>
+                    <div class="mt-4 text-xs text-slate-500">
+                        #41: Cinzel + Lato (Luxury + Refined)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="swiper-pagination mt-4"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+
+    <div class="mt-4 text-center">
+        <p class="text-sm text-slate-500">5 / 50 font çifti gösteriliyor</p>
+    </div>
+</section>
+
+<!-- 5. ACCORDION SECTIONS -->
+<section class="container mx-auto px-6 py-8">
+    <h2 class="text-2xl font-bold text-white mb-6">Detaylı Bilgiler (Accordion)</h2>
+
+    <!-- Design Consistency -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl mb-4 overflow-hidden">
+        <button class="accordion-trigger w-full px-6 py-4 flex items-center justify-between text-left" onclick="toggleAccordion(this)">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-crown text-violet-400"></i>
+                <span class="font-semibold text-white">Design Consistency Sistemi (EN KRİTİK!)</span>
+            </div>
+            <i class="fas fa-chevron-down text-slate-400 transition-transform"></i>
+        </button>
+        <div class="accordion-content px-6 pb-6">
+            <div class="pt-4 space-y-4">
+                <p class="text-slate-300">Tüm sitede tek bir design token sistemi kullan. Her section'da farklı renk, gradient, button stili KULLANMA!</p>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h4 class="text-emerald-400 font-medium mb-2">✅ Doğru</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• Tüm sitede aynı mavi palet</li>
+                            <li>• Tüm butonlar rounded-lg</li>
+                            <li>• Tüm h1'ler text-5xl</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-800 rounded-lg p-4">
+                        <h4 class="text-red-400 font-medium mb-2">❌ Yanlış</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• Hero mavi, About yeşil</li>
+                            <li>• Hero pill, About sharp</li>
+                            <li>• Farklı font size'lar</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container Genişlik -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl mb-4 overflow-hidden">
+        <button class="accordion-trigger w-full px-6 py-4 flex items-center justify-between text-left" onclick="toggleAccordion(this)">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-arrows-alt-h text-blue-400"></i>
+                <span class="font-semibold text-white">Container Genişlik Sistemi</span>
+            </div>
+            <i class="fas fa-chevron-down text-slate-400 transition-transform"></i>
+        </button>
+        <div class="accordion-content px-6 pb-6">
+            <div class="pt-4">
+                <p class="text-slate-300 mb-4">Responsive padding sistemi: İçerik maksimum alan kaplasın, ama kenarlar güvenli mesafede.</p>
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <code class="text-emerald-400 text-sm">
+                        container mx-auto px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20
+                    </code>
+                    <p class="text-xs text-slate-500 mt-2">Mobile: 12px → Tablet: 24-32px → Desktop: 48-64px → Large: 80px</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fingerprint Sistemi -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+        <button class="accordion-trigger w-full px-6 py-4 flex items-center justify-between text-left" onclick="toggleAccordion(this)">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-fingerprint text-emerald-400"></i>
+                <span class="font-semibold text-white">Firma Bazlı Fingerprint Sistemi</span>
+            </div>
+            <i class="fas fa-chevron-down text-slate-400 transition-transform"></i>
+        </button>
+        <div class="accordion-content px-6 pb-6">
+            <div class="pt-4 space-y-4">
+                <p class="text-slate-300">Her firma kendi içinde özgün. Aynı layout/renk/font farklı firmalarda kullanılabilir.</p>
+                <div class="bg-slate-800 rounded-lg p-4 text-sm">
+                    <div class="text-emerald-400 mb-2">Firma A (Sağlık Kliniği):</div>
+                    <ul class="text-slate-300 space-y-1 ml-4">
+                        <li>• v1: Hero#47 + Color:Medical-Green + Font:Playfair-Inter</li>
+                        <li>• v2: Hero#89 + Color:Clinical-Blue + Font:DM-Serif (Farklı!)</li>
+                    </ul>
+                    <div class="text-blue-400 mt-3 mb-2">Firma B (Diş Kliniği):</div>
+                    <ul class="text-slate-300 space-y-1 ml-4">
+                        <li>• v1: Hero#47 + Color:Medical-Green + Font:Playfair-Inter (A ile aynı OK!)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="container mx-auto px-6 py-8 mt-8 border-t border-slate-800">
+    <div class="text-center text-sm text-slate-500">
+        <p class="mb-2">
+            <i class="fas fa-robot mr-2"></i>
+            Interactive Demo - Generated with <a href="https://claude.com/claude-code" class="text-violet-400 hover:text-violet-300">Claude Code</a>
+        </p>
+        <p class="text-xs">v3 FINAL - 40 Gradient • 50 Font • 20 Hover • 30 Animated BG</p>
+    </div>
+</footer>
+
+<script>
+// Gradient Swiper
+const gradientSwiper = new Swiper('.gradientSwiper', {
+    slidesPerView: 1,
+    spaceBetween: 20,
+    pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+    },
+    navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+    },
+    breakpoints: {
+        640: { slidesPerView: 2 },
+        1024: { slidesPerView: 3 },
+        1280: { slidesPerView: 4 },
+    },
+});
+
+// Font Swiper
+const fontSwiper = new Swiper('.fontSwiper', {
+    slidesPerView: 1,
+    spaceBetween: 20,
+    pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+    },
+    navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+    },
+    breakpoints: {
+        640: { slidesPerView: 1 },
+        1024: { slidesPerView: 2 },
+        1280: { slidesPerView: 3 },
+    },
+});
+
+// Accordion
+function toggleAccordion(trigger) {
+    const content = trigger.nextElementSibling;
+    const icon = trigger.querySelector('.fa-chevron-down');
+
+    content.classList.toggle('active');
+    icon.classList.toggle('rotate-180');
+}
+
+// Additional animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes radialPulse {
+        0%, 100% { background-size: 100% 100%; }
+        50% { background-size: 150% 150%; }
+    }
+    @keyframes wave {
+        0% { background-position: 0% 0%; }
+        50% { background-position: 100% 100%; }
+        100% { background-position: 0% 0%; }
+    }
+`;
+document.head.appendChild(style);
+</script>
+
+</body>
+</html>

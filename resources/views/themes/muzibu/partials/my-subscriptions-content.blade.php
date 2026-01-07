@@ -42,7 +42,7 @@
     </div>
 </div>
 
-{{-- Odeme Bekleyen --}}
+{{-- Odeme Bekleyen - DEVRE DIŞI (checkout route sorunu çözülene kadar)
 @if(!empty($subscriptionInfo['pending_payment']))
 <div class="bg-orange-500/10 border border-orange-500/30 rounded-xl overflow-hidden mb-6">
     <div class="p-4 border-b border-orange-500/20">
@@ -69,6 +69,7 @@
     </div>
 </div>
 @endif
+--}}
 
 {{-- Odeme Gecmisi --}}
 <div class="bg-white/5 border border-white/10 rounded-xl overflow-hidden">

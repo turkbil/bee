@@ -18,7 +18,8 @@
     $artistName = null;
 
     if ($song->album) {
-        $albumCover = $song->album->coverMedia ? thumb($song->album->coverMedia, 300, 300, ['scale' => 1]) : null;
+        $albumHero = $song->album->getFirstMedia('hero');
+        $albumCover = $albumHero ? thumb($albumHero, 300, 300, ['scale' => 1]) : null;
         $artistName = $song->album->artist ? $song->album->artist->getTranslation('title', app()->getLocale()) : null;
     }
 @endphp

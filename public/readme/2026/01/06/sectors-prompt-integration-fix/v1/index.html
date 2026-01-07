@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sectors → Prompt Entegrasyonu Düzeltildi | 6 Ocak 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .badge { @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-6 py-4">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-link text-emerald-400 text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-white">Sectors → Prompt Entegrasyonu Düzeltildi</h1>
+                    <p class="text-sm text-slate-400">Seçilen tarzlar artık prompt'a düzgün ekleniyor</p>
+                </div>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <span class="badge bg-emerald-600 text-white"><i class="fas fa-check-circle"></i>Tamamlandı</span>
+                <span class="badge bg-slate-800 text-slate-300"><i class="far fa-calendar"></i>6 Ocak 2026</span>
+                <span class="badge bg-slate-800 text-slate-300"><i class="far fa-clock"></i>17:30</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-6 py-8 space-y-6">
+
+        <!-- Basit Anlatım -->
+        <section class="bg-emerald-900/20 border border-emerald-800/50 rounded-xl p-6">
+            <h2 class="text-lg font-semibold text-emerald-300 mb-3 flex items-center gap-2">
+                <i class="fas fa-comment-dots"></i>
+                Basit Anlatım (Herkes İçin)
+            </h2>
+            <div class="space-y-3 text-slate-300">
+                <p>
+                    <strong>Sorun neydi?</strong><br>
+                    Sectors sayfasından tarz seçiyordunuz (minimal, prestijli, dinamik vb.) ve bu seçimler prompt sayfasına aktarılıyordu.
+                    AMA Claude AI site oluştururken bu tarzları görmezden geliyordu!
+                </p>
+                <p>
+                    <strong>Neden oluyordu?</strong><br>
+                    Prompt.txt dosyasında "Seçilen tarzları nasıl kullanacaksın?" konusunda hiçbir açıklama yoktu.
+                    Claude AI bu bilgileri görüyordu ama ne yapacağını bilmiyordu.
+                </p>
+                <p>
+                    <strong>Ne yapıldı?</strong><br>
+                    Prompt.txt dosyasına iki yeni bölüm eklendi:
+                </p>
+                <ul class="list-disc list-inside space-y-1 ml-4">
+                    <li><strong>TASARIM STILLERI KULLANIMI:</strong> Seçilen tarzları nasıl uygulayacağını adım adım açıklıyor</li>
+                    <li><strong>ONCELIK KURALI (Güncellenmiş):</strong> Tarz seçimleri en yüksek önceliğe sahip olduğunu vurguluyor</li>
+                </ul>
+                <p>
+                    <strong>Sonuç ne oldu?</strong><br>
+                    Artık sectors sayfasından "minimal" seçtiğinizde, Claude AI:
+                </p>
+                <ul class="list-disc list-inside space-y-1 ml-4 text-emerald-300">
+                    <li>Soft gradient kullanıyor (#31-35)</li>
+                    <li>Yumuşak font seçiyor (Nunito, Open Sans)</li>
+                    <li>Minimal hover efekti uyguluyor (ikon weight değişimi)</li>
+                    <li>Temiz, bol boşluklu layout kullanıyor</li>
+                    <li>Animated background kullanmıyor (minimal = static)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="bg-blue-900/20 border border-blue-800/50 rounded-xl p-6">
+            <h2 class="text-lg font-semibold text-blue-300 mb-3 flex items-center gap-2">
+                <i class="fas fa-code"></i>
+                Teknik Detaylar (Geliştiriciler İçin)
+            </h2>
+            <div class="space-y-4">
+
+                <!-- Dosya -->
+                <div>
+                    <h3 class="text-sm font-semibold text-blue-400 mb-2">📁 Güncellenen Dosya:</h3>
+                    <div class="bg-slate-900 rounded-lg p-3 font-mono text-xs text-slate-400">
+                        /var/www/vhosts/tuufi.com/httpdocs/public/design/prompt/v3/prompt.txt
+                    </div>
+                </div>
+
+                <!-- Eklenen Bölümler -->
+                <div>
+                    <h3 class="text-sm font-semibold text-blue-400 mb-2">📝 Eklenen Bölümler:</h3>
+                    <div class="space-y-2">
+                        <div class="bg-slate-900 rounded-lg p-3">
+                            <div class="text-xs font-mono text-emerald-400 mb-1">## 🎯 TASARIM STILLERI KULLANIMI (VARSA - EN YUKSEK ONCELIK!)</div>
+                            <ul class="text-xs text-slate-400 space-y-1 ml-4 list-disc list-inside">
+                                <li>Promptun başındaki TASARIM STILLERI bölümünü nasıl kullanacağını açıklıyor</li>
+                                <li>7 adımlık detaylı uygulama rehberi (Tarz → Gradient → Font → Hover → BG → Layout → Menu)</li>
+                                <li>Örnek uygulama senaryosu ("Minimal" tarzı nasıl uygulanır?)</li>
+                                <li>Çakışma durumunda ne yapılacağı (Tarz seçimi kazanır!)</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-3">
+                            <div class="text-xs font-mono text-blue-400 mb-1">## ONCELIK KURALI (Güncellenmiş)</div>
+                            <ul class="text-xs text-slate-400 space-y-1 ml-4 list-disc list-inside">
+                                <li>3 seviyeli hiyerarşi sistemi (TASARIM STILLERI > Listeler > Manuel Girdi)</li>
+                                <li>Çakışma senaryoları ve çözümleri</li>
+                                <li>TASARIM STILLERI bölümüne atıf</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sistem Akışı -->
+                <div>
+                    <h3 class="text-sm font-semibold text-blue-400 mb-2">🔄 Sistem Akışı:</h3>
+                    <div class="bg-slate-900 rounded-lg p-4">
+                        <div class="space-y-3 text-xs">
+                            <div class="flex items-start gap-3">
+                                <div class="w-6 h-6 bg-violet-500/20 rounded flex items-center justify-center shrink-0">
+                                    <span class="text-violet-400 font-bold">1</span>
+                                </div>
+                                <div>
+                                    <div class="font-mono text-slate-300">/design/sectors/</div>
+                                    <div class="text-slate-500 mt-1">Kullanıcı tarz seçiyor (minimal, prestijli, dinamik...)</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-6 h-6 bg-violet-500/20 rounded flex items-center justify-center shrink-0">
+                                    <span class="text-violet-400 font-bold">2</span>
+                                </div>
+                                <div>
+                                    <div class="font-mono text-slate-300">localStorage.setItem('designStyles', ...)</div>
+                                    <div class="text-slate-500 mt-1">Seçimler localStorage'a kaydediliyor</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-6 h-6 bg-violet-500/20 rounded flex items-center justify-center shrink-0">
+                                    <span class="text-violet-400 font-bold">3</span>
+                                </div>
+                                <div>
+                                    <div class="font-mono text-slate-300">/design/prompt/?v=v3</div>
+                                    <div class="text-slate-500 mt-1">Prompt sayfası localStorage'dan okuyor</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-6 h-6 bg-violet-500/20 rounded flex items-center justify-center shrink-0">
+                                    <span class="text-violet-400 font-bold">4</span>
+                                </div>
+                                <div>
+                                    <div class="font-mono text-slate-300">TASARIM STILLERI (Secilen - ONCELIKLI):</div>
+                                    <div class="text-slate-500 mt-1">Promptun BAŞINA ekleniyor</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-6 h-6 bg-emerald-500/20 rounded flex items-center justify-center shrink-0">
+                                    <span class="text-emerald-400 font-bold">5</span>
+                                </div>
+                                <div>
+                                    <div class="font-mono text-slate-300">v3/prompt.txt</div>
+                                    <div class="text-emerald-400 mt-1">✨ YENİ: Claude AI artık bu bölümü nasıl kullanacağını biliyor!</div>
+                                    <div class="text-slate-500 mt-1">Tarz → Gradient/Font/Hover/Layout seçimi → Site oluşturma</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Örnek Prompt Output -->
+                <div>
+                    <h3 class="text-sm font-semibold text-blue-400 mb-2">📄 Örnek Prompt Çıktısı:</h3>
+                    <div class="bg-slate-900 rounded-lg p-4 font-mono text-xs">
+                        <div class="text-emerald-400">TASARIM STILLERI (Secilen - ONCELIKLI):</div>
+                        <div class="text-slate-400 mt-2">### Genel Tarz</div>
+                        <div class="text-slate-500">- Minimal ve profesyonel</div>
+                        <div class="text-slate-500">- Bol beyaz alan kullanimi</div>
+                        <div class="text-slate-500">- Soft renkler, agresif degil</div>
+                        <div class="text-slate-400 mt-2">### Hizmetler Gosterimi</div>
+                        <div class="text-slate-500">- Kartlar ile grid yapisi</div>
+                        <div class="text-slate-500">- Hover'da hafif yukari kayma</div>
+                        <div class="text-slate-500">- Ikon on planda</div>
+                        <div class="text-slate-600 mt-3">---</div>
+                        <div class="text-blue-400 mt-3">[v3/prompt.txt içeriği devam ediyor...]</div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Yapılan İyileştirmeler -->
+        <section class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+            <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-list-check"></i>
+                Yapılan İyileştirmeler
+            </h2>
+            <div class="grid md:grid-cols-2 gap-4">
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-palette text-violet-400 mt-1"></i>
+                        <div>
+                            <h3 class="font-semibold text-sm text-slate-200 mb-1">Tarz → Gradient Eşleştirme</h3>
+                            <p class="text-xs text-slate-400">Minimal → Soft gradient, Prestijli → Koyu gradient, Dinamik → Parlak gradient</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-font text-blue-400 mt-1"></i>
+                        <div>
+                            <h3 class="font-semibold text-sm text-slate-200 mb-1">Tarz → Font Eşleştirme</h3>
+                            <p class="text-xs text-slate-400">Klasik → Serif, Modern → Sans-serif, Premium → Luxury fonts</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-hand-pointer text-emerald-400 mt-1"></i>
+                        <div>
+                            <h3 class="font-semibold text-sm text-slate-200 mb-1">Tarz → Hover Efekti</h3>
+                            <p class="text-xs text-slate-400">Minimal → Hafif, Dinamik → Hareketli, Bold → Shadow/Border</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-layer-group text-amber-400 mt-1"></i>
+                        <div>
+                            <h3 class="font-semibold text-sm text-slate-200 mb-1">Tarz → Layout Seçimi</h3>
+                            <p class="text-xs text-slate-400">Her section için tarza uygun layout numarası seçiliyor</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-play text-rose-400 mt-1"></i>
+                        <div>
+                            <h3 class="font-semibold text-sm text-slate-200 mb-1">Animated Background Kontrolü</h3>
+                            <p class="text-xs text-slate-400">Minimal/Klasik → Static, Dinamik/Modern → Animated</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-bars text-cyan-400 mt-1"></i>
+                        <div>
+                            <h3 class="font-semibold text-sm text-slate-200 mb-1">Mega Menu Stili</h3>
+                            <p class="text-xs text-slate-400">Tarza uygun 15 mega menu stilinden seçim yapılıyor</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Öncelik Sistemi -->
+        <section class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+            <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-layer-group"></i>
+                Öncelik Sistemi (Yüksekten Alçağa)
+            </h2>
+            <div class="space-y-3">
+
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-violet-500/20 rounded-lg flex items-center justify-center shrink-0">
+                        <span class="text-violet-400 font-bold text-lg">1</span>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-violet-300 mb-1">TASARIM STILLERI</h3>
+                        <p class="text-sm text-slate-400">Sectors sayfasından seçilen tarzlar (varsa). EN YÜKSEK ÖNCELİK!</p>
+                        <div class="mt-2 text-xs text-violet-400 bg-violet-950/30 rounded px-2 py-1 inline-block">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Promptun başında "TASARIM STILLERI (Secilen - ONCELIKLI):" bölümü
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center shrink-0">
+                        <span class="text-blue-400 font-bold text-lg">2</span>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-blue-300 mb-1">Layout/Gradient/Font Listeleri</h3>
+                        <p class="text-sm text-slate-400">40 gradient, 50 font, 20 hover, 15 mega menu listelerinden Claude kendi seçiyor</p>
+                        <div class="mt-2 text-xs text-blue-400 bg-blue-950/30 rounded px-2 py-1 inline-block">
+                            <i class="fas fa-arrow-down mr-1"></i>
+                            TASARIM STILLERI yoksa bu listelerden seçim yapılır
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-slate-700/50 rounded-lg flex items-center justify-center shrink-0">
+                        <span class="text-slate-400 font-bold text-lg">3</span>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-slate-300 mb-1">Manuel Girdi</h3>
+                        <p class="text-sm text-slate-400">Kullanıcının elle yazdığı "sektor: saglik", "tarz: minimal" gibi bilgiler</p>
+                        <div class="mt-2 text-xs text-slate-500 bg-slate-800/50 rounded px-2 py-1 inline-block">
+                            <i class="fas fa-keyboard mr-1"></i>
+                            En düşük öncelik, genel yönlendirme için
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Test Önerisi -->
+        <section class="bg-amber-900/20 border border-amber-800/50 rounded-xl p-6">
+            <h2 class="text-lg font-semibold text-amber-300 mb-3 flex items-center gap-2">
+                <i class="fas fa-vial"></i>
+                Test Önerisi
+            </h2>
+            <div class="space-y-3 text-sm text-slate-300">
+                <p>Sectors sayfasından farklı tarz kombinasyonları seçip yeni tasarım oluşturun:</p>
+                <div class="bg-slate-900 rounded-lg p-4 space-y-2">
+                    <div class="flex items-start gap-2">
+                        <span class="text-amber-400">1.</span>
+                        <div>
+                            <strong class="text-white">Minimal Test:</strong>
+                            <div class="text-xs text-slate-400 mt-1">
+                                Sectors → "Minimal", "Profesyonel", "Temiz" seç → Prompt → Claude'a göster<br>
+                                Beklenen: Soft gradient (#31-35), Nunito font, minimal hover, static background
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="text-amber-400">2.</span>
+                        <div>
+                            <strong class="text-white">Dinamik Test:</strong>
+                            <div class="text-xs text-slate-400 mt-1">
+                                Sectors → "Dinamik", "Enerjik", "Modern" seç → Prompt → Claude'a göster<br>
+                                Beklenen: Parlak gradient (#21-25), Modern font, hareketli hover, animated background
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="text-amber-400">3.</span>
+                        <div>
+                            <strong class="text-white">Prestijli Test:</strong>
+                            <div class="text-xs text-slate-400 mt-1">
+                                Sectors → "Prestijli", "Lüks", "Klasik" seç → Prompt → Claude'a göster<br>
+                                Beklenen: Koyu gradient (#1-5), Premium font (#41-50), elegant hover, static/subtle BG
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-slate-900/50 mt-12">
+        <div class="max-w-5xl mx-auto px-6 py-6">
+            <div class="flex items-center justify-between text-sm text-slate-500">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-robot text-violet-400"></i>
+                    <span>Generated with <a href="https://claude.com/claude-code" class="text-violet-400 hover:text-violet-300">Claude Code</a></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="far fa-clock"></i>
+                    <span>6 Ocak 2026</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

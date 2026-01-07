@@ -29,7 +29,7 @@
            id: {{ $album->id }},
            title: '{{ addslashes($album->getTranslation('title', app()->getLocale())) }}',
            artist: '{{ $album->artist ? addslashes($album->artist->getTranslation('title', app()->getLocale())) : '' }}',
-           cover: '{{ $album->coverMedia ? thumb($album->coverMedia, 300, 300, ['scale' => 1]) : '' }}',
+           cover: '{{ $album->getFirstMedia('hero') ? thumb($album->getFirstMedia('hero'), 300, 300, ['scale' => 1]) : '' }}',
            is_favorite: {{ is_favorited('album', $album->album_id ?? $album->id) ? 'true' : 'false' }}
        }); }"
    @else
@@ -83,8 +83,9 @@
 
     <div class="relative @if($compact) mb-2 @else mb-4 @endif">
         {{-- Album Cover --}}
-        @if($album->media_id && $album->coverMedia)
-            <img src="{{ thumb($album->coverMedia, 300, 300, ['scale' => 1]) }}"
+        @php $heroMedia = $album->getFirstMedia('hero'); @endphp
+        @if($heroMedia)
+            <img src="{{ thumb($heroMedia, 300, 300, ['scale' => 1]) }}"
                  alt="{{ $album->getTranslation('title', app()->getLocale()) }}"
                  class="w-full aspect-square object-cover rounded-lg shadow-lg"
                  loading="lazy">

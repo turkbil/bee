@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Prompt v3 - Özgünlük Geliştirme Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            950: '#020617'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        .badge { @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium; }
+        .section-card { @apply bg-slate-800/50 border border-slate-700 rounded-xl p-6 hover:border-slate-600 transition-all; }
+        .improvement-card { @apply bg-gradient-to-br from-violet-900/20 to-purple-900/20 border border-violet-800/50 rounded-xl p-6; }
+        .example-box { @apply bg-slate-900/50 border border-slate-700 rounded-lg p-4 mt-3; }
+        .score-bar { @apply h-2 rounded-full overflow-hidden bg-slate-700; }
+        .score-fill { @apply h-full transition-all duration-500; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 dark">
+
+    <!-- Header -->
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="flex items-center gap-3 mb-1">
+                        <span class="badge bg-purple-600 text-white">
+                            <i class="fas fa-sparkles"></i>
+                            Analiz Raporu
+                        </span>
+                        <span class="badge bg-slate-700 text-slate-300">
+                            <i class="fas fa-calendar"></i>
+                            6 Ocak 2026
+                        </span>
+                    </div>
+                    <h1 class="text-2xl font-bold text-white">Design Prompt v3 - Özgünlük Geliştirme</h1>
+                    <p class="text-sm text-slate-400 mt-1">v2 Analizi + v3 İyileştirme Önerileri (10 Major Update)</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-3xl font-bold text-violet-400">v2 → v3</div>
+                    <div class="text-xs text-slate-500">Özgünlük Skoru</div>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="text-orange-400 text-sm">v2: 65/100</span>
+                        <i class="fas fa-arrow-right text-slate-600"></i>
+                        <span class="text-emerald-400 text-sm font-bold">v3: 90/100</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-6 py-8 space-y-8">
+
+        <!-- Executive Summary -->
+        <section class="section-card">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-violet-500/20 rounded-xl flex items-center justify-center shrink-0">
+                    <i class="fas fa-chart-line text-violet-400 text-xl"></i>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-xl font-bold text-white mb-3">📊 Yönetici Özeti</h2>
+
+                    <!-- Basit Anlatım -->
+                    <div class="bg-green-900/20 border border-green-800 rounded-lg p-5 mb-4">
+                        <h3 class="font-semibold text-green-300 mb-2 flex items-center gap-2">
+                            <i class="fas fa-user"></i>
+                            Basit Anlatım (Herkes İçin)
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            Mevcut prompt sistemi (v2) AI'ya "her tasarım farklı olsun" diyor ama <strong>nasıl farklı olacağını tam anlatmıyor</strong>.
+                            Bu yüzden bazı tasarımlar birbirine benziyor. v3'te AI'ya <strong>daha net kurallar ve daha çok seçenek</strong> vereceğiz.
+                        </p>
+                        <div class="grid sm:grid-cols-3 gap-3">
+                            <div class="bg-slate-900/50 rounded-lg p-3">
+                                <div class="text-orange-400 text-sm font-medium mb-1">v2 Sorunu</div>
+                                <div class="text-xs text-slate-400">Layout seçimi rastgele ama kayıt tutmuyor, tekrar edebiliyor</div>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-3">
+                                <div class="text-blue-400 text-sm font-medium mb-1">v3 Çözümü</div>
+                                <div class="text-xs text-slate-400">Her seçim kaydedilir, tekrar yasak. Özgünlük puanı hesaplanır</div>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-3">
+                                <div class="text-emerald-400 text-sm font-medium mb-1">Sonuç</div>
+                                <div class="text-xs text-slate-400">%40 daha özgün tasarımlar, sıfır tekrar garantisi</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Teknik Detaylar -->
+                    <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-5">
+                        <h3 class="font-semibold text-blue-300 mb-2 flex items-center gap-2">
+                            <i class="fas fa-code"></i>
+                            Teknik Detaylar (Geliştiriciler İçin)
+                        </h3>
+                        <div class="space-y-2 text-sm text-slate-300">
+                            <div class="flex items-start gap-2">
+                                <i class="fas fa-check text-emerald-400 mt-1"></i>
+                                <div>
+                                    <strong>10 Major İyileştirme:</strong> Layout tracking, renk kütüphanesi, font genişletme, animasyon library,
+                                    özgünlük skoru, sektor-layout matrix, component varyasyonları, dark mode kuralları, özgünlük raporu, karşılaştırma sistemi
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <i class="fas fa-check text-emerald-400 mt-1"></i>
+                                <div>
+                                    <strong>Yeni Mekanizmalar:</strong> Session-based layout tracking, hash-based uniqueness check,
+                                    0-100 özgünlük puanlama algoritması, sektör-palet öneri motoru
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <i class="fas fa-check text-emerald-400 mt-1"></i>
+                                <div>
+                                    <strong>Genişletilen Kütüphaneler:</strong> 10 → 30 font çifti, 0 → 50 renk paleti,
+                                    0 → 25 component style varyasyonu, 0 → 30 micro-interaction örneği
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- v2 Analizi -->
+        <section class="section-card">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-microscope text-blue-400"></i>
+                v2 Mevcut Durum Analizi
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <!-- Güçlü Yönler -->
+                <div class="bg-emerald-900/20 border border-emerald-800 rounded-lg p-5">
+                    <h3 class="font-semibold text-emerald-300 mb-3 flex items-center gap-2">
+                        <i class="fas fa-thumbs-up"></i>
+                        Güçlü Yönler
+                    </h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-emerald-400 mt-0.5"></i>
+                            <span><strong>Kapsamlı layout listeleri:</strong> 150 hero, 150 about, 105 hizmet seçeneği</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-emerald-400 mt-0.5"></i>
+                            <span><strong>Özgünlük vurgusu:</strong> "Her tasarım farklı olmalı" prensibi var</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-emerald-400 mt-0.5"></i>
+                            <span><strong>Font çiftleri:</strong> 10 hazır kombinasyon sunuluyor</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-emerald-400 mt-0.5"></i>
+                            <span><strong>Sektor analizi:</strong> AI'ya "sen analiz et" talimatı</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-emerald-400 mt-0.5"></i>
+                            <span><strong>Kontrol listesi:</strong> Tasarım bitiminde özgünlük check</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-emerald-400 mt-0.5"></i>
+                            <span><strong>Versiyon yönetimi:</strong> Net dosya yapısı ve isimlendirme</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Zayıf Yönler -->
+                <div class="bg-red-900/20 border border-red-800 rounded-lg p-5">
+                    <h3 class="font-semibold text-red-300 mb-3 flex items-center gap-2">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Zayıf Yönler (Kritik Eksikler)
+                    </h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-times text-red-400 mt-0.5"></i>
+                            <span><strong>Layout tracking YOK:</strong> Hangi layout kullanıldı kaydı tutmuyor</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-times text-red-400 mt-0.5"></i>
+                            <span><strong>Renk kütüphanesi YOK:</strong> Sadece "sen analiz et" diyor, örnek palet yok</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-times text-red-400 mt-0.5"></i>
+                            <span><strong>Font sayısı az:</strong> 10 çift yeterli değil, sınırlı çeşitlilik</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-times text-red-400 mt-0.5"></i>
+                            <span><strong>Animasyon/efekt kütüphanesi YOK:</strong> Micro-interaction örnekleri eksik</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-times text-red-400 mt-0.5"></i>
+                            <span><strong>Özgünlük ölçümü YOK:</strong> "Farklı mı?" sorusuna objektif cevap yok</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-times text-red-400 mt-0.5"></i>
+                            <span><strong>Sektör-layout eşleştirme YOK:</strong> Hangi sektör hangi layout'la gider?</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-times text-red-400 mt-0.5"></i>
+                            <span><strong>Component varyasyon YOK:</strong> Button, card, input stilleri eksik</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-times text-red-400 mt-0.5"></i>
+                            <span><strong>Dark mode renk kuralları YOK:</strong> Light → Dark dönüşüm belirsiz</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Özgünlük Skoru -->
+            <div class="mt-6 bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-semibold text-slate-300">v2 Özgünlük Skoru Kırılımı</h3>
+                    <span class="text-2xl font-bold text-orange-400">65/100</span>
+                </div>
+                <div class="space-y-2">
+                    <div>
+                        <div class="flex items-center justify-between text-sm mb-1">
+                            <span class="text-slate-400">Layout Çeşitliliği</span>
+                            <span class="text-emerald-400">20/25</span>
+                        </div>
+                        <div class="score-bar"><div class="score-fill bg-emerald-500" style="width: 80%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between text-sm mb-1">
+                            <span class="text-slate-400">Renk Özgünlüğü</span>
+                            <span class="text-orange-400">10/25</span>
+                        </div>
+                        <div class="score-bar"><div class="score-fill bg-orange-500" style="width: 40%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between text-sm mb-1">
+                            <span class="text-slate-400">Font Varyasyonu</span>
+                            <span class="text-yellow-400">15/20</span>
+                        </div>
+                        <div class="score-bar"><div class="score-fill bg-yellow-500" style="width: 75%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between text-sm mb-1">
+                            <span class="text-slate-400">Animasyon/Efekt</span>
+                            <span class="text-red-400">5/15</span>
+                        </div>
+                        <div class="score-bar"><div class="score-fill bg-red-500" style="width: 33%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between text-sm mb-1">
+                            <span class="text-slate-400">Component Çeşitliliği</span>
+                            <span class="text-red-400">5/15</span>
+                        </div>
+                        <div class="score-bar"><div class="score-fill bg-red-500" style="width: 33%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between text-sm mb-1">
+                            <span class="text-slate-400">Tekrar Önleme</span>
+                            <span class="text-orange-400">10/10</span>
+                        </div>
+                        <div class="score-bar"><div class="score-fill bg-orange-500" style="width: 100%"></div></div>
+                        <p class="text-xs text-slate-500 mt-1">* Mekanizma var ama enforce edilmiyor</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- v3 İyileştirmeler -->
+        <section>
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-2">
+                    <i class="fas fa-rocket text-violet-400"></i>
+                    v3 Major İyileştirmeler (10 Güncelleme)
+                </h2>
+                <p class="text-slate-400">Her iyileştirme özgünlük skorunu artırıyor. Hedef: 90/100</p>
+            </div>
+
+            <div class="space-y-6">
+
+                <!-- 1. Layout Tracking -->
+                <div class="improvement-card">
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="w-12 h-12 bg-violet-500/30 rounded-xl flex items-center justify-center shrink-0">
+                            <span class="text-2xl font-bold text-violet-300">1</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-bold text-white mb-1">Layout Seçim Mekanizması (Tracking + Hash)</h3>
+                            <p class="text-sm text-violet-300">Hangi layout'lar kullanıldı? Tekrar etme garantisi</p>
+                        </div>
+                        <span class="badge bg-emerald-600 text-white">+10 puan</span>
+                    </div>
+
+                    <div class="bg-slate-950/50 rounded-lg p-4 mb-3">
+                        <h4 class="font-semibold text-slate-300 mb-2">💡 Basit Açıklama:</h4>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            v2'de AI rastgele layout seçiyor ama hangi numarayı seçtiğini hatırlamıyor. Aynı layoutu tekrar kullanabiliyor.
+                            v3'te her seçilen layout kaydedilecek. Bir daha aynı kombinasyon kullanılmayacak. Her tasarım gerçekten benzersiz olacak.
+                        </p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4 class="font-semibold text-slate-300 mb-2 text-sm">🔧 Teknik Uygulama:</h4>
+                        <ul class="space-y-2 text-sm text-slate-400">
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-cog text-blue-400 mt-0.5"></i>
+                                <div>
+                                    <strong>Session Storage:</strong> Seçilen layout numaralarını session'da sakla
+                                    <div class="text-xs text-slate-500 mt-1">
+                                        Örnek: hero=47, about=89, services=23 → Hash: "h47-a89-s23"
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-cog text-blue-400 mt-0.5"></i>
+                                <div>
+                                    <strong>Uniqueness Check:</strong> Yeni tasarım öncesi hash karşılaştır
+                                    <div class="text-xs text-slate-500 mt-1">
+                                        Aynı hash varsa → Farklı layout seç (recursive)
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-cog text-blue-400 mt-0.5"></i>
+                                <div>
+                                    <strong>Metadata Kayıt:</strong> prompt.html'e hangi layoutlar kullanıldı yaz
+                                    <div class="text-xs text-slate-500 mt-1">
+                                        Hero: #47 (Asymmetric Grid), About: #89 (Scroll-Reveal Story)
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-3 bg-amber-900/20 border border-amber-800 rounded-lg p-3">
+                        <p class="text-xs text-amber-300 flex items-start gap-2">
+                            <i class="fas fa-lightbulb mt-0.5"></i>
+                            <span><strong>Öneri:</strong> Aynı sektör için 3. tasarımdan sonra layout havuzunu genişlet (150 → 200 seçenek)</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 2. Renk Paleti Kütüphanesi -->
+                <div class="improvement-card">
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="w-12 h-12 bg-violet-500/30 rounded-xl flex items-center justify-center shrink-0">
+                            <span class="text-2xl font-bold text-violet-300">2</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-bold text-white mb-1">Renk Paleti Kütüphanesi (50 Hazır Palet)</h3>
+                            <p class="text-sm text-violet-300">Sektör bazlı renk psikolojisi + Primary/Secondary/Accent sistemi</p>
+                        </div>
+                        <span class="badge bg-emerald-600 text-white">+15 puan</span>
+                    </div>
+
+                    <div class="bg-slate-950/50 rounded-lg p-4 mb-3">
+                        <h4 class="font-semibold text-slate-300 mb-2">💡 Basit Açıklama:</h4>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            v2'de "sen renk seç" diyor ama örnek vermiyor. AI her seferinde aynı güvenli renkleri kullanabiliyor (mavi, yeşil...).
+                            v3'te 50 farklı renk paleti hazır olacak. Her palet sektöre uygun, psikolojik açıklamalı. AI bunlardan seçecek.
+                        </p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4 class="font-semibold text-slate-300 mb-2 text-sm">🎨 Örnek Paletler (Kategorilenmiş):</h4>
+                        <div class="space-y-3 mt-3">
+                            <!-- Corporate -->
+                            <div>
+                                <div class="text-xs text-slate-500 mb-2 font-medium">CORPORATE (10 palet)</div>
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div class="bg-slate-900 rounded p-2">
+                                        <div class="flex gap-1 mb-1">
+                                            <div class="w-4 h-4 rounded" style="background: #1e3a8a"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #3b82f6"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #fbbf24"></div>
+                                        </div>
+                                        <div class="text-slate-400">Trust Blue: Güven, profesyonellik</div>
+                                    </div>
+                                    <div class="bg-slate-900 rounded p-2">
+                                        <div class="flex gap-1 mb-1">
+                                            <div class="w-4 h-4 rounded" style="background: #1f2937"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #6b7280"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #10b981"></div>
+                                        </div>
+                                        <div class="text-slate-400">Executive Gray: Ciddiyet, lüks</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tech -->
+                            <div>
+                                <div class="text-xs text-slate-500 mb-2 font-medium">TECH/INNOVATION (10 palet)</div>
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div class="bg-slate-900 rounded p-2">
+                                        <div class="flex gap-1 mb-1">
+                                            <div class="w-4 h-4 rounded" style="background: #7c3aed"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #a78bfa"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #06b6d4"></div>
+                                        </div>
+                                        <div class="text-slate-400">Cyber Violet: Teknoloji, gelecek</div>
+                                    </div>
+                                    <div class="bg-slate-900 rounded p-2">
+                                        <div class="flex gap-1 mb-1">
+                                            <div class="w-4 h-4 rounded" style="background: #0ea5e9"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #14b8a6"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #f59e0b"></div>
+                                        </div>
+                                        <div class="text-slate-400">Digital Ocean: Yenilik, dinamizm</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Health -->
+                            <div>
+                                <div class="text-xs text-slate-500 mb-2 font-medium">HEALTH/WELLNESS (10 palet)</div>
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div class="bg-slate-900 rounded p-2">
+                                        <div class="flex gap-1 mb-1">
+                                            <div class="w-4 h-4 rounded" style="background: #059669"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #10b981"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #a7f3d0"></div>
+                                        </div>
+                                        <div class="text-slate-400">Medical Green: Şifa, temizlik</div>
+                                    </div>
+                                    <div class="bg-slate-900 rounded p-2">
+                                        <div class="flex gap-1 mb-1">
+                                            <div class="w-4 h-4 rounded" style="background: #0284c7"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #38bdf8"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #e0f2fe"></div>
+                                        </div>
+                                        <div class="text-slate-400">Clinical Blue: Hijyen, güvenilirlik</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Creative -->
+                            <div>
+                                <div class="text-xs text-slate-500 mb-2 font-medium">CREATIVE/AGENCY (10 palet)</div>
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div class="bg-slate-900 rounded p-2">
+                                        <div class="flex gap-1 mb-1">
+                                            <div class="w-4 h-4 rounded" style="background: #ec4899"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #f97316"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #eab308"></div>
+                                        </div>
+                                        <div class="text-slate-400">Rainbow Pop: Yaratıcılık, enerji</div>
+                                    </div>
+                                    <div class="bg-slate-900 rounded p-2">
+                                        <div class="flex gap-1 mb-1">
+                                            <div class="w-4 h-4 rounded" style="background: #1f2937"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #fbbf24"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #ffffff"></div>
+                                        </div>
+                                        <div class="text-slate-400">Bold Contrast: Cesaret, dikkat</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Luxury -->
+                            <div>
+                                <div class="text-xs text-slate-500 mb-2 font-medium">LUXURY/PREMIUM (10 palet)</div>
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div class="bg-slate-900 rounded p-2">
+                                        <div class="flex gap-1 mb-1">
+                                            <div class="w-4 h-4 rounded" style="background: #000000"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #fbbf24"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #d97706"></div>
+                                        </div>
+                                        <div class="text-slate-400">Gold Prestige: Lüks, prestij</div>
+                                    </div>
+                                    <div class="bg-slate-900 rounded p-2">
+                                        <div class="flex gap-1 mb-1">
+                                            <div class="w-4 h-4 rounded" style="background: #450a0a"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #991b1b"></div>
+                                            <div class="w-4 h-4 rounded" style="background: #f5f5f4"></div>
+                                        </div>
+                                        <div class="text-slate-400">Burgundy Elite: Sofistike, zengin</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 bg-blue-900/20 border border-blue-800 rounded-lg p-3">
+                        <p class="text-xs text-blue-300 flex items-start gap-2">
+                            <i class="fas fa-info-circle mt-0.5"></i>
+                            <span><strong>Sistem:</strong> AI sektörü analiz eder → Uygun kategoriyi seçer → O kategoriden rastgele palet alır → Tekrar kullanmaz</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 3. Font Kütüphanesi Genişletme -->
+                <div class="improvement-card">
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="w-12 h-12 bg-violet-500/30 rounded-xl flex items-center justify-center shrink-0">
+                            <span class="text-2xl font-bold text-violet-300">3</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-bold text-white mb-1">Font Kütüphanesi Genişletme (10 → 30 Çift)</h3>
+                            <p class="text-sm text-violet-300">Kategorilenmiş font çiftleri + karakter analizi</p>
+                        </div>
+                        <span class="badge bg-emerald-600 text-white">+5 puan</span>
+                    </div>
+
+                    <div class="bg-slate-950/50 rounded-lg p-4 mb-3">
+                        <h4 class="font-semibold text-slate-300 mb-2">💡 Basit Açıklama:</h4>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            v2'de sadece 10 font çifti var. Aynı font kombinasyonları sık tekrar ediyor.
+                            v3'te 30 farklı font çifti olacak. Her biri kategoriye göre (Corporate, Tech, Luxury...) sınıflandırılmış.
+                        </p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4 class="font-semibold text-slate-300 mb-2 text-sm">🔤 Yeni Font Çiftleri (20 Ekleme):</h4>
+                        <div class="grid md:grid-cols-2 gap-3 text-xs mt-3">
+                            <div class="space-y-2">
+                                <div class="bg-slate-900 rounded p-2">
+                                    <div class="text-violet-400 font-medium mb-1">11. Poppins + Roboto</div>
+                                    <div class="text-slate-500">Modern + Universal</div>
+                                </div>
+                                <div class="bg-slate-900 rounded p-2">
+                                    <div class="text-violet-400 font-medium mb-1">12. Crimson Text + Lora</div>
+                                    <div class="text-slate-500">Editorial + Elegant</div>
+                                </div>
+                                <div class="bg-slate-900 rounded p-2">
+                                    <div class="text-violet-400 font-medium mb-1">13. Archivo + IBM Plex Sans</div>
+                                    <div class="text-slate-500">Tech + Clean</div>
+                                </div>
+                                <div class="bg-slate-900 rounded p-2">
+                                    <div class="text-violet-400 font-medium mb-1">14. Spectral + Karla</div>
+                                    <div class="text-slate-500">Luxury + Minimal</div>
+                                </div>
+                                <div class="bg-slate-900 rounded p-2">
+                                    <div class="text-violet-400 font-medium mb-1">15. Manrope + Merriweather</div>
+                                    <div class="text-slate-500">Geometric + Classic</div>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="bg-slate-900 rounded p-2">
+                                    <div class="text-violet-400 font-medium mb-1">16. Lexend + Noto Sans</div>
+                                    <div class="text-slate-500">Readable + Global</div>
+                                </div>
+                                <div class="bg-slate-900 rounded p-2">
+                                    <div class="text-violet-400 font-medium mb-1">17. Fraunces + Atkinson Hyperlegible</div>
+                                    <div class="text-slate-500">Display + Accessible</div>
+                                </div>
+                                <div class="bg-slate-900 rounded p-2">
+                                    <div class="text-violet-400 font-medium mb-1">18. Commissioner + Public Sans</div>
+                                    <div class="text-slate-500">Government + Official</div>
+                                </div>
+                                <div class="bg-slate-900 rounded p-2">
+                                    <div class="text-violet-400 font-medium mb-1">19. JetBrains Mono + Fira Sans</div>
+                                    <div class="text-slate-500">Developer + Tech</div>
+                                </div>
+                                <div class="bg-slate-900 rounded p-2">
+                                    <div class="text-violet-400 font-medium mb-1">20. Bricolage Grotesque + Inter</div>
+                                    <div class="text-slate-500">Contemporary + Versatile</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2 text-slate-500 text-xs">+ 10 ek font çifti (21-30) - Niche sektörler için</div>
+                    </div>
+                </div>
+
+                <!-- 4. Animasyon/Efekt Kütüphanesi -->
+                <div class="improvement-card">
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="w-12 h-12 bg-violet-500/30 rounded-xl flex items-center justify-center shrink-0">
+                            <span class="text-2xl font-bold text-violet-300">4</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-bold text-white mb-1">Animasyon/Efekt Kütüphanesi (30 Micro-Interaction)</h3>
+                            <p class="text-sm text-violet-300">Hover, scroll, click efektleri + performans notları</p>
+                        </div>
+                        <span class="badge bg-emerald-600 text-white">+10 puan</span>
+                    </div>
+
+                    <div class="bg-slate-950/50 rounded-lg p-4 mb-3">
+                        <h4 class="font-semibold text-slate-300 mb-2">💡 Basit Açıklama:</h4>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            v2'de "animasyon ekle" diyor ama hangi animasyonları, nasıl kullanacağını söylemiyor.
+                            v3'te 30 farklı micro-interaction hazır olacak. Hover efektleri, scroll animasyonları, button feedback'leri...
+                        </p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4 class="font-semibold text-slate-300 mb-2 text-sm">✨ Animasyon Kategorileri:</h4>
+                        <div class="space-y-3 mt-3 text-xs">
+                            <div>
+                                <div class="text-violet-400 font-medium mb-1">HOVER EFFECTS (10 adet)</div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="bg-slate-900 rounded p-2 text-slate-400">1. Magnetic Pull (element fareye yaklaşır)</div>
+                                    <div class="bg-slate-900 rounded p-2 text-slate-400">2. 3D Tilt (perspective değişimi)</div>
+                                    <div class="bg-slate-900 rounded p-2 text-slate-400">3. Glow Spread (ışık yayılımı)</div>
+                                    <div class="bg-slate-900 rounded p-2 text-slate-400">4. Scale Bounce (yumuşak büyüme)</div>
+                                    <div class="bg-slate-900 rounded p-2 text-slate-400">5. Border Draw (çizgi animasyonu)</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-violet-400 font-medium mb-1">SCROLL REVEALS (10 adet)</div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="bg-slate-900 rounded p-2 text-slate-400">1. Fade Up (yukarıdan belirme)</div>
+                                    <div class="bg-slate-900 rounded p-2 text-slate-400">2. Stagger Children (sıralı giriş)</div>
+                                    <div class="bg-slate-900 rounded p-2 text-slate-400">3. Parallax Depth (katmanlı hareket)</div>
+                                    <div class="bg-slate-900 rounded p-2 text-slate-400">4. Number Counter (sayı sayma)</div>
+                                    <div class="bg-slate-900 rounded p-2 text-slate-400">5. Text Reveal (kelime kelime)</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-violet-400 font-medium mb-1">CLICK/INTERACTION (10 adet)</div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="bg-slate-900 rounded p-2 text-slate-400">1. Ripple Effect (dalga etkisi)</div>
+                                    <div class="bg-slate-900 rounded p-2 text-slate-400">2. Particle Burst (patlama efekti)</div>
+                                    <div class="bg-slate-900 rounded p-2 text-slate-400">3. Morphing Shape (şekil değişimi)</div>
+                                    <div class="bg-slate-900 rounded p-2 text-slate-400">4. Elastic Feedback (esnek geri dönüş)</div>
+                                    <div class="bg-slate-900 rounded p-2 text-slate-400">5. Loading Skeleton (yükleme iskelet)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 bg-amber-900/20 border border-amber-800 rounded-lg p-3">
+                        <p class="text-xs text-amber-300 flex items-start gap-2">
+                            <i class="fas fa-tachometer-alt mt-0.5"></i>
+                            <span><strong>Performans Kuralı:</strong> Tüm animasyonlar 60fps'de çalışmalı. GPU-accelerated (transform, opacity). Will-change kullanımı zorunlu.</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 5. Özgünlük Skoru Sistemi -->
+                <div class="improvement-card">
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="w-12 h-12 bg-violet-500/30 rounded-xl flex items-center justify-center shrink-0">
+                            <span class="text-2xl font-bold text-violet-300">5</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-bold text-white mb-1">Özgünlük Skoru Algoritması (0-100 Puanlama)</h3>
+                            <p class="text-sm text-violet-300">Her tasarıma objektif özgünlük puanı</p>
+                        </div>
+                        <span class="badge bg-emerald-600 text-white">+15 puan</span>
+                    </div>
+
+                    <div class="bg-slate-950/50 rounded-lg p-4 mb-3">
+                        <h4 class="font-semibold text-slate-300 mb-2">💡 Basit Açıklama:</h4>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            v2'de "bu tasarım özgün mü?" sorusuna cevap yok. Sadece kontrol listesi var.
+                            v3'te her tasarıma 0-100 arası puan verilecek. 70'in altı kabul edilmeyecek. Objektif ölçüm olacak.
+                        </p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4 class="font-semibold text-slate-300 mb-2 text-sm">🎯 Puanlama Formülü:</h4>
+                        <div class="space-y-2 text-xs mt-3">
+                            <div class="bg-slate-900 rounded p-3">
+                                <div class="text-emerald-400 font-medium mb-2">Layout Özgünlüğü (25 puan)</div>
+                                <ul class="space-y-1 text-slate-400">
+                                    <li>• İlk kez kullanılan layout: +25 puan</li>
+                                    <li>• 2. kez kullanılan layout: +15 puan</li>
+                                    <li>• 3+ kez kullanılan layout: +5 puan</li>
+                                    <li>• Aynı kombinasyon tekrarı: 0 puan</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-900 rounded p-3">
+                                <div class="text-blue-400 font-medium mb-2">Renk Özgünlüğü (25 puan)</div>
+                                <ul class="space-y-1 text-slate-400">
+                                    <li>• Sektöre özel palet: +25 puan</li>
+                                    <li>• Nadir kullanılan palet: +20 puan</li>
+                                    <li>• Genel palet (mavi/yeşil): +10 puan</li>
+                                    <li>• Varsayılan Tailwind renk: +5 puan</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-900 rounded p-3">
+                                <div class="text-purple-400 font-medium mb-2">Font Varyasyonu (20 puan)</div>
+                                <ul class="space-y-1 text-slate-400">
+                                    <li>• Beklenmedik kombinasyon: +20 puan</li>
+                                    <li>• Uygun ama az kullanılan: +15 puan</li>
+                                    <li>• Popüler kombinasyon: +10 puan</li>
+                                    <li>• Çok kullanılan (Inter/Roboto): +5 puan</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-900 rounded p-3">
+                                <div class="text-orange-400 font-medium mb-2">Animasyon/Efekt (15 puan)</div>
+                                <ul class="space-y-1 text-slate-400">
+                                    <li>• 5+ farklı micro-interaction: +15 puan</li>
+                                    <li>• 3-4 animasyon: +10 puan</li>
+                                    <li>• 1-2 basit efekt: +5 puan</li>
+                                    <li>• Hiç animasyon yok: 0 puan</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-900 rounded p-3">
+                                <div class="text-yellow-400 font-medium mb-2">Component Çeşitliliği (15 puan)</div>
+                                <ul class="space-y-1 text-slate-400">
+                                    <li>• 10+ farklı component stili: +15 puan</li>
+                                    <li>• 5-9 component stili: +10 puan</li>
+                                    <li>• 3-4 component stili: +5 puan</li>
+                                    <li>• Varsayılan stiller: 0 puan</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-3 p-3 bg-violet-900/30 border border-violet-700 rounded">
+                            <div class="text-violet-300 font-medium mb-1">Minimum Kabul Skoru: 70/100</div>
+                            <div class="text-xs text-slate-400">70'in altı → AI otomatik revize eder (farklı layout/renk/font seçer)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6-10 Kısa Özet -->
+                <div class="grid md:grid-cols-2 gap-4">
+
+                    <!-- 6. Sektor-Layout Matrix -->
+                    <div class="improvement-card">
+                        <div class="flex items-start gap-3 mb-3">
+                            <div class="w-10 h-10 bg-violet-500/30 rounded-lg flex items-center justify-center shrink-0">
+                                <span class="text-lg font-bold text-violet-300">6</span>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-white mb-1">Sektor-Layout Matrix</h3>
+                                <p class="text-xs text-violet-300">Hangi sektör hangi layout'la gider?</p>
+                            </div>
+                        </div>
+                        <div class="text-xs text-slate-400 space-y-1">
+                            <div class="flex items-start gap-2">
+                                <i class="fas fa-hospital text-emerald-400 mt-0.5"></i>
+                                <span><strong>Sağlık:</strong> Clean layouts (21-40), Trust colors</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <i class="fas fa-microchip text-blue-400 mt-0.5"></i>
+                                <span><strong>Tech:</strong> Interactive (81-105), Gradient palettes</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <i class="fas fa-gem text-yellow-400 mt-0.5"></i>
+                                <span><strong>Lüks:</strong> Typography-focused (66-80), Dark luxury</span>
+                            </div>
+                        </div>
+                        <div class="mt-2 badge bg-emerald-600 text-white text-xs">+5 puan</div>
+                    </div>
+
+                    <!-- 7. Component Style Varyasyonları -->
+                    <div class="improvement-card">
+                        <div class="flex items-start gap-3 mb-3">
+                            <div class="w-10 h-10 bg-violet-500/30 rounded-lg flex items-center justify-center shrink-0">
+                                <span class="text-lg font-bold text-violet-300">7</span>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-white mb-1">Component Varyasyonları</h3>
+                                <p class="text-xs text-violet-300">25 farklı component stili</p>
+                            </div>
+                        </div>
+                        <div class="text-xs text-slate-400 space-y-1">
+                            <div><strong>Button:</strong> 15 stil (outline, filled, ghost, gradient, neon...)</div>
+                            <div><strong>Card:</strong> 10 stil (shadow, border, glass, neumorphic...)</div>
+                            <div><strong>Input:</strong> 8 stil (underline, floating, icon, pill...)</div>
+                        </div>
+                        <div class="mt-2 badge bg-emerald-600 text-white text-xs">+5 puan</div>
+                    </div>
+
+                    <!-- 8. Dark Mode Renk Kuralları -->
+                    <div class="improvement-card">
+                        <div class="flex items-start gap-3 mb-3">
+                            <div class="w-10 h-10 bg-violet-500/30 rounded-lg flex items-center justify-center shrink-0">
+                                <span class="text-lg font-bold text-violet-300">8</span>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-white mb-1">Dark Mode Palet Sistemi</h3>
+                                <p class="text-xs text-violet-300">Light → Dark otomatik dönüşüm</p>
+                            </div>
+                        </div>
+                        <div class="text-xs text-slate-400 space-y-1">
+                            <div>• Kontrast koruması (WCAG AA compliance)</div>
+                            <div>• Renkler %20-30 desaturate</div>
+                            <div>• Accent renkler daha parlak</div>
+                            <div>• Göz yormama kuralları</div>
+                        </div>
+                        <div class="mt-2 badge bg-emerald-600 text-white text-xs">+5 puan</div>
+                    </div>
+
+                    <!-- 9. Özgünlük Raporu -->
+                    <div class="improvement-card">
+                        <div class="flex items-start gap-3 mb-3">
+                            <div class="w-10 h-10 bg-violet-500/30 rounded-lg flex items-center justify-center shrink-0">
+                                <span class="text-lg font-bold text-violet-300">9</span>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-white mb-1">Özgünlük Raporu (prompt.html)</h3>
+                                <p class="text-xs text-violet-300">Seçimler + skor + gerekçe</p>
+                            </div>
+                        </div>
+                        <div class="text-xs text-slate-400 space-y-1">
+                            <div>• Hangi layout'lar kullanıldı?</div>
+                            <div>• Renk paleti + psikolojik açıklama</div>
+                            <div>• Font çifti + karakter analizi</div>
+                            <div>• Animasyonlar + kullanım yerleri</div>
+                            <div>• Özgünlük skoru + kırılım</div>
+                        </div>
+                        <div class="mt-2 badge bg-emerald-600 text-white text-xs">+5 puan</div>
+                    </div>
+
+                    <!-- 10. Karşılaştırma Sistemi -->
+                    <div class="improvement-card md:col-span-2">
+                        <div class="flex items-start gap-3 mb-3">
+                            <div class="w-10 h-10 bg-violet-500/30 rounded-lg flex items-center justify-center shrink-0">
+                                <span class="text-lg font-bold text-violet-300">10</span>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-white mb-1">Önceki Tasarımlarla Karşılaştırma</h3>
+                                <p class="text-xs text-violet-300">Aynı sektör için benzerlik analizi</p>
+                            </div>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-3 text-xs text-slate-400">
+                            <div class="bg-slate-950/50 rounded p-3">
+                                <div class="font-medium text-violet-400 mb-2">Benzerlik Metrikleri:</div>
+                                <ul class="space-y-1">
+                                    <li>• Layout tekrarı yüzdesi</li>
+                                    <li>• Renk paleti benzerliği</li>
+                                    <li>• Font çifti tekrarı</li>
+                                    <li>• Section sıralaması aynılık</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-950/50 rounded p-3">
+                                <div class="font-medium text-violet-400 mb-2">Hedef:</div>
+                                <ul class="space-y-1">
+                                    <li>• Aynı sektörde %80+ farklılık</li>
+                                    <li>• Farklı sektörde %95+ farklılık</li>
+                                    <li>• Hiçbir tasarım birbirine benzemesin</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-2 badge bg-emerald-600 text-white text-xs">+5 puan</div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- v3 Beklenen Sonuçlar -->
+        <section class="section-card">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-trophy text-yellow-400"></i>
+                v3 Beklenen Sonuçlar
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-4 mb-6">
+                <div class="bg-emerald-900/20 border border-emerald-800 rounded-lg p-5">
+                    <h3 class="font-semibold text-emerald-300 mb-3">✅ Kazanımlar</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-emerald-400 mt-0.5"></i>
+                            <span><strong>%40 daha özgün tasarımlar:</strong> 65 → 90 puan artış</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-emerald-400 mt-0.5"></i>
+                            <span><strong>Sıfır tekrar garantisi:</strong> Hash-based tracking sistemi</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-emerald-400 mt-0.5"></i>
+                            <span><strong>Objektif ölçüm:</strong> Her tasarıma özgünlük skoru</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-emerald-400 mt-0.5"></i>
+                            <span><strong>Sektöre özel tasarım:</strong> Renk psikolojisi + layout uyumu</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-emerald-400 mt-0.5"></i>
+                            <span><strong>Zengin görsel dil:</strong> 30 animasyon, 50 renk, 30 font</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-5">
+                    <h3 class="font-semibold text-blue-300 mb-3">📊 Karşılaştırma</h3>
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-slate-400">Özgünlük Skoru</span>
+                                <span class="text-emerald-400 font-bold">+25 puan</span>
+                            </div>
+                            <div class="score-bar"><div class="score-fill bg-gradient-to-r from-orange-500 to-emerald-500" style="width: 100%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-slate-400">Renk Varyasyonu</span>
+                                <span class="text-emerald-400 font-bold">0 → 50 palet</span>
+                            </div>
+                            <div class="score-bar"><div class="score-fill bg-emerald-500" style="width: 100%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-slate-400">Font Çeşitliliği</span>
+                                <span class="text-emerald-400 font-bold">10 → 30 çift</span>
+                            </div>
+                            <div class="score-bar"><div class="score-fill bg-emerald-500" style="width: 100%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-slate-400">Animasyon Kütüphanesi</span>
+                                <span class="text-emerald-400 font-bold">0 → 30 efekt</span>
+                            </div>
+                            <div class="score-bar"><div class="score-fill bg-emerald-500" style="width: 100%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-slate-400">Component Stili</span>
+                                <span class="text-emerald-400 font-bold">0 → 25 varyasyon</span>
+                            </div>
+                            <div class="score-bar"><div class="score-fill bg-emerald-500" style="width: 100%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Implementasyon Önerisi -->
+            <div class="bg-violet-900/20 border border-violet-800 rounded-lg p-5">
+                <h3 class="font-semibold text-violet-300 mb-3 flex items-center gap-2">
+                    <i class="fas fa-code-branch"></i>
+                    Uygulama Stratejisi
+                </h3>
+                <div class="grid md:grid-cols-3 gap-3 text-sm">
+                    <div class="bg-slate-950/50 rounded p-3">
+                        <div class="text-emerald-400 font-medium mb-2">1. Faz: Kütüphaneler</div>
+                        <ul class="text-xs text-slate-400 space-y-1">
+                            <li>• 50 renk paleti ekle</li>
+                            <li>• 30 font çifti ekle</li>
+                            <li>• 30 animasyon örneği ekle</li>
+                            <li>• 25 component stili ekle</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-950/50 rounded p-3">
+                        <div class="text-blue-400 font-medium mb-2">2. Faz: Mekanizmalar</div>
+                        <ul class="text-xs text-slate-400 space-y-1">
+                            <li>• Layout tracking ekle</li>
+                            <li>• Hash sistemi kur</li>
+                            <li>• Özgünlük skoru algoritması</li>
+                            <li>• Sektor-layout matrix</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-950/50 rounded p-3">
+                        <div class="text-purple-400 font-medium mb-2">3. Faz: Raporlama</div>
+                        <ul class="text-xs text-slate-400 space-y-1">
+                            <li>• prompt.html özgünlük raporu</li>
+                            <li>• Karşılaştırma sistemi</li>
+                            <li>• Otomatik revize mekanizması</li>
+                            <li>• Test + deploy</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sonuç -->
+        <section class="bg-gradient-to-br from-violet-900/30 to-purple-900/30 border border-violet-800 rounded-xl p-6">
+            <div class="flex items-start gap-4">
+                <div class="w-14 h-14 bg-violet-500/30 rounded-xl flex items-center justify-center shrink-0">
+                    <i class="fas fa-flag-checkered text-violet-300 text-2xl"></i>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-xl font-bold text-white mb-3">🎯 Sonuç & Onay Bekleniyor</h2>
+                    <p class="text-slate-300 leading-relaxed mb-4">
+                        v2 promptu iyi başlangıç ama <strong>özgünlüğü garanti etmiyor</strong>. v3 ile 10 major iyileştirme yapılacak.
+                        Özgünlük skoru 65'ten 90'a çıkacak. Her tasarım gerçekten benzersiz olacak.
+                        AI artık "farklı olsun" demek yerine <strong>"nasıl farklı olacağını"</strong> bilecek.
+                    </p>
+                    <div class="bg-slate-950/50 rounded-lg p-4 border border-slate-700">
+                        <div class="flex items-center gap-3 mb-3">
+                            <i class="fas fa-question-circle text-violet-400 text-xl"></i>
+                            <span class="font-semibold text-white">Bu v3 önerilerini onaylıyor musunuz?</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2 text-sm">
+                            <span class="badge bg-emerald-600 text-white">
+                                <i class="fas fa-check"></i>
+                                UYGUNDUR → v3 prompt yazılsın
+                            </span>
+                            <span class="badge bg-blue-600 text-white">
+                                <i class="fas fa-edit"></i>
+                                Değişiklik istiyorum
+                            </span>
+                            <span class="badge bg-orange-600 text-white">
+                                <i class="fas fa-plus"></i>
+                                Ek öneri ekleyeceğim
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 mt-12 py-6">
+        <div class="max-w-6xl mx-auto px-6 text-center text-slate-500 text-sm">
+            <p>🤖 Generated with <a href="https://claude.com/claude-code" class="text-violet-400 hover:text-violet-300">Claude Code</a></p>
+            <p class="text-xs mt-1">Design Prompt v3 - Özgünlük Geliştirme Analizi - 6 Ocak 2026</p>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,10 +1,10 @@
 <IfModule mod_authz_core.c>
-    <FilesMatch '(index|template-action)\.php$'>
+    <FilesMatch '(index|template-action|metadata-api)\.php$'>
         Require all granted
     </FilesMatch>
 </IfModule>
 <IfModule !mod_authz_core.c>
-    <FilesMatch '(index|template-action)\.php$'>
+    <FilesMatch '(index|template-action|metadata-api)\.php$'>
         Order allow,deny
         Allow from all
     </FilesMatch>

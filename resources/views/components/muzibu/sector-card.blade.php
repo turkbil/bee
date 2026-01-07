@@ -62,8 +62,9 @@
 
     <div class="relative @if($compact) mb-3 @else mb-4 @endif">
         {{-- Sector Icon/Cover --}}
-        @if($sector->media_id && $sector->iconMedia)
-            <img src="{{ thumb($sector->iconMedia, 300, 300, ['scale' => 1]) }}"
+        @php $heroMedia = $sector->getFirstMedia('hero'); @endphp
+        @if($heroMedia)
+            <img src="{{ thumb($heroMedia, 300, 300, ['scale' => 1]) }}"
                  alt="{{ $sector->getTranslation('title', app()->getLocale()) }}"
                  class="w-full aspect-square object-cover rounded-lg shadow-lg"
                  loading="lazy">

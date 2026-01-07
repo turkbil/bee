@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unimad Madencilik v2 - Tasarım Dokümantasyonu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/admin-assets/libs/fontawesome-pro@7.1.0/css/all.css">
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+
+    <div class="max-w-5xl mx-auto px-6 py-12">
+
+        <!-- Header -->
+        <header class="mb-12 pb-8 border-b border-slate-700">
+            <div class="flex items-center gap-4 mb-4">
+                <span class="px-3 py-1 bg-sky-600 text-white text-sm font-medium">v2</span>
+                <span class="px-3 py-1 bg-emerald-600 text-white text-sm font-medium">Minimal</span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-4">Unimad Madencilik - Tasarım Dokümantasyonu</h1>
+            <p class="text-slate-400 text-lg">
+                Madencilik, mimarlık ve jeoteknik mühendislik sektörü için kurumsal web sitesi tasarımı.
+            </p>
+            <div class="mt-4 text-sm text-slate-500">
+                <span>Oluşturulma: 6 Ocak 2026</span>
+                <span class="mx-2">|</span>
+                <span>Fingerprint: <code class="bg-slate-800 px-2 py-1 rounded">v2-sky-spgr-split21</code></span>
+            </div>
+        </header>
+
+        <!-- Design Tokens -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fa-solid fa-palette text-sky-500"></i>
+                Design Token Sistemi
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+
+                <!-- Renk Paleti -->
+                <div class="bg-slate-800 rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">Renk Paleti: Sky</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-sky-600 rounded"></div>
+                            <div>
+                                <span class="text-white font-medium">Primary</span>
+                                <span class="text-slate-400 text-sm ml-2">sky-600 (#0284c7)</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-sky-700 rounded"></div>
+                            <div>
+                                <span class="text-white font-medium">Primary Hover</span>
+                                <span class="text-slate-400 text-sm ml-2">sky-700 (#0369a1)</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-sky-100 rounded"></div>
+                            <div>
+                                <span class="text-white font-medium">Accent Light</span>
+                                <span class="text-slate-400 text-sm ml-2">sky-100 (#e0f2fe)</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-sky-950 rounded"></div>
+                            <div>
+                                <span class="text-white font-medium">Dark BG</span>
+                                <span class="text-slate-400 text-sm ml-2">sky-950 (#082f49)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-slate-400 text-sm mt-4">
+                        <strong>Gradient Ailesi:</strong> Yok (Minimal tasarım, solid renkler)
+                    </p>
+                </div>
+
+                <!-- Font Çifti -->
+                <div class="bg-slate-800 rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">Font Çifti: #11 (Modern & Tech)</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <span class="text-sky-400 text-sm font-medium">HEADING</span>
+                            <p class="text-2xl font-bold text-white" style="font-family: 'Space Grotesk', sans-serif;">Space Grotesk</p>
+                            <p class="text-slate-400 text-sm">Tech-forward, geometric, modern</p>
+                        </div>
+                        <div>
+                            <span class="text-sky-400 text-sm font-medium">BODY</span>
+                            <p class="text-xl text-white" style="font-family: 'DM Sans', sans-serif;">DM Sans</p>
+                            <p class="text-slate-400 text-sm">Clean, readable, professional</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Border & Spacing -->
+                <div class="bg-slate-800 rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">Border & Spacing</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> <strong>Border Radius:</strong> rounded-none (keskin köşeler)</li>
+                        <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> <strong>Section Padding:</strong> py-20 md:py-32 (spacious)</li>
+                        <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> <strong>Container:</strong> px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20</li>
+                        <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> <strong>Card Padding:</strong> p-8</li>
+                        <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> <strong>Grid Gap:</strong> gap-8 md:gap-12</li>
+                    </ul>
+                </div>
+
+                <!-- Typography Scale -->
+                <div class="bg-slate-800 rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">Typography Hierarchy</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li><strong class="text-white">H1:</strong> text-4xl md:text-5xl xl:text-6xl font-bold</li>
+                        <li><strong class="text-white">H2:</strong> text-3xl md:text-4xl xl:text-5xl font-bold</li>
+                        <li><strong class="text-white">H3:</strong> text-2xl font-bold</li>
+                        <li><strong class="text-white">H4:</strong> text-xl font-semibold</li>
+                        <li><strong class="text-white">Body:</strong> text-lg leading-relaxed</li>
+                        <li><strong class="text-white">Small:</strong> text-sm</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Layout Seçimleri -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fa-solid fa-grid text-sky-500"></i>
+                Layout Seçimleri
+            </h2>
+
+            <div class="bg-slate-800 rounded-xl p-6 space-y-4">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-700/50 p-4 rounded-lg">
+                        <span class="text-sky-400 font-medium">#21 - Split Hero</span>
+                        <p class="text-slate-300 text-sm mt-1">Sol %60 metin + Sağ %40 görsel, floating card</p>
+                    </div>
+                    <div class="bg-slate-700/50 p-4 rounded-lg">
+                        <span class="text-sky-400 font-medium">#21 - Statistics First About</span>
+                        <p class="text-slate-300 text-sm mt-1">Giant counters, 4-column stat grid</p>
+                    </div>
+                    <div class="bg-slate-700/50 p-4 rounded-lg">
+                        <span class="text-sky-400 font-medium">#26 - Horizontal Tabs</span>
+                        <p class="text-slate-300 text-sm mt-1">Tab navigation for 3 services</p>
+                    </div>
+                    <div class="bg-slate-700/50 p-4 rounded-lg">
+                        <span class="text-sky-400 font-medium">#1 - Pillar Grid (Values)</span>
+                        <p class="text-slate-300 text-sm mt-1">3x2 grid, icon + title + description</p>
+                    </div>
+                    <div class="bg-slate-700/50 p-4 rounded-lg">
+                        <span class="text-sky-400 font-medium">#1 - Split Form (Contact)</span>
+                        <p class="text-slate-300 text-sm mt-1">Sol info + Sağ form layout</p>
+                    </div>
+                    <div class="bg-slate-700/50 p-4 rounded-lg">
+                        <span class="text-sky-400 font-medium">#1 - Multi-Column Footer</span>
+                        <p class="text-slate-300 text-sm mt-1">4-column classic footer</p>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-700">
+                    <span class="text-amber-400 font-medium">Section Sırası:</span>
+                    <span class="text-slate-300 ml-2">#1 - Hero > Services > About > Contact (servis odaklı)</span>
+                </div>
+
+                <div class="pt-2">
+                    <span class="text-purple-400 font-medium">Mega Menu Stili:</span>
+                    <span class="text-slate-300 ml-2">#3 - Icon Grid (3-column with icons)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hover Efektleri -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fa-solid fa-mouse-pointer text-sky-500"></i>
+                Hover Efektleri
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-slate-800 rounded-xl p-6">
+                    <span class="text-emerald-400 font-medium">#1 - Icon Weight</span>
+                    <p class="text-slate-300 text-sm mt-2">FontAwesome far → fas (Regular → Solid)</p>
+                    <code class="block mt-2 text-xs bg-slate-700 p-2 rounded text-slate-400">
+                        .hover-icon:hover .icon-light { display: none; }<br>
+                        .hover-icon:hover .icon-solid { display: block; }
+                    </code>
+                </div>
+                <div class="bg-slate-800 rounded-xl p-6">
+                    <span class="text-emerald-400 font-medium">#6 - Text Slide</span>
+                    <p class="text-slate-300 text-sm mt-2">Text translateX(8px) on hover</p>
+                    <code class="block mt-2 text-xs bg-slate-700 p-2 rounded text-slate-400">
+                        .hover-slide-text:hover .slide-text {<br>
+                        &nbsp;&nbsp;transform: translateX(8px);<br>
+                        }
+                    </code>
+                </div>
+                <div class="bg-slate-800 rounded-xl p-6">
+                    <span class="text-emerald-400 font-medium">#11 - Border Draw</span>
+                    <p class="text-slate-300 text-sm mt-2">Sol border yukarıdan aşağı çizilir</p>
+                    <code class="block mt-2 text-xs bg-slate-700 p-2 rounded text-slate-400">
+                        .hover-border-draw::before {<br>
+                        &nbsp;&nbsp;height: 0 → 100%;<br>
+                        }
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <!-- v1 vs v2 Karşılaştırma -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fa-solid fa-code-compare text-sky-500"></i>
+                v1 vs v2 Karşılaştırma
+            </h2>
+
+            <div class="bg-slate-800 rounded-xl overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-700">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-slate-300">Özellik</th>
+                            <th class="px-4 py-3 text-left text-slate-300">v1</th>
+                            <th class="px-4 py-3 text-left text-sky-400">v2 (Yeni)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr>
+                            <td class="px-4 py-3 text-slate-300">Renk Paleti</td>
+                            <td class="px-4 py-3 text-slate-400">Bakır-Turuncu, Mavi, Yeşil (3 hizmet rengi)</td>
+                            <td class="px-4 py-3 text-white">Sky (tek tutarlı palet)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-300">Font</td>
+                            <td class="px-4 py-3 text-slate-400">Montserrat + Inter</td>
+                            <td class="px-4 py-3 text-white">Space Grotesk + DM Sans</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-300">Hero</td>
+                            <td class="px-4 py-3 text-slate-400">Slider Hero</td>
+                            <td class="px-4 py-3 text-white">Split Hero (Sol metin + Sağ görsel)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-300">Köşeler</td>
+                            <td class="px-4 py-3 text-slate-400">Rounded (yumuşak)</td>
+                            <td class="px-4 py-3 text-white">Keskin (rounded-none)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-300">Dark Mode</td>
+                            <td class="px-4 py-3 text-slate-400">Varsayılan: Dark</td>
+                            <td class="px-4 py-3 text-white">Sistem tercihi + localStorage</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-300">Hizmetler</td>
+                            <td class="px-4 py-3 text-slate-400">Card Grid</td>
+                            <td class="px-4 py-3 text-white">Horizontal Tabs (daha interaktif)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-300">Tasarım Dili</td>
+                            <td class="px-4 py-3 text-slate-400">Endüstriyel, sıcak tonlar</td>
+                            <td class="px-4 py-3 text-white">Minimal, soğuk tonlar, spacious</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Leonardo.ai Görsel Promptları -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fa-solid fa-image text-amber-500"></i>
+                Leonardo.ai Görsel Promptları
+            </h2>
+
+            <div class="space-y-6">
+
+                <!-- Hero Image -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800 rounded-r-xl p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-medium text-white">hero-team.jpg</span>
+                        <span class="text-xs text-slate-400">800x1000</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4">
+                        Editorial photograph of professional engineering team in modern office, three engineers reviewing blueprints on glass table, floor-to-ceiling windows with Ankara cityscape background, morning natural light, corporate professional atmosphere, Canon EOS R5 85mm f/1.4, shallow depth of field, Kodak Portra 400 film look, subtle lens dust particles, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Cinematic</span>
+                        <span class="px-2 py-1 bg-emerald-900/50 text-emerald-300 rounded">Guidance: 7</span>
+                    </div>
+                </div>
+
+                <!-- Office Image -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800 rounded-r-xl p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-medium text-white">office-interior.jpg</span>
+                        <span class="text-xs text-slate-400">800x450</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4">
+                        Editorial photograph of modern engineering company headquarters lobby, minimalist interior design, white marble floors, glass partitions, large reception desk with company logo, architectural models on display shelves, diffused natural daylight, Canon R5 24mm f/2.8, wide angle composition, Fuji Pro 400H film emulation, subtle vignette, clean corporate aesthetic, 8k
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Cinematic</span>
+                    </div>
+                </div>
+
+                <!-- Mining Image -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800 rounded-r-xl p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-medium text-white">mining-site.jpg</span>
+                        <span class="text-xs text-slate-400">800x450</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4">
+                        Documentary photograph of active mining site in Anatolian mountains, aerial view of open pit mine with geometric terraces, heavy machinery and haul trucks working, dust particles in golden hour sunlight, dramatic landscape, DJI Mavic 3 drone camera, wide establishing shot, earth tones with copper and amber highlights, National Geographic style, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-orange-900/50 text-orange-300 rounded">Style: Documentary</span>
+                    </div>
+                </div>
+
+                <!-- Architecture Image -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800 rounded-r-xl p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-medium text-white">architecture-project.jpg</span>
+                        <span class="text-xs text-slate-400">800x450</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4">
+                        Professional photograph of architect working on 3D model on large monitor, modern design studio environment, blueprint prints on desk, scale models visible, cool blue LED accent lighting, focused concentration, Sony A7IV 50mm f/1.8, medium depth of field, clean modern aesthetic, slight blue color grade, creative professional atmosphere, 8k
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-purple-900/50 text-purple-300 rounded">Style: Cinematic</span>
+                    </div>
+                </div>
+
+                <!-- Geotechnical Image -->
+                <div class="border-l-4 border-amber-500 pl-4 bg-slate-800 rounded-r-xl p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-medium text-white">geotech-drilling.jpg</span>
+                        <span class="text-xs text-slate-400">800x450</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4">
+                        Documentary photograph of geotechnical drilling operation, engineers in safety gear operating soil sampling equipment, core samples arranged on table, field laboratory setup, overcast diffused lighting, construction site background, Canon 5D Mark IV 35mm f/2, reportage style, earth tones with emerald accent, authentic working environment, 8k quality
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded">Model: Leonardo Phoenix</span>
+                        <span class="px-2 py-1 bg-emerald-900/50 text-emerald-300 rounded">Style: Documentary</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Teknik Notlar -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fa-solid fa-code text-sky-500"></i>
+                Teknik Notlar
+            </h2>
+
+            <div class="bg-slate-800 rounded-xl p-6 space-y-4">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-check-circle text-emerald-500 mt-1"></i>
+                    <div>
+                        <span class="text-white font-medium">Dark/Light Mode:</span>
+                        <span class="text-slate-300 ml-2">localStorage ile kalıcı, sistem tercihine göre varsayılan</span>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-check-circle text-emerald-500 mt-1"></i>
+                    <div>
+                        <span class="text-white font-medium">Animasyonlar:</span>
+                        <span class="text-slate-300 ml-2">AOS scroll animations (duration: 800ms, once: true)</span>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-check-circle text-emerald-500 mt-1"></i>
+                    <div>
+                        <span class="text-white font-medium">Counter Animation:</span>
+                        <span class="text-slate-300 ml-2">Alpine.js ile 60 frame, 30ms interval</span>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-check-circle text-emerald-500 mt-1"></i>
+                    <div>
+                        <span class="text-white font-medium">Responsive:</span>
+                        <span class="text-slate-300 ml-2">Mobile-first, hamburger menu lg: breakpoint</span>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-check-circle text-emerald-500 mt-1"></i>
+                    <div>
+                        <span class="text-white font-medium">Mega Menu:</span>
+                        <span class="text-slate-300 ml-2">mouseenter/mouseleave ile açılış, transition animasyonlu</span>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-check-circle text-emerald-500 mt-1"></i>
+                    <div>
+                        <span class="text-white font-medium">Tabs:</span>
+                        <span class="text-slate-300 ml-2">Alpine x-show + x-transition ile smooth geçiş</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fingerprint -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i class="fa-solid fa-fingerprint text-sky-500"></i>
+                Fingerprint
+            </h2>
+
+            <div class="bg-slate-800 rounded-xl p-6">
+                <pre class="text-sm text-slate-300 overflow-x-auto"><code>{
+  "version": "v2",
+  "hash": "v2-sky-spgr-split21",
+  "created": "2026-01-06",
+  "layouts": {
+    "hero": 21,
+    "about": 21,
+    "services": 26,
+    "values": 1,
+    "contact": 1,
+    "footer": 1
+  },
+  "colors": {
+    "palette": "Sky",
+    "primary": "sky-600",
+    "dark_bg": "sky-950"
+  },
+  "fonts": {
+    "heading": "Space Grotesk",
+    "body": "DM Sans",
+    "pair_id": 11
+  },
+  "style": {
+    "border_radius": "none",
+    "spacing": "spacious",
+    "design_language": "minimal-corporate"
+  },
+  "hover_effects": [1, 6, 11],
+  "mega_menu": 3,
+  "animated_bg": null
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="pt-8 border-t border-slate-700 text-center">
+            <p class="text-slate-500 text-sm">
+                Unimad Madencilik v2 Tasarım Dokümantasyonu | Claude AI tarafından oluşturuldu
+            </p>
+            <p class="text-slate-600 text-xs mt-2">6 Ocak 2026</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>

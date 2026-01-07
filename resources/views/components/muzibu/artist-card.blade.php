@@ -48,8 +48,9 @@
 
     <div class="relative mb-4">
         {{-- Artist Photo (Rounded for artist style) --}}
-        @if($artist->media_id && $artist->photoMedia)
-            <img src="{{ thumb($artist->photoMedia, 300, 300, ['scale' => 1]) }}"
+        @php $heroMedia = $artist->getFirstMedia('hero'); @endphp
+        @if($heroMedia)
+            <img src="{{ thumb($heroMedia, 300, 300, ['scale' => 1]) }}"
                  alt="{{ $artist->getTranslation('title', app()->getLocale()) }}"
                  class="w-full aspect-square object-cover rounded-full shadow-lg"
                  loading="lazy">

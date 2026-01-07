@@ -1,4 +1,31 @@
 {{-- RIGHT SIDEBAR - v6: Tab System with Dynamic Header --}}
+
+{{-- My Playlist Preview Hover Styles --}}
+<style>
+    /* Default state: duration visible, remove button hidden */
+    .playlist-item .duration-text {
+        display: inline !important;
+    }
+    .playlist-item .remove-btn {
+        display: none !important;
+    }
+
+    /* Hover state: duration hidden, remove button visible */
+    .playlist-item:hover .duration-text {
+        display: none !important;
+    }
+    .playlist-item:hover .remove-btn {
+        display: flex !important;
+    }
+
+    /* Sortable styles for playlist reorder */
+    .playlist-item {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+</style>
+
 <div class="h-full" x-data="{ songsTab: 'new' }">
 
     {{-- PREVIEW MODE: Premium Card Design (when clicking on list item - WORKS EVERYWHERE) --}}
@@ -62,9 +89,70 @@
 
             {{-- My-Playlist Preview (Queue Style with Reorder/Delete) - ONLY FOR USER'S OWN PLAYLISTS --}}
             <template x-if="!$store.sidebar.previewLoading && $store.sidebar.hasPreviewTracks && $store.sidebar.previewInfo?.type === 'Playlist' && $store.sidebar.previewInfo?.is_mine === true">
-                <div class="flex-1 overflow-y-auto bg-slate-900/50">
+                <div class="flex-1 overflow-y-auto bg-slate-900/50"
+                     x-ref="myPlaylistPreviewList"
+                     x-effect="
+                        if ($store.sidebar.previewInfo?.is_mine && $refs.myPlaylistPreviewList && $store.sidebar.previewTracks?.length > 0 && typeof Sortable !== 'undefined') {
+                            $nextTick(() => {
+                                if ($refs.myPlaylistPreviewList._sortable) $refs.myPlaylistPreviewList._sortable.destroy();
+                                $refs.myPlaylistPreviewList._sortable = new Sortable($refs.myPlaylistPreviewList, {
+                                    animation: 250,
+                                    easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
+                                    handle: '.playlist-drag-handle',
+                                    ghostClass: 'sortable-ghost',
+                                    chosenClass: 'sortable-chosen',
+                                    dragClass: 'sortable-drag',
+                                    forceFallback: true,
+                                    fallbackClass: 'sortable-drag',
+                                    onEnd: async (evt) => {
+                                        const oldIdx = evt.oldIndex;
+                                        const newIdx = evt.newIndex;
+
+                                        // DOM değişikliğini geri al (Alpine yeniden render edecek)
+                                        const item = evt.item;
+                                        const parent = evt.from;
+                                        parent.removeChild(item);
+                                        if (oldIdx < parent.children.length) {
+                                            parent.insertBefore(item, parent.children[oldIdx]);
+                                        } else {
+                                            parent.appendChild(item);
+                                        }
+
+                                        if (oldIdx === newIdx) return;
+
+                                        const tracks = [...$store.sidebar.previewTracks];
+                                        const movedTrack = tracks[oldIdx];
+                                        tracks.splice(oldIdx, 1);
+                                        tracks.splice(newIdx, 0, movedTrack);
+
+                                        // Update local state (Alpine will re-render)
+                                        $store.sidebar.previewTracks = tracks;
+
+                                        // Save to server - format: song_positions: [{ song_id: X, position: Y }, ...]
+                                        const songPositions = tracks.map((t, i) => ({ song_id: t.id, position: i }));
+                                        try {
+                                            const resp = await fetch(`/api/muzibu/playlists/${$store.sidebar.previewInfo.id}/reorder`, {
+                                                method: 'PUT',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content
+                                                },
+                                                body: JSON.stringify({ song_positions: songPositions })
+                                            });
+                                            const data = await resp.json();
+                                            if (data.success) {
+                                                Alpine.store('toast').show('Sıralama kaydedildi', 'success');
+                                            }
+                                        } catch (e) {
+                                            console.error('Reorder error:', e);
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                     ">
                     <template x-for="(track, index) in $store.sidebar.previewTracks" :key="track.id">
-                        <div class="group flex items-center gap-2.5 px-3 py-2 hover:bg-white/5 cursor-pointer transition-all"
+                        <div class="group flex items-center gap-2.5 px-3 py-2 hover:bg-white/5 cursor-pointer transition-all playlist-item"
                              @click="$dispatch('play-song', { songId: track.id })">
 
                             {{-- Thumbnail with Play Overlay --}}
@@ -90,23 +178,41 @@
                                 <p class="text-gray-400 text-xs truncate" x-text="track.artist"></p>
                             </div>
 
-                            {{-- Duration (hide on hover) --}}
-                            <div class="text-xs text-gray-600 flex-shrink-0 group-hover:hidden" x-show="track.duration" x-text="track.duration"></div>
-
-                            {{-- Actions: Mobile always visible, Desktop hover only --}}
-                            <div class="flex sm:opacity-0 sm:group-hover:opacity-100 items-center gap-1 flex-shrink-0 transition-opacity">
-                                {{-- Remove Button --}}
+                            {{-- Duration / Remove Button (Same Position - Toggle on Hover) --}}
+                            <div class="w-10 h-6 flex items-center justify-center flex-shrink-0 relative">
+                                {{-- Duration (Default State - hides on hover via CSS) --}}
+                                <span class="duration-text text-xs text-gray-600" x-show="track.duration" x-text="track.duration"></span>
+                                {{-- Remove Button (Hover State - shows on hover via CSS) --}}
                                 <button
-                                    @click.stop="if(confirm('Şarkıyı playlist\'ten çıkar?')) { fetch(`/api/muzibu/playlists/${$store.sidebar.previewInfo.id}/remove-song/${track.id}`, { method: 'DELETE', headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content } }).then(r => r.json()).then(d => { if(d.success) { Alpine.store('toast').show('Şarkı çıkarıldı', 'success'); $store.sidebar.refreshPreview(); } }); }"
-                                    class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                                    @click.stop="$store.confirmModal.show({
+                                        title: 'Şarkıyı Çıkar',
+                                        message: 'Bu şarkıyı playlist\'ten çıkarmak istediğinizden emin misiniz?',
+                                        confirmText: 'Çıkar',
+                                        cancelText: 'Vazgeç',
+                                        type: 'danger',
+                                        onConfirm: async () => {
+                                            const resp = await fetch(`/api/muzibu/playlists/${$store.sidebar.previewInfo.id}/remove-song/${track.id}`, {
+                                                method: 'DELETE',
+                                                headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content }
+                                            });
+                                            const data = await resp.json();
+                                            if(data.success) {
+                                                Alpine.store('toast').show('Şarkı çıkarıldı', 'success');
+                                                $store.sidebar.refreshPreview();
+                                            }
+                                        }
+                                    })"
+                                    class="remove-btn absolute inset-0 w-full h-full flex items-center justify-center rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                                    style="display: none;"
                                     title="Çıkar"
                                 >
                                     <i class="fas fa-times text-xs"></i>
                                 </button>
-                                {{-- Drag Handle (Visual Only for Now) --}}
-                                <div class="w-6 h-6 flex items-center justify-center rounded-full text-gray-400 cursor-grab" title="Sürükle">
-                                    <i class="fas fa-grip-vertical text-xs"></i>
-                                </div>
+                            </div>
+
+                            {{-- Drag Handle (Always Visible) --}}
+                            <div class="playlist-drag-handle w-6 h-6 flex items-center justify-center rounded-full text-gray-500 cursor-grab active:cursor-grabbing hover:bg-white/10 hover:text-white transition-all flex-shrink-0" title="Sürükle">
+                                <i class="fas fa-grip-vertical text-xs"></i>
                             </div>
                         </div>
                     </template>

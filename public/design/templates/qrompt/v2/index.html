@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qrompt - Global AI Prompt Marketplace | Discover, Share, Earn</title>
+    <meta name="description" content="The Netflix of AI prompts. Discover thousands of tested prompts for ChatGPT, Midjourney, Claude & more.">
+
+    <!-- Fonts: Inter + Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ['Outfit', 'sans-serif'],
+                        body: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- FontAwesome Pro 7 LOCAL -->
+    <link rel="stylesheet" href="/assets/libs/fontawesome-pro@7.1.0/css/all.css">
+
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <style>
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 { font-family: 'Outfit', sans-serif; }
+        body { font-family: 'Inter', sans-serif; }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .glass-sidebar {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Subtle Aurora Background */
+        .aurora-subtle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 0% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 100% 100%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        /* Card Hover */
+        .card-hover {
+            transition: all 0.2s ease;
+        }
+        .card-hover:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .card-hover:hover .icon-hover {
+            color: #6366f1;
+        }
+        .card-hover:hover .text-hover {
+            color: #fff;
+        }
+
+        /* Sidebar Active */
+        .sidebar-link.active {
+            background: rgba(99, 102, 241, 0.15);
+            border-left: 2px solid #6366f1;
+        }
+        .sidebar-link:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        /* Prompt Card */
+        .prompt-card {
+            transition: all 0.2s ease;
+        }
+        .prompt-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+
+<body class="bg-slate-950 text-slate-300 font-body antialiased" x-data="{ sidebarOpen: true, mobileMenu: false, darkMode: true }">
+
+    <div class="flex min-h-screen">
+
+        <!-- ========================================
+             LEFT SIDEBAR
+             ======================================== -->
+        <aside class="glass-sidebar fixed left-0 top-0 bottom-0 w-64 z-40 flex flex-col transition-transform duration-300"
+               :class="{ '-translate-x-full lg:translate-x-0': !sidebarOpen }">
+
+            <!-- Logo -->
+            <div class="p-6 border-b border-white/5">
+                <a href="#" class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                        <i class="fat fa-sparkles text-white text-lg"></i>
+                    </div>
+                    <span class="font-heading font-bold text-xl text-white">Qrompt</span>
+                </a>
+            </div>
+
+            <!-- Search -->
+            <div class="p-4">
+                <div class="relative">
+                    <i class="fat fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+                    <input type="text" placeholder="Search prompts..."
+                           class="w-full bg-slate-800/50 border border-slate-700/50 rounded-lg pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50">
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+                <span class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Discover</span>
+
+                <a href="#" class="sidebar-link active flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white">
+                    <i class="fat fa-house w-5 text-center text-indigo-400"></i>
+                    <span>Home</span>
+                </a>
+                <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:text-white">
+                    <i class="fat fa-fire w-5 text-center"></i>
+                    <span>Trending</span>
+                    <span class="ml-auto text-xs bg-rose-500/20 text-rose-400 px-2 py-0.5 rounded-full">Hot</span>
+                </a>
+                <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:text-white">
+                    <i class="fat fa-sparkles w-5 text-center"></i>
+                    <span>New Releases</span>
+                </a>
+                <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:text-white">
+                    <i class="fat fa-grid-2 w-5 text-center"></i>
+                    <span>Categories</span>
+                </a>
+
+                <div class="pt-6">
+                    <span class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">AI Platforms</span>
+                </div>
+
+                <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:text-white">
+                    <i class="fab fa-openai w-5 text-center text-emerald-400"></i>
+                    <span>ChatGPT</span>
+                    <span class="ml-auto text-xs text-slate-500">5.2K</span>
+                </a>
+                <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:text-white">
+                    <i class="fat fa-wand-magic-sparkles w-5 text-center text-purple-400"></i>
+                    <span>Midjourney</span>
+                    <span class="ml-auto text-xs text-slate-500">4.8K</span>
+                </a>
+                <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:text-white">
+                    <i class="fat fa-robot w-5 text-center text-orange-400"></i>
+                    <span>Claude</span>
+                    <span class="ml-auto text-xs text-slate-500">2.1K</span>
+                </a>
+                <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:text-white">
+                    <i class="fat fa-image w-5 text-center text-cyan-400"></i>
+                    <span>DALL-E</span>
+                    <span class="ml-auto text-xs text-slate-500">1.8K</span>
+                </a>
+                <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:text-white">
+                    <i class="fat fa-mountain w-5 text-center text-amber-400"></i>
+                    <span>Stable Diffusion</span>
+                    <span class="ml-auto text-xs text-slate-500">1.3K</span>
+                </a>
+
+                <div class="pt-6">
+                    <span class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Library</span>
+                </div>
+
+                <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:text-white">
+                    <i class="fat fa-heart w-5 text-center"></i>
+                    <span>Favorites</span>
+                </a>
+                <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:text-white">
+                    <i class="fat fa-folder w-5 text-center"></i>
+                    <span>Collections</span>
+                </a>
+                <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:text-white">
+                    <i class="fat fa-clock-rotate-left w-5 text-center"></i>
+                    <span>History</span>
+                </a>
+            </nav>
+
+            <!-- Bottom Section -->
+            <div class="p-4 border-t border-white/5">
+                <!-- Upgrade Card -->
+                <div class="bg-gradient-to-br from-indigo-600/20 to-purple-600/20 rounded-xl p-4 mb-4 border border-indigo-500/20">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-500/30 flex items-center justify-center">
+                            <i class="fat fa-bolt text-indigo-300"></i>
+                        </div>
+                        <span class="font-semibold text-white text-sm">Go Pro</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-3">Get 200 credits for $15 and unlock premium prompts.</p>
+                    <a href="#" class="block text-center py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-500 transition-colors">
+                        Upgrade Now
+                    </a>
+                </div>
+
+                <!-- User -->
+                <div class="flex items-center gap-3">
+                    <img src="https://picsum.photos/40/40?random=1" alt="User" class="w-9 h-9 rounded-lg">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-white truncate">John Doe</p>
+                        <p class="text-xs text-slate-500">42 credits</p>
+                    </div>
+                    <button class="text-slate-500 hover:text-white">
+                        <i class="fat fa-gear"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+
+        <!-- ========================================
+             MAIN CONTENT
+             ======================================== -->
+        <main class="flex-1 lg:ml-64">
+
+            <!-- Top Header -->
+            <header class="sticky top-0 z-30 bg-slate-950/80 backdrop-blur-xl border-b border-white/5">
+                <div class="flex items-center justify-between h-16 px-6">
+                    <!-- Mobile Menu Button -->
+                    <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden text-slate-400 hover:text-white">
+                        <i class="fat fa-bars text-xl"></i>
+                    </button>
+
+                    <!-- Breadcrumb / Title -->
+                    <div class="hidden lg:flex items-center gap-2 text-sm">
+                        <span class="text-slate-500">Discover</span>
+                        <i class="fat fa-chevron-right text-xs text-slate-600"></i>
+                        <span class="text-white">Trending Prompts</span>
+                    </div>
+
+                    <!-- Right Actions -->
+                    <div class="flex items-center gap-3">
+                        <button class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700/50 text-sm text-slate-400 hover:text-white hover:border-slate-600 transition-colors">
+                            <i class="fat fa-plus"></i>
+                            <span>Create Prompt</span>
+                        </button>
+
+                        <button class="w-9 h-9 rounded-lg bg-slate-800/50 border border-slate-700/50 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-600 transition-colors">
+                            <i class="fat fa-bell"></i>
+                        </button>
+
+                        <button @click="darkMode = !darkMode; document.documentElement.classList.toggle('dark')"
+                                class="w-9 h-9 rounded-lg bg-slate-800/50 border border-slate-700/50 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-600 transition-colors">
+                            <i class="fat fa-sun-bright" x-show="darkMode"></i>
+                            <i class="fat fa-moon" x-show="!darkMode"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+
+            <!-- ========================================
+                 HERO SECTION
+                 ======================================== -->
+            <section class="relative px-6 py-16 lg:py-24 aurora-subtle overflow-hidden">
+                <div class="max-w-4xl mx-auto text-center relative z-10">
+                    <!-- Badge -->
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm mb-8">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span>15,000+ AI Prompts Available</span>
+                    </div>
+
+                    <!-- Headline -->
+                    <h1 class="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+                        Don't Write Prompts.
+                        <span class="gradient-text">Discover Them.</span>
+                    </h1>
+
+                    <!-- Subheadline -->
+                    <p class="text-lg text-slate-400 max-w-2xl mx-auto mb-10">
+                        Access thousands of tested prompts for ChatGPT, Midjourney, Claude, and more.
+                        Save hours of trial & error. Get proven results instantly.
+                    </p>
+
+                    <!-- Search Bar -->
+                    <div class="max-w-2xl mx-auto mb-8">
+                        <div class="relative">
+                            <i class="fat fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                            <input type="text" placeholder="Search for prompts... (e.g., 'cinematic portrait', 'react component')"
+                                   class="w-full bg-slate-900/80 border border-slate-700/50 rounded-2xl pl-14 pr-32 py-4 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 transition-all">
+                            <button class="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-500 transition-colors">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Popular Tags -->
+                    <div class="flex flex-wrap items-center justify-center gap-2 text-sm">
+                        <span class="text-slate-500">Popular:</span>
+                        <a href="#" class="px-3 py-1 rounded-full bg-slate-800/50 text-slate-400 hover:bg-slate-700/50 hover:text-white transition-colors">Midjourney v6</a>
+                        <a href="#" class="px-3 py-1 rounded-full bg-slate-800/50 text-slate-400 hover:bg-slate-700/50 hover:text-white transition-colors">Code Review</a>
+                        <a href="#" class="px-3 py-1 rounded-full bg-slate-800/50 text-slate-400 hover:bg-slate-700/50 hover:text-white transition-colors">SEO Content</a>
+                        <a href="#" class="px-3 py-1 rounded-full bg-slate-800/50 text-slate-400 hover:bg-slate-700/50 hover:text-white transition-colors">Blog Writer</a>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ========================================
+                 STATS BAR
+                 ======================================== -->
+            <section class="px-6 py-8 border-y border-white/5 bg-slate-900/30">
+                <div class="max-w-6xl mx-auto">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                        <div>
+                            <span class="block text-2xl lg:text-3xl font-heading font-bold text-white">15K+</span>
+                            <span class="text-sm text-slate-500">AI Prompts</span>
+                        </div>
+                        <div>
+                            <span class="block text-2xl lg:text-3xl font-heading font-bold text-white">50K+</span>
+                            <span class="text-sm text-slate-500">Active Users</span>
+                        </div>
+                        <div>
+                            <span class="block text-2xl lg:text-3xl font-heading font-bold text-white">2.4M</span>
+                            <span class="text-sm text-slate-500">Prompt Uses</span>
+                        </div>
+                        <div>
+                            <span class="block text-2xl lg:text-3xl font-heading font-bold text-white">98%</span>
+                            <span class="text-sm text-slate-500">Success Rate</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ========================================
+                 CATEGORIES GRID
+                 ======================================== -->
+            <section class="px-6 py-12">
+                <div class="max-w-6xl mx-auto">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="font-heading text-2xl font-bold text-white">Browse by Category</h2>
+                        <a href="#" class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-2">
+                            View All <i class="fat fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                        <!-- Category Cards -->
+                        <a href="#" class="card-hover glass rounded-xl p-5 text-center group">
+                            <div class="w-12 h-12 mx-auto rounded-xl bg-emerald-500/10 flex items-center justify-center mb-3 group-hover:bg-emerald-500/20 transition-colors">
+                                <i class="fat fa-code text-xl text-emerald-400 icon-hover"></i>
+                            </div>
+                            <h3 class="font-medium text-white text-sm mb-1">Code</h3>
+                            <p class="text-xs text-slate-500">2,400 prompts</p>
+                        </a>
+
+                        <a href="#" class="card-hover glass rounded-xl p-5 text-center group">
+                            <div class="w-12 h-12 mx-auto rounded-xl bg-purple-500/10 flex items-center justify-center mb-3 group-hover:bg-purple-500/20 transition-colors">
+                                <i class="fat fa-image text-xl text-purple-400 icon-hover"></i>
+                            </div>
+                            <h3 class="font-medium text-white text-sm mb-1">Image</h3>
+                            <p class="text-xs text-slate-500">5,800 prompts</p>
+                        </a>
+
+                        <a href="#" class="card-hover glass rounded-xl p-5 text-center group">
+                            <div class="w-12 h-12 mx-auto rounded-xl bg-rose-500/10 flex items-center justify-center mb-3 group-hover:bg-rose-500/20 transition-colors">
+                                <i class="fat fa-pen-fancy text-xl text-rose-400 icon-hover"></i>
+                            </div>
+                            <h3 class="font-medium text-white text-sm mb-1">Writing</h3>
+                            <p class="text-xs text-slate-500">3,200 prompts</p>
+                        </a>
+
+                        <a href="#" class="card-hover glass rounded-xl p-5 text-center group">
+                            <div class="w-12 h-12 mx-auto rounded-xl bg-amber-500/10 flex items-center justify-center mb-3 group-hover:bg-amber-500/20 transition-colors">
+                                <i class="fat fa-bullhorn text-xl text-amber-400 icon-hover"></i>
+                            </div>
+                            <h3 class="font-medium text-white text-sm mb-1">Marketing</h3>
+                            <p class="text-xs text-slate-500">1,900 prompts</p>
+                        </a>
+
+                        <a href="#" class="card-hover glass rounded-xl p-5 text-center group">
+                            <div class="w-12 h-12 mx-auto rounded-xl bg-blue-500/10 flex items-center justify-center mb-3 group-hover:bg-blue-500/20 transition-colors">
+                                <i class="fat fa-graduation-cap text-xl text-blue-400 icon-hover"></i>
+                            </div>
+                            <h3 class="font-medium text-white text-sm mb-1">Education</h3>
+                            <p class="text-xs text-slate-500">1,400 prompts</p>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ========================================
+                 TRENDING PROMPTS
+                 ======================================== -->
+            <section class="px-6 py-12">
+                <div class="max-w-6xl mx-auto">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="flex items-center gap-3">
+                            <i class="fat fa-fire text-rose-400"></i>
+                            <h2 class="font-heading text-2xl font-bold text-white">Trending This Week</h2>
+                        </div>
+                        <a href="#" class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-2">
+                            View All <i class="fat fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Prompt Card 1 -->
+                        <div class="prompt-card glass rounded-xl overflow-hidden">
+                            <div class="aspect-video bg-gradient-to-br from-purple-600/20 to-indigo-600/20 relative">
+                                <img src="https://picsum.photos/400/225?random=10" alt="Prompt preview" class="w-full h-full object-cover opacity-80">
+                                <div class="absolute top-3 right-3 flex items-center gap-1 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-lg text-xs text-white">
+                                    <i class="fas fa-star text-amber-400 text-[10px]"></i>
+                                    <span>4.9</span>
+                                </div>
+                                <div class="absolute bottom-3 left-3">
+                                    <span class="px-2 py-1 rounded-lg bg-purple-500/80 text-white text-xs font-medium">Midjourney</span>
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <h3 class="font-heading font-semibold text-white mb-2">Cinematic Portrait v6</h3>
+                                <p class="text-sm text-slate-400 mb-4 line-clamp-2">Professional cinematic portrait prompts with film-like quality and dramatic lighting...</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <img src="https://picsum.photos/24/24?random=11" alt="Creator" class="w-6 h-6 rounded-full">
+                                        <span class="text-xs text-slate-500">@promptmaster</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-indigo-400">5 credits</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prompt Card 2 -->
+                        <div class="prompt-card glass rounded-xl overflow-hidden">
+                            <div class="aspect-video bg-gradient-to-br from-emerald-600/20 to-teal-600/20 relative">
+                                <img src="https://picsum.photos/400/225?random=12" alt="Prompt preview" class="w-full h-full object-cover opacity-80">
+                                <div class="absolute top-3 right-3 flex items-center gap-1 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-lg text-xs text-white">
+                                    <i class="fas fa-star text-amber-400 text-[10px]"></i>
+                                    <span>4.8</span>
+                                </div>
+                                <div class="absolute bottom-3 left-3">
+                                    <span class="px-2 py-1 rounded-lg bg-emerald-500/80 text-white text-xs font-medium">ChatGPT</span>
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <h3 class="font-heading font-semibold text-white mb-2">React Component Generator</h3>
+                                <p class="text-sm text-slate-400 mb-4 line-clamp-2">Generate production-ready React components with TypeScript and Tailwind CSS...</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <img src="https://picsum.photos/24/24?random=13" alt="Creator" class="w-6 h-6 rounded-full">
+                                        <span class="text-xs text-slate-500">@devpro</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-indigo-400">8 credits</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prompt Card 3 -->
+                        <div class="prompt-card glass rounded-xl overflow-hidden">
+                            <div class="aspect-video bg-gradient-to-br from-rose-600/20 to-pink-600/20 relative">
+                                <img src="https://picsum.photos/400/225?random=14" alt="Prompt preview" class="w-full h-full object-cover opacity-80">
+                                <div class="absolute top-3 right-3 flex items-center gap-1 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-lg text-xs text-white">
+                                    <i class="fas fa-star text-amber-400 text-[10px]"></i>
+                                    <span>4.9</span>
+                                </div>
+                                <div class="absolute bottom-3 left-3">
+                                    <span class="px-2 py-1 rounded-lg bg-orange-500/80 text-white text-xs font-medium">Claude</span>
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <h3 class="font-heading font-semibold text-white mb-2">SEO Blog Writer Pro</h3>
+                                <p class="text-sm text-slate-400 mb-4 line-clamp-2">Create SEO-optimized blog posts that rank on Google with proper structure...</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <img src="https://picsum.photos/24/24?random=15" alt="Creator" class="w-6 h-6 rounded-full">
+                                        <span class="text-xs text-slate-500">@contentking</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-indigo-400">6 credits</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ========================================
+                 HOW IT WORKS
+                 ======================================== -->
+            <section class="px-6 py-16 bg-slate-900/30 border-y border-white/5">
+                <div class="max-w-6xl mx-auto">
+                    <div class="text-center mb-12">
+                        <h2 class="font-heading text-3xl font-bold text-white mb-4">How It Works</h2>
+                        <p class="text-slate-400 max-w-xl mx-auto">Get started in minutes. Find, purchase, and use AI prompts that deliver real results.</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="text-center">
+                            <div class="w-14 h-14 mx-auto rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-4">
+                                <span class="font-heading font-bold text-xl text-indigo-400">1</span>
+                            </div>
+                            <h3 class="font-heading font-semibold text-white mb-2">Search & Discover</h3>
+                            <p class="text-sm text-slate-400">Browse 15,000+ prompts or use search to find exactly what you need.</p>
+                        </div>
+
+                        <div class="text-center">
+                            <div class="w-14 h-14 mx-auto rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-4">
+                                <span class="font-heading font-bold text-xl text-purple-400">2</span>
+                            </div>
+                            <h3 class="font-heading font-semibold text-white mb-2">Preview & Purchase</h3>
+                            <p class="text-sm text-slate-400">Check ratings, reviews, and previews. Buy with credits instantly.</p>
+                        </div>
+
+                        <div class="text-center">
+                            <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4">
+                                <span class="font-heading font-bold text-xl text-emerald-400">3</span>
+                            </div>
+                            <h3 class="font-heading font-semibold text-white mb-2">Copy & Create</h3>
+                            <p class="text-sm text-slate-400">One-click copy, paste into your AI tool, and get amazing results.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ========================================
+                 PRICING
+                 ======================================== -->
+            <section class="px-6 py-16" id="pricing">
+                <div class="max-w-5xl mx-auto">
+                    <div class="text-center mb-12">
+                        <h2 class="font-heading text-3xl font-bold text-white mb-4">Simple Credit Pricing</h2>
+                        <p class="text-slate-400">No subscriptions. Buy credits, use them whenever you want.</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <!-- Starter -->
+                        <div class="glass rounded-2xl p-6 card-hover">
+                            <div class="text-center mb-6">
+                                <h3 class="font-heading font-semibold text-white mb-1">Starter</h3>
+                                <div class="text-3xl font-heading font-bold text-white">$5</div>
+                                <p class="text-sm text-slate-500">50 Credits</p>
+                            </div>
+                            <ul class="space-y-3 mb-6">
+                                <li class="flex items-center gap-3 text-sm text-slate-400">
+                                    <i class="fat fa-check text-emerald-400"></i>
+                                    <span>50 prompt credits</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-400">
+                                    <i class="fat fa-check text-emerald-400"></i>
+                                    <span>Access all prompts</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-400">
+                                    <i class="fat fa-check text-emerald-400"></i>
+                                    <span>Never expires</span>
+                                </li>
+                            </ul>
+                            <button class="w-full py-3 rounded-xl border border-slate-700 text-white font-medium hover:bg-slate-800 transition-colors">
+                                Get Started
+                            </button>
+                        </div>
+
+                        <!-- Pro - Popular -->
+                        <div class="glass rounded-2xl p-6 border-2 border-indigo-500/50 relative">
+                            <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-indigo-600 rounded-full text-xs font-medium text-white">
+                                Most Popular
+                            </div>
+                            <div class="text-center mb-6">
+                                <h3 class="font-heading font-semibold text-white mb-1">Pro</h3>
+                                <div class="text-3xl font-heading font-bold gradient-text">$15</div>
+                                <p class="text-sm text-slate-500">200 Credits <span class="text-emerald-400">(25% off)</span></p>
+                            </div>
+                            <ul class="space-y-3 mb-6">
+                                <li class="flex items-center gap-3 text-sm text-slate-300">
+                                    <i class="fat fa-check text-emerald-400"></i>
+                                    <span>200 prompt credits</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-300">
+                                    <i class="fat fa-check text-emerald-400"></i>
+                                    <span>Early access to new prompts</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-300">
+                                    <i class="fat fa-check text-emerald-400"></i>
+                                    <span>Priority support</span>
+                                </li>
+                            </ul>
+                            <button class="w-full py-3 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-500 transition-colors">
+                                Get Pro
+                            </button>
+                        </div>
+
+                        <!-- Power -->
+                        <div class="glass rounded-2xl p-6 card-hover">
+                            <div class="text-center mb-6">
+                                <h3 class="font-heading font-semibold text-white mb-1">Power</h3>
+                                <div class="text-3xl font-heading font-bold text-white">$50</div>
+                                <p class="text-sm text-slate-500">1,000 Credits <span class="text-emerald-400">(50% off)</span></p>
+                            </div>
+                            <ul class="space-y-3 mb-6">
+                                <li class="flex items-center gap-3 text-sm text-slate-400">
+                                    <i class="fat fa-check text-emerald-400"></i>
+                                    <span>1,000 prompt credits</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-400">
+                                    <i class="fat fa-check text-emerald-400"></i>
+                                    <span>API access</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-400">
+                                    <i class="fat fa-check text-emerald-400"></i>
+                                    <span>Team sharing</span>
+                                </li>
+                            </ul>
+                            <button class="w-full py-3 rounded-xl border border-slate-700 text-white font-medium hover:bg-slate-800 transition-colors">
+                                Get Power
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ========================================
+                 FOR CREATORS
+                 ======================================== -->
+            <section class="px-6 py-16 bg-slate-900/30 border-y border-white/5" id="creators">
+                <div class="max-w-6xl mx-auto">
+                    <div class="grid lg:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm mb-6">
+                                <i class="fat fa-paintbrush"></i>
+                                <span>For Prompt Engineers</span>
+                            </span>
+                            <h2 class="font-heading text-3xl lg:text-4xl font-bold text-white mb-6">
+                                Turn Your Prompts Into
+                                <span class="gradient-text">Passive Income</span>
+                            </h2>
+                            <p class="text-slate-400 mb-8">
+                                Share your expertise with the world. Create prompts, build your audience, and earn money while you sleep.
+                            </p>
+
+                            <div class="space-y-4 mb-8">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                                        <i class="fat fa-percent text-emerald-400"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-white text-sm mb-1">70% Revenue Share</h4>
+                                        <p class="text-xs text-slate-500">Keep 70% of every sale. Best rates in the industry.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <div class="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center flex-shrink-0">
+                                        <i class="fat fa-chart-line text-indigo-400"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-white text-sm mb-1">Analytics Dashboard</h4>
+                                        <p class="text-xs text-slate-500">Track sales, views, and earnings in real-time.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <div class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                                        <i class="fat fa-trophy text-amber-400"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-white text-sm mb-1">Get Featured</h4>
+                                        <p class="text-xs text-slate-500">Top creators get promoted on homepage.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a href="#" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium hover:opacity-90 transition-opacity">
+                                <span>Become a Creator</span>
+                                <i class="fat fa-arrow-right"></i>
+                            </a>
+                        </div>
+
+                        <!-- Dashboard Preview -->
+                        <div class="glass rounded-2xl p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="flex items-center gap-3">
+                                    <img src="https://picsum.photos/40/40?random=20" alt="Creator" class="w-10 h-10 rounded-lg">
+                                    <div>
+                                        <h4 class="font-semibold text-white text-sm">@promptmaster</h4>
+                                        <p class="text-xs text-slate-500">Creator Dashboard</p>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 text-xs">Pro</span>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-3 mb-6">
+                                <div class="bg-slate-800/50 rounded-xl p-4 text-center">
+                                    <span class="block text-xl font-heading font-bold text-indigo-400">$2,480</span>
+                                    <span class="text-xs text-slate-500">This Month</span>
+                                </div>
+                                <div class="bg-slate-800/50 rounded-xl p-4 text-center">
+                                    <span class="block text-xl font-heading font-bold text-purple-400">847</span>
+                                    <span class="text-xs text-slate-500">Sales</span>
+                                </div>
+                                <div class="bg-slate-800/50 rounded-xl p-4 text-center">
+                                    <span class="block text-xl font-heading font-bold text-emerald-400">4.9</span>
+                                    <span class="text-xs text-slate-500">Rating</span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between bg-slate-800/30 rounded-lg p-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                                            <i class="fat fa-image text-purple-400 text-sm"></i>
+                                        </div>
+                                        <span class="text-sm text-white">Cinematic Portrait v2</span>
+                                    </div>
+                                    <span class="text-xs text-emerald-400">+$340</span>
+                                </div>
+                                <div class="flex items-center justify-between bg-slate-800/30 rounded-lg p-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                                            <i class="fat fa-code text-emerald-400 text-sm"></i>
+                                        </div>
+                                        <span class="text-sm text-white">React Generator</span>
+                                    </div>
+                                    <span class="text-xs text-emerald-400">+$285</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ========================================
+                 CTA
+                 ======================================== -->
+            <section class="px-6 py-20">
+                <div class="max-w-3xl mx-auto text-center">
+                    <h2 class="font-heading text-3xl lg:text-4xl font-bold text-white mb-6">
+                        Ready to Transform Your AI Workflow?
+                    </h2>
+                    <p class="text-slate-400 mb-8">
+                        Join 50,000+ users who save hours every week with Qrompt.
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <a href="#" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-500 transition-colors flex items-center justify-center gap-2">
+                            <span>Get Started Free</span>
+                            <i class="fat fa-arrow-right"></i>
+                        </a>
+                        <a href="#" class="w-full sm:w-auto px-8 py-4 rounded-xl border border-slate-700 text-white font-semibold hover:bg-slate-800 transition-colors">
+                            Contact Sales
+                        </a>
+                    </div>
+                    <p class="text-sm text-slate-500 mt-6">No credit card required • 10 free prompts/month</p>
+                </div>
+            </section>
+
+
+            <!-- ========================================
+                 FOOTER
+                 ======================================== -->
+            <footer class="px-6 py-12 border-t border-white/5">
+                <div class="max-w-6xl mx-auto">
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+                        <!-- Brand -->
+                        <div class="col-span-2">
+                            <a href="#" class="flex items-center gap-3 mb-4">
+                                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                                    <i class="fat fa-sparkles text-white text-sm"></i>
+                                </div>
+                                <span class="font-heading font-bold text-lg text-white">Qrompt</span>
+                            </a>
+                            <p class="text-sm text-slate-500 mb-4 max-w-xs">
+                                The global marketplace for AI prompts. Discover, share, and monetize your prompt expertise.
+                            </p>
+                            <div class="flex items-center gap-3">
+                                <a href="#" class="w-8 h-8 rounded-lg bg-slate-800/50 flex items-center justify-center text-slate-500 hover:text-white transition-colors">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="w-8 h-8 rounded-lg bg-slate-800/50 flex items-center justify-center text-slate-500 hover:text-white transition-colors">
+                                    <i class="fab fa-discord"></i>
+                                </a>
+                                <a href="#" class="w-8 h-8 rounded-lg bg-slate-800/50 flex items-center justify-center text-slate-500 hover:text-white transition-colors">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Product -->
+                        <div>
+                            <h4 class="font-semibold text-white text-sm mb-4">Product</h4>
+                            <ul class="space-y-2 text-sm">
+                                <li><a href="#" class="text-slate-500 hover:text-white">Explore</a></li>
+                                <li><a href="#" class="text-slate-500 hover:text-white">Categories</a></li>
+                                <li><a href="#" class="text-slate-500 hover:text-white">Pricing</a></li>
+                                <li><a href="#" class="text-slate-500 hover:text-white">For Creators</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Resources -->
+                        <div>
+                            <h4 class="font-semibold text-white text-sm mb-4">Resources</h4>
+                            <ul class="space-y-2 text-sm">
+                                <li><a href="#" class="text-slate-500 hover:text-white">Blog</a></li>
+                                <li><a href="#" class="text-slate-500 hover:text-white">Documentation</a></li>
+                                <li><a href="#" class="text-slate-500 hover:text-white">API</a></li>
+                                <li><a href="#" class="text-slate-500 hover:text-white">Help Center</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Legal -->
+                        <div>
+                            <h4 class="font-semibold text-white text-sm mb-4">Legal</h4>
+                            <ul class="space-y-2 text-sm">
+                                <li><a href="#" class="text-slate-500 hover:text-white">Privacy</a></li>
+                                <li><a href="#" class="text-slate-500 hover:text-white">Terms</a></li>
+                                <li><a href="#" class="text-slate-500 hover:text-white">Cookies</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <p class="text-sm text-slate-600">&copy; 2025 Qrompt. All rights reserved.</p>
+                        <div class="flex items-center gap-4 text-sm text-slate-600">
+                            <span><i class="fat fa-globe mr-1"></i> English</span>
+                            <span><i class="fat fa-dollar-sign mr-1"></i> USD</span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
+        </main>
+
+    </div>
+
+
+    <!-- Prompt Modal Button -->
+    <button onclick="window.open('prompt.html', '_blank')"
+            class="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-lg hover:bg-indigo-500 transition-colors z-50"
+            title="View Design Prompt">
+        <i class="fat fa-file-lines"></i>
+    </button>
+
+
+    <!-- Initialize -->
+    <script>
+        AOS.init({ duration: 600, once: true, offset: 50 });
+
+        // Icon hover: thin → solid
+        document.querySelectorAll('.card-hover').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.querySelectorAll('.fat').forEach(icon => {
+                    icon.classList.remove('fat');
+                    icon.classList.add('fas');
+                });
+            });
+            card.addEventListener('mouseleave', () => {
+                card.querySelectorAll('.fas').forEach(icon => {
+                    if (!icon.closest('.sidebar-link')) {
+                        icon.classList.remove('fas');
+                        icon.classList.add('fat');
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

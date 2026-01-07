@@ -1,7 +1,8 @@
 <?php
 /**
- * Taslak Silme API
- * Sifre korumalı klasör silme
+ * Template Action API
+ * - Taslak silme (delete)
+ * - Metadata kaydetme (saveMetadata, saveAllMetadata)
  */
 
 header('Content-Type: application/json');
@@ -17,6 +18,70 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // JSON input
 $input = json_decode(file_get_contents('php://input'), true);
+
+// Action belirle
+$action = $input['action'] ?? 'delete';
+
+// Metadata dosya yolu
+$metadataFile = __DIR__ . '/metadata.json';
+
+// ============================================
+// METADATA İŞLEMLERİ
+// ============================================
+if ($action === 'saveMetadata') {
+    // Tek template metadata kaydet
+    $templateId = $input['templateId'] ?? null;
+    $metadata = $input['metadata'] ?? null;
+
+    if (!$templateId || !is_array($metadata)) {
+        http_response_code(400);
+        die(json_encode(['success' => false, 'error' => 'Template ID and metadata required']));
+    }
+
+    // Mevcut metadata'yı oku
+    $allMetadata = [];
+    if (file_exists($metadataFile)) {
+        $content = @file_get_contents($metadataFile);
+        if ($content) {
+            $allMetadata = json_decode($content, true) ?: [];
+        }
+    }
+
+    // Yeni metadata'yı ekle/güncelle
+    $allMetadata[$templateId] = $metadata;
+
+    // Dosyaya yaz
+    $json = json_encode($allMetadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    if (file_put_contents($metadataFile, $json, LOCK_EX) === false) {
+        http_response_code(500);
+        die(json_encode(['success' => false, 'error' => 'Failed to write metadata file']));
+    }
+
+    die(json_encode(['success' => true]));
+}
+
+if ($action === 'saveAllMetadata') {
+    // Tüm metadata'yı toplu kaydet (localStorage migration için)
+    $allData = $input['data'] ?? null;
+
+    if (!is_array($allData)) {
+        http_response_code(400);
+        die(json_encode(['success' => false, 'error' => 'Data must be an object']));
+    }
+
+    // Dosyaya yaz
+    $json = json_encode($allData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    if (file_put_contents($metadataFile, $json, LOCK_EX) === false) {
+        http_response_code(500);
+        die(json_encode(['success' => false, 'error' => 'Failed to write metadata file']));
+    }
+
+    die(json_encode(['success' => true, 'message' => 'All metadata saved']));
+}
+
+// ============================================
+// SİLME İŞLEMİ (ESKİ KOD)
+// ============================================
 
 $password = $input['password'] ?? '';
 $templateId = $input['templateId'] ?? '';

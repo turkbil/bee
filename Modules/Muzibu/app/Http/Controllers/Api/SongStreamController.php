@@ -112,11 +112,22 @@ class SongStreamController extends Controller
                 ConvertToHLSJob::dispatch($song);
 
                 // Return original MP3 URL for now (SIGNED)
+                $mp3Url = $this->signedUrlService->generateStreamUrl($songId, 30);
+
+                // 🔒 URL'leri şifrele - Console'da görünmesin
+                $encryptedUrls = $this->encryptStreamUrls([
+                    'stream_url' => $mp3Url,
+                    'fallback_url' => $mp3Url,
+                    'stream_type' => 'mp3',
+                ], $songId, $user->id);
+
                 return response()->json(array_merge([
                     'status' => 'converting',
                     'message' => 'HLS conversion in progress. Playing original file.',
-                    'stream_url' => $this->signedUrlService->generateStreamUrl($songId, 30), // 🔐 SIGNED URL
-                    'stream_type' => 'mp3',
+                    // 🔒 Şifreli URL data
+                    '_' => $encryptedUrls['_'],
+                    '__' => $encryptedUrls['__'],
+                    '___' => $encryptedUrls['___'],
                     'hls_converting' => true,
                     'song' => [
                         'id' => $song->song_id,
@@ -152,13 +163,22 @@ class SongStreamController extends Controller
 
             // User ID'yi token olarak kullan (DeviceService kapalı olduğu için)
             $hlsUrl = $this->signedUrlService->generateHlsUrl($songId, $ttlSeconds, (string) $user->id);
+            $fallbackUrl = $this->signedUrlService->generateStreamUrl($songId, 30, true);
+
+            // 🔒 URL'leri şifrele - Console'da görünmesin
+            $encryptedUrls = $this->encryptStreamUrls([
+                'stream_url' => $hlsUrl,
+                'fallback_url' => $fallbackUrl,
+                'stream_type' => 'hls',
+            ], $songId, $user->id);
 
             return response()->json(array_merge([
                 'status' => 'ready',
                 'message' => 'HLS stream ready',
-                'stream_url' => $hlsUrl, // 🔐 SIGNED HLS URL (token + expires + sig)
-                'stream_type' => 'hls',
-                'fallback_url' => $this->signedUrlService->generateStreamUrl($songId, 30, true), // 🔐 SIGNED MP3 fallback (force MP3)
+                // 🔒 Şifreli URL data
+                '_' => $encryptedUrls['_'],
+                '__' => $encryptedUrls['__'],
+                '___' => $encryptedUrls['___'],
                 'hls_converting' => false,
                 'song' => [
                     'id' => $song->song_id,
@@ -848,5 +868,42 @@ class SongStreamController extends Controller
 
         // Bilinmeyen
         return 'Other';
+    }
+
+    /**
+     * 🔒 XOR Encryption - URL'leri Console'da gizlemek için
+     * Basit ama etkili obfuscation
+     */
+    private function xorEncrypt(string $data, string $key): string
+    {
+        $result = '';
+        $keyLen = strlen($key);
+        for ($i = 0; $i < strlen($data); $i++) {
+            $result .= chr(ord($data[$i]) ^ ord($key[$i % $keyLen]));
+        }
+        return $result;
+    }
+
+    /**
+     * 🔒 Stream URL'lerini şifrele
+     * Console'a bakan kişi URL yerine anlamsız string görür
+     */
+    private function encryptStreamUrls(array $urls, int $songId, int $userId): array
+    {
+        // Dinamik key: songId + userId + saat (her saat değişir)
+        $key = substr(md5($songId . $userId . date('YmdH') . config('app.key')), 0, 16);
+
+        // URL'leri JSON'a çevir ve şifrele
+        $jsonData = json_encode($urls);
+        $encrypted = base64_encode($this->xorEncrypt($jsonData, $key));
+
+        // Key'i de encode et (JS tarafında decode edilecek)
+        $encodedKey = base64_encode($key);
+
+        return [
+            '_' => $encrypted,      // Şifreli data
+            '__' => $encodedKey,    // Key (encoded)
+            '___' => time(),        // Timestamp
+        ];
     }
 }

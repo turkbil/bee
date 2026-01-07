@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Toast Mesajları Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-amber-500/20 text-amber-400 text-sm font-semibold rounded-full">
+                    <i class="fas fa-bell mr-1"></i> Analiz
+                </span>
+                <span class="text-slate-500 text-sm">8 Ocak 2026</span>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">Muzibu Toast Mesajları Analizi</h1>
+            <p class="text-slate-400">Sistemdeki tüm toast bildirimlerinin detaylı listesi</p>
+        </header>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-green-900/20 border border-green-800 rounded-lg p-4 text-center">
+                <div class="text-3xl font-bold text-green-400">18</div>
+                <div class="text-sm text-slate-400">Success</div>
+            </div>
+            <div class="bg-red-900/20 border border-red-800 rounded-lg p-4 text-center">
+                <div class="text-3xl font-bold text-red-400">24</div>
+                <div class="text-sm text-slate-400">Error</div>
+            </div>
+            <div class="bg-amber-900/20 border border-amber-800 rounded-lg p-4 text-center">
+                <div class="text-3xl font-bold text-amber-400">1</div>
+                <div class="text-sm text-slate-400">Warning</div>
+            </div>
+            <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-4 text-center">
+                <div class="text-3xl font-bold text-blue-400">1</div>
+                <div class="text-sm text-slate-400">Info</div>
+            </div>
+        </div>
+
+        <!-- Kategori: Favoriler -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <i class="fas fa-heart text-red-400"></i>
+                Favoriler
+            </h2>
+            <div class="bg-slate-800/50 rounded-lg overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-700/50">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Mesaj</th>
+                            <th class="px-4 py-3 text-left">Tip</th>
+                            <th class="px-4 py-3 text-left">Ne Zaman</th>
+                            <th class="px-4 py-3 text-left">Dosya</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700/50">
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-green-400">❤️ {title} favorilere eklendi</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">success</span></td>
+                            <td class="px-4 py-3 text-slate-400">Şarkı/albüm favoriye eklendiğinde</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">favorites.js:85</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-amber-400">💔 {title} favorilerden çıkarıldı</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-amber-500/20 text-amber-400 rounded text-xs">warning</span></td>
+                            <td class="px-4 py-3 text-slate-400">Şarkı/albüm favoriden çıkarıldığında</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">favorites.js:85</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-red-400">Favori işlemi başarısız</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">error</span></td>
+                            <td class="px-4 py-3 text-slate-400">API hatası olduğunda</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">favorite-handler.js:20</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Kategori: Playlist Modal -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <i class="fas fa-list-music text-purple-400"></i>
+                Playlist Modal (Şarkı Ekleme/Çıkarma)
+            </h2>
+            <div class="bg-slate-800/50 rounded-lg overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-700/50">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Mesaj</th>
+                            <th class="px-4 py-3 text-left">Tip</th>
+                            <th class="px-4 py-3 text-left">Ne Zaman</th>
+                            <th class="px-4 py-3 text-left">Dosya</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700/50">
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-green-400">✅ "{playlist}" listesine eklendi</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">success</span></td>
+                            <td class="px-4 py-3 text-slate-400">Şarkı playlist'e eklendiğinde</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">muzibu-store.js:1112</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-amber-400">🗑️ "{playlist}" listesinden çıkarıldı</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-amber-500/20 text-amber-400 rounded text-xs">warning</span></td>
+                            <td class="px-4 py-3 text-slate-400">Şarkı playlist'ten çıkarıldığında</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">muzibu-store.js:1145</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-green-400">✅ Albüm "{playlist}" listesine eklendi ({count} şarkı)</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">success</span></td>
+                            <td class="px-4 py-3 text-slate-400">Albüm playlist'e eklendiğinde</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">muzibu-store.js:1180</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-red-400">Ekleme başarısız</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">error</span></td>
+                            <td class="px-4 py-3 text-slate-400">API hata döndüğünde</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">muzibu-store.js:1117</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-red-400">Çıkarma başarısız</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">error</span></td>
+                            <td class="px-4 py-3 text-slate-400">Çıkarma API hatası</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">muzibu-store.js:1150</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-red-400">Bağlantı hatası</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">error</span></td>
+                            <td class="px-4 py-3 text-slate-400">Network hatası (3 yerde)</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">muzibu-store.js</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Kategori: Playlist Yönetimi -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <i class="fas fa-folder-music text-blue-400"></i>
+                Playlist Yönetimi
+            </h2>
+            <div class="bg-slate-800/50 rounded-lg overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-700/50">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Mesaj</th>
+                            <th class="px-4 py-3 text-left">Tip</th>
+                            <th class="px-4 py-3 text-left">Ne Zaman</th>
+                            <th class="px-4 py-3 text-left">Dosya</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700/50">
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-green-400">Playlist oluşturuldu!</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">success</span></td>
+                            <td class="px-4 py-3 text-slate-400">Yeni playlist oluşturulduğunda</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">app.blade.php:1024</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-green-400">Playlist oluşturuldu</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">success</span></td>
+                            <td class="px-4 py-3 text-slate-400">Modal'dan playlist oluşturulduğunda</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">create-playlist-modal:75, playlist-handler:87</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-green-400">🗑️ Playlist silindi</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">success</span></td>
+                            <td class="px-4 py-3 text-slate-400">Playlist silindiğinde (context menu)</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">muzibu-store.js:854</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-green-400">Playlist silindi</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">success</span></td>
+                            <td class="px-4 py-3 text-slate-400">Playlist silindiğinde (my-playlists, actions)</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">content-actions:87, playlist-actions:59, my-playlists:117</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-green-400">📋 "{title}" playlist'inize kopyalandı</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">success</span></td>
+                            <td class="px-4 py-3 text-slate-400">Playlist kopyalandığında</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">muzibu-store.js:880</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-green-400">Playlist güncellendi</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">success</span></td>
+                            <td class="px-4 py-3 text-slate-400">Playlist düzenlendiğinde</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">edit.blade.php:200</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-green-400">Playlist'e eklendi</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">success</span></td>
+                            <td class="px-4 py-3 text-slate-400">Context menu ile ekleme</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">playlist-handler:53</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-red-400">Playlist adı gerekli</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">error</span></td>
+                            <td class="px-4 py-3 text-slate-400">Boş isimle oluşturma denemesi</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">create-playlist-modal:53</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-red-400">Playlist silinemedi</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">error</span></td>
+                            <td class="px-4 py-3 text-slate-400">Silme hatası</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">content-actions:91, playlist-actions:86</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-red-400">Playlist oluşturulamadı</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">error</span></td>
+                            <td class="px-4 py-3 text-slate-400">Oluşturma hatası</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">playlist-handler:90</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Kategori: Player & Queue -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <i class="fas fa-play-circle text-green-400"></i>
+                Player & Sıra (Queue)
+            </h2>
+            <div class="bg-slate-800/50 rounded-lg overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-700/50">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Mesaj</th>
+                            <th class="px-4 py-3 text-left">Tip</th>
+                            <th class="px-4 py-3 text-left">Ne Zaman</th>
+                            <th class="px-4 py-3 text-left">Dosya</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700/50">
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-green-400">▶️ Çalıyor: {title}</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">success</span></td>
+                            <td class="px-4 py-3 text-slate-400">Context menu'den çalma</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">play-handler.js:28</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-blue-400">Sıra temizlendi</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">info</span></td>
+                            <td class="px-4 py-3 text-slate-400">Çalma sırası temizlendiğinde</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">queue-handler.js:34</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-green-400">Sıralama kaydedildi</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">success</span></td>
+                            <td class="px-4 py-3 text-slate-400">Şarkı sıralaması değiştiğinde</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">sidebar-right:154, edit.blade:259</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-green-400">Şarkı çıkarıldı</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">success</span></td>
+                            <td class="px-4 py-3 text-slate-400">Sıradan/playlist'ten şarkı çıkarıldığında</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">sidebar-right:210, edit.blade:229</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-red-400">Çalma hatası</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">error</span></td>
+                            <td class="px-4 py-3 text-slate-400">Play işlemi başarısız</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">play-handler.js:31</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-red-400">Sıraya eklenemedi</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">error</span></td>
+                            <td class="px-4 py-3 text-slate-400">Queue ekleme hatası</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">queue-handler.js:19</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Kategori: Rating -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <i class="fas fa-star text-yellow-400"></i>
+                Puanlama (Rating)
+            </h2>
+            <div class="bg-slate-800/50 rounded-lg overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-700/50">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Mesaj</th>
+                            <th class="px-4 py-3 text-left">Tip</th>
+                            <th class="px-4 py-3 text-left">Ne Zaman</th>
+                            <th class="px-4 py-3 text-left">Dosya</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700/50">
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-green-400">Puanınız kaydedildi</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">success</span></td>
+                            <td class="px-4 py-3 text-slate-400">Rating başarılı</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">rating-handler.js:45</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-red-400">Puan kaydedilemedi</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">error</span></td>
+                            <td class="px-4 py-3 text-slate-400">Rating hatası</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">rating-handler.js:48</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Kategori: Context Menu Actions -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <i class="fas fa-ellipsis-v text-slate-400"></i>
+                Context Menu Özel İşlemleri
+            </h2>
+            <div class="bg-slate-800/50 rounded-lg overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-700/50">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Mesaj</th>
+                            <th class="px-4 py-3 text-left">Tip</th>
+                            <th class="px-4 py-3 text-left">Ne Zaman</th>
+                            <th class="px-4 py-3 text-left">Dosya</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700/50">
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-green-400">📋 "{title}" playliste eklendi: {playlist}</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">success</span></td>
+                            <td class="px-4 py-3 text-slate-400">Context menu'den playlist'e ekleme</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">muzibu-store.js:836</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-green-400">✅ {count} şarkı eklendi</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">success</span></td>
+                            <td class="px-4 py-3 text-slate-400">Context menu'den toplu ekleme</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">muzibu-store.js:784</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-red-400">❌ Şarkı playlist'e eklenemedi</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">error</span></td>
+                            <td class="px-4 py-3 text-slate-400">Ekleme hatası</td>
+                            <td class="px-4 py-3 text-xs text-slate-500">muzibu-store.js:795</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Kategori: Genel Hatalar -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <i class="fas fa-exclamation-triangle text-red-400"></i>
+                Genel Hata Mesajları
+            </h2>
+            <div class="bg-slate-800/50 rounded-lg overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-700/50">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Mesaj</th>
+                            <th class="px-4 py-3 text-left">Tip</th>
+                            <th class="px-4 py-3 text-left">Kullanım Yeri</th>
+                            <th class="px-4 py-3 text-left">Sayı</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700/50">
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-red-400">Bir hata oluştu</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">error</span></td>
+                            <td class="px-4 py-3 text-slate-400">Genel catch blokları</td>
+                            <td class="px-4 py-3 text-xs text-amber-400 font-bold">9 yerde</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-red-400">Bağlantı hatası</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">error</span></td>
+                            <td class="px-4 py-3 text-slate-400">Network hataları</td>
+                            <td class="px-4 py-3 text-xs text-amber-400 font-bold">6 yerde</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><code class="text-red-400">Hata oluştu</code></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">error</span></td>
+                            <td class="px-4 py-3 text-slate-400">API hata response'u</td>
+                            <td class="px-4 py-3 text-xs text-amber-400 font-bold">5 yerde</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Gereksiz/Tekrarlayan Toast'lar -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-amber-400">
+                <i class="fas fa-broom"></i>
+                Temizleme Önerileri
+            </h2>
+            <div class="bg-amber-900/20 border border-amber-800 rounded-lg p-6">
+                <h3 class="font-bold text-amber-400 mb-4">🔄 Tekrarlayan Mesajlar</h3>
+                <ul class="space-y-3 text-sm">
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-times-circle text-red-400 mt-0.5"></i>
+                        <div>
+                            <code class="text-white">"Playlist silindi"</code> - 4 farklı yerde tanımlı (content-actions, playlist-actions, my-playlists, muzibu-store)
+                            <span class="text-amber-400 block text-xs mt-1">Öneri: Tek merkezi fonksiyon kullan</span>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-times-circle text-red-400 mt-0.5"></i>
+                        <div>
+                            <code class="text-white">"Playlist oluşturuldu"</code> - 3 farklı yerde tanımlı
+                            <span class="text-amber-400 block text-xs mt-1">Öneri: Tek merkezi fonksiyon kullan</span>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-times-circle text-red-400 mt-0.5"></i>
+                        <div>
+                            <code class="text-white">"Bir hata oluştu"</code> - 9 yerde kullanılıyor
+                            <span class="text-amber-400 block text-xs mt-1">Öneri: Daha spesifik hata mesajları kullan</span>
+                        </div>
+                    </li>
+                </ul>
+
+                <h3 class="font-bold text-amber-400 mb-4 mt-6">❓ Gereksiz Olabilecek Toast'lar</h3>
+                <ul class="space-y-3 text-sm">
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-question-circle text-amber-400 mt-0.5"></i>
+                        <div>
+                            <code class="text-white">"▶️ Çalıyor: {title}"</code>
+                            <span class="text-slate-400 block text-xs mt-1">Kullanıcı zaten player'da görüyor, toast gereksiz olabilir</span>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-question-circle text-amber-400 mt-0.5"></i>
+                        <div>
+                            <code class="text-white">"Sıralama kaydedildi"</code>
+                            <span class="text-slate-400 block text-xs mt-1">Her drag-drop'ta çıkıyor, rahatsız edici olabilir</span>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-question-circle text-amber-400 mt-0.5"></i>
+                        <div>
+                            <code class="text-white">"Sıra temizlendi"</code>
+                            <span class="text-slate-400 block text-xs mt-1">Kullanıcı bilinçli temizledi, toast gerekli mi?</span>
+                        </div>
+                    </li>
+                </ul>
+
+                <h3 class="font-bold text-green-400 mb-4 mt-6">✅ İyi Tasarlanmış Toast'lar</h3>
+                <ul class="space-y-3 text-sm">
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check-circle text-green-400 mt-0.5"></i>
+                        <div>
+                            <code class="text-white">❤️/💔 Favori mesajları</code>
+                            <span class="text-green-400 block text-xs mt-1">İkon + başlık + aksiyon - çok açıklayıcı</span>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check-circle text-green-400 mt-0.5"></i>
+                        <div>
+                            <code class="text-white">✅ "{playlist}" listesine eklendi</code>
+                            <span class="text-green-400 block text-xs mt-1">Hangi playlist'e eklendiği belli</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm pt-8 border-t border-slate-800">
+            <p>Toplam 44 toast mesajı analiz edildi</p>
+            <p class="mt-2">Claude AI tarafından oluşturuldu • 8 Ocak 2026</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -11,6 +11,77 @@
  * - MuzibuSpaRouter (from features/spa-router.js)
  */
 
+// 🚨 CONSOLE UYARI - DevTools açanlara uyarı
+(function() {
+    // Stiller
+    const bigWarning = 'color: #ff0000; font-size: 48px; font-weight: bold; text-shadow: 2px 2px 4px black;';
+    const stopStyle = 'color: #fff; background: #ff0000; font-size: 20px; font-weight: bold; padding: 10px 20px; border-radius: 5px;';
+    const warningText = 'color: #ff6b6b; font-size: 14px;';
+    const infoHeader = 'color: #ff4444; font-size: 16px; font-weight: bold; background: #1a1a1a; padding: 5px 15px; border-radius: 5px;';
+    const infoStyle = 'color: #aaa; font-size: 13px; font-family: monospace; background: #111; padding: 2px 10px;';
+    const ipStyle = 'color: #ff0000; font-size: 16px; font-weight: bold; background: #330000; padding: 5px 15px; border-radius: 5px;';
+
+    console.log('%c🛑 DUR!', bigWarning);
+    console.log('%c⛔ YETKİSİZ ERİŞİM TESPİT EDİLDİ ⛔', stopStyle);
+    console.log('');
+    console.log('%cBu alan izleniyor. Erişimin kayıt altına alındı.', warningText);
+    console.log('%cYetkisiz erişim suçtur.', warningText);
+    console.log('');
+
+    // Cihaz bilgilerini topla
+    const ua = navigator.userAgent;
+    const platform = navigator.platform || 'Bilinmiyor';
+    const language = navigator.language || 'Bilinmiyor';
+    const screenRes = window.screen ? `${window.screen.width}x${window.screen.height}` : 'Bilinmiyor';
+    const colorDepth = window.screen ? `${window.screen.colorDepth}bit` : '';
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Bilinmiyor';
+    const cores = navigator.hardwareConcurrency || '?';
+    const memory = navigator.deviceMemory ? `${navigator.deviceMemory}GB RAM` : '';
+    const online = navigator.onLine ? 'Çevrimiçi' : 'Çevrimdışı';
+    const cookieEnabled = navigator.cookieEnabled ? 'Aktif' : 'Pasif';
+
+    // Tarayıcı tespiti
+    let browser = 'Bilinmeyen Tarayıcı';
+    if (ua.includes('Firefox')) browser = 'Mozilla Firefox';
+    else if (ua.includes('Edg')) browser = 'Microsoft Edge';
+    else if (ua.includes('Chrome')) browser = 'Google Chrome';
+    else if (ua.includes('Safari')) browser = 'Apple Safari';
+    else if (ua.includes('Opera') || ua.includes('OPR')) browser = 'Opera';
+
+    // OS tespiti
+    let os = 'Bilinmeyen İşletim Sistemi';
+    if (ua.includes('Windows NT 10')) os = 'Windows 10/11';
+    else if (ua.includes('Windows')) os = 'Windows';
+    else if (ua.includes('Mac OS X')) os = 'macOS';
+    else if (ua.includes('Linux')) os = 'Linux';
+    else if (ua.includes('Android')) os = 'Android';
+    else if (ua.includes('iPhone')) os = 'iPhone (iOS)';
+    else if (ua.includes('iPad')) os = 'iPad (iPadOS)';
+
+    console.log('%c📋 SENİN BİLGİLERİN (SUNUCUYA KAYDEDİLDİ):', infoHeader);
+    console.log('%c╔══════════════════════════════════════════════════════════╗', infoStyle);
+    console.log('%c║  📅 Tarih/Saat    : ' + new Date().toLocaleString('tr-TR'), infoStyle);
+    console.log('%c║  🌐 Tarayıcı      : ' + browser, infoStyle);
+    console.log('%c║  💻 İşletim Sis.  : ' + os, infoStyle);
+    console.log('%c║  🖥️  Platform      : ' + platform, infoStyle);
+    console.log('%c║  📐 Ekran Çözün.  : ' + screenRes + ' ' + colorDepth, infoStyle);
+    console.log('%c║  ⚙️  CPU Çekirdek  : ' + cores + ' çekirdek ' + memory, infoStyle);
+    console.log('%c║  🌍 Dil           : ' + language, infoStyle);
+    console.log('%c║  🕐 Saat Dilimi   : ' + timezone, infoStyle);
+    console.log('%c║  📡 Bağlantı      : ' + online, infoStyle);
+    console.log('%c║  🍪 Çerez Durumu  : ' + cookieEnabled, infoStyle);
+    console.log('%c╚══════════════════════════════════════════════════════════╝', infoStyle);
+
+    // IP adresini al ve göster
+    fetch('https://api.ipify.org?format=json')
+        .then(r => r.json())
+        .then(data => {
+            console.log('%c🔴 SENİN IP ADRESİN: ' + data.ip, ipStyle);
+            console.log('%c⚠️ Bu bilgiler yasal işlemlerde delil olarak kullanılabilir.', 'color: #ff6b6b; font-size: 12px;');
+        })
+        .catch(() => {});
+})();
+
 // 🧹 SAFE AUDIO CLEANUP - Hata tetiklemeden audio element temizleme
 function safeAudioCleanup(audio) {
     if (!audio) return;
@@ -91,6 +162,46 @@ function revokeBlobUrl(blobUrl) {
         URL.revokeObjectURL(blobUrl);
         activeBlobUrls.delete(blobUrl);
     }
+}
+
+// 🔒 XOR DECRYPT - Backend'den gelen şifreli URL'leri çöz
+function xorDecrypt(encrypted, key) {
+    let result = '';
+    for (let i = 0; i < encrypted.length; i++) {
+        result += String.fromCharCode(encrypted.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+    }
+    return result;
+}
+
+// 🔒 STREAM DATA DECRYPT - API response'undaki şifreli URL'leri çöz
+function decryptStreamData(response) {
+    // Eğer eski format ise (şifresiz), direkt döndür
+    if (response.stream_url) {
+        return response;
+    }
+
+    // Şifreli format: _, __, ___
+    if (response._ && response.__) {
+        try {
+            const key = atob(response.__);
+            const encrypted = atob(response._);
+            const decrypted = xorDecrypt(encrypted, key);
+            const urlData = JSON.parse(decrypted);
+
+            // Orijinal response'a URL'leri ekle
+            return {
+                ...response,
+                stream_url: urlData.stream_url,
+                fallback_url: urlData.fallback_url,
+                stream_type: urlData.stream_type
+            };
+        } catch (e) {
+            console.error('🔒 Stream decrypt failed:', e);
+            return response;
+        }
+    }
+
+    return response;
 }
 
 // 🔍 SERVER DEBUG LOG - Kritik bilgileri server'a gönder
@@ -656,7 +767,8 @@ function muzibuApp() {
                     return;
                 }
 
-                const streamData = await streamResponse.json();
+                const streamDataRaw = await streamResponse.json();
+                const streamData = decryptStreamData(streamDataRaw); // 🔒 Decrypt
 
                 // 🔍 Debug: API response'u logla
                 console.log('🔍 PRELOAD API Response:', {
@@ -1727,7 +1839,8 @@ function muzibuApp() {
                         this.isCrossfading = false;
                         return; // 401 aldıysa logout olacak
                     }
-                    data = await response.json();
+                    const rawData = await response.json();
+                    data = decryptStreamData(rawData); // 🔒 Decrypt
                 }
 
                 if (!data.stream_url) {
@@ -3054,7 +3167,8 @@ function muzibuApp() {
                     return;
                 }
 
-                const streamData = await streamResponse.json();
+                const streamDataRaw = await streamResponse.json();
+                const streamData = decryptStreamData(streamDataRaw); // 🔒 Decrypt
 
                 // 🎵 Build song object from stream API response
                 const song = {
@@ -3821,7 +3935,8 @@ function muzibuApp() {
                         return;
                     }
 
-                    data = await response.json();
+                    const rawData = await response.json();
+                    data = decryptStreamData(rawData); // 🔒 Decrypt
                 }
 
                 // Update premium status ve subscription bilgileri
@@ -5040,7 +5155,8 @@ onplay: function() {
                         return false;
                     }
 
-                    const data = await response.json();
+                    const rawData = await response.json();
+                    const data = decryptStreamData(rawData); // 🔒 Decrypt
                     if (data.stream_type !== 'hls' || !data.stream_url) {
                         return false;
                     }
@@ -5543,7 +5659,8 @@ onplay: function() {
                 if (type === 'song') {
                     // Single song - fetch details
                     const response = await fetch(`/api/muzibu/songs/${id}/stream`);
-                    const data = await response.json();
+                    const rawData = await response.json();
+                    const data = decryptStreamData(rawData); // 🔒 Decrypt
 
                     if (data.song) {
                         songs = [{
@@ -5930,6 +6047,7 @@ onplay: function() {
                         // Reload song from API (will get full access now)
                         fetch(`/api/muzibu/songs/${this.currentSong.song_id}/stream`)
                             .then(res => res.json())
+                            .then(rawData => decryptStreamData(rawData)) // 🔒 Decrypt
                             .then(async data => {
                                 if (data.stream_url) {
                                     // Stop current playback
@@ -6234,7 +6352,8 @@ onplay: function() {
                 const response = await this.authenticatedFetch(`/api/muzibu/songs/${songId}/stream`, { ignoreAuthError: true });
                 if (!response || !response.ok) return;
 
-                const data = await response.json();
+                const rawData = await response.json();
+                const data = decryptStreamData(rawData); // 🔒 Decrypt
 
                 // Cache the stream data for instant playback later
                 this.streamUrlCache.set(songId, {
@@ -6380,7 +6499,8 @@ onplay: function() {
                     return;
                 }
 
-                const data = await response.json();
+                const rawData = await response.json();
+                const data = decryptStreamData(rawData); // 🔒 Decrypt
 
                 // URL Cache'e yaz (backup için)
                 if (!this.streamUrlCache) {
@@ -6590,7 +6710,8 @@ onplay: function() {
                 const response = await this.authenticatedFetch(`/api/muzibu/songs/${this.currentSong.song_id}/stream`);
                 if (!response || !response.ok) return;
 
-                const data = await response.json();
+                const rawData = await response.json();
+                const data = decryptStreamData(rawData); // 🔒 Decrypt
                 if (data.stream_type === 'hls' && data.stream_url) {
                     this.currentFallbackUrl = data.fallback_url || this.currentFallbackUrl;
                     this._refreshedHlsUrl = data.stream_url;

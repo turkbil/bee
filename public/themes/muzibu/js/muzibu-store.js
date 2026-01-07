@@ -1110,7 +1110,7 @@ document.addEventListener('alpine:init', () => {
                     this.existsInPlaylists.push(playlistId);
                     const playlist = this.userPlaylists.find(p => p.playlist_id === playlistId);
                     Alpine.store('toast').show(
-                        `✅ "${playlist?.title || 'Playlist'}" e eklendi`,
+                        `✅ "${playlist?.title || 'Playlist'}" listesine eklendi`,
                         'success'
                     );
                 } else {
@@ -1143,7 +1143,7 @@ document.addEventListener('alpine:init', () => {
                     if (idx > -1) this.existsInPlaylists.splice(idx, 1);
                     const playlist = this.userPlaylists.find(p => p.playlist_id === playlistId);
                     Alpine.store('toast').show(
-                        `🗑️ "${playlist?.title || 'Playlist'}" ten çıkarıldı`,
+                        `🗑️ "${playlist?.title || 'Playlist'}" listesinden çıkarıldı`,
                         'warning'
                     );
                 } else {
@@ -1178,7 +1178,7 @@ document.addEventListener('alpine:init', () => {
                     this.existsInPlaylists.push(playlistId);
                     const playlist = this.userPlaylists.find(p => p.playlist_id === playlistId);
                     Alpine.store('toast').show(
-                        `✅ Albüm "${playlist?.title || 'Playlist'}" e eklendi (${data.added_count} şarkı)`,
+                        `✅ Albüm "${playlist?.title || 'Playlist'}" listesine eklendi (${data.added_count} şarkı)`,
                         'success'
                     );
                 } else {

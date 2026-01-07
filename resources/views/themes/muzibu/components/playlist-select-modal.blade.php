@@ -106,11 +106,7 @@
                         <div class="px-3 pb-3 space-y-1">
                             <template x-for="playlist in $store.playlistModal.filteredPlaylists" :key="playlist.playlist_id">
                                 <button @click="$store.playlistModal.toggleInstant(playlist.playlist_id)"
-                                        class="w-full flex items-center gap-3 p-2.5 rounded-xl transition group"
-                                        :class="{
-                                            'bg-green-500/10 border border-green-500/30': $store.playlistModal.isInPlaylist(playlist.playlist_id),
-                                            'hover:bg-white/5': !$store.playlistModal.isInPlaylist(playlist.playlist_id)
-                                        }">
+                                        class="w-full flex items-center gap-3 p-2.5 rounded-xl transition group hover:bg-white/5">
                                     {{-- Playlist Cover --}}
                                     <div class="w-10 h-10 rounded-lg flex-shrink-0 overflow-hidden"
                                          :class="playlist.cover_url ? '' : 'bg-gradient-to-br from-purple-500 to-pink-600'">
@@ -127,11 +123,6 @@
                                     {{-- Playlist Info --}}
                                     <div class="flex-1 text-left min-w-0">
                                         <p class="font-medium text-white truncate text-sm" x-text="playlist.title"></p>
-                                        <p class="text-xs"
-                                           :class="$store.playlistModal.isInPlaylist(playlist.playlist_id) ? 'text-green-400' : 'text-zinc-500'">
-                                            <span x-show="$store.playlistModal.isInPlaylist(playlist.playlist_id)">Bu playlist'te mevcut ✓</span>
-                                            <span x-show="!$store.playlistModal.isInPlaylist(playlist.playlist_id)" x-text="(playlist.song_count || 0) + ' şarkı'"></span>
-                                        </p>
                                     </div>
 
                                     {{-- Checkbox --}}
@@ -245,11 +236,7 @@
                         <div class="space-y-1">
                             <template x-for="playlist in $store.playlistModal.filteredPlaylists" :key="playlist.playlist_id">
                                 <button @click="$store.playlistModal.toggleInstant(playlist.playlist_id)"
-                                        class="w-full flex items-center gap-3 p-3 rounded-xl transition"
-                                        :class="{
-                                            'bg-green-500/10 border border-green-500/30': $store.playlistModal.isInPlaylist(playlist.playlist_id),
-                                            'hover:bg-white/5': !$store.playlistModal.isInPlaylist(playlist.playlist_id)
-                                        }">
+                                        class="w-full flex items-center gap-3 p-3 rounded-xl transition hover:bg-white/5">
                                     {{-- Playlist Cover --}}
                                     <div class="w-12 h-12 rounded-lg flex-shrink-0 overflow-hidden"
                                          :class="playlist.cover_url ? '' : 'bg-gradient-to-br from-purple-500 to-pink-600'">
@@ -266,11 +253,6 @@
                                     {{-- Playlist Info --}}
                                     <div class="flex-1 text-left min-w-0">
                                         <p class="font-medium text-white truncate" x-text="playlist.title"></p>
-                                        <p class="text-xs"
-                                           :class="$store.playlistModal.isInPlaylist(playlist.playlist_id) ? 'text-green-400' : 'text-zinc-500'">
-                                            <span x-show="$store.playlistModal.isInPlaylist(playlist.playlist_id)">Bu playlist'te mevcut ✓</span>
-                                            <span x-show="!$store.playlistModal.isInPlaylist(playlist.playlist_id)" x-text="(playlist.song_count || 0) + ' şarkı'"></span>
-                                        </p>
                                     </div>
 
                                     {{-- Checkbox --}}

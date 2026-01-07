@@ -33,6 +33,66 @@ function safeAudioCleanup(audio) {
     } catch (e) {}
 }
 
+// 🔒 BLOB URL HELPER - HLS URL'yi blob'a çevirerek DevTools'ta gizle
+// Bu sayede Network tab'da gerçek m3u8 URL'si görünmez
+async function createHlsBlobUrl(originalUrl) {
+    try {
+        // 1. m3u8 içeriğini fetch et
+        const response = await fetch(originalUrl);
+        if (!response.ok) {
+            console.warn('🔒 Blob URL: m3u8 fetch failed, using original URL');
+            return originalUrl;
+        }
+        let m3u8Content = await response.text();
+
+        // 2. Base URL'yi çıkar (segment'ler için)
+        const urlObj = new URL(originalUrl);
+        const baseUrl = urlObj.origin + urlObj.pathname.substring(0, urlObj.pathname.lastIndexOf('/') + 1);
+        const queryString = urlObj.search; // ?token=...&expires=...&sig=...
+
+        // 3. Relative segment URL'lerini absolute yap
+        // segment-000.ts?... → https://domain.com/api/.../segment-000.ts?...
+        m3u8Content = m3u8Content.replace(
+            /(segment-\d+\.ts)(\?[^\s\n]*)?/g,
+            (match, segment, query) => {
+                // Query varsa kullan, yoksa orijinal URL'den al
+                const finalQuery = query || queryString;
+                return baseUrl + segment + finalQuery;
+            }
+        );
+
+        // 4. Key URL'yi de absolute yap (/ ile başlıyorsa)
+        m3u8Content = m3u8Content.replace(
+            /URI="(\/api\/[^"]+)"/g,
+            (match, path) => `URI="${urlObj.origin}${path}"`
+        );
+
+        // 5. Blob oluştur
+        const blob = new Blob([m3u8Content], { type: 'application/x-mpegurl' });
+        const blobUrl = URL.createObjectURL(blob);
+
+        console.log('🔒 Blob URL created (original URL hidden from DevTools)');
+        return blobUrl;
+    } catch (error) {
+        console.warn('🔒 Blob URL creation failed, using original:', error.message);
+        return originalUrl;
+    }
+}
+
+// 🧹 BLOB URL CLEANUP - Kullanılmayan blob URL'leri temizle
+const activeBlobUrls = new Set();
+function trackBlobUrl(blobUrl) {
+    if (blobUrl && blobUrl.startsWith('blob:')) {
+        activeBlobUrls.add(blobUrl);
+    }
+}
+function revokeBlobUrl(blobUrl) {
+    if (blobUrl && blobUrl.startsWith('blob:') && activeBlobUrls.has(blobUrl)) {
+        URL.revokeObjectURL(blobUrl);
+        activeBlobUrls.delete(blobUrl);
+    }
+}
+
 // 🔍 SERVER DEBUG LOG - Kritik bilgileri server'a gönder
 function serverLog(action, data = {}) {
     try {
@@ -4220,7 +4280,13 @@ onplay: function() {
                     ? normalizedUrl + '&v=' + Date.now()
                     : normalizedUrl + '?v=' + Date.now();
 
-                this.hls.loadSource(cacheBustedUrl);
+                // 🔒 BLOB URL: DevTools'ta gerçek URL'yi gizle
+                // Network tab'da blob:https://... görünür, gerçek m3u8 URL'si gizlenir
+                const blobUrl = await createHlsBlobUrl(cacheBustedUrl);
+                trackBlobUrl(blobUrl);
+                this._currentBlobUrl = blobUrl; // Cleanup için sakla
+
+                this.hls.loadSource(blobUrl);
                 this.hls.attachMedia(audio);
                 this.hls.startLoad(startPosition > 0 ? startPosition : -1);
 

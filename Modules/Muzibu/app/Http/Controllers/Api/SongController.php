@@ -446,9 +446,9 @@ class SongController extends Controller
 
             // Get user's playlists that contain this song
             $playlistIds = DB::table('muzibu_playlists')
-                ->join('muzibu_playlist_songs', 'muzibu_playlists.playlist_id', '=', 'muzibu_playlist_songs.playlist_id')
+                ->join('muzibu_playlist_song', 'muzibu_playlists.playlist_id', '=', 'muzibu_playlist_song.playlist_id')
                 ->where('muzibu_playlists.user_id', $userId)
-                ->where('muzibu_playlist_songs.song_id', $id)
+                ->where('muzibu_playlist_song.song_id', $id)
                 ->pluck('muzibu_playlists.playlist_id')
                 ->toArray();
 

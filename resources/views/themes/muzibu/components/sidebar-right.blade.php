@@ -24,6 +24,32 @@
         -moz-user-select: none;
         user-select: none;
     }
+
+    /* Ghost - bırakılacak yeri gösteren placeholder */
+    .playlist-item.sortable-ghost {
+        opacity: 0.4 !important;
+        background: rgba(255, 107, 107, 0.1) !important;
+        border: 2px dashed rgba(255, 107, 107, 0.4) !important;
+        border-radius: 0.75rem !important;
+    }
+    .playlist-item.sortable-ghost * {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    /* Sürüklenen item */
+    .playlist-item.sortable-drag {
+        opacity: 1 !important;
+        background: rgba(30, 30, 35, 0.98) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+        border-radius: 0.75rem !important;
+        z-index: 9999 !important;
+    }
+
+    /* Seçilen item */
+    .playlist-item.sortable-chosen {
+        background: rgba(255, 107, 107, 0.1) !important;
+    }
 </style>
 
 <div class="h-full" x-data="{ songsTab: 'new' }">
@@ -91,53 +117,49 @@
             <template x-if="!$store.sidebar.previewLoading && $store.sidebar.hasPreviewTracks && $store.sidebar.previewInfo?.type === 'Playlist' && $store.sidebar.previewInfo?.is_mine === true">
                 <div class="flex-1 overflow-y-auto bg-slate-900/50"
                      x-ref="myPlaylistPreviewList"
-                     x-init="
-                        let sortableInstance = null;
-                        const initSortable = () => {
-                            if (!$refs.myPlaylistPreviewList || typeof Sortable === 'undefined') return;
-                            if (sortableInstance) sortableInstance.destroy();
-                            if (!$store.sidebar.previewTracks?.length) return;
+                     x-data="{ sortableReady: false }"
+                     x-effect="
+                        if ($store.sidebar.previewTracks?.length > 0 && $refs.myPlaylistPreviewList && typeof Sortable !== 'undefined') {
+                            $nextTick(() => {
+                                if ($refs.myPlaylistPreviewList._sortable) $refs.myPlaylistPreviewList._sortable.destroy();
+                                $refs.myPlaylistPreviewList._sortable = new Sortable($refs.myPlaylistPreviewList, {
+                                    animation: 200,
+                                    handle: '.playlist-drag-handle',
+                                    ghostClass: 'sortable-ghost',
+                                    chosenClass: 'sortable-chosen',
+                                    dragClass: 'sortable-drag',
+                                    forceFallback: true,
+                                    onEnd: async (evt) => {
+                                        if (evt.oldIndex === evt.newIndex) return;
 
-                            sortableInstance = new Sortable($refs.myPlaylistPreviewList, {
-                                animation: 200,
-                                handle: '.playlist-drag-handle',
-                                ghostClass: 'sortable-ghost',
-                                chosenClass: 'sortable-chosen',
-                                dragClass: 'sortable-drag',
-                                onEnd: async (evt) => {
-                                    if (evt.oldIndex === evt.newIndex) return;
+                                        const tracks = [...$store.sidebar.previewTracks];
+                                        const movedTrack = tracks[evt.oldIndex];
+                                        tracks.splice(evt.oldIndex, 1);
+                                        tracks.splice(evt.newIndex, 0, movedTrack);
 
-                                    // Yeni sıralamayı hesapla
-                                    const tracks = [...$store.sidebar.previewTracks];
-                                    const movedTrack = tracks[evt.oldIndex];
-                                    tracks.splice(evt.oldIndex, 1);
-                                    tracks.splice(evt.newIndex, 0, movedTrack);
+                                        $store.sidebar.previewTracks = tracks;
 
-                                    // State güncelle
-                                    $store.sidebar.previewTracks = tracks;
-
-                                    // Server'a kaydet
-                                    const songPositions = tracks.map((t, i) => ({ song_id: t.id, position: i }));
-                                    try {
-                                        const resp = await fetch(`/api/muzibu/playlists/${$store.sidebar.previewInfo.id}/reorder`, {
-                                            method: 'PUT',
-                                            headers: {
-                                                'Content-Type': 'application/json',
-                                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content
-                                            },
-                                            body: JSON.stringify({ song_positions: songPositions })
-                                        });
-                                        const data = await resp.json();
-                                        if (data.success) {
-                                            Alpine.store('toast').show('Sıralama kaydedildi', 'success');
+                                        const songPositions = tracks.map((t, i) => ({ song_id: t.id, position: i }));
+                                        try {
+                                            const resp = await fetch(`/api/muzibu/playlists/${$store.sidebar.previewInfo.id}/reorder`, {
+                                                method: 'PUT',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content
+                                                },
+                                                body: JSON.stringify({ song_positions: songPositions })
+                                            });
+                                            const data = await resp.json();
+                                            if (data.success) {
+                                                Alpine.store('toast').show('Sıralama kaydedildi', 'success');
+                                            }
+                                        } catch (e) {
+                                            console.error('Reorder error:', e);
                                         }
-                                    } catch (e) {
-                                        console.error('Reorder error:', e);
                                     }
-                                }
+                                });
                             });
-                        };
-                        $watch('$store.sidebar.previewTracks', () => $nextTick(initSortable), { immediate: true });
+                        }
                      ">
                     <template x-for="(track, index) in $store.sidebar.previewTracks" :key="'pl-' + track.id + '-' + index">
                         <div class="group flex items-center gap-2.5 px-3 py-2 hover:bg-white/5 cursor-pointer transition-all playlist-item"

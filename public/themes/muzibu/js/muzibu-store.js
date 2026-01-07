@@ -1020,7 +1020,13 @@ document.addEventListener('alpine:init', () => {
             if (this.contentType !== 'song' || !this.contentId) return;
 
             try {
-                const response = await fetch(`/api/muzibu/songs/${this.contentId}/playlists`);
+                const response = await fetch(`/api/muzibu/songs/${this.contentId}/playlists`, {
+                    credentials: 'same-origin',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
                 const data = await response.json();
                 this.existsInPlaylists = data.playlist_ids || [];
             } catch (err) {
@@ -1102,7 +1108,7 @@ document.addEventListener('alpine:init', () => {
 
                 if (data.success) {
                     this.existsInPlaylists.push(playlistId);
-                    const playlist = this.userPlaylists.find(p => p.id === playlistId);
+                    const playlist = this.userPlaylists.find(p => p.playlist_id === playlistId);
                     Alpine.store('toast').show(
                         `✅ "${playlist?.title || 'Playlist'}" e eklendi`,
                         'success'
@@ -1135,7 +1141,7 @@ document.addEventListener('alpine:init', () => {
                 if (data.success) {
                     const idx = this.existsInPlaylists.indexOf(playlistId);
                     if (idx > -1) this.existsInPlaylists.splice(idx, 1);
-                    const playlist = this.userPlaylists.find(p => p.id === playlistId);
+                    const playlist = this.userPlaylists.find(p => p.playlist_id === playlistId);
                     Alpine.store('toast').show(
                         `🗑️ "${playlist?.title || 'Playlist'}" ten çıkarıldı`,
                         'warning'
@@ -1170,7 +1176,7 @@ document.addEventListener('alpine:init', () => {
 
                 if (data.success) {
                     this.existsInPlaylists.push(playlistId);
-                    const playlist = this.userPlaylists.find(p => p.id === playlistId);
+                    const playlist = this.userPlaylists.find(p => p.playlist_id === playlistId);
                     Alpine.store('toast').show(
                         `✅ Albüm "${playlist?.title || 'Playlist'}" e eklendi (${data.added_count} şarkı)`,
                         'success'

@@ -12,9 +12,8 @@ return [
     'domain_model' => Domain::class,
     
     'central_domains' => [
-        env('APP_DOMAIN', 'laravel.test'),
-        'tuufi.com',
-        'www.tuufi.com',
+        env('APP_DOMAIN', 'localhost'),
+        'www.' . env('APP_DOMAIN', 'localhost'),
     ],
 
     /**

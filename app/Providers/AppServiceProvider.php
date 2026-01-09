@@ -109,6 +109,23 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // 🎵 POLYMORPHIC MORPH MAP - playlistables, favorites, reviews, media sistemi
+        // Not: enforceMorphMap yerine morphMap kullanıyoruz (tüm modelleri tanımlamak zorunda değiliz)
+        \Illuminate\Database\Eloquent\Relations\Relation::morphMap([
+            // Core models
+            'User' => \App\Models\User::class,
+
+            // Muzibu models
+            'Genre' => \Modules\Muzibu\App\Models\Genre::class,
+            'Radio' => \Modules\Muzibu\App\Models\Radio::class,
+            'Sector' => \Modules\Muzibu\App\Models\Sector::class,
+            'Corporate' => \Modules\Muzibu\App\Models\MuzibuCorporateAccount::class,
+            'Playlist' => \Modules\Muzibu\App\Models\Playlist::class,
+            'Album' => \Modules\Muzibu\App\Models\Album::class,
+            'Artist' => \Modules\Muzibu\App\Models\Artist::class,
+            'Song' => \Modules\Muzibu\App\Models\Song::class,
+        ]);
+
         // 🛡️ CONFIG CACHE FALLBACK - DISABLED (causes infinite loop!)
         // PROBLEM: Artisan::call('config:cache') in boot() triggers new Laravel boot → infinite recursion → memory exhausted
         // REASON: Config cache missing → boot() → Artisan::call() → new Laravel instance → boot() → ...
@@ -144,6 +161,12 @@ class AppServiceProvider extends ServiceProvider
         }
 
         // Livewire pagination views are published and customized in resources/views/vendor/livewire/
+
+        // Global Pagination View - Muzibu için custom pagination
+        if (tenant() && tenant()->id === 1001) {
+            \Illuminate\Pagination\Paginator::defaultView('themes.muzibu.partials.pagination');
+            \Illuminate\Pagination\Paginator::defaultSimpleView('themes.muzibu.partials.pagination');
+        }
 
         // Register Model Observers - Automatic Embedding Generation
         $this->registerModelObservers();
@@ -244,6 +267,38 @@ class AppServiceProvider extends ServiceProvider
             $activeThemeName = $activeTheme ? $activeTheme->name : 'simple';
 
             $view->with('activeThemeName', $activeThemeName);
+        });
+
+        // Muzibu Sidebar - New Songs & Popular Songs (Global)
+        // Sidebar tüm sayfalarda kullanılıyor, bu yüzden global view composer ile ekliyoruz
+        view()->composer('themes.muzibu.components.sidebar-right', function ($view) {
+            // Sadece Muzibu tenant'ı için (1001)
+            if (tenant() && tenant()->id === 1001) {
+                // New Songs Cache (5 min) - Sidebar için
+                $newSongs = \Illuminate\Support\Facades\Cache::remember('home_new_songs_v3', 300, function () {
+                    return \Modules\Muzibu\App\Models\Song::where('is_active', 1)
+                        ->whereNotNull('file_path')
+                        ->with(['album.artist', 'album.coverMedia', 'coverMedia'])
+                        ->orderBy('created_at', 'desc')
+                        ->limit(15)
+                        ->get();
+                });
+
+                // Popular Songs Cache (5 min) - Sidebar için (fallback)
+                $popularSongs = \Illuminate\Support\Facades\Cache::remember('home_popular_songs_v3', 300, function () {
+                    return \Modules\Muzibu\App\Models\Song::where('is_active', 1)
+                        ->whereNotNull('file_path')
+                        ->with(['album.artist', 'album.coverMedia', 'coverMedia'])
+                        ->orderBy('play_count', 'desc')
+                        ->limit(10)
+                        ->get();
+                });
+
+                $view->with([
+                    'newSongs' => $newSongs,
+                    'popularSongs' => $popularSongs,
+                ]);
+            }
         });
 
         // Tenant Languages View Composer - Cache için optimize edilmiş

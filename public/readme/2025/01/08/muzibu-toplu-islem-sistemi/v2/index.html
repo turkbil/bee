@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Toplu İşlem Sistemi - Kullanım Kılavuzu v2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        code { font-family: 'Monaco', 'Menlo', monospace; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">📚 Dokümantasyon v2</span>
+                <span class="text-slate-400 text-sm">8 Ocak 2025 - SEO Desteği Eklendi</span>
+            </div>
+            <h1 class="text-4xl font-bold mb-3 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Muzibu Toplu İşlem Sistemi
+            </h1>
+            <p class="text-slate-300 text-lg">
+                HLS Conversion, AI Görsel Üretimi ve SEO Optimizasyonu - Kullanım Kılavuzu
+            </p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-bold text-green-400 mb-3">📝 Basit Anlatım (Herkes İçin)</h3>
+            <p class="text-slate-300 mb-4">
+                Sisteminiz şarkılar için otomatik olarak üç işlem yapabilir:
+            </p>
+            <div class="grid md:grid-cols-3 gap-4 mb-4">
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <p class="text-lg font-bold text-blue-400 mb-2">🎵 HLS Dönüşümü</p>
+                    <p class="text-sm text-slate-300">
+                        MP3 şarkıları küçük parçalara böler ve güvenli streaming formatına çevirir.
+                        Böylece şarkılar kolay kolay indirilemez, sadece dinlenebilir.
+                    </p>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <p class="text-lg font-bold text-purple-400 mb-2">🎨 AI Görsel Üretimi</p>
+                    <p class="text-sm text-slate-300">
+                        Şarkı adından otomatik olarak yapay zeka ile profesyonel albüm kapağı görseli oluşturur.
+                        Her şarkıya benzersiz, yüksek kaliteli kapak resmi.
+                    </p>
+                </div>
+                <div class="bg-slate-800 rounded-lg p-4">
+                    <p class="text-lg font-bold text-orange-400 mb-2">🔍 SEO Optimizasyonu</p>
+                    <p class="text-sm text-slate-300">
+                        Şarkının Google'da üst sıralarda çıkması için otomatik SEO meta bilgileri oluşturur.
+                        Başlık, açıklama, sosyal medya paylaşım bilgileri.
+                    </p>
+                </div>
+            </div>
+            <div class="bg-green-900/30 rounded p-4">
+                <p class="font-semibold text-green-300 mb-2">✨ 3 Farklı Kullanım Şekli:</p>
+                <ul class="text-sm text-slate-300 space-y-1">
+                    <li>1️⃣ <strong>Sadece HLS:</strong> Şarkıları streaming formatına çevir (görsel ve SEO yok)</li>
+                    <li>2️⃣ <strong>Sadece Görsel:</strong> AI ile kapak görseli + SEO oluştur (HLS yok)</li>
+                    <li>3️⃣ <strong>Hem HLS Hem Görsel:</strong> Üçünü birden yap (tam otomatik + SEO)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 3 Aşama -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🎯 3 İşlem Modu</h2>
+        </div>
+
+        <!-- Mod 1: Sadece HLS -->
+        <div class="bg-slate-800 rounded-xl overflow-hidden mb-8 border border-blue-700">
+            <div class="bg-blue-900/30 p-4 border-b border-blue-700">
+                <div class="flex items-center gap-3">
+                    <span class="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded">MOD 1</span>
+                    <h3 class="text-2xl font-bold text-white">Sadece HLS Dönüşümü</h3>
+                </div>
+            </div>
+            <div class="p-6">
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <p class="text-sm font-semibold text-blue-400 mb-2">🎯 Ne Zaman Kullanılır?</p>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• Zaten görseli olan şarkılar için</li>
+                            <li>• Sadece streaming formatına çevirmek istiyorsanız</li>
+                            <li>• AI görsel üretimi istemiyorsanız</li>
+                            <li>• Hızlı işlem gerekiyorsa</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-blue-400 mb-2">⚙️ Ne Yapar?</p>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• MP3 dosyasını HLS formatına dönüştürür</li>
+                            <li>• Küçük parçalara böler (.ts segments)</li>
+                            <li>• M3U8 playlist dosyası oluşturur</li>
+                            <li>• AES-128 ile şifreler (opsiyonel)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-4 mb-4">
+                    <p class="text-xs font-bold text-blue-400 mb-2">📁 Dosya Konumları</p>
+                    <div class="space-y-2 text-sm">
+                        <div>
+                            <p class="text-slate-400">HLS Klasörü:</p>
+                            <code class="bg-slate-800 px-2 py-1 rounded text-green-400 text-xs">/var/www/vhosts/muzibu.com.tr/httpdocs/storage/tenant1001/app/public/muzibu/hls/</code>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 mt-2">Şarkı Yapısı:</p>
+                            <code class="bg-slate-800 px-2 py-1 rounded text-green-400 text-xs">hls/song-{id}/master.m3u8</code>
+                        </div>
+                        <div class="bg-yellow-900/20 border border-yellow-700 rounded p-3 mt-2">
+                            <p class="text-xs text-yellow-300">
+                                <strong>💡 Örnek:</strong> Song ID: 12345<br>
+                                HLS Path: <code class="text-green-400">muzibu/hls/song-12345/master.m3u8</code>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <p class="text-xs font-bold text-blue-400 mb-2">🗄️ Veritabanı Güncellemesi</p>
+                    <p class="text-sm text-slate-300 mb-3">
+                        <strong>Tablo:</strong> <code class="bg-slate-800 px-2 py-1 rounded text-green-400">muzibu_songs</code>
+                    </p>
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-800">
+                            <tr>
+                                <th class="text-left p-2 text-blue-400">Field</th>
+                                <th class="text-left p-2 text-blue-400">Açıklama</th>
+                                <th class="text-left p-2 text-blue-400">Örnek Değer</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr class="border-t border-slate-700">
+                                <td class="p-2"><code class="text-green-400">hls_path</code></td>
+                                <td class="p-2">M3U8 playlist dosya yolu</td>
+                                <td class="p-2"><code class="text-xs">muzibu/hls/song-12345/master.m3u8</code></td>
+                            </tr>
+                            <tr class="border-t border-slate-700">
+                                <td class="p-2"><code class="text-green-400">encryption_key</code></td>
+                                <td class="p-2">AES-128 encryption key</td>
+                                <td class="p-2"><code class="text-xs">a1b2c3d4e5f6...</code></td>
+                            </tr>
+                            <tr class="border-t border-slate-700">
+                                <td class="p-2"><code class="text-green-400">is_encrypted</code></td>
+                                <td class="p-2">Encrypt edildi mi?</td>
+                                <td class="p-2"><code class="text-xs">true</code></td>
+                            </tr>
+                            <tr class="border-t border-slate-700">
+                                <td class="p-2"><code class="text-green-400">hls_converted_at</code></td>
+                                <td class="p-2">Conversion zamanı</td>
+                                <td class="p-2"><code class="text-xs">2025-01-08 23:45:00</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mod 2: Sadece Görsel -->
+        <div class="bg-slate-800 rounded-xl overflow-hidden mb-8 border border-purple-700">
+            <div class="bg-purple-900/30 p-4 border-b border-purple-700">
+                <div class="flex items-center gap-3">
+                    <span class="bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded">MOD 2</span>
+                    <h3 class="text-2xl font-bold text-white">Sadece AI Görsel Üretimi</h3>
+                </div>
+            </div>
+            <div class="p-6">
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <p class="text-sm font-semibold text-purple-400 mb-2">🎯 Ne Zaman Kullanılır?</p>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• Zaten HLS'i olan şarkılar için</li>
+                            <li>• Sadece kapak görseli eksik şarkılar</li>
+                            <li>• HLS dönüşümü istemiyorsanız</li>
+                            <li>• Sadece görsel yenilemek istiyorsanız</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-purple-400 mb-2">⚙️ Ne Yapar?</p>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• Şarkı başlığını analiz eder (GPT-4)</li>
+                            <li>• Otomatik dil tespiti + çeviri</li>
+                            <li>• Leonardo AI ile görsel üretir</li>
+                            <li>• Media tablosuna kaydeder</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-4 mb-4">
+                    <p class="text-xs font-bold text-purple-400 mb-2">🧠 AI İşlemi</p>
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <div class="flex gap-3">
+                            <span class="text-xl">1️⃣</span>
+                            <div>
+                                <p class="font-semibold text-white">GPT-4 Prompt Oluşturma</p>
+                                <p class="text-xs">Şarkı başlığını analiz eder, dil tespit eder, İngilizce'ye çevirir, detaylı fotoğraf prompt'u oluşturur</p>
+                                <code class="bg-slate-800 px-2 py-1 rounded text-green-400 text-xs block mt-1">
+                                    "Paradise" → "Tropical beach, turquoise water, sunset..."
+                                </code>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <span class="text-xl">2️⃣</span>
+                            <div>
+                                <p class="font-semibold text-white">Leonardo AI Görsel Üretimi</p>
+                                <p class="text-xs">GPT-4'ün prompt'unu kullanarak profesyonel fotoğraf tarzında görsel üretir</p>
+                                <code class="bg-slate-800 px-2 py-1 rounded text-green-400 text-xs block mt-1">
+                                    Model: Lucid Origin | Boyut: 1472x832px | Stil: GPT-4 seçimi
+                                </code>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <span class="text-xl">3️⃣</span>
+                            <div>
+                                <p class="font-semibold text-white">Görsel İndirme ve Kaydetme</p>
+                                <p class="text-xs">Leonardo AI'dan görseli indirir, Spatie Media Library ile şarkıya bağlar</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <p class="text-xs font-bold text-purple-400 mb-2">🗄️ Veritabanı Yapısı</p>
+                    <p class="text-sm text-slate-300 mb-3">
+                        <strong>Tablo:</strong> <code class="bg-slate-800 px-2 py-1 rounded text-green-400">media</code>
+                        (Spatie Media Library)
+                    </p>
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-800">
+                            <tr>
+                                <th class="text-left p-2 text-purple-400">Field</th>
+                                <th class="text-left p-2 text-purple-400">Açıklama</th>
+                                <th class="text-left p-2 text-purple-400">Örnek Değer</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr class="border-t border-slate-700">
+                                <td class="p-2"><code class="text-green-400">model_type</code></td>
+                                <td class="p-2">Bağlı model (Song)</td>
+                                <td class="p-2"><code class="text-xs">Modules\Muzibu\App\Models\Song</code></td>
+                            </tr>
+                            <tr class="border-t border-slate-700">
+                                <td class="p-2"><code class="text-green-400">model_id</code></td>
+                                <td class="p-2">Şarkı ID'si</td>
+                                <td class="p-2"><code class="text-xs">12345</code></td>
+                            </tr>
+                            <tr class="border-t border-slate-700">
+                                <td class="p-2"><code class="text-green-400">collection_name</code></td>
+                                <td class="p-2">Media collection</td>
+                                <td class="p-2"><code class="text-xs">hero</code> (album cover)</td>
+                            </tr>
+                            <tr class="border-t border-slate-700">
+                                <td class="p-2"><code class="text-green-400">file_name</code></td>
+                                <td class="p-2">Dosya adı</td>
+                                <td class="p-2"><code class="text-xs">song-cover-12345.jpg</code></td>
+                            </tr>
+                            <tr class="border-t border-slate-700">
+                                <td class="p-2"><code class="text-green-400">disk</code></td>
+                                <td class="p-2">Storage disk</td>
+                                <td class="p-2"><code class="text-xs">public</code></td>
+                            </tr>
+                            <tr class="border-t border-slate-700">
+                                <td class="p-2"><code class="text-green-400">custom_properties</code></td>
+                                <td class="p-2">AI metadata (JSON)</td>
+                                <td class="p-2"><code class="text-xs">{ "generation_source": "ai_generated", ... }</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="bg-purple-900/20 border border-purple-700 rounded p-3 mt-4">
+                        <p class="text-xs font-semibold text-purple-300 mb-2">📦 custom_properties İçeriği:</p>
+                        <pre class="text-xs text-slate-300 overflow-x-auto"><code>{
+  "generation_source": "ai_generated",
+  "generation_prompt": "Album cover art of tropical beach...",
+  "generation_params": {
+    "model": "leonardo-lucid-origin",
+    "size": "1472x832",
+    "style": "cinematic",
+    "provider": "leonardo",
+    "generation_id": "abc-123-def",
+    "detected_language": "English",
+    "translated_title": "Paradise",
+    "tenant_id": 1001,
+    "purpose": "song_cover"
+  }
+}</code></pre>
+                        <p class="text-xs text-yellow-300 mt-2">
+                            <strong>💡 Önemli:</strong> Görsel dosyası <code>media</code> tablosunda, prompt ve AI bilgileri
+                            <code>custom_properties</code> JSON field'inde saklanır. Ayrı bir "media_library_items" tablosu YOK!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mod 3: Hem HLS Hem Görsel -->
+        <div class="bg-slate-800 rounded-xl overflow-hidden mb-8 border border-green-700">
+            <div class="bg-green-900/30 p-4 border-b border-green-700">
+                <div class="flex items-center gap-3">
+                    <span class="bg-green-600 text-white text-xs font-bold px-3 py-1 rounded">MOD 3</span>
+                    <h3 class="text-2xl font-bold text-white">Hem HLS Hem AI Görsel (Tam Otomatik)</h3>
+                </div>
+            </div>
+            <div class="p-6">
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <p class="text-sm font-semibold text-green-400 mb-2">🎯 Ne Zaman Kullanılır?</p>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• Yeni yüklenen şarkılar için</li>
+                            <li>• Hem HLS hem görsel eksik olanlar</li>
+                            <li>• Tek seferde her şeyi halletmek istiyorsanız</li>
+                            <li>• Toplu işlem yapacaksanız</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-green-400 mb-2">⚙️ Ne Yapar?</p>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• MOD 1 + MOD 2 işlemlerinin tamamını yapar</li>
+                            <li>• Sıralı çalışır: Önce HLS, sonra Görsel</li>
+                            <li>• Her iki veritabanı kaydını günceller</li>
+                            <li>• Paralel queue'lerde çalışır</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-4 mb-4">
+                    <p class="text-xs font-bold text-green-400 mb-2">🔄 İşlem Sırası</p>
+                    <div class="space-y-3">
+                        <div class="flex gap-3 items-start">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">1</span>
+                            <div class="flex-1">
+                                <p class="text-sm font-semibold text-white">HLS Conversion (Queue: muzibu_hls)</p>
+                                <p class="text-xs text-slate-400">MP3 → HLS dönüşümü, song tablosunda hls_path güncellenir</p>
+                                <div class="bg-slate-800 rounded p-2 mt-2">
+                                    <code class="text-xs text-green-400">Job: ConvertSongToHLS</code><br>
+                                    <code class="text-xs text-slate-400">Timeout: 300s | Tries: 1</code>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border-l-2 border-green-600 pl-6 ml-3">
+                            <span class="text-slate-500 text-xs">↓ HLS tamamlandıktan sonra</span>
+                        </div>
+                        <div class="flex gap-3 items-start">
+                            <span class="bg-purple-600 text-white text-xs font-bold px-2 py-1 rounded">2</span>
+                            <div class="flex-1">
+                                <p class="text-sm font-semibold text-white">AI Görsel Üretimi (Queue: muzibu_my_playlist)</p>
+                                <p class="text-xs text-slate-400">GPT-4 + Leonardo AI, media tablosuna kayıt</p>
+                                <div class="bg-slate-800 rounded p-2 mt-2">
+                                    <code class="text-xs text-green-400">Job: GenerateSongCover</code><br>
+                                    <code class="text-xs text-slate-400">Timeout: 180s | Tries: 1</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-green-900/20 border border-green-700 rounded p-4">
+                    <p class="text-sm font-semibold text-green-300 mb-2">✅ Sonuç:</p>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• Şarkı HLS formatında streaming'e hazır</li>
+                        <li>• Şarkı AI görseliyle albüm kapağına sahip</li>
+                        <li>• Her iki veritabanı güncel</li>
+                        <li>• Kullanıcı deneyimi tam</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- YENİ: SEO Optimizasyonu Bölümü -->
+        <div class="bg-slate-800 rounded-xl overflow-hidden mb-8 border border-orange-700">
+            <div class="bg-orange-900/30 p-4 border-b border-orange-700">
+                <div class="flex items-center gap-3">
+                    <span class="bg-orange-600 text-white text-xs font-bold px-3 py-1 rounded">🔍 SEO</span>
+                    <h3 class="text-2xl font-bold text-white">Otomatik SEO Optimizasyonu</h3>
+                </div>
+            </div>
+            <div class="p-6">
+                <!-- Basit Anlatım -->
+                <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-6">
+                    <h4 class="text-lg font-bold text-green-400 mb-3">📝 Basit Anlatım (Herkes İçin)</h4>
+                    <p class="text-slate-300 mb-4">
+                        <strong>SEO nedir?</strong> Şarkıların Google ve sosyal medyalarda (Facebook, Twitter, WhatsApp) nasıl görüneceğini belirleyen bilgilerdir.
+                    </p>
+                    <div class="bg-slate-900 rounded p-4 mb-4">
+                        <p class="text-sm font-semibold text-white mb-2">🌟 Neden Önemli?</p>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li>• Google'da şarkı aratıldığında üst sıralarda çıkar</li>
+                            <li>• Facebook/Twitter'da paylaşınca güzel başlık ve açıklama görünür</li>
+                            <li>• WhatsApp'ta link gönderilince görsel ve bilgiler otomatik çıkar</li>
+                            <li>• Daha fazla dinleyiciye ulaşırsınız</li>
+                        </ul>
+                    </div>
+                    <div class="bg-orange-900/20 border border-orange-700 rounded p-4">
+                        <p class="text-sm font-semibold text-orange-300 mb-2">✨ Ne Yapar?</p>
+                        <p class="text-sm text-slate-300 mb-2">
+                            HLS veya Görsel üretildiğinde, sistem otomatik olarak:
+                        </p>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• Şarkı için SEO ayarları yoksa → Hemen oluşturur</li>
+                            <li>• AI ile başlık, açıklama, sosyal medya bilgileri üretir</li>
+                            <li>• Google ve sosyal medya paylaşımları optimize eder</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Teknik Detaylar -->
+                <div class="bg-blue-900/20 border border-blue-700 rounded-lg p-6 mb-6">
+                    <h4 class="text-lg font-bold text-blue-400 mb-3">🔧 Teknik Detaylar (Geliştiriciler İçin)</h4>
+
+                    <div class="space-y-4">
+                        <!-- Ne Zaman Tetiklenir -->
+                        <div>
+                            <p class="text-sm font-semibold text-white mb-2">⏱️ Ne Zaman Tetiklenir?</p>
+                            <div class="bg-slate-900 rounded p-3">
+                                <ul class="text-sm text-slate-300 space-y-2">
+                                    <li>• <strong>HLS Job tamamlandığında:</strong> ConvertSongToHLS sonrası kontrol edilir</li>
+                                    <li>• <strong>AI Görsel Job tamamlandığında:</strong> GenerateSongCover sonrası kontrol edilir</li>
+                                    <li>• <strong>Her iki durumda:</strong> <code class="bg-slate-800 px-2 py-1 rounded text-green-400">seo_settings</code> tablosunda kayıt yoksa → GPT-4 ile oluşturulur</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Hangi Alanlar Üretilir -->
+                        <div>
+                            <p class="text-sm font-semibold text-white mb-2">📋 Hangi SEO Alanları Üretilir?</p>
+                            <div class="bg-slate-900 rounded p-3">
+                                <table class="w-full text-xs">
+                                    <thead class="bg-slate-800">
+                                        <tr>
+                                            <th class="text-left p-2 text-orange-400">Alan</th>
+                                            <th class="text-left p-2 text-orange-400">Açıklama</th>
+                                            <th class="text-left p-2 text-orange-400">Örnek</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-slate-300">
+                                        <tr class="border-t border-slate-700">
+                                            <td class="p-2"><code class="text-green-400">title</code></td>
+                                            <td class="p-2">SEO başlık (Google'da görünür)</td>
+                                            <td class="p-2">"Paradise - Muzibu | Tropical..."</td>
+                                        </tr>
+                                        <tr class="border-t border-slate-700">
+                                            <td class="p-2"><code class="text-green-400">description</code></td>
+                                            <td class="p-2">SEO açıklama (Google'da görünür)</td>
+                                            <td class="p-2">"Discover Paradise, a captivating..."</td>
+                                        </tr>
+                                        <tr class="border-t border-slate-700">
+                                            <td class="p-2"><code class="text-green-400">og_title</code></td>
+                                            <td class="p-2">Facebook/WhatsApp başlık</td>
+                                            <td class="p-2">"🎵 Paradise - Müzibu"</td>
+                                        </tr>
+                                        <tr class="border-t border-slate-700">
+                                            <td class="p-2"><code class="text-green-400">og_description</code></td>
+                                            <td class="p-2">Facebook/WhatsApp açıklama</td>
+                                            <td class="p-2">"Dinle, paylaş, keşfet..."</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Database Yapısı -->
+                        <div>
+                            <p class="text-sm font-semibold text-white mb-2">🗄️ Veritabanı Yapısı</p>
+                            <div class="bg-slate-900 rounded p-3">
+                                <p class="text-xs text-slate-400 mb-2">
+                                    <strong>Tablo:</strong> <code class="bg-slate-800 px-2 py-1 rounded text-green-400">seo_settings</code>
+                                </p>
+                                <p class="text-xs text-slate-400 mb-3">
+                                    <strong>İlişki Tipi:</strong> Polymorphic (Her içerik kendi SEO'suna sahip)
+                                </p>
+                                <table class="w-full text-xs">
+                                    <thead class="bg-slate-800">
+                                        <tr>
+                                            <th class="text-left p-2 text-orange-400">Field</th>
+                                            <th class="text-left p-2 text-orange-400">Tip</th>
+                                            <th class="text-left p-2 text-orange-400">Açıklama</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-slate-300">
+                                        <tr class="border-t border-slate-700">
+                                            <td class="p-2"><code class="text-green-400">seoable_type</code></td>
+                                            <td class="p-2">VARCHAR</td>
+                                            <td class="p-2">Model class (Song, Album, Page...)</td>
+                                        </tr>
+                                        <tr class="border-t border-slate-700">
+                                            <td class="p-2"><code class="text-green-400">seoable_id</code></td>
+                                            <td class="p-2">BIGINT</td>
+                                            <td class="p-2">İçerik ID (song_id, album_id...)</td>
+                                        </tr>
+                                        <tr class="border-t border-slate-700">
+                                            <td class="p-2"><code class="text-green-400">titles</code></td>
+                                            <td class="p-2">JSON</td>
+                                            <td class="p-2">Çoklu dil başlık: {"tr": "...", "en": "..."}</td>
+                                        </tr>
+                                        <tr class="border-t border-slate-700">
+                                            <td class="p-2"><code class="text-green-400">descriptions</code></td>
+                                            <td class="p-2">JSON</td>
+                                            <td class="p-2">Çoklu dil açıklama</td>
+                                        </tr>
+                                        <tr class="border-t border-slate-700">
+                                            <td class="p-2"><code class="text-green-400">og_titles</code></td>
+                                            <td class="p-2">JSON</td>
+                                            <td class="p-2">Facebook/Twitter başlık</td>
+                                        </tr>
+                                        <tr class="border-t border-slate-700">
+                                            <td class="p-2"><code class="text-green-400">og_descriptions</code></td>
+                                            <td class="p-2">JSON</td>
+                                            <td class="p-2">Facebook/Twitter açıklama</td>
+                                        </tr>
+                                        <tr class="border-t border-slate-700">
+                                            <td class="p-2"><code class="text-green-400">og_image</code></td>
+                                            <td class="p-2">VARCHAR</td>
+                                            <td class="p-2">Sosyal medya görseli URL</td>
+                                        </tr>
+                                        <tr class="border-t border-slate-700">
+                                            <td class="p-2"><code class="text-green-400">canonical_url</code></td>
+                                            <td class="p-2">VARCHAR</td>
+                                            <td class="p-2">Ana URL (SEO için)</td>
+                                        </tr>
+                                        <tr class="border-t border-slate-700">
+                                            <td class="p-2"><code class="text-green-400">robots_meta</code></td>
+                                            <td class="p-2">JSON</td>
+                                            <td class="p-2">index, follow, noarchive...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- AI Üretim Süreci -->
+                        <div>
+                            <p class="text-sm font-semibold text-white mb-2">🤖 AI ile SEO İçeriği Üretimi</p>
+                            <div class="bg-slate-900 rounded p-3">
+                                <div class="space-y-3 text-xs text-slate-300">
+                                    <div class="flex gap-2">
+                                        <span class="text-lg">1️⃣</span>
+                                        <div>
+                                            <p class="font-semibold text-white">SEO Kontrol</p>
+                                            <code class="bg-slate-800 px-2 py-1 rounded text-green-400 block mt-1">
+                                                if (!$song->seoSetting) { ... }
+                                            </code>
+                                            <p class="text-slate-400 mt-1">seo_settings tablosunda kayıt var mı kontrol edilir</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <span class="text-lg">2️⃣</span>
+                                        <div>
+                                            <p class="font-semibold text-white">GPT-4 Prompt</p>
+                                            <code class="bg-slate-800 px-2 py-1 rounded text-green-400 block mt-1">
+                                                "Şarkı: Paradise | Kısa SEO başlık ve açıklama üret"
+                                            </code>
+                                            <p class="text-slate-400 mt-1">GPT-4'e şarkı bilgileri gönderilir</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <span class="text-lg">3️⃣</span>
+                                        <div>
+                                            <p class="font-semibold text-white">SEO Oluştur</p>
+                                            <code class="bg-slate-800 px-2 py-1 rounded text-green-400 block mt-1">
+                                                $song->getOrCreateSeoSetting()
+                                            </code>
+                                            <p class="text-slate-400 mt-1">HasSeo trait ile otomatik oluşturulur</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <span class="text-lg">4️⃣</span>
+                                        <div>
+                                            <p class="font-semibold text-white">İçerik Doldur</p>
+                                            <code class="bg-slate-800 px-2 py-1 rounded text-green-400 block mt-1">
+                                                $seoSetting->update(['titles' => ..., 'descriptions' => ...])
+                                            </code>
+                                            <p class="text-slate-400 mt-1">GPT-4'ün ürettiği içerikler kaydedilir</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Model Desteği -->
+                        <div>
+                            <p class="text-sm font-semibold text-white mb-2">🎯 Hangi Modeller SEO Desteğine Sahip?</p>
+                            <div class="bg-slate-900 rounded p-3">
+                                <p class="text-xs text-slate-400 mb-2">
+                                    <code class="bg-slate-800 px-2 py-1 rounded text-green-400">HasSeo</code> trait'ini kullanan tüm modeller otomatik SEO alır:
+                                </p>
+                                <ul class="text-xs text-slate-300 space-y-1">
+                                    <li>✅ <strong>Song:</strong> Şarkılar (muzibu_songs)</li>
+                                    <li>✅ <strong>Album:</strong> Albümler (muzibu_albums)</li>
+                                    <li>✅ <strong>Page:</strong> Sayfalar (pages)</li>
+                                    <li>✅ <strong>Blog:</strong> Blog yazıları (blogs)</li>
+                                    <li>✅ <strong>Product:</strong> Ürünler (shop_products)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Örnek SEO Çıktısı -->
+                <div class="bg-slate-900 rounded-lg p-4">
+                    <p class="text-xs font-bold text-orange-400 mb-2">📄 Örnek SEO Çıktısı</p>
+                    <div class="bg-slate-800 rounded p-3">
+                        <p class="text-xs text-slate-400 mb-2"><strong>Şarkı:</strong> "Paradise"</p>
+                        <pre class="text-xs text-slate-300 overflow-x-auto"><code>{
+  "seoable_type": "Modules\\Muzibu\\App\\Models\\Song",
+  "seoable_id": 7394,
+  "titles": {
+    "tr": "Paradise - Muzibu | Tropikal Plaj Müziği",
+    "en": "Paradise - Muzibu | Tropical Beach Music"
+  },
+  "descriptions": {
+    "tr": "Paradise şarkısını dinle, keşfet ve paylaş. Tropikal ritmler...",
+    "en": "Listen, discover and share Paradise song. Tropical rhythms..."
+  },
+  "og_titles": {
+    "tr": "🎵 Paradise - Muzibu'da Dinle",
+    "en": "🎵 Listen to Paradise on Muzibu"
+  },
+  "og_descriptions": {
+    "tr": "Tropikal müziğin büyüsüne kapıl. Şimdi dinle!",
+    "en": "Feel the magic of tropical music. Listen now!"
+  },
+  "og_image": "https://cdn.leonardo.ai/users/.../song-7394.jpg",
+  "canonical_url": "https://muzibu.com.tr/sarki/paradise",
+  "robots_meta": {
+    "index": true,
+    "follow": true
+  }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-700 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-bold text-blue-400 mb-4">🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+
+            <div class="space-y-6">
+                <!-- HLS Teknik -->
+                <div>
+                    <p class="font-semibold text-white mb-2">📁 HLS Dosya Yapısı</p>
+                    <div class="bg-slate-900 rounded p-3">
+                        <pre class="text-xs text-slate-300"><code>storage/tenant1001/app/public/muzibu/hls/
+└── song-12345/
+    ├── master.m3u8          # Ana playlist
+    ├── stream.m3u8          # Segment listesi
+    ├── segment-000.ts       # Video segment 1
+    ├── segment-001.ts       # Video segment 2
+    ├── segment-002.ts       # Video segment 3
+    └── encryption.key       # AES-128 key (opsiyonel)</code></pre>
+                    </div>
+                </div>
+
+                <!-- Media Teknik -->
+                <div>
+                    <p class="font-semibold text-white mb-2">🎨 Media Storage Yapısı</p>
+                    <div class="bg-slate-900 rounded p-3">
+                        <pre class="text-xs text-slate-300"><code>storage/tenant1001/app/public/
+└── 12345/                   # Model ID (Song ID)
+    └── song-cover.jpg       # AI generated cover
+
+Database: media tablosu
+├── file_name: "song-cover.jpg"
+├── disk: "public"
+├── collection_name: "hero"
+└── custom_properties: { AI metadata }</code></pre>
+                    </div>
+                </div>
+
+                <!-- Queue'lar -->
+                <div>
+                    <p class="font-semibold text-white mb-2">⚙️ Laravel Queue Sistemi</p>
+                    <table class="w-full text-xs bg-slate-900 rounded">
+                        <thead class="bg-slate-800">
+                            <tr>
+                                <th class="text-left p-2 text-blue-400">Queue</th>
+                                <th class="text-left p-2 text-blue-400">İşlem</th>
+                                <th class="text-left p-2 text-blue-400">Timeout</th>
+                                <th class="text-left p-2 text-blue-400">Tries</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr class="border-t border-slate-700">
+                                <td class="p-2"><code>muzibu_hls</code></td>
+                                <td class="p-2">HLS Conversion</td>
+                                <td class="p-2">300s</td>
+                                <td class="p-2">1</td>
+                            </tr>
+                            <tr class="border-t border-slate-700">
+                                <td class="p-2"><code>muzibu_my_playlist</code></td>
+                                <td class="p-2">AI Cover Generation</td>
+                                <td class="p-2">180s</td>
+                                <td class="p-2">1</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Job Class'ları -->
+                <div>
+                    <p class="font-semibold text-white mb-2">📦 Job Class'ları</p>
+                    <div class="bg-slate-900 rounded p-3">
+                        <div class="space-y-2 text-xs text-slate-300">
+                            <div>
+                                <code class="text-green-400">Modules\Muzibu\App\Jobs\ConvertSongToHLS</code>
+                                <p class="text-slate-400 ml-4">→ MP3 → HLS conversion, song.hls_path günceller, SEO kontrol eder</p>
+                            </div>
+                            <div>
+                                <code class="text-green-400">Modules\Muzibu\App\Jobs\GenerateSongCover</code>
+                                <p class="text-slate-400 ml-4">→ GPT-4 + Leonardo AI, media tablosuna kayıt, SEO kontrol eder</p>
+                            </div>
+                            <div>
+                                <code class="text-green-400">Modules\Muzibu\App\Services\MuzibuLeonardoAIService</code>
+                                <p class="text-slate-400 ml-4">→ AI servisi (dil tespiti, çeviri, prompt oluşturma, görsel üretme)</p>
+                            </div>
+                            <div>
+                                <code class="text-green-400">App\Traits\HasSeo</code>
+                                <p class="text-slate-400 ml-4">→ SEO trait (getOrCreateSeoSetting, polymorphic relationship)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Önemli Notlar -->
+        <div class="bg-yellow-900/20 border border-yellow-700 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-bold text-yellow-400 mb-3">⚠️ Önemli Notlar</h3>
+            <div class="space-y-3 text-slate-300 text-sm">
+                <div class="flex gap-3">
+                    <span class="text-xl">💾</span>
+                    <div>
+                        <p class="font-semibold text-white">Veritabanı Yapısı</p>
+                        <p>"media_library_items" diye bir tablo YOK! Eski sistemde olabilir ama şu an Spatie Media Library kullanılıyor.
+                        Tüm media bilgileri <code class="bg-slate-800 px-2 py-1 rounded text-green-400">media</code> tablosunda,
+                        AI prompt ve generation bilgileri <code class="bg-slate-800 px-2 py-1 rounded text-green-400">custom_properties</code> JSON field'inde.</p>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <span class="text-xl">🔍</span>
+                    <div>
+                        <p class="font-semibold text-white">SEO Otomasyonu (YENİ!)</p>
+                        <p>Her HLS ve AI Görsel işleminden sonra otomatik SEO kontrolü yapılır.
+                        <code class="bg-slate-800 px-2 py-1 rounded text-green-400">seo_settings</code> tablosunda kayıt yoksa,
+                        GPT-4 ile SEO başlık, açıklama ve Open Graph bilgileri üretilir. Hiçbir müdahale gerekmez!</p>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <span class="text-xl">🔐</span>
+                    <div>
+                        <p class="font-semibold text-white">HLS Encryption</p>
+                        <p>HLS parçaları AES-128 ile şifrelenebilir. Encryption key <code>encryption_key</code> field'inde saklanır.
+                        Şifreleme aktifse <code>is_encrypted = true</code> olur.</p>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <span class="text-xl">🌍</span>
+                    <div>
+                        <p class="font-semibold text-white">Çok Dilli Destek</p>
+                        <p>AI görsel sistemi otomatik dil tespiti yapar (Türkçe, İngilizce, İtalyanca, İspanyolca, Japonca vb.) ve
+                        Leonardo AI için İngilizce'ye çevirir. Dil bilgisi <code>custom_properties.detected_language</code> içinde.
+                        SEO içerikleri de çoklu dil desteğiyle JSON formatında saklanır.</p>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <span class="text-xl">⏱️</span>
+                    <div>
+                        <p class="font-semibold text-white">İşlem Süreleri</p>
+                        <p>HLS conversion: ~2-5 dakika (şarkı uzunluğuna bağlı)<br>
+                        AI görsel üretimi: ~30-60 saniye (GPT-4 + Leonardo AI)<br>
+                        SEO üretimi: ~5-10 saniye (GPT-4 - anlık)</p>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <span class="text-xl">🚫</span>
+                    <div>
+                        <p class="font-semibold text-white">Kullanıcı Görseli Kontrolü</p>
+                        <p>Eğer şarkıda zaten manuel yüklenmiş görsel varsa (<code>hasMedia('hero')</code>), AI görsel üretimi ATLANIR.
+                        Kullanıcının görseli korunur, AI ezmez. Ancak SEO yoksa yine üretilir.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-6 border-t border-slate-700 text-center text-slate-400 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu | Muzibu Müzik Platformu</p>
+            <p class="mt-2">Dokümantasyon tarihi: 8 Ocak 2025 (v2 - SEO Eklendi) | Tenant: 1001</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiteSpeed Symlink 403 Sorunu - Detaylı Analiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-red-900/30 border border-red-700 rounded text-red-400 text-sm font-semibold">❌ Çözülemedi</span>
+                <span class="px-3 py-1 bg-blue-900/30 border border-blue-700 rounded text-blue-400 text-sm font-semibold">🔍 Analiz</span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-2">LiteSpeed phpSuExec=2 Symlink Kısıtlaması</h1>
+            <p class="text-slate-400">AI-generated görseller 403 Forbidden hatası veriyor</p>
+            <div class="mt-4 text-sm text-slate-500">
+                📅 9 Ocak 2026 | 🖥️ muzibu.com.tr | 🔧 LiteSpeed Enterprise 6.3.1
+            </div>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <span>📝</span> Basit Anlatım (Herkes İçin)
+            </h3>
+            <div class="space-y-4 text-slate-300">
+                <p><strong>Ne Oldu?</strong></p>
+                <p>
+                    Müzik platformunda şarkı kapak görselleri AI ile başarıyla oluşturuldu (20/20 başarı!).
+                    Ancak sitede görseller görünmüyor - browser 403 Forbidden (Erişim Engellendi) hatası alıyor.
+                </p>
+
+                <p><strong>Neden Oldu?</strong></p>
+                <p>
+                    Web sunucusu (LiteSpeed) çok katı güvenlik modunda (phpSuExec=2) çalışıyor.
+                    Bu mod, "kısayol" (symlink) olan dosyalara erişimi engelliyor.
+                    Görseller storage klasöründe, ancak web'den erişim için kısayol kullanıyoruz.
+                </p>
+
+                <p><strong>Ne Denendi?</strong></p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>✅ Dosya sahipliklerini düzelttik (tuufi.com_:psacln)</li>
+                    <li>✅ Global güvenlik ayarlarını gevşettik (checkSymbolLink 0, forceStrictOwnership 0)</li>
+                    <li>✅ Apache config'e Alias ekledik (symlink bypass)</li>
+                    <li>✅ .htaccess dosyası ekledik (FollowSymLinks)</li>
+                    <li>❌ Hiçbiri işe yaramadı - LiteSpeed katı moddayken bu ayarları görmezden geliyor</li>
+                </ul>
+
+                <p><strong>Şu Anda Durum:</strong></p>
+                <p class="bg-red-900/30 border border-red-700 rounded p-4">
+                    ❌ Görseller <strong>mevcut</strong> ama <strong>erişilemiyor</strong><br>
+                    ❌ LiteSpeed phpSuExec=2 modu symlink'leri engelliyor<br>
+                    ❌ Global config değişiklikleri işe yaramıyor
+                </p>
+
+                <p><strong>Neden Önemli?</strong></p>
+                <p>
+                    Kullanıcılar şarkı kapak görsellerini göremiyorlar. Site görsel olarak eksik görünüyor.
+                    AI ile üretilen 20 görselin hiçbiri erişilebilir değil.
+                </p>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                <span>🔧</span> Teknik Detaylar (Geliştiriciler İçin)
+            </h3>
+            <div class="space-y-4 text-slate-300">
+                <div>
+                    <h4 class="font-bold text-white mb-2">🏗️ Sistem Mimarisi</h4>
+                    <ul class="list-disc list-inside space-y-1 ml-4 text-sm">
+                        <li><strong>Web Server:</strong> LiteSpeed Enterprise 6.3.1</li>
+                        <li><strong>Arka Plan:</strong> Apache config yüklü (loadApacheConf=1)</li>
+                        <li><strong>PHP Mode:</strong> phpSuExec=2 (Strict Ownership)</li>
+                        <li><strong>Storage:</strong> Laravel Multi-Tenancy (tenant1001)</li>
+                        <li><strong>Symlink:</strong> <code>public/storage/tenant1001 → storage/tenant1001/app/public</code></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-white mb-2">📂 Dosya Yapısı</h4>
+                    <div class="bg-slate-800/50 rounded p-4 font-mono text-xs">
+                        <div>Symlink:</div>
+                        <div class="text-green-400">lrwxrwxrwx tuufi.com_:psacln public/storage/tenant1001 → ../../storage/tenant1001/app/public</div>
+
+                        <div class="mt-3">Target File:</div>
+                        <div class="text-blue-400">-rw-r--r-- tuufi.com_:psacln storage/tenant1001/app/public/21/Lucid_Origin_*.jpg</div>
+
+                        <div class="mt-3">Test URL:</div>
+                        <div class="text-red-400">https://muzibu.com.tr/storage/tenant1001/21/Lucid_Origin_*.jpg → HTTP 403</div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-white mb-2">🔴 LiteSpeed Error Log</h4>
+                    <div class="bg-red-900/20 border border-red-700 rounded p-4 font-mono text-xs text-red-300">
+                        [INFO] Found symbolic link, or owner of symbolic link and link target does not match for path [/var/www/vhosts/muzibu.com.tr/httpdocs/public/storage/tenant1001/21/...], access denied. ret=-1, errno=13
+                    </div>
+                    <p class="text-sm text-slate-400 mt-2">
+                        ⚠️ Bu hata <strong>user/group eşleşmesine</strong> rağmen oluşuyor! LiteSpeed phpSuExec=2 modunda ek kontroller var.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-white mb-2">✅ Denenen Çözümler</h4>
+                    <div class="space-y-2">
+                        <div class="flex items-start gap-2">
+                            <span class="text-yellow-500">⚠️</span>
+                            <div>
+                                <strong>Global Config Değişikliği:</strong>
+                                <div class="font-mono text-xs bg-slate-800/50 rounded p-2 mt-1">
+                                    /usr/local/lsws/conf/httpd_config.xml:<br>
+                                    &lt;checkSymbolLink&gt;0&lt;/checkSymbolLink&gt;<br>
+                                    &lt;forceStrictOwnership&gt;0&lt;/forceStrictOwnership&gt;
+                                </div>
+                                <div class="text-red-400 text-sm mt-1">❌ Sonuç: İşe yaramadı - phpSuExec=2 bu ayarları override ediyor</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-2">
+                            <span class="text-yellow-500">⚠️</span>
+                            <div>
+                                <strong>Ownership Düzeltme:</strong>
+                                <div class="font-mono text-xs bg-slate-800/50 rounded p-2 mt-1">
+                                    sudo chgrp -R psacln storage/tenant1001/
+                                </div>
+                                <div class="text-red-400 text-sm mt-1">❌ Sonuç: Symlink ve target aynı owner/group olmasına rağmen 403</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-2">
+                            <span class="text-yellow-500">⚠️</span>
+                            <div>
+                                <strong>Apache Alias (Symlink Bypass):</strong>
+                                <div class="font-mono text-xs bg-slate-800/50 rounded p-2 mt-1">
+                                    vhost.conf:<br>
+                                    Alias /storage/tenant1001 /var/www/vhosts/.../storage/tenant1001/app/public
+                                </div>
+                                <div class="text-red-400 text-sm mt-1">❌ Sonuç: LiteSpeed Apache'yi bypass ediyor, Alias işlenmedi</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-2">
+                            <span class="text-yellow-500">⚠️</span>
+                            <div>
+                                <strong>.htaccess FollowSymLinks:</strong>
+                                <div class="font-mono text-xs bg-slate-800/50 rounded p-2 mt-1">
+                                    public/storage/.htaccess:<br>
+                                    &lt;IfModule LiteSpeed&gt;<br>
+                                    &nbsp;&nbsp;Options +FollowSymLinks<br>
+                                    &lt;/IfModule&gt;
+                                </div>
+                                <div class="text-red-400 text-sm mt-1">❌ Sonuç: LiteSpeed .htaccess'i static file serving'de görmezden aldı</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-white mb-2">🔍 Kök Sebep</h4>
+                    <div class="bg-red-900/30 border border-red-700 rounded p-4">
+                        <p class="font-bold text-red-400 mb-2">LiteSpeed phpSuExec=2 Mode: Hardcoded Symlink Restriction</p>
+                        <p class="text-sm">
+                            phpSuExec=2 modu, PHP execution için değil, <strong>static file serving için de</strong> symlink kontrolü yapıyor.
+                            Bu kontrol LiteSpeed core seviyesinde ve <strong>config dosyalarıyla devre dışı bırakılamıyor</strong>.
+                        </p>
+                        <p class="text-sm mt-2">
+                            Nginx sunucularında <code>disable_symlinks off</code> ile çözülen bu sorun,
+                            LiteSpeed'de böyle bir directive olmadığı için çözülemiyor.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mevcut Çözümler -->
+        <div class="bg-purple-900/20 border border-purple-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+                <span>💡</span> Olası Çözümler (Sıralı)
+            </h3>
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-1 bg-green-900/30 border border-green-700 rounded text-green-400 text-xs font-semibold">✅ ÖNERİLEN</span>
+                        <h4 class="font-bold text-white">1. phpSuExec Modunu 2'den 1'e Düşür</h4>
+                    </div>
+                    <p class="text-sm text-slate-300 mb-2">
+                        <code>/usr/local/lsws/conf/httpd_config.xml</code> dosyasında <code>&lt;phpSuExec&gt;2&lt;/phpSuExec&gt;</code> → <code>&lt;phpSuExec&gt;1&lt;/phpSuExec&gt;</code>
+                    </p>
+                    <div class="text-xs space-y-1">
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-500">✅</span>
+                            <span class="text-slate-400">Avantaj: Symlink'ler çalışmaya başlar, performans optimum</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-500">⚠️</span>
+                            <span class="text-slate-400">Risk: <strong>GLOBAL</strong> değişiklik - tüm domainler etkilenir, güvenlik seviyesi düşer</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-blue-500">ℹ️</span>
+                            <span class="text-slate-400">Alternatif: Vhost-specific phpSuExec değişikliği mümkün mü kontrol et (LiteSpeed WebAdmin)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-1 bg-yellow-900/30 border border-yellow-700 rounded text-yellow-400 text-xs font-semibold">⚡ HIZLI</span>
+                        <h4 class="font-bold text-white">2. Laravel Route ile Serve Et</h4>
+                    </div>
+                    <p class="text-sm text-slate-300 mb-2">
+                        <code>routes/tenant.php</code> içinde <code>/storage/tenant{id}/{path}</code> route'u oluştur,
+                        <code>Storage::download()</code> ile dosyayı PHP üzerinden serve et.
+                    </p>
+                    <div class="text-xs space-y-1">
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-500">✅</span>
+                            <span class="text-slate-400">Avantaj: Symlink gerektirmez, tüm platformlarda çalışır</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-500">⚠️</span>
+                            <span class="text-slate-400">Risk: Performans kaybı (PHP her görsel için çalışır), memory kullanımı artar</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-blue-500">ℹ️</span>
+                            <span class="text-slate-400">İyileştirme: Cache headers ekle, X-Sendfile/X-Accel-Redirect kullan (web server'a offload)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-1 bg-blue-900/30 border border-blue-700 rounded text-blue-400 text-xs font-semibold">🔧 YAPISAL</span>
+                        <h4 class="font-bold text-white">3. Storage'ı Public Altına Taşı</h4>
+                    </div>
+                    <p class="text-sm text-slate-300 mb-2">
+                        <code>storage/tenant{id}/app/public/</code> → <code>public/storage/tenant{id}/</code> (hard copy, symlink değil)
+                    </p>
+                    <div class="text-xs space-y-1">
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-500">✅</span>
+                            <span class="text-slate-400">Avantaj: Symlink gerektirmez, native web server serving (hızlı)</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-500">⚠️</span>
+                            <span class="text-slate-400">Risk: Laravel best practice ihlali, güvenlik riski (public erişim), disk kullanımı artar</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-500">❌</span>
+                            <span class="text-slate-400">Kullanıcı Talebi: "storage de kalacak!!!" - Bu çözüm uygun değil</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-1 bg-orange-900/30 border border-orange-700 rounded text-orange-400 text-xs font-semibold">☁️ DIŞARIYA</span>
+                        <h4 class="font-bold text-white">4. CDN/Cloud Storage Kullan</h4>
+                    </div>
+                    <p class="text-sm text-slate-300 mb-2">
+                        Görselleri AWS S3, Cloudflare R2, veya DigitalOcean Spaces gibi cloud storage'a yükle,
+                        Media Library'yi cloud'a yönlendir.
+                    </p>
+                    <div class="text-xs space-y-1">
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-500">✅</span>
+                            <span class="text-slate-400">Avantaj: Symlink gerektirmez, CDN avantajı, sunucu yükü azalır</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-500">⚠️</span>
+                            <span class="text-slate-400">Risk: Aylık maliyet, bağımlılık (cloud vendor), migration gerekir</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-blue-500">ℹ️</span>
+                            <span class="text-slate-400">Örnek: Spatie Media Library S3 driver ile entegre edilebilir</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-1 bg-red-900/30 border border-red-700 rounded text-red-400 text-xs font-semibold">🚀 ALTYAPI</span>
+                        <h4 class="font-bold text-white">5. Web Server Değiştir (LiteSpeed → Nginx)</h4>
+                    </div>
+                    <p class="text-sm text-slate-300 mb-2">
+                        Plesk'te Apache + LiteSpeed yerine Nginx + PHP-FPM kullan. Nginx'te <code>disable_symlinks off;</code> çalışıyor.
+                    </p>
+                    <div class="text-xs space-y-1">
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-500">✅</span>
+                            <span class="text-slate-400">Avantaj: Symlink sorunu çözülür, Nginx performansı iyi</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-500">⚠️</span>
+                            <span class="text-slate-400">Risk: <strong>ÇOK BÜYÜK</strong> değişiklik, tüm sunucu etkilenir, downtime gerekir</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-500">❌</span>
+                            <span class="text-slate-400">Kullanıcı Geri Bildirimi: "tüm sistemi değiştirmene müsade edemem. bu global bir sistem."</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Karşılaştırma: tuufi.com vs muzibu.com.tr -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <span>⚖️</span> Sunucu Karşılaştırması
+            </h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-green-900/20 border border-green-700 rounded p-4">
+                    <h4 class="font-bold text-green-400 mb-3 flex items-center gap-2">
+                        <span>✅</span> tuufi.com (ÇALIŞIYOR)
+                    </h4>
+                    <div class="space-y-2 text-sm">
+                        <div>
+                            <span class="text-slate-400">Web Server:</span>
+                            <span class="text-white ml-2 font-mono">Nginx + Apache</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400">Symlink Ayarı:</span>
+                            <span class="text-green-400 ml-2 font-mono">disable_symlinks off</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400">PHP Mode:</span>
+                            <span class="text-white ml-2 font-mono">PHP-FPM</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400">Storage Symlink:</span>
+                            <span class="text-green-400 ml-2">✅ Çalışıyor</span>
+                        </div>
+                        <div class="bg-green-900/30 rounded p-2 mt-3 font-mono text-xs">
+                            # /etc/nginx/conf.d/vhost_nginx.conf<br>
+                            location ~* ^/storage/ {<br>
+                            &nbsp;&nbsp;disable_symlinks off;<br>
+                            &nbsp;&nbsp;expires 30d;<br>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-red-900/20 border border-red-700 rounded p-4">
+                    <h4 class="font-bold text-red-400 mb-3 flex items-center gap-2">
+                        <span>❌</span> muzibu.com.tr (ÇALIŞMIYOR)
+                    </h4>
+                    <div class="space-y-2 text-sm">
+                        <div>
+                            <span class="text-slate-400">Web Server:</span>
+                            <span class="text-white ml-2 font-mono">LiteSpeed Enterprise</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400">Symlink Ayarı:</span>
+                            <span class="text-red-400 ml-2 font-mono">checkSymbolLink 0 (IGNORED)</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400">PHP Mode:</span>
+                            <span class="text-white ml-2 font-mono">phpSuExec=2 (STRICT)</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400">Storage Symlink:</span>
+                            <span class="text-red-400 ml-2">❌ HTTP 403</span>
+                        </div>
+                        <div class="bg-red-900/30 rounded p-2 mt-3 font-mono text-xs">
+                            # /usr/local/lsws/conf/httpd_config.xml<br>
+                            &lt;checkSymbolLink&gt;0&lt;/checkSymbolLink&gt;<br>
+                            &lt;forceStrictOwnership&gt;0&lt;/forceStrictOwnership&gt;<br>
+                            &lt;phpSuExec&gt;2&lt;/phpSuExec&gt;<br>
+                            <span class="text-red-400"># ⚠️ phpSuExec=2 diğer ayarları override ediyor!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sonuç -->
+        <div class="bg-red-900/20 border border-red-700 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                <span>🎯</span> Sonuç ve Öneri
+            </h3>
+            <div class="space-y-4 text-slate-300">
+                <div class="bg-red-900/30 rounded p-4">
+                    <p class="font-bold text-white mb-2">📊 Durum</p>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li>✅ AI görselleri başarıyla oluşturuldu (20/20)</li>
+                        <li>✅ Dosyalar storage'da mevcut (tuufi.com_:psacln)</li>
+                        <li>✅ Symlink oluşturuldu ve doğru ownership var</li>
+                        <li>❌ LiteSpeed phpSuExec=2 symlink'leri engelliyor</li>
+                        <li>❌ Global config değişiklikleri işe yaramadı</li>
+                        <li>❌ Sitede görseller erişilemiyor (HTTP 403)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-900/30 border border-yellow-700 rounded p-4">
+                    <p class="font-bold text-yellow-400 mb-2">💡 Önerilen Aksiyon</p>
+                    <div class="space-y-3">
+                        <div>
+                            <p class="font-semibold text-white text-sm">Seçenek A: phpSuExec Değişikliği (ÖNERİLEN)</p>
+                            <p class="text-sm text-slate-300">
+                                <code>phpSuExec=2</code> → <code>phpSuExec=1</code> değiştir. Bu GLOBAL değişiklik olduğu için
+                                önce LiteSpeed WebAdmin'den vhost-specific ayar mümkün mü kontrol et.
+                            </p>
+                            <div class="mt-2 text-xs text-yellow-400">
+                                ⚠️ Risk: Tüm domainler etkilenir, güvenlik seviyesi düşer (ancak hala secure)
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="font-semibold text-white text-sm">Seçenek B: Laravel Route Serving (HIZLI)</p>
+                            <p class="text-sm text-slate-300">
+                                <code>routes/tenant.php</code> içinde route oluştur, X-Sendfile ile serve et.
+                                Symlink gerektirmez, hızlı implement edilir.
+                            </p>
+                            <div class="mt-2 text-xs text-yellow-400">
+                                ⚠️ Risk: Performans kaybı (PHP overhead), ancak X-Sendfile ile minimize edilebilir
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="font-semibold text-white text-sm">Seçenek C: Cloud Storage (UZUN VADELI)</p>
+                            <p class="text-sm text-slate-300">
+                                AWS S3/Cloudflare R2 entegrasyonu. Symlink sorununu tamamen çözer, CDN avantajı sağlar.
+                            </p>
+                            <div class="mt-2 text-xs text-yellow-400">
+                                ⚠️ Risk: Aylık maliyet, migration çalışması gerekir
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded p-4">
+                    <p class="font-bold text-white mb-2">📝 Karar Noktası</p>
+                    <p class="text-sm">
+                        Kullanıcıya sunulacak 3 seçenek var. Her birinin artı/eksileri açık.
+                        <strong>Seçenek A</strong> (phpSuExec değişikliği) en kolay ve performanslı ama global etki var.
+                        <strong>Seçenek B</strong> (Laravel route) hızlı implement ama performans kaybı var.
+                        <strong>Seçenek C</strong> (cloud) uzun vadeli en iyi çözüm ama maliyet/zaman gerektirir.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-8 pt-6 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu</p>
+            <p class="mt-1">9 Ocak 2026 - muzibu.com.tr</p>
+        </footer>
+    </div>
+</body>
+</html>

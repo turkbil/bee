@@ -1,0 +1,38 @@
+[
+  {
+    "song_id": 17998,
+    "title": "Va Come Deve",
+    "genre": null,
+    "prompt": "Album cover art of an abstract representation reflecting a journey with elements from nature, emphasizing flowing rivers meeting at the sea. Capture it through dynamic angles to suggest motion and evolution in life, possibly taken from a drone for that wide-angle perspective. Incorporate dramatic volumetric lighting to mimic sunlight breaking through clouds over a landscape where water embraces land forming shapes akin to human veins depicting life's essence flow. Use Canon camera with 24mm lens on Fuji Velvia film stock for vivid saturation capturing earth's diverse hues merging into each other gracefully as destiny unfolds just 'Va Come Deve'. Adding imperfections such as natural grain and vignette will imbue nostalgia within the scene’s narrative depth itself creating resonant parallels indicative of unhurried growth processes humanity relates intimately still mysterious allures.",
+    "original_title": "Va Come Deve",
+    "style": "vibrant",
+    "generation_id": "425bd4a1-ec7d-48b2-aa59-84464170e3e9",
+    "image_url": "https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/425bd4a1-ec7d-48b2-aa59-84464170e3e9/segments/1:1:1/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg",
+    "local_image": "images/song-17998.jpg",
+    "success": true
+  },
+  {
+    "song_id": 26319,
+    "title": "Hidden Paradise",
+    "genre": null,
+    "prompt": "Album cover art of an untouched, mystical tropical beach concealed by lush emerald foliage. Captured from a low angle through the leaves, creating a secretive feel as if peering into another world. A breathtaking blue lagoon shimmering under golden sunlight with reflections dancing on its surface; palm trees slightly bending in harmony with gentle sea breezes fill the background. Canon camera paired with an 85mm lens highlights distant details while adding softness to foreground elements. Rich Kodak Portra film captures vibrant tones and natural grain providing nostalgic depth combined with slight vignette around edges for mysterious framing effect evokes allurement of hidden treasures yet undiscovered.",
+    "original_title": "Hidden Paradise",
+    "style": "cinematic",
+    "generation_id": "62874127-c203-4ab3-82ab-9676d96375d8",
+    "image_url": "https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/62874127-c203-4ab3-82ab-9676d96375d8/segments/1:1:1/Lucid_Origin_a_cinematic_photo_of_Album_cover_art_of_an_untouc_0.jpg",
+    "local_image": "images/song-26319.jpg",
+    "success": true
+  },
+  {
+    "song_id": 7394,
+    "title": "Paradise",
+    "genre": null,
+    "prompt": "Album cover art of a breathtaking tropical beachscape, showcasing a serene coastline with turquoise waters and powdery white sands. A vibrant sunset sets the sky ablaze in hues of orange, pink, and purple. Coconut palms gracefully bend over the shore while gentle waves kiss the sand tenderly. Captured from an aerial perspective for an immersive sense of escape. Sunrays create magical reflections on water's surface enhanced by moody shadows from lush foliage nearby lending a picturesque contrast that epitomizes paradise tranquility photographed using Nikon D850 camera paired with ultra-wide lens at 18mm to capture expansive view Fuji Velvia film elevates scene adding rich color depth significant dreamlike quality evident accentuated grain light leaks finalized through post-processed slight vintage fade igniting soothing relaxed ambiance ideally illustrating ‘Paradise’ themed musical essence purely encapsulated.",
+    "original_title": "Paradise",
+    "style": "cinematic",
+    "generation_id": "77f48237-c158-4352-941d-3df8c474bd07",
+    "image_url": "https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/77f48237-c158-4352-941d-3df8c474bd07/segments/1:1:1/Lucid_Origin_a_cinematic_photo_of_Album_cover_art_of_a_breatht_0.jpg",
+    "local_image": "images/song-7394.jpg",
+    "success": true
+  }
+]

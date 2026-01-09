@@ -1,0 +1,38 @@
+[
+    {
+        "song_id": 17998,
+        "title": "Va Come Deve",
+        "genre": null,
+        "prompt": "Album cover art of abstract musical notes floating gracefully in a serene night sky. A lone violin silhouette is surrounded by shimmering golden and silver sound waves that create an ethereal pattern against the deep blue background, reminiscent of constellations forming mystical shapes. Captured from a low angle to enhance the majesty, utilizing soft rim lighting for delicate highlights on edges with bokeh effects resembling stardust scattering across frame. Photographed using Leica camera paired with 85mm lens for fine detail capture combined with Kodak Portra film stock giving warm color hues alongside gentle grain textures evoking nostalgia. Mood infused dreamy ambiance through lifted shadows showcasing whispered elegance; subtle chromatic aberration enhances magic-like atmosphere.",
+        "original_title": "Va Come Deve",
+        "style": "vibrant",
+        "generation_id": "5b82a389-2404-448c-adb9-4569a78d8c78",
+        "image_url": "https:\/\/cdn.leonardo.ai\/users\/5c302e69-8d49-40d2-a1f1-013c97a6279a\/generations\/5b82a389-2404-448c-adb9-4569a78d8c78\/segments\/1:1:1\/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg",
+        "local_image": "images\/song-17998.jpg",
+        "success": true
+    },
+    {
+        "song_id": 26319,
+        "title": "Hidden Paradise",
+        "genre": null,
+        "prompt": "Album cover art of an abstract representation for 'Hidden Paradise'. Envision a lush, imaginary landscape with shimmering streams and verdant foliage subtly intertwined with musical elements like gentle guitar silhouettes emerging from the scene. Imagine golden-hued saxophones blending into horizon lines against a setting sun casting warm shades over tranquil waters. Capture this enchanting atmosphere using low angle shots to evoke grandeur and depth perception; lens flares burst dynamically across serene visuals, reminiscent of sonic vibrations on untouched islands yet discovered by melodies. Illuminate compositions in dreamy backlit hues captured through Nikon DSLR paired elegantly with a versatile 35mm prime capturing vivid imagery where beams playfully bounce amidst bokeh clusters inspired nostalgically by Fuji Velvia film imperfections like soft grain elevating ambient mood lingering magical allure embraces every note softly echoing surreal wonders within ethereal soundscapes yearning beyond explored frequencies.",
+        "original_title": "Hidden Paradise",
+        "style": "vibrant",
+        "generation_id": "31fd9623-aae1-47b0-a553-c844a1a003cb",
+        "image_url": "https:\/\/cdn.leonardo.ai\/users\/5c302e69-8d49-40d2-a1f1-013c97a6279a\/generations\/31fd9623-aae1-47b0-a553-c844a1a003cb\/segments\/1:1:1\/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg",
+        "local_image": "images\/song-26319.jpg",
+        "success": true
+    },
+    {
+        "song_id": 7394,
+        "title": "Paradise",
+        "genre": null,
+        "prompt": "Album cover art of a serene tropical landscape infused with vibrant music elements. An abstract guitar silhouette subtly merges into palm trees, under golden sunlight that casts intricate shadows on the beach sand. Capture this from a low angle to emphasize vastness and tranquility. Stage lights mimic sunbeams piercing through coconut fronds, adding an ethereal aura to the scene reminiscent of live concerts by the sea. Shot using Canon camera paired with a 35mm lens for authentic depth and clarity in hues found in Kodak Portra film stock — grainy textures narrate tales of relaxation, holiday rhythms clinging onto breezy tones creating mellow yet invigorating vibes.",
+        "original_title": "Paradise",
+        "style": "vibrant",
+        "generation_id": "ffad0263-c272-43a9-ba00-a02957aa2d35",
+        "image_url": "https:\/\/cdn.leonardo.ai\/users\/5c302e69-8d49-40d2-a1f1-013c97a6279a\/generations\/ffad0263-c272-43a9-ba00-a02957aa2d35\/segments\/1:1:1\/Lucid_Origin_A_stunning_and_vibrant_cinematic_photo_of_Album_c_0.jpg",
+        "local_image": "images\/song-7394.jpg",
+        "success": true
+    }
+]

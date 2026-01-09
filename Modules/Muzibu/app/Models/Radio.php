@@ -288,17 +288,10 @@ class Radio extends BaseModel implements TranslatableEntity, HasMedia
     /**
      * Radio için locale-aware URL
      */
-    public function getUrl(?string $locale = null): string
+    public function getUrl(?string $locale = null): ?string
     {
-        $locale = $locale ?? app()->getLocale();
-        $slug = $this->getTranslated('slug', $locale);
-        $defaultLocale = get_tenant_default_locale();
-
-        if ($locale === $defaultLocale) {
-            return url("/muzibu/radio/{$slug}");
-        }
-
-        return url("/{$locale}/muzibu/radio/{$slug}");
+        // Radios have no detail page - return null
+        return null;
     }
 
     /**

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu.com.tr Tenant Sorun Analizi - Neden Veriler Gözükmüyor?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1a202e',
+                            950: '#0f1419'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased">
+    <div class="max-w-5xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+
+        <!-- Header -->
+        <header class="mb-12 border-b border-slate-800 pb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-900/30 text-red-400 border border-red-800">
+                    🚨 Kritik Sorun
+                </span>
+                <span class="text-slate-500 text-sm">8 Ocak 2026</span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-4 leading-tight">
+                Muzibu.com.tr - Neden Veriler Gözükmüyor?
+            </h1>
+            <p class="text-slate-400 text-lg leading-relaxed">
+                Multi-tenant sistemde kritik yapılandırma hatası tespit edildi. Site central database'den veri çekiyor, tenant database'ine erişemiyor.
+            </p>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-semibold text-green-400 mb-4 flex items-center gap-2">
+                📝 Basit Anlatım (Herkes İçin)
+            </h3>
+
+            <div class="space-y-4 text-slate-300 leading-relaxed">
+                <p><strong class="text-white">Sorun Ne?</strong></p>
+                <p>
+                    Muzibu.com.tr sitesi şu anda <strong>"yanlış depoya"</strong> bakıyor. Şarkılar, albümler, sanatçılar ayrı bir depoda (tenant database) ama site merkezi depoya (central database) bakıyor. Bu yüzden hiçbir şey gözükmüyor.
+                </p>
+
+                <p><strong class="text-white">Neden Oldu?</strong></p>
+                <p>
+                    Sistem yapılandırma dosyasında (<code class="bg-slate-800 px-2 py-1 rounded text-sm">.env</code>) yanlış ayarlar var:
+                </p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li><strong>APP_DOMAIN=localhost</strong> → Olması gereken: <strong>muzibu.com.tr</strong></li>
+                    <li><strong>TENANT_PARENT_DOMAIN=muzibu.com.tr</strong> → Olması gereken: <strong>tuufi.com</strong></li>
+                </ul>
+                <p>
+                    Bu ayarlar yüzünden sistem "muzibu.com.tr merkezi site" sanıyor, tenant sistemine geçmiyor.
+                </p>
+
+                <p><strong class="text-white">Sonuç?</strong></p>
+                <ul class="list-disc list-inside space-y-2 ml-4 text-yellow-300">
+                    <li>Yeni eklenen şarkılar gözükmüyor</li>
+                    <li>Albümler gözükmüyor</li>
+                    <li>Sanatçılar gözükmüyor</li>
+                    <li>Tüm muzibu-özel içerikler kayıp görünüyor</li>
+                </ul>
+                <p class="text-sm text-slate-400 italic">
+                    Not: Veriler kaybolmadı! Sadece yanlış depoya bakıyoruz. Doğru depoya yönlendiğimizde her şey çalışacak.
+                </p>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-semibold text-blue-400 mb-4 flex items-center gap-2">
+                🔧 Teknik Detaylar (Geliştiriciler İçin)
+            </h3>
+
+            <div class="space-y-6">
+                <!-- Mevcut Durum -->
+                <div>
+                    <h4 class="text-lg font-medium text-white mb-3">📊 Mevcut Durum</h4>
+                    <div class="bg-slate-900/50 rounded p-4 space-y-2 font-mono text-sm">
+                        <div class="flex gap-2">
+                            <span class="text-red-400">❌</span>
+                            <span class="text-slate-400">Current Context:</span>
+                            <span class="text-red-300">Central (olması gereken: Tenant 1001)</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="text-red-400">❌</span>
+                            <span class="text-slate-400">Database:</span>
+                            <span class="text-red-300">tuufi_4ekim (olması gereken: tenant_muzibu_1528d0)</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="text-green-400">✅</span>
+                            <span class="text-slate-400">Tenant Record:</span>
+                            <span class="text-green-300">ID: 1001, Domains: muzibu.com.tr, www.muzibu.com.tr</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="text-green-400">✅</span>
+                            <span class="text-slate-400">Domain Mapping:</span>
+                            <span class="text-green-300">muzibu.com.tr → tenant_id: 1001</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yapılandırma Hataları -->
+                <div>
+                    <h4 class="text-lg font-medium text-white mb-3">⚠️ Yapılandırma Hataları</h4>
+                    <div class="bg-slate-900/50 rounded p-4 space-y-3">
+                        <div>
+                            <p class="text-slate-400 mb-2"><strong>1. .env Dosyası:</strong></p>
+                            <div class="bg-red-950/30 border border-red-800 rounded p-3 space-y-1 text-sm">
+                                <div class="text-red-300">❌ APP_DOMAIN=localhost</div>
+                                <div class="text-green-300">✅ Olmalı: APP_DOMAIN=muzibu.com.tr</div>
+                            </div>
+                            <div class="bg-red-950/30 border border-red-800 rounded p-3 space-y-1 text-sm mt-2">
+                                <div class="text-red-300">❌ TENANT_PARENT_DOMAIN=muzibu.com.tr</div>
+                                <div class="text-green-300">✅ Olmalı: TENANT_PARENT_DOMAIN=tuufi.com</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-slate-400 mb-2"><strong>2. Config Sonucu:</strong></p>
+                            <div class="bg-yellow-950/30 border border-yellow-800 rounded p-3 text-sm">
+                                <div class="text-yellow-300">config('tenancy.central_domains') = ['localhost', 'www.localhost']</div>
+                                <div class="text-yellow-300">config('tenancy.parent_domain') = 'muzibu.com.tr'</div>
+                                <div class="text-slate-400 mt-2 text-xs">
+                                    ⚠️ Bu ayarlar "muzibu.com.tr = central" algısı yaratıyor
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dosya Yolları -->
+                <div>
+                    <h4 class="text-lg font-medium text-white mb-3">📁 İlgili Dosyalar</h4>
+                    <div class="bg-slate-900/50 rounded p-4 space-y-2 font-mono text-xs">
+                        <div><span class="text-blue-400">/var/www/vhosts/muzibu.com.tr/httpdocs/.env</span> → Yapılandırma dosyası (düzeltilecek)</div>
+                        <div><span class="text-blue-400">config/tenancy.php</span> → Tenant sistemi config (central_domains, parent_domain)</div>
+                        <div><span class="text-blue-400">app/Http/Kernel.php</span> → Middleware config (InitializeTenancyByDomain)</div>
+                        <div><span class="text-blue-400">app/Providers/TenancyServiceProvider.php</span> → Tenant başlatma mantığı</div>
+                    </div>
+                </div>
+
+                <!-- Tenant Sistemi Mantığı -->
+                <div>
+                    <h4 class="text-lg font-medium text-white mb-3">🔄 Tenant Sistemi Mantığı</h4>
+                    <div class="bg-slate-900/50 rounded p-4 space-y-3 text-sm">
+                        <p class="text-slate-300"><strong>Normal Akış (Beklenen):</strong></p>
+                        <ol class="list-decimal list-inside space-y-2 text-slate-400 ml-4">
+                            <li>Kullanıcı <code>muzibu.com.tr</code> adresine girer</li>
+                            <li>Middleware: <code>InitializeTenancyByDomain</code> devreye girer</li>
+                            <li>Domain <code>central_domains</code> içinde mi kontrol eder → Hayır</li>
+                            <li>Database'de domain'i arar: <code>domains</code> tablosu</li>
+                            <li>Domain bulunur → <code>tenant_id: 1001</code></li>
+                            <li>Tenant initialize edilir → Database: <code>tenant_muzibu_1528d0</code></li>
+                            <li>Tüm sorgular tenant database'e gider ✅</li>
+                        </ol>
+
+                        <p class="text-slate-300 mt-4"><strong>Mevcut Durum (Hatalı):</strong></p>
+                        <ol class="list-decimal list-inside space-y-2 text-red-400 ml-4">
+                            <li>Kullanıcı <code>muzibu.com.tr</code> adresine girer</li>
+                            <li>Middleware: <code>InitializeTenancyByDomain</code> devreye girer</li>
+                            <li>Domain <code>central_domains</code> içinde mi kontrol eder → <strong>Evet sanıyor!</strong> (APP_DOMAIN etkisi)</li>
+                            <li>Tenant initialize edilmez ❌</li>
+                            <li>Central context'te kalır → Database: <code>tuufi_4ekim</code></li>
+                            <li>Tenant verileri bulunamaz (songs, albums, artists yok) ❌</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Çözüm Önerileri -->
+        <div class="bg-purple-900/20 border border-purple-800 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-semibold text-purple-400 mb-4 flex items-center gap-2">
+                💡 Çözüm Önerileri
+            </h3>
+
+            <div class="space-y-6">
+                <!-- Öneri 1: .env Düzeltme (ÖNERİLEN) -->
+                <div class="bg-green-950/30 border border-green-800 rounded-lg p-5">
+                    <div class="flex items-start gap-3 mb-3">
+                        <span class="text-2xl">✅</span>
+                        <div>
+                            <h4 class="text-lg font-medium text-green-400">Öneri 1: .env Dosyasını Düzelt (ÖNERİLEN)</h4>
+                            <p class="text-slate-400 text-sm mt-1">En hızlı ve güvenli çözüm</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-white mb-2"><strong>📝 Basit Açıklama:</strong></p>
+                            <p class="text-slate-300 text-sm">
+                                Sistem yapılandırma dosyasında iki satırı değiştireceğiz. Bu değişiklikle sistem "muzibu.com.tr tenant sitesi" olarak algılayacak ve doğru depoya (tenant database) bağlanacak.
+                            </p>
+                        </div>
+
+                        <div>
+                            <p class="text-white mb-2"><strong>🔧 Yapılacak Değişiklik:</strong></p>
+                            <div class="bg-slate-900 rounded p-4 font-mono text-sm space-y-3">
+                                <div>
+                                    <div class="text-red-400"># Eski (Yanlış)</div>
+                                    <div class="text-red-300">APP_DOMAIN=localhost</div>
+                                    <div class="text-green-400 mt-1"># Yeni (Doğru)</div>
+                                    <div class="text-green-300">APP_DOMAIN=muzibu.com.tr</div>
+                                </div>
+                                <div class="border-t border-slate-700 pt-3">
+                                    <div class="text-red-400"># Eski (Yanlış)</div>
+                                    <div class="text-red-300">TENANT_PARENT_DOMAIN=muzibu.com.tr</div>
+                                    <div class="text-green-400 mt-1"># Yeni (Doğru)</div>
+                                    <div class="text-green-300">TENANT_PARENT_DOMAIN=tuufi.com</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-white mb-2"><strong>⚡ Sonrası:</strong></p>
+                            <div class="bg-slate-900 rounded p-4 font-mono text-sm space-y-1">
+                                <div class="text-slate-400"># Cache temizle</div>
+                                <div class="text-blue-300">php artisan config:clear</div>
+                                <div class="text-blue-300">php artisan cache:clear</div>
+                                <div class="text-blue-300">php artisan responsecache:clear</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-950/50 border border-green-700 rounded p-3">
+                            <p class="text-green-300 text-sm"><strong>✅ Avantajlar:</strong></p>
+                            <ul class="list-disc list-inside text-slate-300 text-sm space-y-1 mt-2 ml-4">
+                                <li>5 dakikada tamamlanır</li>
+                                <li>Hiçbir veri kaybı yok</li>
+                                <li>Geri dönüşü kolay (eski değerleri geri yazarsan)</li>
+                                <li>Database değişikliği YOK</li>
+                                <li>Risk seviyesi: Çok düşük</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Öneri 2: Central Tenant Oluşturma -->
+                <div class="bg-blue-950/30 border border-blue-800 rounded-lg p-5">
+                    <div class="flex items-start gap-3 mb-3">
+                        <span class="text-2xl">🔵</span>
+                        <div>
+                            <h4 class="text-lg font-medium text-blue-400">Öneri 2: Central'a Ayrı Tenant Oluştur</h4>
+                            <p class="text-slate-400 text-sm mt-1">Alternatif çözüm (daha karmaşık)</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-white mb-2"><strong>📝 Basit Açıklama:</strong></p>
+                            <p class="text-slate-300 text-sm">
+                                Merkezi site (tuufi.com) için de ayrı bir "tenant" oluşturacağız. Böylece hem tuufi.com hem muzibu.com.tr tenant olarak çalışır. Ama bu daha karmaşık bir işlem.
+                            </p>
+                        </div>
+
+                        <div>
+                            <p class="text-white mb-2"><strong>🔧 Yapılacaklar:</strong></p>
+                            <ol class="list-decimal list-inside text-slate-300 text-sm space-y-2 ml-4">
+                                <li>Tenant ID=1 için ayrı database oluştur (<code>tenant_tuufi</code>)</li>
+                                <li>Central verileri yeni tenant database'e migrate et</li>
+                                <li>Domain kayıtları: <code>tuufi.com</code>, <code>www.tuufi.com</code> → tenant_id: 1</li>
+                                <li><code>central_domains</code> config'den kaldır (boş bırak)</li>
+                                <li>Tüm siteleri tenant olarak çalıştır</li>
+                            </ol>
+                        </div>
+
+                        <div class="bg-yellow-950/50 border border-yellow-700 rounded p-3">
+                            <p class="text-yellow-300 text-sm"><strong>⚠️ Dikkat Edilmesi Gerekenler:</strong></p>
+                            <ul class="list-disc list-inside text-slate-300 text-sm space-y-1 mt-2 ml-4">
+                                <li>Veri taşıma işlemi gerekir (migration)</li>
+                                <li>AI sistemi central'da çalışıyor (tenant'a uyarlanmalı)</li>
+                                <li>Subscription sistemi central'da (tenant'a uyarlanmalı)</li>
+                                <li>Test süreci daha uzun (2-3 saat)</li>
+                                <li>Geri dönüşü zor</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-red-950/50 border border-red-700 rounded p-3">
+                            <p class="text-red-300 text-sm"><strong>❌ Dezavantajlar:</strong></p>
+                            <ul class="list-disc list-inside text-slate-300 text-sm space-y-1 mt-2 ml-4">
+                                <li>Karmaşık veri taşıma işlemi</li>
+                                <li>Merkezi AI sistemi tenant'a uyarlanmalı</li>
+                                <li>Subscription sistemi yeniden yapılandırılmalı</li>
+                                <li>1-2 gün sürebilir</li>
+                                <li>Risk seviyesi: Yüksek</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Öneri 3: Hybrid Yaklaşım -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-5">
+                    <div class="flex items-start gap-3 mb-3">
+                        <span class="text-2xl">🔄</span>
+                        <div>
+                            <h4 class="text-lg font-medium text-slate-300">Öneri 3: Hybrid Yaklaşım (Gelecek İçin)</h4>
+                            <p class="text-slate-400 text-sm mt-1">Mevcut sorunu çözmez, ama uzun vadeli plan</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-white mb-2"><strong>📝 Basit Açıklama:</strong></p>
+                            <p class="text-slate-300 text-sm">
+                                Bazı veriler merkezi (central) kalsın (AI, subscription), bazı veriler tenant'a özel olsun (içerik, ürünler). İki sistemi birlikte kullan.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900 rounded p-4">
+                            <p class="text-slate-300 text-sm"><strong>Merkezi (Central) Kalacaklar:</strong></p>
+                            <ul class="list-disc list-inside text-slate-400 text-xs space-y-1 mt-2 ml-4">
+                                <li>AI sistemi (tüm tenant'lar ortak kullanır)</li>
+                                <li>Subscription/payment sistemi</li>
+                                <li>Tenant yönetimi</li>
+                                <li>Sistem admin'leri</li>
+                            </ul>
+
+                            <p class="text-slate-300 text-sm mt-4"><strong>Tenant'a Özel Kalacaklar:</strong></p>
+                            <ul class="list-disc list-inside text-slate-400 text-xs space-y-1 mt-2 ml-4">
+                                <li>Şarkılar, albümler, sanatçılar (muzibu)</li>
+                                <li>Ürünler, kategoriler (ixtif)</li>
+                                <li>Blog, sayfa içerikleri</li>
+                                <li>Kullanıcılar, roller</li>
+                                <li>Medya dosyaları</li>
+                            </ul>
+                        </div>
+
+                        <div class="text-slate-400 text-sm italic">
+                            Not: Bu yaklaşım mevcut mimariyi destekliyor, ama muzibu.com.tr'nin şu anki sorununu çözmüyor. Önce Öneri 1 veya 2 uygulanmalı.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Karşılaştırma Tablosu -->
+        <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-semibold text-white mb-4">📊 Çözüm Karşılaştırması</h3>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 px-4 text-slate-400 font-medium">Kriter</th>
+                            <th class="text-left py-3 px-4 text-green-400 font-medium">Öneri 1: .env Düzelt</th>
+                            <th class="text-left py-3 px-4 text-blue-400 font-medium">Öneri 2: Central Tenant</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Süre</td>
+                            <td class="py-3 px-4 text-green-300">5 dakika</td>
+                            <td class="py-3 px-4 text-yellow-300">1-2 gün</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Karmaşıklık</td>
+                            <td class="py-3 px-4 text-green-300">Çok basit</td>
+                            <td class="py-3 px-4 text-red-300">Karmaşık</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Risk</td>
+                            <td class="py-3 px-4 text-green-300">Çok düşük</td>
+                            <td class="py-3 px-4 text-red-300">Yüksek</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Veri Taşıma</td>
+                            <td class="py-3 px-4 text-green-300">Gerek yok</td>
+                            <td class="py-3 px-4 text-red-300">Gerekli</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Geri Dönüş</td>
+                            <td class="py-3 px-4 text-green-300">Çok kolay</td>
+                            <td class="py-3 px-4 text-red-300">Zor</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Sistem Değişikliği</td>
+                            <td class="py-3 px-4 text-green-300">Minimal</td>
+                            <td class="py-3 px-4 text-red-300">Büyük</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Uzun Vadeli Kalıcılık</td>
+                            <td class="py-3 px-4 text-green-300">Evet (mevcut mimari)</td>
+                            <td class="py-3 px-4 text-blue-300">Evet (yeni mimari)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 bg-green-950/30 border border-green-800 rounded p-4">
+                <p class="text-green-400 font-medium mb-2">💡 Öneri:</p>
+                <p class="text-slate-300 text-sm">
+                    <strong>Öneri 1 (.env düzeltme)</strong> ile başlayın. Sistem hemen çalışır hale gelir.
+                    Daha sonra, gerekirse ve yeterli test ortamı hazırlandığında Öneri 2'ye geçilebilir.
+                </p>
+            </div>
+        </div>
+
+        <!-- Sonuç -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+            <h3 class="text-xl font-semibold text-white mb-4">🎯 Sonuç ve Öneriler</h3>
+
+            <div class="space-y-4 text-slate-300">
+                <p><strong class="text-white">Sorunun Özeti:</strong></p>
+                <p class="text-sm">
+                    Muzibu.com.tr tenant database'ine erişemiyor çünkü sistem yapılandırması "muzibu.com.tr = merkezi site" algısı yaratıyor.
+                    <code class="bg-slate-900 px-2 py-1 rounded text-xs">APP_DOMAIN</code> ve
+                    <code class="bg-slate-900 px-2 py-1 rounded text-xs">TENANT_PARENT_DOMAIN</code> değişkenleri yanlış ayarlanmış.
+                </p>
+
+                <p><strong class="text-white">En Hızlı Çözüm:</strong></p>
+                <ol class="list-decimal list-inside space-y-2 text-sm ml-4">
+                    <li>.env dosyasında 2 satırı düzelt (APP_DOMAIN, TENANT_PARENT_DOMAIN)</li>
+                    <li>Config cache'i temizle</li>
+                    <li>Siteyi test et</li>
+                    <li>Şarkılar, albümler, sanatçılar gözükecek ✅</li>
+                </ol>
+
+                <p><strong class="text-white">Uzun Vadeli Plan:</strong></p>
+                <p class="text-sm">
+                    İlerleyen zamanda, test ortamında Öneri 2 (central tenant) veya Öneri 3 (hybrid) denenebilir.
+                    Ama öncelik şu an çalışan bir sistem elde etmek olmalı.
+                </p>
+
+                <div class="bg-yellow-950/30 border border-yellow-800 rounded p-4 mt-4">
+                    <p class="text-yellow-300 text-sm"><strong>⚠️ Önemli Not:</strong></p>
+                    <p class="text-slate-300 text-xs mt-2">
+                        Değişiklikleri yapmadan önce mevcut .env dosyasının yedeğini alın. Herhangi bir sorun çıkarsa geri dönüş mümkün olsun.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t border-slate-800 text-center text-slate-500 text-sm">
+            <p>🤖 Claude Sonnet 4.5 tarafından oluşturuldu</p>
+            <p class="mt-2">Multi-Tenant Sistem Analizi - 8 Ocak 2026</p>
+        </footer>
+
+    </div>
+</body>
+</html>

@@ -32,7 +32,7 @@ return [
     |
     */
 
-    'lifetime' => (int) env('SESSION_LIFETIME', 120),
+    'lifetime' => (int) env('SESSION_LIFETIME', 525600), // 1 yıl (default 120 yerine)
 
     'expire_on_close' => false, // Tarayıcı kapandığında oturumun sonlanmasını engeller
 

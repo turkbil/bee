@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HLS Kontrollerini Geri Alma Kılavuzu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1a202e',
+                            950: '#0f1419'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="mb-8 border-b border-slate-800 pb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 bg-blue-900/30 text-blue-400 border border-blue-800 rounded-full text-sm font-medium">
+                    📋 Geri Alma Kılavuzu
+                </span>
+                <span class="px-3 py-1 bg-slate-800 text-slate-400 rounded-full text-sm">
+                    v1
+                </span>
+            </div>
+            <h1 class="text-4xl font-bold text-slate-100 mb-2">
+                HLS Kontrollerini Geri Alma
+            </h1>
+            <p class="text-slate-400 text-lg">
+                HLS conversion tamamlandığında eski haline nasıl alınır?
+            </p>
+            <div class="flex gap-4 mt-4 text-sm text-slate-500">
+                <span>📅 8 Ocak 2026</span>
+                <span>⏱️ 22:46</span>
+                <span>🏷️ Muzibu, HLS, Song Filter</span>
+            </div>
+        </header>
+
+        <!-- Basit Anlatım -->
+        <div class="bg-green-900/20 border border-green-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <span>📝</span> Basit Anlatım (Herkes İçin)
+            </h3>
+            <div class="space-y-4 text-slate-300">
+                <p>
+                    <strong>Ne Yapıldı?</strong><br>
+                    Müzik platformunda şarkılar görünmüyordu çünkü sistem sadece HLS formatına çevrilmiş şarkıları gösteriyordu.
+                    HLS henüz hazır olmadığı için tüm şarkılar gizli kalıyordu.
+                </p>
+                <p>
+                    <strong>Çözüm:</strong><br>
+                    HLS kontrolü geçici olarak devre dışı bırakıldı. Şimdi şarkılar MP3 formatıyla çalışıyor ve görünüyor.
+                </p>
+                <p>
+                    <strong>Ne Zaman Geri Alınacak?</strong><br>
+                    HLS formatına dönüşüm tamamlandığında (tüm şarkılar HLS'ye çevrilince) bu değişiklik geri alınacak
+                    ve sistem yeniden HLS kontrolü yapacak.
+                </p>
+                <p class="bg-slate-900/50 border border-slate-700 rounded p-4">
+                    <strong>💡 Neden Önemli?</strong><br>
+                    28,208 şarkı MP3 formatında hazır ama hiçbiri HLS'ye çevrilmemiş. HLS kontrolü açıkken
+                    kullanıcılar hiçbir şarkı görmüyor. Bu değişiklik sayesinde platformdaki tüm şarkılar
+                    kullanılabilir hale geldi.
+                </p>
+            </div>
+        </div>
+
+        <!-- Teknik Detaylar -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                <span>🔧</span> Teknik Detaylar (Geliştiriciler İçin)
+            </h3>
+            <div class="space-y-4 text-slate-300">
+                <div>
+                    <h4 class="font-semibold text-slate-200 mb-2">Değiştirilen Dosyalar:</h4>
+                    <ul class="list-disc list-inside space-y-1 text-sm font-mono bg-slate-900/50 p-4 rounded">
+                        <li>Modules/Muzibu/app/Http/Controllers/Front/HomeController.php</li>
+                        <li>Modules/Muzibu/app/Http/Controllers/Api/QueueRefillController.php</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-slate-200 mb-2">Yapılan Değişiklik:</h4>
+                    <pre class="bg-slate-900 p-4 rounded border border-slate-700 overflow-x-auto text-sm"><code class="text-red-400">// ÖNCE (HLS Zorunlu):
+->whereNotNull('hls_path')</code>
+
+<code class="text-green-400">// SONRA (HLS Opsiyonel):
+// ->whereNotNull('hls_path') // GEÇİCİ: HLS hazır değil, MP3 ile çalışıyor</code></pre>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-slate-200 mb-2">Etkilenen Sorgulamalar:</h4>
+                    <ul class="list-disc list-inside space-y-2 bg-slate-900/50 p-4 rounded">
+                        <li><strong>HomeController:</strong> Popular Songs (1 adet)</li>
+                        <li><strong>QueueRefillController:</strong> Tüm queue refill endpoint'leri (10+ adet)</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-slate-200 mb-2">Database Durumu:</h4>
+                    <div class="bg-slate-900/50 p-4 rounded space-y-1 text-sm">
+                        <p>✅ Toplam aktif şarkı: 28,211</p>
+                        <p>✅ file_path var: 28,208</p>
+                        <p>❌ hls_path var: 0</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-slate-200 mb-2">Ek Düzeltmeler:</h4>
+                    <ul class="list-disc list-inside space-y-2 bg-slate-900/50 p-4 rounded">
+                        <li><strong>Album songs_count:</strong> 650 album için yeniden hesaplandı</li>
+                        <li><strong>Playlist songs_count:</strong> 399 system playlist için yeniden hesaplandı</li>
+                        <li><strong>Cache:</strong> Tüm cache katmanları temizlendi</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Geri Alma Adımları -->
+        <div class="bg-slate-900 border border-slate-700 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-bold text-slate-100 mb-6">
+                🔄 Geri Alma Adımları (HLS Hazır Olunca)
+            </h3>
+
+            <!-- Adım 1 -->
+            <div class="mb-6 pb-6 border-b border-slate-800">
+                <div class="flex items-start gap-4">
+                    <span class="flex-shrink-0 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
+                        1
+                    </span>
+                    <div class="flex-1">
+                        <h4 class="text-lg font-semibold text-slate-200 mb-3">HLS Conversion Durumunu Kontrol Et</h4>
+                        <p class="text-slate-400 mb-4">
+                            Öncelikle kaç şarkıda HLS path'i olduğunu kontrol et. Tüm şarkılar HLS'ye çevrilmiş olmalı.
+                        </p>
+                        <div class="bg-slate-950 p-4 rounded border border-slate-700">
+                            <p class="text-xs text-slate-500 mb-2">Terminal Komutu:</p>
+                            <pre class="text-sm text-green-400 overflow-x-auto"><code>/opt/plesk/php/8.3/bin/php artisan tinker --execute="
+\$domain = \App\Models\Domain::where('domain', 'muzibu.com.tr')->first();
+\$tenant = \$domain->tenant;
+tenancy()->initialize(\$tenant);
+
+\$total = \Modules\Muzibu\App\Models\Song::where('is_active', 1)->count();
+\$withHls = \Modules\Muzibu\App\Models\Song::where('is_active', 1)->whereNotNull('hls_path')->count();
+\$withMp3 = \Modules\Muzibu\App\Models\Song::where('is_active', 1)->whereNotNull('file_path')->count();
+
+echo 'Toplam aktif: ' . \$total . PHP_EOL;
+echo 'HLS var: ' . \$withHls . PHP_EOL;
+echo 'MP3 var: ' . \$withMp3 . PHP_EOL;
+echo 'Conversion oranı: ' . round((\$withHls / \$total) * 100, 2) . '%' . PHP_EOL;
+"</code></pre>
+                        </div>
+                        <div class="mt-3 bg-yellow-900/20 border border-yellow-700 rounded p-3">
+                            <p class="text-sm text-yellow-400">
+                                ⚠️ <strong>Uyarı:</strong> Conversion oranı %100'e ulaşmadan devam etme!
+                                Aksi takdirde şarkılar tekrar görünmez hale gelir.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 2 -->
+            <div class="mb-6 pb-6 border-b border-slate-800">
+                <div class="flex items-start gap-4">
+                    <span class="flex-shrink-0 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
+                        2
+                    </span>
+                    <div class="flex-1">
+                        <h4 class="text-lg font-semibold text-slate-200 mb-3">HomeController'ı Düzelt</h4>
+                        <p class="text-slate-400 mb-4">
+                            Popular Songs sorgusunda HLS kontrolünü yeniden aktif et.
+                        </p>
+                        <div class="bg-slate-950 p-4 rounded border border-slate-700 mb-3">
+                            <p class="text-xs text-slate-500 mb-2">Dosya:</p>
+                            <pre class="text-sm text-blue-400"><code>Modules/Muzibu/app/Http/Controllers/Front/HomeController.php</code></pre>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded border border-slate-700">
+                            <p class="text-xs text-slate-500 mb-2">Satır 43'teki comment'i kaldır:</p>
+                            <pre class="text-sm overflow-x-auto"><code class="text-red-400">// ->whereNotNull('hls_path') // GEÇİCİ: HLS hazır değil, MP3 ile çalışıyor</code>
+
+<code class="text-green-400">->whereNotNull('hls_path')</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 3 -->
+            <div class="mb-6 pb-6 border-b border-slate-800">
+                <div class="flex items-start gap-4">
+                    <span class="flex-shrink-0 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
+                        3
+                    </span>
+                    <div class="flex-1">
+                        <h4 class="text-lg font-semibold text-slate-200 mb-3">QueueRefillController'ı Düzelt</h4>
+                        <p class="text-slate-400 mb-4">
+                            Tüm queue refill endpoint'lerinde HLS kontrolünü yeniden aktif et.
+                        </p>
+                        <div class="bg-slate-950 p-4 rounded border border-slate-700 mb-3">
+                            <p class="text-xs text-slate-500 mb-2">Dosya:</p>
+                            <pre class="text-sm text-blue-400"><code>Modules/Muzibu/app/Http/Controllers/Api/QueueRefillController.php</code></pre>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded border border-slate-700">
+                            <p class="text-xs text-slate-500 mb-2">Otomatik Değiştirme Komutu:</p>
+                            <pre class="text-sm text-green-400 overflow-x-auto"><code>sed -i 's|// ->whereNotNull('\''hls_path'\'') // GEÇİCİ.*|->whereNotNull('\''hls_path'\'')|g' \
+  /var/www/vhosts/muzibu.com.tr/httpdocs/Modules/Muzibu/app/Http/Controllers/Api/QueueRefillController.php
+
+sed -i 's|// ->whereNotNull('\''muzibu_songs.hls_path'\'') // GEÇİCİ|->whereNotNull('\''muzibu_songs.hls_path'\'')|g' \
+  /var/www/vhosts/muzibu.com.tr/httpdocs/Modules/Muzibu/app/Http/Controllers/Api/QueueRefillController.php
+
+echo "✅ QueueRefillController güncellendi"</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 4 -->
+            <div class="mb-6 pb-6 border-b border-slate-800">
+                <div class="flex items-start gap-4">
+                    <span class="flex-shrink-0 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
+                        4
+                    </span>
+                    <div class="flex-1">
+                        <h4 class="text-lg font-semibold text-slate-200 mb-3">Cache Temizle</h4>
+                        <p class="text-slate-400 mb-4">
+                            Tüm cache katmanlarını temizle ki değişiklikler hemen yansısın.
+                        </p>
+                        <div class="bg-slate-950 p-4 rounded border border-slate-700">
+                            <p class="text-xs text-slate-500 mb-2">Terminal Komutu:</p>
+                            <pre class="text-sm text-green-400 overflow-x-auto"><code>/opt/plesk/php/8.3/bin/php artisan cache:clear
+/opt/plesk/php/8.3/bin/php artisan view:clear
+/opt/plesk/php/8.3/bin/php artisan responsecache:clear
+curl -s -k https://ixtif.com/opcache-reset.php > /dev/null
+
+echo "✅ Tüm cache temizlendi"</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 5 -->
+            <div class="mb-6">
+                <div class="flex items-start gap-4">
+                    <span class="flex-shrink-0 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
+                        5
+                    </span>
+                    <div class="flex-1">
+                        <h4 class="text-lg font-semibold text-slate-200 mb-3">Test Et</h4>
+                        <p class="text-slate-400 mb-4">
+                            Ana sayfa ve player'ın düzgün çalıştığını doğrula.
+                        </p>
+                        <div class="bg-slate-950 p-4 rounded border border-slate-700">
+                            <p class="text-xs text-slate-500 mb-2">Test Adımları:</p>
+                            <ul class="list-disc list-inside space-y-2 text-sm text-slate-300">
+                                <li>Ana sayfayı aç: <a href="https://muzibu.com.tr/" target="_blank" class="text-blue-400 hover:underline">https://muzibu.com.tr/</a></li>
+                                <li>"Yeni Eklenenler" bölümünde albumler görünüyor mu?</li>
+                                <li>"En Çok Dinlenenler" bölümünde şarkılar görünüyor mu?</li>
+                                <li>Bir şarkı çalmayı dene - HLS stream çalışıyor mu?</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tek Komut (Hepsi Birden) -->
+        <div class="bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-700 rounded-lg p-6 mb-6">
+            <h3 class="text-xl font-bold text-purple-300 mb-4 flex items-center gap-2">
+                <span>⚡</span> Tek Komut (Tüm Adımlar Birden)
+            </h3>
+            <p class="text-slate-300 mb-4">
+                Yukarıdaki tüm adımları tek komutla çalıştır (Adım 1 hariç - HLS kontrolü manuel yapılmalı):
+            </p>
+            <div class="bg-slate-950 p-4 rounded border border-slate-700">
+                <pre class="text-sm text-green-400 overflow-x-auto"><code>#!/bin/bash
+# HLS Kontrollerini Geri Al (Tek Komut)
+
+# 1. HomeController düzelt
+sed -i 's|// ->whereNotNull('\''hls_path'\'') // GEÇİCİ.*|->whereNotNull('\''hls_path'\'')|g' \
+  /var/www/vhosts/muzibu.com.tr/httpdocs/Modules/Muzibu/app/Http/Controllers/Front/HomeController.php
+
+# 2. QueueRefillController düzelt
+sed -i 's|// ->whereNotNull('\''hls_path'\'') // GEÇİCİ.*|->whereNotNull('\''hls_path'\'')|g' \
+  /var/www/vhosts/muzibu.com.tr/httpdocs/Modules/Muzibu/app/Http/Controllers/Api/QueueRefillController.php
+
+sed -i 's|// ->whereNotNull('\''muzibu_songs.hls_path'\'') // GEÇİCİ|->whereNotNull('\''muzibu_songs.hls_path'\'')|g' \
+  /var/www/vhosts/muzibu.com.tr/httpdocs/Modules/Muzibu/app/Http/Controllers/Api/QueueRefillController.php
+
+# 3. Cache temizle
+/opt/plesk/php/8.3/bin/php artisan cache:clear
+/opt/plesk/php/8.3/bin/php artisan view:clear
+/opt/plesk/php/8.3/bin/php artisan responsecache:clear
+curl -s -k https://ixtif.com/opcache-reset.php > /dev/null
+
+echo ""
+echo "✅ HLS kontrolleri geri alındı!"
+echo "✅ Cache temizlendi!"
+echo ""
+echo "📋 Şimdi test et:"
+echo "   https://muzibu.com.tr/"</code></pre>
+            </div>
+            <div class="mt-4 bg-red-900/20 border border-red-700 rounded p-4">
+                <p class="text-sm text-red-400">
+                    <strong>⚠️ UYARI:</strong> Bu komutu çalıştırmadan önce mutlaka Adım 1'deki HLS conversion
+                    kontrolünü yap! HLS'ye çevrilmemiş şarkılar varsa platforma zarar verir.
+                </p>
+            </div>
+        </div>
+
+        <!-- Sonuç Özeti -->
+        <div class="bg-slate-900 border border-slate-700 rounded-lg p-6">
+            <h3 class="text-xl font-bold text-slate-100 mb-4">
+                📊 Özet
+            </h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-950 p-4 rounded border border-slate-800">
+                    <h4 class="font-semibold text-green-400 mb-2">✅ Şu Anda Aktif</h4>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• MP3 ile çalışma modu</li>
+                        <li>• HLS kontrolü devre dışı</li>
+                        <li>• 28,208 şarkı erişilebilir</li>
+                        <li>• Tüm playlist/album görünür</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-950 p-4 rounded border border-slate-800">
+                    <h4 class="font-semibold text-blue-400 mb-2">🎯 Hedef Durum (HLS Sonrası)</h4>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• HLS ile çalışma modu</li>
+                        <li>• HLS kontrolü aktif</li>
+                        <li>• Sadece HLS'li şarkılar görünür</li>
+                        <li>• Daha iyi performans/güvenlik</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-8 pt-6 border-t border-slate-800 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu</p>
+            <p class="mt-1">8 Ocak 2026 - Muzibu Music Platform</p>
+        </footer>
+    </div>
+</body>
+</html>

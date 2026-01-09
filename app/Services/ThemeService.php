@@ -73,6 +73,36 @@ class ThemeService
                 }
             }
 
+            // 🔥 CENTRAL DOMAIN: Tenant yüklenmediyse ama domain database'de varsa
+            // (Merkezi domain için tema yükleme - muzibu.com.tr gibi)
+            if (!tenant() && request()) {
+                $host = request()->getHost();
+                // www prefix'i kaldır
+                $host = preg_replace('/^www\./', '', $host);
+
+                // Domain'e göre tenant ve tema bul
+                $cacheKey = "theme:central_domain_{$host}";
+                $theme = $cache->remember($cacheKey, now()->addHours(1), function() use ($host) {
+                    // Domain'i bul ve tenant'ını çek
+                    $domain = \Stancl\Tenancy\Database\Models\Domain::with('tenant')
+                        ->where('domain', $host)
+                        ->first();
+
+                    if ($domain && $domain->tenant && $domain->tenant->theme_id) {
+                        return Theme::on('mysql')
+                            ->where('theme_id', $domain->tenant->theme_id)
+                            ->where('is_active', true)
+                            ->first();
+                    }
+
+                    return null;
+                });
+
+                if ($theme) {
+                    return $theme;
+                }
+            }
+
             // Default tema cache - Repository ile uyumlu
             $cacheKey = 'theme:default';
 
@@ -82,14 +112,14 @@ class ThemeService
                     ->where('is_default', true)
                     ->where('is_active', true)
                     ->first();
-                
+
                 if (!$theme) {
                     // Herhangi bir aktif tema ara
                     $theme = Theme::on('mysql')
                         ->where('is_active', true)
                         ->first();
                 }
-                
+
                 if (!$theme) {
                     // Emergency fallback tema oluştur
                     return (object) [
@@ -102,13 +132,13 @@ class ThemeService
                         'updated_at' => now()
                     ];
                 }
-                
+
                 return $theme;
             });
-            
+
         } catch (\Exception $e) {
             Log::error('ThemeService error: ' . $e->getMessage());
-            
+
             // Emergency fallback
             return (object) [
                 'id' => 0,

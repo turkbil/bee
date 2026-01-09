@@ -9,7 +9,7 @@ class RadioController extends Controller
 {
     public function index()
     {
-        // Only show radios with at least 1 active playlist (that has active songs) - alfabetik sıralı
+        // Show all active radios with playlists (alfabetik sıralı)
         $radios = Radio::with('logoMedia')
             ->where('is_active', 1)
             ->whereHas('playlists', function($q) {

@@ -24,26 +24,17 @@ class DeviceService
     /**
      * Servis çalışmalı mı?
      *
-     * 🔴 GEÇİCİ DEVRE DIŞI - Kullanıcı isteği ile kapatıldı (2025-12-26)
-     * Tekrar açmak için: return false; satırını kaldır
+     * Session kayıtları için aktif (limit kontrolü YOK - 08.01.2026)
      */
     public function shouldRun(): bool
     {
-        // 🔴 GEÇİCİ: Device limit sistemi tamamen devre dışı
-        return false;
-
         $tenant = tenant();
         if (!$tenant) {
             return false;
         }
 
-        // Abonelik sistemi kapalıysa device limit de çalışmasın
-        if (!setting('auth_subscription', false)) {
-            return false;
-        }
-
-        // Device limit özelliği kapatılmışsa çalışmasın (auth_device setting key)
-        return (bool) setting('auth_device', false);
+        // Session kayıtlarını her zaman tut
+        return true;
     }
 
     /**
@@ -66,7 +57,7 @@ class DeviceService
         }
 
         $agent = new Agent();
-        $lifetime = (int) setting('auth_session_lifetime', 525600); // Varsayılan 1 yıl (panelden override)
+        $lifetime = (int) setting('auth_session_lifetime', env('SESSION_LIFETIME', 525600)); // .env'den çek, yoksa 1 yıl (08.01.2026)
         $cookieName = 'mzb_login_token';
 
         // 🔥 1. AYNI TARAYICI MI? Cookie kontrolü
@@ -103,60 +94,17 @@ class DeviceService
             }
         }
 
-        // 🔥 2. FARKLI TARAYICI - DISTRIBUTED LOCK + LIFO
+        // 🔥 2. FARKLI TARAYICI - Yeni session oluştur (LIMIT KONTROLÜ YOK - 08.01.2026)
         $lock = Cache::lock("user_login:{$user->id}", 10);
 
         if (!$lock->get()) {
             \Log::warning('🔐 LOCK: Başka login işlemi devam ediyor', ['user_id' => $user->id]);
-            // Lock alınamadı - yine de devam et (ama log'la)
+            // Lock alınamadı - yine de devam et
         }
 
         try {
-            $limit = $this->getDeviceLimit($user);
-            $existingSessions = DB::table($this->table)
-                ->where('user_id', $user->id)
-                ->orderBy('last_activity', 'asc') // En eski önce
-                ->get();
-
-            // Limit aşıldıysa sadece fazla olan kadar session sil (LIFO - en eski önce)
-            // 🛡️ FIX: Aktif playback olan session'ları koruyalım (son 5 dakikada activity varsa)
-            $existingCount = $existingSessions->count();
-            $overLimit = max(0, $existingCount - $limit + 1); // yeni cihaz için yer aç
-
-            if ($overLimit > 0) {
-                $fiveMinutesAgo = now()->subMinutes(5);
-
-                // 🎵 Aktif playback olan session'ları filtrele (last_activity < 5 dakika önce)
-                $activeSessions = $existingSessions->filter(function($session) use ($fiveMinutesAgo) {
-                    return $session->last_activity > $fiveMinutesAgo;
-                });
-
-                // İnactive session'ları bul (silmeye aday)
-                $inactiveSessions = $existingSessions->filter(function($session) use ($fiveMinutesAgo) {
-                    return $session->last_activity <= $fiveMinutesAgo;
-                });
-
-                // Önce inactive olanları sil, yetmezse active'den sil
-                $sessionsToRemove = $inactiveSessions->take($overLimit);
-                $remaining = $overLimit - $sessionsToRemove->count();
-
-                if ($remaining > 0) {
-                    // İnactive yetmedi, active'den de silmek zorundayız
-                    $sessionsToRemove = $sessionsToRemove->merge($activeSessions->take($remaining));
-
-                    \Log::warning('🚨 LIFO: Active playback session silindi (limit aşıldı)', [
-                        'user_id' => $user->id,
-                        'active_count' => $activeSessions->count(),
-                        'limit' => $limit,
-                    ]);
-                }
-
-                foreach ($sessionsToRemove as $oldSession) {
-                    $this->terminateSessionAtomicByRow($oldSession, 'lifo', $user);
-                }
-            }
-
-            // 🔥 3. YENİ SESSION OLUŞTUR
+            // Limit kontrolü ve LIFO kaldırıldı - Sadece kayıt tut
+            // 🔥 YENİ SESSION OLUŞTUR
             $loginToken = bin2hex(random_bytes(32)); // 64 char hex
 
             DB::table($this->table)->insert([

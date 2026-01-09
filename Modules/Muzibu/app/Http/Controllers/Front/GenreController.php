@@ -11,15 +11,16 @@ class GenreController extends Controller
 {
     public function index()
     {
-        // Only show genres with at least 1 active playlist (alfabetik sıralı)
+        // Show all active genres (alfabetik sıralı)
+        // TODO: whereHas('playlists') eklenecek (genre playlistables import edilince)
         $genres = Genre::with('iconMedia')
             ->where('is_active', 1)
-            ->whereHas('playlists', function($q) {
-                $q->where('is_active', 1)
-                  ->whereHas('songs', function($sq) {
-                      $sq->where('is_active', 1);
-                  });
-            })
+            // ->whereHas('playlists', function($q) {
+            //     $q->where('is_active', 1)
+            //       ->whereHas('songs', function($sq) {
+            //           $sq->where('is_active', 1);
+            //       });
+            // })
             ->withCount(['playlists' => function($q) {
                 $q->where('is_active', 1)
                   ->whereHas('songs', function($sq) {

@@ -108,30 +108,51 @@
         </div>
 
         {{-- CTA Section --}}
-        @if(!$userCorporate)
-            <div class="grid md:grid-cols-2 gap-6">
+        @guest
+            {{-- Not Logged In --}}
+            <div class="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-2xl p-8 text-center max-w-2xl mx-auto">
+                <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-user-lock text-white text-3xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white mb-3">Giriş Yapmanız Gerekiyor</h2>
+                <p class="text-gray-400 mb-6">
+                    Kurumsal hesap oluşturmak veya mevcut bir hesaba katılmak için önce giriş yapmalısınız.
+                </p>
+                <div class="flex gap-3 justify-center">
+                    <a href="/login" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold rounded-xl transition">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Giriş Yap
+                    </a>
+                    <a href="/register" class="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl transition">
+                        <i class="fas fa-user-plus mr-2"></i>Kayıt Ol
+                    </a>
+                </div>
+            </div>
+        @else
+            @if(!$userCorporate)
+                <div class="grid md:grid-cols-2 gap-6">
                 {{-- Join with Code --}}
                 <div class="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-2xl p-8">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="w-14 h-14 bg-green-500/20 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-link text-green-400 text-2xl"></i>
+                    <div class="text-center mb-6">
+                        <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-sign-in-alt text-white text-xl"></i>
                         </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-white">{{ __('muzibu::front.corporate.join_with_code') }}</h3>
-                            <p class="text-green-300 text-sm">{{ __('muzibu::front.corporate.enter_company_code') }}</p>
-                        </div>
+                        <h2 class="text-xl font-bold text-white mb-1">{{ __('muzibu::front.corporate.join_with_code') }}</h2>
+                        <p class="text-gray-400 text-sm">{{ __('muzibu::front.corporate.enter_company_code') }}</p>
                     </div>
-                    <form action="/corporate/join" method="POST" @submit.prevent="joinWithCode()" class="space-y-4">
-                        @csrf
+                    <form @submit.prevent="joinWithCode()" class="space-y-4">
                         <div>
-                            <input type="text" x-model="code" name="corporate_code"
-                                   placeholder="{{ __('muzibu::front.corporate.code_placeholder') }}"
+                            <label class="block text-sm text-gray-400 mb-2">Davet Kodu</label>
+                            <input type="text" x-model="code"
+                                   placeholder="ABCD1234"
                                    maxlength="8"
-                                   class="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-green-500 uppercase tracking-widest font-mono text-lg text-center"
-                                   @input="code = $event.target.value.toUpperCase()">
+                                   class="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-green-500 uppercase tracking-widest font-mono text-xl text-center"
+                                   @input="code = $event.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '')">
+                            <p class="text-xs text-gray-500 mt-2 text-center">
+                                <span x-text="code.length"></span>/8 karakter
+                            </p>
                         </div>
                         <button type="submit" :disabled="code.length !== 8 || loading"
-                                class="w-full py-3 bg-green-500 hover:bg-green-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition">
+                                class="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition">
                             <span x-show="!loading"><i class="fas fa-arrow-right mr-2"></i>{{ __('muzibu::front.corporate.join') }}</span>
                             <span x-show="loading"><i class="fas fa-spinner fa-spin mr-2"></i>{{ __('muzibu::front.corporate.checking') }}</span>
                         </button>
@@ -140,24 +161,57 @@
 
                 {{-- Become Corporate --}}
                 <div class="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-2xl p-8">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="w-14 h-14 bg-purple-500/20 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-building text-purple-400 text-2xl"></i>
+                    <div class="text-center mb-6">
+                        <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-crown text-yellow-400 text-xl"></i>
+                        </div>
+                        <h2 class="text-xl font-bold text-white mb-1">{{ __('muzibu::front.corporate.create_corporate') }}</h2>
+                        <p class="text-gray-400 text-sm">{{ __('muzibu::front.corporate.apply_for_company') }}</p>
+                    </div>
+                    <form @submit.prevent="createCorporate()" class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Sirket / Isletme Adi</label>
+                            <input type="text" x-model="companyName"
+                                   placeholder="Ornek Teknoloji A.S."
+                                   maxlength="100"
+                                   class="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500">
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-white">{{ __('muzibu::front.corporate.create_corporate') }}</h3>
-                            <p class="text-purple-300 text-sm">{{ __('muzibu::front.corporate.apply_for_company') }}</p>
+                            <label class="block text-sm text-gray-400 mb-2">Kurumsal Kodunuz <span class="text-purple-400">(siz belirleyin)</span></label>
+                            <div class="relative">
+                                <input type="text" x-model="createCode"
+                                       @input="createCode = $event.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8); validateCreateCode()"
+                                       placeholder="FIRMA001"
+                                       maxlength="8"
+                                       class="w-full px-4 py-3 pr-12 bg-white/5 border rounded-xl text-white placeholder-gray-500 focus:outline-none uppercase tracking-widest font-mono text-xl text-center"
+                                       :class="codeError ? 'border-red-500' : (codeAvailable === true ? 'border-green-500' : 'border-white/20 focus:border-purple-500')">
+                                <div class="absolute right-3 top-1/2 -translate-y-1/2">
+                                    <i x-show="checkingCode" class="fas fa-spinner fa-spin text-gray-400"></i>
+                                    <i x-show="!checkingCode && codeAvailable === true" class="fas fa-check-circle text-green-400"></i>
+                                    <i x-show="!checkingCode && codeAvailable === false" class="fas fa-times-circle text-red-400"></i>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center mt-2">
+                                <p class="text-xs" :class="codeAvailable === true ? 'text-green-400' : 'text-gray-500'">
+                                    <span x-text="createCode.length"></span>/8 karakter
+                                    <span x-show="codeAvailable === true" class="text-green-400 ml-1">- Uygun!</span>
+                                </p>
+                                <p x-show="codeError" x-text="codeError" class="text-red-400 text-xs"></p>
+                            </div>
+                            <p class="text-xs text-purple-400 mt-1">
+                                <i class="fas fa-info-circle mr-1"></i>Bu kod ile calisanlariniz size katilabilir
+                            </p>
                         </div>
-                    </div>
-                    <p class="text-gray-400 mb-6">
-                        {{ __('muzibu::front.corporate.create_corporate_desc') }}
-                    </p>
-                    <a href="mailto:kurumsal@muzibu.com.tr" class="block w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold rounded-xl text-center transition">
-                        <i class="fas fa-envelope mr-2"></i>{{ __('muzibu::front.corporate.contact_us') }}
-                    </a>
+                        <button type="submit" :disabled="companyName.length < 2 || !createCodeValid || creating"
+                                class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition">
+                            <span x-show="!creating"><i class="fas fa-crown mr-2"></i>{{ __('muzibu::front.corporate.create_corporate') }}</span>
+                            <span x-show="creating"><i class="fas fa-spinner fa-spin mr-2"></i>Olusturuluyor...</span>
+                        </button>
+                    </form>
                 </div>
             </div>
-        @endif
+            @endif
+        @endguest
 
     </div>
 </div>
@@ -166,8 +220,22 @@
 <script>
 function corporateIndexApp() {
     return {
+        // Join with code
         code: '',
         loading: false,
+
+        // Create corporate
+        companyName: '',
+        createCode: '',
+        creating: false,
+        codeAvailable: null,
+        codeError: '',
+        checkingCode: false,
+        checkCodeTimer: null,
+
+        get createCodeValid() {
+            return this.createCode.length === 8 && this.codeAvailable === true;
+        },
 
         async joinWithCode() {
             if (this.code.length !== 8) return;
@@ -201,10 +269,86 @@ function corporateIndexApp() {
                 }
             } catch (error) {
                 window.dispatchEvent(new CustomEvent('toast', {
-                    detail: { message: '{{ __('muzibu::front.corporate.error_occurred') }}', type: 'error' }
+                    detail: { message: 'Bir hata oluştu', type: 'error' }
                 }));
             } finally {
                 this.loading = false;
+            }
+        },
+
+        validateCreateCode() {
+            if (this.createCode.length !== 8) {
+                this.codeAvailable = null;
+                this.codeError = '';
+                return;
+            }
+
+            // Debounce: 500ms bekle
+            clearTimeout(this.checkCodeTimer);
+            this.checkingCode = true;
+            this.codeError = '';
+
+            this.checkCodeTimer = setTimeout(async () => {
+                try {
+                    const response = await fetch('/api/corporate/check-code?code=' + this.createCode, {
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    this.codeAvailable = data.available;
+                    this.codeError = data.available ? '' : 'Bu kod zaten kullanımda';
+                } catch (error) {
+                    this.codeError = 'Kontrol edilemedi';
+                    this.codeAvailable = null;
+                } finally {
+                    this.checkingCode = false;
+                }
+            }, 500);
+        },
+
+        async createCorporate() {
+            if (this.companyName.length < 2 || !this.createCodeValid) return;
+
+            this.creating = true;
+
+            try {
+                const response = await fetch('/api/corporate/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        company_name: this.companyName,
+                        corporate_code: this.createCode
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    window.dispatchEvent(new CustomEvent('toast', {
+                        detail: { message: data.message, type: 'success' }
+                    }));
+                    setTimeout(() => {
+                        window.location.href = data.redirect || '/corporate/dashboard';
+                    }, 1000);
+                } else {
+                    window.dispatchEvent(new CustomEvent('toast', {
+                        detail: { message: data.message, type: 'error' }
+                    }));
+                }
+            } catch (error) {
+                window.dispatchEvent(new CustomEvent('toast', {
+                    detail: { message: 'Bir hata oluştu', type: 'error' }
+                }));
+            } finally {
+                this.creating = false;
             }
         }
     }

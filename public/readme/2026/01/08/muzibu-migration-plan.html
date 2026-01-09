@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Veri Taşıma Planı v2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        .gradient-header { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+    </style>
+</head>
+<body class="bg-slate-900 text-white">
+
+    <header class="gradient-header border-b border-slate-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-white">🎵 Muzibu Veri Taşıma Planı v2</h1>
+                    <p class="text-slate-400 mt-2">muzibu.com → muzibu.com.tr (Detaylı Karşılaştırma)</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-slate-400">8 Ocak 2026</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-12 space-y-8">
+
+        <section class="bg-green-900/20 border border-green-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-green-400 mb-4">📝 Basit Anlatım</h2>
+            <div class="space-y-4 text-slate-300">
+                <p class="text-lg">
+                    <strong>Ne yapacağız?</strong><br>
+                    Eski Muzibu sitesinden (muzibu.com) şarkı, albüm, sanatçı verilerini yeni siteye (muzibu.com.tr) taşıyacağız.
+                </p>
+                <p class="text-lg"><strong>Ana Farklar:</strong></p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li><strong>Tek Dil → Çoklu Dil:</strong> title_tr → {"tr": "...", "en": "..."}</li>
+                    <li><strong>Thumb → Media ID:</strong> Görseller media tablosunda</li>
+                    <li><strong>Playlistables:</strong> 3 pivot tablo → 1 polymorphic tablo</li>
+                    <li><strong>Song Plays:</strong> Basit tracking → Detaylı tracking (browser, platform, session)</li>
+                    <li><strong>Moods:</strong> Eski sistemde var, yeni sistemde YOK!</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="bg-blue-900/20 border border-blue-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-blue-400 mb-4">🔢 Import Sırası (5 Grup)</h2>
+            <div class="space-y-3">
+                <div class="bg-slate-800 p-4 rounded">
+                    <strong class="text-lg">1️⃣ GRUP 1 (Bağımlılık yok)</strong>
+                    <p class="text-slate-300 mt-2">Genres, Artists, Sectors</p>
+                </div>
+                <div class="bg-slate-800 p-4 rounded">
+                    <strong class="text-lg">2️⃣ GRUP 2 (Artist'e bağımlı)</strong>
+                    <p class="text-slate-300 mt-2">Albums (artist_id mapping gerekli)</p>
+                </div>
+                <div class="bg-slate-800 p-4 rounded">
+                    <strong class="text-lg">3️⃣ GRUP 3 (Album + Genre'ye bağımlı)</strong>
+                    <p class="text-slate-300 mt-2">Songs (album_id + genre_id mapping)</p>
+                </div>
+                <div class="bg-slate-800 p-4 rounded">
+                    <strong class="text-lg">4️⃣ GRUP 4 (Playlist sistemi)</strong>
+                    <p class="text-slate-300 mt-2">Radios, Playlists, Playlistables</p>
+                </div>
+                <div class="bg-slate-800 p-4 rounded">
+                    <strong class="text-lg">5️⃣ GRUP 5 (Kullanıcı ilişkileri)</strong>
+                    <p class="text-slate-300 mt-2">Favorites, Playlist Favorites, Song Plays</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-purple-900/20 border border-purple-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-purple-400 mb-4">🔄 Detaylı Field Dönüşümleri</h2>
+
+            <div class="space-y-6">
+
+                <div class="bg-slate-800 p-5 rounded-lg">
+                    <h3 class="text-xl font-semibold text-white mb-3">👤 ARTISTS (Sanatçılar)</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm font-semibold text-red-400 mb-2">❌ ESKİ</p>
+                            <div class="bg-slate-900 p-3 rounded text-xs font-mono space-y-1">
+                                <div>id, title_tr, slug, bio_tr</div>
+                                <div>thumb, created, active</div>
+                                <div>meta_title, meta_keywords, meta_description</div>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-green-400 mb-2">✅ YENİ</p>
+                            <div class="bg-slate-900 p-3 rounded text-xs font-mono space-y-1">
+                                <div>artist_id, title (JSON), slug (JSON)</div>
+                                <div>bio (JSON), media_id (FK→media)</div>
+                                <div>is_active, created_at, updated_at, deleted_at</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-yellow-900/30 border border-yellow-800 p-3 rounded mt-3">
+                        <p class="text-sm font-semibold text-yellow-400">🔄 Dönüşüm:</p>
+                        <ul class="text-xs space-y-1 mt-2 ml-4 list-disc list-inside text-slate-300">
+                            <li>title_tr → title: {"tr": title_tr, "en": title_tr}</li>
+                            <li>slug → slug: {"tr": slug, "en": slug}</li>
+                            <li>bio_tr → bio: {"tr": bio_tr, "en": ""}</li>
+                            <li>thumb → media_id: NULL (görseller sonra yüklenecek)</li>
+                            <li>meta_* → SİLİNECEK</li>
+                            <li>active → is_active (1=true, 0=false)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-5 rounded-lg">
+                    <h3 class="text-xl font-semibold text-white mb-3">💿 ALBUMS (Albümler)</h3>
+                    <p class="text-sm text-slate-300">Artist ile aynı pattern + <strong>artist_id mapping gerekli</strong></p>
+                    <div class="bg-yellow-900/30 border border-yellow-800 p-3 rounded mt-3">
+                        <code class="text-xs text-yellow-300">$albumMapping[old_album_id] = new_album_id;</code>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-5 rounded-lg">
+                    <h3 class="text-xl font-semibold text-white mb-3">🎸 GENRES (Türler)</h3>
+                    <p class="text-sm text-slate-300">Artist ile aynı pattern (bağımlılık yok)</p>
+                </div>
+
+                <div class="bg-slate-800 p-5 rounded-lg">
+                    <h3 class="text-xl font-semibold text-white mb-3">🎵 SONGS (Şarkılar) - EN KARMAŞIK!</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm font-semibold text-red-400 mb-2">❌ ESKİ</p>
+                            <div class="bg-slate-900 p-3 rounded text-xs font-mono space-y-1">
+                                <div>id, title_tr, slug</div>
+                                <div>album_id, genre_id, duration</div>
+                                <div>file_path, lyrics_tr</div>
+                                <div>is_featured, play_count</div>
+                                <div class="text-red-400">❌ thumb field YOK!</div>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-green-400 mb-2">✅ YENİ</p>
+                            <div class="bg-slate-900 p-3 rounded text-xs font-mono space-y-1">
+                                <div>song_id, title (JSON), slug (JSON)</div>
+                                <div>album_id, genre_id, duration</div>
+                                <div>file_path, lyrics (JSON), media_id</div>
+                                <div>hls_path, hls_converted, bitrate</div>
+                                <div>color_hash, play_count</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-red-900/30 border border-red-800 p-3 rounded mt-3">
+                        <p class="text-sm font-semibold text-red-400">⚠️ KRİTİK - ŞARKI GÖRSELİ YOK!</p>
+                        <p class="text-xs text-red-300 mt-2">
+                            Eski sistemde şarkılarda <strong>kendi görseli yok!</strong> Albüm kapağı kullanılıyor.<br>
+                            media_id = NULL olarak import edilecek, frontend albüm kapağı gösterecek.
+                        </p>
+                    </div>
+                    <div class="bg-yellow-900/30 border border-yellow-800 p-3 rounded mt-3">
+                        <p class="text-sm font-semibold text-yellow-400">🔄 Dönüşüm:</p>
+                        <ul class="text-xs space-y-1 mt-2 ml-4 list-disc list-inside text-slate-300">
+                            <li>album_id → $albumMapping[old_id]</li>
+                            <li>genre_id → $genreMapping[old_id]</li>
+                            <li>file_path → Kopyala: muzibu/songs/{new_song_id}.mp3</li>
+                            <li>lyrics_tr → lyrics: {"tr": lyrics_tr, "en": ""}</li>
+                            <li>media_id → NULL</li>
+                            <li>hls_path, hls_converted, bitrate, color_hash → NULL</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-5 rounded-lg">
+                    <h3 class="text-xl font-semibold text-white mb-3">🏢 SECTORS (Sektörler)</h3>
+                    <p class="text-sm text-slate-300">Artist ile aynı pattern</p>
+                </div>
+
+                <div class="bg-slate-800 p-5 rounded-lg">
+                    <h3 class="text-xl font-semibold text-white mb-3">📱 PLAYLISTS (Çalma Listeleri)</h3>
+                    <div class="text-sm text-slate-300 space-y-2">
+                        <p>system → is_system (0=kullanıcı, 1=sistem playlist'i)</p>
+                        <p><strong>radio field KALDIRILDI!</strong> Artık Radio'lar ayrı tablo</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-5 rounded-lg">
+                    <h3 class="text-xl font-semibold text-white mb-3">📻 RADIOS (Radyo İstasyonları) - YENİ TABLO!</h3>
+                    <div class="bg-green-900/30 border border-green-800 p-3 rounded">
+                        <p class="text-sm font-semibold text-green-400">✅ YENİ SİSTEMDE AYRI TABLO!</p>
+                        <p class="text-xs text-slate-300 mt-2">
+                            Eski: <code>SELECT * FROM playlists WHERE radio=1</code><br>
+                            Yeni: <code>muzibu_radios</code> ayrı tablo
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-5 rounded-lg">
+                    <h3 class="text-xl font-semibold text-white mb-3">🔗 PLAYLISTABLES (Polymorphic İlişki) - YENİ!</h3>
+                    <div class="bg-purple-900/30 border border-purple-800 p-3 rounded">
+                        <p class="text-sm font-semibold text-purple-400">🚀 3 AYRI TABLO → 1 POLYMORPHİC TABLO</p>
+                        <div class="text-xs text-slate-300 mt-2 space-y-1">
+                            <p>Eski: playlist_sector, playlist_radio, playlist_song</p>
+                            <p>Yeni: playlistables (tek tablo)</p>
+                        </div>
+                    </div>
+                    <div class="bg-yellow-900/30 border border-yellow-800 p-3 rounded mt-3">
+                        <p class="text-sm font-semibold text-yellow-400">🔄 Dönüşüm:</p>
+                        <ul class="text-xs space-y-1 mt-2 ml-4 list-disc list-inside text-slate-300">
+                            <li>playlist_sector → playlistable_type: 'sector', playlistable_id: sector_id</li>
+                            <li>playlist_radio → playlistable_type: 'radio', playlistable_id: radio_id</li>
+                            <li>playlist_song → playlistable_type: 'song', playlistable_id: song_id, position</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-5 rounded-lg">
+                    <h3 class="text-xl font-semibold text-white mb-3">📊 SONG_PLAYS (Dinleme Kayıtları) - ÇOK DEĞİŞTİ!</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm font-semibold text-red-400 mb-2">❌ ESKİ (basit)</p>
+                            <div class="bg-slate-900 p-3 rounded text-xs font-mono space-y-1">
+                                <div>user_id, song_id</div>
+                                <div>ip_address, created</div>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-green-400 mb-2">✅ YENİ (detaylı)</p>
+                            <div class="bg-slate-900 p-3 rounded text-xs font-mono space-y-1">
+                                <div>+ device_type, browser, platform</div>
+                                <div>+ session_id, started_at, ended_at</div>
+                                <div>+ duration_played, completed</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-red-900/30 border border-red-800 p-3 rounded mt-3">
+                        <p class="text-sm font-semibold text-red-400">⚠️ Yeni field'lar NULL olacak (eski veri basit)</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-5 rounded-lg">
+                    <h3 class="text-xl font-semibold text-white mb-3">😊 MOODS (Ruh Halleri) - SİLİNDİ!</h3>
+                    <div class="bg-red-900/40 border border-red-700 p-4 rounded">
+                        <p class="text-sm font-semibold text-red-300">❌ YENİ SİSTEMDE YOK!</p>
+                        <p class="text-xs text-slate-300 mt-2">
+                            Eski: muzibu_moods, song_mood<br>
+                            Yeni: Bu feature kaldırıldı<br>
+                            <strong>Sonuç:</strong> Import edilmeyecek
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-5 rounded-lg">
+                    <h3 class="text-xl font-semibold text-white mb-3">❤️ FAVORITES (Favoriler) - AYNI YAPI</h3>
+                    <p class="text-sm text-green-400">✅ Neredeyse aynı! Sadece created → created_at</p>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="bg-red-900/20 border border-red-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-red-400 mb-4">⚠️ Kritik Notlar & Uyarılar</h2>
+            <div class="space-y-3 text-slate-300">
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">🚫</span>
+                    <div>
+                        <strong class="text-red-400">BACKUP ZORUNLU!</strong><br>
+                        <span class="text-sm">İşlem öncesi her iki database'in backup'ını al!</span>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">🔢</span>
+                    <div>
+                        <strong class="text-red-400">ID MAPPING ZORUNLU!</strong><br>
+                        <span class="text-sm">Her tablo için ID mapping array'i tut: $artistMapping[old_id] = new_id</span>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">📷</span>
+                    <div>
+                        <strong class="text-red-400">GÖRSELLERİ SIL, YENİDEN YÜKLE!</strong><br>
+                        <span class="text-sm">media_id = NULL olacak. Görseller admin panelden manuel yüklenecek.</span>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">🎵</span>
+                    <div>
+                        <strong class="text-red-400">ŞARKI DOSYALARI!</strong><br>
+                        <span class="text-sm">Eski path → storage/tenant1001/app/public/muzibu/songs/{song_id}.mp3</span>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">😊</span>
+                    <div>
+                        <strong class="text-red-400">MOODS SİSTEMİ SİLİNDİ!</strong><br>
+                        <span class="text-sm">Import edilmeyecek (yeni sistemde yok)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-cyan-900/20 border border-cyan-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-cyan-400 mb-4">➡️ Sonraki Adım: Import Script Yazmaya Hazır</h2>
+            <div class="space-y-4 text-slate-300">
+                <p>Artık eski ve yeni tablo yapısını <strong>detaylıca</strong> biliyoruz.</p>
+                <p><strong>Hazırız! Laravel Artisan Command yazabiliriz.</strong></p>
+                <div class="bg-green-900/30 border border-green-800 p-3 rounded mt-4">
+                    <p class="font-semibold text-green-400">✅ Gerekli Bilgiler:</p>
+                    <ul class="text-xs mt-2 space-y-1 list-disc list-inside">
+                        <li>Eski database credentials (host, user, pass, database)</li>
+                        <li>Eski şarkı dosyalarının path'i</li>
+                        <li>Örnek kayıtlar (test için)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-800 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-slate-400">
+            <p class="text-sm">
+                🤖 <strong>Claude AI</strong> tarafından oluşturuldu<br>
+                📅 8 Ocak 2026 | 📍 muzibu.com.tr (Tenant 1001)
+            </p>
+            <p class="text-xs mt-2 text-slate-500">v2 - Detaylı Field Karşılaştırması</p>
+        </div>
+    </footer>
+
+</body>
+</html>

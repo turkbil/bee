@@ -3244,10 +3244,7 @@ function muzibuApp() {
                     } : null
                 });
 
-                // 🔍 MOBILE DEBUG: Toast ile debug (sadece root kullanıcılar)
-                if (this.currentUser?.is_root) {
-                    this.showToast(`🔍 store:${muzibuStore ? 'OK' : 'YOK!'} album:${albumId || '-'} genre:${genreId || '-'} ctx:${currentContext ? 'var' : 'yok'}`, 'info');
-                }
+                // Debug toast removed (production mode)
 
                 // 🎵 Tek şarkı çalınırken HER ZAMAN context güncelle (radyo sonrası queue görünsün)
                 // Priority: Album → Genre → Song

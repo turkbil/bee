@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use App\Services\Media\LeonardoAIService;
+use Modules\Muzibu\App\Services\MuzibuLeonardoAIService;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -95,8 +95,8 @@ class GenerateGenericMuzibyCover implements ShouldQueue
                 'prompt' => $prompt,
             ]);
 
-            // Leonardo AI ile görsel üret (serbest hayal gücü modu)
-            $leonardo = app(LeonardoAIService::class);
+            // Muzibu Leonardo AI ile görsel üret (müzik platformu optimized!)
+            $leonardo = app(MuzibuLeonardoAIService::class);
             $imageData = $leonardo->generateFreeImagination($prompt, [
                 'width' => 1472,
                 'height' => 832,

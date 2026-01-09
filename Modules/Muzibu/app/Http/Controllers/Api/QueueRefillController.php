@@ -195,7 +195,7 @@ class QueueRefillController extends Controller
 
             return $genre->songs()
                 ->where('is_active', 1)
-                ->whereNotNull('hls_path')
+                // ->whereNotNull('hls_path') // GEÇİCİ: HLS hazır değil, file_path ile çalışıyor
                 ->pluck('song_id')
                 ->toArray();
         });
@@ -224,7 +224,7 @@ class QueueRefillController extends Controller
         $albumSongIds = \Cache::remember($cacheKey, 300, function () use ($album) {
             return $album->songs()
                 ->where('is_active', 1)
-                ->whereNotNull('hls_path')
+                // ->whereNotNull('hls_path') // GEÇİCİ: HLS hazır değil, file_path ile çalışıyor
                 ->pluck('song_id')
                 ->toArray();
         });
@@ -294,7 +294,7 @@ class QueueRefillController extends Controller
                 ->where('playlist_id', $playlistId)
                 ->join('muzibu_songs', 'muzibu_playlist_song.song_id', '=', 'muzibu_songs.song_id')
                 ->where('muzibu_songs.is_active', 1)
-                ->whereNotNull('muzibu_songs.hls_path')
+                // ->whereNotNull('muzibu_songs.hls_path') // GEÇİCİ
                 ->pluck('muzibu_playlist_song.song_id')
                 ->toArray();
         });
@@ -367,7 +367,7 @@ class QueueRefillController extends Controller
             ->where('playlist_id', $playlistId)
             ->join('muzibu_songs', 'muzibu_playlist_song.song_id', '=', 'muzibu_songs.song_id')
             ->where('muzibu_songs.is_active', 1)
-            ->whereNotNull('muzibu_songs.hls_path')
+            // ->whereNotNull('muzibu_songs.hls_path') // GEÇİCİ
             ->when(!empty($excludeSongIds), function ($query) use ($excludeSongIds) {
                 $query->whereNotIn('muzibu_playlist_song.song_id', $excludeSongIds);
             })
@@ -443,7 +443,7 @@ class QueueRefillController extends Controller
 
             return Song::whereIn('song_id', $pivotIds)
                 ->where('is_active', 1)
-                ->whereNotNull('hls_path')
+                // ->whereNotNull('hls_path') // GEÇİCİ: HLS hazır değil, file_path ile çalışıyor
                 ->pluck('song_id')
                 ->toArray();
         });
@@ -481,7 +481,7 @@ class QueueRefillController extends Controller
 
             return Song::whereIn('song_id', $pivotIds)
                 ->where('is_active', 1)
-                ->whereNotNull('hls_path')
+                // ->whereNotNull('hls_path') // GEÇİCİ: HLS hazır değil, file_path ile çalışıyor
                 ->pluck('song_id')
                 ->toArray();
         });
@@ -506,7 +506,7 @@ class QueueRefillController extends Controller
         $cacheKey = 'popular_song_ids_top100';
         $popularSongIds = \Cache::remember($cacheKey, 300, function () {
             return Song::where('is_active', 1)
-                ->whereNotNull('hls_path')
+                // ->whereNotNull('hls_path') // GEÇİCİ: HLS hazır değil, file_path ile çalışıyor
                 ->orderBy('play_count', 'desc')
                 ->take(100)
                 ->pluck('song_id')
@@ -558,7 +558,7 @@ class QueueRefillController extends Controller
         $cacheKey = 'recent_song_ids_200';
         $recentSongIds = \Cache::remember($cacheKey, 300, function () {
             return Song::where('is_active', 1)
-                ->whereNotNull('hls_path')
+                // ->whereNotNull('hls_path') // GEÇİCİ: HLS hazır değil, file_path ile çalışıyor
                 ->orderBy('created_at', 'desc')
                 ->take(200)
                 ->pluck('song_id')
@@ -593,7 +593,7 @@ class QueueRefillController extends Controller
             ->where('favoritable_type', Song::class)
             ->join('muzibu_songs', 'favorites.favoritable_id', '=', 'muzibu_songs.song_id')
             ->where('muzibu_songs.is_active', 1)
-            ->whereNotNull('muzibu_songs.hls_path')
+            // ->whereNotNull('muzibu_songs.hls_path') // GEÇİCİ
             ->when(!empty($excludeSongIds), function ($query) use ($excludeSongIds) {
                 $query->whereNotIn('favorites.favoritable_id', $excludeSongIds);
             })
@@ -665,7 +665,7 @@ class QueueRefillController extends Controller
                     $query->where('artist_id', $artistId);
                 })
                 ->where('is_active', 1)
-                ->whereNotNull('hls_path')
+                // ->whereNotNull('hls_path') // GEÇİCİ: HLS hazır değil, file_path ile çalışıyor
                 ->pluck('song_id')
                 ->toArray();
         });
@@ -1003,7 +1003,7 @@ class QueueRefillController extends Controller
                 if ($lastPlay) {
                     $lastSong = Song::with(['album.artist', 'genre'])
                         ->where('is_active', 1)
-                        ->whereNotNull('hls_path')
+                        // ->whereNotNull('hls_path') // GEÇİCİ: HLS hazır değil, file_path ile çalışıyor
                         ->find($lastPlay->song_id);
 
                     if ($lastSong) {
@@ -1079,7 +1079,7 @@ class QueueRefillController extends Controller
 
             return $genre->songs()
                 ->where('is_active', 1)
-                ->whereNotNull('hls_path')
+                // ->whereNotNull('hls_path') // GEÇİCİ: HLS hazır değil, file_path ile çalışıyor
                 ->pluck('song_id')
                 ->toArray();
         });
@@ -1136,7 +1136,7 @@ class QueueRefillController extends Controller
         $cacheKey = 'popular_song_ids_top50';
         $topSongIds = \Cache::remember($cacheKey, 300, function () {
             return Song::where('is_active', 1)
-                ->whereNotNull('hls_path')
+                // ->whereNotNull('hls_path') // GEÇİCİ: HLS hazır değil, file_path ile çalışıyor
                 ->orderBy('play_count', 'desc')
                 ->take(50)
                 ->pluck('song_id')

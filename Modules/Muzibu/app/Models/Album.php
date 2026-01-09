@@ -369,10 +369,10 @@ class Album extends BaseModel implements TranslatableEntity, HasMedia
         $defaultLocale = get_tenant_default_locale();
 
         if ($locale === $defaultLocale) {
-            return url("/muzibu/album/{$slug}");
+            return url("/albums/{$slug}");
         }
 
-        return url("/{$locale}/muzibu/album/{$slug}");
+        return url("/{$locale}/albums/{$slug}");
     }
 
     /**

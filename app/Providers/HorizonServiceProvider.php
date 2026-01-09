@@ -32,19 +32,14 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
             if (app()->environment('local')) {
                 return true;
             }
-            
-            // Check for authenticated admin users with appropriate permissions
+
+            // Check for authenticated users
             if (!$user) {
                 return false;
             }
-            
-            // Allow users with root or admin roles to access Horizon
-            return $user->hasRole(['root', 'admin']) || 
-                   in_array($user->email, [
-                       'nurullah@nurullah.net',
-                       'info@turkbilisim.com.tr',
-                       'laravel@test'
-                   ]);
+
+            // SADECE ROOT YETKİSİ - Admin giremez!
+            return $user->hasRole('root');
         });
     }
 }

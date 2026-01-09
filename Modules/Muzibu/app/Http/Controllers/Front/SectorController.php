@@ -10,7 +10,7 @@ class SectorController extends Controller
 {
     public function index()
     {
-        // Only show sectors with at least 1 active playlist (that has active songs) - alfabetik sıralı
+        // Show all active sectors with playlists (alfabetik sıralı)
         $sectors = Sector::with('iconMedia')
             ->where('is_active', 1)
             ->whereHas('playlists', function($q) {

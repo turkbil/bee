@@ -478,8 +478,13 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
      */
     public function recalculateSubscriptionExpiry(): void
     {
-        // Tenant context yoksa çık
-        if (!tenant()) {
+        // 🔧 FIX: Tenant context check removed - User model already exists in tenant DB
+        // Connection check ensures we're working with correct database
+        $connection = $this->getConnectionName();
+
+        // Only process if we have a connection (prevents running on non-existent models)
+        if (!$connection) {
+            \Log::warning('recalculateSubscriptionExpiry: No database connection', ['user_id' => $this->id]);
             return;
         }
 
@@ -512,13 +517,25 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         $lastSubscription = $validSubscriptions->sortByDesc('current_period_end')->first();
         $expiresAt = $lastSubscription?->current_period_end;
 
-        // Sadece Tenant DB güncelle
+        \Log::channel('daily')->info('🔄 recalculateSubscriptionExpiry', [
+            'user_id' => $this->id,
+            'connection' => $connection,
+            'valid_subscriptions_count' => $validSubscriptions->count(),
+            'calculated_expires_at' => $expiresAt ? $expiresAt->toDateTimeString() : 'NULL',
+        ]);
+
+        // Update users table using the same connection as the model
         try {
-            \DB::table('users')
+            \DB::connection($connection)
+                ->table('users')
                 ->where('id', $this->id)
                 ->update(['subscription_expires_at' => $expiresAt]);
         } catch (\Exception $e) {
-            \Log::debug('Tenant users update skipped: ' . $e->getMessage());
+            \Log::error('recalculateSubscriptionExpiry: DB update failed', [
+                'user_id' => $this->id,
+                'connection' => $connection,
+                'error' => $e->getMessage(),
+            ]);
         }
 
         // Model'i refresh et

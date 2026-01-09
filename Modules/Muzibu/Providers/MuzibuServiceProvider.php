@@ -23,14 +23,7 @@ class MuzibuServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Polymorphic Morph Map - playlistables için
-        // Database'de 'sector', 'genre', 'radio', 'corporate' olarak saklanıyor
-        Relation::morphMap([
-            'sector' => \Modules\Muzibu\App\Models\Sector::class,
-            'genre' => \Modules\Muzibu\App\Models\Genre::class,
-            'radio' => \Modules\Muzibu\App\Models\Radio::class,
-            'corporate' => \Modules\Muzibu\App\Models\MuzibuCorporateAccount::class,
-        ]);
+        // Polymorphic Morph Map - AppServiceProvider'da tanımlı (duplicate önleme)
 
         // Load helpers
         $helpersPath = module_path($this->name, 'app/Helpers/helpers.php');
@@ -75,9 +68,7 @@ class MuzibuServiceProvider extends ServiceProvider
         // ✅ MODEL OBSERVERS: UTF-8 Temizleme (30 bin şarkı için production-ready!)
         $this->registerModelObservers();
 
-        // ✅ MORPH MAP: Polymorphic ilişkiler için kısa alias'lar
-        // playlistables tablosu bu alias'ları kullanır
-        $this->registerMorphMap();
+        // ✅ MORPH MAP: AppServiceProvider'da tanımlı (duplicate önleme)
     }
 
     /**
@@ -121,31 +112,6 @@ class MuzibuServiceProvider extends ServiceProvider
         \Modules\Muzibu\App\Models\MuzibuCorporateAccount::observe(\Modules\Muzibu\App\Observers\MuzibuCorporateAccountObserver::class);
     }
 
-    /**
-     * Morph Map Kayıtları
-     *
-     * Polymorphic ilişkilerde tam class adı yerine kısa alias kullanılır.
-     * Bu sayede DB'de "Modules\Muzibu\App\Models\Sector" yerine sadece "sector" yazılır.
-     *
-     * playlistables tablosu bu alias'ları kullanır:
-     * - sector -> Sector model
-     * - radio -> Radio model
-     * - corporate -> MuzibuCorporateAccount model
-     * - mood -> (İleride eklenecek)
-     */
-    protected function registerMorphMap(): void
-    {
-        // morphMap() = sadece alias tanımla (diğer modellere dokunma)
-        // enforceMorphMap() = TÜM morphable modeller tanımlı olmalı (User vb. için hata verir)
-        Relation::morphMap([
-            'sector' => \Modules\Muzibu\App\Models\Sector::class,
-            'radio' => \Modules\Muzibu\App\Models\Radio::class,
-            'corporate' => \Modules\Muzibu\App\Models\MuzibuCorporateAccount::class,
-            // İleride eklenecek:
-            // 'mood' => \Modules\Muzibu\App\Models\Mood::class,
-            // 'genre' => \Modules\Muzibu\App\Models\Genre::class,
-        ]);
-    }
 
     /**
      * Livewire component'lerini kaydet

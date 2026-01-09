@@ -100,6 +100,9 @@ class Genre extends BaseModel implements TranslatableEntity, HasMedia
         return $this->hasMany(Song::class, 'genre_id', 'genre_id');
     }
 
+    // playlists() metodu artık HasPlaylistDistribution trait'inden geliyor
+    // Eski tablo: muzibu_playlist_genre → Yeni tablo: muzibu_playlistables
+
     /**
      * HasCachedCounts configuration
      * Defines cached count fields and their calculators
@@ -279,10 +282,10 @@ class Genre extends BaseModel implements TranslatableEntity, HasMedia
         $defaultLocale = get_tenant_default_locale();
 
         if ($locale === $defaultLocale) {
-            return url("/muzibu/genre/{$slug}");
+            return url("/genres/{$slug}");
         }
 
-        return url("/{$locale}/muzibu/genre/{$slug}");
+        return url("/{$locale}/genres/{$slug}");
     }
 
     /**

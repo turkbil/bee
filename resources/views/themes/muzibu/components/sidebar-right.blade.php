@@ -226,6 +226,53 @@
                             </div>
                         </div>
                     </template>
+
+                    {{-- Load More Button (for infinite scroll up to 100) --}}
+                    <template x-if="$store.sidebar.canLoadMorePreviewTracks">
+                        <div class="px-4 py-4 border-t border-gray-800">
+                            <button @click="$store.sidebar.loadMorePreviewTracks()"
+                                    class="w-full py-2.5 bg-muzibu-gray hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2">
+                                <i class="fas fa-chevron-down text-xs"></i>
+                                <span x-text="`Daha Fazla Yükle (${$store.sidebar.previewDisplayCount}/${Math.min(100, $store.sidebar.previewTotalCount)})`"></span>
+                            </button>
+                        </div>
+                    </template>
+
+                    {{-- Pagination (for 100+) --}}
+                    <template x-if="$store.sidebar.showPreviewPagination && $store.sidebar.previewDisplayCount >= 100">
+                        <div class="px-4 py-4 border-t border-gray-800">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-xs text-gray-400" x-text="`Toplam ${$store.sidebar.previewTotalCount} şarkı`"></span>
+                                <span class="text-xs text-gray-400" x-text="`Sayfa ${$store.sidebar.previewCurrentPage} / ${$store.sidebar.previewTotalPages}`"></span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                {{-- Previous Button --}}
+                                <button @click="$store.sidebar.loadPreviewPage($store.sidebar.previewCurrentPage - 1)"
+                                        :disabled="$store.sidebar.previewCurrentPage === 1"
+                                        class="px-3 py-2 bg-muzibu-gray hover:bg-gray-700 text-white text-sm rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <i class="fas fa-chevron-left text-xs"></i>
+                                </button>
+
+                                {{-- Page Numbers --}}
+                                <div class="flex-1 flex items-center justify-center gap-1">
+                                    <template x-for="page in $store.sidebar.previewTotalPages" :key="page">
+                                        <button @click="$store.sidebar.loadPreviewPage(page)"
+                                                x-show="page === 1 || page === $store.sidebar.previewTotalPages || Math.abs(page - $store.sidebar.previewCurrentPage) <= 1"
+                                                class="w-8 h-8 rounded-lg text-xs font-medium transition-colors"
+                                                :class="page === $store.sidebar.previewCurrentPage ? 'bg-muzibu-coral text-white' : 'bg-muzibu-gray hover:bg-gray-700 text-gray-400'"
+                                                x-text="page"></button>
+                                    </template>
+                                </div>
+
+                                {{-- Next Button --}}
+                                <button @click="$store.sidebar.loadPreviewPage($store.sidebar.previewCurrentPage + 1)"
+                                        :disabled="$store.sidebar.previewCurrentPage === $store.sidebar.previewTotalPages"
+                                        class="px-3 py-2 bg-muzibu-gray hover:bg-gray-700 text-white text-sm rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <i class="fas fa-chevron-right text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </template>
                 </div>
             </template>
 
@@ -302,6 +349,53 @@
                                         <i class="fas fa-ellipsis-v text-xs"></i>
                                     </button>
                                 </div>
+                            </div>
+                        </div>
+                    </template>
+
+                    {{-- Load More Button (for infinite scroll up to 100) --}}
+                    <template x-if="$store.sidebar.canLoadMorePreviewTracks">
+                        <div class="px-4 py-4 border-t border-gray-800">
+                            <button @click="$store.sidebar.loadMorePreviewTracks()"
+                                    class="w-full py-2.5 bg-muzibu-gray hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2">
+                                <i class="fas fa-chevron-down text-xs"></i>
+                                <span x-text="`Daha Fazla Yükle (${$store.sidebar.previewDisplayCount}/${Math.min(100, $store.sidebar.previewTotalCount)})`"></span>
+                            </button>
+                        </div>
+                    </template>
+
+                    {{-- Pagination (for 100+) --}}
+                    <template x-if="$store.sidebar.showPreviewPagination && $store.sidebar.previewDisplayCount >= 100">
+                        <div class="px-4 py-4 border-t border-gray-800">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-xs text-gray-400" x-text="`Toplam ${$store.sidebar.previewTotalCount} şarkı`"></span>
+                                <span class="text-xs text-gray-400" x-text="`Sayfa ${$store.sidebar.previewCurrentPage} / ${$store.sidebar.previewTotalPages}`"></span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                {{-- Previous Button --}}
+                                <button @click="$store.sidebar.loadPreviewPage($store.sidebar.previewCurrentPage - 1)"
+                                        :disabled="$store.sidebar.previewCurrentPage === 1"
+                                        class="px-3 py-2 bg-muzibu-gray hover:bg-gray-700 text-white text-sm rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <i class="fas fa-chevron-left text-xs"></i>
+                                </button>
+
+                                {{-- Page Numbers --}}
+                                <div class="flex-1 flex items-center justify-center gap-1">
+                                    <template x-for="page in $store.sidebar.previewTotalPages" :key="page">
+                                        <button @click="$store.sidebar.loadPreviewPage(page)"
+                                                x-show="page === 1 || page === $store.sidebar.previewTotalPages || Math.abs(page - $store.sidebar.previewCurrentPage) <= 1"
+                                                class="w-8 h-8 rounded-lg text-xs font-medium transition-colors"
+                                                :class="page === $store.sidebar.previewCurrentPage ? 'bg-muzibu-coral text-white' : 'bg-muzibu-gray hover:bg-gray-700 text-gray-400'"
+                                                x-text="page"></button>
+                                    </template>
+                                </div>
+
+                                {{-- Next Button --}}
+                                <button @click="$store.sidebar.loadPreviewPage($store.sidebar.previewCurrentPage + 1)"
+                                        :disabled="$store.sidebar.previewCurrentPage === $store.sidebar.previewTotalPages"
+                                        class="px-3 py-2 bg-muzibu-gray hover:bg-gray-700 text-white text-sm rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <i class="fas fa-chevron-right text-xs"></i>
+                                </button>
                             </div>
                         </div>
                     </template>

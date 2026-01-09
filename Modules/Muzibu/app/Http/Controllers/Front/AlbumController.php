@@ -22,7 +22,10 @@ class AlbumController extends Controller
                 $q->where('is_active', 1);
             }])
             ->orderByRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr")))')
-            ->paginate(200);
+            ->paginate(40);
+
+        // Set custom pagination view
+        $albums->setPath(request()->url());
 
         return view('themes.muzibu.albums.index', compact('albums'));
     }
@@ -65,7 +68,7 @@ class AlbumController extends Controller
                 $q->where('is_active', 1);
             }])
             ->orderByRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr")))')
-            ->paginate(200);
+            ->paginate(40);
         $html = view('themes.muzibu.partials.albums-grid', compact('albums'))->render();
 
         return response()->json(['html' => $html, 'meta' => ['title' => 'Albümler - Muzibu', 'description' => 'En yeni albümleri keşfedin']])

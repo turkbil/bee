@@ -413,18 +413,31 @@
 
                             {{-- Features List --}}
                             @php
-                                $features = $plan->features ?? [];
+                                // Features multi-language ise doğru dili seç
+                                $rawFeatures = $plan->features ?? [];
+                                if (is_array($rawFeatures) && isset($rawFeatures['tr'])) {
+                                    $currentLocale = app()->getLocale();
+                                    $features = $rawFeatures[$currentLocale] ?? $rawFeatures['tr'] ?? [];
+                                } else {
+                                    $features = $rawFeatures;
+                                }
                             @endphp
                             <div class="flex-1 mb-6">
                                 @if(!empty($features))
                                 <div class="space-y-3">
                                     @foreach($features as $featureIndex => $feature)
                                         @php
-                                            if (str_contains($feature, '|')) {
+                                            // Array ise (nested) skip et
+                                            if (is_array($feature)) {
+                                                continue;
+                                            }
+
+                                            // String kontrolü - icon|text formatı
+                                            if (is_string($feature) && str_contains($feature, '|')) {
                                                 [$icon, $text] = explode('|', $feature, 2);
                                             } else {
                                                 $icon = 'fas fa-check';
-                                                $text = $feature;
+                                                $text = is_string($feature) ? $feature : '';
                                             }
                                         @endphp
                                         <div class="flex items-start gap-3 text-sm">

@@ -1,0 +1,5 @@
+Bu dosya checkout debug için oluşturuldu.
+
+Lütfen yeni bir abonelik satın alımı yapın ve sonucu buraya yazın.
+
+Test zamanı: <?php echo date('Y-m-d H:i:s'); ?>

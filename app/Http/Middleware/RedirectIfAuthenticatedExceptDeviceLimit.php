@@ -16,11 +16,12 @@ class RedirectIfAuthenticatedExceptDeviceLimit
 {
     /**
      * Handle an incoming request.
+     *
+     * Authenticated kullanıcıları guest sayfalarından (login/register) yönlendirir
      */
     public function handle(Request $request, Closure $next, string ...$guards): Response
     {
-        // 🔥 POST request'lerde middleware'i atla (login işlemi sırasında)
-        // Login işlemi tamamlandıktan sonra controller'da redirect yapılır
+        // POST request'lerde middleware'i atla (login işlemi sırasında)
         if ($request->isMethod('POST')) {
             return $next($request);
         }
@@ -29,16 +30,7 @@ class RedirectIfAuthenticatedExceptDeviceLimit
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                // 🔐 Device limit exceeded ise login sayfasına izin ver (modal göstermek için)
-                if (session('device_limit_exceeded')) {
-                    \Log::info('🔐 GUEST MIDDLEWARE: Device limit exceeded, allowing access to login page', [
-                        'user_id' => Auth::id(),
-                        'route' => $request->route()->getName(),
-                    ]);
-                    return $next($request);
-                }
-
-                // Normal durum: authenticated user guest sayfalarına giremez
+                // Authenticated user guest sayfalarına giremez
                 return redirect('/');
             }
         }

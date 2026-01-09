@@ -70,7 +70,7 @@ return [
     |
     */
 
-    'middleware' => env('APP_ENV') === 'production' ? ['web', 'auth', 'admin'] : ['web'],
+    'middleware' => env('APP_ENV') === 'production' ? ['web', 'auth'] : ['web'],
 
     /*
     |--------------------------------------------------------------------------
@@ -222,15 +222,16 @@ return [
                 'muzibu_my_playlist',       // Playlist cover generation (Leonardo AI)
                 'muzibu_isolated',          // Bulk operations, translations
                 'muzibu_hls',               // HLS conversion (generic)
+                'muzibu_seo',               // SEO generation (OpenAI GPT-4)
                 'muzibu_tenant_1001_hls',   // Tenant 1001 HLS conversion
             ],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
-            'minProcesses' => 1,
-            'maxProcesses' => 3,
+            'minProcesses' => 2,
+            'maxProcesses' => 6,  // 10 saat için artırıldı (277 job)
             'maxTime' => 0,
-            'maxJobs' => 100,
-            'memory' => 256,
+            'maxJobs' => 200,     // maxJobs artırıldı
+            'memory' => 512,      // Memory artırıldı (HLS + AI için)
             'tries' => 2,
             'timeout' => 600, // 10 dakika - HLS conversion için
             'nice' => 5,

@@ -338,7 +338,9 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
             'playlistable',
             'muzibu_playlistables',
             'playlist_id',
-            'playlistable_id'
+            'playlistable_id',
+            'playlist_id',  // Parent key (Playlist PK)
+            'sector_id'     // Related key (Sector PK)
         )->withPivot('position')->withTimestamps();
     }
 
@@ -353,7 +355,9 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
             'playlistable',
             'muzibu_playlistables',
             'playlist_id',
-            'playlistable_id'
+            'playlistable_id',
+            'playlist_id',  // Parent key (Playlist PK)
+            'radio_id'      // Related key (Radio PK)
         )->withPivot('position')->withTimestamps();
     }
 
@@ -368,7 +372,9 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
             'playlistable',
             'muzibu_playlistables',
             'playlist_id',
-            'playlistable_id'
+            'playlistable_id',
+            'playlist_id',  // Parent key (Playlist PK)
+            'genre_id'      // Related key (Genre PK)
         )->withPivot('position')->withTimestamps();
     }
 
@@ -383,7 +389,9 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
             'playlistable',
             'muzibu_playlistables',
             'playlist_id',
-            'playlistable_id'
+            'playlistable_id',
+            'playlist_id',              // Parent key (Playlist PK)
+            'muzibu_corporate_account_id'  // Related key (Corporate PK)
         )->withPivot('position')->withTimestamps();
     }
 
@@ -808,10 +816,10 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
         $defaultLocale = get_tenant_default_locale();
 
         if ($locale === $defaultLocale) {
-            return url("/muzibu/playlist/{$slug}");
+            return url("/playlists/{$slug}");
         }
 
-        return url("/{$locale}/muzibu/playlist/{$slug}");
+        return url("/{$locale}/playlists/{$slug}");
     }
 
     /**

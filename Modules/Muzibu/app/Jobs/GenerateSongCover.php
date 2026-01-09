@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Modules\Muzibu\App\Models\Song;
-use App\Services\Media\LeonardoAIService;
+use Modules\Muzibu\App\Services\MuzibuLeonardoAIService;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -92,8 +92,8 @@ class GenerateSongCover implements ShouldQueue
                 'prompt' => $prompt,
             ]);
 
-            // Leonardo AI ile görsel üret (serbest hayal gücü modu)
-            $leonardo = app(LeonardoAIService::class);
+            // Muzibu Leonardo AI ile görsel üret (müzik platformu optimized!)
+            $leonardo = app(MuzibuLeonardoAIService::class);
             $imageData = $leonardo->generateFreeImagination($prompt, [
                 'width' => 1472,
                 'height' => 832,
@@ -126,6 +126,23 @@ class GenerateSongCover implements ShouldQueue
                         ],
                     ])
                     ->toMediaCollection('hero');
+
+                // 🔐 FIX PERMISSION: Horizon root olarak çalıştığı için dosya root:root oluyor
+                // Web server'ın (tuufi.com_) dosyaya erişebilmesi için ownership düzelt
+                if ($spatieMedia) {
+                    $filePath = $spatieMedia->getPath();
+                    $dirPath = dirname($filePath);
+
+                    // Dosya ve klasör ownership'ini düzelt
+                    @exec("sudo chown -R tuufi.com_:psaserv " . escapeshellarg($dirPath));
+                    @exec("sudo chmod 755 " . escapeshellarg($dirPath));
+                    @exec("sudo chmod 644 " . escapeshellarg($filePath));
+
+                    Log::info('🔐 GenerateSongCover: Fixed file permissions', [
+                        'file_path' => $filePath,
+                        'media_id' => $spatieMedia->id,
+                    ]);
+                }
             }
 
             // Kredi düş

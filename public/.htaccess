@@ -42,7 +42,7 @@
 
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
-        Options -MultiViews -Indexes
+        Options -MultiViews -Indexes +FollowSymLinks
     </IfModule>
 
     RewriteEngine On
@@ -50,6 +50,11 @@
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Force rewrite for tenant1001 storage path (bypass symlink check for LiteSpeed phpSuExec)
+    # Other tenants are on different servers
+    RewriteCond %{REQUEST_URI} ^/storage/tenant1001/
+    RewriteRule ^ index.php [L]
 
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d

@@ -1,21 +1,5 @@
 # 🏢 MULTI-TENANT SİSTEM MİMARİSİ
 
-## 🔵 SUBSCRIPTION SİSTEMİ - DENEME AŞAMASI
-
-### 📋 ÖNEMLİ NOT:
-
-**Subscription plan tablolarında veri olmasına gerek yok!**
-
-- Şu anda **denemeler yapıyoruz**
-- **Hedef:** Tüm tabloları aynı tarza/yapıya getirmek
-- **Strateji:** Manage sayfasında kullanılan field'leri baz alarak 3 DB'yi birleştirmek
-- **Plan Dosyası:** https://ixtif.com/readme/2025/12/05/subscription-database-migration-plan/
-
-**Migration Yapılacak:**
-- Central (tuufi_4ekim) → +tax_rate, +price_display_mode, +is_trial | -legacy fields
-- Tenant İxtif → +is_trial, +sort_order | -unused fields
-- Tenant Muzibu → +tax_rate, +price_display_mode, +is_trial, +sort_order | -legacy price fields
-
 **Kullanıcıya migration öncesi danış!**
 
 ---

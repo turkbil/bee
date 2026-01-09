@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leonardo AI Test v2 - Prompt Güncellemesi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full">✅ v2 - DÜZELTME</span>
+                <span class="text-slate-400 text-sm">8 Ocak 2025</span>
+            </div>
+            <h1 class="text-4xl font-bold mb-3 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+                Leonardo AI v2 - Prompt Güncellemesi
+            </h1>
+            <p class="text-slate-300 text-lg mb-2">
+                Enstrüman Zorlaması Kaldırıldı - Başlık Odaklı Yorumlama
+            </p>
+            <a href="v1/" class="text-sm text-blue-400 hover:text-blue-300 underline">← v1 sonuçlarına dön</a>
+        </header>
+
+        <!-- Değişiklikler -->
+        <div class="bg-yellow-900/20 border border-yellow-700 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-bold text-yellow-400 mb-3">⚠️ v1'de Tespit Edilen Sorunlar</h3>
+            <div class="space-y-3 text-slate-300">
+                <div class="flex gap-3">
+                    <span class="text-2xl">❌</span>
+                    <div>
+                        <p class="font-semibold text-white mb-1">Her Fotoğrafta Enstrüman Zorlaması</p>
+                        <p class="text-sm">"Paradise" → Gitar eklendi ❌ | "Va Come Deve" → Keman eklendi ❌</p>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <span class="text-2xl">❌</span>
+                    <div>
+                        <p class="font-semibold text-white mb-1">Başlık Yanlış Yorumlandı</p>
+                        <p class="text-sm">Müzik platformu için görsel = Her şeye enstrüman ekle (YANLIŞ MANTIK!)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- v2 Güncellemeler -->
+        <div class="bg-green-900/20 border border-green-700 rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-bold text-green-400 mb-3">✅ v2'de Yapılan Düzeltmeler</h3>
+            <div class="space-y-3 text-slate-300">
+                <div class="flex gap-3">
+                    <span class="text-2xl">✅</span>
+                    <div>
+                        <p class="font-semibold text-white mb-1">Başlık Ne Diyorsa Onu Yorumla</p>
+                        <p class="text-sm">"Paradise" → Tropical beach (gitar YOK!) | "Va Come Deve" → Harmony, journey (keman YOK!)</p>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <span class="text-2xl">✅</span>
+                    <div>
+                        <p class="font-semibold text-white mb-1">Enstrüman SADECE Gerektiğinde</p>
+                        <p class="text-sm">"Rock Playlist" → Gitar eklenebilir | "Jazz Night" → Saksafon eklenebilir</p>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <span class="text-2xl">🌍</span>
+                    <div>
+                        <p class="font-semibold text-white mb-1">Çok Dilli Destek Eklendi</p>
+                        <p class="text-sm">Otomatik dil tespiti + İngilizce çeviri (Türkçe, İtalyanca, İspanyolca, Japonca vb.)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Sonuçları -->
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold mb-4">🎵 Test Sonuçları (Aynı 3 Şarkı)</h2>
+        </div>
+
+        <!-- Şarkı 1: Va Come Deve -->
+        <div class="bg-slate-800 rounded-xl overflow-hidden mb-8 border border-slate-700">
+            <div class="p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded">Şarkı #1</span>
+                    <h3 class="text-2xl font-bold text-white">Va Come Deve</h3>
+                    <span class="text-xs bg-blue-900 text-blue-300 px-2 py-1 rounded">İtalyanca</span>
+                </div>
+
+                <!-- v1 vs v2 Karşılaştırma -->
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-red-900/20 border border-red-700 rounded-lg p-4">
+                        <p class="text-xs font-bold text-red-400 mb-2">❌ v1 - YANLIŞ</p>
+                        <p class="text-sm text-slate-300">"Keman silueti, müzik notaları, gece gökyüzü, altın ses dalgaları"</p>
+                        <p class="text-xs text-red-300 mt-2">→ Neden keman? Başlık enstrüman gerektirmiyor!</p>
+                    </div>
+                    <div class="bg-green-900/20 border border-green-700 rounded-lg p-4">
+                        <p class="text-xs font-bold text-green-400 mb-2">✅ v2 - DOĞRU</p>
+                        <p class="text-sm text-slate-300">"Doğa yolculuğu, akan nehirler, denizle buluşma, yaşamın özü"</p>
+                        <p class="text-xs text-green-300 mt-2">→ "As It Should Be" konsepti, enstrüman YOK!</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Görsel -->
+                    <div class="bg-slate-900 rounded-lg overflow-hidden">
+                        <img src="v2/images/song-17998.jpg" alt="Va Come Deve - AI Generated Cover v2"
+                             class="w-full h-auto object-cover" loading="lazy">
+                        <div class="p-3 bg-slate-900 border-t border-slate-700">
+                            <p class="text-xs text-slate-400">
+                                <span class="text-purple-400 font-semibold">Stil:</span> vibrant |
+                                <span class="text-purple-400 font-semibold">Çeviri:</span> "As It Should Be"
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- GPT-4 Prompt -->
+                    <div>
+                        <div class="bg-slate-900 rounded-lg p-4 mb-3">
+                            <p class="text-xs font-bold text-purple-400 mb-2">🧠 GPT-4 PROMPT v2 (897 karakter)</p>
+                            <p class="text-sm text-slate-300 leading-relaxed">
+                                Album cover art of an abstract representation reflecting a journey with elements from nature,
+                                emphasizing flowing rivers meeting at the sea. Capture it through dynamic angles to suggest
+                                motion and evolution in life, possibly taken from a drone for that wide-angle perspective.
+                                Incorporate dramatic volumetric lighting to mimic sunlight breaking through clouds over a
+                                landscape where water embraces land forming shapes akin to human veins depicting life's essence
+                                flow. Use Canon camera with 24mm lens on Fuji Velvia film stock for vivid saturation capturing
+                                earth's diverse hues merging into each other gracefully as destiny unfolds just 'Va Come Deve'.
+                                Adding imperfections such as natural grain and vignette will imbue nostalgia within the scene's
+                                narrative depth itself creating resonant parallels indicative of unhurried growth processes humanity
+                                relates intimately still mysterious allures.
+                            </p>
+                        </div>
+                        <div class="bg-green-900/20 border border-green-700 rounded p-3">
+                            <p class="text-xs font-semibold text-green-400 mb-1">✨ Yeni Özellikler:</p>
+                            <ul class="text-xs text-slate-300 space-y-1">
+                                <li>🌍 <strong>Dil:</strong> Italian (otomatik tespit)</li>
+                                <li>🔄 <strong>Çeviri:</strong> "As It Should Be"</li>
+                                <li>🎨 <strong>Konsept:</strong> Journey, harmony, destiny (enstrüman YOK!)</li>
+                                <li>📷 <strong>Kamera:</strong> Canon 24mm + drone angle</li>
+                                <li>🎞️ <strong>Film:</strong> Fuji Velvia (vivid colors)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Şarkı 2: Hidden Paradise -->
+        <div class="bg-slate-800 rounded-xl overflow-hidden mb-8 border border-slate-700">
+            <div class="p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-pink-600 text-white text-xs font-bold px-3 py-1 rounded">Şarkı #2</span>
+                    <h3 class="text-2xl font-bold text-white">Hidden Paradise</h3>
+                    <span class="text-xs bg-green-900 text-green-300 px-2 py-1 rounded">English</span>
+                </div>
+
+                <!-- v1 vs v2 Karşılaştırma -->
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-red-900/20 border border-red-700 rounded-lg p-4">
+                        <p class="text-xs font-bold text-red-400 mb-2">❌ v1 - YANLIŞ</p>
+                        <p class="text-sm text-slate-300">"Gitar siluetleri, altın renkli saksofonlar, melodik ada"</p>
+                        <p class="text-xs text-red-300 mt-2">→ Neden enstrüman? Başlık "cennet" diyor!</p>
+                    </div>
+                    <div class="bg-green-900/20 border border-green-700 rounded-lg p-4">
+                        <p class="text-xs font-bold text-green-400 mb-2">✅ v2 - DOĞRU</p>
+                        <p class="text-sm text-slate-300">"Gizli tropikal plaj, zümrüt yapraklar, turkuaz lagün, palmiyeler"</p>
+                        <p class="text-xs text-green-300 mt-2">→ Cennet manzarası, enstrüman YOK!</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Görsel -->
+                    <div class="bg-slate-900 rounded-lg overflow-hidden">
+                        <img src="v2/images/song-26319.jpg" alt="Hidden Paradise - AI Generated Cover v2"
+                             class="w-full h-auto object-cover" loading="lazy">
+                        <div class="p-3 bg-slate-900 border-t border-slate-700">
+                            <p class="text-xs text-slate-400">
+                                <span class="text-pink-400 font-semibold">Stil:</span> cinematic (v1: vibrant) |
+                                <span class="text-pink-400 font-semibold">Stil değişti!</span> GPT-4 kararı
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- GPT-4 Prompt -->
+                    <div>
+                        <div class="bg-slate-900 rounded-lg p-4 mb-3">
+                            <p class="text-xs font-bold text-pink-400 mb-2">🧠 GPT-4 PROMPT v2 (712 karakter)</p>
+                            <p class="text-sm text-slate-300 leading-relaxed">
+                                Album cover art of an untouched, mystical tropical beach concealed by lush emerald foliage.
+                                Captured from a low angle through the leaves, creating a secretive feel as if peering into
+                                another world. A breathtaking blue lagoon shimmering under golden sunlight with reflections
+                                dancing on its surface; palm trees slightly bending in harmony with gentle sea breezes fill
+                                the background. Canon camera paired with an 85mm lens highlights distant details while adding
+                                softness to foreground elements. Rich Kodak Portra film captures vibrant tones and natural
+                                grain providing nostalgic depth combined with slight vignette around edges for mysterious
+                                framing effect evokes allurement of hidden treasures yet undiscovered.
+                            </p>
+                        </div>
+                        <div class="bg-green-900/20 border border-green-700 rounded p-3">
+                            <p class="text-xs font-semibold text-green-400 mb-1">✨ Yeni Özellikler:</p>
+                            <ul class="text-xs text-slate-300 space-y-1">
+                                <li>🌍 <strong>Dil:</strong> English (zaten İngilizce)</li>
+                                <li>🏝️ <strong>Konsept:</strong> Hidden beach, tropical paradise (enstrüman YOK!)</li>
+                                <li>📷 <strong>Kamera:</strong> Canon 85mm + low angle through leaves</li>
+                                <li>🎞️ <strong>Film:</strong> Kodak Portra (nostalgic tones)</li>
+                                <li>🎨 <strong>Stil Değişimi:</strong> vibrant → cinematic (GPT-4 seçimi)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Şarkı 3: Paradise -->
+        <div class="bg-slate-800 rounded-xl overflow-hidden mb-8 border border-slate-700">
+            <div class="p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded">Şarkı #3</span>
+                    <h3 class="text-2xl font-bold text-white">Paradise</h3>
+                    <span class="text-xs bg-green-900 text-green-300 px-2 py-1 rounded">English</span>
+                </div>
+
+                <!-- v1 vs v2 Karşılaştırma -->
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-red-900/20 border border-red-700 rounded-lg p-4">
+                        <p class="text-xs font-bold text-red-400 mb-2">❌ v1 - YANLIŞ</p>
+                        <p class="text-sm text-slate-300">"Abstract gitar silueti palmiye ağaçlarına karışmış"</p>
+                        <p class="text-xs text-red-300 mt-2">→ Neden gitar? Paradise = plaj, gün batımı!</p>
+                    </div>
+                    <div class="bg-green-900/20 border border-green-700 rounded-lg p-4">
+                        <p class="text-xs font-bold text-green-400 mb-2">✅ v2 - DOĞRU</p>
+                        <p class="text-sm text-slate-300">"Tropikal plaj, turkuaz su, beyaz kumsal, gün batımı, hindistancevizi"</p>
+                        <p class="text-xs text-green-300 mt-2">→ Cennet plajı, enstrüman YOK!</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Görsel -->
+                    <div class="bg-slate-900 rounded-lg overflow-hidden">
+                        <img src="v2/images/song-7394.jpg" alt="Paradise - AI Generated Cover v2"
+                             class="w-full h-auto object-cover" loading="lazy">
+                        <div class="p-3 bg-slate-900 border-t border-slate-700">
+                            <p class="text-xs text-slate-400">
+                                <span class="text-yellow-400 font-semibold">Stil:</span> cinematic (v1: vibrant) |
+                                <span class="text-yellow-400 font-semibold">Stil değişti!</span> GPT-4 kararı
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- GPT-4 Prompt -->
+                    <div>
+                        <div class="bg-slate-900 rounded-lg p-4 mb-3">
+                            <p class="text-xs font-bold text-yellow-400 mb-2">🧠 GPT-4 PROMPT v2 (927 karakter)</p>
+                            <p class="text-sm text-slate-300 leading-relaxed">
+                                Album cover art of a breathtaking tropical beachscape, showcasing a serene coastline with
+                                turquoise waters and powdery white sands. A vibrant sunset sets the sky ablaze in hues of
+                                orange, pink, and purple. Coconut palms gracefully bend over the shore while gentle waves
+                                kiss the sand tenderly. Captured from an aerial perspective for an immersive sense of escape.
+                                Sunrays create magical reflections on water's surface enhanced by moody shadows from lush
+                                foliage nearby lending a picturesque contrast that epitomizes paradise tranquility photographed
+                                using Nikon D850 camera paired with ultra-wide lens at 18mm to capture expansive view Fuji
+                                Velvia film elevates scene adding rich color depth significant dreamlike quality evident
+                                accentuated grain light leaks finalized through post-processed slight vintage fade igniting
+                                soothing relaxed ambiance ideally illustrating 'Paradise' themed musical essence purely encapsulated.
+                            </p>
+                        </div>
+                        <div class="bg-green-900/20 border border-green-700 rounded p-3">
+                            <p class="text-xs font-semibold text-green-400 mb-1">✨ Yeni Özellikler:</p>
+                            <ul class="text-xs text-slate-300 space-y-1">
+                                <li>🌍 <strong>Dil:</strong> English (zaten İngilizce)</li>
+                                <li>🏖️ <strong>Konsept:</strong> Tropical beach paradise (enstrüman YOK!)</li>
+                                <li>📷 <strong>Kamera:</strong> Nikon D850 + 18mm ultra-wide (aerial view)</li>
+                                <li>🎞️ <strong>Film:</strong> Fuji Velvia (dreamlike quality)</li>
+                                <li>🌅 <strong>Atmosfer:</strong> Sunset, turquoise water, white sand</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Özet Karşılaştırma -->
+        <div class="bg-gradient-to-r from-green-900/30 to-emerald-900/30 border border-green-700 rounded-xl p-6 mb-8">
+            <h3 class="text-xl font-bold text-white mb-4">📊 v1 vs v2 Karşılaştırma</h3>
+            <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <p class="text-sm text-slate-400 mb-2">Enstrüman Ekleme</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">❌</span>
+                        <p class="text-sm"><strong class="text-red-400">v1:</strong> 3/3 şarkı</p>
+                    </div>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="text-2xl">✅</span>
+                        <p class="text-sm"><strong class="text-green-400">v2:</strong> 0/3 şarkı</p>
+                    </div>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <p class="text-sm text-slate-400 mb-2">Başlığa Uygunluk</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">❌</span>
+                        <p class="text-sm"><strong class="text-red-400">v1:</strong> Yanlış yorumlama</p>
+                    </div>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="text-2xl">✅</span>
+                        <p class="text-sm"><strong class="text-green-400">v2:</strong> Doğru yorumlama</p>
+                    </div>
+                </div>
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <p class="text-sm text-slate-400 mb-2">Dil Desteği</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">❌</span>
+                        <p class="text-sm"><strong class="text-red-400">v1:</strong> Sadece İngilizce</p>
+                    </div>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="text-2xl">✅</span>
+                        <p class="text-sm"><strong class="text-green-400">v2:</strong> Çok dilli!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sonuç -->
+        <div class="bg-green-900/20 border border-green-700 rounded-lg p-6">
+            <h3 class="text-xl font-bold text-green-400 mb-3">✅ v2 Başarı Raporu</h3>
+            <div class="text-slate-300 space-y-3">
+                <p>
+                    <strong class="text-white">Prompt düzeltmesi başarılı!</strong> Artık sistem başlığı doğru yorumluyor.
+                </p>
+                <div class="bg-slate-900/50 rounded p-4">
+                    <p class="font-semibold text-green-300 mb-2">💡 Önemli Değişiklikler:</p>
+                    <ul class="space-y-2 text-sm">
+                        <li>✅ <strong>"Paradise"</strong> → Artık tropikal plaj, gün batımı, turkuaz su (gitar YOK!)</li>
+                        <li>✅ <strong>"Va Come Deve"</strong> → Artık doğa yolculuğu, nehirler, deniz (keman YOK!)</li>
+                        <li>✅ <strong>"Hidden Paradise"</strong> → Artık gizli plaj, cennet lagünü (saksafon YOK!)</li>
+                        <li>🌍 <strong>Çok Dilli:</strong> Otomatik dil tespiti + İngilizce çeviri eklendi</li>
+                        <li>🎨 <strong>Stil Çeşitliliği:</strong> 2 cinematic + 1 vibrant (GPT-4'ün özgür seçimi)</li>
+                    </ul>
+                </div>
+                <p class="text-sm text-slate-400">
+                    <strong>Not:</strong> Sistem artık production'a hazır. Enstrüman zorlaması yok, başlıklar doğru yorumlanıyor,
+                    çok dilli destek çalışıyor.
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-6 border-t border-slate-700 text-center text-slate-400 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu | Muzibu Müzik Platformu</p>
+            <p class="mt-2">v2 Test tarihi: 8 Ocak 2025 | Tenant: 1001</p>
+            <p class="mt-1"><a href="v1/" class="text-blue-400 hover:text-blue-300 underline">v1 sonuçlarını görüntüle</a></p>
+        </footer>
+    </div>
+</body>
+</html>

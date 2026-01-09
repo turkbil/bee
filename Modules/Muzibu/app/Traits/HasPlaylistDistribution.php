@@ -20,11 +20,10 @@ use Modules\Muzibu\App\Models\Playlist;
 trait HasPlaylistDistribution
 {
     /**
-     * Bu entity'e dağıtılmış playlist'ler
+     * Bu entity'nin playlist'leri (polymorphic)
      *
-     * ⚠️ playlistable_type değerleri: 'sector', 'radio', 'genre', 'corporate'
-     * Database'de küçük harf, singular formda saklanıyor!
-     * MorphMap: MuzibuServiceProvider::boot() içinde tanımlı
+     * ⚠️ playlistable_type değerleri: Kısa model adı (örn: 'Radio', 'Sector')
+     * Database'de morph map ile kısa isim saklanıyor!
      */
     public function playlists(): MorphToMany
     {
@@ -33,8 +32,10 @@ trait HasPlaylistDistribution
             'playlistable',
             'muzibu_playlistables',
             'playlistable_id',
+            'playlist_id',
+            $this->getKeyName(), // genre_id, radio_id, sector_id
             'playlist_id'
-        )->withPivot('position')->withTimestamps();
+        )->withPivot('position')->withTimestamps()->orderBy('muzibu_playlistables.position');
     }
 
     /**

@@ -155,6 +155,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/subscriptions', [CorporateFrontController::class, 'apiSubscriptions'])->name('api.corporate.subscriptions');
         Route::get('/spots', [CorporateFrontController::class, 'apiSpots'])->name('api.corporate.spots');
         Route::get('/member/{id}/history', [CorporateFrontController::class, 'apiMemberHistory'])->name('api.corporate.member-history');
+
+        // POST routes for corporate actions
+        Route::get('/check-code', [CorporateFrontController::class, 'checkCodeAvailability'])->name('api.corporate.check-code');
+        Route::post('/create', [CorporateFrontController::class, 'createCorporate'])->name('api.corporate.create');
     });
 
     // 📢 Spot (Anons) API Routes

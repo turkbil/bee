@@ -25,16 +25,14 @@ class AdminAccessMiddleware
             Log::warning('Kimlik doğrulama yapılmamış kullanıcı admin erişimi deniyor');
             abort(403, 'Bu alana erişim yetkiniz bulunmamaktadır.');
         }
-        
+
         $user = auth()->user();
         $path = $request->path();
-        
+
         // Hangi modülü erişmeye çalıştığını belirle - alt yolları da yakala
         preg_match('/^admin\/([^\/]+)/', $path, $matches);
         $moduleName = $matches[1] ?? null;
-        
-        // Debug logları kaldırıldı - performans için
-        
+
         // Root her yere erişebilir
         if ($user->isRoot()) {
             return $next($request);

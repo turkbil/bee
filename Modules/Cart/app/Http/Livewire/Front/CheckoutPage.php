@@ -1716,12 +1716,23 @@ class CheckoutPage extends Component
      */
     public function proceedToPayment()
     {
+        // 🔥 AGGRESSIVE DEBUG
+        $debugLog = storage_path('logs/checkout-proceed-debug.log');
+        file_put_contents($debugLog, "\n\n=== " . date('Y-m-d H:i:s') . " ===\n", FILE_APPEND);
+        file_put_contents($debugLog, "proceedToPayment() CALLED!\n", FILE_APPEND);
+        file_put_contents($debugLog, "User ID: " . (auth()->id() ?? 'NULL') . "\n", FILE_APPEND);
+        file_put_contents($debugLog, "Auth check: " . (auth()->check() ? 'YES' : 'NO') . "\n", FILE_APPEND);
+        file_put_contents($debugLog, "billing_profile_id: " . ($this->billing_profile_id ?? 'NULL') . "\n", FILE_APPEND);
+        file_put_contents($debugLog, "agree_all: " . ($this->agree_all ? 'YES' : 'NO') . "\n", FILE_APPEND);
+
         \Log::info('💳 [CHECKOUT] proceedToPayment START', [
             'billing_profile_id' => $this->billing_profile_id,
             'selectedPaymentMethodId' => $this->selectedPaymentMethodId,
             'selectedGateway' => $this->selectedGateway,
             'agree_all' => $this->agree_all,
             'requiresShipping' => $this->requiresShipping,
+            'user_id' => auth()->id(),
+            'session_id' => session()->getId(),
         ]);
 
         // Önce validation yap
@@ -1985,6 +1996,9 @@ class CheckoutPage extends Component
                 'success' => true,
                 'redirectUrl' => $paymentUrl,
             ]);
+
+            // 🔥 FIX: Skip render to avoid huge response (failed to load response data)
+            $this->skipRender();
 
             return [
                 'success' => true,

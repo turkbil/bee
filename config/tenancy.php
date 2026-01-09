@@ -13,7 +13,10 @@ return [
     
     'central_domains' => [
         env('APP_DOMAIN', 'laravel.test'),
-        'www.' . env('APP_DOMAIN', 'laravel.test'),
+        'tuufi.com',
+        'www.tuufi.com',
+        'muzibu.com',
+        'www.muzibu.com.tr',
     ],
 
     /**

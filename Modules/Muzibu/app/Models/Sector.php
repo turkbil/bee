@@ -161,10 +161,10 @@ class Sector extends BaseModel implements HasMedia
         $defaultLocale = get_tenant_default_locale();
 
         if ($locale === $defaultLocale) {
-            return url("/muzibu/sector/{$slug}");
+            return url("/sectors/{$slug}");
         }
 
-        return url("/{$locale}/muzibu/sector/{$slug}");
+        return url("/{$locale}/sectors/{$slug}");
     }
 
     /**

@@ -128,20 +128,23 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
-        // 🧹 LOGIN CACHE TEMİZLEME - Sadece user-specific cache'ler (development mode'da tüm sistem cache temizleme gereksiz)
+        // 🧹 LOGIN CACHE TEMİZLEME - Response cache tamamen temizle (guest→auth geçişi için)
         try {
             // Kullanıcı tercihlerine göre locale ayarla
             if ($user->tenant_locale) {
                 app()->setLocale($user->tenant_locale);
             }
 
-            // Sadece guest cache'leri temizle (auth/guest ayrımı için)
-            $this->clearGuestCaches();
-
-            \Log::info('🧹 LOGIN: Guest cache temizleme tamamlandı', [
-                'user_id' => $user->id,
-                'user_locale' => $user->tenant_locale
-            ]);
+            // 🔥 RESPONSE CACHE TAMAMEN TEMİZLE
+            // clearGuestCaches() merkezi domain için çalışmıyor (tenant() null)
+            // Tüm cache temizlemek daha güvenli ve etkili
+            if (class_exists('\Spatie\ResponseCache\Facades\ResponseCache')) {
+                \Spatie\ResponseCache\Facades\ResponseCache::clear();
+                \Log::info('🧹 LOGIN: Response cache tamamen temizlendi', [
+                    'user_id' => $user->id,
+                    'user_locale' => $user->tenant_locale
+                ]);
+            }
         } catch (\Exception $e) {
             \Log::warning('Login cache clear error: ' . $e->getMessage());
         }
@@ -158,26 +161,18 @@ class AuthenticatedSessionController extends Controller
             'auth_check' => Auth::check() ? 'YES' : 'NO',
         ]);
 
-        // 🔐 DEVICE LIMIT - Session regenerate SONRASI registerSession() çağır (Tenant-aware)
+        // 📝 SESSION KAYDI - Limit kontrolü YOK, sadece kayıt (08.01.2026)
         if (tenant()) {
             try {
                 $deviceService = app(\Modules\Muzibu\App\Services\DeviceService::class);
-
-                // registerSession() içinde LIFO otomatik KALDIRILDI
-                // Kullanıcı manuel seçecek
                 $deviceService->registerSession($user);
 
-                \Log::info('🔐 POST-LOGIN: Session registered (LIFO otomatik)', [
+                \Log::info('📝 POST-LOGIN: Session kaydedildi', [
                     'user_id' => $user->id,
                     'session_id' => substr(session()->getId(), 0, 20) . '...',
                 ]);
-
-                // ✅ LIFO artık registerSession() içinde otomatik çalışıyor
-                // ✅ isDeviceLimitExceeded kontrolü KALDIRILDI (21.12.2025)
-                // ✅ Eski session'lar otomatik siliniyor, modal gereksiz
-
             } catch (\Exception $e) {
-                \Log::error('🔐 POST-LOGIN: Device service failed', [
+                \Log::error('📝 POST-LOGIN: Session kayıt hatası', [
                     'user_id' => $user->id,
                     'error' => $e->getMessage(),
                 ]);
@@ -241,9 +236,14 @@ class AuthenticatedSessionController extends Controller
                 }
             }
 
-            // 🧹 LOGOUT: Sadece user auth cache (hafif & hızlı)
+            // 🧹 LOGOUT: Response cache tamamen temizle (auth→guest geçişi için)
             try {
-                $this->clearUserAuthCaches($user->id);
+                if (class_exists('\Spatie\ResponseCache\Facades\ResponseCache')) {
+                    \Spatie\ResponseCache\Facades\ResponseCache::clear();
+                    \Log::info('🧹 LOGOUT: Response cache tamamen temizlendi', [
+                        'user_id' => $user->id
+                    ]);
+                }
             } catch (\Exception $e) {
                 \Log::warning('Logout cache clear error: ' . $e->getMessage());
             }

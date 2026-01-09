@@ -15,7 +15,10 @@ return [
     'enabled' => env('AI_ENABLED', true),
     'debug' => env('AI_DEBUG', false),
     'cache_duration' => env('AI_CACHE_DURATION', 60), // minutes
-    
+
+    // API Keys (for Leonardo AI service compatibility)
+    'openai_api_key' => env('OPENAI_API_KEY'),
+
     // Default provider (fallback from database)
     'default_provider' => env('AI_DEFAULT_PROVIDER', 'openai'),
     'default_model' => env('AI_DEFAULT_MODEL', 'gpt-4o-mini'),
